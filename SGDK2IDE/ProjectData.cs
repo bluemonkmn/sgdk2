@@ -1324,6 +1324,14 @@ namespace SGDK2
             return m_dsPrj.SpriteCategory;
          }
       }
+      public static ProjectDataset.SpriteCategoryRow AddSpriteCategory(string Name)
+      {
+         return m_dsPrj.SpriteCategory.AddSpriteCategoryRow(Name);
+      }
+      public static ProjectDataset.SpriteCategoryRow GetSpriteCategory(string Name)
+      {
+         return m_dsPrj.SpriteCategory.FindByName(Name);
+      }
       #endregion
 
       #region SpriteCategorySprite
@@ -1366,6 +1374,23 @@ namespace SGDK2
          {
             return m_dsPrj.SpriteCategorySprite;
          }
+      }
+      public static bool IsSpriteDefinitionInCategory(string CategoryName, string SpriteDefName)
+      {
+         return m_dsPrj.SpriteCategorySprite.FindByCategoryNameDefinitionName(CategoryName, SpriteDefName) != null;
+      }
+      public static ProjectDataset.SpriteCategorySpriteRow AddSpriteDefinitionToCategory(ProjectDataset.SpriteCategoryRow SpriteCategory, ProjectDataset.SpriteDefinitionRow SpriteDefinition)
+      {
+         ProjectDataset.SpriteCategorySpriteRow dr = m_dsPrj.SpriteCategorySprite.FindByCategoryNameDefinitionName(SpriteCategory.Name, SpriteDefinition.Name);
+         if (dr == null)
+            return m_dsPrj.SpriteCategorySprite.AddSpriteCategorySpriteRow(SpriteCategory, SpriteDefinition);
+         return dr;
+      }
+      public static void RemoveSpriteDefinitionFromCategory(string CategoryName, string SpriteDefName)
+      {
+         ProjectDataset.SpriteCategorySpriteRow dr = m_dsPrj.SpriteCategorySprite.FindByCategoryNameDefinitionName(CategoryName, SpriteDefName);
+         if (dr != null)
+            dr.Delete();
       }
       #endregion
       

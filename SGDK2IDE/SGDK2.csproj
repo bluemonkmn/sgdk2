@@ -427,8 +427,13 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
-                    RelPath = "SpriteBase.cs"
-                    SubType = "Code"
+                    RelPath = "SpriteCategories.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "SpriteCategories.resx"
+                    DependentUpon = "SpriteCategories.cs"
                     BuildAction = "EmbeddedResource"
                 />
                 <File
@@ -474,6 +479,11 @@
                 <File
                     RelPath = "WizardBase.resx"
                     DependentUpon = "WizardBase.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "Template\SpriteBase.cs"
+                    SubType = "Code"
                     BuildAction = "EmbeddedResource"
                 />
             </Include>

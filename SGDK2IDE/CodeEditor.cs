@@ -28,13 +28,14 @@ namespace SGDK2
       #endregion
 
       #region Initialization and Clean-up
-		public frmCodeEditor(ProjectDataset.SourceCodeRow m_SourceCode)
+		public frmCodeEditor(ProjectDataset.SourceCodeRow drSourceCode)
 		{
 			//
 			// Required for Windows Form Designer support
 			//
 			InitializeComponent();
 
+         m_SourceCode = drSourceCode;
          txtCode.Text = m_SourceCode.Text;
          m_isDirty = false;
 		}
@@ -73,12 +74,15 @@ namespace SGDK2
          // txtCode
          // 
          this.txtCode.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.txtCode.Font = new System.Drawing.Font("Lucida Console", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
          this.txtCode.Location = new System.Drawing.Point(0, 0);
          this.txtCode.Multiline = true;
          this.txtCode.Name = "txtCode";
+         this.txtCode.ScrollBars = System.Windows.Forms.ScrollBars.Both;
          this.txtCode.Size = new System.Drawing.Size(456, 349);
          this.txtCode.TabIndex = 0;
          this.txtCode.Text = "";
+         this.txtCode.WordWrap = false;
          this.txtCode.TextChanged += new System.EventHandler(this.txtCode_TextChanged);
          // 
          // mnuCodeEditor

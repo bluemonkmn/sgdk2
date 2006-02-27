@@ -949,17 +949,12 @@ namespace SGDK2
 
       #region Private Methods
       /// <summary>
-      /// Debug Test
+      /// Retrieve the code for the sprite base class for this project
       /// </summary>
-      /// <returns></returns>
-      private string GetDefaultSpriteCode()
+      /// <returns>String containing class SpriteBase</returns>
+      private string GetBaseSpriteCode()
       {
-         System.IO.Stream remoteReflectorStream  = System.Reflection.Assembly.GetAssembly(typeof(SGDK2IDE)).GetManifestResourceStream("SGDK2.SpriteBase.cs");
-         System.IO.StreamReader readReflector = new System.IO.StreamReader(remoteReflectorStream);
-         string remoteReflectorCode;
-         remoteReflectorCode = readReflector.ReadToEnd();
-         readReflector.Close();
-         return remoteReflectorCode;
+         return ProjectData.GetSourceCode("SpriteBase").Text;
       }
 
       private string CompileTempAssembly(string code)
@@ -1143,7 +1138,7 @@ namespace SGDK2
       {
          if (bForceRefresh || (m_AvailableRules == null))
          {
-            RemotingServices.RemoteMethodInfo[] ruleList = GetAvailableRules(GetDefaultSpriteCode());
+            RemotingServices.RemoteMethodInfo[] ruleList = GetAvailableRules(GetBaseSpriteCode());
             m_AvailableRules = new RuleTable();
             m_Enums = new EnumTable();
             foreach(RemotingServices.RemoteMethodInfo mi in ruleList)
@@ -1244,7 +1239,7 @@ namespace SGDK2
             if (m_Enums.Contains(param.TypeName))
                enumVals = m_Enums[param.TypeName];
             else
-               enumVals = m_Enums[param.TypeName] = GetEnumInfo(GetDefaultSpriteCode(), param.TypeName);
+               enumVals = m_Enums[param.TypeName] = GetEnumInfo(GetBaseSpriteCode(), param.TypeName);
 
             foreach (string enumVal in enumVals)
                cboParameter.Items.Add(enumVal);

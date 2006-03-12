@@ -27,6 +27,7 @@ namespace SGDK2
       Int32 m_nPinStatus; // 0 == Pinned, 1 == Unpinned Collapsed, 2 = Unpinned Expanded
       Boolean m_bOverPin = false;
       TreeNode m_ContextNode = null;
+      string m_strProjectPath;
       #endregion
 
       #region Windows Form Designer Memebers
@@ -60,6 +61,10 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuFileDeleteObj;
       private SGDK2.DataChangeNotifier dataMonitor;
       private System.Windows.Forms.MenuItem mnuFileNewPrj;
+      private System.Windows.Forms.MenuItem mnuFileResetCode;
+      private System.Windows.Forms.MenuItem mnuFileGenerate;
+      private System.Windows.Forms.MenuItem menuItem3;
+      private System.Windows.Forms.MenuItem mnuFileSavePrjAs;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -125,6 +130,10 @@ namespace SGDK2
          this.pnlProjectTree = new System.Windows.Forms.Panel();
          this.lblProjectTree = new System.Windows.Forms.Label();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
+         this.mnuFileResetCode = new System.Windows.Forms.MenuItem();
+         this.mnuFileGenerate = new System.Windows.Forms.MenuItem();
+         this.menuItem3 = new System.Windows.Forms.MenuItem();
+         this.mnuFileSavePrjAs = new System.Windows.Forms.MenuItem();
          this.pnlProjectTree.SuspendLayout();
          this.SuspendLayout();
          // 
@@ -245,9 +254,13 @@ namespace SGDK2
                                                                                 this.mnuFileNewPrj,
                                                                                 this.mnuFileOpenPrj,
                                                                                 this.mnuFileSavePrj,
+                                                                                this.mnuFileSavePrjAs,
                                                                                 this.mnuFileSep1,
                                                                                 this.mnuFileNewObj,
                                                                                 this.mnuFileDeleteObj,
+                                                                                this.menuItem3,
+                                                                                this.mnuFileResetCode,
+                                                                                this.mnuFileGenerate,
                                                                                 this.mnuFileSep2,
                                                                                 this.mnuFileExit});
          this.mnuFile.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
@@ -273,30 +286,30 @@ namespace SGDK2
          // 
          // mnuFileSep1
          // 
-         this.mnuFileSep1.Index = 3;
+         this.mnuFileSep1.Index = 4;
          this.mnuFileSep1.Text = "-";
          // 
          // mnuFileNewObj
          // 
-         this.mnuFileNewObj.Index = 4;
+         this.mnuFileNewObj.Index = 5;
          this.mnuFileNewObj.Text = "New O&bject";
          this.mnuFileNewObj.Click += new System.EventHandler(this.mnuFileNewObj_Click);
          // 
          // mnuFileDeleteObj
          // 
-         this.mnuFileDeleteObj.Index = 5;
+         this.mnuFileDeleteObj.Index = 6;
          this.mnuFileDeleteObj.Text = "&Delete Object";
          this.mnuFileDeleteObj.Click += new System.EventHandler(this.mnuFileDeleteObj_Click);
          // 
          // mnuFileSep2
          // 
-         this.mnuFileSep2.Index = 6;
+         this.mnuFileSep2.Index = 10;
          this.mnuFileSep2.MergeOrder = 98;
          this.mnuFileSep2.Text = "-";
          // 
          // mnuFileExit
          // 
-         this.mnuFileExit.Index = 7;
+         this.mnuFileExit.Index = 11;
          this.mnuFileExit.MergeOrder = 99;
          this.mnuFileExit.Text = "E&xit";
          this.mnuFileExit.Click += new System.EventHandler(this.mnuFileExit_Click);
@@ -365,6 +378,7 @@ namespace SGDK2
          this.dataMonitor.SpriteCategoryRowChanging += new SGDK2.ProjectDataset.SpriteCategoryRowChangeEventHandler(this.dataMonitor_SpriteCategoryRowChanging);
          this.dataMonitor.SpriteDefinitionRowDeleted += new SGDK2.ProjectDataset.SpriteDefinitionRowChangeEventHandler(this.dataMonitor_SpriteDefinitionRowDeleted);
          this.dataMonitor.LayerRowChanging += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowChanging);
+         this.dataMonitor.SourceCodeRowChanging += new SGDK2.ProjectDataset.SourceCodeRowChangeEventHandler(this.dataMonitor_SourceCodeRowChanging);
          this.dataMonitor.CounterRowDeleted += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowDeleted);
          this.dataMonitor.TilesetRowChanged += new SGDK2.ProjectDataset.TilesetRowChangeEventHandler(this.dataMonitor_TilesetRowChanged);
          this.dataMonitor.GraphicSheetRowDeleted += new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(this.dataMonitor_GraphicSheetRowDeleted);
@@ -383,11 +397,36 @@ namespace SGDK2
          this.dataMonitor.SpriteDefinitionRowChanging += new SGDK2.ProjectDataset.SpriteDefinitionRowChangeEventHandler(this.dataMonitor_SpriteDefinitionRowChanging);
          this.dataMonitor.SpriteDefinitionRowChanged += new SGDK2.ProjectDataset.SpriteDefinitionRowChangeEventHandler(this.dataMonitor_SpriteDefinitionRowChanged);
          this.dataMonitor.TilesetRowDeleted += new SGDK2.ProjectDataset.TilesetRowChangeEventHandler(this.dataMonitor_TilesetRowDeleted);
+         this.dataMonitor.SourceCodeRowChanged += new SGDK2.ProjectDataset.SourceCodeRowChangeEventHandler(this.dataMonitor_SourceCodeRowChanged);
          this.dataMonitor.FramesetRowDeleted += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.dataMonitor_FramesetRowDeleted);
+         this.dataMonitor.SourceCodeRowDeleted += new SGDK2.ProjectDataset.SourceCodeRowChangeEventHandler(this.dataMonitor_SourceCodeRowDeleted);
          this.dataMonitor.TileShapeRowChanged += new SGDK2.ProjectDataset.TileShapeRowChangeEventHandler(this.dataMonitor_TileShapeRowChanged);
          this.dataMonitor.FramesetRowChanged += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.dataMonitor_FramesetRowChanged);
          this.dataMonitor.SolidityRowChanging += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.dataMonitor_SolidityRowChanging);
          this.dataMonitor.SolidityRowDeleted += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.dataMonitor_SolidityRowDeleted);
+         // 
+         // mnuFileResetCode
+         // 
+         this.mnuFileResetCode.Index = 8;
+         this.mnuFileResetCode.Text = "&Reset Source Code";
+         this.mnuFileResetCode.Click += new System.EventHandler(this.mnuFileResetCode_Click);
+         // 
+         // mnuFileGenerate
+         // 
+         this.mnuFileGenerate.Index = 9;
+         this.mnuFileGenerate.Text = "&Generate Project";
+         this.mnuFileGenerate.Click += new System.EventHandler(this.mnuFileGenerate_Click);
+         // 
+         // menuItem3
+         // 
+         this.menuItem3.Index = 7;
+         this.menuItem3.Text = "-";
+         // 
+         // mnuFileSavePrjAs
+         // 
+         this.mnuFileSavePrjAs.Index = 3;
+         this.mnuFileSavePrjAs.Text = "&Save Project As...";
+         this.mnuFileSavePrjAs.Click += new System.EventHandler(this.mnuFileSavePrjAs_Click);
          // 
          // frmMain
          // 
@@ -464,11 +503,6 @@ namespace SGDK2
          ndFolder.Tag = "CD";
          m_TreeNodes.Add("CD", ndFolder);
          ndRoot.Nodes.Add(ndFolder);
-
-         ndFolder = new TreeNode("SpriteBase", 20, 20);
-         ndFolder.Tag = "CDSpriteBase";
-         m_TreeNodes.Add("CDSpriteBase", ndFolder);
-         ((TreeNode)m_TreeNodes["CD"]).Nodes.Add(ndFolder);
       }
 
       private void DoNewProject()
@@ -476,9 +510,10 @@ namespace SGDK2
          ProjectData.Clear();
          ProjectData.AddTileShape("Empty", "false");
          ProjectData.AddTileShape("Solid", "true");
-         ProjectData.AddSourceCode("SpriteBase", SGDK2IDE.LoadEmbeddedString("SGDK2.Template.SpriteBase.cs"));
+         ProjectData.ExtendedProperties["SchemaVersion"] = "1";
          tvwMain.CollapseAll();
          tvwMain.Nodes[0].Expand();
+         m_strProjectPath = null;
       }
 
       private void ShowMDIChild(System.Type typForm)
@@ -1374,6 +1409,43 @@ namespace SGDK2
          }                  
       }
 
+      private void dataMonitor_SourceCodeRowChanged(object sender, SGDK2.ProjectDataset.SourceCodeRowChangeEvent e)
+      {
+         if (e.Action == DataRowAction.Add)
+         {
+            TreeNode ndNew = ((TreeNode)m_TreeNodes["CD"]).Nodes.Add(e.Row.Name);
+            ndNew.Tag = "CD" + e.Row.Name;
+            ndNew.SelectedImageIndex = ndNew.ImageIndex = 20;
+            ndNew.EnsureVisible();
+            // Add the node to the local index
+            m_TreeNodes.Add(ndNew.Tag, ndNew);
+         }
+      }
+
+      private void dataMonitor_SourceCodeRowChanging(object sender, SGDK2.ProjectDataset.SourceCodeRowChangeEvent e)
+      {
+         if (e.Action == DataRowAction.Change)
+         {
+            String sOldKey = e.Row[ProjectData.SourceCode.NameColumn, DataRowVersion.Original].ToString();
+            TreeNode ndOld = (TreeNode)m_TreeNodes["CD" + sOldKey];
+            m_TreeNodes.Remove("CD" + sOldKey);
+            ndOld.Tag = "CD" + e.Row.Name;
+            ndOld.Text = e.Row.Name;
+            m_TreeNodes.Add(ndOld.Tag, ndOld);
+         }                  
+      }
+
+      private void dataMonitor_SourceCodeRowDeleted(object sender, SGDK2.ProjectDataset.SourceCodeRowChangeEvent e)
+      {
+         if ((e.Action == DataRowAction.Delete) && (e.Row.HasVersion(DataRowVersion.Original)))
+         {
+            string Key = e.Row[ProjectData.SourceCode.NameColumn, DataRowVersion.Original].ToString();
+            TreeNode tnCode = (TreeNode)m_TreeNodes["CD" + Key];
+            m_TreeNodes.Remove("CD" + Key);
+            tnCode.Parent.Nodes.Remove(tnCode);
+         }                        
+      }
+
       private void MainPanel_MouseLeave(object sender, System.EventArgs e)
       {
          if (sender == lblProjectTree)
@@ -1550,6 +1622,23 @@ namespace SGDK2
       {
          try
          {
+            if (m_strProjectPath == null)
+            {
+               mnuFileSavePrjAs_Click(sender, e);
+               return;
+            }
+            ProjectData.WriteXml(m_strProjectPath);
+         }
+         catch(Exception ex)
+         {
+            MessageBox.Show(this, ex.Message, "Save Project", MessageBoxButtons.OK, MessageBoxIcon.Error);
+         }
+      }
+
+      private void mnuFileSavePrjAs_Click(object sender, System.EventArgs e)
+      {
+         try
+         {
             SaveFileDialog fd = new SaveFileDialog();
             fd.CheckPathExists = true;
             fd.OverwritePrompt = true;
@@ -1560,13 +1649,13 @@ namespace SGDK2
             fd.ValidateNames = true;
             if (DialogResult.OK == fd.ShowDialog(this))
             {
-               ProjectData.ExtendedProperties["SchemaVersion"] = "1";
                ProjectData.WriteXml(fd.FileName);
+               m_strProjectPath = fd.FileName;
             }
          }
          catch(Exception ex)
          {
-            MessageBox.Show(this, ex.Message, "Save Project", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(this, ex.Message, "Save Project As...", MessageBoxButtons.OK, MessageBoxIcon.Error);
          }
       }
 
@@ -1589,6 +1678,7 @@ namespace SGDK2
                InitializeTree();
                ProjectData.Merge(dsLoad);
                ProjectData.AcceptChanges();
+               m_strProjectPath = fd.FileName;
                tvwMain.CollapseAll();
                tvwMain.Nodes[0].Expand();
             }
@@ -1613,6 +1703,31 @@ namespace SGDK2
          }
          m_ContextNode = tvwMain.SelectedNode;
          DeleteObject();
+      }
+
+      private void mnuFileResetCode_Click(object sender, System.EventArgs e)
+      {
+         ProjectData.SourceCode.Clear();
+         foreach (string resourceName in System.Reflection.Assembly.GetAssembly(typeof(SGDK2IDE)).GetManifestResourceNames())
+         {
+            if (resourceName.StartsWith("SGDK2.Template."))
+            {
+               System.IO.TextReader stm = new System.IO.StreamReader(System.Reflection.Assembly.GetAssembly(typeof(SGDK2IDE)).GetManifestResourceStream(resourceName));
+               ProjectData.SourceCode.AddSourceCodeRow(resourceName.Substring(15), stm.ReadToEnd());
+               stm.Close();
+            }
+         }
+      }
+
+      private void mnuFileGenerate_Click(object sender, System.EventArgs e)
+      {
+         if (m_strProjectPath == null)
+         {
+            mnuFileSavePrj_Click(sender, e);
+         }
+
+         string strFolder = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(m_strProjectPath), System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath));
+         new CodeGenerator().GenerateAllCode(strFolder);
       }
       #endregion
    }

@@ -101,20 +101,6 @@ namespace SGDK2
          stm.Close();
          return cur;
       }
-
-      public static string LoadEmbeddedString(string Name)
-      {
-         System.IO.Stream embeddedStream = System.Reflection.Assembly.GetAssembly(typeof(SGDK2IDE)).GetManifestResourceStream(Name);
-         System.IO.StreamReader embeddedReader = new System.IO.StreamReader(embeddedStream);
-         try
-         {
-            return embeddedReader.ReadToEnd();
-         }
-         finally
-         {
-            embeddedReader.Close();
-         }
-      }
       #endregion
    }
 }

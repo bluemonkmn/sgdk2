@@ -15,6 +15,7 @@ public abstract class SpriteBase
    public int frame;
    public InputBits inputs;
    public InputBits oldinputs;
+   public bool isActive;
 
    [FlagsAttribute()]
    public enum InputBits

@@ -167,6 +167,11 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "CodeGenerator.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "ColorSel.cs"
                     SubType = "UserControl"
                     BuildAction = "Compile"
@@ -482,7 +487,27 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "Template\Display.cs"
+                    SubType = "Component"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "Template\Frame.cs"
+                    SubType = "Code"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "Template\LayerBase.cs"
+                    SubType = "Code"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "Template\SpriteBase.cs"
+                    SubType = "Code"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "Template\SpriteCollection.cs"
                     SubType = "Code"
                     BuildAction = "EmbeddedResource"
                 />

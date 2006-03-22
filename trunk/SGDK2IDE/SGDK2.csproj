@@ -497,7 +497,7 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
-                    RelPath = "Template\LayerBase.cs"
+                    RelPath = "Template\Layer.cs"
                     SubType = "Code"
                     BuildAction = "EmbeddedResource"
                 />
@@ -508,6 +508,11 @@
                 />
                 <File
                     RelPath = "Template\SpriteCollection.cs"
+                    SubType = "Code"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "Template\Tile.cs"
                     SubType = "Code"
                     BuildAction = "EmbeddedResource"
                 />

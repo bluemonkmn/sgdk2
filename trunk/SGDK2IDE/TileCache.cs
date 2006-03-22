@@ -39,6 +39,13 @@ namespace SGDK2
          /// </summary>
          public readonly int[] subFrames;
 
+
+         public TileFrame(int accumulatedDuration, int[] subFrames)
+         {
+            this.accumulatedDuration = accumulatedDuration;
+            this.subFrames = subFrames;
+         }
+         
          #region IComparable Members
 
          public int CompareTo(object obj)
@@ -49,11 +56,6 @@ namespace SGDK2
                return accumulatedDuration.CompareTo(obj);
          }
 
-         public TileFrame(int accumulatedDuration, int[] subFrames)
-         {
-            this.accumulatedDuration = accumulatedDuration;
-            this.subFrames = subFrames;
-         }
          #endregion
       }
       private readonly TileInfo[] m_tiles;

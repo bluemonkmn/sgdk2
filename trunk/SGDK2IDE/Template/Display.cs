@@ -168,6 +168,16 @@ public class Display : ScrollableControl
          return cp;
       }
    }
+
+   protected override void OnResize(EventArgs e)
+   {
+      if ((m_d3d != null) && (m_pp != null) && (m_pp.Windowed))
+      {
+         m_pp.BackBufferHeight = m_pp.BackBufferWidth = 0;
+         m_d3d.Reset(m_pp);
+      }
+      base.OnResize (e);
+   }
    #endregion
 
    #region Public members
@@ -195,9 +205,10 @@ public class Display : ScrollableControl
             return (Texture)wr.Target;
       }
 
-      Texture tex = Texture.FromBitmap(m_d3d,
-         (System.Drawing.Bitmap)Project.m_res.GetObject(Name),
-         0, Pool.Managed);
+      System.Drawing.Bitmap bmpTemp = (System.Drawing.Bitmap)Project.Resources.GetObject(Name);
+
+      Texture tex = Texture.FromBitmap(m_d3d, bmpTemp, 0, Pool.Managed);
+      bmpTemp.Dispose();
       m_GraphicSheets[Name] = new WeakReference(tex);
       return tex;
    }
@@ -365,15 +376,15 @@ public class Display : ScrollableControl
       }
    }
 
-   #endregion
-
-   protected override void OnResize(EventArgs e)
+   public System.Drawing.Rectangle DisplayRectangle
    {
-      if ((m_d3d != null) && (m_pp != null) && (m_pp.Windowed))
+      get
       {
-         m_pp.BackBufferHeight = m_pp.BackBufferWidth = 0;
-         m_d3d.Reset(m_pp);
+         if (m_pp.Windowed)
+            return ClientRectangle;
+         else
+            return new System.Drawing.Rectangle(0, 0, m_pp.BackBufferWidth, m_pp.BackBufferHeight);
       }
-      base.OnResize (e);
    }
+   #endregion
 }

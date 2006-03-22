@@ -1707,7 +1707,10 @@ namespace SGDK2
 
       private void mnuFileResetCode_Click(object sender, System.EventArgs e)
       {
-         ProjectData.SourceCode.Clear();
+         foreach(ProjectDataset.SourceCodeRow drSrc in ProjectData.SourceCode)
+            drSrc.Delete();
+         ProjectData.AcceptChanges();
+
          foreach (string resourceName in System.Reflection.Assembly.GetAssembly(typeof(SGDK2IDE)).GetManifestResourceNames())
          {
             if (resourceName.StartsWith("SGDK2.Template."))
@@ -1724,10 +1727,14 @@ namespace SGDK2
          if (m_strProjectPath == null)
          {
             mnuFileSavePrj_Click(sender, e);
+            if (m_strProjectPath == null)
+               return;
          }
 
          string strFolder = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(m_strProjectPath), System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath));
-         new CodeGenerator().GenerateAllCode(strFolder);
+         CodeGenerator g = new CodeGenerator();
+         g.GeneratorOptions.BracingStyle = "C";
+         g.GenerateAllCode(strFolder);
       }
       #endregion
    }

@@ -1,9 +1,9 @@
 Microsoft Visual Studio Solution File, Format Version 8.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SGDK2", "SGDK2.csproj", "{A1F1DF5A-C16F-4439-BC2B-E99FE2904941}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SetupSGDK2", "..\SetupSGDK2\SetupSGDK2.vdproj", "{730D397E-8D8C-4DA9-8E50-41A3BA41E193}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "SetupSGDK2", "..\SetupSGDK2\SetupSGDK2.vdproj", "{730D397E-8D8C-4DA9-8E50-41A3BA41E193}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SGDK2", "SGDK2.csproj", "{A1F1DF5A-C16F-4439-BC2B-E99FE2904941}"
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
@@ -13,12 +13,12 @@ Global
 		Release = Release
 	EndGlobalSection
 	GlobalSection(ProjectConfiguration) = postSolution
+		{730D397E-8D8C-4DA9-8E50-41A3BA41E193}.Debug.ActiveCfg = Debug
+		{730D397E-8D8C-4DA9-8E50-41A3BA41E193}.Release.ActiveCfg = Release
 		{A1F1DF5A-C16F-4439-BC2B-E99FE2904941}.Debug.ActiveCfg = Debug|.NET
 		{A1F1DF5A-C16F-4439-BC2B-E99FE2904941}.Debug.Build.0 = Debug|.NET
 		{A1F1DF5A-C16F-4439-BC2B-E99FE2904941}.Release.ActiveCfg = Release|.NET
 		{A1F1DF5A-C16F-4439-BC2B-E99FE2904941}.Release.Build.0 = Release|.NET
-		{730D397E-8D8C-4DA9-8E50-41A3BA41E193}.Debug.ActiveCfg = Debug
-		{730D397E-8D8C-4DA9-8E50-41A3BA41E193}.Release.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

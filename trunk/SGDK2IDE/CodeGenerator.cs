@@ -569,6 +569,14 @@ namespace SGDK2
          mthDraw.Name = "Draw";
          clsMap.Members.Add(mthDraw);
 
+         mthDraw.Statements.Add(new CodeVariableDeclarationStatement(typeof(Microsoft.DirectX.Direct3D.Sprite), "spr",
+            new CodeObjectCreateExpression(typeof(Microsoft.DirectX.Direct3D.Sprite),
+            new CodeFieldReferenceExpression(fldDisplayRef, "Device"))));
+         CodeVariableReferenceExpression refSpr = new CodeVariableReferenceExpression("spr");
+         mthDraw.Statements.Add(new CodeMethodInvokeExpression(refSpr, "Begin",
+            new CodeFieldReferenceExpression(
+            new CodeTypeReferenceExpression(typeof(Microsoft.DirectX.Direct3D.SpriteFlags)),"AlphaBlend")));
+
          foreach (ProjectDataset.LayerRow drLayer in ProjectData.GetSortedLayers(drMap))
          {
             CodeMemberField fldLayer;
@@ -622,8 +630,11 @@ namespace SGDK2
 
             mthDraw.Statements.Add(new CodeMethodInvokeExpression(
                new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fldLayer.Name),
-               "Draw", new CodePropertyReferenceExpression(fldDisplayRef, "DisplayRectangle")));
+               "Draw", new CodePropertyReferenceExpression(fldDisplayRef, "DisplayRectangle"),
+               refSpr));
          }
+         mthDraw.Statements.Add(new CodeMethodInvokeExpression(refSpr, "End"));
+         mthDraw.Statements.Add(new CodeMethodInvokeExpression(refSpr, "Dispose"));
          constructor.Statements.Add(new CodeAssignStatement(fldDisplayRef, refDisp));
          Generator.GenerateCodeFromType(clsMap, txt, GeneratorOptions);
       }

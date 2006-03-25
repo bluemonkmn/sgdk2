@@ -208,6 +208,8 @@ namespace SGDK2
 
       public void Draw(Device Device, Size ViewSize)
       {
+         if (m_TileCache.Count <= 0)
+            return;
          ProjectDataset.TilesetRow tsr = m_Layer.TilesetRow;
          int nTileWidth = tsr.TileWidth;
          int nTileHeight = tsr.TileHeight;
@@ -322,6 +324,8 @@ namespace SGDK2
 
       public void InjectTile(int nCol, int nRow, int nTileValue)
       {
+         if (m_TileCache.Count <= 0)
+            return;
          ProjectDataset.TilesetRow tsr = m_Layer.TilesetRow;
          short nWidth = tsr.TileWidth;
          short nHeight = tsr.TileHeight;

@@ -508,6 +508,7 @@ namespace SGDK2
       private void DoNewProject()
       {
          ProjectData.Clear();
+         InitializeTree();
          ProjectData.AddTileShape("Empty", "false");
          ProjectData.AddTileShape("Solid", "true");
          ProjectData.ExtendedProperties["SchemaVersion"] = "1";
@@ -591,6 +592,11 @@ namespace SGDK2
                   break;
                case "LR":
                case "LE":
+                  if (ProjectData.Tileset.Count <= 0)
+                  {
+                     MessageBox.Show(this, "Please create a tileset before creating a layer", "New Layer", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                     return;
+                  }
                   frmNew = new frmLayerManager(ProjectData.GetMap(KeyParts[0]));
                   frmNew.MdiParent = this;
                   frmNew.Show();

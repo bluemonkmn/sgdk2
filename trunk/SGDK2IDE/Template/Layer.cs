@@ -74,7 +74,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
 
    #region Fields
    protected readonly Tileset m_Tileset;
-   private readonly Frameset m_Frameset;
+   private Frameset m_Frameset;
    private System.Collections.ArrayList m_InjectedFrames = null;
    
    private readonly int m_nLeftBuffer;
@@ -88,6 +88,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
    private readonly System.Drawing.SizeF m_ScrollRate;
    private System.Drawing.Point m_CurrentPosition;
    private Display m_Display;
+   private EventHandler m_ReInitializeHandler = null;
    #endregion
 
    protected LayerBase(Tileset Tileset, Display Disp, int nLeftBuffer, int nTopBuffer, int nRightBuffer, int nBottomBuffer,
@@ -106,6 +107,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
       this.m_Sprites = Sprites;
       this.m_ScrollRate = ScrollRate;
       this.m_Display = Disp;
+      this.m_ReInitializeHandler = new EventHandler(Display_ReInitialize);
+      this.m_Display.ReInitialize += m_ReInitializeHandler;
    }
 
    #region Abstract Members
@@ -210,7 +213,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
       m_CurrentPosition = new Point(m_AbsolutePosition.X + (int)(x * m_ScrollRate.Width), m_AbsolutePosition.Y + (int)(y * m_ScrollRate.Height));
    }
 
-   public void Draw(Rectangle ViewRect)
+   public void Draw(Rectangle ViewRect, Sprite spr)
    {
       int nTileWidth = m_Tileset.TileWidth;
       int nTileHeight = m_Tileset.TileHeight;
@@ -229,81 +232,70 @@ public abstract class LayerBase : System.Collections.IEnumerable
       if (EndRow >= Rows)
          EndRow = Rows - 1;
 
-      Sprite spr = new Sprite(m_Display.Device);
-      try
+      Texture t = null;
+
+      System.Collections.IEnumerator Injected = null;
+      InjectedFrame CurFrame;
+      if (m_InjectedFrames != null)
       {
-         spr.Begin(SpriteFlags.AlphaBlend);
-
-         Texture t = null;
-
-         System.Collections.IEnumerator Injected = null;
-         InjectedFrame CurFrame;
-         if (m_InjectedFrames != null)
-         {
-            Injected = m_InjectedFrames.GetEnumerator();
-            if (!Injected.MoveNext())
-               Injected = null;
-         }
-
-         for (int y = nStartRow; y <= EndRow; y++)
-         {
-            if (Injected != null)
-            {
-               while ((CurFrame = (InjectedFrame)Injected.Current).y < y * nTileHeight)
-               {
-                  if ((t == null) || (t != CurFrame.frame.GraphicSheetTexture))
-                     m_Display.Device.SetTexture(0, t = CurFrame.frame.GraphicSheetTexture);
-                  spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
-                     CurFrame.x + m_CurrentPosition.X + ViewRect.X,
-                     CurFrame.y + m_CurrentPosition.Y + ViewRect.Y, 0));
-                  spr.Draw(CurFrame.frame.GraphicSheetTexture, CurFrame.frame.SourceRect,
-                     Vector3.Empty, Vector3.Empty, -1);
-                  if (!Injected.MoveNext())
-                  {
-                     Injected = null;
-                     break;
-                  }
-               }
-            }
-
-            for (int x = nStartCol; x <= EndCol; x++)
-            {
-               int[] SubFrames = GetTileFrame(x,y);
-               for (int nFrame = 0; nFrame < SubFrames.Length; nFrame++)
-               {
-                  Frame f = m_Frameset[SubFrames[nFrame]];
-                  if ((t == null) || (t != f.GraphicSheetTexture))
-                     m_Display.Device.SetTexture(0, t = f.GraphicSheetTexture);
-
-                  spr.Transform = Matrix.Multiply(f.Transform, Matrix.Translation(
-                     x * nTileWidth + m_CurrentPosition.X + ViewRect.X,
-                     y * nTileHeight + m_CurrentPosition.Y + ViewRect.Y, 0));
-                  spr.Draw(f.GraphicSheetTexture, f.SourceRect, Vector3.Empty, Vector3.Empty, -1);
-               }
-            }
-         }
-
-         while (Injected != null)
-         {
-            CurFrame = (InjectedFrame)Injected.Current;
-            if (t != CurFrame.frame.GraphicSheetTexture)
-               m_Display.Device.SetTexture(0, t = CurFrame.frame.GraphicSheetTexture);
-            spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
-               CurFrame.x + m_CurrentPosition.X + ViewRect.X,
-               CurFrame.y + m_CurrentPosition.Y + ViewRect.Y, 0));
-            spr.Draw(CurFrame.frame.GraphicSheetTexture, CurFrame.frame.SourceRect,
-               Vector3.Empty, Vector3.Empty, -1);
-            if (!Injected.MoveNext())
-            {
-               Injected = null;
-               break;
-            }
-         }
-         spr.End();
+         Injected = m_InjectedFrames.GetEnumerator();
+         if (!Injected.MoveNext())
+            Injected = null;
       }
-      finally
+
+      for (int y = nStartRow; y <= EndRow; y++)
       {
-         spr.Dispose();
+         if (Injected != null)
+         {
+            while ((CurFrame = (InjectedFrame)Injected.Current).y < y * nTileHeight)
+            {
+               if ((t == null) || (t != CurFrame.frame.GraphicSheetTexture))
+                  m_Display.Device.SetTexture(0, t = CurFrame.frame.GraphicSheetTexture);
+               spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
+                  CurFrame.x + m_CurrentPosition.X + ViewRect.X,
+                  CurFrame.y + m_CurrentPosition.Y + ViewRect.Y, 0));
+               spr.Draw(CurFrame.frame.GraphicSheetTexture, CurFrame.frame.SourceRect,
+                  Vector3.Empty, Vector3.Empty, -1);
+               if (!Injected.MoveNext())
+               {
+                  Injected = null;
+                  break;
+               }
+            }
+         }
+
+         for (int x = nStartCol; x <= EndCol; x++)
+         {
+            int[] SubFrames = GetTileFrame(x,y);
+            for (int nFrame = 0; nFrame < SubFrames.Length; nFrame++)
+            {
+               Frame f = m_Frameset[SubFrames[nFrame]];
+               if ((t == null) || (t != f.GraphicSheetTexture))
+                  m_Display.Device.SetTexture(0, t = f.GraphicSheetTexture);
+
+               spr.Transform = Matrix.Multiply(f.Transform, Matrix.Translation(
+                  x * nTileWidth + m_CurrentPosition.X + ViewRect.X,
+                  y * nTileHeight + m_CurrentPosition.Y + ViewRect.Y, 0));
+               spr.Draw(f.GraphicSheetTexture, f.SourceRect, Vector3.Empty, Vector3.Empty, -1);
+            }
+         }
+      }
+
+      while (Injected != null)
+      {
+         CurFrame = (InjectedFrame)Injected.Current;
+         if (t != CurFrame.frame.GraphicSheetTexture)
+            m_Display.Device.SetTexture(0, t = CurFrame.frame.GraphicSheetTexture);
+         spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
+            CurFrame.x + m_CurrentPosition.X + ViewRect.X,
+            CurFrame.y + m_CurrentPosition.Y + ViewRect.Y, 0));
+         spr.Draw(CurFrame.frame.GraphicSheetTexture, CurFrame.frame.SourceRect,
+            Vector3.Empty, Vector3.Empty, -1);
+         if (!Injected.MoveNext())
+         {
+            Injected = null;
+            break;
+         }
       }
    }
 
@@ -337,6 +329,17 @@ public abstract class LayerBase : System.Collections.IEnumerable
    public void ClearInjections()
    {
       m_InjectedFrames = null;
+   }
+   public void DetachDisplay()
+   {
+      this.m_Display.ReInitialize -= m_ReInitializeHandler;
+   }
+   #endregion
+
+   #region Event Handlers
+   private void Display_ReInitialize(object sender, EventArgs e)
+   {
+      m_Frameset = m_Tileset.CreateFrameset(m_Display);
    }
    #endregion
 }

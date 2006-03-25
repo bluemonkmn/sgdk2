@@ -56,11 +56,15 @@ public class Display : ScrollableControl
 
    #region Fields
    private System.Collections.Specialized.HybridDictionary m_GraphicSheets = null;
-   private Device m_d3d;
+   private Device m_d3d = null;
    private PresentParameters m_pp;
    private GameDisplayMode m_GameDisplayMode;
    private BorderStyle m_BorderStyle;
    private CoverWindow m_CoverWindow = null;
+   #endregion
+
+   #region Events
+   public event System.EventHandler ReInitialize;
    #endregion
 
    #region Initialization and clean-up
@@ -78,6 +82,7 @@ public class Display : ScrollableControl
       DisplayMode dm = GetActualDisplayMode(mode);
       m_pp = new PresentParameters();
       m_pp.Windowed = windowed;
+      m_pp.SwapEffect = SwapEffect.Discard;
       if (windowed)
       {
          m_pp.BackBufferFormat = Format.Unknown;
@@ -85,9 +90,12 @@ public class Display : ScrollableControl
       }
       else
       {
+         m_pp.BackBufferCount = 2;
          m_pp.BackBufferFormat = dm.Format;
          m_pp.BackBufferWidth = dm.Width;
          m_pp.BackBufferHeight = dm.Height;
+         m_CoverWindow = new CoverWindow(this);
+         m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, m_CoverWindow, CreateFlags.HardwareVertexProcessing, m_pp);
       }
       m_GameDisplayMode = mode;
    }
@@ -104,6 +112,7 @@ public class Display : ScrollableControl
          }
          if (m_CoverWindow != null)
          {
+            m_CoverWindow.m_LinkedControl = null;
             m_CoverWindow.Close();
             m_CoverWindow.Dispose();
             m_CoverWindow = null;
@@ -121,7 +130,8 @@ public class Display : ScrollableControl
 
       try
       {
-         m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, this, CreateFlags.HardwareVertexProcessing, m_pp);
+         if (m_d3d == null)
+            m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, this, CreateFlags.HardwareVertexProcessing, m_pp);
       }
       catch(Exception ex)
       {
@@ -208,7 +218,6 @@ public class Display : ScrollableControl
       System.Drawing.Bitmap bmpTemp = (System.Drawing.Bitmap)Project.Resources.GetObject(Name);
 
       Texture tex = Texture.FromBitmap(m_d3d, bmpTemp, 0, Pool.Managed);
-      bmpTemp.Dispose();
       m_GraphicSheets[Name] = new WeakReference(tex);
       return tex;
    }
@@ -241,7 +250,14 @@ public class Display : ScrollableControl
          if ((DesignMode) && (!value))
             throw new InvalidOperationException("Cannot use full screen in design mode");
 
+         if (value != m_pp.Windowed)
+         {
+            DisposeAllTextures();
+            m_d3d.Dispose();
+         }
+
          m_pp.Windowed = value;
+         m_pp.SwapEffect = SwapEffect.Discard;
 
          if (value)
          {
@@ -250,10 +266,14 @@ public class Display : ScrollableControl
             m_pp.BackBufferFormat = Format.Unknown;
             if (m_CoverWindow != null)
             {
+               m_CoverWindow.m_LinkedControl = null;
                m_CoverWindow.Close();
                m_CoverWindow.Dispose();
                m_CoverWindow = null;
             }
+            m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, this, CreateFlags.HardwareVertexProcessing, m_pp);
+            if (ReInitialize != null)
+               ReInitialize(this, null);
          }
          else
          {
@@ -262,12 +282,14 @@ public class Display : ScrollableControl
             DisplayMode dm = GetActualDisplayMode(m_GameDisplayMode);
             if (dm.Format == Format.Unknown)
                throw new ApplicationException("Current display does not support mode " + m_GameDisplayMode.ToString() +".");
+            m_pp.BackBufferCount = 2;
             m_pp.BackBufferWidth = dm.Width;
             m_pp.BackBufferHeight = dm.Height;
             m_pp.BackBufferFormat = dm.Format;
+            m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, m_CoverWindow, CreateFlags.HardwareVertexProcessing, m_pp);
+            if (ReInitialize != null)
+               ReInitialize(this, null);
          }
-         if (m_d3d != null)
-            m_d3d.Reset(m_pp);
       }
       get
       {
@@ -368,6 +390,7 @@ public class Display : ScrollableControl
             DisplayMode dm = GetActualDisplayMode(m_GameDisplayMode);
             if (dm.Format == Format.Unknown)
                throw new ApplicationException("Current display does not support mode " + m_GameDisplayMode.ToString() +".");
+            m_pp.BackBufferCount = 2;
             m_pp.BackBufferWidth = dm.Width;
             m_pp.BackBufferHeight = dm.Height;
             m_pp.BackBufferFormat = dm.Format;

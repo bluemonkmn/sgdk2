@@ -5,12 +5,12 @@ using System.Drawing;
 
 public struct Frame
 {
-   public Texture GraphicSheetTexture;
+   public Display.TextureRef GraphicSheetTexture;
    public short CellIndex;
    public Matrix Transform;
    public Rectangle SourceRect;
 
-   public Frame(Texture texture, short cell, float M11, float M12, float M21, float M22, float M41, float M42, Rectangle srcRect)
+   public Frame(Display.TextureRef texture, short cell, float M11, float M12, float M21, float M22, float M41, float M42, Rectangle srcRect)
    {
       GraphicSheetTexture = texture;
       CellIndex = cell;
@@ -25,7 +25,7 @@ public struct Frame
       SourceRect = srcRect;
    }
 
-   public Frame(Texture texture, short cell, Rectangle srcRect)
+   public Frame(Display.TextureRef texture, short cell, Rectangle srcRect)
    {
       GraphicSheetTexture = texture;
       CellIndex = cell;

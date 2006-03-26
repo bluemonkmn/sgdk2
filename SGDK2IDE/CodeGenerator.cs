@@ -155,7 +155,7 @@ namespace SGDK2
             System.Collections.ArrayList frameParams = new System.Collections.ArrayList();
             foreach(ProjectDataset.FrameRow drFrame in ProjectData.GetSortedFrameRows(drFrameset))
             {
-               CodeMethodInvokeExpression getTextureExp = new CodeMethodInvokeExpression(dispParam, "GetTexture", new CodePrimitiveExpression(drFrame.GraphicSheet));
+               CodeMethodInvokeExpression getTextureExp = new CodeMethodInvokeExpression(dispParam, "GetTextureRef", new CodePrimitiveExpression(drFrame.GraphicSheet));
                CodePrimitiveExpression cellExp = new CodePrimitiveExpression(drFrame.CellIndex);
                ProjectDataset.GraphicSheetRow g = ProjectData.GetGraphicSheet(drFrame.GraphicSheet);
                Microsoft.DirectX.Matrix im = Microsoft.DirectX.Matrix.Identity;

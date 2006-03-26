@@ -29,7 +29,7 @@ public class Display : ScrollableControl
    #endregion
 
    #region Embedded Classes
-   class CoverWindow : Form
+   private class CoverWindow : Form
    {
       public Display m_LinkedControl;
 
@@ -52,19 +52,59 @@ public class Display : ScrollableControl
          m_LinkedControl.OnKeyDown(e);
       }
    }
+
+   public class TextureRef : IDisposable
+   {
+      private string m_Name;
+      private Texture m_Texture = null;
+      private Display m_Display;
+      
+      public TextureRef(Display Disp, string Name)
+      {
+         m_Display = Disp;
+         m_Name = Name;
+      }
+
+      public string Name
+      {
+         get
+         {
+            return m_Name;
+         }
+      }
+
+      public void Reset()
+      {
+         m_Texture = null;
+      }
+
+      public Texture Texture
+      {
+         get
+         {
+            if (m_Texture == null)
+               m_Texture = m_Display.GetTexture(m_Name);
+            return m_Texture;
+         }
+      }
+
+      #region IDisposable Members
+      public void Dispose()
+      {
+         m_Texture.Dispose();
+         m_Texture = null;
+      }
+      #endregion
+   }
    #endregion
 
    #region Fields
-   private System.Collections.Specialized.HybridDictionary m_GraphicSheets = null;
+   private System.Collections.Specialized.HybridDictionary m_TextureRefs = null;
    private Device m_d3d = null;
    private PresentParameters m_pp;
    private GameDisplayMode m_GameDisplayMode;
    private BorderStyle m_BorderStyle;
    private CoverWindow m_CoverWindow = null;
-   #endregion
-
-   #region Events
-   public event System.EventHandler ReInitialize;
    #endregion
 
    #region Initialization and clean-up
@@ -190,6 +230,15 @@ public class Display : ScrollableControl
    }
    #endregion
 
+   #region Private members
+   private Texture GetTexture(string Name)
+   {
+      return Texture.FromBitmap(m_d3d,
+         (System.Drawing.Bitmap)Project.Resources.GetObject(Name), 0, Pool.Managed);
+   }
+
+   #endregion
+
    #region Public members
    public BorderStyle BorderStyle
    {
@@ -203,35 +252,33 @@ public class Display : ScrollableControl
          UpdateStyles();
       }
    }
-   public Texture GetTexture(string Name)
-   {
-      if (m_GraphicSheets == null)
-         m_GraphicSheets = new System.Collections.Specialized.HybridDictionary();
 
-      if (m_GraphicSheets.Contains(Name))
+   public TextureRef GetTextureRef(string Name)
+   {
+      if (m_TextureRefs == null)
+         m_TextureRefs = new System.Collections.Specialized.HybridDictionary();
+
+      if (m_TextureRefs.Contains(Name))
       {
-         WeakReference wr = (WeakReference)m_GraphicSheets[Name];
-         if ((wr.IsAlive) && !((Texture)wr.Target).Disposed)
-            return (Texture)wr.Target;
+         WeakReference wr = (WeakReference)m_TextureRefs[Name];
+         if (wr.IsAlive)
+            return (TextureRef)wr.Target;
       }
 
-      System.Drawing.Bitmap bmpTemp = (System.Drawing.Bitmap)Project.Resources.GetObject(Name);
-
-      Texture tex = Texture.FromBitmap(m_d3d, bmpTemp, 0, Pool.Managed);
-      m_GraphicSheets[Name] = new WeakReference(tex);
+      TextureRef tex = new TextureRef(this, Name);
+      m_TextureRefs[Name] = new WeakReference(tex);
       return tex;
    }
 
    public void DisposeAllTextures()
    {
-      if (m_GraphicSheets != null)
+      if (m_TextureRefs != null)
       {
-         foreach (DictionaryEntry de in m_GraphicSheets)
+         foreach (DictionaryEntry de in m_TextureRefs)
          {
             if (((WeakReference)de.Value).IsAlive)
-               ((Texture)((WeakReference)de.Value).Target).Dispose();
+               ((TextureRef)((WeakReference)de.Value).Target).Dispose();
          }
-         m_GraphicSheets = null;
       }
    }
 
@@ -272,8 +319,6 @@ public class Display : ScrollableControl
                m_CoverWindow = null;
             }
             m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, this, CreateFlags.HardwareVertexProcessing, m_pp);
-            if (ReInitialize != null)
-               ReInitialize(this, null);
          }
          else
          {
@@ -287,8 +332,6 @@ public class Display : ScrollableControl
             m_pp.BackBufferHeight = dm.Height;
             m_pp.BackBufferFormat = dm.Format;
             m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, m_CoverWindow, CreateFlags.HardwareVertexProcessing, m_pp);
-            if (ReInitialize != null)
-               ReInitialize(this, null);
          }
       }
       get

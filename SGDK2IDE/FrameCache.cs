@@ -26,12 +26,29 @@ namespace SGDK2
          public short CellIndex;
          public Matrix Transform;
          public Rectangle SourceRect;
+         public ProjectDataset.GraphicSheetRow GraphicSheet;
       }
 
       #region Fields
       private Frame[] m_arFrames = null;
       private Display m_Display = null;
       #endregion
+
+      private static System.Collections.Hashtable activeCaches = new System.Collections.Hashtable();
+
+      public static FrameCache GetFrameCache(string name, Display display)
+      {
+         if (activeCaches.Contains(name))
+         {
+            WeakReference cachedObject = (WeakReference)activeCaches[name];
+            FrameCache result;
+            if (!cachedObject.IsAlive || (null == (result = (FrameCache)cachedObject.Target)))
+               return new FrameCache(ProjectData.GetFrameSet(name), display);
+            return result;
+         }
+         else
+            return new FrameCache(ProjectData.GetFrameSet(name), display);
+      }
 
       #region Initialization and Clean-up
       private FrameCache()
@@ -53,6 +70,7 @@ namespace SGDK2
             ProjectDataset.GraphicSheetRow g = ProjectData.GetGraphicSheet(arfr[nIdx].GraphicSheet);
 
             m_arFrames[nIdx].GraphicSheetTexture = m_Display.GetTexture(g.Name, false);
+            m_arFrames[nIdx].GraphicSheet = g;
             m_arFrames[nIdx].CellIndex = arfr[nIdx].CellIndex;
             m_arFrames[nIdx].Transform.M11 = arfr[nIdx].m11;
             m_arFrames[nIdx].Transform.M12 = arfr[nIdx].m12;
@@ -71,6 +89,8 @@ namespace SGDK2
                (arfr[nIdx].CellIndex % g.Columns) * g.CellWidth,
                (arfr[nIdx].CellIndex / g.Columns) * g.CellHeight,
                g.CellWidth, g.CellHeight);
+
+            activeCaches[Frameset.Name] = new WeakReference(this);
          }
       }
       #endregion

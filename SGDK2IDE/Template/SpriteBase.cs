@@ -134,7 +134,7 @@ public abstract class SpriteBase
    /// </summary>
    /// <param name="PlatformList">List of platform sprites to check</param>
    /// <returns>True if the sprite landed on a platform.</returns>
-   public bool LandDownOnPlatform(SpriteBase[] PlatformList)
+   public bool LandDownOnPlatform(SpriteCollection PlatformList)
    {
       foreach(SpriteBase spr in PlatformList)
       {

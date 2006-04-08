@@ -4450,6 +4450,8 @@ namespace SGDK2 {
             
             private DataColumn columnMapName;
             
+            private DataColumn columnPriority;
+            
             internal SpriteDataTable() : 
                     base("Sprite") {
                 this.InitClass();
@@ -4538,6 +4540,12 @@ namespace SGDK2 {
                 }
             }
             
+            internal DataColumn PriorityColumn {
+                get {
+                    return this.columnPriority;
+                }
+            }
+            
             public SpriteRow this[int index] {
                 get {
                     return ((SpriteRow)(this.Rows[index]));
@@ -4556,7 +4564,7 @@ namespace SGDK2 {
                 this.Rows.Add(row);
             }
             
-            public SpriteRow AddSpriteRow(string LayerName, string Name, string DefinitionName, string StateName, short CurrentFrame, int X, int Y, System.Single DX, System.Single DY, string MapName) {
+            public SpriteRow AddSpriteRow(string LayerName, string Name, string DefinitionName, string StateName, short CurrentFrame, int X, int Y, System.Single DX, System.Single DY, string MapName, int Priority) {
                 SpriteRow rowSpriteRow = ((SpriteRow)(this.NewRow()));
                 rowSpriteRow.ItemArray = new object[] {
                         LayerName,
@@ -4568,7 +4576,8 @@ namespace SGDK2 {
                         Y,
                         DX,
                         DY,
-                        MapName};
+                        MapName,
+                        Priority};
                 this.Rows.Add(rowSpriteRow);
                 return rowSpriteRow;
             }
@@ -4605,6 +4614,7 @@ namespace SGDK2 {
                 this.columnDX = this.Columns["DX"];
                 this.columnDY = this.Columns["DY"];
                 this.columnMapName = this.Columns["MapName"];
+                this.columnPriority = this.Columns["Priority"];
             }
             
             private void InitClass() {
@@ -4628,6 +4638,8 @@ namespace SGDK2 {
                 this.Columns.Add(this.columnDY);
                 this.columnMapName = new DataColumn("MapName", typeof(string), null, System.Data.MappingType.Hidden);
                 this.Columns.Add(this.columnMapName);
+                this.columnPriority = new DataColumn("Priority", typeof(int), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnPriority);
                 this.Constraints.Add(new UniqueConstraint("SpriteKey", new DataColumn[] {
                                 this.columnLayerName,
                                 this.columnName,
@@ -4651,6 +4663,7 @@ namespace SGDK2 {
                 this.columnDY.Namespace = "";
                 this.columnMapName.AllowDBNull = false;
                 this.columnMapName.Namespace = "";
+                this.columnPriority.Namespace = "";
             }
             
             public SpriteRow NewSpriteRow() {
@@ -4810,6 +4823,20 @@ namespace SGDK2 {
                 }
             }
             
+            public int Priority {
+                get {
+                    try {
+                        return ((int)(this[this.tableSprite.PriorityColumn]));
+                    }
+                    catch (InvalidCastException e) {
+                        throw new StrongTypingException("Cannot get value because it is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableSprite.PriorityColumn] = value;
+                }
+            }
+            
             public LayerRow LayerRowParent {
                 get {
                     return ((LayerRow)(this.GetParentRow(this.Table.ParentRelations["LayerSprite"])));
@@ -4874,6 +4901,14 @@ namespace SGDK2 {
             
             public void SetDYNull() {
                 this[this.tableSprite.DYColumn] = System.Convert.DBNull;
+            }
+            
+            public bool IsPriorityNull() {
+                return this.IsNull(this.tableSprite.PriorityColumn);
+            }
+            
+            public void SetPriorityNull() {
+                this[this.tableSprite.PriorityColumn] = System.Convert.DBNull;
             }
             
             public ParameterValueRow[] GetParameterValueRows() {
@@ -7979,6 +8014,10 @@ namespace SGDK2 {
             
             private DataColumn columnSolidityName;
             
+            private DataColumn columnSolidWidth;
+            
+            private DataColumn columnSolidHeight;
+            
             internal SpriteStateDataTable() : 
                     base("SpriteState") {
                 this.InitClass();
@@ -8031,6 +8070,18 @@ namespace SGDK2 {
                 }
             }
             
+            internal DataColumn SolidWidthColumn {
+                get {
+                    return this.columnSolidWidth;
+                }
+            }
+            
+            internal DataColumn SolidHeightColumn {
+                get {
+                    return this.columnSolidHeight;
+                }
+            }
+            
             public SpriteStateRow this[int index] {
                 get {
                     return ((SpriteStateRow)(this.Rows[index]));
@@ -8049,13 +8100,15 @@ namespace SGDK2 {
                 this.Rows.Add(row);
             }
             
-            public SpriteStateRow AddSpriteStateRow(SpriteDefinitionRow parentSpriteDefinitionRowBySpriteDefinitionState, string Name, FramesetRow parentFramesetRowByFramesetSpriteState, SolidityRow parentSolidityRowBySoliditySpriteState) {
+            public SpriteStateRow AddSpriteStateRow(SpriteDefinitionRow parentSpriteDefinitionRowBySpriteDefinitionState, string Name, FramesetRow parentFramesetRowByFramesetSpriteState, SolidityRow parentSolidityRowBySoliditySpriteState, short SolidWidth, short SolidHeight) {
                 SpriteStateRow rowSpriteStateRow = ((SpriteStateRow)(this.NewRow()));
                 rowSpriteStateRow.ItemArray = new object[] {
                         parentSpriteDefinitionRowBySpriteDefinitionState[0],
                         Name,
                         parentFramesetRowByFramesetSpriteState[0],
-                        parentSolidityRowBySoliditySpriteState[0]};
+                        parentSolidityRowBySoliditySpriteState[0],
+                        SolidWidth,
+                        SolidHeight};
                 this.Rows.Add(rowSpriteStateRow);
                 return rowSpriteStateRow;
             }
@@ -8085,6 +8138,8 @@ namespace SGDK2 {
                 this.columnName = this.Columns["Name"];
                 this.columnFramesetName = this.Columns["FramesetName"];
                 this.columnSolidityName = this.Columns["SolidityName"];
+                this.columnSolidWidth = this.Columns["SolidWidth"];
+                this.columnSolidHeight = this.Columns["SolidHeight"];
             }
             
             private void InitClass() {
@@ -8096,6 +8151,10 @@ namespace SGDK2 {
                 this.Columns.Add(this.columnFramesetName);
                 this.columnSolidityName = new DataColumn("SolidityName", typeof(string), null, System.Data.MappingType.Attribute);
                 this.Columns.Add(this.columnSolidityName);
+                this.columnSolidWidth = new DataColumn("SolidWidth", typeof(short), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnSolidWidth);
+                this.columnSolidHeight = new DataColumn("SolidHeight", typeof(short), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnSolidHeight);
                 this.Constraints.Add(new UniqueConstraint("SpriteStateKey", new DataColumn[] {
                                 this.columnDefinitionName,
                                 this.columnName}, true));
@@ -8110,6 +8169,10 @@ namespace SGDK2 {
                 this.columnFramesetName.AllowDBNull = false;
                 this.columnFramesetName.Namespace = "";
                 this.columnSolidityName.Namespace = "";
+                this.columnSolidWidth.AllowDBNull = false;
+                this.columnSolidWidth.Namespace = "";
+                this.columnSolidHeight.AllowDBNull = false;
+                this.columnSolidHeight.Namespace = "";
             }
             
             public SpriteStateRow NewSpriteStateRow() {
@@ -8196,6 +8259,24 @@ namespace SGDK2 {
                 }
                 set {
                     this[this.tableSpriteState.SolidityNameColumn] = value;
+                }
+            }
+            
+            public short SolidWidth {
+                get {
+                    return ((short)(this[this.tableSpriteState.SolidWidthColumn]));
+                }
+                set {
+                    this[this.tableSpriteState.SolidWidthColumn] = value;
+                }
+            }
+            
+            public short SolidHeight {
+                get {
+                    return ((short)(this[this.tableSpriteState.SolidHeightColumn]));
+                }
+                set {
+                    this[this.tableSpriteState.SolidHeightColumn] = value;
                 }
             }
             

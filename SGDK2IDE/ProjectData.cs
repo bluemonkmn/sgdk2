@@ -65,6 +65,9 @@ namespace SGDK2
          if (Name.Length == 0)
             return "Name cannot be empty";
 
+         if (Name.EndsWith(" t"))
+            return "Name cannot end with \" t\"";
+
          if (char.IsDigit(Name,0))
          {
             return "Name must not start with a digit.";
@@ -236,6 +239,10 @@ namespace SGDK2
                return ((ProjectDataset.LayerRow)x).ZIndex.CompareTo(((ProjectDataset.LayerRow)y).ZIndex);
             else if (x is ProjectDataset.SpriteFrameRow)
                return ((ProjectDataset.SpriteFrameRow)x).Sequence.CompareTo(((ProjectDataset.SpriteFrameRow)y).Sequence);
+            else if (x is ProjectDataset.SpriteRow)
+               return ((ProjectDataset.SpriteRow)x).Priority.CompareTo(((ProjectDataset.SpriteRow)y).Priority);
+            else if (x is ProjectDataset.SpriteParameterRow)
+               return ((ProjectDataset.SpriteParameterRow)x).Name.CompareTo(((ProjectDataset.SpriteParameterRow)y).Name);
             else
                throw new ApplicationException("Unknown data row type for comparing");
          }
@@ -848,6 +855,12 @@ namespace SGDK2
             return m_dsPrj.Layer;
          }
       }
+      public static ProjectDataset.SpriteRow[] GetSortedSpriteRows(ProjectDataset.LayerRow row)
+      {
+         ProjectDataset.SpriteRow[] result = row.GetSpriteRows();
+         Array.Sort(result, new DataRowComparer());
+         return result;
+      }
       #endregion
 
       #region Category
@@ -1009,6 +1022,12 @@ namespace SGDK2
       {
          return m_dsPrj.SpriteDefinition.AddSpriteDefinitionRow(Name);
       }
+      public static ProjectDataset.SpriteParameterRow[] GetSortedSpriteParameters(ProjectDataset.SpriteDefinitionRow row)
+      {
+         ProjectDataset.SpriteParameterRow[] result = row.GetSpriteParameterRows();
+         Array.Sort(result, new DataRowComparer());
+         return result;
+      }
       #endregion
 
       #region SpriteState
@@ -1056,9 +1075,9 @@ namespace SGDK2
       {
          return m_dsPrj.SpriteState.FindByDefinitionNameName(SpriteDefinition, State);
       }
-      public static ProjectDataset.SpriteStateRow AddSpriteState(ProjectDataset.SpriteDefinitionRow parent, string Name, ProjectDataset.FramesetRow Frameset, ProjectDataset.SolidityRow Solidity)
+      public static ProjectDataset.SpriteStateRow AddSpriteState(ProjectDataset.SpriteDefinitionRow parent, string Name, ProjectDataset.FramesetRow Frameset, ProjectDataset.SolidityRow Solidity, short SolidWidth, short SolidHeight)
       {
-         return m_dsPrj.SpriteState.AddSpriteStateRow(parent, Name, Frameset, Solidity);
+         return m_dsPrj.SpriteState.AddSpriteStateRow(parent, Name, Frameset, Solidity, SolidWidth, SolidHeight);
       }
       public static ProjectDataset.SpriteFrameRow[] GetSortedSpriteFrames(ProjectDataset.SpriteStateRow row)
       {
@@ -1434,6 +1453,12 @@ namespace SGDK2
          {
             return m_dsPrj.Sprite;
          }
+      }
+      public static ProjectDataset.ParameterValueRow GetSpriteParameterValueRow(ProjectDataset.SpriteRow row, string paramName)
+      {
+         string LayerName = (string)row["LayerName"];
+         string MapName = (string)row["MapName"];
+         return m_dsPrj.ParameterValue.FindByLayerNameSpriteNameParameterNameMapName(LayerName, row.Name, paramName, MapName);
       }
       #endregion
 

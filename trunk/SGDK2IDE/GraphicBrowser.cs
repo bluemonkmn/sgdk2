@@ -238,6 +238,7 @@ namespace SGDK2
                m_FramesToDisplayChangedEvent = new ListChangedEventHandler(FramesToDisplay_ListChanged);
                m_FramesToDisplay.ListChanged += m_FramesToDisplayChangedEvent;
             }
+            QueueRecalc();
          }
       }
 
@@ -346,6 +347,9 @@ namespace SGDK2
                else
                   return m_FramesToDisplay.Count;
             }
+
+            if ((m_FramesToDisplay != null) && (m_FramesToDisplay.ProvidesGraphics))
+               return m_FramesToDisplay.Count;
 
             return 0;
          }
@@ -466,6 +470,53 @@ namespace SGDK2
             return rcMax;
          }
 
+         if  ((m_FramesToDisplay != null) && (m_FramesToDisplay.ProvidesGraphics))
+         {
+            Rectangle rcMax = new Rectangle(0,0,0,0);
+            int nCellCount = CellCount;
+            for(int nCellIndex = 0; nCellIndex < nCellCount; nCellIndex++)
+            {
+               for (int nSubFrame = 0; nSubFrame < m_FramesToDisplay[nCellIndex].FrameIndexes.Length; nSubFrame++)
+               {
+                  IProvideGraphics gfx;
+                  if (m_FramesToDisplay[nCellIndex].FrameIndexes.Length > 0)
+                     gfx = ((IProvideGraphics)m_FramesToDisplay[nCellIndex]);
+                  else
+                     continue;
+
+                  ProjectDataset.GraphicSheetRow drG = gfx.GetGraphicSheet(nSubFrame);
+                  Point[] ptCorners = new Point[]
+                  {
+                     new Point(0,0),
+                     new Point(drG.CellWidth, 0),
+                     new Point(0, drG.CellHeight),
+                     new Point(drG.CellWidth, drG.CellHeight)
+                  };
+                  Matrix m = gfx.CreateMatrix(nSubFrame);
+                  m.TransformPoints(ptCorners);
+                  m.Dispose();
+                  foreach (Point pt in ptCorners)
+                  {
+                     if (pt.X < rcMax.X)
+                     {
+                        rcMax.Width = rcMax.Left + rcMax.Width - pt.X;
+                        rcMax.X = pt.X;
+                     }
+                     if (pt.Y < rcMax.Y)
+                     {
+                        rcMax.Height = rcMax.Top + rcMax.Height - pt.Y;
+                        rcMax.Y = pt.Y;
+                     }
+                     if (pt.X - rcMax.Left > rcMax.Width)
+                        rcMax.Width = pt.X - rcMax.Left;
+                     if (pt.Y - rcMax.Top > rcMax.Height)
+                        rcMax.Height = pt.Y - rcMax.Top;
+                  }
+               }
+            }
+            return rcMax;
+         }
+
          return Rectangle.Empty;
       }
 
@@ -504,7 +555,8 @@ namespace SGDK2
       #region Public Methods
       public BitArray GetCellsInRect(Rectangle rect)
       {
-         if ((m_imgGraphicSheet == null) && (m_Frameset == null) && (m_GraphicSheet == null))
+         if ((m_imgGraphicSheet == null) && (m_Frameset == null) && (m_GraphicSheet == null) &&
+            ((m_FramesToDisplay == null) || !m_FramesToDisplay.ProvidesGraphics))
             return null;
 
          if ((CellSize.Width <= 0) || (CellSize.Height <= 0))
@@ -561,7 +613,8 @@ namespace SGDK2
       /// relative to the series of cells contained in the control</returns>
       public int GetCellAtXY(int X, int Y, HitFlags HitType)
       {
-         if ((m_imgGraphicSheet == null) && (m_Frameset == null) && (m_GraphicSheet == null))
+         if ((m_imgGraphicSheet == null) && (m_Frameset == null) && (m_GraphicSheet == null) &&
+            ((m_FramesToDisplay == null) || !m_FramesToDisplay.ProvidesGraphics))
          {
             if (0 != (int)(HitType & HitFlags.AllowExtraCell))
                return CellCount;
@@ -648,7 +701,8 @@ namespace SGDK2
       {
          get
          {
-            if ((m_imgGraphicSheet == null) && (m_Frameset == null) && (m_GraphicSheet == null))
+            if ((m_imgGraphicSheet == null) && (m_Frameset == null) && (m_GraphicSheet == null) &&
+               ((m_FramesToDisplay == null) || !m_FramesToDisplay.ProvidesGraphics))
                return 1;
 
             if (CellSize.Width <= 0)
@@ -676,7 +730,8 @@ namespace SGDK2
 
       public Rectangle GetCellAbsoluteRect(int CellIndex)
       {
-         if ((m_imgGraphicSheet == null) && (m_Frameset == null) && (m_GraphicSheet == null))
+         if ((m_imgGraphicSheet == null) && (m_Frameset == null) && (m_GraphicSheet == null) && 
+            ((m_FramesToDisplay == null) || !m_FramesToDisplay.ProvidesGraphics))
             return Rectangle.Empty;
 
          if ((CellSize.Width <= 0) || (CellSize.Height <= 0))
@@ -797,7 +852,8 @@ namespace SGDK2
       #region Overrides
       protected override void OnPaint(PaintEventArgs pe)
       {
-         if ((m_imgGraphicSheet == null) && (m_Frameset == null) && (m_GraphicSheet == null))
+         if ((m_imgGraphicSheet == null) && (m_Frameset == null) && (m_GraphicSheet == null) &&
+             ((m_FramesToDisplay==null) || !(m_FramesToDisplay.ProvidesGraphics)))
             return;
 
          if ((CellSize.Width <= 0) || (CellSize.Height <= 0))
@@ -830,10 +886,10 @@ namespace SGDK2
             ProjectDataset.GraphicSheetDataTable dtGraphics = null;
             ProjectDataset.GraphicSheetRow drGfx = null;
          
-            if (m_Frameset != null)
+            if ((m_Frameset != null) || ((m_FramesToDisplay != null) && (m_FramesToDisplay.ProvidesGraphics)))
             {
                Frames = GetSortedFrameRows();
-               dtGraphics = ((ProjectDataset)m_Frameset.Table.DataSet).GraphicSheet;
+               dtGraphics = ProjectData.GraphicSheet;
             }
 
             int nX = m_CellPadding.Width;
@@ -865,7 +921,7 @@ namespace SGDK2
                      gfxOut.FillRectangle(SelectedBrush, rcSelRect);
                   }
 
-                  if (m_Frameset == null)
+                  if ((m_Frameset == null) && ((m_FramesToDisplay == null) || !m_FramesToDisplay.ProvidesGraphics))
                   {
                      Rectangle rcCell = new Rectangle((nCell % nCols) * CellSize.Width,
                         (nCell / nCols) * CellSize.Height, CellSize.Width, CellSize.Height);
@@ -888,17 +944,35 @@ namespace SGDK2
                         else
                            nFrameToDisplay = FramesToDisplay[nCell].FrameIndexes[nCompositeFrameStep];
 
-                        if ((drGfx == null) || (drGfx.Name != Frames[nFrameToDisplay].GraphicSheet))
+                        Rectangle rcCell;
+                        Matrix m;
+                        if ((FramesToDisplay != null) && (FramesToDisplay.ProvidesGraphics))
                         {
-                           drGfx =dtGraphics.FindByName(Frames[nFrameToDisplay].GraphicSheet);
-                           bmpImage = ProjectData.GetGraphicSheetImage(drGfx.Name, false);
-                           nCols = bmpImage.Width / drGfx.CellWidth;
+                           IProvideGraphics p = (IProvideGraphics)FramesToDisplay[nCell];
+                           ProjectDataset.GraphicSheetRow subGraphic = p.GetGraphicSheet(nCompositeFrameStep);
+                           if (drGfx != subGraphic)
+                           {
+                              drGfx = subGraphic;
+                              bmpImage = ProjectData.GetGraphicSheetImage(drGfx.Name, false);
+                              nCols = bmpImage.Width / drGfx.CellWidth;
+                           }
+                           rcCell = p.GetRectangle(nCompositeFrameStep);
+                           m = p.CreateMatrix(nCompositeFrameStep);
                         }
-                        Rectangle rcCell = new Rectangle((Frames[nFrameToDisplay].CellIndex % nCols) * drGfx.CellWidth,
-                           (Frames[nFrameToDisplay].CellIndex / nCols) * drGfx.CellHeight, drGfx.CellWidth, drGfx.CellHeight);
-                        Matrix m = new System.Drawing.Drawing2D.Matrix(
-                           Frames[nFrameToDisplay].m11, Frames[nFrameToDisplay].m12, Frames[nFrameToDisplay].m21,
-                           Frames[nFrameToDisplay].m22, Frames[nFrameToDisplay].dx, Frames[nFrameToDisplay].dy);
+                        else
+                        {
+                           if ((drGfx == null) || (drGfx.Name != Frames[nFrameToDisplay].GraphicSheet))
+                           {
+                              drGfx = dtGraphics.FindByName(Frames[nFrameToDisplay].GraphicSheet);
+                              bmpImage = ProjectData.GetGraphicSheetImage(drGfx.Name, false);
+                              nCols = bmpImage.Width / drGfx.CellWidth;
+                           }
+                           rcCell = new Rectangle((Frames[nFrameToDisplay].CellIndex % nCols) * drGfx.CellWidth,
+                              (Frames[nFrameToDisplay].CellIndex / nCols) * drGfx.CellHeight, drGfx.CellWidth, drGfx.CellHeight);
+                           m = new System.Drawing.Drawing2D.Matrix(
+                              Frames[nFrameToDisplay].m11, Frames[nFrameToDisplay].m12, Frames[nFrameToDisplay].m21,
+                              Frames[nFrameToDisplay].m22, Frames[nFrameToDisplay].dx, Frames[nFrameToDisplay].dy);
+                        }
                         gfxOut.Transform = m;
                         m.Dispose();
                         gfxOut.PixelOffsetMode = PixelOffsetMode.Half;
@@ -1366,6 +1440,8 @@ namespace SGDK2
    {
       public event ListChangedEventHandler ListChanged;
 
+      public bool ProvidesGraphics = false;
+
       public IProvideFrame this[int index]
       {
          get
@@ -1421,7 +1497,12 @@ namespace SGDK2
             ListChanged(this, new ListChangedEventArgs(ListChangedType.Reset, -1));
          base.OnSetComplete (index, oldValue, newValue);
       }
+   }
 
-
+   public interface IProvideGraphics
+   {
+      ProjectDataset.GraphicSheetRow GetGraphicSheet(int subFrame);
+      Rectangle GetRectangle(int subFrame);
+      System.Drawing.Drawing2D.Matrix CreateMatrix(int subFrame);
    }
 }

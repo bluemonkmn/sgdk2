@@ -146,7 +146,6 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuRemoveFrame;
       private System.Windows.Forms.ListBox lstSpriteStates;
       private System.Windows.Forms.DataGrid grdParameters;
-      private System.Windows.Forms.TreeView treeView1;
       private System.Windows.Forms.Splitter splitter1;
       private System.Windows.Forms.MenuItem mnuConditionSeparator;
       private System.Windows.Forms.MenuItem mnuAddAction;
@@ -170,6 +169,11 @@ namespace SGDK2
       private System.Windows.Forms.ComboBox cboOutput;
       private System.Windows.Forms.CheckBox chkEndIf;
       private System.Windows.Forms.Label lblCompileError;
+      private System.Windows.Forms.Label lblWidthHeight;
+      private System.Windows.Forms.TextBox txtWidth;
+      private System.Windows.Forms.TextBox txtHeight;
+      private System.Windows.Forms.Label lblComma;
+      private System.Windows.Forms.TreeView tvwRules;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -248,12 +252,16 @@ namespace SGDK2
          this.lblRepeatCount = new System.Windows.Forms.Label();
          this.lblStateFrames = new System.Windows.Forms.Label();
          this.pnlSpriteState = new System.Windows.Forms.Panel();
-         this.cboFrameset = new System.Windows.Forms.ComboBox();
-         this.lblFrameset = new System.Windows.Forms.Label();
-         this.txtStateName = new System.Windows.Forms.TextBox();
          this.lblStateName = new System.Windows.Forms.Label();
+         this.txtStateName = new System.Windows.Forms.TextBox();
+         this.lblFrameset = new System.Windows.Forms.Label();
+         this.cboFrameset = new System.Windows.Forms.ComboBox();
          this.lblSolidity = new System.Windows.Forms.Label();
          this.cboSolidity = new System.Windows.Forms.ComboBox();
+         this.lblWidthHeight = new System.Windows.Forms.Label();
+         this.txtWidth = new System.Windows.Forms.TextBox();
+         this.lblComma = new System.Windows.Forms.Label();
+         this.txtHeight = new System.Windows.Forms.TextBox();
          this.StateTreeSplitter = new System.Windows.Forms.Splitter();
          this.lstSpriteStates = new System.Windows.Forms.ListBox();
          this.tabParamegers = new System.Windows.Forms.TabPage();
@@ -263,6 +271,7 @@ namespace SGDK2
          this.imlArrows = new System.Windows.Forms.ImageList(this.components);
          this.btnMoveUp = new System.Windows.Forms.Button();
          this.grpCondition = new System.Windows.Forms.GroupBox();
+         this.lblCompileError = new System.Windows.Forms.Label();
          this.chkEndIf = new System.Windows.Forms.CheckBox();
          this.lblOutput = new System.Windows.Forms.Label();
          this.cboOutput = new System.Windows.Forms.ComboBox();
@@ -278,7 +287,7 @@ namespace SGDK2
          this.txtRuleName = new System.Windows.Forms.TextBox();
          this.lblRuleName = new System.Windows.Forms.Label();
          this.splitter1 = new System.Windows.Forms.Splitter();
-         this.treeView1 = new System.Windows.Forms.TreeView();
+         this.tvwRules = new System.Windows.Forms.TreeView();
          this.pnlSpriteHeader = new System.Windows.Forms.Panel();
          this.txtName = new System.Windows.Forms.TextBox();
          this.lblName = new System.Windows.Forms.Label();
@@ -292,7 +301,6 @@ namespace SGDK2
          this.mnuAddAction = new System.Windows.Forms.MenuItem();
          this.mnuRemoveRule = new System.Windows.Forms.MenuItem();
          this.DataMonitor = new SGDK2.DataChangeNotifier(this.components);
-         this.lblCompileError = new System.Windows.Forms.Label();
          this.tabSpriteDefinition.SuspendLayout();
          this.tabStates.SuspendLayout();
          this.pnlFrames.SuspendLayout();
@@ -316,7 +324,7 @@ namespace SGDK2
          this.tabSpriteDefinition.Name = "tabSpriteDefinition";
          this.tabSpriteDefinition.SelectedIndex = 0;
          this.tabSpriteDefinition.Size = new System.Drawing.Size(552, 361);
-         this.tabSpriteDefinition.TabIndex = 0;
+         this.tabSpriteDefinition.TabIndex = 3;
          this.tabSpriteDefinition.SelectedIndexChanged += new System.EventHandler(this.tabSpriteDefinition_SelectedIndexChanged);
          // 
          // tabStates
@@ -330,7 +338,7 @@ namespace SGDK2
          this.tabStates.Controls.Add(this.lstSpriteStates);
          this.tabStates.Location = new System.Drawing.Point(4, 22);
          this.tabStates.Name = "tabStates";
-         this.tabStates.Size = new System.Drawing.Size(552, 343);
+         this.tabStates.Size = new System.Drawing.Size(544, 335);
          this.tabStates.TabIndex = 0;
          this.tabStates.Text = "States";
          // 
@@ -348,7 +356,7 @@ namespace SGDK2
          this.AvailableFrames.Location = new System.Drawing.Point(125, 229);
          this.AvailableFrames.Name = "AvailableFrames";
          this.AvailableFrames.SheetImage = null;
-         this.AvailableFrames.Size = new System.Drawing.Size(427, 114);
+         this.AvailableFrames.Size = new System.Drawing.Size(419, 106);
          this.AvailableFrames.TabIndex = 10;
          // 
          // lblAvailableFrames
@@ -356,8 +364,8 @@ namespace SGDK2
          this.lblAvailableFrames.Dock = System.Windows.Forms.DockStyle.Top;
          this.lblAvailableFrames.Location = new System.Drawing.Point(125, 213);
          this.lblAvailableFrames.Name = "lblAvailableFrames";
-         this.lblAvailableFrames.Size = new System.Drawing.Size(427, 16);
-         this.lblAvailableFrames.TabIndex = 11;
+         this.lblAvailableFrames.Size = new System.Drawing.Size(419, 16);
+         this.lblAvailableFrames.TabIndex = 9;
          this.lblAvailableFrames.Text = "Available Frames:";
          // 
          // splitter2
@@ -366,8 +374,8 @@ namespace SGDK2
          this.splitter2.Dock = System.Windows.Forms.DockStyle.Top;
          this.splitter2.Location = new System.Drawing.Point(125, 208);
          this.splitter2.Name = "splitter2";
-         this.splitter2.Size = new System.Drawing.Size(427, 5);
-         this.splitter2.TabIndex = 12;
+         this.splitter2.Size = new System.Drawing.Size(419, 5);
+         this.splitter2.TabIndex = 8;
          this.splitter2.TabStop = false;
          // 
          // pnlFrames
@@ -378,8 +386,8 @@ namespace SGDK2
          this.pnlFrames.Dock = System.Windows.Forms.DockStyle.Top;
          this.pnlFrames.Location = new System.Drawing.Point(125, 64);
          this.pnlFrames.Name = "pnlFrames";
-         this.pnlFrames.Size = new System.Drawing.Size(427, 144);
-         this.pnlFrames.TabIndex = 3;
+         this.pnlFrames.Size = new System.Drawing.Size(419, 144);
+         this.pnlFrames.TabIndex = 6;
          // 
          // StateFrames
          // 
@@ -395,8 +403,8 @@ namespace SGDK2
          this.StateFrames.Location = new System.Drawing.Point(0, 16);
          this.StateFrames.Name = "StateFrames";
          this.StateFrames.SheetImage = null;
-         this.StateFrames.Size = new System.Drawing.Size(427, 104);
-         this.StateFrames.TabIndex = 5;
+         this.StateFrames.Size = new System.Drawing.Size(419, 104);
+         this.StateFrames.TabIndex = 1;
          this.StateFrames.CurrentCellChanged += new System.EventHandler(this.StateFrames_CurrentCellChanged);
          this.StateFrames.DragDrop += new System.Windows.Forms.DragEventHandler(this.StateFrames_DragDrop);
          this.StateFrames.DragOver += new System.Windows.Forms.DragEventHandler(this.StateFrames_DragOver);
@@ -411,8 +419,8 @@ namespace SGDK2
          this.pnlFrameDetails.DockPadding.Top = 2;
          this.pnlFrameDetails.Location = new System.Drawing.Point(0, 120);
          this.pnlFrameDetails.Name = "pnlFrameDetails";
-         this.pnlFrameDetails.Size = new System.Drawing.Size(427, 24);
-         this.pnlFrameDetails.TabIndex = 4;
+         this.pnlFrameDetails.Size = new System.Drawing.Size(419, 24);
+         this.pnlFrameDetails.TabIndex = 7;
          // 
          // updRepeatCount
          // 
@@ -425,12 +433,13 @@ namespace SGDK2
                                                                        0});
          this.updRepeatCount.Name = "updRepeatCount";
          this.updRepeatCount.Size = new System.Drawing.Size(64, 20);
-         this.updRepeatCount.TabIndex = 4;
+         this.updRepeatCount.TabIndex = 1;
          this.updRepeatCount.Value = new System.Decimal(new int[] {
                                                                      1,
                                                                      0,
                                                                      0,
                                                                      0});
+         this.updRepeatCount.Validated += new System.EventHandler(this.updRepeatCount_Validated);
          this.updRepeatCount.ValueChanged += new System.EventHandler(this.updRepeatCount_ValueChanged);
          // 
          // lblRepeatCount
@@ -439,7 +448,7 @@ namespace SGDK2
          this.lblRepeatCount.Location = new System.Drawing.Point(1, 2);
          this.lblRepeatCount.Name = "lblRepeatCount";
          this.lblRepeatCount.Size = new System.Drawing.Size(104, 20);
-         this.lblRepeatCount.TabIndex = 3;
+         this.lblRepeatCount.TabIndex = 0;
          this.lblRepeatCount.Text = "Repeat Count:";
          this.lblRepeatCount.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
          // 
@@ -448,44 +457,36 @@ namespace SGDK2
          this.lblStateFrames.Dock = System.Windows.Forms.DockStyle.Top;
          this.lblStateFrames.Location = new System.Drawing.Point(0, 0);
          this.lblStateFrames.Name = "lblStateFrames";
-         this.lblStateFrames.Size = new System.Drawing.Size(427, 16);
-         this.lblStateFrames.TabIndex = 7;
+         this.lblStateFrames.Size = new System.Drawing.Size(419, 16);
+         this.lblStateFrames.TabIndex = 0;
          this.lblStateFrames.Text = "Frames in Current State:";
          // 
          // pnlSpriteState
          // 
-         this.pnlSpriteState.Controls.Add(this.cboFrameset);
-         this.pnlSpriteState.Controls.Add(this.lblFrameset);
-         this.pnlSpriteState.Controls.Add(this.txtStateName);
          this.pnlSpriteState.Controls.Add(this.lblStateName);
+         this.pnlSpriteState.Controls.Add(this.txtStateName);
+         this.pnlSpriteState.Controls.Add(this.lblFrameset);
+         this.pnlSpriteState.Controls.Add(this.cboFrameset);
          this.pnlSpriteState.Controls.Add(this.lblSolidity);
          this.pnlSpriteState.Controls.Add(this.cboSolidity);
+         this.pnlSpriteState.Controls.Add(this.lblWidthHeight);
+         this.pnlSpriteState.Controls.Add(this.txtWidth);
+         this.pnlSpriteState.Controls.Add(this.lblComma);
+         this.pnlSpriteState.Controls.Add(this.txtHeight);
          this.pnlSpriteState.Dock = System.Windows.Forms.DockStyle.Top;
          this.pnlSpriteState.Location = new System.Drawing.Point(125, 0);
          this.pnlSpriteState.Name = "pnlSpriteState";
-         this.pnlSpriteState.Size = new System.Drawing.Size(427, 64);
-         this.pnlSpriteState.TabIndex = 2;
+         this.pnlSpriteState.Size = new System.Drawing.Size(419, 64);
+         this.pnlSpriteState.TabIndex = 5;
          // 
-         // cboFrameset
+         // lblStateName
          // 
-         this.cboFrameset.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-         this.cboFrameset.DisplayMember = "Name";
-         this.cboFrameset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-         this.cboFrameset.Location = new System.Drawing.Point(296, 8);
-         this.cboFrameset.Name = "cboFrameset";
-         this.cboFrameset.Size = new System.Drawing.Size(120, 21);
-         this.cboFrameset.TabIndex = 3;
-         this.cboFrameset.SelectionChangeCommitted += new System.EventHandler(this.cboFrameset_SelectionChangeCommitted);
-         // 
-         // lblFrameset
-         // 
-         this.lblFrameset.Location = new System.Drawing.Point(216, 8);
-         this.lblFrameset.Name = "lblFrameset";
-         this.lblFrameset.Size = new System.Drawing.Size(80, 21);
-         this.lblFrameset.TabIndex = 2;
-         this.lblFrameset.Text = "Frameset:";
-         this.lblFrameset.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+         this.lblStateName.Location = new System.Drawing.Point(8, 8);
+         this.lblStateName.Name = "lblStateName";
+         this.lblStateName.Size = new System.Drawing.Size(80, 20);
+         this.lblStateName.TabIndex = 0;
+         this.lblStateName.Text = "State Name:";
+         this.lblStateName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
          // 
          // txtStateName
          // 
@@ -497,14 +498,26 @@ namespace SGDK2
          this.txtStateName.Validating += new System.ComponentModel.CancelEventHandler(this.txtStateName_Validating);
          this.txtStateName.Validated += new System.EventHandler(this.txtStateName_Validated);
          // 
-         // lblStateName
+         // lblFrameset
          // 
-         this.lblStateName.Location = new System.Drawing.Point(8, 8);
-         this.lblStateName.Name = "lblStateName";
-         this.lblStateName.Size = new System.Drawing.Size(80, 20);
-         this.lblStateName.TabIndex = 0;
-         this.lblStateName.Text = "State Name:";
-         this.lblStateName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+         this.lblFrameset.Location = new System.Drawing.Point(216, 8);
+         this.lblFrameset.Name = "lblFrameset";
+         this.lblFrameset.Size = new System.Drawing.Size(80, 21);
+         this.lblFrameset.TabIndex = 2;
+         this.lblFrameset.Text = "Frameset:";
+         this.lblFrameset.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+         // 
+         // cboFrameset
+         // 
+         this.cboFrameset.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+         this.cboFrameset.DisplayMember = "Name";
+         this.cboFrameset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+         this.cboFrameset.Location = new System.Drawing.Point(296, 8);
+         this.cboFrameset.Name = "cboFrameset";
+         this.cboFrameset.Size = new System.Drawing.Size(112, 21);
+         this.cboFrameset.TabIndex = 3;
+         this.cboFrameset.SelectionChangeCommitted += new System.EventHandler(this.cboFrameset_SelectionChangeCommitted);
          // 
          // lblSolidity
          // 
@@ -523,13 +536,52 @@ namespace SGDK2
          this.cboSolidity.Name = "cboSolidity";
          this.cboSolidity.Size = new System.Drawing.Size(120, 21);
          this.cboSolidity.TabIndex = 5;
+         this.cboSolidity.SelectionChangeCommitted += new System.EventHandler(this.cboSolidity_SelectionChangeCommitted);
+         // 
+         // lblWidthHeight
+         // 
+         this.lblWidthHeight.Location = new System.Drawing.Point(216, 32);
+         this.lblWidthHeight.Name = "lblWidthHeight";
+         this.lblWidthHeight.Size = new System.Drawing.Size(80, 20);
+         this.lblWidthHeight.TabIndex = 6;
+         this.lblWidthHeight.Text = "Width, height:";
+         this.lblWidthHeight.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+         // 
+         // txtWidth
+         // 
+         this.txtWidth.Location = new System.Drawing.Point(296, 32);
+         this.txtWidth.Name = "txtWidth";
+         this.txtWidth.Size = new System.Drawing.Size(48, 20);
+         this.txtWidth.TabIndex = 7;
+         this.txtWidth.Text = "";
+         this.txtWidth.Validating += new System.ComponentModel.CancelEventHandler(this.txtSize_Validating);
+         this.txtWidth.Validated += new System.EventHandler(this.txtWidth_Validated);
+         // 
+         // lblComma
+         // 
+         this.lblComma.Location = new System.Drawing.Point(344, 32);
+         this.lblComma.Name = "lblComma";
+         this.lblComma.Size = new System.Drawing.Size(16, 20);
+         this.lblComma.TabIndex = 8;
+         this.lblComma.Text = ",";
+         this.lblComma.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
+         // 
+         // txtHeight
+         // 
+         this.txtHeight.Location = new System.Drawing.Point(360, 32);
+         this.txtHeight.Name = "txtHeight";
+         this.txtHeight.Size = new System.Drawing.Size(48, 20);
+         this.txtHeight.TabIndex = 9;
+         this.txtHeight.Text = "";
+         this.txtHeight.Validating += new System.ComponentModel.CancelEventHandler(this.txtSize_Validating);
+         this.txtHeight.Validated += new System.EventHandler(this.txtHeight_Validated);
          // 
          // StateTreeSplitter
          // 
          this.StateTreeSplitter.Location = new System.Drawing.Point(120, 0);
          this.StateTreeSplitter.Name = "StateTreeSplitter";
-         this.StateTreeSplitter.Size = new System.Drawing.Size(5, 343);
-         this.StateTreeSplitter.TabIndex = 1;
+         this.StateTreeSplitter.Size = new System.Drawing.Size(5, 335);
+         this.StateTreeSplitter.TabIndex = 11;
          this.StateTreeSplitter.TabStop = false;
          // 
          // lstSpriteStates
@@ -538,8 +590,8 @@ namespace SGDK2
          this.lstSpriteStates.Dock = System.Windows.Forms.DockStyle.Left;
          this.lstSpriteStates.Location = new System.Drawing.Point(0, 0);
          this.lstSpriteStates.Name = "lstSpriteStates";
-         this.lstSpriteStates.Size = new System.Drawing.Size(120, 342);
-         this.lstSpriteStates.TabIndex = 13;
+         this.lstSpriteStates.Size = new System.Drawing.Size(120, 329);
+         this.lstSpriteStates.TabIndex = 4;
          this.lstSpriteStates.SelectedIndexChanged += new System.EventHandler(this.lstSpriteStates_SelectedIndexChanged);
          // 
          // tabParamegers
@@ -547,7 +599,7 @@ namespace SGDK2
          this.tabParamegers.Controls.Add(this.grdParameters);
          this.tabParamegers.Location = new System.Drawing.Point(4, 22);
          this.tabParamegers.Name = "tabParamegers";
-         this.tabParamegers.Size = new System.Drawing.Size(552, 343);
+         this.tabParamegers.Size = new System.Drawing.Size(544, 335);
          this.tabParamegers.TabIndex = 1;
          this.tabParamegers.Text = "Parameters";
          // 
@@ -560,8 +612,8 @@ namespace SGDK2
          this.grdParameters.HeaderForeColor = System.Drawing.SystemColors.ControlText;
          this.grdParameters.Location = new System.Drawing.Point(0, 0);
          this.grdParameters.Name = "grdParameters";
-         this.grdParameters.Size = new System.Drawing.Size(552, 343);
-         this.grdParameters.TabIndex = 0;
+         this.grdParameters.Size = new System.Drawing.Size(544, 335);
+         this.grdParameters.TabIndex = 35;
          // 
          // tabRules
          // 
@@ -571,7 +623,7 @@ namespace SGDK2
          this.tabRules.Controls.Add(this.txtRuleName);
          this.tabRules.Controls.Add(this.lblRuleName);
          this.tabRules.Controls.Add(this.splitter1);
-         this.tabRules.Controls.Add(this.treeView1);
+         this.tabRules.Controls.Add(this.tvwRules);
          this.tabRules.Location = new System.Drawing.Point(4, 22);
          this.tabRules.Name = "tabRules";
          this.tabRules.Size = new System.Drawing.Size(544, 335);
@@ -585,7 +637,7 @@ namespace SGDK2
          this.btnMoveDown.Location = new System.Drawing.Point(152, 176);
          this.btnMoveDown.Name = "btnMoveDown";
          this.btnMoveDown.Size = new System.Drawing.Size(25, 24);
-         this.btnMoveDown.TabIndex = 6;
+         this.btnMoveDown.TabIndex = 2;
          // 
          // imlArrows
          // 
@@ -600,7 +652,7 @@ namespace SGDK2
          this.btnMoveUp.Location = new System.Drawing.Point(152, 136);
          this.btnMoveUp.Name = "btnMoveUp";
          this.btnMoveUp.Size = new System.Drawing.Size(25, 24);
-         this.btnMoveUp.TabIndex = 5;
+         this.btnMoveUp.TabIndex = 1;
          // 
          // grpCondition
          // 
@@ -623,9 +675,19 @@ namespace SGDK2
          this.grpCondition.Location = new System.Drawing.Point(184, 32);
          this.grpCondition.Name = "grpCondition";
          this.grpCondition.Size = new System.Drawing.Size(352, 296);
-         this.grpCondition.TabIndex = 4;
+         this.grpCondition.TabIndex = 5;
          this.grpCondition.TabStop = false;
          this.grpCondition.Text = "Define Rule";
+         // 
+         // lblCompileError
+         // 
+         this.lblCompileError.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+         this.lblCompileError.Location = new System.Drawing.Point(16, 176);
+         this.lblCompileError.Name = "lblCompileError";
+         this.lblCompileError.Size = new System.Drawing.Size(328, 112);
+         this.lblCompileError.TabIndex = 12;
          // 
          // chkEndIf
          // 
@@ -633,7 +695,7 @@ namespace SGDK2
          this.chkEndIf.Location = new System.Drawing.Point(16, 144);
          this.chkEndIf.Name = "chkEndIf";
          this.chkEndIf.Size = new System.Drawing.Size(120, 24);
-         this.chkEndIf.TabIndex = 28;
+         this.chkEndIf.TabIndex = 11;
          this.chkEndIf.Text = "End If";
          // 
          // lblOutput
@@ -642,7 +704,7 @@ namespace SGDK2
          this.lblOutput.Location = new System.Drawing.Point(16, 120);
          this.lblOutput.Name = "lblOutput";
          this.lblOutput.Size = new System.Drawing.Size(120, 21);
-         this.lblOutput.TabIndex = 27;
+         this.lblOutput.TabIndex = 9;
          this.lblOutput.Text = "Output to:";
          this.lblOutput.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
          // 
@@ -654,8 +716,8 @@ namespace SGDK2
          this.cboOutput.Enabled = false;
          this.cboOutput.Location = new System.Drawing.Point(136, 120);
          this.cboOutput.Name = "cboOutput";
-         this.cboOutput.Size = new System.Drawing.Size(208, 21);
-         this.cboOutput.TabIndex = 26;
+         this.cboOutput.Size = new System.Drawing.Size(208, 20);
+         this.cboOutput.TabIndex = 10;
          // 
          // lblParam3
          // 
@@ -663,7 +725,7 @@ namespace SGDK2
          this.lblParam3.Location = new System.Drawing.Point(16, 96);
          this.lblParam3.Name = "lblParam3";
          this.lblParam3.Size = new System.Drawing.Size(120, 21);
-         this.lblParam3.TabIndex = 25;
+         this.lblParam3.TabIndex = 7;
          this.lblParam3.Text = "Parameter 3:";
          this.lblParam3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
          // 
@@ -674,8 +736,8 @@ namespace SGDK2
          this.cboParam3.Enabled = false;
          this.cboParam3.Location = new System.Drawing.Point(136, 96);
          this.cboParam3.Name = "cboParam3";
-         this.cboParam3.Size = new System.Drawing.Size(208, 21);
-         this.cboParam3.TabIndex = 24;
+         this.cboParam3.Size = new System.Drawing.Size(208, 20);
+         this.cboParam3.TabIndex = 8;
          // 
          // cboRuleType
          // 
@@ -687,7 +749,7 @@ namespace SGDK2
          this.cboRuleType.Location = new System.Drawing.Point(16, 24);
          this.cboRuleType.Name = "cboRuleType";
          this.cboRuleType.Size = new System.Drawing.Size(56, 21);
-         this.cboRuleType.TabIndex = 23;
+         this.cboRuleType.TabIndex = 0;
          this.cboRuleType.SelectedIndexChanged += new System.EventHandler(this.cboRuleType_SelectedIndexChanged);
          // 
          // lblParam2
@@ -696,7 +758,7 @@ namespace SGDK2
          this.lblParam2.Location = new System.Drawing.Point(16, 72);
          this.lblParam2.Name = "lblParam2";
          this.lblParam2.Size = new System.Drawing.Size(120, 21);
-         this.lblParam2.TabIndex = 6;
+         this.lblParam2.TabIndex = 5;
          this.lblParam2.Text = "Parameter 2:";
          this.lblParam2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
          // 
@@ -706,7 +768,7 @@ namespace SGDK2
          this.lblParam1.Location = new System.Drawing.Point(16, 48);
          this.lblParam1.Name = "lblParam1";
          this.lblParam1.Size = new System.Drawing.Size(120, 21);
-         this.lblParam1.TabIndex = 5;
+         this.lblParam1.TabIndex = 3;
          this.lblParam1.Text = "Parameter 1:";
          this.lblParam1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
          // 
@@ -717,8 +779,8 @@ namespace SGDK2
          this.cboParam2.Enabled = false;
          this.cboParam2.Location = new System.Drawing.Point(136, 72);
          this.cboParam2.Name = "cboParam2";
-         this.cboParam2.Size = new System.Drawing.Size(208, 21);
-         this.cboParam2.TabIndex = 4;
+         this.cboParam2.Size = new System.Drawing.Size(208, 20);
+         this.cboParam2.TabIndex = 6;
          // 
          // cboParam1
          // 
@@ -727,8 +789,8 @@ namespace SGDK2
          this.cboParam1.Enabled = false;
          this.cboParam1.Location = new System.Drawing.Point(136, 48);
          this.cboParam1.Name = "cboParam1";
-         this.cboParam1.Size = new System.Drawing.Size(208, 21);
-         this.cboParam1.TabIndex = 3;
+         this.cboParam1.Size = new System.Drawing.Size(208, 20);
+         this.cboParam1.TabIndex = 4;
          // 
          // chkNot
          // 
@@ -768,8 +830,8 @@ namespace SGDK2
                                                          "Riding"});
          this.cboFunction.Location = new System.Drawing.Point(136, 24);
          this.cboFunction.Name = "cboFunction";
-         this.cboFunction.Size = new System.Drawing.Size(208, 21);
-         this.cboFunction.TabIndex = 0;
+         this.cboFunction.Size = new System.Drawing.Size(208, 20);
+         this.cboFunction.TabIndex = 2;
          this.cboFunction.SelectedIndexChanged += new System.EventHandler(this.cboFunction_SelectedIndexChanged);
          // 
          // txtRuleName
@@ -777,7 +839,7 @@ namespace SGDK2
          this.txtRuleName.Location = new System.Drawing.Point(272, 8);
          this.txtRuleName.Name = "txtRuleName";
          this.txtRuleName.Size = new System.Drawing.Size(160, 20);
-         this.txtRuleName.TabIndex = 3;
+         this.txtRuleName.TabIndex = 4;
          this.txtRuleName.Text = "";
          // 
          // lblRuleName
@@ -785,7 +847,7 @@ namespace SGDK2
          this.lblRuleName.Location = new System.Drawing.Point(184, 8);
          this.lblRuleName.Name = "lblRuleName";
          this.lblRuleName.Size = new System.Drawing.Size(88, 20);
-         this.lblRuleName.TabIndex = 2;
+         this.lblRuleName.TabIndex = 3;
          this.lblRuleName.Text = "Rule Name:";
          this.lblRuleName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
          // 
@@ -794,18 +856,18 @@ namespace SGDK2
          this.splitter1.Location = new System.Drawing.Point(144, 0);
          this.splitter1.Name = "splitter1";
          this.splitter1.Size = new System.Drawing.Size(5, 335);
-         this.splitter1.TabIndex = 1;
+         this.splitter1.TabIndex = 13;
          this.splitter1.TabStop = false;
          // 
-         // treeView1
+         // tvwRules
          // 
-         this.treeView1.Dock = System.Windows.Forms.DockStyle.Left;
-         this.treeView1.ImageIndex = -1;
-         this.treeView1.Location = new System.Drawing.Point(0, 0);
-         this.treeView1.Name = "treeView1";
-         this.treeView1.SelectedImageIndex = -1;
-         this.treeView1.Size = new System.Drawing.Size(144, 335);
-         this.treeView1.TabIndex = 0;
+         this.tvwRules.Dock = System.Windows.Forms.DockStyle.Left;
+         this.tvwRules.ImageIndex = -1;
+         this.tvwRules.Location = new System.Drawing.Point(0, 0);
+         this.tvwRules.Name = "tvwRules";
+         this.tvwRules.SelectedImageIndex = -1;
+         this.tvwRules.Size = new System.Drawing.Size(144, 335);
+         this.tvwRules.TabIndex = 0;
          // 
          // pnlSpriteHeader
          // 
@@ -815,14 +877,14 @@ namespace SGDK2
          this.pnlSpriteHeader.Location = new System.Drawing.Point(0, 0);
          this.pnlSpriteHeader.Name = "pnlSpriteHeader";
          this.pnlSpriteHeader.Size = new System.Drawing.Size(552, 32);
-         this.pnlSpriteHeader.TabIndex = 1;
+         this.pnlSpriteHeader.TabIndex = 0;
          // 
          // txtName
          // 
          this.txtName.Location = new System.Drawing.Point(72, 8);
          this.txtName.Name = "txtName";
          this.txtName.Size = new System.Drawing.Size(160, 20);
-         this.txtName.TabIndex = 1;
+         this.txtName.TabIndex = 2;
          this.txtName.Text = "";
          this.txtName.Validating += new System.ComponentModel.CancelEventHandler(this.txtName_Validating);
          this.txtName.Validated += new System.EventHandler(this.txtName_Validated);
@@ -832,7 +894,7 @@ namespace SGDK2
          this.lblName.Location = new System.Drawing.Point(8, 8);
          this.lblName.Name = "lblName";
          this.lblName.Size = new System.Drawing.Size(64, 20);
-         this.lblName.TabIndex = 0;
+         this.lblName.TabIndex = 1;
          this.lblName.Text = "Name:";
          this.lblName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
          // 
@@ -911,16 +973,6 @@ namespace SGDK2
          this.DataMonitor.SolidityRowChanging += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.DataMonitor_SolidityRowChanging);
          this.DataMonitor.SolidityRowDeleted += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.DataMonitor_SolidityRowDeleted);
          // 
-         // lblCompileError
-         // 
-         this.lblCompileError.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-         this.lblCompileError.Location = new System.Drawing.Point(16, 176);
-         this.lblCompileError.Name = "lblCompileError";
-         this.lblCompileError.Size = new System.Drawing.Size(328, 112);
-         this.lblCompileError.TabIndex = 29;
-         // 
          // frmSpriteDefinition
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -954,7 +1006,7 @@ namespace SGDK2
       /// <returns>String containing class SpriteBase</returns>
       private string GetBaseSpriteCode()
       {
-         return ProjectData.GetSourceCode("SpriteBase").Text;
+         return ProjectData.GetSourceCode("SpriteBase.cs").Text;
       }
 
       private string CompileTempAssembly(string code)
@@ -1085,8 +1137,13 @@ namespace SGDK2
             }
          }
 
+         txtWidth.Text = state.SolidWidth.ToString();
+         txtHeight.Text = state.SolidHeight.ToString();
          AvailableFrames.Frameset = StateFrames.Frameset = state.FramesetRow;
          LoadSpriteFrames(state);
+         // Ensure that repeat/delay field gets reset
+         if (StateFrames.CellCount > 0)
+            StateFrames.CurrentCellIndex = 0;
       }
 
       private void LoadSpriteFrames(ProjectDataset.SpriteStateRow state)
@@ -1110,6 +1167,7 @@ namespace SGDK2
             lblFrameset.Enabled = lblSolidity.Enabled = cboSolidity.Enabled =
             lblStateFrames.Enabled = StateFrames.Enabled = lblAvailableFrames.Enabled =
             AvailableFrames.Enabled = lblRepeatCount.Enabled = updRepeatCount.Enabled =
+            txtWidth.Enabled = txtHeight.Enabled = lblWidthHeight.Enabled = lblComma.Enabled =
             enable;
       }
 
@@ -1324,7 +1382,7 @@ namespace SGDK2
 
          lstSpriteStates.SelectedItem = ProjectData.AddSpriteState(m_SpriteDef, sName,
             (ProjectDataset.FramesetRow)ProjectData.Frameset.Rows[0],
-            (ProjectDataset.SolidityRow)ProjectData.Solidity.Rows[0]);
+            (ProjectDataset.SolidityRow)ProjectData.Solidity.Rows[0], 32, 32);
       }
 
       private void StateFrames_DragOver(object sender, System.Windows.Forms.DragEventArgs e)
@@ -1421,6 +1479,11 @@ namespace SGDK2
          }
       }
 
+      private void cboSolidity_SelectionChangeCommitted(object sender, System.EventArgs e)
+      {
+         GetCurrentState().SolidityName = ((ProjectDataset.SolidityRow)cboSolidity.SelectedItem).Name;
+      }
+
       private void updRepeatCount_ValueChanged(object sender, System.EventArgs e)
       {
          try
@@ -1428,7 +1491,7 @@ namespace SGDK2
             if (StateFrames.CurrentCellIndex < 0)
                return;
             for(int i=0; i < StateFrames.CellCount; i++)
-               if ((StateFrames.FramesToDisplay[i].IsSelected) && (((SpriteFrame)StateFrames.FramesToDisplay[i]).Row.Duration != (short)updRepeatCount.Value))
+               if ((StateFrames.Selected[i]) && (((SpriteFrame)StateFrames.FramesToDisplay[i]).Row.Duration != (short)updRepeatCount.Value))
                   ((SpriteFrame)StateFrames.FramesToDisplay[i]).Row.Duration = (short)updRepeatCount.Value;
             ProjectData.AcceptChanges();
          }
@@ -1463,10 +1526,14 @@ namespace SGDK2
       {
          if ((e.Action == System.Data.DataRowAction.Change) && (e.Row.SpriteDefinitionRow == m_SpriteDef))
          {
-            for (int i=0; i<lstSpriteStates.Items.Count; i++)
+            if (!e.Row.HasVersion(System.Data.DataRowVersion.Original) ||
+               (string.Compare(e.Row["Name", System.Data.DataRowVersion.Original].ToString(), e.Row.Name) != 0))
             {
-               if (lstSpriteStates.Items[i] == e.Row)
-                  lstSpriteStates.Items[i] = e.Row;
+               for (int i=0; i<lstSpriteStates.Items.Count; i++)
+               {
+                  if (lstSpriteStates.Items[i] == e.Row)
+                     lstSpriteStates.Items[i] = e.Row;
+               }
             }
          }
       }
@@ -1479,7 +1546,10 @@ namespace SGDK2
 
       private void txtStateName_Validated(object sender, System.EventArgs e)
       {
-         GetCurrentState().Name = txtStateName.Text;
+         ProjectDataset.SpriteStateRow drState = GetCurrentState();
+         if (String.Compare(drState.Name, txtStateName.Text) == 0)
+            return;
+         drState.Name = txtStateName.Text;
          ProjectData.AcceptChanges();
       }
 
@@ -1500,6 +1570,32 @@ namespace SGDK2
                txtStateName.Text = GetCurrentState().Name;
             e.Cancel = true;
          }      
+      }
+
+      private void txtWidth_Validated(object sender, System.EventArgs e)
+      {
+         GetCurrentState().SolidWidth = short.Parse(txtWidth.Text);
+      }
+
+      private void txtHeight_Validated(object sender, System.EventArgs e)
+      {
+         GetCurrentState().SolidHeight = short.Parse(txtHeight.Text);      
+      }
+
+      private void txtSize_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+      {
+         double dblResult;
+         if (!Double.TryParse(((TextBox)sender).Text, System.Globalization.NumberStyles.Integer, System.Globalization.NumberFormatInfo.InvariantInfo, out dblResult))
+         {
+            MessageBox.Show(this, ((TextBox)sender).Text + " is not a valid number.", "Invalid Entry", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            e.Cancel = true;
+            return;
+         }
+
+         if (dblResult > 9999)
+            ((TextBox)sender).Text = "9999";
+         if (dblResult < 1)
+            ((TextBox)sender).Text = "1";
       }
 
       private void lstSpriteStates_SelectedIndexChanged(object sender, System.EventArgs e)
@@ -1655,6 +1751,12 @@ namespace SGDK2
       private void cboFunction_SelectedIndexChanged(object sender, System.EventArgs e)
       {
          PrepareFunction(cboFunction.SelectedItem.ToString());
+      }
+
+      private void updRepeatCount_Validated(object sender, System.EventArgs e)
+      {
+         // Force control to pick up new value
+         decimal dummy = ((NumericUpDown)sender).Value;      
       }
       #endregion
    }

@@ -80,6 +80,15 @@ namespace SGDK2
             txt.Close();
          }
 
+         string SpritesFolder = System.IO.Path.Combine(FolderName, "Sprites");
+         if (!System.IO.Directory.Exists(SpritesFolder))
+            System.IO.Directory.CreateDirectory(SpritesFolder);
+         foreach (ProjectDataset.SpriteDefinitionRow drSpriteDef in ProjectData.SpriteDefinition)
+         {
+            txt = new System.IO.StreamWriter(System.IO.Path.Combine(SpritesFolder, NameToVariable(drSpriteDef.Name) + ".cs"));
+            GenerateSpriteDef(drSpriteDef, txt);
+            txt.Close();
+         }
          GenerateProjectSourceCode(FolderName);
 
          string errs = err.ToString();err.Close();
@@ -147,11 +156,11 @@ namespace SGDK2
          foreach(ProjectDataset.FramesetRow drFrameset in ProjectData.Frameset)
          {
             if (curCondition.TrueStatements.Count > 0) curCondition.FalseStatements.Add(curCondition = new CodeConditionStatement());
-            CodeVariableReferenceExpression nameParam = new CodeVariableReferenceExpression("Name");
+            CodeArgumentReferenceExpression nameParam = new CodeArgumentReferenceExpression("Name");
             CodePrimitiveExpression nameCompare = new CodePrimitiveExpression(drFrameset.Name);
             CodeBinaryOperatorExpression DoCompare = new CodeBinaryOperatorExpression(nameParam, CodeBinaryOperatorType.ValueEquality, nameCompare);
             curCondition.Condition = DoCompare;
-            CodeVariableReferenceExpression dispParam = new CodeVariableReferenceExpression("disp");
+            CodeArgumentReferenceExpression dispParam = new CodeArgumentReferenceExpression("disp");
             System.Collections.ArrayList frameParams = new System.Collections.ArrayList();
             foreach(ProjectDataset.FrameRow drFrame in ProjectData.GetSortedFrameRows(drFrameset))
             {
@@ -192,7 +201,7 @@ namespace SGDK2
          framesetConstructor.Statements.Add(topCondition);
          framesetConstructor.Statements.Add(new CodeAssignStatement(
             new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "m_Display"),
-            new CodeVariableReferenceExpression("disp")));
+            new CodeArgumentReferenceExpression("disp")));
 
          CodeMemberProperty indexer = new CodeMemberProperty();
          indexer.Name = "Item";
@@ -201,7 +210,7 @@ namespace SGDK2
          indexer.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "index"));
          indexer.HasSet=false;
          indexer.HasGet=true;
-         indexer.GetStatements.Add(new CodeMethodReturnStatement(new CodeArrayIndexerExpression(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "m_arFrames"), new CodeVariableReferenceExpression("index"))));
+         indexer.GetStatements.Add(new CodeMethodReturnStatement(new CodeArrayIndexerExpression(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "m_arFrames"), new CodeArgumentReferenceExpression("index"))));
          framesetClassDecl.Members.Add(indexer);
 
          CodeMemberProperty countProp = new CodeMemberProperty();
@@ -227,8 +236,8 @@ namespace SGDK2
          CodeConstructor construct = new CodeConstructor();
          construct.Attributes = MemberAttributes.Public;
          construct.Parameters.AddRange(new CodeParameterDeclarationExpression[] {new CodeParameterDeclarationExpression(typeof(int), "nValue"), new CodeParameterDeclarationExpression(typeof(int), "nMax")});
-         construct.Statements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), CounterValFld), new CodeVariableReferenceExpression("nValue")));
-         construct.Statements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), CounterMaxFld), new CodeVariableReferenceExpression("nMax")));
+         construct.Statements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), CounterValFld), new CodeArgumentReferenceExpression("nValue")));
+         construct.Statements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), CounterMaxFld), new CodeArgumentReferenceExpression("nMax")));
          counterClassDecl.Members.Add(construct);
 
          CodeMemberField fld = new CodeMemberField(typeof(int), CounterValFld);
@@ -322,10 +331,10 @@ namespace SGDK2
          constructor.Parameters.Add(new CodeParameterDeclarationExpression(typeof(short), "nTileWidth"));
          constructor.Parameters.Add(new CodeParameterDeclarationExpression(typeof(short), "nTileHeight"));
          constructor.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "strFrameset"));
-         constructor.Statements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fldTiles.Name), new CodeVariableReferenceExpression("tiles")));
-         constructor.Statements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fldTileWidth.Name), new CodeVariableReferenceExpression("nTileWidth")));
-         constructor.Statements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fldTileHeight.Name), new CodeVariableReferenceExpression("nTileHeight")));
-         constructor.Statements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fldTilesetFrameset.Name), new CodeVariableReferenceExpression("strFrameset")));
+         constructor.Statements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fldTiles.Name), new CodeArgumentReferenceExpression("tiles")));
+         constructor.Statements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fldTileWidth.Name), new CodeArgumentReferenceExpression("nTileWidth")));
+         constructor.Statements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fldTileHeight.Name), new CodeArgumentReferenceExpression("nTileHeight")));
+         constructor.Statements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fldTilesetFrameset.Name), new CodeArgumentReferenceExpression("strFrameset")));
          staticConstructor.Statements.Add(new CodeVariableDeclarationStatement(typeof(System.Collections.ArrayList), TileListVar));
 
          CodeVariableReferenceExpression varTileList = new CodeVariableReferenceExpression(TileListVar);
@@ -424,7 +433,7 @@ namespace SGDK2
                new CodeCastExpression(
                new CodeTypeReference(TileBaseClass, 1),
                new CodeMethodInvokeExpression(
-               new CodeVariableReferenceExpression(TileListVar), "ToArray",
+               varTileList, "ToArray",
                new CodeTypeOfExpression(TileBaseClass))),
                new CodePrimitiveExpression(drTileset.TileWidth),
                new CodePrimitiveExpression(drTileset.TileHeight),
@@ -444,7 +453,7 @@ namespace SGDK2
             new CodeArrayIndexerExpression(
             new CodeFieldReferenceExpression(
             new CodeThisReferenceExpression(), TilesField),
-            new CodeVariableReferenceExpression(indexParam.Name))));
+            new CodeArgumentReferenceExpression(indexParam.Name))));
          classTileset.Members.Add(prpTile);
 
          CodeMemberProperty prpTileWidth = new CodeMemberProperty();
@@ -482,7 +491,7 @@ namespace SGDK2
             new CodeTypeReference(FramesetClass),
             new CodeFieldReferenceExpression(
             new CodeThisReferenceExpression(), TilesetFramesetField),
-            new CodeVariableReferenceExpression("disp"))));
+            new CodeArgumentReferenceExpression("disp"))));
          classTileset.Members.Add(mthCreateFrameset);
 
          CodeMemberProperty prpTileCount = new CodeMemberProperty();
@@ -558,7 +567,7 @@ namespace SGDK2
          CodeConstructor constructor = new CodeConstructor();
          constructor.Attributes = MemberAttributes.Final | MemberAttributes.Public;
          constructor.Parameters.Add(new CodeParameterDeclarationExpression("Display", "Disp"));
-         CodeVariableReferenceExpression refDisp = new CodeVariableReferenceExpression("Disp");
+         CodeArgumentReferenceExpression refDisp = new CodeArgumentReferenceExpression("Disp");
          clsMap.Members.Add(constructor);
          clsMap.Members.Add(new CodeMemberField("Display", MapDisplayField));
          CodeFieldReferenceExpression fldDisplayRef = new CodeFieldReferenceExpression(
@@ -595,7 +604,43 @@ namespace SGDK2
                   lyrTyp = new CodeTypeReference("IntLayer");
                   break;
             }
-            fldLayer = new CodeMemberField(lyrTyp, "m_" + NameToVariable(drLayer.Name));
+
+            CodeTypeDeclaration clsLayer = new CodeTypeDeclaration(NameToVariable(drLayer.Name)+ "_t");
+            clsLayer.BaseTypes.Add(lyrTyp);
+            lyrTyp = new CodeTypeReference(clsLayer.Name);
+            CodeConstructor lyrConstructor = new CodeConstructor();
+            clsLayer.Members.Add(lyrConstructor);
+            lyrConstructor.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+            lyrConstructor.Parameters.AddRange(new CodeParameterDeclarationExpression[]
+               {
+                  new CodeParameterDeclarationExpression("Tileset", "Tileset"),
+                  new CodeParameterDeclarationExpression("Display", "Disp"),
+                  new CodeParameterDeclarationExpression(typeof(int), "nLeftBuffer"),
+                  new CodeParameterDeclarationExpression(typeof(int), "nTopBuffer"),
+                  new CodeParameterDeclarationExpression(typeof(int), "nRightBuffer"),
+                  new CodeParameterDeclarationExpression(typeof(int), "nBottomBuffer"),
+                  new CodeParameterDeclarationExpression(typeof(int), "nColumns"),
+                  new CodeParameterDeclarationExpression(typeof(int), "nRows"),
+                  new CodeParameterDeclarationExpression(typeof(System.Drawing.Point), "Position"),
+                  new CodeParameterDeclarationExpression(typeof(System.Drawing.SizeF), "ScrollRate")
+               });
+            CodeObjectCreateExpression createLayerSprites = new CodeObjectCreateExpression("SpriteCollection");
+            lyrConstructor.BaseConstructorArgs.AddRange(new CodeExpression[]
+               {
+                  new CodeArgumentReferenceExpression("Tileset"),
+                  new CodeArgumentReferenceExpression("Disp"),
+                  new CodeArgumentReferenceExpression("nLeftBuffer"),
+                  new CodeArgumentReferenceExpression("nTopBuffer"),
+                  new CodeArgumentReferenceExpression("nRightBuffer"),
+                  new CodeArgumentReferenceExpression("nBottomBuffer"),
+                  new CodeArgumentReferenceExpression("nColumns"),
+                  new CodeArgumentReferenceExpression("nRows"),
+                  new CodeArgumentReferenceExpression("Position"),
+                  new CodeArgumentReferenceExpression("ScrollRate")
+               });
+            clsMap.Members.Add(clsLayer);
+
+            fldLayer = new CodeMemberField(clsLayer.Name, "m_" + NameToVariable(drLayer.Name));
             clsMap.Members.Add(fldLayer);
 
             constructor.Statements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(
@@ -612,7 +657,6 @@ namespace SGDK2
                new CodeObjectCreateExpression(typeof(System.Drawing.Point), 
                new CodePrimitiveExpression(drLayer.OffsetX),
                new CodePrimitiveExpression(drLayer.OffsetY)),
-               new CodePrimitiveExpression(null), // TODO: Create sprites
                new CodeObjectCreateExpression(typeof(System.Drawing.SizeF),
                new CodePrimitiveExpression(drLayer.ScrollRateX),
                new CodePrimitiveExpression(drLayer.ScrollRateY)),
@@ -632,13 +676,139 @@ namespace SGDK2
                new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fldLayer.Name),
                "Draw", new CodePropertyReferenceExpression(fldDisplayRef, "DisplayRectangle"),
                refSpr));
+
+            ProjectDataset.SpriteRow[] sprites = ProjectData.GetSortedSpriteRows(drLayer);
+            System.Collections.Hashtable htCategories = new System.Collections.Hashtable();
+            if (sprites.Length > 0)
+            {
+               foreach(ProjectDataset.SpriteRow sprite in sprites)
+               {
+                  System.Collections.ArrayList SpriteCreateParams = new System.Collections.ArrayList();
+                  ProjectDataset.SpriteStateRow drState = sprite.SpriteStateRowParent;
+                  ProjectDataset.SpriteDefinitionRow drDef = drState.SpriteDefinitionRow;
+                  SpriteCreateParams.Add(new CodeFieldReferenceExpression(new CodeTypeReferenceExpression("Sprites." + NameToVariable(drDef.Name) + ".State"), NameToVariable(sprite.StateName)));
+                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.CurrentFrame));
+                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.X));
+                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.Y));
+                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.DX));
+                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.DY));
+                  ProjectDataset.SpriteParameterRow[] sprParams = ProjectData.GetSortedSpriteParameters(drDef);
+                  if (sprParams.Length > 0)
+                  {
+                     foreach (ProjectDataset.SpriteParameterRow drParam in sprParams)
+                     {
+                        ProjectDataset.ParameterValueRow sprParam = ProjectData.GetSpriteParameterValueRow(sprite, drParam.Name);
+                        if (sprParam == null)
+                           SpriteCreateParams.Add(new CodePrimitiveExpression(0));
+                        else
+                           SpriteCreateParams.Add(new CodePrimitiveExpression(sprParam.Value));
+                     }
+                  }
+                  CodeObjectCreateExpression createSprite = new CodeObjectCreateExpression(
+                     "Sprites." + NameToVariable(drDef.Name), (CodeExpression[])
+                     SpriteCreateParams.ToArray(typeof(CodeExpression)));
+                  clsLayer.Members.Add(new CodeMemberField("Sprites." + NameToVariable(drDef.Name), "m_" + NameToVariable(sprite.Name)));
+                  lyrConstructor.Statements.Add(new CodeAssignStatement(
+                     new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "m_" + NameToVariable(sprite.Name)),
+                     createSprite));
+                  CodeFieldReferenceExpression fldrefSpr = new CodeFieldReferenceExpression(
+                     new CodeThisReferenceExpression(), "m_" + NameToVariable(sprite.Name));
+                  createLayerSprites.Parameters.Add(fldrefSpr);
+
+                  foreach(ProjectDataset.SpriteCategorySpriteRow drCatSpr in drDef.GetSpriteCategorySpriteRows())
+                  {
+                     ProjectDataset.SpriteCategoryRow drCat = drCatSpr.SpriteCategoryRow;
+                     if (!htCategories.ContainsKey(drCat.Name))
+                        htCategories[drCat.Name] = new System.Collections.ArrayList();
+                     ((System.Collections.ArrayList)htCategories[drCat.Name]).Add(fldrefSpr);                        
+                  }
+               }
+               if (htCategories.Count > 0)
+               {
+                  foreach(System.Collections.DictionaryEntry de in htCategories)
+                  {
+                     clsLayer.Members.Add(new CodeMemberField(
+                        "SpriteCollection", "m_" + NameToVariable(de.Key.ToString())));
+                     lyrConstructor.Statements.Add(new CodeAssignStatement(
+                        new CodeFieldReferenceExpression(
+                        new CodeThisReferenceExpression(), "m_" + NameToVariable(de.Key.ToString())),
+                        new CodeObjectCreateExpression("SpriteCollection",
+                        (CodeFieldReferenceExpression[])((System.Collections.ArrayList)de.Value).ToArray(
+                        typeof(CodeFieldReferenceExpression)))));
+                     CodeMemberProperty prpSpriteCat = new CodeMemberProperty();
+                     prpSpriteCat.Type = new CodeTypeReference("SpriteCollection");
+                     prpSpriteCat.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+                     prpSpriteCat.HasGet = true;
+                     prpSpriteCat.HasSet = false;
+                     prpSpriteCat.Name = NameToVariable(de.Key.ToString());
+                     prpSpriteCat.GetStatements.Add(
+                        new CodeMethodReturnStatement(
+                        new CodeFieldReferenceExpression(
+                        new CodeThisReferenceExpression(), "m_" + NameToVariable(de.Key.ToString()))));
+                     clsLayer.Members.Add(prpSpriteCat);
+                  }
+               }
+            }
+            lyrConstructor.Statements.Add(new CodeAssignStatement(
+               new CodeFieldReferenceExpression(
+               new CodeThisReferenceExpression(), "m_Sprites"),
+               createLayerSprites));
          }
          mthDraw.Statements.Add(new CodeMethodInvokeExpression(refSpr, "End"));
          mthDraw.Statements.Add(new CodeMethodInvokeExpression(refSpr, "Dispose"));
          constructor.Statements.Add(new CodeAssignStatement(fldDisplayRef, refDisp));
          Generator.GenerateCodeFromType(clsMap, txt, GeneratorOptions);
       }
-   
+
+      public void GenerateSpriteDef(ProjectDataset.SpriteDefinitionRow drSpriteDef, System.IO.TextWriter txt)
+      {
+         CodeNamespace nsSprites = new CodeNamespace("Sprites");
+         CodeTypeDeclaration clsSpriteDef = new CodeTypeDeclaration(NameToVariable(drSpriteDef.Name));
+         nsSprites.Types.Add(clsSpriteDef);
+
+         clsSpriteDef.BaseTypes.Add("SpriteBase");
+         CodeConstructor constructor = new CodeConstructor();
+         constructor.Parameters.AddRange(new CodeParameterDeclarationExpression[]
+            {
+               new CodeParameterDeclarationExpression(typeof(double), "x"),
+               new CodeParameterDeclarationExpression(typeof(double), "y"),
+               new CodeParameterDeclarationExpression(typeof(double), "dx"),
+               new CodeParameterDeclarationExpression(typeof(double), "dy"),
+               new CodeParameterDeclarationExpression(typeof(int), "state"),
+               new CodeParameterDeclarationExpression(typeof(int), "frame")
+            });
+         constructor.BaseConstructorArgs.AddRange(new CodeArgumentReferenceExpression[]
+            {
+               new CodeArgumentReferenceExpression("x"),
+               new CodeArgumentReferenceExpression("y"),
+               new CodeArgumentReferenceExpression("dx"),
+               new CodeArgumentReferenceExpression("dy"),
+               new CodeArgumentReferenceExpression("state"),
+               new CodeArgumentReferenceExpression("frame")
+            });
+         foreach(ProjectDataset.SpriteParameterRow drParam in ProjectData.GetSortedSpriteParameters(drSpriteDef))
+         {
+            clsSpriteDef.Members.Add(new CodeMemberField(typeof(int), "m_" + NameToVariable(drParam.Name)));
+            CodeFieldReferenceExpression refParam = new CodeFieldReferenceExpression(
+               new CodeThisReferenceExpression(), "m_" + NameToVariable(drParam.Name));
+            constructor.Parameters.Add(new CodeParameterDeclarationExpression(
+               typeof(int), NameToVariable(drParam.Name)));
+            constructor.Statements.Add(new CodeAssignStatement(refParam,               
+               new CodeArgumentReferenceExpression(NameToVariable(drParam.Name))));
+            CodeMemberProperty prp = new CodeMemberProperty();
+            prp.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+            prp.Name = NameToVariable(drParam.Name);
+            prp.HasGet = true;
+            prp.HasSet = true;
+            prp.Type = new CodeTypeReference(typeof(int));
+            prp.GetStatements.Add(new CodeMethodReturnStatement(refParam));
+            prp.SetStatements.Add(new CodeAssignStatement(refParam, new CodePropertySetValueReferenceExpression()));
+            clsSpriteDef.Members.Add(prp);
+         }
+         clsSpriteDef.Members.Add(constructor);
+         Generator.GenerateCodeFromNamespace(nsSprites, txt, GeneratorOptions);
+      }
+
       public void GenerateProjectSourceCode(string FolderName)
       {
          foreach (ProjectDataset.SourceCodeRow drCode in ProjectData.SourceCode)

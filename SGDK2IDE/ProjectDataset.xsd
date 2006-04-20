@@ -161,6 +161,7 @@
                            <xs:attribute name="ScrollRateX" type="xs:float" default="1" msprop:nullValue="1" use="optional" />
                            <xs:attribute name="ScrollRateY" type="xs:float" default="1" msprop:nullValue="1" use="optional" />
                            <xs:attribute name="ZIndex" type="xs:int" msprop:nullValue="0" />
+                           <xs:attribute name="Priority" type="xs:int" msprop:nullValue="0" default="0" />
                         </xs:complexType>
                      </xs:element>
                   </xs:sequence>

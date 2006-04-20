@@ -26,18 +26,23 @@ namespace SGDK2
       {
          public int x;
          public int y;
+         public int priority;
          public FrameCache.Frame frame;
-         public InjectedFrame(int x, int y, FrameCache.Frame frame)
+         public InjectedFrame(int x, int y, int priority, FrameCache.Frame frame)
          {
             this.x = x;
             this.y = y;
             this.frame = frame;
+            this.priority = priority;
          }
          #region IComparable Members
 
          public int CompareTo(object obj)
          {
-            int result = y.CompareTo((obj as InjectedFrame).y);
+            int result = priority.CompareTo((obj as InjectedFrame).priority);
+            if (result != 0)
+               return result;
+            result = y.CompareTo((obj as InjectedFrame).y);
             if (result != 0)
                return result;
             result = x.CompareTo((obj as InjectedFrame).x);
@@ -60,6 +65,7 @@ namespace SGDK2
       TileCache m_TileCache;
       FrameCache m_FrameCache;
       System.Collections.ArrayList m_InjectedFrames = null;
+      System.Collections.ArrayList m_CachedSprites = null;
       #endregion
 
       private Layer()
@@ -188,6 +194,14 @@ namespace SGDK2
             return m_Layer;
          }
       }
+
+      public int Priority
+      {
+         get
+         {
+            return m_Layer.Priority;
+         }
+      }
       #endregion
 
       #region Public methods
@@ -248,7 +262,8 @@ namespace SGDK2
             {
                if (Injected != null)
                {
-                  while ((CurFrame = (InjectedFrame)Injected.Current).y < y * nTileHeight)
+                  while (((CurFrame = (InjectedFrame)Injected.Current).priority < Priority) ||
+                     ((CurFrame.priority == Priority) && (CurFrame.y < y * nTileHeight)))
                   {
                      if ((t == null) || (t != CurFrame.frame.GraphicSheetTexture))
                         Device.SetTexture(0, t = CurFrame.frame.GraphicSheetTexture);
@@ -304,10 +319,10 @@ namespace SGDK2
          }
       }
 
-      public void InjectFrame(int x, int y, FrameCache.Frame frame)
+      public void InjectFrame(int x, int y, int priority, FrameCache.Frame frame)
       {
          int idx;
-         InjectedFrame f = new InjectedFrame(x, y, frame);
+         InjectedFrame f = new InjectedFrame(x, y, priority, frame);
          if (m_InjectedFrames == null)
          {
             m_InjectedFrames = new System.Collections.ArrayList();
@@ -331,12 +346,57 @@ namespace SGDK2
          short nHeight = tsr.TileHeight;
          int[] SubFrames = m_TileCache[nTileValue];
          for (int nFrame = 0; nFrame < SubFrames.Length; nFrame++)
-            InjectFrame(nCol * nWidth, nRow * nHeight, m_FrameCache[SubFrames[nFrame]]);
+            InjectFrame(nCol * nWidth, nRow * nHeight, Priority, m_FrameCache[SubFrames[nFrame]]);
       }
 
       public void ClearInjections()
       {
          m_InjectedFrames = null;
+      }
+
+      public void InjectCachedSprites()
+      {
+         foreach(SpriteProvider sp in m_CachedSprites)
+         {
+            int nCount = sp.GetSubFrameCount();
+            for(int i=0; i<nCount; i++)
+            {
+               InjectFrame(sp.X, sp.Y, sp.Priority, sp.GetSubFrame(i));
+            }
+         }
+      }
+
+      public void RefreshLayerSprites(SpriteCache cache)
+      {
+         ProjectDataset.SpriteRow[] SpriteRows = ProjectData.GetSortedSpriteRows(m_Layer);
+         m_CachedSprites = new System.Collections.ArrayList(SpriteRows.Length);
+         foreach(ProjectDataset.SpriteRow drSprite in SpriteRows)
+         {
+            SpriteProvider sp = new SpriteProvider(cache[drSprite.DefinitionName], drSprite);
+            m_CachedSprites.Add(sp);
+         }
+      }
+
+      public SpriteProvider[] GetSpritesInRect(Rectangle rect)
+      {
+         System.Collections.ArrayList result = new System.Collections.ArrayList();
+         foreach (SpriteProvider sp in m_CachedSprites)
+         {
+            if (rect.IntersectsWith(sp.Bounds))
+               result.Add(sp);
+         }
+         return (SpriteProvider[])result.ToArray(typeof(SpriteProvider));
+      }
+
+      public SpriteProvider[] GetSpritesAtPoint(Point pt)
+      {
+         System.Collections.ArrayList result = new System.Collections.ArrayList();
+         foreach (SpriteProvider sp in m_CachedSprites)
+         {
+            if (sp.Bounds.Contains(pt))
+               result.Add(sp);
+         }
+         return (SpriteProvider[])result.ToArray(typeof(SpriteProvider));
       }
       #endregion
    }

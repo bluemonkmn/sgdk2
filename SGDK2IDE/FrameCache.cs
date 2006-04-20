@@ -27,6 +27,54 @@ namespace SGDK2
          public Matrix Transform;
          public Rectangle SourceRect;
          public ProjectDataset.GraphicSheetRow GraphicSheet;
+         private System.Drawing.Rectangle bounds;
+
+         /// <summary>
+         /// Determine the bounding rectangle of the graphics in this frame
+         /// </summary>
+         /// <returns>Rectangle relative to the origin of this frame
+         /// that contains the frame's graphics</returns>
+         public System.Drawing.Rectangle Bounds
+         {
+            get
+            {
+               if (bounds.IsEmpty)
+               {
+                  Size CellSize = new Size(SourceRect.Width, SourceRect.Height);
+                  using (System.Drawing.Drawing2D.Matrix m =
+                     new System.Drawing.Drawing2D.Matrix(Transform.M11, Transform.M12, Transform.M21, Transform.M22, Transform.M41, Transform.M42))
+                  {
+                     System.Drawing.Point[] ptsRect = new Point[]
+                     {
+                        new Point(0, 0),
+                        new Point(CellSize.Width, 0),
+                        new Point(CellSize.Width, CellSize.Height),
+                        new Point(0, CellSize.Height)
+                     };
+                     m.TransformPoints(ptsRect);
+                     bounds = new Rectangle(ptsRect[0], new Size(1,1));
+                     foreach (Point pt in ptsRect)
+                     {
+                        if(pt.X < bounds.X)
+                        {
+                           bounds.Width += bounds.X - pt.X;
+                           bounds.X = pt.X;
+                        }
+                        if(pt.Y < bounds.Y)
+                        {
+                           bounds.Height += bounds.Y - pt.Y;
+                           bounds.Y = pt.Y;
+                        }
+                        if (pt.X > bounds.Right)
+                           bounds.Width += pt.X - bounds.Right;
+                        if (pt.Y > bounds.Bottom)
+                           bounds.Height += pt.Y - bounds.Bottom;
+                     }
+                  }
+               }
+               return bounds;
+            }
+         }
       }
 
       #region Fields
@@ -43,6 +91,8 @@ namespace SGDK2
             WeakReference cachedObject = (WeakReference)activeCaches[name];
             FrameCache result;
             if (!cachedObject.IsAlive || (null == (result = (FrameCache)cachedObject.Target)))
+               return new FrameCache(ProjectData.GetFrameSet(name), display);
+            if (result.m_Display != display)
                return new FrameCache(ProjectData.GetFrameSet(name), display);
             return result;
          }

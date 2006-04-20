@@ -3906,6 +3906,8 @@ namespace SGDK2 {
             
             private DataColumn columnZIndex;
             
+            private DataColumn columnPriority;
+            
             private DataColumn columnTiles;
             
             internal LayerDataTable() : 
@@ -4002,6 +4004,12 @@ namespace SGDK2 {
                 }
             }
             
+            internal DataColumn PriorityColumn {
+                get {
+                    return this.columnPriority;
+                }
+            }
+            
             internal DataColumn TilesColumn {
                 get {
                     return this.columnTiles;
@@ -4026,7 +4034,7 @@ namespace SGDK2 {
                 this.Rows.Add(row);
             }
             
-            public LayerRow AddLayerRow(string Name, int Width, int Height, TilesetRow parentTilesetRowByTilesetLayer, System.Byte BytesPerTile, MapRow parentMapRowByMapLayer, int OffsetX, int OffsetY, System.Single ScrollRateX, System.Single ScrollRateY, int ZIndex, System.Byte[] Tiles) {
+            public LayerRow AddLayerRow(string Name, int Width, int Height, TilesetRow parentTilesetRowByTilesetLayer, System.Byte BytesPerTile, MapRow parentMapRowByMapLayer, int OffsetX, int OffsetY, System.Single ScrollRateX, System.Single ScrollRateY, int ZIndex, int Priority, System.Byte[] Tiles) {
                 LayerRow rowLayerRow = ((LayerRow)(this.NewRow()));
                 rowLayerRow.ItemArray = new object[] {
                         Name,
@@ -4040,6 +4048,7 @@ namespace SGDK2 {
                         ScrollRateX,
                         ScrollRateY,
                         ZIndex,
+                        Priority,
                         Tiles};
                 this.Rows.Add(rowLayerRow);
                 return rowLayerRow;
@@ -4077,6 +4086,7 @@ namespace SGDK2 {
                 this.columnScrollRateX = this.Columns["ScrollRateX"];
                 this.columnScrollRateY = this.Columns["ScrollRateY"];
                 this.columnZIndex = this.Columns["ZIndex"];
+                this.columnPriority = this.Columns["Priority"];
                 this.columnTiles = this.Columns["Tiles"];
             }
             
@@ -4103,6 +4113,8 @@ namespace SGDK2 {
                 this.Columns.Add(this.columnScrollRateY);
                 this.columnZIndex = new DataColumn("ZIndex", typeof(int), null, System.Data.MappingType.Attribute);
                 this.Columns.Add(this.columnZIndex);
+                this.columnPriority = new DataColumn("Priority", typeof(int), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnPriority);
                 this.columnTiles = new DataColumn("Tiles", typeof(System.Byte[]), null, System.Data.MappingType.Element);
                 this.Columns.Add(this.columnTiles);
                 this.Constraints.Add(new UniqueConstraint("LayerKey", new DataColumn[] {
@@ -4128,6 +4140,8 @@ namespace SGDK2 {
                 this.columnScrollRateY.Namespace = "";
                 this.columnScrollRateY.DefaultValue = 1F;
                 this.columnZIndex.Namespace = "";
+                this.columnPriority.Namespace = "";
+                this.columnPriority.DefaultValue = 0;
             }
             
             public LayerRow NewLayerRow() {
@@ -4305,6 +4319,20 @@ namespace SGDK2 {
                 }
             }
             
+            public int Priority {
+                get {
+                    if (this.IsPriorityNull()) {
+                        return 0;
+                    }
+                    else {
+                        return ((int)(this[this.tableLayer.PriorityColumn]));
+                    }
+                }
+                set {
+                    this[this.tableLayer.PriorityColumn] = value;
+                }
+            }
+            
             public System.Byte[] Tiles {
                 get {
                     try {
@@ -4383,6 +4411,14 @@ namespace SGDK2 {
             
             public void SetZIndexNull() {
                 this[this.tableLayer.ZIndexColumn] = System.Convert.DBNull;
+            }
+            
+            public bool IsPriorityNull() {
+                return this.IsNull(this.tableLayer.PriorityColumn);
+            }
+            
+            public void SetPriorityNull() {
+                this[this.tableLayer.PriorityColumn] = System.Convert.DBNull;
             }
             
             public bool IsTilesNull() {

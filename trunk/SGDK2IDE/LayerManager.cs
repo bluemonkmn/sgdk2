@@ -234,6 +234,20 @@ namespace SGDK2
                m_drLayer.ZIndex = value;
             }
          }
+
+         [Description("Sprites with priority values equal to this are interleaved into rows of tiles in the layer (allowing isometric-type views).  Greater values are drawn in front."),
+         Category("Behavior")]
+         public int Priority
+         {
+            get
+            {
+               return m_drLayer.Priority;
+            }
+            set
+            {
+               m_drLayer.Priority = value;
+            }
+         }
       }
       #endregion
 

@@ -22,13 +22,15 @@ namespace SGDK2
             System.Type typ = typeof(SpriteProvider);
             properties.AddRange(new ReflectionPropertyDescriptor[]
             {
+               new ReflectionPropertyDescriptor(typ.GetProperty("Name")),
                new ReflectionPropertyDescriptor(typ.GetProperty("X")),
                new ReflectionPropertyDescriptor(typ.GetProperty("Y")),
                new ReflectionPropertyDescriptor(typ.GetProperty("DX")),
                new ReflectionPropertyDescriptor(typ.GetProperty("DY")),
                new ReflectionPropertyDescriptor(typ.GetProperty("Priority")),
-               new ReflectionPropertyDescriptor(typ.GetProperty("CurrentStateName")),
-               new ReflectionPropertyDescriptor(typ.GetProperty("CurrentFrame"))
+               new ReflectionPropertyDescriptor(typ.GetProperty("CurrentStateName"), this),
+               new ReflectionPropertyDescriptor(typ.GetProperty("CurrentFrame")),
+               new ReflectionPropertyDescriptor(typ.GetProperty("DefinitionName"))
             });
 
             foreach(string paramName in ((SpriteProvider)context.Instance).ParameterNames)
@@ -49,8 +51,31 @@ namespace SGDK2
    
       public override System.ComponentModel.TypeConverter.StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
       {
-         return new System.ComponentModel.TypeConverter.StandardValuesCollection(
-            ((SpriteProvider)context.Instance).GetAvailableStates());
+         if (context.Instance is SpriteProvider)
+         {
+            return new System.ComponentModel.TypeConverter.StandardValuesCollection(
+               ((SpriteProvider)context.Instance).GetAvailableStates());
+         }
+         System.Collections.Specialized.StringCollection vals = null;
+         foreach(SpriteProvider sp in (SpriteProvider[])context.Instance)
+         {
+            if(vals == null)
+            {
+               vals = new System.Collections.Specialized.StringCollection();
+               vals.AddRange(sp.GetAvailableStates());
+            }
+            else
+            {
+               string[] valcopy = new string[vals.Count];
+               vals.CopyTo(valcopy, 0);
+               foreach(string s in valcopy)
+                  if (Array.IndexOf(sp.GetAvailableStates(), s) < 0)
+                     vals.Remove(s);               
+            }
+         }
+         string[] result = new string[vals.Count];
+         vals.CopyTo(result,0);
+         return new System.ComponentModel.TypeConverter.StandardValuesCollection(result);
       }
    
       public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
@@ -58,48 +83,32 @@ namespace SGDK2
          if ((context.Instance is SpriteProvider) && (context.PropertyDescriptor != null) &&
             (context.PropertyDescriptor.Name.Equals("CurrentStateName")))
             return true;
+         if ((context.Instance is SpriteProvider[]) && (context.PropertyDescriptor != null) &&
+             (context.PropertyDescriptor.Name.Equals("CurrentStateName")))
+            return true;
          return base.GetStandardValuesSupported (context);
-      }
-      
-      public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
-      {
-         if ((context.Instance is SpriteProvider) && (context.PropertyDescriptor != null) &&
-            (sourceType == typeof(string)))
-         {
-            if ((context.PropertyDescriptor.PropertyType == typeof(int)) || 
-               (context.PropertyDescriptor.PropertyType == typeof(float)))
-               return true;
-         }
-         return base.CanConvertFrom (context, sourceType);
-      }
-   
-      public override object ConvertFrom(ITypeDescriptorContext context, System.Globalization.CultureInfo culture, object value)
-      {
-         if ((context.Instance is SpriteProvider) && (context.PropertyDescriptor != null) && (value is string))
-         {
-            if (context.PropertyDescriptor.PropertyType == typeof(int))
-               return int.Parse((string)value);
-            if (context.PropertyDescriptor.PropertyType == typeof(float))
-               return float.Parse((string)value);
-         }
-         return base.ConvertFrom (context, culture, value);
-      }
+      }      
    }
 
    [TypeConverter(typeof(SpriteConverter))]
-   class SpriteProvider : IProvideFrame, IProvideGraphics
+   public class SpriteProvider : IProvideFrame, IProvideGraphics, ICustomTypeDescriptor, ITypeDescriptorContext
    {
-      private readonly CachedSprite m_Sprite;
+      private readonly CachedSpriteDef m_Sprite;
+      private ProjectDataset.SpriteRow m_SpriteRow = null;
+      private ProjectDataset.ParameterValueRow[] m_ParameterRows = null;
       private string m_State;
-      private int m_Frame;
+      private short m_Frame;
       private int[] m_ParameterValues;
+      private string m_name;
       private int m_x;
       private int m_y;
       private float m_dx;
       private float m_dy;
       private int m_priority;
 
-      public SpriteProvider(CachedSprite sprite, string state, int frame)
+      private static SpriteConverter m_converter = new SpriteConverter();
+
+      public SpriteProvider(CachedSpriteDef sprite, string state, short frame)
       {
          m_Sprite = sprite;
          m_State = state;
@@ -107,15 +116,57 @@ namespace SGDK2
          m_ParameterValues = new int[m_Sprite.ParamNames.Count];
       }
 
+      public SpriteProvider(CachedSpriteDef sprite, ProjectDataset.SpriteRow row)
+      {
+         m_Sprite = sprite;
+         m_SpriteRow = row;
+         ProjectDataset.SpriteParameterRow[] parmrows = ProjectData.GetSortedSpriteParameters(row.SpriteStateRowParent.SpriteDefinitionRow);
+         m_ParameterRows = new ProjectDataset.ParameterValueRow[parmrows.Length];
+         for(int i = 0; i < parmrows.Length; i++)
+            m_ParameterRows[i] = ProjectData.GetSpriteParameterValueRow(row, parmrows[i].Name);
+      }
+
+      public string DefinitionName
+      {
+         get
+         {
+            return m_Sprite.Name;
+         }
+      }
+
+      public string Name
+      {
+         get
+         {
+            if (m_SpriteRow != null)
+               return m_SpriteRow.Name;
+            else
+               return m_name;
+         }
+         set
+         {
+            if (m_SpriteRow != null)
+               m_SpriteRow.Name = value;
+            else
+               m_name = value;
+         }
+      }
+
       public int X
       {
          get
          {
-            return m_x;
+            if (m_SpriteRow != null)
+               return m_SpriteRow.X;
+            else
+               return m_x;
          }
          set
          {
-            m_x = value;
+            if (m_SpriteRow != null)
+               m_SpriteRow.X = value;
+            else
+               m_x = value;
          }
       }
 
@@ -123,11 +174,17 @@ namespace SGDK2
       {
          get
          {
-            return m_y;
+            if (m_SpriteRow != null)
+               return m_SpriteRow.Y;
+            else
+               return m_y;
          }
          set
          {
-            m_y = value;
+            if (m_SpriteRow != null)
+               m_SpriteRow.Y = value;
+            else
+               m_y = value;
          }
       }
 
@@ -135,11 +192,17 @@ namespace SGDK2
       {
          get
          {
-            return m_dx;
+            if (m_SpriteRow != null)
+               return m_SpriteRow.DX;
+            else
+               return m_dx;
          }
          set
          {
-            m_dx = value;
+            if (m_SpriteRow != null)
+               m_SpriteRow.DX = value;
+            else
+               m_dx = value;
          }
       }
 
@@ -147,11 +210,17 @@ namespace SGDK2
       {
          get
          {
-            return m_dy;
+            if (m_SpriteRow != null)
+               return m_SpriteRow.DY;
+            else
+               return m_dy;
          }
          set
          {
-            m_dy = value;
+            if (m_SpriteRow != null)
+               m_SpriteRow.DY = value;
+            else
+               m_dy = value;
          }
       }
 
@@ -159,11 +228,17 @@ namespace SGDK2
       {
          get
          {
-            return m_priority;
+            if (m_SpriteRow != null)
+               return m_SpriteRow.Priority;
+            else
+               return m_priority;
          }
          set
          {
-            m_priority = value;
+            if (m_SpriteRow != null)
+               m_SpriteRow.Priority = value;
+            else
+               m_priority = value;
          }
       }
 
@@ -171,13 +246,19 @@ namespace SGDK2
       {
          get
          {
-            return m_State;
+            if (m_SpriteRow != null)
+               return m_SpriteRow.StateName;
+            else
+               return m_State;
          }
          set
          {
             if (m_Sprite.ContainsState(value))
             {
-               m_State = value;
+               if (m_SpriteRow != null)
+                  m_SpriteRow.StateName = value;
+               else
+                  m_State = value;
             }
             else
             {
@@ -194,15 +275,21 @@ namespace SGDK2
          }
       }
 
-      public int CurrentFrame
+      public short CurrentFrame
       {
          get
          {
-            return m_Frame;
+            if (m_SpriteRow != null)
+               return m_SpriteRow.CurrentFrame;
+            else
+               return m_Frame;
          }
          set
          {
-            m_Frame = value;
+            if (m_SpriteRow != null)
+               m_SpriteRow.CurrentFrame = value;
+            else
+               m_Frame = value;
          }
       }
 
@@ -210,17 +297,56 @@ namespace SGDK2
       {
          get
          {
-            int pidx = m_Sprite.ParamNames.IndexOf(ParamName);
-            if (pidx < 0)
+            if (m_ParameterRows != null)
+            {
+               for(int i = 0; i < m_ParameterRows.Length; i++)
+                  if (m_ParameterRows[i].SpriteParameterRowParent.Name.Equals(ParamName))
+                     return m_ParameterRows[i].Value;
                throw new IndexOutOfRangeException("Parameter " + ParamName + " not found");
-            return m_ParameterValues[pidx];
+            }
+            else
+            {
+               int pidx = m_Sprite.ParamNames.IndexOf(ParamName);
+               if (pidx < 0)
+                  throw new IndexOutOfRangeException("Parameter " + ParamName + " not found");
+               return m_ParameterValues[pidx];
+            }
          }
          set
          {
-            int pidx = m_Sprite.ParamNames.IndexOf(ParamName);
-            if (pidx < 0)
+            if (m_ParameterRows != null)
+            {
+               for(int i = 0; i < m_ParameterRows.Length; i++)
+                  if (m_ParameterRows[i].SpriteParameterRowParent.Name.Equals(ParamName))
+                  {
+                     m_ParameterRows[i].Value = value;
+                     return;
+                  }
                throw new IndexOutOfRangeException("Parameter " + ParamName + " not found");
-            m_ParameterValues[pidx] = value;
+            }
+            else
+            {
+               int pidx = m_Sprite.ParamNames.IndexOf(ParamName);
+               if (pidx < 0)
+                  throw new IndexOutOfRangeException("Parameter " + ParamName + " not found");
+               m_ParameterValues[pidx] = value;
+            }
+         }
+      }
+
+      public int[] ParameterValues
+      {
+         get
+         {
+            if (m_ParameterRows != null)
+            {
+               int[] result = new int[m_ParameterRows.Length];
+               for(int i = 0; i < result.Length; i++)
+                  result[i] = m_ParameterRows[i].Value;
+               return result;
+            }
+            else
+               return m_ParameterValues;
          }
       }
 
@@ -236,14 +362,42 @@ namespace SGDK2
          return result;
       }
 
+      public int GetSubFrameCount()
+      {
+         return m_Sprite[CurrentStateName, CurrentFrame].Length;
+      }
+
+      public FrameCache.Frame GetSubFrame(int nSubFrame)
+      {
+         return m_Sprite[CurrentStateName].frameset[m_Sprite[CurrentStateName, CurrentFrame][nSubFrame]];
+      }
+
+      public Rectangle Bounds
+      {
+         get
+         {
+            Rectangle result = m_Sprite[CurrentStateName].Bounds;
+            result.Offset(X, Y);
+            return result;
+         }
+      }
+
+      public bool IsDataRow
+      {
+         get
+         {
+            return m_SpriteRow != null;
+         }
+      }
+
       #region IProvideFrame Members
 
       public int FrameIndex
       {
          get
          {
-            if (m_Sprite[m_State,m_Frame].Length >0)
-               return m_Sprite[m_State,m_Frame][0];
+            if (m_Sprite[CurrentStateName,CurrentFrame].Length >0)
+               return m_Sprite[CurrentStateName,CurrentFrame][0];
             else
                return 0;
          }
@@ -253,7 +407,7 @@ namespace SGDK2
       {
          get
          {
-            return m_Sprite[m_State,m_Frame];
+            return m_Sprite[CurrentStateName,CurrentFrame];
          }
       }
 
@@ -273,12 +427,12 @@ namespace SGDK2
 
       public SGDK2.ProjectDataset.GraphicSheetRow GetGraphicSheet(int subFrame)
       {
-         return m_Sprite[m_State].frameset[FrameIndexes[subFrame]].GraphicSheet;
+         return m_Sprite[CurrentStateName].frameset[FrameIndexes[subFrame]].GraphicSheet;
       }
 
       public Rectangle GetRectangle(int subFrame)
       {
-         return m_Sprite[m_State].frameset[FrameIndexes[subFrame]].SourceRect;
+         return m_Sprite[CurrentStateName].frameset[FrameIndexes[subFrame]].SourceRect;
       }
 
       /// <summary>
@@ -289,8 +443,122 @@ namespace SGDK2
       /// <remarks>Caller must dispose of the returned object</remarks>
       public System.Drawing.Drawing2D.Matrix CreateMatrix(int subFrame)
       {
-         Microsoft.DirectX.Matrix m3d = m_Sprite[m_State].frameset[FrameIndexes[subFrame]].Transform;
+         Microsoft.DirectX.Matrix m3d = m_Sprite[CurrentStateName].frameset[FrameIndexes[subFrame]].Transform;
          return new System.Drawing.Drawing2D.Matrix(m3d.M11, m3d.M12, m3d.M21, m3d.M22, m3d.M41, m3d.M42);
+      }
+
+      #endregion
+
+      #region ICustomTypeDescriptor Members
+
+      public TypeConverter GetConverter()
+      {
+         return m_converter;
+      }
+
+      public EventDescriptorCollection GetEvents(Attribute[] attributes)
+      {
+         return new EventDescriptorCollection(new EventDescriptor[] {});
+      }
+
+      EventDescriptorCollection System.ComponentModel.ICustomTypeDescriptor.GetEvents()
+      {
+         return new EventDescriptorCollection(new EventDescriptor[] {});
+      }
+
+      public string GetComponentName()
+      {
+         return this.Name;
+      }
+
+      public object GetPropertyOwner(PropertyDescriptor pd)
+      {
+         return this;
+      }
+
+      public AttributeCollection GetAttributes()
+      {
+         return new AttributeCollection(new Attribute[] {new TypeConverterAttribute(typeof(SpriteConverter))});
+      }
+
+      public PropertyDescriptorCollection GetProperties(Attribute[] attributes)
+      {
+         return m_converter.GetProperties(this, this, attributes);
+      }
+
+      PropertyDescriptorCollection System.ComponentModel.ICustomTypeDescriptor.GetProperties()
+      {
+         return m_converter.GetProperties(this, this, null);
+      }
+
+      public object GetEditor(Type editorBaseType)
+      {
+         return null;
+      }
+
+      public PropertyDescriptor GetDefaultProperty()
+      {
+         return null;
+      }
+
+      public EventDescriptor GetDefaultEvent()
+      {
+         return null;
+      }
+
+      public string GetClassName()
+      {
+         return "Sprite";
+      }
+
+      #endregion
+
+      #region ITypeDescriptorContext Members
+
+      public void OnComponentChanged()
+      {
+         // TODO:  Add SpriteProvider.OnComponentChanged implementation
+      }
+
+      public IContainer Container
+      {
+         get
+         {
+            // TODO:  Add SpriteProvider.Container getter implementation
+            return null;
+         }
+      }
+
+      public bool OnComponentChanging()
+      {
+         // TODO:  Add SpriteProvider.OnComponentChanging implementation
+         return false;
+      }
+
+      public object Instance
+      {
+         get
+         {            
+            return this;
+         }
+      }
+
+      public PropertyDescriptor PropertyDescriptor
+      {
+         get
+         {
+            return null;
+         }
+      }
+
+      #endregion
+
+      #region IServiceProvider Members
+
+      public object GetService(Type serviceType)
+      {
+         // TODO:  Add SpriteProvider.GetService implementation
+         return null;
       }
 
       #endregion
@@ -300,7 +568,12 @@ namespace SGDK2
    {
       System.Reflection.PropertyInfo m_PropertyInfo;
       
-      public ReflectionPropertyDescriptor(System.Reflection.PropertyInfo pi) : base(pi.Name, new Attribute[] {new TypeConverterAttribute(typeof(SpriteConverter))})
+      public ReflectionPropertyDescriptor(System.Reflection.PropertyInfo pi) : base(pi.Name, new Attribute[] {new CategoryAttribute("Intrinsic"), new BrowsableAttribute(true)})
+      {
+         m_PropertyInfo = pi;
+      }
+
+      public ReflectionPropertyDescriptor(System.Reflection.PropertyInfo pi, TypeConverter tc) : base(pi.Name, new Attribute[] {new TypeConverterAttribute(tc.GetType()), new CategoryAttribute("Intrinsic"), new BrowsableAttribute(true)})
       {
          m_PropertyInfo = pi;
       }
@@ -357,7 +630,7 @@ namespace SGDK2
 
    class SpriteParamDescriptor : System.ComponentModel.PropertyDescriptor
    {
-      public SpriteParamDescriptor(string name) : base(name, new Attribute[] {})
+      public SpriteParamDescriptor(string name) : base(name, new Attribute[] {new CategoryAttribute("Parameters")})
       {
       }
 

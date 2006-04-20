@@ -1358,7 +1358,9 @@ namespace SGDK2
 
       private void txtName_Validated(object sender, System.EventArgs e)
       {
+         ProjectData.EnforceConstraints = false;
          m_SpriteDef.Name = txtName.Text;
+         ProjectData.EnforceConstraints = true;
          ProjectData.AcceptChanges();
       }
 

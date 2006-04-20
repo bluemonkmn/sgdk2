@@ -33,8 +33,8 @@ namespace SGDK2
 	/// <summary>
 	/// Manages the display device on which real-time game graphics are drawn
 	/// </summary>
-	public class Display : ScrollableControl
-	{
+   public class Display : ScrollableControl
+   {
       #region Win32 API Constants
       public const int WS_EX_CLIENTEDGE = unchecked((int)0x00000200);
       public const int WS_BORDER = unchecked((int)0x00800000);
@@ -76,8 +76,8 @@ namespace SGDK2
       #endregion
 
       #region Initialization and clean-up
-		public Display() : this(GameDisplayMode.m640x480x24, true)
-		{
+      public Display() : this(GameDisplayMode.m640x480x24, true)
+      {
       }
 
       public Display(GameDisplayMode mode, bool windowed)
@@ -90,6 +90,8 @@ namespace SGDK2
          DisplayMode dm = GetActualDisplayMode(mode);
          m_pp = new PresentParameters();
          m_pp.Windowed = windowed;
+         // Allow GetGraphics
+         m_pp.PresentFlag = PresentFlag.LockableBackBuffer;
          if (windowed)
          {
             m_pp.BackBufferFormat = Format.Unknown;
@@ -146,7 +148,7 @@ namespace SGDK2
       protected override void OnPaint(PaintEventArgs e)
       {
          base.OnPaint(e);
-         m_d3d.Present();
+         //m_d3d.Present();
       }
 
       protected override void OnKeyDown(KeyEventArgs e)
@@ -180,6 +182,17 @@ namespace SGDK2
             return cp;
          }
       }
+
+      protected override void OnResize(EventArgs e)
+      {
+         if ((m_d3d != null) && (m_pp != null) && (m_pp.Windowed))
+         {
+            m_pp.BackBufferHeight = m_pp.BackBufferWidth = 0;
+            m_d3d.Reset(m_pp);
+         }
+         base.OnResize (e);
+      }
+
       #endregion
 
       #region Public members
@@ -385,16 +398,6 @@ namespace SGDK2
          }
       }
 
-      #endregion
-   
-      protected override void OnResize(EventArgs e)
-      {
-         if ((m_d3d != null) && (m_pp != null) && (m_pp.Windowed))
-         {
-            m_pp.BackBufferHeight = m_pp.BackBufferWidth = 0;
-            m_d3d.Reset(m_pp);
-         }
-         base.OnResize (e);
-      }
+      #endregion   
    }
 }

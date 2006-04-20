@@ -81,6 +81,17 @@ namespace SGDK2
 
          return null;
       }
+      public static bool EnforceConstraints
+      {
+         get
+         {
+            return m_dsPrj.EnforceConstraints;
+         }
+         set
+         {
+            m_dsPrj.EnforceConstraints = value;
+         }
+      }
       #endregion
 
       #region GraphicsSheet
@@ -1456,9 +1467,25 @@ namespace SGDK2
       }
       public static ProjectDataset.ParameterValueRow GetSpriteParameterValueRow(ProjectDataset.SpriteRow row, string paramName)
       {
-         string LayerName = (string)row["LayerName"];
-         string MapName = (string)row["MapName"];
+         string LayerName = (string)row[m_dsPrj.Sprite.LayerNameColumn];
+         string MapName = (string)row[m_dsPrj.Sprite.MapNameColumn];
          return m_dsPrj.ParameterValue.FindByLayerNameSpriteNameParameterNameMapName(LayerName, row.Name, paramName, MapName);
+      }
+      public static ProjectDataset.SpriteRow AddSprite(string LayerName, string SpriteName,
+         string DefinitionName, string StateName, short CurrentFrame, int X, int Y,
+         float DX, float DY, string MapName, int Priority, string[] ParamNames, int[] ParamValues)
+      {
+         ProjectDataset.SpriteRow drSprite = m_dsPrj.Sprite.AddSpriteRow(
+            LayerName, SpriteName, DefinitionName, StateName, CurrentFrame,
+            X, Y, DX, DY, MapName, Priority);
+         for (int i=0; i<ParamNames.Length; i++)
+            m_dsPrj.ParameterValue.AddParameterValueRow(LayerName, SpriteName, ParamNames[i], 
+               ParamValues[i], DefinitionName, MapName);
+         return drSprite;
+      }
+      public static ProjectDataset.SpriteRow GetSprite(ProjectDataset.LayerRow layer, string name)
+      {
+         return m_dsPrj.Sprite.FindByLayerNameNameMapName(layer.Name, name, layer[m_dsPrj.Layer.MapNameColumn].ToString());
       }
       #endregion
 

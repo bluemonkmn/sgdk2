@@ -28,8 +28,11 @@ namespace SGDK2
       private Layer[] m_Layers;
       private int m_nCurLayer;
       private TileCache m_TileCache;
+      private SpriteCache m_SpriteCache;
       private FrameList m_TileProvider;
       private FrameList m_SpriteProvider;
+      private Timer m_RefreshSpriteTimer = null;
+      private Keys m_CurrentModifiers = Keys.None;
       #endregion
 
       #region Form Designer Members
@@ -48,10 +51,23 @@ namespace SGDK2
       private System.Windows.Forms.PropertyGrid grdSprite;
       private System.Windows.Forms.ComboBox cboSpriteCategory;
       private SGDK2.GraphicBrowser SpriteSelector;
+      private System.Windows.Forms.RadioButton rdoSelectSprites;
+      private System.Windows.Forms.RadioButton rdoAddSprites;
+      private System.Windows.Forms.StatusBar StatusBar;
+      private System.Windows.Forms.StatusBarPanel sbpCtrl;
+      private System.Windows.Forms.StatusBarPanel sbpStatus;
       private System.Windows.Forms.Splitter SpriteSplitter;
       #endregion
 
       #region Embedded classes
+      private enum CursorMode
+      {
+         None,
+         PlaceTile,
+         PlaceSprite,
+         SelectSprite
+      }
+
       class TileProvider : IProvideFrame
       {
          private readonly TileCache m_TileCache;
@@ -107,6 +123,7 @@ namespace SGDK2
       }
       #endregion
 
+      #region Initialization and clean-up
 		public frmMapEditor(ProjectDataset.LayerRow Layer)
 		{
 			//
@@ -122,8 +139,10 @@ namespace SGDK2
             if (lrs[i] == Layer)
                m_nCurLayer = i;
          }
+         m_SpriteCache = new SpriteCache(MapDisplay);
          LoadCategories();
          LoadSpriteCategories();
+         RefreshLayerSprites();
 		}
 
 		/// <summary>
@@ -140,6 +159,7 @@ namespace SGDK2
 			}
 			base.Dispose( disposing );
 		}
+      #endregion
 
 		#region Windows Form Designer generated code
 		/// <summary>
@@ -165,17 +185,24 @@ namespace SGDK2
          this.SpriteSplitter = new System.Windows.Forms.Splitter();
          this.cboSpriteCategory = new System.Windows.Forms.ComboBox();
          this.grdSprite = new System.Windows.Forms.PropertyGrid();
+         this.rdoAddSprites = new System.Windows.Forms.RadioButton();
+         this.rdoSelectSprites = new System.Windows.Forms.RadioButton();
+         this.StatusBar = new System.Windows.Forms.StatusBar();
+         this.sbpStatus = new System.Windows.Forms.StatusBarPanel();
+         this.sbpCtrl = new System.Windows.Forms.StatusBarPanel();
          this.tabSelector.SuspendLayout();
          this.tabTiles.SuspendLayout();
          this.pnlTiles.SuspendLayout();
          this.tabSprites.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpStatus)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpCtrl)).BeginInit();
          this.SuspendLayout();
          // 
          // MapSplitter
          // 
          this.MapSplitter.Location = new System.Drawing.Point(144, 0);
          this.MapSplitter.Name = "MapSplitter";
-         this.MapSplitter.Size = new System.Drawing.Size(5, 489);
+         this.MapSplitter.Size = new System.Drawing.Size(5, 473);
          this.MapSplitter.TabIndex = 8;
          this.MapSplitter.TabStop = false;
          // 
@@ -187,11 +214,12 @@ namespace SGDK2
          this.MapDisplay.GameDisplayMode = SGDK2.GameDisplayMode.m640x480x24;
          this.MapDisplay.Location = new System.Drawing.Point(149, 0);
          this.MapDisplay.Name = "MapDisplay";
-         this.MapDisplay.Size = new System.Drawing.Size(443, 489);
+         this.MapDisplay.Size = new System.Drawing.Size(443, 473);
          this.MapDisplay.TabIndex = 10;
          this.MapDisplay.Windowed = true;
          this.MapDisplay.Paint += new System.Windows.Forms.PaintEventHandler(this.MapDisplay_Paint);
          this.MapDisplay.MouseMove += new System.Windows.Forms.MouseEventHandler(this.DisplayMap_MouseMove);
+         this.MapDisplay.MouseLeave += new System.EventHandler(this.MapDisplay_MouseLeave);
          this.MapDisplay.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MapDisplay_MouseDown);
          // 
          // mnuMapEditor
@@ -209,8 +237,10 @@ namespace SGDK2
          this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
          this.dataMonitor.TileFrameRowDeleted += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
          this.dataMonitor.TileRowChanged += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowChanged);
+         this.dataMonitor.SpriteRowChanged += new SGDK2.ProjectDataset.SpriteRowChangeEventHandler(this.dataMonitor_SpriteRowChanged);
          this.dataMonitor.TileFrameRowChanged += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
          this.dataMonitor.LayerRowDeleted += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowDeleted);
+         this.dataMonitor.SpriteRowDeleted += new SGDK2.ProjectDataset.SpriteRowChangeEventHandler(this.dataMonitor_SpriteRowDeleted);
          this.dataMonitor.MapRowDeleted += new SGDK2.ProjectDataset.MapRowChangeEventHandler(this.dataMonitor_MapRowDeleted);
          this.dataMonitor.TileRowDeleted += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowChanged);
          // 
@@ -222,7 +252,7 @@ namespace SGDK2
          this.tabSelector.Location = new System.Drawing.Point(0, 0);
          this.tabSelector.Name = "tabSelector";
          this.tabSelector.SelectedIndex = 0;
-         this.tabSelector.Size = new System.Drawing.Size(144, 489);
+         this.tabSelector.Size = new System.Drawing.Size(144, 473);
          this.tabSelector.TabIndex = 13;
          // 
          // tabTiles
@@ -276,9 +306,11 @@ namespace SGDK2
          this.tabSprites.Controls.Add(this.SpriteSplitter);
          this.tabSprites.Controls.Add(this.cboSpriteCategory);
          this.tabSprites.Controls.Add(this.grdSprite);
+         this.tabSprites.Controls.Add(this.rdoAddSprites);
+         this.tabSprites.Controls.Add(this.rdoSelectSprites);
          this.tabSprites.Location = new System.Drawing.Point(4, 22);
          this.tabSprites.Name = "tabSprites";
-         this.tabSprites.Size = new System.Drawing.Size(136, 463);
+         this.tabSprites.Size = new System.Drawing.Size(136, 447);
          this.tabSprites.TabIndex = 1;
          this.tabSprites.Text = "Sprites";
          // 
@@ -292,17 +324,17 @@ namespace SGDK2
          this.SpriteSelector.Frameset = null;
          this.SpriteSelector.FramesToDisplay = null;
          this.SpriteSelector.GraphicSheet = null;
-         this.SpriteSelector.Location = new System.Drawing.Point(0, 21);
+         this.SpriteSelector.Location = new System.Drawing.Point(0, 69);
          this.SpriteSelector.Name = "SpriteSelector";
          this.SpriteSelector.SheetImage = null;
-         this.SpriteSelector.Size = new System.Drawing.Size(136, 293);
+         this.SpriteSelector.Size = new System.Drawing.Size(136, 229);
          this.SpriteSelector.TabIndex = 2;
          this.SpriteSelector.CurrentCellChanged += new System.EventHandler(this.SpriteSelector_CurrentCellChanged);
          // 
          // SpriteSplitter
          // 
          this.SpriteSplitter.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.SpriteSplitter.Location = new System.Drawing.Point(0, 314);
+         this.SpriteSplitter.Location = new System.Drawing.Point(0, 298);
          this.SpriteSplitter.Name = "SpriteSplitter";
          this.SpriteSplitter.Size = new System.Drawing.Size(136, 5);
          this.SpriteSplitter.TabIndex = 3;
@@ -312,7 +344,7 @@ namespace SGDK2
          // 
          this.cboSpriteCategory.Dock = System.Windows.Forms.DockStyle.Top;
          this.cboSpriteCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-         this.cboSpriteCategory.Location = new System.Drawing.Point(0, 0);
+         this.cboSpriteCategory.Location = new System.Drawing.Point(0, 48);
          this.cboSpriteCategory.Name = "cboSpriteCategory";
          this.cboSpriteCategory.Size = new System.Drawing.Size(136, 21);
          this.cboSpriteCategory.TabIndex = 1;
@@ -325,7 +357,7 @@ namespace SGDK2
          this.grdSprite.HelpVisible = false;
          this.grdSprite.LargeButtons = false;
          this.grdSprite.LineColor = System.Drawing.SystemColors.ScrollBar;
-         this.grdSprite.Location = new System.Drawing.Point(0, 319);
+         this.grdSprite.Location = new System.Drawing.Point(0, 303);
          this.grdSprite.Name = "grdSprite";
          this.grdSprite.Size = new System.Drawing.Size(136, 144);
          this.grdSprite.TabIndex = 0;
@@ -334,6 +366,56 @@ namespace SGDK2
          this.grdSprite.ViewBackColor = System.Drawing.SystemColors.Window;
          this.grdSprite.ViewForeColor = System.Drawing.SystemColors.WindowText;
          // 
+         // rdoAddSprites
+         // 
+         this.rdoAddSprites.Appearance = System.Windows.Forms.Appearance.Button;
+         this.rdoAddSprites.Dock = System.Windows.Forms.DockStyle.Top;
+         this.rdoAddSprites.Location = new System.Drawing.Point(0, 24);
+         this.rdoAddSprites.Name = "rdoAddSprites";
+         this.rdoAddSprites.Size = new System.Drawing.Size(136, 24);
+         this.rdoAddSprites.TabIndex = 5;
+         this.rdoAddSprites.Text = "Add Sprites";
+         this.rdoAddSprites.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+         // 
+         // rdoSelectSprites
+         // 
+         this.rdoSelectSprites.Appearance = System.Windows.Forms.Appearance.Button;
+         this.rdoSelectSprites.Checked = true;
+         this.rdoSelectSprites.Dock = System.Windows.Forms.DockStyle.Top;
+         this.rdoSelectSprites.Location = new System.Drawing.Point(0, 0);
+         this.rdoSelectSprites.Name = "rdoSelectSprites";
+         this.rdoSelectSprites.Size = new System.Drawing.Size(136, 24);
+         this.rdoSelectSprites.TabIndex = 4;
+         this.rdoSelectSprites.TabStop = true;
+         this.rdoSelectSprites.Text = "Select Sprites";
+         this.rdoSelectSprites.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+         // 
+         // StatusBar
+         // 
+         this.StatusBar.Location = new System.Drawing.Point(0, 473);
+         this.StatusBar.Name = "StatusBar";
+         this.StatusBar.Panels.AddRange(new System.Windows.Forms.StatusBarPanel[] {
+                                                                                     this.sbpStatus,
+                                                                                     this.sbpCtrl});
+         this.StatusBar.ShowPanels = true;
+         this.StatusBar.Size = new System.Drawing.Size(592, 16);
+         this.StatusBar.TabIndex = 14;
+         this.StatusBar.DrawItem += new System.Windows.Forms.StatusBarDrawItemEventHandler(this.StatusBar_DrawItem);
+         // 
+         // sbpStatus
+         // 
+         this.sbpStatus.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Spring;
+         this.sbpStatus.BorderStyle = System.Windows.Forms.StatusBarPanelBorderStyle.None;
+         this.sbpStatus.Width = 532;
+         // 
+         // sbpCtrl
+         // 
+         this.sbpCtrl.Alignment = System.Windows.Forms.HorizontalAlignment.Right;
+         this.sbpCtrl.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
+         this.sbpCtrl.Style = System.Windows.Forms.StatusBarPanelStyle.OwnerDraw;
+         this.sbpCtrl.Text = "CTRL";
+         this.sbpCtrl.Width = 44;
+         // 
          // frmMapEditor
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -341,19 +423,25 @@ namespace SGDK2
          this.Controls.Add(this.MapDisplay);
          this.Controls.Add(this.MapSplitter);
          this.Controls.Add(this.tabSelector);
+         this.Controls.Add(this.StatusBar);
          this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+         this.KeyPreview = true;
          this.Menu = this.mnuMapEditor;
          this.Name = "frmMapEditor";
+         this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmMapEditor_KeyDown);
+         this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.frmMapEditor_KeyUp);
          this.tabSelector.ResumeLayout(false);
          this.tabTiles.ResumeLayout(false);
          this.pnlTiles.ResumeLayout(false);
          this.tabSprites.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.sbpStatus)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpCtrl)).EndInit();
          this.ResumeLayout(false);
 
       }
 		#endregion
 
-      #region Private Methods
+      #region Private Members
       private Size GetScrollBounds()
       {
          ProjectDataset.TilesetRow tsr = m_Layers[m_nCurLayer].LayerRow.TilesetRow;
@@ -372,11 +460,10 @@ namespace SGDK2
             return TileSelector.CurrentCellIndex;
          }
       }
-      private Point TileFromPosition(int x, int y)
+      private Point TileFromLayerPoint(Point ptLayer)
       {
          ProjectDataset.TilesetRow tsr = m_Layers[m_nCurLayer].LayerRow.TilesetRow;
-         return new Point((x - MapDisplay.AutoScrollPosition.X) / tsr.TileWidth,
-            (y - MapDisplay.AutoScrollPosition.Y) / tsr.TileHeight);
+         return new Point(ptLayer.X / tsr.TileWidth, ptLayer.Y / tsr.TileHeight);
       }
 
       private void LoadTileSelector(ProjectDataset.CategoryRow category)
@@ -429,8 +516,16 @@ namespace SGDK2
                {
                   if (drState[validState].GetSpriteFrameRows().Length > 0)
                   {
-                     m_SpriteProvider.Add(new SpriteProvider(
-                        new CachedSprite(drDef, MapDisplay), drState[validState].Name, 0));
+                     SpriteProvider sp = new SpriteProvider(
+                        m_SpriteCache[drDef.Name], drState[validState].Name, 0);
+                     string name;
+                     int index = 1;
+                     do
+                     {
+                        name = sp.DefinitionName + " " + (index++).ToString();
+                     } while (ProjectData.GetSprite(m_Layers[m_nCurLayer].LayerRow, name) != null);
+                     sp.Name = name;
+                     m_SpriteProvider.Add(sp);
                      break;
                   }
                }
@@ -461,30 +556,176 @@ namespace SGDK2
             cboSpriteCategory.Items.Add(row);
          }
       }
+
+      private void QueueRefreshLayerSprites()
+      {
+         if (m_RefreshSpriteTimer == null)
+         {
+            m_RefreshSpriteTimer = new Timer();
+            m_RefreshSpriteTimer.Tick += new EventHandler(RefreshSpriteTimer_Tick);
+         }
+         else
+            m_RefreshSpriteTimer.Stop();
+         m_RefreshSpriteTimer.Interval = 100;
+         m_RefreshSpriteTimer.Start();
+      }
+
+      private void RefreshLayerSprites()
+      {
+         foreach(Layer layer in m_Layers)
+         {
+            layer.RefreshLayerSprites(m_SpriteCache);
+            layer.InjectCachedSprites();
+         }
+         MapDisplay.Invalidate();
+      }
+
+      private CursorMode GetCurrentMode()
+      {
+         if (tabSelector.SelectedTab == tabTiles)
+            return CursorMode.PlaceTile;
+         else if (tabSelector.SelectedTab == tabSprites)
+         {
+            if (rdoSelectSprites.Checked)
+               return CursorMode.SelectSprite;
+            else
+               return CursorMode.PlaceSprite;
+         }
+         else
+            return CursorMode.None;
+      }
+
+      private void DrawSpriteSelection(Graphics gfx, SpriteProvider sp)
+      {
+         Rectangle inner = sp.Bounds;
+         Point ptOffset = m_Layers[m_nCurLayer].CurrentPosition;
+         inner.Offset(ptOffset.X, ptOffset.Y);
+         Rectangle outer = inner;
+         outer.Inflate(4,4);
+         using (System.Drawing.Region rgn = new Region(outer))
+         {
+            rgn.Exclude(inner);
+            using(Brush brSel = new System.Drawing.Drawing2D.HatchBrush(
+                     System.Drawing.Drawing2D.HatchStyle.Percent25, Color.DarkBlue, Color.Wheat))
+            {
+               gfx.FillRegion(brSel, rgn);
+            }
+         }
+      }
       #endregion
 
       #region Event Handlers
       private void DisplayMap_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
       {
-         int nSel = CurrentTile;
-         Point TilePos = TileFromPosition(e.X, e.Y);
          m_Layers[m_nCurLayer].ClearInjections();
-         if ((TilePos.X < m_Layers[m_nCurLayer].Columns) && (TilePos.Y < m_Layers[m_nCurLayer].Rows))
+         m_Layers[m_nCurLayer].InjectCachedSprites();
+         Point ptInLayer = new Point(e.X - m_Layers[m_nCurLayer].CurrentPosition.X, e.Y - m_Layers[m_nCurLayer].CurrentPosition.Y);
+         switch(GetCurrentMode())
          {
-            if (0 != (e.Button & MouseButtons.Left))
-               m_Layers[m_nCurLayer][TilePos.X, TilePos.Y] = nSel;
-            else
-               m_Layers[m_nCurLayer].InjectTile(TilePos.X, TilePos.Y, nSel);
+            case CursorMode.PlaceTile:
+               int nSel = CurrentTile;
+               Point TilePos = TileFromLayerPoint(ptInLayer);
+               if ((TilePos.X < m_Layers[m_nCurLayer].Columns) && (TilePos.Y < m_Layers[m_nCurLayer].Rows))
+               {
+                  if (0 != (e.Button & MouseButtons.Left))
+                     m_Layers[m_nCurLayer][TilePos.X, TilePos.Y] = nSel;
+                  else
+                     m_Layers[m_nCurLayer].InjectTile(TilePos.X, TilePos.Y, nSel);
+               }
+               break;
+            case CursorMode.PlaceSprite:
+               if (SpriteSelector.CurrentCellIndex < 0)
+                  return;
+               SpriteProvider sp = (SpriteProvider)m_SpriteProvider[SpriteSelector.CurrentCellIndex];
+               int nCount = sp.GetSubFrameCount();
+               if ((sp.X != ptInLayer.X) || (sp.Y != ptInLayer.Y))
+               {
+                  sp.X = ptInLayer.X;
+                  sp.Y = ptInLayer.Y;
+                  grdSprite.Refresh();
+               }
+               for(int i = 0; i<nCount; i++)
+               {
+                  m_Layers[m_nCurLayer].InjectFrame(sp.X, sp.Y, sp.Priority, sp.GetSubFrame(i));
+               }
+               break;
          }
          MapDisplay.Invalidate();
       }
 
       private void MapDisplay_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
       {
-         int nSel = CurrentTile;
-         Point TilePos = TileFromPosition(e.X, e.Y);
-         if ((TilePos.X < m_Layers[m_nCurLayer].Columns) && (TilePos.Y < m_Layers[m_nCurLayer].Rows))
-            m_Layers[m_nCurLayer][TilePos.X, TilePos.Y] = nSel;
+         try
+         {
+            Point ptInLayer = new Point(e.X - m_Layers[m_nCurLayer].CurrentPosition.X, e.Y - m_Layers[m_nCurLayer].CurrentPosition.Y);
+
+            switch(GetCurrentMode())
+            {
+               case CursorMode.PlaceTile:
+                  int nSel = CurrentTile;
+                  Point TilePos = TileFromLayerPoint(ptInLayer);
+                  if ((TilePos.X < m_Layers[m_nCurLayer].Columns) && (TilePos.Y < m_Layers[m_nCurLayer].Rows))
+                     m_Layers[m_nCurLayer][TilePos.X, TilePos.Y] = nSel;
+                  break;
+               case CursorMode.PlaceSprite:
+                  if (SpriteSelector.CurrentCellIndex < 0)
+                     return;
+                  SpriteProvider sp = (SpriteProvider)m_SpriteProvider[SpriteSelector.CurrentCellIndex];
+                  string[] paramNames = new string[sp.ParameterNames.Count];
+                  sp.ParameterNames.CopyTo(paramNames, 0);
+                  ProjectDataset.LayerRow drLayer = m_Layers[m_nCurLayer].LayerRow;
+                  ProjectData.AddSprite(drLayer.Name, sp.Name, sp.DefinitionName, sp.CurrentStateName,
+                     sp.CurrentFrame, sp.X, sp.Y, sp.DX, sp.DY, drLayer.MapRow.Name, sp.Priority,
+                     paramNames, sp.ParameterValues);
+                  ProjectData.AcceptChanges();
+                  string name;
+                  int index = 1;
+                  do
+                  {
+                     name = sp.DefinitionName + " " + (index++).ToString();
+                  } while (ProjectData.GetSprite(m_Layers[m_nCurLayer].LayerRow, name) != null);
+                  sp.Name = name;
+                  QueueRefreshLayerSprites();
+                  break;
+               case CursorMode.SelectSprite:
+                  Point ptOffset = m_Layers[m_nCurLayer].CurrentPosition;
+                  SpriteProvider[] arsp = m_Layers[m_nCurLayer].GetSpritesAtPoint(ptInLayer);
+                  if (arsp.Length > 0)
+                  {
+                     if (0 != (m_CurrentModifiers & Keys.Control))
+                     {
+                        if (grdSprite.SelectedObjects != null)
+                        {
+                           SpriteProvider[] all = new SpriteProvider[arsp.Length + grdSprite.SelectedObjects.Length];
+                           grdSprite.SelectedObjects.CopyTo(all, 0);
+                           arsp.CopyTo(all, grdSprite.SelectedObjects.Length);
+                           grdSprite.SelectedObjects = all;
+                        }
+                        else if (grdSprite.SelectedObject != null)
+                        {
+                           SpriteProvider[] all = new SpriteProvider[arsp.Length + 1];
+                           all[0] = (SpriteProvider)grdSprite.SelectedObject;
+                           arsp.CopyTo(all, 1);
+                           grdSprite.SelectedObjects = all;
+                        }                     
+                     }
+                     else
+                     {
+                        if (arsp.Length > 1)
+                           grdSprite.SelectedObjects = arsp;
+                        else
+                           grdSprite.SelectedObject = arsp[0];
+                     }
+                  }
+                  else
+                     grdSprite.SelectedObject = null;
+                  break;
+            }
+         }
+         catch (System.Exception ex)
+         {
+            MessageBox.Show(this, ex.Message, "Error Adding Sprite", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+         }
       }
 
       private void dataMonitor_TileRowChanged(object sender, SGDK2.ProjectDataset.TileRowChangeEvent e)
@@ -571,6 +812,8 @@ namespace SGDK2
                Point ptPos = Point.Empty;
                Layer CurLayer = m_Layers[m_nCurLayer];
                Layer DrawLayer = m_Layers[i];
+               // Manually scroll other layers because current layer is always
+               // 1:1 scroll ratio with AutoScrollPosition (not like map).
                if (CurLayer.ScrollRate.Width > 0)
                   ptPos.X = (int)((MapDisplay.AutoScrollPosition.X - CurLayer.AbsolutePosition.X) / CurLayer.ScrollRate.Width * DrawLayer.ScrollRate.Width + DrawLayer.AbsolutePosition.X);
                else
@@ -584,6 +827,31 @@ namespace SGDK2
             m_Layers[i].Draw(MapDisplay.Device, MapDisplay.ClientSize);
          }
          MapDisplay.Device.EndScene();
+         Surface sfc = MapDisplay.Device.GetRenderTarget(0);
+         Graphics gfxDx = sfc.GetGraphics();
+         try
+         {
+            if (grdSprite.SelectedObjects is SpriteProvider[])
+            {
+               foreach(SpriteProvider sp in grdSprite.SelectedObjects)
+               {
+                  DrawSpriteSelection(gfxDx, sp);
+               }
+            } 
+            else if(grdSprite.SelectedObject is SpriteProvider)
+            {
+               SpriteProvider sp = (SpriteProvider)grdSprite.SelectedObject;
+               if (sp.IsDataRow)
+               {
+                  DrawSpriteSelection(gfxDx, sp);
+               }
+            }
+         }
+         finally
+         {
+            sfc.ReleaseGraphics();
+         }
+         MapDisplay.Device.Present();
       }
 
       private void cboCategory_SelectedIndexChanged(object sender, System.EventArgs e)
@@ -603,7 +871,80 @@ namespace SGDK2
       }
       private void SpriteSelector_CurrentCellChanged(object sender, System.EventArgs e)
       {
-         grdSprite.SelectedObject = (SpriteProvider)m_SpriteProvider[SpriteSelector.CurrentCellIndex];
+         if (SpriteSelector.CurrentCellIndex >= 0)
+            grdSprite.SelectedObject = (SpriteProvider)m_SpriteProvider[SpriteSelector.CurrentCellIndex];
+         else
+            grdSprite.SelectedObject = null;
+      }
+
+      private void dataMonitor_SpriteRowChanged(object sender, SGDK2.ProjectDataset.SpriteRowChangeEvent e)
+      {
+         if (e.Action == DataRowAction.Add)
+         {
+            ProjectDataset.SpriteRow drSprite = (ProjectDataset.SpriteRow)e.Row;
+            if (drSprite.LayerRowParent.MapRow == m_Layers[m_nCurLayer].LayerRow.MapRow)
+            {
+               QueueRefreshLayerSprites();
+            }
+         }
+         else if (e.Action == DataRowAction.Change)
+         {
+            m_Layers[m_nCurLayer].ClearInjections();
+            m_Layers[m_nCurLayer].InjectCachedSprites();
+            MapDisplay.Invalidate();
+         }
+      }
+
+      private void dataMonitor_SpriteRowDeleted(object sender, SGDK2.ProjectDataset.SpriteRowChangeEvent e)
+      {
+         if (e.Action == DataRowAction.Delete)
+         {
+            ProjectDataset.SpriteRow drSprite = (ProjectDataset.SpriteRow)e.Row;
+            if (drSprite.LayerRowParent.MapRow == m_Layers[m_nCurLayer].LayerRow.MapRow)
+            {
+               QueueRefreshLayerSprites();
+            }
+         }      
+      }
+
+      private void RefreshSpriteTimer_Tick(object sender, EventArgs e)
+      {
+         m_RefreshSpriteTimer.Dispose();
+         m_RefreshSpriteTimer = null;
+         RefreshLayerSprites();
+      }
+
+      private void MapDisplay_MouseLeave(object sender, System.EventArgs e)
+      {
+         m_Layers[m_nCurLayer].ClearInjections();
+         m_Layers[m_nCurLayer].InjectCachedSprites();
+         MapDisplay.Invalidate();
+      }
+
+      private void frmMapEditor_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+      {
+         m_CurrentModifiers = e.Modifiers;
+         StatusBar.Invalidate();
+      }
+
+      private void frmMapEditor_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
+      {
+         m_CurrentModifiers = e.Modifiers;
+         StatusBar.Invalidate();
+      }
+
+      private void StatusBar_DrawItem(object sender, System.Windows.Forms.StatusBarDrawItemEventArgs sbdevent)
+      {
+         if (sbdevent.Panel == sbpCtrl)
+         {
+            Brush b = SystemBrushes.ControlText;
+            if (0 == (m_CurrentModifiers & Keys.Control))
+               b = SystemBrushes.ControlDark;
+            StringFormat sf = new StringFormat(StringFormatFlags.NoWrap);
+            sf.Alignment = StringAlignment.Center;
+            sf.LineAlignment = StringAlignment.Center;
+            sbdevent.Graphics.DrawString(sbdevent.Panel.Text, ((StatusBar)sender).Font, b, sbdevent.Bounds,sf);
+         }
       }
       #endregion
    }

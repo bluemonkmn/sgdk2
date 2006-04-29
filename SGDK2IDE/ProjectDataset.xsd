@@ -108,6 +108,7 @@
                                     <xs:attribute name="DY" type="xs:float" />
                                     <xs:attribute name="MapName" type="xs:Name" use="prohibited" />
                                     <xs:attribute name="Priority" type="xs:int" />
+                                    <xs:attribute name="Active" type="xs:boolean" default="true" msprop:nullValue="false" />
                                  </xs:complexType>
                               </xs:element>
                               <xs:element name="SpritePlan">

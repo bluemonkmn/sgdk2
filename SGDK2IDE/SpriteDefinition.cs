@@ -1000,53 +1000,23 @@ namespace SGDK2
 		#endregion
 
       #region Private Methods
-      /// <summary>
-      /// Retrieve the code for the sprite base class for this project
-      /// </summary>
-      /// <returns>String containing class SpriteBase</returns>
-      private string GetBaseSpriteCode()
-      {
-         return ProjectData.GetSourceCode("SpriteBase.cs").Text;
-      }
-
-      private string CompileTempAssembly(string code)
-      {
-         lblCompileError.Text = string.Empty;
-         System.IO.Stream remoteReflectorStream  = System.Reflection.Assembly.GetAssembly(typeof(SGDK2IDE)).GetManifestResourceStream("SGDK2.RemoteReflector.cs");
-         System.IO.StreamReader readReflector = new System.IO.StreamReader(remoteReflectorStream);
-         string remoteReflectorCode;
-         remoteReflectorCode = readReflector.ReadToEnd();
-         readReflector.Close();
-         Microsoft.CSharp.CSharpCodeProvider codeProvider = new Microsoft.CSharp.CSharpCodeProvider();
-         System.CodeDom.Compiler.ICodeCompiler compiler = codeProvider.CreateCompiler();
-         System.CodeDom.Compiler.CompilerParameters compilerParams = new System.CodeDom.Compiler.CompilerParameters(new string[] {}, System.IO.Path.Combine(Application.StartupPath, "TempSprite.dll"));
-         compilerParams.ReferencedAssemblies.Add(System.IO.Path.Combine(Application.StartupPath, "SGDK2IDE.exe"));
-         compilerParams.GenerateExecutable = false;
-         System.CodeDom.Compiler.CompilerResults results = compiler.CompileAssemblyFromSourceBatch(compilerParams, new string[] {code, remoteReflectorCode});
-         if (results.Errors.Count > 0)
-         {
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
-            for (int i = 0; i < results.Errors.Count; i++)
-            {
-               sb.Append(results.Errors[i].ToString() + Environment.NewLine);
-            }
-            lblCompileError.Text = sb.ToString();
-            return null;
-         }
-         return compilerParams.OutputAssembly;
-      }
-
-      private RemotingServices.RemoteMethodInfo[] GetAvailableRules(string spriteCode)
+      private RemotingServices.RemoteMethodInfo[] GetAvailableRules()
       {
          try
          {
-            string assemblyFilename = CompileTempAssembly(spriteCode);
+            string errs;
+            string assemblyFilename = new CodeGenerator().CompileTempAssembly(out errs);
+            if (errs != null)
+               lblCompileError.Text = errs;
+            else
+               lblCompileError.Text = String.Empty;
             if (assemblyFilename == null)
                return new RemotingServices.RemoteMethodInfo[] {};
 
             AppDomain tempDomain = AppDomain.CreateDomain("TempDomain");
+            string asmName = System.IO.Path.GetFileNameWithoutExtension(assemblyFilename);
             RemotingServices.IRemoteTypeInfo reflector = tempDomain.CreateInstanceAndUnwrap(
-               "TempSprite", "RemoteReflector", false,
+               asmName, "RemoteReflector", false,
                System.Reflection.BindingFlags.CreateInstance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance,
                null, new object[] {"SpriteBase"}, null, null, null) as RemotingServices.IRemoteTypeInfo;
 
@@ -1062,17 +1032,23 @@ namespace SGDK2
          }
       }
 
-      private string[] GetEnumInfo(string spriteCode, string enumName)
+      private string[] GetEnumInfo(string enumName)
       {
          try
          {
-            string assemblyFilename = CompileTempAssembly(spriteCode);
+            string errs;
+            string assemblyFilename = new CodeGenerator().CompileTempAssembly(out errs);
+            if (errs != null)
+               lblCompileError.Text = errs;
+            else
+               lblCompileError.Text = String.Empty;
             if (assemblyFilename == null)
                return new string[] {};
 
+            string asmName = System.IO.Path.GetFileNameWithoutExtension(assemblyFilename);
             AppDomain tempDomain = AppDomain.CreateDomain("TempDomain");
             RemotingServices.IRemoteTypeInfo reflector = tempDomain.CreateInstanceAndUnwrap(
-               "TempSprite", "RemoteReflector", false,
+               asmName, "RemoteReflector", false,
                System.Reflection.BindingFlags.CreateInstance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance,
                null, new object[] {enumName}, null, null, null) as RemotingServices.IRemoteTypeInfo;
 
@@ -1196,7 +1172,8 @@ namespace SGDK2
       {
          if (bForceRefresh || (m_AvailableRules == null))
          {
-            RemotingServices.RemoteMethodInfo[] ruleList = GetAvailableRules(GetBaseSpriteCode());
+            RemotingServices.RemoteMethodInfo[] ruleList = GetAvailableRules();
+
             m_AvailableRules = new RuleTable();
             m_Enums = new EnumTable();
             foreach(RemotingServices.RemoteMethodInfo mi in ruleList)
@@ -1297,7 +1274,7 @@ namespace SGDK2
             if (m_Enums.Contains(param.TypeName))
                enumVals = m_Enums[param.TypeName];
             else
-               enumVals = m_Enums[param.TypeName] = GetEnumInfo(GetBaseSpriteCode(), param.TypeName);
+               enumVals = m_Enums[param.TypeName] = GetEnumInfo(param.TypeName);
 
             foreach (string enumVal in enumVals)
                cboParameter.Items.Add(enumVal);

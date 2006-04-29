@@ -123,6 +123,8 @@ public class Display : ScrollableControl
       m_pp = new PresentParameters();
       m_pp.Windowed = windowed;
       m_pp.SwapEffect = SwapEffect.Discard;
+      // Allow GetGraphics
+      m_pp.PresentFlag = PresentFlag.LockableBackBuffer;
       if (windowed)
       {
          m_pp.BackBufferFormat = Format.Unknown;

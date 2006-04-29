@@ -100,6 +100,21 @@ namespace SGDK2
             return new FrameCache(ProjectData.GetFrameSet(name), display);
       }
 
+      public static void ClearDisplayCache(Display display)
+      {
+         System.Collections.ArrayList lstRemove = new System.Collections.ArrayList();
+         foreach(System.Collections.DictionaryEntry de in activeCaches)
+         {
+            WeakReference cachedObject = (WeakReference)de.Value;
+            if (!cachedObject.IsAlive)
+               lstRemove.Add(de.Key);
+            else if (((FrameCache)cachedObject.Target).m_Display == display)
+               lstRemove.Add(de.Key);
+         }
+         foreach(string name in lstRemove)
+            activeCaches.Remove(name);
+      }
+
       #region Initialization and Clean-up
       private FrameCache()
       {
@@ -119,7 +134,8 @@ namespace SGDK2
             }
             ProjectDataset.GraphicSheetRow g = ProjectData.GetGraphicSheet(arfr[nIdx].GraphicSheet);
 
-            m_arFrames[nIdx].GraphicSheetTexture = m_Display.GetTexture(g.Name, false);
+            if (m_Display != null)
+               m_arFrames[nIdx].GraphicSheetTexture = m_Display.GetTexture(g.Name, false);
             m_arFrames[nIdx].GraphicSheet = g;
             m_arFrames[nIdx].CellIndex = arfr[nIdx].CellIndex;
             m_arFrames[nIdx].Transform.M11 = arfr[nIdx].m11;

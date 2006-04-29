@@ -30,6 +30,7 @@ namespace SGDK2
                new ReflectionPropertyDescriptor(typ.GetProperty("Priority")),
                new ReflectionPropertyDescriptor(typ.GetProperty("CurrentStateName"), this),
                new ReflectionPropertyDescriptor(typ.GetProperty("CurrentFrame")),
+               new ReflectionPropertyDescriptor(typ.GetProperty("Active")),
                new ReflectionPropertyDescriptor(typ.GetProperty("DefinitionName"))
             });
 
@@ -105,6 +106,7 @@ namespace SGDK2
       private float m_dx;
       private float m_dy;
       private int m_priority;
+      private bool m_active;
 
       private static SpriteConverter m_converter = new SpriteConverter();
 
@@ -239,6 +241,24 @@ namespace SGDK2
                m_SpriteRow.Priority = value;
             else
                m_priority = value;
+         }
+      }
+
+      public bool Active
+      {
+         get
+         {
+            if (m_SpriteRow != null)
+               return m_SpriteRow.Active;
+            else
+               return m_active;
+         }
+         set
+         {
+            if (m_SpriteRow != null)
+               m_SpriteRow.Active = value;
+            else
+               m_active = value;
          }
       }
 

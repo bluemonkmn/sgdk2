@@ -512,6 +512,11 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "Template\SolidityBase.cs"
+                    SubType = "Code"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "Template\SpriteBase.cs"
                     SubType = "Code"
                     BuildAction = "EmbeddedResource"
@@ -522,7 +527,17 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "Template\SpriteState.cs"
+                    SubType = "Code"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "Template\Tile.cs"
+                    SubType = "Code"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "Template\TileCategoryMembership.cs"
                     SubType = "Code"
                     BuildAction = "EmbeddedResource"
                 />

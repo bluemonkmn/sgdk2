@@ -30,7 +30,7 @@ public abstract class SpriteBase
       Button4=128
    }
 
-   public SpriteBase(double x, double y, double dx, double dy, int state, int frame)
+   public SpriteBase(double x, double y, double dx, double dy, int state, int frame, bool active)
 	{
       this.x = x;
       this.y = y;
@@ -38,6 +38,7 @@ public abstract class SpriteBase
       this.dy = dy;
       this.state = state;
       this.frame = frame;
+      this.isActive = active;
 	}
 
    #region Properties
@@ -56,6 +57,15 @@ public abstract class SpriteBase
          return (int)y;
       }
    }
+
+   public SpriteState CurrentState
+   {
+      get
+      {
+         return this[state];
+      }
+   }
+
    #endregion
 
    #region Virtual members
@@ -64,7 +74,7 @@ public abstract class SpriteBase
    /// solid areas of the map.  The width is measured from the origin and
    /// extends rightward.
    /// </summary>
-   public abstract int solidWidth
+   public abstract int SolidWidth
    {
       get;
    }
@@ -74,9 +84,34 @@ public abstract class SpriteBase
    /// solid areas of the map.  The height is measured from the origin and
    /// extends downward.
    /// </summary>
-   public abstract int solidHeight
+   public abstract int SolidHeight
    {
       get;
+   }
+
+   public abstract SpriteState this[int state]
+   {
+      get;
+   }
+   #endregion
+
+   #region Public Methods
+   public System.Drawing.Rectangle GetBounds()
+   {
+      System.Drawing.Rectangle result = CurrentState.LocalBounds;
+      result.Offset(PixelX, PixelY);
+      return result;
+   }
+
+   public Frame[] GetCurrentFramesetFrames()
+   {
+      SpriteState curstate = CurrentState;
+      Frameset stateframes = curstate.Frameset;
+      int[] subframes = curstate.GetFrame(frame);
+      Frame[] result = new Frame[subframes.Length];
+      for(int idx = 0; idx < result.Length; idx++)
+         result[idx] = stateframes[subframes[idx]];
+      return result;
    }
    #endregion
 
@@ -103,7 +138,7 @@ public abstract class SpriteBase
          return;
       x = RidingOn.x + RideRelativeX + dx;
       dx = (Slipperiness * dx + (100-RidingOn.dx) * RidingOn.dx) / 100.0d;
-      y = RidingOn.PixelY - solidHeight;
+      y = RidingOn.PixelY - SolidHeight;
       dy = 0;
    }
 
@@ -138,15 +173,15 @@ public abstract class SpriteBase
    {
       foreach(SpriteBase spr in PlatformList)
       {
-         if((oldY + solidHeight <= spr.oldY) &&
-            (y + solidHeight > spr.y) &&
-            (x + solidWidth > spr.x) &&
-            (x < spr.x + spr.solidWidth))
+         if((oldY + SolidHeight <= spr.oldY) &&
+            (y + SolidHeight > spr.y) &&
+            (x + SolidWidth > spr.x) &&
+            (x < spr.x + spr.SolidWidth))
          {
             RidingOn = spr;
             RideRelativeX = x - spr.x;
             dx = dx - spr.dx;
-            y = spr.y - solidHeight;
+            y = spr.y - SolidHeight;
             return true;
          }
       }

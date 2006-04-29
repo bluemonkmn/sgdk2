@@ -48,12 +48,20 @@ public abstract class LayerBase : System.Collections.IEnumerable
    {
       public int x;
       public int y;
+      /* The runtime implementation only uses priority to determine
+       * whether the frame is behind the layer (-1), on the layer (0)
+       * or in front of the layer(1).  The rest of the priority
+       * handling is pre-processed by having sprites sorted in the
+       * original arrays.
+       */
+      public int priority;
       public Frame frame;
-      public InjectedFrame(int x, int y, Frame frame)
+      public InjectedFrame(int x, int y, int priority, Frame frame)
       {
          this.x = x;
          this.y = y;
          this.frame = frame;
+         this.priority = priority;
       }
       #region IComparable Members
 
@@ -84,7 +92,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
    private readonly int m_nColumns;
    private readonly int m_nRows;
    private System.Drawing.Point m_AbsolutePosition;
-   protected readonly SpriteCollection m_Sprites;
+   protected SpriteCollection m_Sprites;
    private readonly System.Drawing.SizeF m_ScrollRate;
    private System.Drawing.Point m_CurrentPosition;
    private Display m_Display;
@@ -94,7 +102,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
       int nColumns, int nRows, System.Drawing.Point Position, System.Drawing.SizeF ScrollRate)
    {
       this.m_Tileset = Tileset;
-      this.m_Frameset = Tileset.CreateFrameset(Disp);
+      this.m_Frameset = Tileset.GetFrameset(Disp);
       this.m_nLeftBuffer = nLeftBuffer;
       this.m_nTopBuffer = nTopBuffer;
       this.m_nRightBuffer = nRightBuffer;
@@ -117,6 +125,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
    }
    public abstract int[] GetTileFrame(int x, int y);
    public abstract TileBase GetTile(int x, int y);
+   public abstract void InjectSprites();
    #endregion
 
    #region IEnumerable Members
@@ -208,7 +217,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
       m_CurrentPosition = new Point(m_AbsolutePosition.X + (int)(x * m_ScrollRate.Width), m_AbsolutePosition.Y + (int)(y * m_ScrollRate.Height));
    }
 
-   public void Draw(Rectangle ViewRect, Sprite spr)
+   public void Draw(Sprite spr)
    {
       int nTileWidth = m_Tileset.TileWidth;
       int nTileHeight = m_Tileset.TileHeight;
@@ -219,6 +228,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
       int nStartRow = (-m_nTopBuffer - m_CurrentPosition.Y) / nTileHeight;
       if (nStartRow < 0)
          nStartRow = 0;
+
+      Rectangle ViewRect = m_Display.DisplayRectangle;
 
       int EndCol = (ViewRect.Width - 1 + m_nRightBuffer - m_CurrentPosition.X) / nTileWidth;
       if (EndCol >= Columns)
@@ -240,7 +251,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
       {
          if (Injected != null)
          {
-            while ((CurFrame = (InjectedFrame)Injected.Current).y < y * nTileHeight)
+            while ((((CurFrame = (InjectedFrame)Injected.Current).y < y * nTileHeight)) && (CurFrame.priority <= 0) ||
+                   (CurFrame.priority < 0))
             {
                spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
                   CurFrame.x + m_CurrentPosition.X + ViewRect.X,
@@ -285,36 +297,62 @@ public abstract class LayerBase : System.Collections.IEnumerable
       }
    }
 
-   public void InjectFrame(int x, int y, Frame frame)
+   public Rectangle VisibleArea
    {
-      int idx;
-      InjectedFrame f = new InjectedFrame(x, y, frame);
+      get
+      {
+         Rectangle result = m_Display.DisplayRectangle;
+         result.Offset(-m_CurrentPosition.X, -m_CurrentPosition.Y);
+         return result;
+      }
+   }
+
+   public bool IsSpriteVisible(SpriteBase sprite)
+   {
+      return sprite.isActive && sprite.GetBounds().IntersectsWith(VisibleArea);
+   }
+
+   public void InjectFrames(int x, int y, Frame[] frames)
+   {
+      if (frames.Length <= 0)
+         return;
+
+      InjectedFrame[] additions = new InjectedFrame[frames.Length];
+      for (int idx=0; idx<frames.Length; idx++)
+         additions[idx] = new InjectedFrame(x, y, 0, frames[idx]);
+
+      int insIdx;
       if (m_InjectedFrames == null)
       {
          m_InjectedFrames = new System.Collections.ArrayList();
-         idx = 0;
+         insIdx = 0;
       }
       else
       {
-         idx = m_InjectedFrames.BinarySearch(f);
-         if (idx < 0)
-            idx = ~idx;
+         insIdx = m_InjectedFrames.BinarySearch(additions[0]);
+         if (insIdx < 0)
+            insIdx = ~insIdx;
       }
-      m_InjectedFrames.Insert(idx, f);
+      m_InjectedFrames.InsertRange(insIdx, additions);
    }
 
-   public void InjectTile(int nCol, int nRow, int nTileValue)
+   public void AppendFrames(int x, int y, Frame[] frames, int priority)
    {
-      short nWidth = m_Tileset.TileWidth;
-      short nHeight = m_Tileset.TileHeight;
-      int[] SubFrames = m_Tileset[nTileValue].CurrentFrame;
-      for (int nFrame = 0; nFrame < SubFrames.Length; nFrame++)
-         InjectFrame(nCol * nWidth, nRow * nHeight, m_Frameset[SubFrames[nFrame]]);
+      InjectedFrame[] additions = new InjectedFrame[frames.Length];
+      for (int idx=0; idx<frames.Length; idx++)
+         additions[idx] = new InjectedFrame(x, y, priority, frames[idx]);
+      if (m_InjectedFrames == null)
+      {
+         m_InjectedFrames = new System.Collections.ArrayList(additions);
+      }
+      else
+         m_InjectedFrames.AddRange(additions);
    }
 
    public void ClearInjections()
    {
-      m_InjectedFrames = null;
+      if (m_InjectedFrames != null)
+         m_InjectedFrames.Clear();
    }
    #endregion
 }
@@ -325,9 +363,9 @@ public abstract class IntLayer : LayerBase
 
    public IntLayer(Tileset Tileset, Display Disp, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
       int nBottomBuffer, int nColumns, int nRows, System.Drawing.Point Position,
-      SpriteCollection Sprites, System.Drawing.SizeF ScrollRate, string Name) : 
+      System.Drawing.SizeF ScrollRate, string Name) : 
       base(Tileset, Disp, nLeftBuffer, nTopBuffer, nRightBuffer,
-      nBottomBuffer, nColumns, nRows, Position, Sprites, ScrollRate)
+      nBottomBuffer, nColumns, nRows, Position, ScrollRate)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(MapLevel1));
       m_Tiles = (int[,])(resources.GetObject(Name));
@@ -362,9 +400,9 @@ public abstract class ShortLayer : LayerBase
 
    public ShortLayer(Tileset Tileset, Display Disp, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
       int nBottomBuffer, int nColumns, int nRows, System.Drawing.Point Position,
-      SpriteCollection Sprites, System.Drawing.SizeF ScrollRate, string Name) : 
+      System.Drawing.SizeF ScrollRate, string Name) : 
       base(Tileset, Disp, nLeftBuffer, nTopBuffer, nRightBuffer,
-      nBottomBuffer, nColumns, nRows, Position, Sprites, ScrollRate)
+      nBottomBuffer, nColumns, nRows, Position, ScrollRate)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(MapLevel1));
       m_Tiles = (short[,])(resources.GetObject(Name));
@@ -399,9 +437,9 @@ public abstract class ByteLayer : LayerBase
 
    public ByteLayer(Tileset Tileset, Display Disp, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
       int nBottomBuffer, int nColumns, int nRows, System.Drawing.Point Position,
-      SpriteCollection Sprites, System.Drawing.SizeF ScrollRate, string Name) : 
+      System.Drawing.SizeF ScrollRate, string Name) : 
       base(Tileset, Disp, nLeftBuffer, nTopBuffer, nRightBuffer,
-      nBottomBuffer, nColumns, nRows, Position, Sprites, ScrollRate)
+      nBottomBuffer, nColumns, nRows, Position, ScrollRate)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(MapLevel1));
       m_Tiles = (byte[,])(resources.GetObject(Name));

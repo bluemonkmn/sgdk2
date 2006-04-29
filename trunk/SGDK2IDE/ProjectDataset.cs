@@ -4488,6 +4488,8 @@ namespace SGDK2 {
             
             private DataColumn columnPriority;
             
+            private DataColumn columnActive;
+            
             internal SpriteDataTable() : 
                     base("Sprite") {
                 this.InitClass();
@@ -4582,6 +4584,12 @@ namespace SGDK2 {
                 }
             }
             
+            internal DataColumn ActiveColumn {
+                get {
+                    return this.columnActive;
+                }
+            }
+            
             public SpriteRow this[int index] {
                 get {
                     return ((SpriteRow)(this.Rows[index]));
@@ -4600,7 +4608,7 @@ namespace SGDK2 {
                 this.Rows.Add(row);
             }
             
-            public SpriteRow AddSpriteRow(string LayerName, string Name, string DefinitionName, string StateName, short CurrentFrame, int X, int Y, System.Single DX, System.Single DY, string MapName, int Priority) {
+            public SpriteRow AddSpriteRow(string LayerName, string Name, string DefinitionName, string StateName, short CurrentFrame, int X, int Y, System.Single DX, System.Single DY, string MapName, int Priority, bool Active) {
                 SpriteRow rowSpriteRow = ((SpriteRow)(this.NewRow()));
                 rowSpriteRow.ItemArray = new object[] {
                         LayerName,
@@ -4613,7 +4621,8 @@ namespace SGDK2 {
                         DX,
                         DY,
                         MapName,
-                        Priority};
+                        Priority,
+                        Active};
                 this.Rows.Add(rowSpriteRow);
                 return rowSpriteRow;
             }
@@ -4651,6 +4660,7 @@ namespace SGDK2 {
                 this.columnDY = this.Columns["DY"];
                 this.columnMapName = this.Columns["MapName"];
                 this.columnPriority = this.Columns["Priority"];
+                this.columnActive = this.Columns["Active"];
             }
             
             private void InitClass() {
@@ -4676,6 +4686,8 @@ namespace SGDK2 {
                 this.Columns.Add(this.columnMapName);
                 this.columnPriority = new DataColumn("Priority", typeof(int), null, System.Data.MappingType.Attribute);
                 this.Columns.Add(this.columnPriority);
+                this.columnActive = new DataColumn("Active", typeof(bool), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnActive);
                 this.Constraints.Add(new UniqueConstraint("SpriteKey", new DataColumn[] {
                                 this.columnLayerName,
                                 this.columnName,
@@ -4700,6 +4712,8 @@ namespace SGDK2 {
                 this.columnMapName.AllowDBNull = false;
                 this.columnMapName.Namespace = "";
                 this.columnPriority.Namespace = "";
+                this.columnActive.Namespace = "";
+                this.columnActive.DefaultValue = true;
             }
             
             public SpriteRow NewSpriteRow() {
@@ -4873,6 +4887,20 @@ namespace SGDK2 {
                 }
             }
             
+            public bool Active {
+                get {
+                    if (this.IsActiveNull()) {
+                        return false;
+                    }
+                    else {
+                        return ((bool)(this[this.tableSprite.ActiveColumn]));
+                    }
+                }
+                set {
+                    this[this.tableSprite.ActiveColumn] = value;
+                }
+            }
+            
             public LayerRow LayerRowParent {
                 get {
                     return ((LayerRow)(this.GetParentRow(this.Table.ParentRelations["LayerSprite"])));
@@ -4945,6 +4973,14 @@ namespace SGDK2 {
             
             public void SetPriorityNull() {
                 this[this.tableSprite.PriorityColumn] = System.Convert.DBNull;
+            }
+            
+            public bool IsActiveNull() {
+                return this.IsNull(this.tableSprite.ActiveColumn);
+            }
+            
+            public void SetActiveNull() {
+                this[this.tableSprite.ActiveColumn] = System.Convert.DBNull;
             }
             
             public ParameterValueRow[] GetParameterValueRows() {

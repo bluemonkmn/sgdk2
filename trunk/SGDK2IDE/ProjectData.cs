@@ -982,6 +982,13 @@ namespace SGDK2
             return m_dsPrj.CategoryTile;
          }
       }
+      public static ProjectDataset.CategoryTileRow[] GetTileCategories(string Tileset, int TileValue)
+      {
+         DataRow[] drUntyped = m_dsPrj.CategoryTile.Select("TileValue=" + TileValue.ToString() + " and Tileset='" + Tileset.ToString() + "'");
+         ProjectDataset.CategoryTileRow[] drResult = new SGDK2.ProjectDataset.CategoryTileRow[drUntyped.Length];
+         drUntyped.CopyTo(drResult, 0);
+         return drResult;
+      }
       #endregion
 
       #region SpriteDefinition
@@ -1473,11 +1480,11 @@ namespace SGDK2
       }
       public static ProjectDataset.SpriteRow AddSprite(string LayerName, string SpriteName,
          string DefinitionName, string StateName, short CurrentFrame, int X, int Y,
-         float DX, float DY, string MapName, int Priority, string[] ParamNames, int[] ParamValues)
+         float DX, float DY, string MapName, int Priority, bool Active, string[] ParamNames, int[] ParamValues)
       {
          ProjectDataset.SpriteRow drSprite = m_dsPrj.Sprite.AddSpriteRow(
             LayerName, SpriteName, DefinitionName, StateName, CurrentFrame,
-            X, Y, DX, DY, MapName, Priority);
+            X, Y, DX, DY, MapName, Priority, Active);
          for (int i=0; i<ParamNames.Length; i++)
             m_dsPrj.ParameterValue.AddParameterValueRow(LayerName, SpriteName, ParamNames[i], 
                ParamValues[i], DefinitionName, MapName);

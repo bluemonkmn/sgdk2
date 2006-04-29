@@ -5,6 +5,13 @@ using System;
 /// </summary>
 public abstract class TileBase
 {
+   protected TileCategoryMembershipBase m_membership;
+
+   protected TileBase(TileCategoryMembershipBase membership)
+   {
+      m_membership = membership;
+   }
+
    /// <summary>
    /// Returns an array of frameset frames to draw for a tile during a particular frame
    /// </summary>
@@ -12,6 +19,8 @@ public abstract class TileBase
    {
       get;
    }
+
+   public abstract bool IsMember(TileCategoryName cat);
 }
 
 /// <summary>
@@ -21,41 +30,74 @@ public class AnimTile : TileBase
 {
    private readonly TileFrame[] m_frames;
    private readonly Counter m_counter;
-   private int m_nLastCounterValue = -1;
-   private int m_nTotalDuration;
-   private int[] m_lastFrame = null;
+   private short[] m_frameIndexMap;
 
    /// <summary>
    /// Creates an animated tile definition
    /// </summary>
    /// <param name="frames">Array of frames sorted by chronological sequence</param>
    /// <param name="counter">Which counter affects this tile's animation</param>
-   public AnimTile(Counter counter, params TileFrame[] frames)
+   public AnimTile(Counter counter, params TileFrame[] frames) : base(null)
    {
       if (frames.Length <= 0)
          throw new System.ApplicationException("Use EmptyTile to create empty tiles");
       this.m_frames = frames;
       this.m_counter = counter;
-      m_nTotalDuration = m_frames[m_frames.Length - 1].m_nAccumulatedDuration;
+      GenerateFrameIndexMap();
+   }
+
+   public AnimTile(Counter counter, TileCategoryMembershipBase membership, params TileFrame[] frames) : base(membership)
+   {
+      if (frames.Length <= 0)
+         throw new System.ApplicationException("Use EmptyTile to create empty tiles");
+      this.m_frames = frames;
+      this.m_counter = counter;
+      GenerateFrameIndexMap();
+   }
+
+   private void GenerateFrameIndexMap()
+   {
+      m_frameIndexMap = new short[m_frames[m_frames.Length - 1].m_nAccumulatedDuration];
+      short frameIndex = 0;
+      for (int frameValue=0; frameValue<m_frameIndexMap.Length; frameValue++)
+      {
+         if (m_frames[frameIndex].m_nAccumulatedDuration <= frameValue)
+            frameIndex++;
+         m_frameIndexMap[frameValue] = frameIndex;
+      }
+   }
+
+   public int FrameSequenceIndex
+   {
+      get
+      {
+         return m_frameIndexMap[m_counter.CurrentValue % m_frameIndexMap.Length];
+      }
+   }
+
+   public int FrameSequenceLength
+   {
+      get
+      {
+         return m_frames.Length;
+      }
    }
 
    public override int[] CurrentFrame
    {
       get
       {
-         if (m_counter.CurrentValue != m_nLastCounterValue)
-         {
-            m_nLastCounterValue = m_counter.CurrentValue;
-            int nFoundIdx = Array.BinarySearch(m_frames, m_nLastCounterValue % m_nTotalDuration + 1);
-            if ((nFoundIdx < 0) && (~nFoundIdx < m_frames.Length))
-               m_lastFrame = m_frames[~nFoundIdx].subFrames;
-            else if (nFoundIdx >= 0)
-               m_lastFrame = m_frames[nFoundIdx].subFrames;
-            else
-               throw new ApplicationException("Did not expect modded counter value beyond array bounds");
-         }
-         return m_lastFrame;
+         return m_frames[FrameSequenceIndex].subFrames;
       }
+   }
+
+   public override bool IsMember(TileCategoryName cat)
+   {
+      if (m_membership == null) return false;
+      if (m_membership is TileCategoryFrameMembership)
+         return ((TileCategoryFrameMembership)m_membership)[FrameSequenceIndex, cat];
+      else
+         return ((TileCategorySimpleMembership)m_membership)[cat];
    }
 }
 
@@ -66,12 +108,22 @@ public class SimpleTile : TileBase
 {
    private readonly int[] frame;
 
-   public SimpleTile(int frame)
+   public SimpleTile(int frame) : base(null)
    {
       this.frame = new int[] {frame};
    }
 
-   public SimpleTile(int[] frame)
+   public SimpleTile(int[] frame) : base(null)
+   {
+      this.frame = frame;
+   }
+
+   public SimpleTile(int frame, TileCategoryMembershipBase membership) : base(membership)
+   {
+      this.frame = new int[] {frame};
+   }
+
+   public SimpleTile(int[] frame, TileCategoryMembershipBase membership) : base(membership)
    {
       this.frame = frame;
    }
@@ -83,6 +135,12 @@ public class SimpleTile : TileBase
          return frame;
       }
    }
+
+   public override bool IsMember(TileCategoryName cat)
+   {
+      if (m_membership == null) return false;
+      return ((TileCategorySimpleMembership)m_membership)[cat];
+   }
 }
 
 /// <summary>
@@ -93,7 +151,7 @@ public class EmptyTile : TileBase
    public static readonly EmptyTile Value = new EmptyTile();
    private readonly int[] frame;
 
-   private EmptyTile()
+   private EmptyTile() : base(null)
    {
       frame = new int[] {};
    }
@@ -104,6 +162,11 @@ public class EmptyTile : TileBase
       {
          return frame;
       }
+   }
+
+   public override bool IsMember(TileCategoryName cat)
+   {
+      return false;
    }
 }
 

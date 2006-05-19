@@ -39,7 +39,6 @@ namespace SGDK2
          nudMaximum.Value = m_Counter.Max;
          nudValue.Value = m_Counter.Value;
          txtCounterName.Text = sName;
-         ProjectData.AcceptChanges();
       }
 
       public frmCounterEdit(ProjectDataset.CounterRow drCounter)
@@ -191,19 +190,16 @@ namespace SGDK2
             nudValue.Value = nudMaximum.Value;
          nudValue.Maximum = nudMaximum.Value;
          m_Counter.Max = (int)nudMaximum.Value;
-         ProjectData.AcceptChanges();
       }
 
       private void nudValue_ValueChanged(object sender, System.EventArgs e)
       {
          m_Counter.Value = (int)nudValue.Value;
-         ProjectData.AcceptChanges();
       }
 
       private void txtCounterName_Validated(object sender, System.EventArgs e)
       {
          m_Counter.Name = txtCounterName.Text;
-         ProjectData.AcceptChanges();
       }
 
       private void txtCounterName_Validating(object sender, System.ComponentModel.CancelEventArgs e)
@@ -222,7 +218,7 @@ namespace SGDK2
             if (DialogResult.Cancel == MessageBox.Show(this, txtCounterName.Text + " already exists", "Counter Name", MessageBoxButtons.RetryCancel, MessageBoxIcon.Exclamation))
                txtCounterName.Text = m_Counter.Name;
             e.Cancel = true;
-         }               
+         }
       }
 
       private void dataMonitor_CounterRowDeleted(object sender, SGDK2.ProjectDataset.CounterRowChangeEvent e)

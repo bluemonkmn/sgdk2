@@ -147,7 +147,6 @@ namespace SGDK2
 
          FrameBrowser.Frameset = ProjectData.AddFramesetRow(sName);
          txtFramesetName.Text = sName;
-         ProjectData.AcceptChanges();
       }
 
       public frmFrameEdit(ProjectDataset.FramesetRow dr)
@@ -1493,7 +1492,6 @@ namespace SGDK2
          arfr[0].m22 = m_CurrentTransform.Elements[3];
          arfr[0].dx = m_CurrentTransform.Elements[4];
          arfr[0].dy = m_CurrentTransform.Elements[5];
-         arfr[0].AcceptChanges();
       }
 
       private void pnlTransform_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -1683,7 +1681,6 @@ namespace SGDK2
                   CellBrowser.GraphicSheet.Name, nIdx, 1f, 0f, 0f, 1f, 0f, 0f);
             }
          }
-         ProjectData.AcceptChanges();
       }
 
       private void btnLoadGCell_Click(object sender, System.EventArgs e)
@@ -1749,7 +1746,6 @@ namespace SGDK2
       private void txtFramesetName_Validated(object sender, System.EventArgs e)
       {
          FrameBrowser.Frameset.Name = txtFramesetName.Text;
-         FrameBrowser.Frameset.AcceptChanges();
       }
       #endregion      
    }

@@ -283,15 +283,13 @@ namespace SGDK2
                   return false;
                }
             }
-            else if ((DataObject.m_drGfx.Columns != (short)DataObject.m_drGfx[ProjectData.GraphicSheet.ColumnsColumn, DataRowVersion.Original]) ||
-               (DataObject.m_drGfx.Rows != (short)DataObject.m_drGfx[ProjectData.GraphicSheet.RowsColumn, DataRowVersion.Original]) ||
-               (DataObject.m_drGfx.CellWidth != (short)DataObject.m_drGfx[ProjectData.GraphicSheet.CellWidthColumn, DataRowVersion.Original]) ||
-               (DataObject.m_drGfx.CellHeight != (short)DataObject.m_drGfx[ProjectData.GraphicSheet.CellHeightColumn, DataRowVersion.Original]) ||
+            else if (!GetImageSize().Equals(new Size(
+               DataObject.m_drGfx.Columns * DataObject.m_drGfx.CellWidth,
+               DataObject.m_drGfx.Rows * DataObject.m_drGfx.CellHeight)) ||
                (DataObject.BackgroundColor != Color.Empty))
             {
                DataObject.m_drGfx.Image = GetImageForCurrentParams();
             }
-            DataObject.m_drGfx.AcceptChanges();
             btnCancel.Text = "Close";
             ((frmMain)MdiParent).SelectByContext("GS" + DataObject.m_drGfx.Name);
             return true;
@@ -300,6 +298,22 @@ namespace SGDK2
          {
             MessageBox.Show(this, "Unable to modify the graphic sheet due to invalid data.  Please specify a unique name.", "Add Graphic Sheet", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             return false;
+         }
+      }
+
+      private Size GetImageSize()
+      {
+         System.IO.MemoryStream stmBmp = new System.IO.MemoryStream(
+            DataObject.m_drGfx.Image, false);
+         Bitmap bmpTmp = new Bitmap(stmBmp);
+         try
+         {
+            stmBmp.Close();
+            return bmpTmp.Size;
+         }
+         finally
+         {
+            bmpTmp.Dispose();
          }
       }
 

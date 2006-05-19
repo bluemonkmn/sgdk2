@@ -270,7 +270,6 @@ namespace SGDK2
                   return false;
                }
             }
-            DataObject.m_drMap.AcceptChanges();
             btnCancel.Text = "Close";
             ((frmMain)MdiParent).SelectByContext("MP" + DataObject.m_drMap.Name);
             return true;

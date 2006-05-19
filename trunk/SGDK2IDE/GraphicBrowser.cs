@@ -206,7 +206,7 @@ namespace SGDK2
                   {
                      m_FrameChangingEvent = new SGDK2.ProjectDataset.FrameRowChangeEventHandler(Frame_FrameRowChanging);
                      ProjectData.FrameRowChanging += m_FrameChangingEvent;
-                     ProjectData.FrameRowDeleted += m_FrameChangingEvent;
+                     ProjectData.FrameRowDeleting += m_FrameChangingEvent;
                   }
                   QueueRecalc();
                }
@@ -1352,14 +1352,14 @@ namespace SGDK2
             return;
          }
 
-         if (e.Row.HasVersion(DataRowVersion.Original) &&
-            (e.Row[ProjectData.Frame.NameColumn, DataRowVersion.Original].ToString() == Frameset.Name))
+         if (e.Row.HasVersion(DataRowVersion.Current) &&
+            (e.Row[ProjectData.Frame.NameColumn, DataRowVersion.Current].ToString() == Frameset.Name))
          {
             if (FramesToDisplay == null)
             {
                if (e.Action == DataRowAction.Change)
                {
-                  Int32 nOrigValue = (Int32)e.Row[ProjectData.Frame.FrameValueColumn, DataRowVersion.Original];
+                  Int32 nOrigValue = (Int32)e.Row[ProjectData.Frame.FrameValueColumn, DataRowVersion.Current];
                   if (nOrigValue != e.Row.FrameValue)
                   {
                      if (nOrigValue == int.MaxValue)

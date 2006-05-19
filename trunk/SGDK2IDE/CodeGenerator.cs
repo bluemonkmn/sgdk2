@@ -80,8 +80,9 @@ namespace SGDK2
          GenerateTilesets(txt, err);
          txt.Close();
 
-         foreach (ProjectDataset.MapRow drMap in ProjectData.Map)
+         foreach (System.Data.DataRowView drv in ProjectData.Map.DefaultView)
          {
+            ProjectDataset.MapRow drMap = (ProjectDataset.MapRow)drv.Row;
             txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, "Map" + drMap.Name + ".resx"));
             GenerateMapResx(drMap, txt);
             txt.Close();
@@ -94,8 +95,9 @@ namespace SGDK2
          string SpritesFolder = System.IO.Path.Combine(FolderName, "Sprites");
          if (!System.IO.Directory.Exists(SpritesFolder))
             System.IO.Directory.CreateDirectory(SpritesFolder);
-         foreach (ProjectDataset.SpriteDefinitionRow drSpriteDef in ProjectData.SpriteDefinition)
+         foreach (System.Data.DataRowView drv in ProjectData.SpriteDefinition.DefaultView)
          {
+            ProjectDataset.SpriteDefinitionRow drSpriteDef = (ProjectDataset.SpriteDefinitionRow)drv.Row;
             txt = new System.IO.StreamWriter(System.IO.Path.Combine(SpritesFolder, NameToVariable(drSpriteDef.Name) + ".cs"));
             GenerateSpriteDef(drSpriteDef, txt);
             txt.Close();
@@ -151,9 +153,11 @@ namespace SGDK2
          txt.Close();
          result.Add(txt.ToString());
 
-         foreach (ProjectDataset.MapRow drMap in ProjectData.Map)
+         foreach (System.Data.DataRowView drv in ProjectData.Map.DefaultView)
          {
-            /*txt = new System.IO.StringWriter(System.IO.Path.Combine(FolderName, "Map" + drMap.Name + ".resx"));
+            ProjectDataset.MapRow drMap = (ProjectDataset.MapRow)drv.Row;
+            /* Don't need this in the string-only version of the code
+             * txt = new System.IO.StringWriter(System.IO.Path.Combine(FolderName, "Map" + drMap.Name + ".resx"));
             GenerateMapResx(drMap, txt);
             txt.Close();*/
 
@@ -163,8 +167,9 @@ namespace SGDK2
             result.Add(txt.ToString());
          }
 
-         foreach (ProjectDataset.SpriteDefinitionRow drSpriteDef in ProjectData.SpriteDefinition)
+         foreach (System.Data.DataRowView drv in ProjectData.SpriteDefinition.DefaultView)
          {
+            ProjectDataset.SpriteDefinitionRow drSpriteDef = (ProjectDataset.SpriteDefinitionRow)drv.Row;
             txt = new System.IO.StringWriter();
             GenerateSpriteDef(drSpriteDef, txt);
             txt.Close();
@@ -177,8 +182,11 @@ namespace SGDK2
          txt.Close();
          result.Add(txt.ToString());
 
-         foreach(ProjectDataset.SourceCodeRow drCode in ProjectData.SourceCode)
+         foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
+         {
+            ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
             result.Add(drCode.Text);
+         }
 
          errs = err.ToString();
          err.Close();
@@ -188,8 +196,9 @@ namespace SGDK2
       
       public void GenerateProjectSourceCode(string FolderName)
       {
-         foreach (ProjectDataset.SourceCodeRow drCode in ProjectData.SourceCode)
+         foreach (System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
          {
+            ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
             System.IO.TextWriter txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, drCode.Name));
             txt.Write(drCode.Text);
             txt.Close();
@@ -228,8 +237,9 @@ namespace SGDK2
          System.Resources.ResXResourceWriter w = new System.Resources.ResXResourceWriter(txt);
          try
          {
-            foreach(ProjectDataset.GraphicSheetRow drGfx in ProjectData.GraphicSheet)
+            foreach(System.Data.DataRowView drv in ProjectData.GraphicSheet.DefaultView)
             {
+               ProjectDataset.GraphicSheetRow drGfx = (ProjectDataset.GraphicSheetRow)drv.Row;
                w.AddResource(drGfx.Name, ProjectData.GetGraphicSheetImage(drGfx.Name, false));
             }
          }
@@ -299,8 +309,9 @@ namespace SGDK2
          CodeConditionStatement topCondition = new CodeConditionStatement();
          CodeConditionStatement curCondition = topCondition;
 
-         foreach(ProjectDataset.FramesetRow drFrameset in ProjectData.Frameset)
+         foreach(System.Data.DataRowView drv in ProjectData.Frameset.DefaultView)
          {
+            ProjectDataset.FramesetRow drFrameset = (ProjectDataset.FramesetRow)drv.Row;
             if (curCondition.TrueStatements.Count > 0) curCondition.FalseStatements.Add(curCondition = new CodeConditionStatement());
             CodeArgumentReferenceExpression nameParam = new CodeArgumentReferenceExpression("Name");
             CodePrimitiveExpression nameCompare = new CodePrimitiveExpression(drFrameset.Name);
@@ -422,8 +433,9 @@ namespace SGDK2
          counterClassDecl.Members.Add(propDecl);
 
 
-         foreach(ProjectDataset.CounterRow drCounter in ProjectData.Counter)
+         foreach(System.Data.DataRowView drv in ProjectData.Counter.DefaultView)
          {
+            ProjectDataset.CounterRow drCounter = (ProjectDataset.CounterRow)drv.Row;
             CodeMemberField fldCounter = new CodeMemberField("Counter", "m_" + NameToVariable(drCounter.Name));
             fldCounter.InitExpression = new CodeObjectCreateExpression("Counter", new CodePrimitiveExpression(drCounter.Value), new CodePrimitiveExpression(drCounter.Max));
             fldCounter.Attributes = MemberAttributes.Final | MemberAttributes.Private | MemberAttributes.Static;
@@ -480,8 +492,9 @@ namespace SGDK2
 
          CodeVariableReferenceExpression varTileList = new CodeVariableReferenceExpression(TileListVar);
 
-         foreach(ProjectDataset.TilesetRow drTileset in ProjectData.Tileset)
+         foreach(System.Data.DataRowView drv in ProjectData.Tileset.DefaultView)
          {
+            ProjectDataset.TilesetRow drTileset = (ProjectDataset.TilesetRow)drv.Row;
             ProjectDataset.TileRow[] arTiles = ProjectData.GetSortedTileRows(drTileset);
             int nCurIdx = 0;
             CodeArrayCreateExpression TileArrayExp = new CodeArrayCreateExpression(TileBaseClass, new CodePrimitiveExpression(arTiles.Length));
@@ -501,7 +514,9 @@ namespace SGDK2
 
             staticConstructor.Statements.Add(new CodeCommentStatement(drTileset.Name));
             staticConstructor.Statements.Add(new CodeAssignStatement(varTileList, new CodeObjectCreateExpression(typeof(System.Collections.ArrayList))));
-            int nMax = arTiles[arTiles.Length-1].TileValue;
+            int nMax = 0;
+            if (arTiles.Length > 0)
+               nMax = arTiles[arTiles.Length-1].TileValue;
             if (drTileset.FramesetRow.GetFrameRows().Length > nMax)
                nMax = drTileset.FramesetRow.GetFrameRows().Length - 1;
             for(int i=0; i<=nMax; i++)
@@ -1221,8 +1236,9 @@ namespace SGDK2
          mthGetTileShape.Statements.Add(new CodeMethodReturnStatement(
             new CodePrimitiveExpression(null)));
 
-         foreach(ProjectDataset.TileShapeRow drShape in ProjectData.TileShape)
+         foreach(System.Data.DataRowView drv in ProjectData.TileShape.DefaultView)
          {
+            ProjectDataset.TileShapeRow drShape = (ProjectDataset.TileShapeRow)drv.Row;
             CodeTypeDeclaration clsShape = new CodeTypeDeclaration(NameToVariable(drShape.Name));
             CodeConstructor shapeConstructor = new CodeConstructor();
             clsShape.Members.Add(shapeConstructor);
@@ -1272,8 +1288,9 @@ namespace SGDK2
             Generator.GenerateCodeFromType(clsShape, txt, GeneratorOptions);
          }
 
-         foreach(ProjectDataset.SolidityRow drSolid in ProjectData.Solidity)
+         foreach(System.Data.DataRowView drv in ProjectData.Solidity.DefaultView)
          {
+            ProjectDataset.SolidityRow drSolid = (ProjectDataset.SolidityRow)drv.Row;
             CodeMemberField fldSolid = new CodeMemberField(SolidityClassName, "m_" +
                NameToVariable(drSolid.Name));
             fldSolid.Attributes = MemberAttributes.Private | MemberAttributes.Static | MemberAttributes.Final;

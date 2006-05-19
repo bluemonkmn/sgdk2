@@ -18,78 +18,107 @@ namespace SGDK2
       ProjectDataset.GraphicSheetRowChangeEventHandler m_GraphicsSheetChanged = null;
       ProjectDataset.GraphicSheetRowChangeEventHandler m_GraphicsSheetChanging = null;
       ProjectDataset.GraphicSheetRowChangeEventHandler m_GraphicsSheetDeleted = null;
+      ProjectDataset.GraphicSheetRowChangeEventHandler m_GraphicsSheetDeleting = null;
       ProjectDataset.FramesetRowChangeEventHandler m_FramesetChanged = null;
       ProjectDataset.FramesetRowChangeEventHandler m_FramesetChanging = null;
       ProjectDataset.FramesetRowChangeEventHandler m_FramesetDeleted = null;
+      ProjectDataset.FramesetRowChangeEventHandler m_FramesetDeleting = null;
       ProjectDataset.FrameRowChangeEventHandler m_FrameChanged = null;
       ProjectDataset.FrameRowChangeEventHandler m_FrameChanging = null;
       ProjectDataset.FrameRowChangeEventHandler m_FrameDeleted = null;
+      ProjectDataset.FrameRowChangeEventHandler m_FrameDeleting = null;
       ProjectDataset.TilesetRowChangeEventHandler m_TilesetChanged = null;
       ProjectDataset.TilesetRowChangeEventHandler m_TilesetChanging = null;
       ProjectDataset.TilesetRowChangeEventHandler m_TilesetDeleted = null;
+      ProjectDataset.TilesetRowChangeEventHandler m_TilesetDeleting = null;
       ProjectDataset.TileRowChangeEventHandler m_TileChanged = null;
       ProjectDataset.TileRowChangeEventHandler m_TileChanging = null;
       ProjectDataset.TileRowChangeEventHandler m_TileDeleted = null;
+      ProjectDataset.TileRowChangeEventHandler m_TileDeleting = null;
       ProjectDataset.CounterRowChangeEventHandler m_CounterChanged = null;
       ProjectDataset.CounterRowChangeEventHandler m_CounterChanging = null;
       ProjectDataset.CounterRowChangeEventHandler m_CounterDeleted = null;
+      ProjectDataset.CounterRowChangeEventHandler m_CounterDeleting = null;
       ProjectDataset.MapRowChangeEventHandler m_MapChanged = null;
       ProjectDataset.MapRowChangeEventHandler m_MapChanging = null;
       ProjectDataset.MapRowChangeEventHandler m_MapDeleted = null;
+      ProjectDataset.MapRowChangeEventHandler m_MapDeleting = null;
       ProjectDataset.LayerRowChangeEventHandler m_LayerChanged = null;
       ProjectDataset.LayerRowChangeEventHandler m_LayerChanging = null;
       ProjectDataset.LayerRowChangeEventHandler m_LayerDeleted = null;
+      ProjectDataset.LayerRowChangeEventHandler m_LayerDeleting = null;
       ProjectDataset.TileFrameRowChangeEventHandler m_TileFrameChanged = null;
       ProjectDataset.TileFrameRowChangeEventHandler m_TileFrameChanging = null;
       ProjectDataset.TileFrameRowChangeEventHandler m_TileFrameDeleted = null;
+      ProjectDataset.TileFrameRowChangeEventHandler m_TileFrameDeleting = null;
       ProjectDataset.CategoryRowChangeEventHandler m_CategoryChanged = null;
       ProjectDataset.CategoryRowChangeEventHandler m_CategoryChanging = null;
       ProjectDataset.CategoryRowChangeEventHandler m_CategoryDeleted = null;
+      ProjectDataset.CategoryRowChangeEventHandler m_CategoryDeleting = null;
       ProjectDataset.CategoryTileRowChangeEventHandler m_CategoryTileChanged = null;
       ProjectDataset.CategoryTileRowChangeEventHandler m_CategoryTileChanging = null;
       ProjectDataset.CategoryTileRowChangeEventHandler m_CategoryTileDeleted = null;
+      ProjectDataset.CategoryTileRowChangeEventHandler m_CategoryTileDeleting = null;
       ProjectDataset.SpriteDefinitionRowChangeEventHandler m_SpriteDefinitionChanged = null;
       ProjectDataset.SpriteDefinitionRowChangeEventHandler m_SpriteDefinitionChanging = null;
       ProjectDataset.SpriteDefinitionRowChangeEventHandler m_SpriteDefinitionDeleted = null;
+      ProjectDataset.SpriteDefinitionRowChangeEventHandler m_SpriteDefinitionDeleting = null;
       ProjectDataset.SpriteStateRowChangeEventHandler m_SpriteStateChanged = null;
       ProjectDataset.SpriteStateRowChangeEventHandler m_SpriteStateChanging = null;
       ProjectDataset.SpriteStateRowChangeEventHandler m_SpriteStateDeleted = null;
+      ProjectDataset.SpriteStateRowChangeEventHandler m_SpriteStateDeleting = null;
       ProjectDataset.SpriteFrameRowChangeEventHandler m_SpriteFrameChanged = null;
       ProjectDataset.SpriteFrameRowChangeEventHandler m_SpriteFrameChanging = null;
       ProjectDataset.SpriteFrameRowChangeEventHandler m_SpriteFrameDeleted = null;
+      ProjectDataset.SpriteFrameRowChangeEventHandler m_SpriteFrameDeleting = null;
       ProjectDataset.SpriteRuleRowChangeEventHandler m_SpriteRuleChanged = null;
       ProjectDataset.SpriteRuleRowChangeEventHandler m_SpriteRuleChanging = null;
       ProjectDataset.SpriteRuleRowChangeEventHandler m_SpriteRuleDeleted = null;
+      ProjectDataset.SpriteRuleRowChangeEventHandler m_SpriteRuleDeleting = null;
       ProjectDataset.SpriteParameterRowChangeEventHandler m_SpriteParameterChanged = null;
       ProjectDataset.SpriteParameterRowChangeEventHandler m_SpriteParameterChanging = null;
       ProjectDataset.SpriteParameterRowChangeEventHandler m_SpriteParameterDeleted = null;
+      ProjectDataset.SpriteParameterRowChangeEventHandler m_SpriteParameterDeleting = null;
       ProjectDataset.SpriteCategoryRowChangeEventHandler m_SpriteCategoryChanged = null;
       ProjectDataset.SpriteCategoryRowChangeEventHandler m_SpriteCategoryChanging = null;
       ProjectDataset.SpriteCategoryRowChangeEventHandler m_SpriteCategoryDeleted = null;
+      ProjectDataset.SpriteCategoryRowChangeEventHandler m_SpriteCategoryDeleting = null;
       ProjectDataset.SpriteCategorySpriteRowChangeEventHandler m_SpriteCategorySpriteChanged = null;
       ProjectDataset.SpriteCategorySpriteRowChangeEventHandler m_SpriteCategorySpriteChanging = null;
       ProjectDataset.SpriteCategorySpriteRowChangeEventHandler m_SpriteCategorySpriteDeleted = null;
+      ProjectDataset.SpriteCategorySpriteRowChangeEventHandler m_SpriteCategorySpriteDeleting = null;
       ProjectDataset.SpriteRowChangeEventHandler m_SpriteChanged = null;
       ProjectDataset.SpriteRowChangeEventHandler m_SpriteChanging = null;
       ProjectDataset.SpriteRowChangeEventHandler m_SpriteDeleted = null;
+      ProjectDataset.SpriteRowChangeEventHandler m_SpriteDeleting = null;
       ProjectDataset.ParameterValueRowChangeEventHandler m_ParameterValueChanged = null;
       ProjectDataset.ParameterValueRowChangeEventHandler m_ParameterValueChanging = null;
       ProjectDataset.ParameterValueRowChangeEventHandler m_ParameterValueDeleted = null;
+      ProjectDataset.ParameterValueRowChangeEventHandler m_ParameterValueDeleting = null;
       ProjectDataset.SolidityRowChangeEventHandler m_SolidityChanged = null;
       ProjectDataset.SolidityRowChangeEventHandler m_SolidityChanging = null;
       ProjectDataset.SolidityRowChangeEventHandler m_SolidityDeleted = null;
+      ProjectDataset.SolidityRowChangeEventHandler m_SolidityDeleting = null;
       ProjectDataset.SolidityShapeRowChangeEventHandler m_SolidityShapeChanged = null;
       ProjectDataset.SolidityShapeRowChangeEventHandler m_SolidityShapeChanging = null;
       ProjectDataset.SolidityShapeRowChangeEventHandler m_SolidityShapeDeleted = null;
+      ProjectDataset.SolidityShapeRowChangeEventHandler m_SolidityShapeDeleting = null;
       ProjectDataset.TileShapeRowChangeEventHandler m_TileShapeChanged = null;
       ProjectDataset.TileShapeRowChangeEventHandler m_TileShapeChanging = null;
       ProjectDataset.TileShapeRowChangeEventHandler m_TileShapeDeleted = null;
+      ProjectDataset.TileShapeRowChangeEventHandler m_TileShapeDeleting = null;
       ProjectDataset.CategoryFrameRowChangeEventHandler m_CategoryFrameChanged = null;
       ProjectDataset.CategoryFrameRowChangeEventHandler m_CategoryFrameChanging = null;
       ProjectDataset.CategoryFrameRowChangeEventHandler m_CategoryFrameDeleted = null;
+      ProjectDataset.CategoryFrameRowChangeEventHandler m_CategoryFrameDeleting = null;
       ProjectDataset.SourceCodeRowChangeEventHandler m_SourceCodeChanged = null;
       ProjectDataset.SourceCodeRowChangeEventHandler m_SourceCodeChanging = null;
       ProjectDataset.SourceCodeRowChangeEventHandler m_SourceCodeDeleted = null;
+      ProjectDataset.SourceCodeRowChangeEventHandler m_SourceCodeDeleting = null;
+      ProjectDataset.SpritePlanRowChangeEventHandler m_SpritePlanChanged = null;
+      ProjectDataset.SpritePlanRowChangeEventHandler m_SpritePlanChanging = null;
+      ProjectDataset.SpritePlanRowChangeEventHandler m_SpritePlanDeleted = null;
+      ProjectDataset.SpritePlanRowChangeEventHandler m_SpritePlanDeleting = null;
       System.EventHandler m_Clearing = null;
 
       public DataChangeNotifier(System.ComponentModel.IContainer container)
@@ -126,150 +155,208 @@ namespace SGDK2
                GraphicSheetRowChanging -= m_GraphicsSheetChanging;
             if (m_GraphicsSheetDeleted != null)
                GraphicSheetRowDeleted -= m_GraphicsSheetDeleted;
+            if (m_GraphicsSheetDeleting != null)
+               GraphicSheetRowDeleting -= m_GraphicsSheetDeleting;
             if (m_FramesetChanged != null)
                FramesetRowChanged -= m_FramesetChanged;
             if (m_FramesetChanging != null)
                FramesetRowChanging -= m_FramesetChanging;
             if (m_FramesetDeleted != null)
                FramesetRowDeleted -= m_FramesetDeleted;
+            if (m_FramesetDeleting != null)
+               FramesetRowDeleting -= m_FramesetDeleting;
             if (m_FrameChanged != null)
                FrameRowChanged -= m_FrameChanged;
             if (m_FrameChanging != null)
                FrameRowChanging -= m_FrameChanging;
             if (m_FrameDeleted != null)
                FrameRowDeleted -= m_FrameDeleted;
+            if (m_FrameDeleting != null)
+               FrameRowDeleting -= m_FrameDeleting;
             if (m_TilesetChanged != null)
                TilesetRowChanged -= m_TilesetChanged;
             if (m_TilesetChanging != null)
                TilesetRowChanging -= m_TilesetChanging;
             if (m_TilesetDeleted != null)
                TilesetRowDeleted -= m_TilesetDeleted;
+            if (m_TilesetDeleting != null)
+               TilesetRowDeleting -= m_TilesetDeleting;
             if (m_TileChanged != null)
                TileRowChanged -= m_TileChanged;
             if (m_TileChanging != null)
                TileRowChanging -= m_TileChanging;
             if (m_TileDeleted != null)
                TileRowDeleted -= m_TileDeleted;
+            if (m_TileDeleting != null)
+               TileRowDeleting -= m_TileDeleting;
             if (m_CounterChanged != null)
                CounterRowChanged -= m_CounterChanged;
             if (m_CounterChanging != null)
                CounterRowChanging -= m_CounterChanging;
             if (m_CounterDeleted != null)
                CounterRowDeleted -= m_CounterDeleted;
+            if (m_CounterDeleting != null)
+               CounterRowDeleting -= m_CounterDeleting;
             if (m_MapChanged != null)
                MapRowChanged -= m_MapChanged;
             if (m_MapChanging != null)
                MapRowChanging -= m_MapChanging;
             if (m_MapDeleted != null)
                MapRowDeleted -= m_MapDeleted;
+            if (m_MapDeleting != null)
+               MapRowDeleting -= m_MapDeleting;
             if (m_LayerChanged != null)
                LayerRowChanged -= m_LayerChanged;
             if (m_LayerChanging != null)
                LayerRowChanging -= m_LayerChanging;
             if (m_LayerDeleted != null)
                LayerRowDeleted -= m_LayerDeleted;
+            if (m_LayerDeleting != null)
+               LayerRowDeleting -= m_LayerDeleting;
             if (m_TileFrameChanged != null)
                TileFrameRowChanged -= m_TileFrameChanged;
             if (m_TileFrameChanging != null)
                TileFrameRowChanging -= m_TileFrameChanging;
             if (m_TileFrameDeleted != null)
                TileFrameRowDeleted -= m_TileFrameDeleted;
+            if (m_TileFrameDeleting != null)
+               TileFrameRowDeleting -= m_TileFrameDeleting;
             if (m_CategoryChanged != null)
                CategoryRowChanged -= m_CategoryChanged;
             if (m_CategoryChanging != null)
                CategoryRowChanging -= m_CategoryChanging;
             if (m_CategoryDeleted != null)
                CategoryRowDeleted -= m_CategoryDeleted;
+            if (m_CategoryDeleting != null)
+               CategoryRowDeleting -= m_CategoryDeleting;
             if (m_CategoryTileChanged != null)
                CategoryTileRowChanged -= m_CategoryTileChanged;
             if (m_CategoryTileChanging != null)
                CategoryTileRowChanging -= m_CategoryTileChanging;
             if (m_CategoryTileDeleted != null)
                CategoryTileRowDeleted -= m_CategoryTileDeleted;
+            if (m_CategoryTileDeleting != null)
+               CategoryTileRowDeleting -= m_CategoryTileDeleting;
             if (m_SpriteDefinitionChanged != null)
                SpriteDefinitionRowChanged -= m_SpriteDefinitionChanged;
             if (m_SpriteDefinitionChanging != null)
                SpriteDefinitionRowChanging -= m_SpriteDefinitionChanging;
             if (m_SpriteDefinitionDeleted != null)
                SpriteDefinitionRowDeleted -= m_SpriteDefinitionDeleted;
+            if (m_SpriteDefinitionDeleting != null)
+               SpriteDefinitionRowDeleting -= m_SpriteDefinitionDeleting;
             if (m_SpriteStateChanged != null)
                SpriteStateRowChanged -= m_SpriteStateChanged;
             if (m_SpriteStateChanging != null)
                SpriteStateRowChanging -= m_SpriteStateChanging;
             if (m_SpriteStateDeleted != null)
                SpriteStateRowDeleted -= m_SpriteStateDeleted;
+            if (m_SpriteStateDeleting != null)
+               SpriteStateRowDeleting -= m_SpriteStateDeleting;
             if (m_SpriteFrameChanged != null)
                SpriteFrameRowChanged -= m_SpriteFrameChanged;
             if (m_SpriteFrameChanging != null)
                SpriteFrameRowChanging -= m_SpriteFrameChanging;
             if (m_SpriteFrameDeleted != null)
                SpriteFrameRowDeleted -= m_SpriteFrameDeleted;
+            if (m_SpriteFrameDeleting != null)
+               SpriteFrameRowDeleting -= m_SpriteFrameDeleting;
             if (m_SpriteRuleChanged != null)
                SpriteRuleRowChanged -= m_SpriteRuleChanged;
             if (m_SpriteRuleChanging != null)
                SpriteRuleRowChanging -= m_SpriteRuleChanging;
             if (m_SpriteRuleDeleted != null)
                SpriteRuleRowDeleted -= m_SpriteRuleDeleted;
+            if (m_SpriteRuleDeleting != null)
+               SpriteRuleRowDeleting -= m_SpriteRuleDeleting;
             if (m_SpriteParameterChanged != null)
                SpriteParameterRowChanged -= m_SpriteParameterChanged;
             if (m_SpriteParameterChanging != null)
                SpriteParameterRowChanging -= m_SpriteParameterChanging;
             if (m_SpriteParameterDeleted != null)
                SpriteParameterRowDeleted -= m_SpriteParameterDeleted;
+            if (m_SpriteParameterDeleting != null)
+               SpriteParameterRowDeleting -= m_SpriteParameterDeleting;
             if (m_SpriteCategoryChanged != null)
                SpriteCategoryRowChanged -= m_SpriteCategoryChanged;
             if (m_SpriteCategoryChanging != null)
                SpriteCategoryRowChanging -= m_SpriteCategoryChanging;
             if (m_SpriteCategoryDeleted != null)
                SpriteCategoryRowDeleted -= m_SpriteCategoryDeleted;
+            if (m_SpriteCategoryDeleting != null)
+               SpriteCategoryRowDeleting -= m_SpriteCategoryDeleting;
             if (m_SpriteCategorySpriteChanged != null)
                SpriteCategorySpriteRowChanged -= m_SpriteCategorySpriteChanged;
             if (m_SpriteCategorySpriteChanging != null)
                SpriteCategorySpriteRowChanging -= m_SpriteCategorySpriteChanging;
             if (m_SpriteCategorySpriteDeleted != null)
                SpriteCategorySpriteRowDeleted -= m_SpriteCategorySpriteDeleted;
+            if (m_SpriteCategorySpriteDeleting != null)
+               SpriteCategorySpriteRowDeleting -= m_SpriteCategorySpriteDeleting;
             if (m_SpriteChanged != null)
                SpriteRowChanged -= m_SpriteChanged;
             if (m_SpriteChanging != null)
                SpriteRowChanging -= m_SpriteChanging;
             if (m_SpriteDeleted != null)
                SpriteRowDeleted -= m_SpriteDeleted;
+            if (m_SpriteDeleting != null)
+               SpriteRowDeleting -= m_SpriteDeleting;
             if (m_ParameterValueChanged != null)
                ParameterValueRowChanged -= m_ParameterValueChanged;
             if (m_ParameterValueChanging != null)
                ParameterValueRowChanging -= m_ParameterValueChanging;
             if (m_ParameterValueDeleted != null)
                ParameterValueRowDeleted -= m_ParameterValueDeleted;
+            if (m_ParameterValueDeleting != null)
+               ParameterValueRowDeleting -= m_ParameterValueDeleting;
             if (m_SolidityChanged != null)
                SolidityRowChanged -= m_SolidityChanged;
             if (m_SolidityChanging != null)
                SolidityRowChanging -= m_SolidityChanging;
             if (m_SolidityDeleted != null)
                SolidityRowDeleted -= m_SolidityDeleted;
+            if (m_SolidityDeleting != null)
+               SolidityRowDeleting -= m_SolidityDeleting;
             if (m_SolidityShapeChanged != null)
                SolidityShapeRowChanged -= m_SolidityShapeChanged;
             if (m_SolidityShapeChanging != null)
                SolidityShapeRowChanging -= m_SolidityShapeChanging;
             if (m_SolidityShapeDeleted != null)
                SolidityShapeRowDeleted -= m_SolidityShapeDeleted;
+            if (m_SolidityShapeDeleting != null)
+               SolidityShapeRowDeleting -= m_SolidityShapeDeleting;
             if (m_TileShapeChanged != null)
                TileShapeRowChanged -= m_TileShapeChanged;
             if (m_TileShapeChanging != null)
                TileShapeRowChanging -= m_TileShapeChanging;
             if (m_TileShapeDeleted != null)
                TileShapeRowDeleted -= m_TileShapeDeleted;
+            if (m_TileShapeDeleting != null)
+               TileShapeRowDeleting -= m_TileShapeDeleting;
             if (m_CategoryFrameChanged != null)
                CategoryFrameRowChanged -= m_CategoryFrameChanged;
             if (m_CategoryFrameChanging != null)
                CategoryFrameRowChanging -= m_CategoryFrameChanging;
             if (m_CategoryFrameDeleted != null)
                CategoryFrameRowDeleted -= m_CategoryFrameDeleted;
+            if (m_CategoryFrameDeleting != null)
+               CategoryFrameRowDeleting -= m_CategoryFrameDeleting;
             if (m_SourceCodeChanged != null)
                SourceCodeRowChanged -= m_SourceCodeChanged;
             if (m_SourceCodeChanging != null)
                SourceCodeRowChanging -= m_SourceCodeChanging;
             if (m_SourceCodeDeleted != null)
                SourceCodeRowDeleted -= m_SourceCodeDeleted;
+            if (m_SourceCodeDeleting != null)
+               SourceCodeRowDeleting -= m_SourceCodeDeleting;
+            if (m_SpritePlanChanged != null)
+               SpritePlanRowChanged -= m_SpritePlanChanged;
+            if (m_SpritePlanChanging != null)
+               SpritePlanRowChanging -= m_SpritePlanChanging;
+            if (m_SpritePlanDeleted != null)
+               SpritePlanRowDeleted -= m_SpritePlanDeleted;
+            if (m_SpritePlanDeleting != null)
+               SpritePlanRowDeleting -= m_SpritePlanDeleting;
             if (m_Clearing != null)
                Clearing -= m_Clearing;
          }
@@ -336,6 +423,22 @@ namespace SGDK2
             m_GraphicsSheetDeleted = null;
          }
       }
+      public event ProjectDataset.GraphicSheetRowChangeEventHandler GraphicSheetRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_GraphicsSheetDeleting == null);
+            if (m_GraphicsSheetDeleting != null)
+               ProjectData.GraphicSheetRowDeleting -= m_GraphicsSheetDeleting;
+            ProjectData.GraphicSheetRowDeleting += m_GraphicsSheetDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_GraphicsSheetDeleting == value);
+            ProjectData.GraphicSheetRowDeleting -= value;
+            m_GraphicsSheetDeleting = null;
+         }
+      }
       public event ProjectDataset.FramesetRowChangeEventHandler FramesetRowChanged
       {
          add
@@ -382,6 +485,22 @@ namespace SGDK2
             Debug.Assert(m_FramesetDeleted == value);
             ProjectData.FramesetRowDeleted -= value;
             m_FramesetDeleted = null;
+         }
+      }
+      public event ProjectDataset.FramesetRowChangeEventHandler FramesetRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_FramesetDeleting == null);
+            if (m_FramesetDeleting != null)
+               ProjectData.FramesetRowDeleting -= m_FramesetDeleting;
+            ProjectData.FramesetRowDeleting += m_FramesetDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_FramesetDeleting == value);
+            ProjectData.FramesetRowDeleting -= value;
+            m_FramesetDeleting = null;
          }
       }
       public event ProjectDataset.FrameRowChangeEventHandler FrameRowChanged
@@ -432,6 +551,22 @@ namespace SGDK2
             m_FrameDeleted = null;
          }
       }   
+      public event ProjectDataset.FrameRowChangeEventHandler FrameRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_FrameDeleting == null);
+            if (m_FrameDeleting != null)
+               ProjectData.FrameRowDeleting -= m_FrameDeleting;
+            ProjectData.FrameRowDeleting += m_FrameDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_FrameDeleting == value);
+            ProjectData.FrameRowDeleting -= value;
+            m_FrameDeleting = null;
+         }
+      }   
       public event ProjectDataset.TilesetRowChangeEventHandler TilesetRowChanged
       {
          add
@@ -478,6 +613,22 @@ namespace SGDK2
             Debug.Assert(m_TilesetDeleted == value);
             ProjectData.TilesetRowDeleted -= value;
             m_TilesetDeleted = null;
+         }
+      }
+      public event ProjectDataset.TilesetRowChangeEventHandler TilesetRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_TilesetDeleting == null);
+            if (m_TilesetDeleting != null)
+               ProjectData.TilesetRowDeleting -= m_TilesetDeleting;
+            ProjectData.TilesetRowDeleting += m_TilesetDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_TilesetDeleting == value);
+            ProjectData.TilesetRowDeleting -= value;
+            m_TilesetDeleting = null;
          }
       }
       public event ProjectDataset.TileRowChangeEventHandler TileRowChanged
@@ -528,6 +679,22 @@ namespace SGDK2
             m_TileDeleted = null;
          }
       }
+      public event ProjectDataset.TileRowChangeEventHandler TileRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_TileDeleting == null);
+            if (m_TileDeleting != null)
+               ProjectData.TileRowDeleting -= m_TileDeleting;
+            ProjectData.TileRowDeleting += m_TileDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_TileDeleting == value);
+            ProjectData.TileRowDeleting -= value;
+            m_TileDeleting = null;
+         }
+      }
       public event ProjectDataset.CounterRowChangeEventHandler CounterRowChanged
       {
          add
@@ -574,6 +741,22 @@ namespace SGDK2
             Debug.Assert(m_CounterDeleted == value);
             ProjectData.CounterRowDeleted -= value;
             m_CounterDeleted = null;
+         }
+      }
+      public event ProjectDataset.CounterRowChangeEventHandler CounterRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_CounterDeleting == null);
+            if (m_CounterDeleting != null)
+               ProjectData.CounterRowDeleting -= m_CounterDeleting;
+            ProjectData.CounterRowDeleting += m_CounterDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_CounterDeleting == value);
+            ProjectData.CounterRowDeleting -= value;
+            m_CounterDeleting = null;
          }
       }
       public event ProjectDataset.MapRowChangeEventHandler MapRowChanged
@@ -624,6 +807,22 @@ namespace SGDK2
             m_MapDeleted = null;
          }
       }
+      public event ProjectDataset.MapRowChangeEventHandler MapRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_MapDeleting == null);
+            if (m_MapDeleting != null)
+               ProjectData.MapRowDeleting -= m_MapDeleting;
+            ProjectData.MapRowDeleting += m_MapDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_MapDeleting == value);
+            ProjectData.MapRowDeleting -= value;
+            m_MapDeleting = null;
+         }
+      }
       public event ProjectDataset.LayerRowChangeEventHandler LayerRowChanged
       {
          add
@@ -670,6 +869,22 @@ namespace SGDK2
             Debug.Assert(m_LayerDeleted == value);
             ProjectData.LayerRowDeleted -= value;
             m_LayerDeleted = null;
+         }
+      }
+      public event ProjectDataset.LayerRowChangeEventHandler LayerRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_LayerDeleting == null);
+            if (m_LayerDeleting != null)
+               ProjectData.LayerRowDeleting -= m_LayerDeleting;
+            ProjectData.LayerRowDeleting += m_LayerDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_LayerDeleting == value);
+            ProjectData.LayerRowDeleting -= value;
+            m_LayerDeleting = null;
          }
       }
       public event ProjectDataset.TileFrameRowChangeEventHandler TileFrameRowChanged
@@ -720,6 +935,22 @@ namespace SGDK2
             m_TileFrameDeleted = null;
          }
       }
+      public event ProjectDataset.TileFrameRowChangeEventHandler TileFrameRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_TileFrameDeleting == null);
+            if (m_TileFrameDeleting != null)
+               ProjectData.TileFrameRowDeleting -= m_TileFrameDeleting;
+            ProjectData.TileFrameRowDeleting += m_TileFrameDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_TileFrameDeleting == value);
+            ProjectData.TileFrameRowDeleting -= value;
+            m_TileFrameDeleting = null;
+         }
+      }
       public event ProjectDataset.CategoryRowChangeEventHandler CategoryRowChanged
       {
          add
@@ -766,6 +997,22 @@ namespace SGDK2
             Debug.Assert(m_CategoryDeleted == value);
             ProjectData.CategoryRowDeleted -= value;
             m_CategoryDeleted = null;
+         }
+      }
+      public event ProjectDataset.CategoryRowChangeEventHandler CategoryRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_CategoryDeleting == null);
+            if (m_CategoryDeleting != null)
+               ProjectData.CategoryRowDeleting -= m_CategoryDeleting;
+            ProjectData.CategoryRowDeleting += m_CategoryDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_CategoryDeleting == value);
+            ProjectData.CategoryRowDeleting -= value;
+            m_CategoryDeleting = null;
          }
       }
       public event ProjectDataset.CategoryTileRowChangeEventHandler CategoryTileRowChanged
@@ -816,6 +1063,22 @@ namespace SGDK2
             m_CategoryTileDeleted = null;
          }
       }
+      public event ProjectDataset.CategoryTileRowChangeEventHandler CategoryTileRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_CategoryTileDeleting == null);
+            if (m_CategoryTileDeleting != null)
+               ProjectData.CategoryTileRowDeleting -= m_CategoryTileDeleting;
+            ProjectData.CategoryTileRowDeleting += m_CategoryTileDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_CategoryTileDeleting == value);
+            ProjectData.CategoryTileRowDeleting -= value;
+            m_CategoryTileDeleting = null;
+         }
+      }
       public event ProjectDataset.SpriteDefinitionRowChangeEventHandler SpriteDefinitionRowChanged
       {
          add
@@ -862,6 +1125,22 @@ namespace SGDK2
             Debug.Assert(m_SpriteDefinitionDeleted == value);
             ProjectData.SpriteDefinitionRowDeleted -= value;
             m_SpriteDefinitionDeleted = null;
+         }
+      }
+      public event ProjectDataset.SpriteDefinitionRowChangeEventHandler SpriteDefinitionRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_SpriteDefinitionDeleting == null);
+            if (m_SpriteDefinitionDeleting != null)
+               ProjectData.SpriteDefinitionRowDeleting -= m_SpriteDefinitionDeleting;
+            ProjectData.SpriteDefinitionRowDeleting += m_SpriteDefinitionDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_SpriteDefinitionDeleting == value);
+            ProjectData.SpriteDefinitionRowDeleting -= value;
+            m_SpriteDefinitionDeleting = null;
          }
       }
       public event ProjectDataset.SpriteStateRowChangeEventHandler SpriteStateRowChanged
@@ -912,6 +1191,22 @@ namespace SGDK2
             m_SpriteStateDeleted = null;
          }
       }
+      public event ProjectDataset.SpriteStateRowChangeEventHandler SpriteStateRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_SpriteStateDeleting == null);
+            if (m_SpriteStateDeleting != null)
+               ProjectData.SpriteStateRowDeleting -= m_SpriteStateDeleting;
+            ProjectData.SpriteStateRowDeleting += m_SpriteStateDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_SpriteStateDeleting == value);
+            ProjectData.SpriteStateRowDeleting -= value;
+            m_SpriteStateDeleting = null;
+         }
+      }
       public event ProjectDataset.SpriteFrameRowChangeEventHandler SpriteFrameRowChanged
       {
          add
@@ -958,6 +1253,22 @@ namespace SGDK2
             Debug.Assert(m_SpriteFrameDeleted == value);
             ProjectData.SpriteFrameRowDeleted -= value;
             m_SpriteFrameDeleted = null;
+         }
+      }
+      public event ProjectDataset.SpriteFrameRowChangeEventHandler SpriteFrameRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_SpriteFrameDeleting == null);
+            if (m_SpriteFrameDeleting != null)
+               ProjectData.SpriteFrameRowDeleting -= m_SpriteFrameDeleting;
+            ProjectData.SpriteFrameRowDeleting += m_SpriteFrameDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_SpriteFrameDeleting == value);
+            ProjectData.SpriteFrameRowDeleting -= value;
+            m_SpriteFrameDeleting = null;
          }
       }
       public event ProjectDataset.SpriteRuleRowChangeEventHandler SpriteRuleRowChanged
@@ -1008,6 +1319,22 @@ namespace SGDK2
             m_SpriteRuleDeleted = null;
          }
       }
+      public event ProjectDataset.SpriteRuleRowChangeEventHandler SpriteRuleRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_SpriteRuleDeleting == null);
+            if (m_SpriteRuleDeleting != null)
+               ProjectData.SpriteRuleRowDeleting -= m_SpriteRuleDeleting;
+            ProjectData.SpriteRuleRowDeleting += m_SpriteRuleDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_SpriteRuleDeleting == value);
+            ProjectData.SpriteRuleRowDeleting -= value;
+            m_SpriteRuleDeleting = null;
+         }
+      }
       public event ProjectDataset.SpriteParameterRowChangeEventHandler SpriteParameterRowChanged
       {
          add
@@ -1054,6 +1381,22 @@ namespace SGDK2
             Debug.Assert(m_SpriteParameterDeleted == value);
             ProjectData.SpriteParameterRowDeleted -= value;
             m_SpriteParameterDeleted = null;
+         }
+      }
+      public event ProjectDataset.SpriteParameterRowChangeEventHandler SpriteParameterRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_SpriteParameterDeleting == null);
+            if (m_SpriteParameterDeleting != null)
+               ProjectData.SpriteParameterRowDeleting -= m_SpriteParameterDeleting;
+            ProjectData.SpriteParameterRowDeleting += m_SpriteParameterDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_SpriteParameterDeleting == value);
+            ProjectData.SpriteParameterRowDeleting -= value;
+            m_SpriteParameterDeleting = null;
          }
       }
       public event ProjectDataset.SpriteCategoryRowChangeEventHandler SpriteCategoryRowChanged
@@ -1104,6 +1447,22 @@ namespace SGDK2
             m_SpriteCategoryDeleted = null;
          }
       }
+      public event ProjectDataset.SpriteCategoryRowChangeEventHandler SpriteCategoryRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_SpriteCategoryDeleting == null);
+            if (m_SpriteCategoryDeleting != null)
+               ProjectData.SpriteCategoryRowDeleting -= m_SpriteCategoryDeleting;
+            ProjectData.SpriteCategoryRowDeleting += m_SpriteCategoryDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_SpriteCategoryDeleting == value);
+            ProjectData.SpriteCategoryRowDeleting -= value;
+            m_SpriteCategoryDeleting = null;
+         }
+      }
       public event ProjectDataset.SpriteCategorySpriteRowChangeEventHandler SpriteCategorySpriteRowChanged
       {
          add
@@ -1150,6 +1509,22 @@ namespace SGDK2
             Debug.Assert(m_SpriteCategorySpriteDeleted == value);
             ProjectData.SpriteCategorySpriteRowDeleted -= value;
             m_SpriteCategorySpriteDeleted = null;
+         }
+      }
+      public event ProjectDataset.SpriteCategorySpriteRowChangeEventHandler SpriteCategorySpriteRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_SpriteCategorySpriteDeleting == null);
+            if (m_SpriteCategorySpriteDeleting != null)
+               ProjectData.SpriteCategorySpriteRowDeleting -= m_SpriteCategorySpriteDeleting;
+            ProjectData.SpriteCategorySpriteRowDeleting += m_SpriteCategorySpriteDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_SpriteCategorySpriteDeleting == value);
+            ProjectData.SpriteCategorySpriteRowDeleting -= value;
+            m_SpriteCategorySpriteDeleting = null;
          }
       }
       public event ProjectDataset.SpriteRowChangeEventHandler SpriteRowChanged
@@ -1200,6 +1575,22 @@ namespace SGDK2
             m_SpriteDeleted = null;
          }
       }
+      public event ProjectDataset.SpriteRowChangeEventHandler SpriteRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_SpriteDeleting == null);
+            if (m_SpriteDeleting != null)
+               ProjectData.SpriteRowDeleting -= m_SpriteDeleting;
+            ProjectData.SpriteRowDeleting += m_SpriteDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_SpriteDeleting == value);
+            ProjectData.SpriteRowDeleting -= value;
+            m_SpriteDeleting = null;
+         }
+      }
       public event ProjectDataset.ParameterValueRowChangeEventHandler ParameterValueRowChanged
       {
          add
@@ -1246,6 +1637,22 @@ namespace SGDK2
             Debug.Assert(m_ParameterValueDeleted == value);
             ProjectData.ParameterValueRowDeleted -= value;
             m_ParameterValueDeleted = null;
+         }
+      }
+      public event ProjectDataset.ParameterValueRowChangeEventHandler ParameterValueRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_ParameterValueDeleting == null);
+            if (m_ParameterValueDeleting != null)
+               ProjectData.ParameterValueRowDeleting -= m_ParameterValueDeleting;
+            ProjectData.ParameterValueRowDeleting += m_ParameterValueDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_ParameterValueDeleting == value);
+            ProjectData.ParameterValueRowDeleting -= value;
+            m_ParameterValueDeleting = null;
          }
       }
       public event ProjectDataset.SolidityRowChangeEventHandler SolidityRowChanged
@@ -1296,6 +1703,22 @@ namespace SGDK2
             m_SolidityDeleted = null;
          }
       }
+      public event ProjectDataset.SolidityRowChangeEventHandler SolidityRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_SolidityDeleting == null);
+            if (m_SolidityDeleting != null)
+               ProjectData.SolidityRowDeleting -= m_SolidityDeleting;
+            ProjectData.SolidityRowDeleting += m_SolidityDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_SolidityDeleting == value);
+            ProjectData.SolidityRowDeleting -= value;
+            m_SolidityDeleting = null;
+         }
+      }
       public event ProjectDataset.SolidityShapeRowChangeEventHandler SolidityShapeRowChanged
       {
          add
@@ -1342,6 +1765,22 @@ namespace SGDK2
             Debug.Assert(m_SolidityShapeDeleted == value);
             ProjectData.SolidityShapeRowDeleted -= value;
             m_SolidityShapeDeleted = null;
+         }
+      }
+      public event ProjectDataset.SolidityShapeRowChangeEventHandler SolidityShapeRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_SolidityShapeDeleting == null);
+            if (m_SolidityShapeDeleting != null)
+               ProjectData.SolidityShapeRowDeleting -= m_SolidityShapeDeleting;
+            ProjectData.SolidityShapeRowDeleting += m_SolidityShapeDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_SolidityShapeDeleting == value);
+            ProjectData.SolidityShapeRowDeleting -= value;
+            m_SolidityShapeDeleting = null;
          }
       }
       public event ProjectDataset.TileShapeRowChangeEventHandler TileShapeRowChanged
@@ -1392,6 +1831,22 @@ namespace SGDK2
             m_TileShapeDeleted = null;
          }
       }
+      public event ProjectDataset.TileShapeRowChangeEventHandler TileShapeRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_TileShapeDeleting == null);
+            if (m_TileShapeDeleting != null)
+               ProjectData.TileShapeRowDeleting -= m_TileShapeDeleting;
+            ProjectData.TileShapeRowDeleting += m_TileShapeDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_TileShapeDeleting == value);
+            ProjectData.TileShapeRowDeleting -= value;
+            m_TileShapeDeleting = null;
+         }
+      }
       public event ProjectDataset.CategoryFrameRowChangeEventHandler CategoryFrameRowChanged
       {
          add
@@ -1440,6 +1895,22 @@ namespace SGDK2
             m_CategoryFrameDeleted = null;
          }
       }
+      public event ProjectDataset.CategoryFrameRowChangeEventHandler CategoryFrameRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_CategoryFrameDeleting == null);
+            if (m_CategoryFrameDeleting != null)
+               ProjectData.CategoryFrameRowDeleting -= m_CategoryFrameDeleting;
+            ProjectData.CategoryFrameRowDeleting += m_CategoryFrameDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_CategoryFrameDeleting == value);
+            ProjectData.CategoryFrameRowDeleting -= value;
+            m_CategoryFrameDeleting = null;
+         }
+      }
       public event ProjectDataset.SourceCodeRowChangeEventHandler SourceCodeRowChanged
       {
          add
@@ -1486,6 +1957,86 @@ namespace SGDK2
             Debug.Assert(m_SourceCodeDeleted == value);
             ProjectData.SourceCodeRowDeleted -= value;
             m_SourceCodeDeleted = null;
+         }
+      }
+      public event ProjectDataset.SourceCodeRowChangeEventHandler SourceCodeRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_SourceCodeDeleting == null);
+            if (m_SourceCodeDeleting != null)
+               ProjectData.SourceCodeRowDeleting -= m_SourceCodeDeleting;
+            ProjectData.SourceCodeRowDeleting += m_SourceCodeDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_SourceCodeDeleting == value);
+            ProjectData.SourceCodeRowDeleting -= value;
+            m_SourceCodeDeleting = null;
+         }
+      }
+      public event ProjectDataset.SpritePlanRowChangeEventHandler SpritePlanRowChanged
+      {
+         add
+         {
+            Debug.Assert(m_SpritePlanChanged == null);
+            if (m_SpritePlanChanged != null)
+               ProjectData.SpritePlanRowChanged -= m_SpritePlanChanged;
+            ProjectData.SpritePlanRowChanged += m_SpritePlanChanged = value;
+         }
+         remove
+         {
+            Debug.Assert(m_SpritePlanChanged == value);
+            ProjectData.SpritePlanRowChanged -= value;
+            m_SpritePlanChanged = null;
+         }
+      }
+      public event ProjectDataset.SpritePlanRowChangeEventHandler SpritePlanRowChanging
+      {
+         add
+         {
+            Debug.Assert(m_SpritePlanChanging == null);
+            if (m_SpritePlanChanging != null)
+               ProjectData.SpritePlanRowChanging -= m_SpritePlanChanging;
+            ProjectData.SpritePlanRowChanging += m_SpritePlanChanging = value;
+         }
+         remove
+         {
+            Debug.Assert(m_SpritePlanChanging == value);
+            ProjectData.SpritePlanRowChanging -= value;
+            m_SpritePlanChanging = null;
+         }
+      }
+      public event ProjectDataset.SpritePlanRowChangeEventHandler SpritePlanRowDeleted
+      {
+         add
+         {
+            Debug.Assert(m_SpritePlanDeleted == null);
+            if (m_SpritePlanDeleted != null)
+               ProjectData.SpritePlanRowDeleted -= m_SpritePlanDeleted;
+            ProjectData.SpritePlanRowDeleted += m_SpritePlanDeleted = value;
+         }
+         remove
+         {
+            Debug.Assert(m_SpritePlanDeleted == value);
+            ProjectData.SpritePlanRowDeleted -= value;
+            m_SpritePlanDeleted = null;
+         }
+      }
+      public event ProjectDataset.SpritePlanRowChangeEventHandler SpritePlanRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_SpritePlanDeleting == null);
+            if (m_SpritePlanDeleting != null)
+               ProjectData.SpritePlanRowDeleting -= m_SpritePlanDeleting;
+            ProjectData.SpritePlanRowDeleting += m_SpritePlanDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_SpritePlanDeleting == value);
+            ProjectData.SpritePlanRowDeleting -= value;
+            m_SpritePlanDeleting = null;
          }
       }
       public event System.EventHandler Clearing

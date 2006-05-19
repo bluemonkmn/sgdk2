@@ -35,6 +35,19 @@ namespace SGDK2
          m_dsPrj.AcceptChanges();
       }
 
+      public static DataTable[] GetChangedTables()
+      {
+         System.Collections.ArrayList tables = new ArrayList();
+         foreach (DataTable dt in m_dsPrj.Tables)
+         {
+            DataTable chg = dt.GetChanges();
+            if ((chg != null) && (chg.Rows.Count > 0))
+               tables.Add(chg);
+         }
+
+         return (DataTable[])tables.ToArray(typeof(DataTable));
+      }
+
       public static void RejectChanges()
       {
          m_dsPrj.RejectChanges();
@@ -126,6 +139,17 @@ namespace SGDK2
          remove
          {
             m_dsPrj.GraphicSheet.GraphicSheetRowDeleted -= value;
+         }
+      }
+      public static event ProjectDataset.GraphicSheetRowChangeEventHandler GraphicSheetRowDeleting
+      {
+         add
+         {
+            m_dsPrj.GraphicSheet.GraphicSheetRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.GraphicSheet.GraphicSheetRowDeleting -= value;
          }
       }
       
@@ -225,6 +249,17 @@ namespace SGDK2
             m_dsPrj.Frameset.FramesetRowDeleted -= value;
          }
       }
+      public static event ProjectDataset.FramesetRowChangeEventHandler FramesetRowDeleting
+      {
+         add
+         {
+            m_dsPrj.Frameset.FramesetRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.Frameset.FramesetRowDeleting -= value;
+         }
+      }
       public static ProjectDataset.FramesetRow AddFramesetRow(string Name)
       {
          return m_dsPrj.Frameset.AddFramesetRow(Name);
@@ -254,6 +289,15 @@ namespace SGDK2
                return ((ProjectDataset.SpriteRow)x).Priority.CompareTo(((ProjectDataset.SpriteRow)y).Priority);
             else if (x is ProjectDataset.SpriteParameterRow)
                return ((ProjectDataset.SpriteParameterRow)x).Name.CompareTo(((ProjectDataset.SpriteParameterRow)y).Name);
+            else if (x is ProjectDataset.SpritePlanRow)
+            {
+               int result = ((ProjectDataset.SpritePlanRow)x).Priority.CompareTo(((ProjectDataset.SpritePlanRow)y).Priority);
+               if (result == 0)
+                  result = ((ProjectDataset.SpritePlanRow)x).Name.CompareTo(((ProjectDataset.SpritePlanRow)y).Name);
+               return result;
+            }
+            else if (x is ProjectDataset.CoordinateRow)
+               return ((ProjectDataset.CoordinateRow)x).Sequence.CompareTo(((ProjectDataset.CoordinateRow)y).Sequence);
             else
                throw new ApplicationException("Unknown data row type for comparing");
          }
@@ -309,6 +353,17 @@ namespace SGDK2
             m_dsPrj.Frame.FrameRowDeleted -= value;
          }
       }
+      public static event ProjectDataset.FrameRowChangeEventHandler FrameRowDeleting
+      {
+         add
+         {
+            m_dsPrj.Frame.FrameRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.Frame.FrameRowDeleting -= value;
+         }
+      }
       public static ProjectDataset.FrameDataTable Frame
       {
          get
@@ -353,9 +408,7 @@ namespace SGDK2
          m_dsPrj.Frame.Rows.InsertAt(drNew, FrameValue);
          foreach(ProjectDataset.FrameRow dr in ardr)
             dr.FrameValue++;
-         m_dsPrj.Frame.AcceptChanges();
          drNew.FrameValue = FrameValue;
-         drNew.AcceptChanges();
          return drNew;
       }
 
@@ -372,9 +425,7 @@ namespace SGDK2
                   " AND FrameValue < " + nSelVal.ToString(), "FrameValue DESC");
                foreach(ProjectDataset.FrameRow fr in ardr)
                   fr.FrameValue++;
-               m_dsPrj.AcceptChanges();
                row.FrameValue = NewFrameValue++;
-               row.AcceptChanges();
             }
             else if (NewFrameValue > nSelVal)
             {
@@ -383,10 +434,8 @@ namespace SGDK2
                   " AND FrameValue < " + NewFrameValue.ToString(), "FrameValue");
                foreach(ProjectDataset.FrameRow fr in ardr)
                   fr.FrameValue--;
-               m_dsPrj.Frame.AcceptChanges();
                row.FrameValue = NewFrameValue - 1;
                row.EndEdit();
-               row.AcceptChanges();
             }
          }
          return NewFrameValue;
@@ -399,7 +448,6 @@ namespace SGDK2
          foreach(ProjectDataset.FrameRow fr in
             m_dsPrj.Frame.Select("Name='" + sDelete + "' AND FrameValue > " + nFrameValue.ToString(), "FrameValue"))
             fr.FrameValue--;
-         m_dsPrj.Frame.AcceptChanges();
       }
       public static ProjectDataset.FrameRow AddFrameRow(
          ProjectDataset.FramesetRow Frameset, int FrameValue, string GraphicSheet, short CellIndex,
@@ -445,6 +493,17 @@ namespace SGDK2
          remove
          {
             m_dsPrj.Tileset.TilesetRowDeleted -= value;
+         }
+      }
+      public static event ProjectDataset.TilesetRowChangeEventHandler TilesetRowDeleting
+      {
+         add
+         {
+            m_dsPrj.Tileset.TilesetRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.Tileset.TilesetRowDeleting -= value;
          }
       }
       public static ProjectDataset.TilesetRow AddTilesetRow(string Name, ProjectDataset.FramesetRow Frameset, short TileWidth, short TileHeight)
@@ -550,6 +609,17 @@ namespace SGDK2
             m_dsPrj.Tile.TileRowDeleted -= value;
          }
       }
+      public static event ProjectDataset.TileRowChangeEventHandler TileRowDeleting
+      {
+         add
+         {
+            m_dsPrj.Tile.TileRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.Tile.TileRowDeleting -= value;
+         }
+      }
       /// <summary>
       /// Add a new "managed" tile (not automatically mapped to the frameset) to a tileset.
       /// </summary>
@@ -615,6 +685,17 @@ namespace SGDK2
          remove
          {
             m_dsPrj.TileFrame.TileFrameRowDeleted -= value;
+         }
+      }
+      public static event ProjectDataset.TileFrameRowChangeEventHandler TileFrameRowDeleting
+      {
+         add
+         {
+            m_dsPrj.TileFrame.TileFrameRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.TileFrame.TileFrameRowDeleting -= value;
          }
       }
 
@@ -686,7 +767,6 @@ namespace SGDK2
                System.Diagnostics.Debug.Assert(rows[nIdx].Sequence==nIdx);
                rows[nIdx].Sequence = (short)(nIdx + nOffsetDir);
             }
-            m_dsPrj.TileFrame.AcceptChanges();
             
             row.Sequence = NewSequence;
          }
@@ -730,6 +810,17 @@ namespace SGDK2
          remove
          {
             m_dsPrj.Counter.CounterRowDeleted -= value;
+         }
+      }
+      public static event ProjectDataset.CounterRowChangeEventHandler CounterRowDeleting
+      {
+         add
+         {
+            m_dsPrj.Counter.CounterRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.Counter.CounterRowDeleting -= value;
          }
       }
 
@@ -782,6 +873,17 @@ namespace SGDK2
          remove
          {
             m_dsPrj.Map.MapRowDeleted -= value;
+         }
+      }
+      public static event ProjectDataset.MapRowChangeEventHandler MapRowDeleting
+      {
+         add
+         {
+            m_dsPrj.Map.MapRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.Map.MapRowDeleting -= value;
          }
       }
       public static void AddMapRow(ProjectDataset.MapRow row)
@@ -847,6 +949,17 @@ namespace SGDK2
             m_dsPrj.Layer.LayerRowDeleted -= value;
          }
       }
+      public static event ProjectDataset.LayerRowChangeEventHandler LayerRowDeleting
+      {
+         add
+         {
+            m_dsPrj.Layer.LayerRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.Layer.LayerRowDeleting -= value;
+         }
+      }
       public static void AddLayerRow(ProjectDataset.LayerRow row)
       {
          m_dsPrj.Layer.AddLayerRow(row);
@@ -908,6 +1021,17 @@ namespace SGDK2
             m_dsPrj.Category.CategoryRowDeleted -= value;
          }
       }
+      public static event ProjectDataset.CategoryRowChangeEventHandler CategoryRowDeleting
+      {
+         add
+         {
+            m_dsPrj.Category.CategoryRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.Category.CategoryRowDeleting -= value;
+         }
+      }
       public static ProjectDataset.CategoryRow AddCategoryRow(ProjectDataset.TilesetRow Parent, string Name)
       {
          return m_dsPrj.Category.AddCategoryRow(Parent, Name);
@@ -961,6 +1085,17 @@ namespace SGDK2
          remove
          {
             m_dsPrj.CategoryTile.CategoryTileRowDeleted -= value;
+         }
+      }
+      public static event ProjectDataset.CategoryTileRowChangeEventHandler CategoryTileRowDeleting
+      {
+         add
+         {
+            m_dsPrj.CategoryTile.CategoryTileRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.CategoryTile.CategoryTileRowDeleting -= value;
          }
       }
       public static ProjectDataset.CategoryTileRow AddCategoryTileRow(string Tileset, string Category, int TileValue)
@@ -1025,6 +1160,17 @@ namespace SGDK2
             m_dsPrj.SpriteDefinition.SpriteDefinitionRowDeleted -= value;
          }
       }
+      public static event ProjectDataset.SpriteDefinitionRowChangeEventHandler SpriteDefinitionRowDeleting
+      {
+         add
+         {
+            m_dsPrj.SpriteDefinition.SpriteDefinitionRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.SpriteDefinition.SpriteDefinitionRowDeleting -= value;
+         }
+      }
       public static ProjectDataset.SpriteDefinitionDataTable SpriteDefinition
       {
          get
@@ -1080,6 +1226,17 @@ namespace SGDK2
          remove
          {
             m_dsPrj.SpriteState.SpriteStateRowDeleted -= value;
+         }
+      }
+      public static event ProjectDataset.SpriteStateRowChangeEventHandler SpriteStateRowDeleting
+      {
+         add
+         {
+            m_dsPrj.SpriteState.SpriteStateRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.SpriteState.SpriteStateRowDeleting -= value;
          }
       }
       public static ProjectDataset.SpriteStateDataTable SpriteState
@@ -1139,6 +1296,17 @@ namespace SGDK2
             m_dsPrj.SpriteFrame.SpriteFrameRowDeleted -= value;
          }
       }
+      public static event ProjectDataset.SpriteFrameRowChangeEventHandler SpriteFrameRowDeleting
+      {
+         add
+         {
+            m_dsPrj.SpriteFrame.SpriteFrameRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.SpriteFrame.SpriteFrameRowDeleting -= value;
+         }
+      }
       public static ProjectDataset.SpriteFrameDataTable SpriteFrame
       {
          get
@@ -1168,7 +1336,6 @@ namespace SGDK2
                System.Diagnostics.Debug.Assert(rows[nIdx].Sequence==nIdx);
                rows[nIdx].Sequence = (short)(nIdx + nOffsetDir);
             }
-            m_dsPrj.SpriteFrame.AcceptChanges();
             
             row.Sequence = NewSequence;
          }
@@ -1268,6 +1435,17 @@ namespace SGDK2
             m_dsPrj.SpriteRule.SpriteRuleRowDeleted -= value;
          }
       }
+      public static event ProjectDataset.SpriteRuleRowChangeEventHandler SpriteRuleRowDeleting
+      {
+         add
+         {
+            m_dsPrj.SpriteRule.SpriteRuleRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.SpriteRule.SpriteRuleRowDeleting -= value;
+         }
+      }
       public static ProjectDataset.SpriteRuleDataTable SpriteRule
       {
          get
@@ -1311,6 +1489,17 @@ namespace SGDK2
             m_dsPrj.SpriteParameter.SpriteParameterRowDeleted -= value;
          }
       }
+      public static event ProjectDataset.SpriteParameterRowChangeEventHandler SpriteParameterRowDeleting
+      {
+         add
+         {
+            m_dsPrj.SpriteParameter.SpriteParameterRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.SpriteParameter.SpriteParameterRowDeleting -= value;
+         }
+      }
       public static ProjectDataset.SpriteParameterDataTable SpriteParameter
       {
          get
@@ -1352,6 +1541,17 @@ namespace SGDK2
          remove
          {
             m_dsPrj.SpriteCategory.SpriteCategoryRowDeleted -= value;
+         }
+      }
+      public static event ProjectDataset.SpriteCategoryRowChangeEventHandler SpriteCategoryRowDeleting
+      {
+         add
+         {
+            m_dsPrj.SpriteCategory.SpriteCategoryRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.SpriteCategory.SpriteCategoryRowDeleting -= value;
          }
       }
       public static ProjectDataset.SpriteCategoryDataTable SpriteCategory
@@ -1403,6 +1603,17 @@ namespace SGDK2
          remove
          {
             m_dsPrj.SpriteCategorySprite.SpriteCategorySpriteRowDeleted -= value;
+         }
+      }
+      public static event ProjectDataset.SpriteCategorySpriteRowChangeEventHandler SpriteCategorySpriteRowDeleting
+      {
+         add
+         {
+            m_dsPrj.SpriteCategorySprite.SpriteCategorySpriteRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.SpriteCategorySprite.SpriteCategorySpriteRowDeleting -= value;
          }
       }
       public static ProjectDataset.SpriteCategorySpriteDataTable SpriteCategorySprite
@@ -1463,6 +1674,17 @@ namespace SGDK2
          remove
          {
             m_dsPrj.Sprite.SpriteRowDeleted -= value;
+         }
+      }
+      public static event ProjectDataset.SpriteRowChangeEventHandler SpriteRowDeleting
+      {
+         add
+         {
+            m_dsPrj.Sprite.SpriteRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.Sprite.SpriteRowDeleting -= value;
          }
       }
       public static ProjectDataset.SpriteDataTable Sprite
@@ -1530,6 +1752,17 @@ namespace SGDK2
             m_dsPrj.ParameterValue.ParameterValueRowDeleted -= value;
          }
       }
+      public static event ProjectDataset.ParameterValueRowChangeEventHandler ParameterValueRowDeleting
+      {
+         add
+         {
+            m_dsPrj.ParameterValue.ParameterValueRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.ParameterValue.ParameterValueRowDeleting -= value;
+         }
+      }
       public static ProjectDataset.ParameterValueDataTable ParameterValue
       {
          get
@@ -1573,12 +1806,41 @@ namespace SGDK2
             m_dsPrj.SpritePlan.SpritePlanRowDeleted -= value;
          }
       }
+      public static event ProjectDataset.SpritePlanRowChangeEventHandler SpritePlanRowDeleting
+      {
+         add
+         {
+            m_dsPrj.SpritePlan.SpritePlanRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.SpritePlan.SpritePlanRowDeleting -= value;
+         }
+      }
       public static ProjectDataset.SpritePlanDataTable SpritePlan
       {
          get
          {
             return m_dsPrj.SpritePlan;
          }
+      }
+      public static ProjectDataset.SpritePlanRow AddSpritePlan(ProjectDataset.LayerRow ParentLayer, string Name, int Priority)
+      {
+         return m_dsPrj.SpritePlan.AddSpritePlanRow(ParentLayer.MapRow.Name, ParentLayer.Name, Name, Priority);
+      }
+      public static ProjectDataset.SpritePlanRow GetSpritePlan(ProjectDataset.LayerRow ParentLayer, string Name)
+      {
+         return m_dsPrj.SpritePlan.FindByMapNameLayerNameName(ParentLayer.MapRow.Name, ParentLayer.Name, Name);
+      }
+      public static ProjectDataset.SpritePlanRow GetSpritePlan(string MapName, string LayerName, string Name)
+      {
+         return m_dsPrj.SpritePlan.FindByMapNameLayerNameName(MapName, LayerName, Name);
+      }
+      public static ProjectDataset.SpritePlanRow[] GetSortedSpritePlans(ProjectDataset.LayerRow ParentLayer)
+      {
+         ProjectDataset.SpritePlanRow[] result = ParentLayer.GetSpritePlanRows();
+         Array.Sort(result, new DataRowComparer());
+         return result;
       }
       #endregion
 
@@ -1616,12 +1878,40 @@ namespace SGDK2
             m_dsPrj.Coordinate.CoordinateRowDeleted -= value;
          }
       }
+      public static event ProjectDataset.CoordinateRowChangeEventHandler CoordinateRowDeleting
+      {
+         add
+         {
+            m_dsPrj.Coordinate.CoordinateRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.Coordinate.CoordinateRowDeleting -= value;
+         }
+      }
       public static ProjectDataset.CoordinateDataTable Coordinate
       {
          get
          {
             return m_dsPrj.Coordinate;
          }
+      }
+      public static ProjectDataset.CoordinateRow[] GetSortedCoordinates(ProjectDataset.SpritePlanRow ParentPlan)
+      {
+         ProjectDataset.CoordinateRow[] result = ParentPlan.GetCoordinateRows();
+         Array.Sort(result, new DataRowComparer());
+         return result;
+      }
+      public static ProjectDataset.CoordinateRow AppendPlanCoordinate(ProjectDataset.SpritePlanRow ParentPlan, int x, int y, int weight)
+      {
+         ProjectDataset.CoordinateRow[] others = ParentPlan.GetCoordinateRows();
+         short MaxSeq = 0;
+         for (int i=0; i<others.Length; i++)
+         {
+            if (others[i].Sequence > MaxSeq)
+               MaxSeq = others[i].Sequence;
+         }
+         return m_dsPrj.Coordinate.AddCoordinateRow(ParentPlan.LayerRowParent.MapRow.Name, ParentPlan.LayerRowParent.Name, ParentPlan.Name, (short)(MaxSeq + 1), x, y, weight);
       }
       #endregion
       
@@ -1657,6 +1947,17 @@ namespace SGDK2
          remove
          {
             m_dsPrj.Solidity.SolidityRowDeleted -= value;
+         }
+      }
+      public static event ProjectDataset.SolidityRowChangeEventHandler SolidityRowDeleting
+      {
+         add
+         {
+            m_dsPrj.Solidity.SolidityRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.Solidity.SolidityRowDeleting -= value;
          }
       }
       public static ProjectDataset.SolidityDataTable Solidity
@@ -1710,6 +2011,17 @@ namespace SGDK2
             m_dsPrj.SolidityShape.SolidityShapeRowDeleted -= value;
          }
       }
+      public static event ProjectDataset.SolidityShapeRowChangeEventHandler SolidityShapeRowDeleting
+      {
+         add
+         {
+            m_dsPrj.SolidityShape.SolidityShapeRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.SolidityShape.SolidityShapeRowDeleting -= value;
+         }
+      }
       public static ProjectDataset.SolidityShapeDataTable SolidityShape
       {
          get
@@ -1751,6 +2063,17 @@ namespace SGDK2
          remove
          {
             m_dsPrj.TileShape.TileShapeRowDeleted -= value;
+         }
+      }
+      public static event ProjectDataset.TileShapeRowChangeEventHandler TileShapeRowDeleting
+      {
+         add
+         {
+            m_dsPrj.TileShape.TileShapeRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.TileShape.TileShapeRowDeleting -= value;
          }
       }
       public static ProjectDataset.TileShapeDataTable TileShape
@@ -1802,6 +2125,17 @@ namespace SGDK2
          remove
          {
             m_dsPrj.CategoryFrame.CategoryFrameRowDeleted -= value;
+         }
+      }
+      public static event ProjectDataset.CategoryFrameRowChangeEventHandler CategoryFrameRowDeleting
+      {
+         add
+         {
+            m_dsPrj.CategoryFrame.CategoryFrameRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.CategoryFrame.CategoryFrameRowDeleting -= value;
          }
       }
       public static ProjectDataset.CategoryFrameDataTable CategoryFrame
@@ -1873,6 +2207,17 @@ namespace SGDK2
          remove
          {
             m_dsPrj.SourceCode.SourceCodeRowDeleted -= value;
+         }
+      }
+      public static event ProjectDataset.SourceCodeRowChangeEventHandler SourceCodeRowDeleting
+      {
+         add
+         {
+            m_dsPrj.SourceCode.SourceCodeRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.SourceCode.SourceCodeRowDeleting -= value;
          }
       }
       public static ProjectDataset.SourceCodeDataTable SourceCode

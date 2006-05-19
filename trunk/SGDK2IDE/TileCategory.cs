@@ -7,9 +7,9 @@ using System.Data;
 
 namespace SGDK2
 {
-	/// <summary>
-	/// Summary description for TileCategory.
-	/// </summary>
+   /// <summary>
+   /// Summary description for TileCategory.
+   /// </summary>
    public class frmTileCategory : System.Windows.Forms.Form
    {
       #region Embedded classes
@@ -105,6 +105,11 @@ namespace SGDK2
       private FrameList m_CategoryProvider;
       // Provides frameset info to the TileFrames GraphicBrowser
       private FrameList m_TileFrameProvider;
+      private int m_nDeleteCTValue = -1;
+      private int m_nDeleteTValue = -1;
+      private int m_nDeleteTFValue = -1;
+      private int m_nDeleteCFTile = -1;
+      private short m_nDeleteCFFrame = -1;
       #endregion
 
       #region Form Designer Members
@@ -144,7 +149,6 @@ namespace SGDK2
             ;
          m_Category = ProjectData.AddCategoryRow(parent, "New Category " + iNew.ToString());
          txtName.Text = m_Category.Name;
-         ProjectData.AcceptChanges();
          InitializeTiles();
       }
 
@@ -321,16 +325,20 @@ namespace SGDK2
          // 
          // dataMonitor
          // 
-         this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
-         this.dataMonitor.TileFrameRowDeleted += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
-         this.dataMonitor.CategoryRowDeleted += new SGDK2.ProjectDataset.CategoryRowChangeEventHandler(this.dataMonitor_CategoryRowDeleted);
-         this.dataMonitor.TileRowChanged += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowChanged);
-         this.dataMonitor.TileFrameRowChanged += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
-         this.dataMonitor.CategoryTileRowChanged += new SGDK2.ProjectDataset.CategoryTileRowChangeEventHandler(this.dataMonitor_CategoryTileRowChanged);
-         this.dataMonitor.CategoryFrameRowChanged += new SGDK2.ProjectDataset.CategoryFrameRowChangeEventHandler(this.dataMonitor_CategoryFrameRowChanged);
-         this.dataMonitor.CategoryTileRowDeleted += new SGDK2.ProjectDataset.CategoryTileRowChangeEventHandler(this.dataMonitor_CategoryTileRowDeleted);
-         this.dataMonitor.CategoryFrameRowDeleted += new SGDK2.ProjectDataset.CategoryFrameRowChangeEventHandler(this.dataMonitor_CategoryFrameRowDeleted);
+         this.dataMonitor.TileFrameRowDeleting += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
          this.dataMonitor.TileRowDeleted += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowChanged);
+         this.dataMonitor.CategoryFrameRowDeleting += new SGDK2.ProjectDataset.CategoryFrameRowChangeEventHandler(this.dataMonitor_CategoryFrameRowDeleting);
+         this.dataMonitor.CategoryRowDeleted += new SGDK2.ProjectDataset.CategoryRowChangeEventHandler(this.dataMonitor_CategoryRowDeleted);
+         this.dataMonitor.CategoryFrameRowChanged += new SGDK2.ProjectDataset.CategoryFrameRowChangeEventHandler(this.dataMonitor_CategoryFrameRowChanged);
+         this.dataMonitor.TileFrameRowChanged += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
+         this.dataMonitor.TileRowChanged += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowChanged);
+         this.dataMonitor.CategoryTileRowChanged += new SGDK2.ProjectDataset.CategoryTileRowChangeEventHandler(this.dataMonitor_CategoryTileRowChanged);
+         this.dataMonitor.CategoryTileRowDeleting += new SGDK2.ProjectDataset.CategoryTileRowChangeEventHandler(this.dataMonitor_CategoryTileRowDeleting);
+         this.dataMonitor.TileFrameRowDeleted += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
+         this.dataMonitor.TileRowDeleting += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowChanged);
+         this.dataMonitor.CategoryFrameRowDeleted += new SGDK2.ProjectDataset.CategoryFrameRowChangeEventHandler(this.dataMonitor_CategoryFrameRowDeleted);
+         this.dataMonitor.CategoryTileRowDeleted += new SGDK2.ProjectDataset.CategoryTileRowChangeEventHandler(this.dataMonitor_CategoryTileRowDeleted);
+         this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
          // 
          // chkLimitIncludedFrames
          // 
@@ -514,7 +522,6 @@ namespace SGDK2
                }
             }
          }
-         ProjectData.AcceptChanges();
       }
 
       private void RemoveSelectionFromCategory()
@@ -536,7 +543,6 @@ namespace SGDK2
                }
             }
          }
-         ProjectData.AcceptChanges();
       }
 
       private void LoadTileFrames(int nTileIndex)
@@ -576,7 +582,6 @@ namespace SGDK2
          if (m_Category.Name != txtName.Text)
          {
             m_Category.Name = txtName.Text;
-            ProjectData.AcceptChanges();
          }
       }
 
@@ -626,24 +631,31 @@ namespace SGDK2
          }
       }
 
+      private void dataMonitor_CategoryTileRowDeleting(object sender, SGDK2.ProjectDataset.CategoryTileRowChangeEvent e)
+      {
+         if ((e.Action == DataRowAction.Delete) && (e.Row.HasVersion(DataRowVersion.Current)))
+         {
+            if ((String.Compare(e.Row[ProjectData.CategoryTile.CategoryColumn, DataRowVersion.Current].ToString(),
+               m_Category.Name)==0) && (String.Compare(e.Row[ProjectData.CategoryTile.TilesetColumn,
+               DataRowVersion.Current].ToString(), m_Category.TilesetRow.Name) == 0))
+               m_nDeleteCTValue = (int)(e.Row[ProjectData.CategoryTile.TileValueColumn, DataRowVersion.Current]);
+         }
+      }
+
       private void dataMonitor_CategoryTileRowDeleted(object sender, SGDK2.ProjectDataset.CategoryTileRowChangeEvent e)
       {
-         if (e.Action == DataRowAction.Delete)
+         if (m_nDeleteCTValue >= 0)
          {
-            if ((String.Compare(e.Row[ProjectData.CategoryTile.CategoryColumn, DataRowVersion.Original].ToString(),
-               m_Category.Name)==0) && (String.Compare(e.Row[ProjectData.CategoryTile.TilesetColumn,
-               DataRowVersion.Original].ToString(), m_Category.TilesetRow.Name) == 0))
-            {
-               int nDeleteValue = (int)(e.Row[ProjectData.CategoryTile.TileValueColumn, DataRowVersion.Original]);
-               for (int i = 0; i < m_CategoryProvider.Count; i++)
-                  if (((TileProvider)m_CategoryProvider[i]).TileIndex == nDeleteValue)
-                  {
-                     m_CategoryProvider.RemoveAt(i);
-                     CategoryFrames.Invalidate();
-                     return;
-                  }
-            }
-         }      
+            for (int i = 0; i < m_CategoryProvider.Count; i++)
+               if (((TileProvider)m_CategoryProvider[i]).TileIndex == m_nDeleteCTValue)
+               {
+                  m_CategoryProvider.RemoveAt(i);
+                  CategoryFrames.Invalidate();
+                  m_nDeleteCTValue = -1;
+                  return;
+               }
+            m_nDeleteCTValue = -1;
+         }
       }
 
       private void dataMonitor_TileRowChanged(object sender, SGDK2.ProjectDataset.TileRowChangeEvent e)
@@ -664,12 +676,16 @@ namespace SGDK2
                }
                break;
             case DataRowAction.Delete:
-               if (string.Compare((string)e.Row["Name", DataRowVersion.Original], m_Category.TilesetRow.Name) == 0)
+               if ((e.Row.HasVersion(DataRowVersion.Current)) &&
+                  (string.Compare((string)e.Row["Name", DataRowVersion.Current], m_Category.TilesetRow.Name) == 0))
+                  // Deleting, store delete key
+                  m_nDeleteTValue = (int)tr["TileValue", DataRowVersion.Current];
+               else if (m_nDeleteTValue >= 0)
                {
-                  int nTileValue = (int)tr["TileValue", DataRowVersion.Original];
-                  m_Tiles.ResetTile(nTileValue, nTileValue % m_Category.TilesetRow.FramesetRow.GetFrameRows().Length);
+                  m_Tiles.ResetTile(m_nDeleteTValue, m_nDeleteTValue % m_Category.TilesetRow.FramesetRow.GetFrameRows().Length);
                   TilesetTiles.Invalidate();
                   CategoryFrames.Invalidate();
+                  m_nDeleteTValue = -1;
                }
                break;
          }
@@ -690,13 +706,17 @@ namespace SGDK2
                }
                break;
             case DataRowAction.Delete:
-               if (string.Compare((string)tfr["Name", DataRowVersion.Original], m_Category.TilesetRow.Name) == 0)
+               if (e.Row.HasVersion(DataRowVersion.Current) &&
+                  (string.Compare((string)tfr["Name", DataRowVersion.Current], m_Category.TilesetRow.Name) == 0))
+                  m_nDeleteTFValue = (int)tfr["TileValue", DataRowVersion.Current];
+               else if (m_nDeleteTFValue >= 0)
                {
                   ProjectDataset.TileRow tr = ProjectData.Tile.FindByNameTileValue(
-                     m_Category.TilesetRow.Name, (int)tfr["TileValue", DataRowVersion.Original]);
+                     m_Category.TilesetRow.Name, m_nDeleteTFValue);
                   m_Tiles.RefreshTile(tr);
                   TilesetTiles.Invalidate();
                   CategoryFrames.Invalidate();
+                  m_nDeleteTFValue = -1;
                }
                break;
          }
@@ -776,37 +796,51 @@ namespace SGDK2
          }      
       }
 
-      private void dataMonitor_CategoryFrameRowDeleted(object sender, SGDK2.ProjectDataset.CategoryFrameRowChangeEvent e)
+      private void dataMonitor_CategoryFrameRowDeleting(object sender, SGDK2.ProjectDataset.CategoryFrameRowChangeEvent e)
       {
-         if (e.Action == DataRowAction.Delete)
+         if ((e.Action == DataRowAction.Delete) && (e.Row.HasVersion(DataRowVersion.Current)))
          {
-            string Tileset = e.Row[ProjectData.CategoryFrame.TilesetColumn, DataRowVersion.Original].ToString();
-            string Category = e.Row[ProjectData.CategoryFrame.CategoryColumn, DataRowVersion.Original].ToString();
+            string Tileset = e.Row[ProjectData.CategoryFrame.TilesetColumn, DataRowVersion.Current].ToString();
+            string Category = e.Row[ProjectData.CategoryFrame.CategoryColumn, DataRowVersion.Current].ToString();
 
             if ((String.Compare(Category, m_Category.Name)==0) &&
-                (String.Compare(Tileset, m_Category.TilesetRow.Name) == 0))
+               (String.Compare(Tileset, m_Category.TilesetRow.Name) == 0))
             {
-               int nDeleteTile = (int)(e.Row[ProjectData.CategoryFrame.TileValueColumn, DataRowVersion.Original]);
-               short nDeleteFrame = (short)(e.Row[ProjectData.CategoryFrame.FrameColumn, DataRowVersion.Original]);
-               for (int i = 0; i < m_CategoryProvider.Count; i++)
+               m_nDeleteCFTile = (int)(e.Row[ProjectData.CategoryFrame.TileValueColumn, DataRowVersion.Current]);
+               m_nDeleteCFFrame = (short)(e.Row[ProjectData.CategoryFrame.FrameColumn, DataRowVersion.Current]);
+            }
+         }
+      }
+
+      private void dataMonitor_CategoryFrameRowDeleted(object sender, SGDK2.ProjectDataset.CategoryFrameRowChangeEvent e)
+      {
+         if (m_nDeleteCFTile >= 0)
+         {
+            string Tileset = m_Category.TilesetRow.Name;
+            string Category = m_Category.Name;
+
+            for (int i = 0; i < m_CategoryProvider.Count; i++)
+            {
+               if ((((TileProvider)m_CategoryProvider[i]).TileIndex == m_nDeleteCFTile) &&
+                  (((TileProvider)m_CategoryProvider[i]).TileFrameIndex == m_nDeleteCFFrame))
                {
-                  if ((((TileProvider)m_CategoryProvider[i]).TileIndex == nDeleteTile) &&
-                     (((TileProvider)m_CategoryProvider[i]).TileFrameIndex == nDeleteFrame))
+                  m_CategoryProvider.RemoveAt(i);
+                  // When all of a tile's frames are removed without removing the tile itself,
+                  // must put the tile back in with all frames.
+                  ProjectDataset.CategoryTileRow parent = ProjectData.GetCategoryTileRow(Tileset, Category, m_nDeleteCFTile);
+                  if (parent.GetCategoryFrameRows().Length == 0)
                   {
-                     m_CategoryProvider.RemoveAt(i);
-                     // When all of a tile's frames are removed without removing the tile itself,
-                     // must put the tile back in with all frames.
-                     ProjectDataset.CategoryTileRow parent = ProjectData.GetCategoryTileRow(Tileset, Category, nDeleteTile);
-                     if (parent.GetCategoryFrameRows().Length == 0)
-                     {
-                        m_CategoryProvider.Add(new TileProvider(m_Tiles, parent.TileValue));
-                     }
-                     CategoryFrames.Invalidate();
-                     return;
+                     m_CategoryProvider.Add(new TileProvider(m_Tiles, parent.TileValue));
                   }
+                  CategoryFrames.Invalidate();
+                  m_nDeleteCFTile = -1;
+                  m_nDeleteCFFrame = -1;
+                  return;
                }
             }
-         }            
+            m_nDeleteCFTile = -1;
+            m_nDeleteCFFrame = -1;
+         }
       }
 
       private void CategoryFrames_DragDrop(object sender, System.Windows.Forms.DragEventArgs e)

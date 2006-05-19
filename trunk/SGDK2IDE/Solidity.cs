@@ -39,7 +39,6 @@ namespace SGDK2
 
          m_Solidity = ProjectData.AddSolidity(sName);
          txtName.Text = sName;
-         ProjectData.AcceptChanges();
 
          InitializeGrid();
       }
@@ -208,7 +207,6 @@ namespace SGDK2
       private void txtName_Validated(object sender, System.EventArgs e)
       {
          m_Solidity.Name = txtName.Text;
-         ProjectData.AcceptChanges();
       }
 
       private void grdMappings_CurrentCellChanged(object sender, System.EventArgs e)

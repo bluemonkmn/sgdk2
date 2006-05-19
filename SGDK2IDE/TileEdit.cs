@@ -73,9 +73,9 @@ namespace SGDK2
             sName = "New Tileset " + (nIdx++).ToString();
          while (ProjectData.GetTileSet(sName) != null);
 
-         if (ProjectData.Frameset.Rows.Count <= 0)
+         if (ProjectData.Frameset.DefaultView.Count <= 0)
             throw new ApplicationException("Please create a Frameset before creating a Tileset");
-         ProjectDataset.FramesetRow fr = (ProjectDataset.FramesetRow)ProjectData.Frameset.Rows[0];
+         ProjectDataset.FramesetRow fr = (ProjectDataset.FramesetRow)ProjectData.Frameset.DefaultView[0].Row;
          ProjectDataset.FrameRow[] f = ProjectData.GetSortedFrameRows(fr);
          if (f.Length > 0)
          {
@@ -89,7 +89,6 @@ namespace SGDK2
          txtTilesetName.Text = sName;
          nudTileWidth.Value = m_Tileset.TileWidth;
          nudTileHeight.Value = m_Tileset.TileHeight;
-         ProjectData.AcceptChanges();
          FillFramesets();
          FillCounters();
       }
@@ -637,8 +636,9 @@ namespace SGDK2
       private void FillFramesets()
       {
          cboFrameset.Items.Clear();
-         foreach (ProjectDataset.FramesetRow fr in ProjectData.Frameset.Rows)
+         foreach (DataRowView drv in ProjectData.Frameset.DefaultView)
          {
+            ProjectDataset.FramesetRow fr = (ProjectDataset.FramesetRow)drv.Row;
             int nNewIndex = cboFrameset.Items.Add(fr);
             if (fr == m_Tileset.FramesetRow)
                cboFrameset.SelectedIndex = nNewIndex;
@@ -709,7 +709,6 @@ namespace SGDK2
                      TileFrames.CurrentCellIndex = nNewIndex;
                   }
                }
-               ProjectData.AcceptChanges();
             }
             else
             {
@@ -719,7 +718,6 @@ namespace SGDK2
                      tr, nCellIndex, fr.FrameValue, (short)updRepeatCount.Value);
                   TileFrames.FramesToDisplay.Insert(nCellIndex++, new TileFrame(tfr));
                }
-               ProjectData.AcceptChanges();
             }
          }
          catch (System.Exception ex)
@@ -772,7 +770,6 @@ namespace SGDK2
                if (nNewVal < m_Tileset.FramesetRow.GetFrameRows().Length)
                   ProjectData.InsertFrame(trNew, 0, nNewVal, 1);
                cboMappedTiles.Items.Add(trNew);
-               ProjectData.AcceptChanges();
                cboMappedTiles.SelectedItem = trNew;
             }
             else if (e.Button == tbMappedTiles.Buttons[1])
@@ -784,7 +781,6 @@ namespace SGDK2
                      cboMappedTiles.SelectedIndex = -1;
                      cboMappedTiles.Items.Remove(tr);
                      tr.Delete();
-                     ProjectData.AcceptChanges();
                   }
             }
          }
@@ -806,7 +802,6 @@ namespace SGDK2
                cboMappedTiles.SelectedIndex = -1;
                cboMappedTiles.Items.Remove(tr);
                tr.Delete();
-               ProjectData.AcceptChanges();
             }
          }
          catch (System.Exception ex)
@@ -927,7 +922,6 @@ namespace SGDK2
       private void txtTilesetName_Validated(object sender, System.EventArgs e)
       {
          m_Tileset.Name = txtTilesetName.Text;
-         m_Tileset.AcceptChanges();
       }
 
       private void mnuNewTile_Click(object sender, System.EventArgs e)
@@ -991,7 +985,6 @@ namespace SGDK2
             TileFrames.FramesToDisplay.Remove(tf);
          }
 
-         ProjectData.AcceptChanges();
          TileFrames.Invalidate();
       }
 
@@ -1018,7 +1011,6 @@ namespace SGDK2
                if (tf.Row.Duration != (short)updRepeatCount.Value)
                {
                   tf.Row.Duration = (short)updRepeatCount.Value;
-                  ProjectData.AcceptChanges();
                }
             }
          }
@@ -1053,13 +1045,11 @@ namespace SGDK2
       private void nudTileWidth_ValueChanged(object sender, System.EventArgs e)
       {
          m_Tileset.TileWidth = System.Convert.ToInt16(nudTileWidth.Value);
-         ProjectData.AcceptChanges();
       }
 
       private void nudTileHeight_ValueChanged(object sender, System.EventArgs e)
       {
          m_Tileset.TileHeight = System.Convert.ToInt16(nudTileHeight.Value);
-         ProjectData.AcceptChanges();      
       }
       #endregion
 

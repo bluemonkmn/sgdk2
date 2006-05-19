@@ -56,7 +56,6 @@ namespace SGDK2
 
          m_Category = ProjectData.AddSpriteCategory(sName);
          txtName.Text = sName;
-         ProjectData.AcceptChanges();
       }
 
       public frmSpriteCategory(ProjectDataset.SpriteCategoryRow drCategory)
@@ -168,8 +167,9 @@ namespace SGDK2
       private void PopulateSpriteDefs()
       {
          chlSpriteDefs.Items.Clear();
-         foreach(ProjectDataset.SpriteDefinitionRow drSpriteDef in ProjectData.SpriteDefinition)
+         foreach(System.Data.DataRowView drv in ProjectData.SpriteDefinition.DefaultView)
          {
+            ProjectDataset.SpriteDefinitionRow drSpriteDef = (ProjectDataset.SpriteDefinitionRow)drv.Row;
             if (ProjectData.IsSpriteDefinitionInCategory(m_Category.Name, drSpriteDef.Name))
             {
                chlSpriteDefs.Items.Add(new SpriteDefRowWrapper(drSpriteDef), true);
@@ -194,7 +194,6 @@ namespace SGDK2
       private void txtName_Validated(object sender, System.EventArgs e)
       {
          m_Category.Name = txtName.Text;
-         ProjectData.AcceptChanges();
       }
 
       private void txtName_Validating(object sender, System.ComponentModel.CancelEventArgs e)
@@ -238,7 +237,6 @@ namespace SGDK2
             ProjectData.AddSpriteDefinitionToCategory(m_Category, ((SpriteDefRowWrapper)chlSpriteDefs.Items[e.Index]).row);
          else
             ProjectData.RemoveSpriteDefinitionFromCategory(m_Category.Name, chlSpriteDefs.Items[e.Index].ToString());
-         ProjectData.AcceptChanges();
       }
 
       private void dataMonitor_SpriteDefinitionRowChanged(object sender, SGDK2.ProjectDataset.SpriteDefinitionRowChangeEvent e)

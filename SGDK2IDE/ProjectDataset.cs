@@ -5323,7 +5323,7 @@ namespace SGDK2 {
             
             private DataColumn columnName;
             
-            private DataColumn columnCircular;
+            private DataColumn columnPriority;
             
             internal SpritePlanDataTable() : 
                     base("SpritePlan") {
@@ -5371,9 +5371,9 @@ namespace SGDK2 {
                 }
             }
             
-            internal DataColumn CircularColumn {
+            internal DataColumn PriorityColumn {
                 get {
-                    return this.columnCircular;
+                    return this.columnPriority;
                 }
             }
             
@@ -5395,13 +5395,13 @@ namespace SGDK2 {
                 this.Rows.Add(row);
             }
             
-            public SpritePlanRow AddSpritePlanRow(string MapName, string LayerName, string Name, bool Circular) {
+            public SpritePlanRow AddSpritePlanRow(string MapName, string LayerName, string Name, int Priority) {
                 SpritePlanRow rowSpritePlanRow = ((SpritePlanRow)(this.NewRow()));
                 rowSpritePlanRow.ItemArray = new object[] {
                         MapName,
                         LayerName,
                         Name,
-                        Circular};
+                        Priority};
                 this.Rows.Add(rowSpritePlanRow);
                 return rowSpritePlanRow;
             }
@@ -5431,7 +5431,7 @@ namespace SGDK2 {
                 this.columnMapName = this.Columns["MapName"];
                 this.columnLayerName = this.Columns["LayerName"];
                 this.columnName = this.Columns["Name"];
-                this.columnCircular = this.Columns["Circular"];
+                this.columnPriority = this.Columns["Priority"];
             }
             
             private void InitClass() {
@@ -5441,8 +5441,8 @@ namespace SGDK2 {
                 this.Columns.Add(this.columnLayerName);
                 this.columnName = new DataColumn("Name", typeof(string), null, System.Data.MappingType.Attribute);
                 this.Columns.Add(this.columnName);
-                this.columnCircular = new DataColumn("Circular", typeof(bool), null, System.Data.MappingType.Attribute);
-                this.Columns.Add(this.columnCircular);
+                this.columnPriority = new DataColumn("Priority", typeof(int), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnPriority);
                 this.Constraints.Add(new UniqueConstraint("SpritePlanKey", new DataColumn[] {
                                 this.columnMapName,
                                 this.columnLayerName,
@@ -5453,7 +5453,7 @@ namespace SGDK2 {
                 this.columnLayerName.Namespace = "";
                 this.columnName.AllowDBNull = false;
                 this.columnName.Namespace = "";
-                this.columnCircular.Namespace = "";
+                this.columnPriority.Namespace = "";
             }
             
             public SpritePlanRow NewSpritePlanRow() {
@@ -5520,17 +5520,17 @@ namespace SGDK2 {
                 }
             }
             
-            public bool Circular {
+            public int Priority {
                 get {
                     try {
-                        return ((bool)(this[this.tableSpritePlan.CircularColumn]));
+                        return ((int)(this[this.tableSpritePlan.PriorityColumn]));
                     }
                     catch (InvalidCastException e) {
                         throw new StrongTypingException("Cannot get value because it is DBNull.", e);
                     }
                 }
                 set {
-                    this[this.tableSpritePlan.CircularColumn] = value;
+                    this[this.tableSpritePlan.PriorityColumn] = value;
                 }
             }
             
@@ -5543,12 +5543,12 @@ namespace SGDK2 {
                 }
             }
             
-            public bool IsCircularNull() {
-                return this.IsNull(this.tableSpritePlan.CircularColumn);
+            public bool IsPriorityNull() {
+                return this.IsNull(this.tableSpritePlan.PriorityColumn);
             }
             
-            public void SetCircularNull() {
-                this[this.tableSpritePlan.CircularColumn] = System.Convert.DBNull;
+            public void SetPriorityNull() {
+                this[this.tableSpritePlan.PriorityColumn] = System.Convert.DBNull;
             }
             
             public CoordinateRow[] GetCoordinateRows() {

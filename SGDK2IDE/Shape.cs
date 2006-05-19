@@ -64,7 +64,6 @@ namespace SGDK2
          m_Shape = ProjectData.AddTileShape(sName, "true");
          txtName.Text = sName;
          txtExpression.Text = m_Shape.Shape;
-         ProjectData.AcceptChanges();
       }
 
       public frmShape(ProjectDataset.TileShapeRow shape)
@@ -570,13 +569,11 @@ namespace SGDK2
       private void txtName_Validated(object sender, System.EventArgs e)
       {
          m_Shape.Name = txtName.Text;
-         ProjectData.AcceptChanges();
       }
 
       private void txtExpression_Validated(object sender, System.EventArgs e)
       {
          m_Shape.Shape = txtExpression.Text;
-         ProjectData.AcceptChanges();
       }
    }
 }

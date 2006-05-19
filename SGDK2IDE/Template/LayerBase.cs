@@ -367,7 +367,7 @@ public abstract class IntLayer : LayerBase
       base(Tileset, Disp, nLeftBuffer, nTopBuffer, nRightBuffer,
       nBottomBuffer, nColumns, nRows, Position, ScrollRate)
    {
-      System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(MapLevel1));
+      System.Resources.ResourceManager resources = new System.Resources.ResourceManager(this.GetType());
       m_Tiles = (int[,])(resources.GetObject(Name));
    }
 
@@ -404,7 +404,7 @@ public abstract class ShortLayer : LayerBase
       base(Tileset, Disp, nLeftBuffer, nTopBuffer, nRightBuffer,
       nBottomBuffer, nColumns, nRows, Position, ScrollRate)
    {
-      System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(MapLevel1));
+      System.Resources.ResourceManager resources = new System.Resources.ResourceManager(this.GetType());
       m_Tiles = (short[,])(resources.GetObject(Name));
    }
 
@@ -441,7 +441,7 @@ public abstract class ByteLayer : LayerBase
       base(Tileset, Disp, nLeftBuffer, nTopBuffer, nRightBuffer,
       nBottomBuffer, nColumns, nRows, Position, ScrollRate)
    {
-      System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(MapLevel1));
+      System.Resources.ResourceManager resources = new System.Resources.ResourceManager(this.GetType());
       m_Tiles = (byte[,])(resources.GetObject(Name));
    }
 

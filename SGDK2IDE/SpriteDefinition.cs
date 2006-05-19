@@ -192,7 +192,6 @@ namespace SGDK2
          while (ProjectData.GetSpriteDefinition(sName) != null);
          m_SpriteDef = ProjectData.AddSpriteDefinition(sName);
          txtName.Text = sName;
-         ProjectData.AcceptChanges();
 
          EnableState(false);
          FillSolidity();
@@ -1068,8 +1067,9 @@ namespace SGDK2
       private void FillSolidity()
       {
          cboSolidity.Items.Clear();
-         foreach(ProjectDataset.SolidityRow dr in ProjectData.Solidity)
+         foreach(System.Data.DataRowView drv in ProjectData.Solidity.DefaultView)
          {
+            ProjectDataset.SolidityRow dr = (ProjectDataset.SolidityRow)drv.Row;
             cboSolidity.Items.Add(dr);
          }
       }
@@ -1077,8 +1077,9 @@ namespace SGDK2
       private void FillFramesets()
       {
          cboFrameset.Items.Clear();
-         foreach(ProjectDataset.FramesetRow fr in ProjectData.Frameset)
+         foreach(System.Data.DataRowView drv in ProjectData.Frameset.DefaultView)
          {
+            ProjectDataset.FramesetRow fr = (ProjectDataset.FramesetRow)drv.Row;
             cboFrameset.Items.Add(fr);
          }
       }
@@ -1338,17 +1339,16 @@ namespace SGDK2
          ProjectData.EnforceConstraints = false;
          m_SpriteDef.Name = txtName.Text;
          ProjectData.EnforceConstraints = true;
-         ProjectData.AcceptChanges();
       }
 
       private void mnuAddState_Click(object sender, System.EventArgs e)
       {
-         if (ProjectData.Frameset.Rows.Count <= 0)
+         if (ProjectData.Frameset.DefaultView.Count <= 0)
          {
             MessageBox.Show(this, "Please create a frameset before creating sprite states", "Add Sprite State", MessageBoxButtons.OK, MessageBoxIcon.Exclamation); 
             return;
          }
-         if (ProjectData.Solidity.Rows.Count <= 0)
+         if (ProjectData.Solidity.DefaultView.Count <= 0)
          {
             MessageBox.Show(this, "Please define solidity before creating sprite states", "Add Sprite State", MessageBoxButtons.OK, MessageBoxIcon.Exclamation); 
             return;
@@ -1360,8 +1360,8 @@ namespace SGDK2
          while (ProjectData.GetSpriteState(m_SpriteDef.Name, sName) != null);
 
          lstSpriteStates.SelectedItem = ProjectData.AddSpriteState(m_SpriteDef, sName,
-            (ProjectDataset.FramesetRow)ProjectData.Frameset.Rows[0],
-            (ProjectDataset.SolidityRow)ProjectData.Solidity.Rows[0], 32, 32);
+            (ProjectDataset.FramesetRow)ProjectData.Frameset.DefaultView[0].Row,
+            (ProjectDataset.SolidityRow)ProjectData.Solidity.DefaultView[0].Row, 32, 32);
       }
 
       private void StateFrames_DragOver(object sender, System.Windows.Forms.DragEventArgs e)
@@ -1410,7 +1410,6 @@ namespace SGDK2
                      StateFrames.CurrentCellIndex = nNewIndex;
                   }
                }
-               ProjectData.AcceptChanges();
             }
             else
             {
@@ -1420,7 +1419,6 @@ namespace SGDK2
                      row, nCellIndex, fr.FrameValue, (short)updRepeatCount.Value);
                   StateFrames.FramesToDisplay.Insert(nCellIndex++, new SpriteFrame(sfr));
                }
-               ProjectData.AcceptChanges();
             }
          }
          catch (System.Exception ex)
@@ -1472,7 +1470,6 @@ namespace SGDK2
             for(int i=0; i < StateFrames.CellCount; i++)
                if ((StateFrames.Selected[i]) && (((SpriteFrame)StateFrames.FramesToDisplay[i]).Row.Duration != (short)updRepeatCount.Value))
                   ((SpriteFrame)StateFrames.FramesToDisplay[i]).Row.Duration = (short)updRepeatCount.Value;
-            ProjectData.AcceptChanges();
          }
          catch(System.Exception ex)
          {
@@ -1505,8 +1502,8 @@ namespace SGDK2
       {
          if ((e.Action == System.Data.DataRowAction.Change) && (e.Row.SpriteDefinitionRow == m_SpriteDef))
          {
-            if (!e.Row.HasVersion(System.Data.DataRowVersion.Original) ||
-               (string.Compare(e.Row["Name", System.Data.DataRowVersion.Original].ToString(), e.Row.Name) != 0))
+            if (!e.Row.HasVersion(System.Data.DataRowVersion.Current) ||
+               (string.Compare(e.Row["Name", System.Data.DataRowVersion.Current].ToString(), e.Row.Name) != 0))
             {
                for (int i=0; i<lstSpriteStates.Items.Count; i++)
                {
@@ -1529,7 +1526,6 @@ namespace SGDK2
          if (String.Compare(drState.Name, txtStateName.Text) == 0)
             return;
          drState.Name = txtStateName.Text;
-         ProjectData.AcceptChanges();
       }
 
       private void txtStateName_Validating(object sender, System.ComponentModel.CancelEventArgs e)
@@ -1597,7 +1593,6 @@ namespace SGDK2
          }
 
          GetCurrentState().Delete();
-         ProjectData.AcceptChanges();
       }
 
       private void mnuAddFrame_Click(object sender, System.EventArgs e)
@@ -1616,7 +1611,6 @@ namespace SGDK2
          {
             StateFrames.FramesToDisplay.Add(new SpriteFrame(ProjectData.InsertFrame(GetCurrentState(), -1, fr.FrameValue, (short)updRepeatCount.Value)));
          }
-         ProjectData.AcceptChanges();
       }
 
       private void mnuRemoveFrame_Click(object sender, System.EventArgs e)
@@ -1636,7 +1630,6 @@ namespace SGDK2
             ProjectData.DeleteSpriteFrame(sf.Row);
             StateFrames.FramesToDisplay.Remove(sf);
          }
-         ProjectData.AcceptChanges();
       }
 
       private void DataMonitor_SolidityRowChanged(object sender, SGDK2.ProjectDataset.SolidityRowChangeEvent e)

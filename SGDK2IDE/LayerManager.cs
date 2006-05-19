@@ -28,8 +28,11 @@ namespace SGDK2
          public override System.ComponentModel.TypeConverter.StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
          {
             ArrayList TilesetNames = new ArrayList();
-            foreach(ProjectDataset.TilesetRow tr in ProjectData.Tileset.Rows)
+            foreach(System.Data.DataRowView drv in ProjectData.Tileset.DefaultView)
+            {
+               ProjectDataset.TilesetRow tr = (ProjectDataset.TilesetRow)drv.Row;
                TilesetNames.Add(tr.Name);
+            }
             return new System.ComponentModel.TypeConverter.StandardValuesCollection(TilesetNames);
          }
       }
@@ -253,6 +256,8 @@ namespace SGDK2
 
       #region Non-Control Members
       LayerProperties DataObject;
+      Size m_PersistedDimensions = Size.Empty;
+      byte m_PersistedBytesPerTile = 0;
       #endregion
 
       #region Form designer members
@@ -280,8 +285,8 @@ namespace SGDK2
          EditRow.Width = 100;
          EditRow.Height = 15;
          EditRow.BytesPerTile = 1;
-         if (ProjectData.Tileset.Rows.Count > 0)
-            EditRow.Tileset = (ProjectData.Tileset.Rows[0] as ProjectDataset.TilesetRow).Name;
+         if (ProjectData.Tileset.DefaultView.Count > 0)
+            EditRow.Tileset = (ProjectData.Tileset.DefaultView[0].Row as ProjectDataset.TilesetRow).Name;
          EditRow.BeginEdit();
          pgrLayer.SelectedObject = DataObject = new LayerProperties(EditRow);
          DataObject.BackgroundTile = 0;
@@ -293,6 +298,8 @@ namespace SGDK2
          btnOK.Text = "Update";
          EditRow.BeginEdit();
          pgrLayer.SelectedObject = DataObject = new LayerProperties(EditRow);
+         m_PersistedDimensions = new Size(EditRow.Width, EditRow.Height);
+         m_PersistedBytesPerTile = EditRow.BytesPerTile;
       }
 
       /// <summary>
@@ -366,7 +373,7 @@ namespace SGDK2
          // 
          // dataMonitor
          // 
-         this.dataMonitor.LayerRowDeleted += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowDeleted_1);
+         this.dataMonitor.LayerRowDeleted += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowDeleted);
          this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
          // 
          // frmLayerManager
@@ -414,9 +421,9 @@ namespace SGDK2
 
             // Microsoft Dataset Bug?  Errors occur during AcceptChanges if name changes
             // at the same time as (for example) Height.
-            if (DataObject.m_drLayer.HasVersion(DataRowVersion.Original))
-               if (DataObject.m_drLayer.Name.CompareTo(DataObject.m_drLayer[ProjectData.Layer.NameColumn, DataRowVersion.Original]) != 0)
-                  DataObject.m_drLayer.AcceptChanges();
+            //if (DataObject.m_drLayer.HasVersion(DataRowVersion.Original))
+               //if (DataObject.m_drLayer.Name.CompareTo(DataObject.m_drLayer[ProjectData.Layer.NameColumn, DataRowVersion.Original]) != 0)
+                  //DataObject.m_drLayer.AcceptChanges();
 
             if (DataObject.m_drLayer.RowState == DataRowState.Detached)
             {
@@ -432,14 +439,15 @@ namespace SGDK2
                   return false;
                }
             }
-            else if ((DataObject.m_drLayer.Width != (Int32)DataObject.m_drLayer[ProjectData.Layer.WidthColumn, DataRowVersion.Original]) ||
-               (DataObject.m_drLayer.Height != (Int32)DataObject.m_drLayer[ProjectData.Layer.HeightColumn, DataRowVersion.Original]) ||
-               (DataObject.m_drLayer.BytesPerTile != (Byte)DataObject.m_drLayer[ProjectData.Layer.BytesPerTileColumn, DataRowVersion.Original]) ||
+            else if ((DataObject.m_drLayer.Width != m_PersistedDimensions.Width) ||
+               (DataObject.m_drLayer.Height != m_PersistedDimensions.Height) ||
+               (DataObject.m_drLayer.BytesPerTile != m_PersistedBytesPerTile) ||
                (DataObject.BackgroundTile >= 0))
             {
                DataObject.m_drLayer.Tiles = GetTilesForCurrentParams();
+               m_PersistedDimensions = new Size(DataObject.m_drLayer.Width, DataObject.m_drLayer.Height);
+               m_PersistedBytesPerTile = DataObject.m_drLayer.BytesPerTile;
             }
-            DataObject.m_drLayer.AcceptChanges();
             btnCancel.Text = "Close";
             ((frmMain)MdiParent).SelectByContext("LR" + DataObject.m_drLayer.Name);
             return true;
@@ -483,20 +491,17 @@ namespace SGDK2
          // (if we have old data and will not be clearing it).
          if (!DataObject.m_drLayer.IsTilesNull() && (DataObject.BackgroundTile < 0))
          {
-            int nOldCols = (int)DataObject.m_drLayer[ProjectData.Layer.WidthColumn, DataRowVersion.Original];
-            int nOldRows = (int)DataObject.m_drLayer[ProjectData.Layer.HeightColumn, DataRowVersion.Original];
-            byte nOldBytesPerTile = (byte)DataObject.m_drLayer[ProjectData.Layer.BytesPerTileColumn, DataRowVersion.Original];
             System.IO.BinaryReader br = new System.IO.BinaryReader(new System.IO.MemoryStream(DataObject.m_drLayer.Tiles));
-            int nMinWidth = Math.Min(nOldCols, nNewCols);
-            int nMinHeight = Math.Min(nOldRows, nNewRows);
+            int nMinWidth = Math.Min(m_PersistedDimensions.Width, nNewCols);
+            int nMinHeight = Math.Min(m_PersistedDimensions.Height, nNewRows);
 
             // Read through the old layer data, and copy those tiles that are within
             // the bounds of the new layer dimensions into the new layer data data.
             // The boxing and unboxing might be bad here, but this operation should be rare.
             for (int nRow = 0; nRow < nMinHeight; nRow++)
-               for (int nCol = 0; nCol < nOldCols; nCol++)
+               for (int nCol = 0; nCol < nMinWidth; nCol++)
                {
-                  switch (nOldBytesPerTile)
+                  switch (m_PersistedBytesPerTile)
                   {
                      case 1:
                         if (nCol < nMinWidth)
@@ -568,15 +573,6 @@ namespace SGDK2
       }
 
       private void dataMonitor_LayerRowDeleted(object sender, SGDK2.ProjectDataset.LayerRowChangeEvent e)
-      {
-         if (DataObject.m_drLayer == e.Row)
-         {
-            DataObject.m_drLayer.CancelEdit();
-            this.Close();
-         }         
-      }
-
-      private void dataMonitor_LayerRowDeleted_1(object sender, SGDK2.ProjectDataset.LayerRowChangeEvent e)
       {
          if (e.Row == DataObject.m_drLayer)
             this.Close();

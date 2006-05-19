@@ -357,6 +357,21 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "PlanConverter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "PlanEdit.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "PlanEdit.resx"
+                    DependentUpon = "PlanEdit.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "ProjectData.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -484,6 +499,16 @@
                 <File
                     RelPath = "TileEdit.resx"
                     DependentUpon = "TileEdit.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "UnsavedChanges.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "UnsavedChanges.resx"
+                    DependentUpon = "UnsavedChanges.cs"
                     BuildAction = "EmbeddedResource"
                 />
                 <File

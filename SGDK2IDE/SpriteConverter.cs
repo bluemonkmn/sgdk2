@@ -6,7 +6,7 @@ using System.Collections;
 namespace SGDK2
 {
 	/// <summary>
-	/// Summary description for SpriteConverter.
+	/// Exposes properties of a Sprite to a property browser
 	/// </summary>
 	public class SpriteConverter : TypeConverter
 	{

@@ -147,7 +147,7 @@
                                     <xs:attribute name="MapName" type="xs:Name" use="prohibited" />
                                     <xs:attribute name="LayerName" type="xs:Name" use="prohibited" />
                                     <xs:attribute name="Name" type="xs:Name" />
-                                    <xs:attribute name="Circular" type="xs:boolean" />
+                                    <xs:attribute name="Priority" type="xs:int" />
                                  </xs:complexType>
                               </xs:element>
                            </xs:sequence>

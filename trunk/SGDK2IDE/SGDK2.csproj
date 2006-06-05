@@ -417,16 +417,6 @@
                     CustomToolNamespace = "SGDK2"
                 />
                 <File
-                    RelPath = "Shape.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Shape.resx"
-                    DependentUpon = "Shape.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
                     RelPath = "Solidity.cs"
                     SubType = "Form"
                     BuildAction = "Compile"
@@ -537,7 +527,7 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
-                    RelPath = "Template\SolidityBase.cs"
+                    RelPath = "Template\PlanBase.cs"
                     SubType = "Code"
                     BuildAction = "EmbeddedResource"
                 />
@@ -563,6 +553,11 @@
                 />
                 <File
                     RelPath = "Template\TileCategoryMembership.cs"
+                    SubType = "Code"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "Template\TileShapes.cs"
                     SubType = "Code"
                     BuildAction = "EmbeddedResource"
                 />

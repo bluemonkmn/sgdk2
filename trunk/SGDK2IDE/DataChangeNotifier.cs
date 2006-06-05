@@ -103,10 +103,6 @@ namespace SGDK2
       ProjectDataset.SolidityShapeRowChangeEventHandler m_SolidityShapeChanging = null;
       ProjectDataset.SolidityShapeRowChangeEventHandler m_SolidityShapeDeleted = null;
       ProjectDataset.SolidityShapeRowChangeEventHandler m_SolidityShapeDeleting = null;
-      ProjectDataset.TileShapeRowChangeEventHandler m_TileShapeChanged = null;
-      ProjectDataset.TileShapeRowChangeEventHandler m_TileShapeChanging = null;
-      ProjectDataset.TileShapeRowChangeEventHandler m_TileShapeDeleted = null;
-      ProjectDataset.TileShapeRowChangeEventHandler m_TileShapeDeleting = null;
       ProjectDataset.CategoryFrameRowChangeEventHandler m_CategoryFrameChanged = null;
       ProjectDataset.CategoryFrameRowChangeEventHandler m_CategoryFrameChanging = null;
       ProjectDataset.CategoryFrameRowChangeEventHandler m_CategoryFrameDeleted = null;
@@ -119,6 +115,10 @@ namespace SGDK2
       ProjectDataset.SpritePlanRowChangeEventHandler m_SpritePlanChanging = null;
       ProjectDataset.SpritePlanRowChangeEventHandler m_SpritePlanDeleted = null;
       ProjectDataset.SpritePlanRowChangeEventHandler m_SpritePlanDeleting = null;
+      ProjectDataset.PlanRuleRowChangeEventHandler m_PlanRuleChanged = null;
+      ProjectDataset.PlanRuleRowChangeEventHandler m_PlanRuleChanging = null;
+      ProjectDataset.PlanRuleRowChangeEventHandler m_PlanRuleDeleted = null;
+      ProjectDataset.PlanRuleRowChangeEventHandler m_PlanRuleDeleting = null;
       System.EventHandler m_Clearing = null;
 
       public DataChangeNotifier(System.ComponentModel.IContainer container)
@@ -325,14 +325,6 @@ namespace SGDK2
                SolidityShapeRowDeleted -= m_SolidityShapeDeleted;
             if (m_SolidityShapeDeleting != null)
                SolidityShapeRowDeleting -= m_SolidityShapeDeleting;
-            if (m_TileShapeChanged != null)
-               TileShapeRowChanged -= m_TileShapeChanged;
-            if (m_TileShapeChanging != null)
-               TileShapeRowChanging -= m_TileShapeChanging;
-            if (m_TileShapeDeleted != null)
-               TileShapeRowDeleted -= m_TileShapeDeleted;
-            if (m_TileShapeDeleting != null)
-               TileShapeRowDeleting -= m_TileShapeDeleting;
             if (m_CategoryFrameChanged != null)
                CategoryFrameRowChanged -= m_CategoryFrameChanged;
             if (m_CategoryFrameChanging != null)
@@ -357,6 +349,14 @@ namespace SGDK2
                SpritePlanRowDeleted -= m_SpritePlanDeleted;
             if (m_SpritePlanDeleting != null)
                SpritePlanRowDeleting -= m_SpritePlanDeleting;
+            if (m_PlanRuleChanged != null)
+               PlanRuleRowChanged -= m_PlanRuleChanged;
+            if (m_PlanRuleChanging != null)
+               PlanRuleRowChanging -= m_PlanRuleChanging;
+            if (m_PlanRuleDeleted != null)
+               PlanRuleRowDeleted -= m_PlanRuleDeleted;
+            if (m_PlanRuleDeleting != null)
+               PlanRuleRowDeleting -= m_PlanRuleDeleting;
             if (m_Clearing != null)
                Clearing -= m_Clearing;
          }
@@ -1783,70 +1783,6 @@ namespace SGDK2
             m_SolidityShapeDeleting = null;
          }
       }
-      public event ProjectDataset.TileShapeRowChangeEventHandler TileShapeRowChanged
-      {
-         add
-         {
-            Debug.Assert(m_TileShapeChanged == null);
-            if (m_TileShapeChanged != null)
-               ProjectData.TileShapeRowChanged -= m_TileShapeChanged;
-            ProjectData.TileShapeRowChanged += m_TileShapeChanged = value;
-         }
-         remove
-         {
-            Debug.Assert(m_TileShapeChanged == value);
-            ProjectData.TileShapeRowChanged -= value;
-            m_TileShapeChanged = null;
-         }
-      }
-      public event ProjectDataset.TileShapeRowChangeEventHandler TileShapeRowChanging
-      {
-         add
-         {
-            Debug.Assert(m_TileShapeChanging == null);
-            if (m_TileShapeChanging != null)
-               ProjectData.TileShapeRowChanging -= m_TileShapeChanging;
-            ProjectData.TileShapeRowChanging += m_TileShapeChanging = value;
-         }
-         remove
-         {
-            Debug.Assert(m_TileShapeChanging == value);
-            ProjectData.TileShapeRowChanging -= value;
-            m_TileShapeChanging = null;
-         }
-      }
-      public event ProjectDataset.TileShapeRowChangeEventHandler TileShapeRowDeleted
-      {
-         add
-         {
-            Debug.Assert(m_TileShapeDeleted == null);
-            if (m_TileShapeDeleted != null)
-               ProjectData.TileShapeRowDeleted -= m_TileShapeDeleted;
-            ProjectData.TileShapeRowDeleted += m_TileShapeDeleted = value;
-         }
-         remove
-         {
-            Debug.Assert(m_TileShapeDeleted == value);
-            ProjectData.TileShapeRowDeleted -= value;
-            m_TileShapeDeleted = null;
-         }
-      }
-      public event ProjectDataset.TileShapeRowChangeEventHandler TileShapeRowDeleting
-      {
-         add
-         {
-            Debug.Assert(m_TileShapeDeleting == null);
-            if (m_TileShapeDeleting != null)
-               ProjectData.TileShapeRowDeleting -= m_TileShapeDeleting;
-            ProjectData.TileShapeRowDeleting += m_TileShapeDeleting = value;
-         }
-         remove
-         {
-            Debug.Assert(m_TileShapeDeleting == value);
-            ProjectData.TileShapeRowDeleting -= value;
-            m_TileShapeDeleting = null;
-         }
-      }
       public event ProjectDataset.CategoryFrameRowChangeEventHandler CategoryFrameRowChanged
       {
          add
@@ -2037,6 +1973,70 @@ namespace SGDK2
             Debug.Assert(m_SpritePlanDeleting == value);
             ProjectData.SpritePlanRowDeleting -= value;
             m_SpritePlanDeleting = null;
+         }
+      }
+      public event ProjectDataset.PlanRuleRowChangeEventHandler PlanRuleRowChanged
+      {
+         add
+         {
+            Debug.Assert(m_PlanRuleChanged == null);
+            if (m_PlanRuleChanged != null)
+               ProjectData.PlanRuleRowChanged -= m_PlanRuleChanged;
+            ProjectData.PlanRuleRowChanged += m_PlanRuleChanged = value;
+         }
+         remove
+         {
+            Debug.Assert(m_PlanRuleChanged == value);
+            ProjectData.PlanRuleRowChanged -= value;
+            m_PlanRuleChanged = null;
+         }
+      }
+      public event ProjectDataset.PlanRuleRowChangeEventHandler PlanRuleRowChanging
+      {
+         add
+         {
+            Debug.Assert(m_PlanRuleChanging == null);
+            if (m_PlanRuleChanging != null)
+               ProjectData.PlanRuleRowChanging -= m_PlanRuleChanging;
+            ProjectData.PlanRuleRowChanging += m_PlanRuleChanging = value;
+         }
+         remove
+         {
+            Debug.Assert(m_PlanRuleChanging == value);
+            ProjectData.PlanRuleRowChanging -= value;
+            m_PlanRuleChanging = null;
+         }
+      }
+      public event ProjectDataset.PlanRuleRowChangeEventHandler PlanRuleRowDeleted
+      {
+         add
+         {
+            Debug.Assert(m_PlanRuleDeleted == null);
+            if (m_PlanRuleDeleted != null)
+               ProjectData.PlanRuleRowDeleted -= m_PlanRuleDeleted;
+            ProjectData.PlanRuleRowDeleted += m_PlanRuleDeleted = value;
+         }
+         remove
+         {
+            Debug.Assert(m_PlanRuleDeleted == value);
+            ProjectData.PlanRuleRowDeleted -= value;
+            m_PlanRuleDeleted = null;
+         }
+      }
+      public event ProjectDataset.PlanRuleRowChangeEventHandler PlanRuleRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_PlanRuleDeleting == null);
+            if (m_PlanRuleDeleting != null)
+               ProjectData.PlanRuleRowDeleting -= m_PlanRuleDeleting;
+            ProjectData.PlanRuleRowDeleting += m_PlanRuleDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_PlanRuleDeleting == value);
+            ProjectData.PlanRuleRowDeleting -= value;
+            m_PlanRuleDeleting = null;
          }
       }
       public event System.EventHandler Clearing

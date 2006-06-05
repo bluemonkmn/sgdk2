@@ -48,14 +48,17 @@ class CompileResx
          rd = new System.Resources.ResXResourceReader("TileCategory.resx");
          WriteResources(rd,"SGDK2.frmTileCategory.resources");
          rd.Close();
-         rd = new System.Resources.ResXResourceReader("Shape.resx");
-         WriteResources(rd,"SGDK2.frmShape.resources");
-         rd.Close();
          rd = new System.Resources.ResXResourceReader("CodeEditor.resx");
          WriteResources(rd,"SGDK2.frmCodeEditor.resources");
          rd.Close();
          rd = new System.Resources.ResXResourceReader("SpriteCategories.resx");
          WriteResources(rd,"SGDK2.frmSpriteCategories.resources");
+         rd.Close();
+         rd = new System.Resources.ResXResourceReader("PlanEdit.resx");
+         WriteResources(rd,"SGDK2.frmPlanEdit.resources");
+         rd.Close();
+         rd = new System.Resources.ResXResourceReader("UnsavedChanges.resx");
+         WriteResources(rd,"SGDK2.frmUnsavedChanges.resources");
          rd.Close();
       }
       public static void WriteResources(System.Resources.ResXResourceReader rd, string sFile)

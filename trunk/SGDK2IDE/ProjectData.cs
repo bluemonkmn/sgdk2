@@ -105,6 +105,42 @@ namespace SGDK2
             m_dsPrj.EnforceConstraints = value;
          }
       }
+
+      private class DataRowComparer : IComparer
+      {
+         #region IComparer Members
+         public int Compare(object x, object y)
+         {
+            if (x is ProjectDataset.FrameRow)
+               return ((ProjectDataset.FrameRow)x).FrameValue.CompareTo(((ProjectDataset.FrameRow)y).FrameValue);
+            else if (x is ProjectDataset.TileFrameRow)
+               return ((ProjectDataset.TileFrameRow)x).Sequence.CompareTo(((ProjectDataset.TileFrameRow)y).Sequence);
+            else if (x is ProjectDataset.TileRow)
+               return ((ProjectDataset.TileRow)x).TileValue.CompareTo(((ProjectDataset.TileRow)y).TileValue);
+            else if (x is ProjectDataset.LayerRow)
+               return ((ProjectDataset.LayerRow)x).ZIndex.CompareTo(((ProjectDataset.LayerRow)y).ZIndex);
+            else if (x is ProjectDataset.SpriteFrameRow)
+               return ((ProjectDataset.SpriteFrameRow)x).Sequence.CompareTo(((ProjectDataset.SpriteFrameRow)y).Sequence);
+            else if (x is ProjectDataset.SpriteRow)
+               return ((ProjectDataset.SpriteRow)x).Priority.CompareTo(((ProjectDataset.SpriteRow)y).Priority);
+            else if (x is ProjectDataset.SpriteParameterRow)
+               return ((ProjectDataset.SpriteParameterRow)x).Name.CompareTo(((ProjectDataset.SpriteParameterRow)y).Name);
+            else if (x is ProjectDataset.SpritePlanRow)
+            {
+               int result = ((ProjectDataset.SpritePlanRow)x).Priority.CompareTo(((ProjectDataset.SpritePlanRow)y).Priority);
+               if (result == 0)
+                  result = ((ProjectDataset.SpritePlanRow)x).Name.CompareTo(((ProjectDataset.SpritePlanRow)y).Name);
+               return result;
+            }
+            else if (x is ProjectDataset.CoordinateRow)
+               return ((ProjectDataset.CoordinateRow)x).Sequence.CompareTo(((ProjectDataset.CoordinateRow)y).Sequence);
+            else if (x is ProjectDataset.PlanRuleRow)
+               return ((ProjectDataset.PlanRuleRow)x).Sequence.CompareTo(((ProjectDataset.PlanRuleRow)y).Sequence);
+            else
+               throw new ApplicationException("Unknown data row type for comparing");
+         }
+         #endregion
+      }
       #endregion
 
       #region GraphicsSheet
@@ -268,40 +304,6 @@ namespace SGDK2
       public static ProjectDataset.FramesetRow GetFrameSet(string Name)
       {
          return m_dsPrj.Frameset.FindByName(Name);
-      }
-
-      private class DataRowComparer : IComparer
-      {
-         #region IComparer Members
-         public int Compare(object x, object y)
-         {
-            if (x is ProjectDataset.FrameRow)
-               return ((ProjectDataset.FrameRow)x).FrameValue.CompareTo(((ProjectDataset.FrameRow)y).FrameValue);
-            else if (x is ProjectDataset.TileFrameRow)
-               return ((ProjectDataset.TileFrameRow)x).Sequence.CompareTo(((ProjectDataset.TileFrameRow)y).Sequence);
-            else if (x is ProjectDataset.TileRow)
-               return ((ProjectDataset.TileRow)x).TileValue.CompareTo(((ProjectDataset.TileRow)y).TileValue);
-            else if (x is ProjectDataset.LayerRow)
-               return ((ProjectDataset.LayerRow)x).ZIndex.CompareTo(((ProjectDataset.LayerRow)y).ZIndex);
-            else if (x is ProjectDataset.SpriteFrameRow)
-               return ((ProjectDataset.SpriteFrameRow)x).Sequence.CompareTo(((ProjectDataset.SpriteFrameRow)y).Sequence);
-            else if (x is ProjectDataset.SpriteRow)
-               return ((ProjectDataset.SpriteRow)x).Priority.CompareTo(((ProjectDataset.SpriteRow)y).Priority);
-            else if (x is ProjectDataset.SpriteParameterRow)
-               return ((ProjectDataset.SpriteParameterRow)x).Name.CompareTo(((ProjectDataset.SpriteParameterRow)y).Name);
-            else if (x is ProjectDataset.SpritePlanRow)
-            {
-               int result = ((ProjectDataset.SpritePlanRow)x).Priority.CompareTo(((ProjectDataset.SpritePlanRow)y).Priority);
-               if (result == 0)
-                  result = ((ProjectDataset.SpritePlanRow)x).Name.CompareTo(((ProjectDataset.SpritePlanRow)y).Name);
-               return result;
-            }
-            else if (x is ProjectDataset.CoordinateRow)
-               return ((ProjectDataset.CoordinateRow)x).Sequence.CompareTo(((ProjectDataset.CoordinateRow)y).Sequence);
-            else
-               throw new ApplicationException("Unknown data row type for comparing");
-         }
-         #endregion
       }
 
       public static ProjectDataset.FrameRow[] GetSortedFrameRows(ProjectDataset.FramesetRow row)
@@ -1915,6 +1917,131 @@ namespace SGDK2
       }
       #endregion
       
+      #region PlanRule
+      public static event ProjectDataset.PlanRuleRowChangeEventHandler PlanRuleRowChanged
+      {
+         add
+         {
+            m_dsPrj.PlanRule.PlanRuleRowChanged += value;
+         }
+         remove
+         {
+            m_dsPrj.PlanRule.PlanRuleRowChanged -= value;
+         }
+      }
+      public static event ProjectDataset.PlanRuleRowChangeEventHandler PlanRuleRowChanging
+      {
+         add
+         {
+            m_dsPrj.PlanRule.PlanRuleRowChanging += value;
+         }
+         remove
+         {
+            m_dsPrj.PlanRule.PlanRuleRowChanging -= value;
+         }
+      }
+      public static event ProjectDataset.PlanRuleRowChangeEventHandler PlanRuleRowDeleted
+      {
+         add
+         {
+            m_dsPrj.PlanRule.PlanRuleRowDeleted += value;
+         }
+         remove
+         {
+            m_dsPrj.PlanRule.PlanRuleRowDeleted -= value;
+         }
+      }
+      public static event ProjectDataset.PlanRuleRowChangeEventHandler PlanRuleRowDeleting
+      {
+         add
+         {
+            m_dsPrj.PlanRule.PlanRuleRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.PlanRule.PlanRuleRowDeleting -= value;
+         }
+      }
+      public static ProjectDataset.PlanRuleDataTable PlanRule
+      {
+         get
+         {
+            return m_dsPrj.PlanRule;
+         }
+      }
+      public static ProjectDataset.PlanRuleRow[] GetSortedPlanRules(ProjectDataset.SpritePlanRow parent)
+      {
+         ProjectDataset.PlanRuleRow[] result = parent.GetPlanRuleRows();
+         Array.Sort(result, new DataRowComparer());
+         return result;
+      }
+      public static ProjectDataset.PlanRuleRow InsertPlanRule(ProjectDataset.SpritePlanRow parent, string name,
+         string type, int sequence, string function, string parameter1, string parameter2, string parameter3, string resultParameter, bool endIf)
+      {
+         if (sequence < 0)
+            sequence = GetMaxPlanSequence(parent) + 1;
+         string layerName = parent[m_dsPrj.SpritePlan.LayerNameColumn].ToString();
+         string mapName = parent[m_dsPrj.SpritePlan.MapNameColumn].ToString();
+         foreach(ProjectDataset.PlanRuleRow row in GetSortedPlanRules(parent))
+            if (row.Sequence >= sequence)
+               row.Sequence += 1;
+         return m_dsPrj.PlanRule.AddPlanRuleRow(mapName, layerName, parent.Name,
+            name, sequence, type, function, parameter1, parameter2, parameter3, resultParameter, endIf);
+      }
+      
+      public static void DeletePlanRule(ProjectDataset.PlanRuleRow row)
+      {
+         int oldSeq = row.Sequence;
+         ProjectDataset.SpritePlanRow parent = row.SpritePlanRowParent;
+         row.Delete();
+         foreach(ProjectDataset.PlanRuleRow drChange in GetSortedPlanRules(parent))
+            if (drChange.Sequence >= oldSeq)
+               drChange.Sequence -= 1;
+      }
+      
+      public static bool MovePlanRule(ProjectDataset.PlanRuleRow row, bool moveDown)
+      {
+         string planName = row[m_dsPrj.PlanRule.PlanNameColumn].ToString();
+         string layerName = row[m_dsPrj.PlanRule.LayerNameColumn].ToString();
+         string mapName = row[m_dsPrj.PlanRule.MapNameColumn].ToString();
+         string filter = "MapName='" + mapName + "' and LayerName='" + layerName + "' and PlanName='" + planName + "' ";
+
+         DataRow[] nextRows;
+         if (moveDown)
+            nextRows = m_dsPrj.PlanRule.Select(filter + "and Sequence >= " + row.Sequence.ToString(), "Sequence ASC");
+         else
+            nextRows = m_dsPrj.PlanRule.Select(filter + "and Sequence <= " + row.Sequence.ToString(), "Sequence DESC");
+         System.Diagnostics.Debug.Assert((nextRows.Length > 0) && (nextRows[0] == row), "Unexpected plan rule sequencing error");
+         if (nextRows.Length == 1)
+            return false;
+         ProjectDataset.PlanRuleRow nextRow = (ProjectDataset.PlanRuleRow)nextRows[1];
+         int nextSeq = nextRow.Sequence;
+         if (moveDown)
+            System.Diagnostics.Debug.Assert(nextRow.Sequence == row.Sequence + 1, "Plan rows are not consecutively sequenced");
+         else
+            System.Diagnostics.Debug.Assert(nextRow.Sequence == row.Sequence - 1, "Plan rows are not consecutively sequenced");
+         nextRow.Sequence = row.Sequence;
+         row.Sequence = nextSeq;
+         return true;
+      }
+      public static ProjectDataset.PlanRuleRow GetPlanRule(ProjectDataset.SpritePlanRow parent, string name)
+      {
+         string layerName = parent[m_dsPrj.SpritePlan.LayerNameColumn].ToString();
+         string mapName = parent[m_dsPrj.SpritePlan.MapNameColumn].ToString();
+         return m_dsPrj.PlanRule.FindByMapNameLayerNamePlanNameName(mapName, layerName, parent.Name, name);
+      }
+      public static int GetMaxPlanSequence(ProjectDataset.SpritePlanRow parent)
+      {
+         int max = 0;
+         foreach (ProjectDataset.PlanRuleRow row in parent.GetPlanRuleRows())
+         {
+            if (row.Sequence > max)
+               max = row.Sequence;
+         }
+         return max;
+      }
+      #endregion
+
       #region Solidity
       public static event ProjectDataset.SolidityRowChangeEventHandler SolidityRowChanged
       {
@@ -2028,68 +2155,6 @@ namespace SGDK2
          {
             return m_dsPrj.SolidityShape;
          }
-      }
-      #endregion
-
-      #region TileShape
-      public static event ProjectDataset.TileShapeRowChangeEventHandler TileShapeRowChanged
-      {
-         add
-         {
-            m_dsPrj.TileShape.TileShapeRowChanged += value;
-         }
-         remove
-         {
-            m_dsPrj.TileShape.TileShapeRowChanged -= value;
-         }
-      }
-      public static event ProjectDataset.TileShapeRowChangeEventHandler TileShapeRowChanging
-      {
-         add
-         {
-            m_dsPrj.TileShape.TileShapeRowChanging += value;
-         }
-         remove
-         {
-            m_dsPrj.TileShape.TileShapeRowChanging -= value;
-         }
-      }
-      public static event ProjectDataset.TileShapeRowChangeEventHandler TileShapeRowDeleted
-      {
-         add
-         {
-            m_dsPrj.TileShape.TileShapeRowDeleted += value;
-         }
-         remove
-         {
-            m_dsPrj.TileShape.TileShapeRowDeleted -= value;
-         }
-      }
-      public static event ProjectDataset.TileShapeRowChangeEventHandler TileShapeRowDeleting
-      {
-         add
-         {
-            m_dsPrj.TileShape.TileShapeRowDeleting += value;
-         }
-         remove
-         {
-            m_dsPrj.TileShape.TileShapeRowDeleting -= value;
-         }
-      }
-      public static ProjectDataset.TileShapeDataTable TileShape
-      {
-         get
-         {
-            return m_dsPrj.TileShape;
-         }
-      }
-      public static ProjectDataset.TileShapeRow GetTileShape(string Name)
-      {
-         return m_dsPrj.TileShape.FindByName(Name);
-      }
-      public static ProjectDataset.TileShapeRow AddTileShape(string Name, string Shape)
-      {
-         return m_dsPrj.TileShape.AddTileShapeRow(Name, Shape);
       }
       #endregion
 

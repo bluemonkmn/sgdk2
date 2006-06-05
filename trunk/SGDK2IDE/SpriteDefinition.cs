@@ -63,49 +63,6 @@ namespace SGDK2
             }
          }
       }
-
-      class RuleTable : System.Collections.DictionaryBase
-      {
-         public RemotingServices.RemoteMethodInfo this[string name]
-         {
-            get
-            {
-               return (RemotingServices.RemoteMethodInfo)InnerHashtable[name];
-            }
-            set
-            {
-               InnerHashtable[name] = value;
-            }
-         }
-
-         public ICollection Rules
-         {
-            get
-            {
-               return InnerHashtable.Values;
-            }
-         }
-      }
-
-      class EnumTable : System.Collections.DictionaryBase
-      {
-         public string[] this[string name]
-         {
-            get
-            {
-               return InnerHashtable[name] as string[];
-            }
-            set
-            {
-               InnerHashtable[name] = value;
-            }
-         }
-
-         public bool Contains(string name)
-         {
-            return InnerHashtable.Contains(name);
-         }
-      }
       #endregion
 
       private ProjectDataset.SpriteDefinitionRow m_SpriteDef;
@@ -154,8 +111,6 @@ namespace SGDK2
       private System.Windows.Forms.TextBox txtRuleName;
       private System.Windows.Forms.GroupBox grpCondition;
       private System.Windows.Forms.ImageList imlArrows;
-      private System.Windows.Forms.Button btnMoveUp;
-      private System.Windows.Forms.Button btnMoveDown;
       private System.Windows.Forms.ComboBox cboRuleType;
       private System.Windows.Forms.Label lblParam2;
       private System.Windows.Forms.Label lblParam1;
@@ -266,9 +221,7 @@ namespace SGDK2
          this.tabParamegers = new System.Windows.Forms.TabPage();
          this.grdParameters = new System.Windows.Forms.DataGrid();
          this.tabRules = new System.Windows.Forms.TabPage();
-         this.btnMoveDown = new System.Windows.Forms.Button();
          this.imlArrows = new System.Windows.Forms.ImageList(this.components);
-         this.btnMoveUp = new System.Windows.Forms.Button();
          this.grpCondition = new System.Windows.Forms.GroupBox();
          this.lblCompileError = new System.Windows.Forms.Label();
          this.chkEndIf = new System.Windows.Forms.CheckBox();
@@ -616,8 +569,6 @@ namespace SGDK2
          // 
          // tabRules
          // 
-         this.tabRules.Controls.Add(this.btnMoveDown);
-         this.tabRules.Controls.Add(this.btnMoveUp);
          this.tabRules.Controls.Add(this.grpCondition);
          this.tabRules.Controls.Add(this.txtRuleName);
          this.tabRules.Controls.Add(this.lblRuleName);
@@ -629,29 +580,11 @@ namespace SGDK2
          this.tabRules.TabIndex = 2;
          this.tabRules.Text = "Rules";
          // 
-         // btnMoveDown
-         // 
-         this.btnMoveDown.ImageIndex = 1;
-         this.btnMoveDown.ImageList = this.imlArrows;
-         this.btnMoveDown.Location = new System.Drawing.Point(152, 176);
-         this.btnMoveDown.Name = "btnMoveDown";
-         this.btnMoveDown.Size = new System.Drawing.Size(25, 24);
-         this.btnMoveDown.TabIndex = 2;
-         // 
          // imlArrows
          // 
          this.imlArrows.ImageSize = new System.Drawing.Size(11, 6);
          this.imlArrows.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imlArrows.ImageStream")));
          this.imlArrows.TransparentColor = System.Drawing.Color.Magenta;
-         // 
-         // btnMoveUp
-         // 
-         this.btnMoveUp.ImageIndex = 0;
-         this.btnMoveUp.ImageList = this.imlArrows;
-         this.btnMoveUp.Location = new System.Drawing.Point(152, 136);
-         this.btnMoveUp.Name = "btnMoveUp";
-         this.btnMoveUp.Size = new System.Drawing.Size(25, 24);
-         this.btnMoveUp.TabIndex = 1;
          // 
          // grpCondition
          // 
@@ -715,7 +648,7 @@ namespace SGDK2
          this.cboOutput.Enabled = false;
          this.cboOutput.Location = new System.Drawing.Point(136, 120);
          this.cboOutput.Name = "cboOutput";
-         this.cboOutput.Size = new System.Drawing.Size(208, 20);
+         this.cboOutput.Size = new System.Drawing.Size(208, 21);
          this.cboOutput.TabIndex = 10;
          // 
          // lblParam3
@@ -735,7 +668,7 @@ namespace SGDK2
          this.cboParam3.Enabled = false;
          this.cboParam3.Location = new System.Drawing.Point(136, 96);
          this.cboParam3.Name = "cboParam3";
-         this.cboParam3.Size = new System.Drawing.Size(208, 20);
+         this.cboParam3.Size = new System.Drawing.Size(208, 21);
          this.cboParam3.TabIndex = 8;
          // 
          // cboRuleType
@@ -778,7 +711,7 @@ namespace SGDK2
          this.cboParam2.Enabled = false;
          this.cboParam2.Location = new System.Drawing.Point(136, 72);
          this.cboParam2.Name = "cboParam2";
-         this.cboParam2.Size = new System.Drawing.Size(208, 20);
+         this.cboParam2.Size = new System.Drawing.Size(208, 21);
          this.cboParam2.TabIndex = 6;
          // 
          // cboParam1
@@ -788,7 +721,7 @@ namespace SGDK2
          this.cboParam1.Enabled = false;
          this.cboParam1.Location = new System.Drawing.Point(136, 48);
          this.cboParam1.Name = "cboParam1";
-         this.cboParam1.Size = new System.Drawing.Size(208, 20);
+         this.cboParam1.Size = new System.Drawing.Size(208, 21);
          this.cboParam1.TabIndex = 4;
          // 
          // chkNot
@@ -805,31 +738,9 @@ namespace SGDK2
          this.cboFunction.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
          this.cboFunction.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-         this.cboFunction.Items.AddRange(new object[] {
-                                                         "InputPressed",
-                                                         "InputReleased",
-                                                         "InputIsDown",
-                                                         "CounterAtLeast",
-                                                         "CounterEqual",
-                                                         "ParameterAtLeast",
-                                                         "ParameterEqual",
-                                                         "IsCurrentState",
-                                                         "HitSpriteInCategory",
-                                                         "LandedOnSpriteInCategory",
-                                                         "HitSolidTile",
-                                                         "SolidBelow",
-                                                         "SolidAbove",
-                                                         "SolidLeft",
-                                                         "SolidRight",
-                                                         "HitTileInCategory",
-                                                         "TouchingTileInCategory",
-                                                         "HitAreaInCategory",
-                                                         "ExitedAreaInCategory",
-                                                         "TouchingAreaInCategory",
-                                                         "Riding"});
          this.cboFunction.Location = new System.Drawing.Point(136, 24);
          this.cboFunction.Name = "cboFunction";
-         this.cboFunction.Size = new System.Drawing.Size(208, 20);
+         this.cboFunction.Size = new System.Drawing.Size(208, 21);
          this.cboFunction.TabIndex = 2;
          this.cboFunction.SelectedIndexChanged += new System.EventHandler(this.cboFunction_SelectedIndexChanged);
          // 
@@ -960,17 +871,17 @@ namespace SGDK2
          // 
          // DataMonitor
          // 
-         this.DataMonitor.Clearing += new System.EventHandler(this.DataMonitor_Clearing);
-         this.DataMonitor.SpriteStateRowChanging += new SGDK2.ProjectDataset.SpriteStateRowChangeEventHandler(this.DataMonitor_SpriteStateRowChanging);
-         this.DataMonitor.SolidityRowChanged += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.DataMonitor_SolidityRowChanged);
          this.DataMonitor.SpriteStateRowChanged += new SGDK2.ProjectDataset.SpriteStateRowChangeEventHandler(this.DataMonitor_SpriteStateRowChanged);
-         this.DataMonitor.SpriteDefinitionRowDeleted += new SGDK2.ProjectDataset.SpriteDefinitionRowChangeEventHandler(this.DataMonitor_SpriteDefinitionRowDeleted);
          this.DataMonitor.FramesetRowChanging += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.DataMonitor_FramesetRowChanging);
-         this.DataMonitor.FramesetRowDeleted += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.DataMonitor_FramesetRowDeleted);
          this.DataMonitor.FramesetRowChanged += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.DataMonitor_FramesetRowChanged);
-         this.DataMonitor.SpriteStateRowDeleted += new SGDK2.ProjectDataset.SpriteStateRowChangeEventHandler(this.DataMonitor_SpriteStateRowDeleted);
-         this.DataMonitor.SolidityRowChanging += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.DataMonitor_SolidityRowChanging);
          this.DataMonitor.SolidityRowDeleted += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.DataMonitor_SolidityRowDeleted);
+         this.DataMonitor.SpriteStateRowChanging += new SGDK2.ProjectDataset.SpriteStateRowChangeEventHandler(this.DataMonitor_SpriteStateRowChanging);
+         this.DataMonitor.SpriteDefinitionRowDeleted += new SGDK2.ProjectDataset.SpriteDefinitionRowChangeEventHandler(this.DataMonitor_SpriteDefinitionRowDeleted);
+         this.DataMonitor.SolidityRowChanging += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.DataMonitor_SolidityRowChanging);
+         this.DataMonitor.SolidityRowChanged += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.DataMonitor_SolidityRowChanged);
+         this.DataMonitor.FramesetRowDeleted += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.DataMonitor_FramesetRowDeleted);
+         this.DataMonitor.SpriteStateRowDeleted += new SGDK2.ProjectDataset.SpriteStateRowChangeEventHandler(this.DataMonitor_SpriteStateRowDeleted);
+         this.DataMonitor.Clearing += new System.EventHandler(this.DataMonitor_Clearing);
          // 
          // frmSpriteDefinition
          // 
@@ -1731,5 +1642,6 @@ namespace SGDK2
          decimal dummy = ((NumericUpDown)sender).Value;      
       }
       #endregion
+
    }
 }

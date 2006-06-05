@@ -164,12 +164,49 @@ namespace SGDK2
          col.HeaderText = "Category";
          ts.GridColumnStyles.Add(col);
 
-         col = new DataGridComboBoxColumn(pdc["ShapeName"], ProjectData.TileShape.Select(), ProjectData.TileShape.NameColumn.ColumnName);
+         col = new DataGridComboBoxColumn(pdc["ShapeName"], GetTileShapes());
          col.MappingName = "ShapeName";
          col.HeaderText = "Shape";
          ts.GridColumnStyles.Add(col);
 
          grdMappings.TableStyles.Add(ts);
+      }
+
+      private string[] GetTileShapes()
+      {
+         CodeGenerator gen = new CodeGenerator();
+         string errs;
+         string assemblyFilename = gen.CompileTempAssembly(out errs);
+         if ((errs != null) && (errs.Length > 0))
+         {
+            MessageBox.Show(this, "Errors occurred while compiling a temporary project to generate a list of available tile shapes: " + errs, "Error Compiling Temporary Code", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            if (assemblyFilename == null)
+               return new string[] {};
+         }
+         AppDomain tempDomain = AppDomain.CreateDomain("TempDomain");
+         try
+         {
+            string asmName = System.IO.Path.GetFileNameWithoutExtension(assemblyFilename);
+            RemotingServices.IRemoteTypeInfo reflector = tempDomain.CreateInstanceAndUnwrap(
+               asmName, "RemoteReflector", false,
+               System.Reflection.BindingFlags.CreateInstance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance,
+               null, new object[] {"TileShape"}, null, null, null) as RemotingServices.IRemoteTypeInfo;
+
+            return reflector.GetSubclasses();
+         }
+         finally
+         {
+            try
+            {
+               AppDomain.Unload(tempDomain);
+               if (assemblyFilename != null)
+                  System.IO.File.Delete(assemblyFilename);
+            }
+            catch (System.Exception ex)
+            {
+               MessageBox.Show(this, "Failed to delete " + assemblyFilename + ": " + ex.Message, "File Delete Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+         }
       }
       #endregion
 

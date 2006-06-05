@@ -4,8 +4,12 @@ using System;
 /// Utility class for interacting with objects accross AppDomains
 /// </summary>
 public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices.IRemoteTypeInfo
-   {
+{
    private Type reflectType;
+
+   private RemoteReflector()
+   {
+   }
 
    public RemoteReflector(string typeName)
    {
@@ -21,6 +25,11 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
       {
          result[i].MethodName = mi[i].Name;
          result[i].ReturnType = mi[i].ReturnType.Name;
+         System.ComponentModel.DescriptionAttribute da = System.Attribute.GetCustomAttribute(mi[i], typeof(System.ComponentModel.DescriptionAttribute), false) as System.ComponentModel.DescriptionAttribute;
+         if (da == null)
+            result[i].Description = String.Empty;
+         else
+            result[i].Description = da.Description;
          System.Reflection.ParameterInfo[] pi = mi[i].GetParameters();
          SGDK2.RemotingServices.RemoteParameterInfo[] rpi = new SGDK2.RemotingServices.RemoteParameterInfo[pi.Length];
          for (int j = 0; j < pi.Length; j++)
@@ -42,5 +51,16 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
       return System.Enum.GetNames(reflectType);
    }
 
+   public string[] GetSubclasses()
+   {
+      System.Collections.ArrayList result = new System.Collections.ArrayList();
+      System.Type[] types = reflectType.Assembly.GetTypes();
+      for (int i=0; i<types.Length; i++)
+      {
+         if (types[i].IsSubclassOf(reflectType))
+            result.Add(types[i].Name);
+      }
+      return (string[])result.ToArray(typeof(string));
+   }
    #endregion
 }

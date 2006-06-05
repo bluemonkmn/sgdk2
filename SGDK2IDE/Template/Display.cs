@@ -444,7 +444,7 @@ public class Display : ScrollableControl
       }
    }
 
-   public System.Drawing.Rectangle DisplayRectangle
+   public override System.Drawing.Rectangle DisplayRectangle
    {
       get
       {

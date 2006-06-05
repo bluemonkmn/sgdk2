@@ -40,9 +40,10 @@ echo >>Input.txt /res:SGDK2.frmTileEdit.resources
 echo >>Input.txt /res:SGDK2.frmSpriteDefinition.resources
 echo >>Input.txt /res:SGDK2.frmSolidity.resources
 echo >>Input.txt /res:SGDK2.frmTileCategory.resources
-echo >>Input.txt /res:SGDK2.frmShape.resources
 echo >>Input.txt /res:SGDK2.frmSpriteCategories.resources
 echo >>Input.txt /res:SGDK2.frmCodeEditor.resources
+echo >>Input.txt /res:SGDK2.frmPlanEdit.resources
+echo >>Input.txt /res:SGDK2.frmUnsavedChanges.resources
 echo >>Input.txt /res:Template\Display.cs,SGDK2.Template.Display.cs
 echo >>Input.txt /res:Template\Frame.cs,SGDK2.Template.Frame.cs
 echo >>Input.txt /res:Template\LayerBase.cs,SGDK2.Template.LayerBase.cs
@@ -79,7 +80,6 @@ echo >>Input.txt MapEditor.cs
 echo >>Input.txt LayerManager.cs
 echo >>Input.txt SpriteDefinition.cs
 echo >>Input.txt Solidity.cs
-echo >>Input.txt Shape.cs
 echo >>Input.txt TileCategory.cs
 echo >>Input.txt DataGridComboBox.cs
 echo >>Input.txt RemotingServices.cs
@@ -88,6 +88,9 @@ echo >>Input.txt SpriteConverter.cs
 echo >>Input.txt SpriteCategories.cs
 echo >>Input.txt CodeEditor.cs
 echo >>Input.txt CodeGenerator.cs
+echo >>Input.txt PlanConverter.cs
+echo >>Input.txt PlanEdit.cs
+echo >>Input.txt UnsavedChanges.cs
 csc /noconfig @Input.txt
 del Input.txt
 del *.resources

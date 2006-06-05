@@ -283,7 +283,9 @@ namespace SGDK2
          this.dataMonitor.TileFrameRowDeleted += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
          this.dataMonitor.SpritePlanRowDeleted += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowDeleted);
          this.dataMonitor.SpritePlanRowChanged += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowChanged);
+         this.dataMonitor.SpritePlanRowChanging += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowChanging);
          this.dataMonitor.SpriteRowChanged += new SGDK2.ProjectDataset.SpriteRowChangeEventHandler(this.dataMonitor_SpriteRowChanged);
+         this.dataMonitor.SpriteRowChanging += new SGDK2.ProjectDataset.SpriteRowChangeEventHandler(this.dataMonitor_SpriteRowChanging);
          this.dataMonitor.MapRowDeleted += new SGDK2.ProjectDataset.MapRowChangeEventHandler(this.dataMonitor_MapRowDeleted);
          this.dataMonitor.LayerRowDeleted += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowDeleted);
          this.dataMonitor.TileFrameRowChanged += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
@@ -1356,11 +1358,22 @@ namespace SGDK2
             m_Layers[m_nCurLayer].ClearInjections();
             m_Layers[m_nCurLayer].InjectCachedSprites();
             MapDisplay.Invalidate();
+         }
+      }
+
+      private void dataMonitor_SpriteRowChanging(object sender, SGDK2.ProjectDataset.SpriteRowChangeEvent e)
+      {
+         if (e.Action == DataRowAction.Change)
+         {
             if(String.Compare(e.Row.Name, e.Row[ProjectData.Sprite.NameColumn, DataRowVersion.Current].ToString()) != 0)
             {
                for (int i = 0; i<lstAvailableSprites.Items.Count; i++)
                   if (lstAvailableSprites.Items[i] == e.Row)
+                  {
+                     m_ChangingName = true;
                      lstAvailableSprites.Items[i] = e.Row; // Force refresh;
+                     m_ChangingName = false;
+                  }
             }
          }
       }
@@ -1436,7 +1449,7 @@ namespace SGDK2
 
       private void lstAvailableSprites_SelectedIndexChanged(object sender, System.EventArgs e)
       {
-         if (m_ReflectingSelection)
+         if (m_ReflectingSelection || m_ChangingName)
             return;
          if (lstAvailableSprites.SelectedIndex < 0)
          {
@@ -1466,11 +1479,18 @@ namespace SGDK2
             if ((e.Row.LayerRowParent == m_Layers[m_nCurLayer].LayerRow) && (!lstPlans.Items.Contains(e.Row)))
                lstPlans.Items.Add(e.Row);
          }
-         else if (e.Row.HasVersion(DataRowVersion.Current) && (e.Row[ProjectData.SpritePlan.NameColumn, DataRowVersion.Current].ToString().CompareTo(e.Row.Name) != 0))
+      }
+
+      private void dataMonitor_SpritePlanRowChanging(object sender, SGDK2.ProjectDataset.SpritePlanRowChangeEvent e)
+      {
+         if (e.Action == DataRowAction.Change)
          {
-            m_ChangingName = true;
-            lstPlans.Items[lstPlans.Items.IndexOf(e.Row)] = e.Row;
-            m_ChangingName = false;
+            if (e.Row.HasVersion(DataRowVersion.Current) && (e.Row[ProjectData.SpritePlan.NameColumn, DataRowVersion.Current].ToString().CompareTo(e.Row.Name) != 0))
+            {
+               m_ChangingName = true;
+               lstPlans.Items[lstPlans.Items.IndexOf(e.Row)] = e.Row;
+               m_ChangingName = false;
+            }
          }
       }
 

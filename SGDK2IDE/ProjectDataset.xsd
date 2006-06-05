@@ -133,14 +133,14 @@
                                              <xs:attribute name="LayerName" type="xs:Name" use="prohibited" />
                                              <xs:attribute name="PlanName" type="xs:Name" use="prohibited" />
                                              <xs:attribute name="Name" type="xs:string" />
-                                             <xs:attribute name="Sequence" type="xs:int" />
-                                             <xs:attribute name="Type" type="xs:string" />
-                                             <xs:attribute name="Function" type="xs:Name" />
+                                             <xs:attribute name="Sequence" type="xs:int" use="required" msprop:nullValue="_throw" />
+                                             <xs:attribute name="Type" type="xs:string" use="required" msprop:nullValue="_throw" />
+                                             <xs:attribute name="Function" type="xs:Name" msprop:nullValue="_empty" use="required" />
                                              <xs:attribute name="Parameter1" type="xs:string" />
                                              <xs:attribute name="Parameter2" type="xs:string" />
                                              <xs:attribute name="Parameter3" type="xs:string" />
                                              <xs:attribute name="ResultParameter" type="xs:Name" />
-                                             <xs:attribute name="EndIf" type="xs:boolean" />
+                                             <xs:attribute name="EndIf" type="xs:boolean" msprop:nullValue="false" default="false" />
                                           </xs:complexType>
                                        </xs:element>
                                     </xs:sequence>
@@ -264,14 +264,6 @@
                            <xs:attribute name="DefinitionName" type="xs:Name" />
                         </xs:complexType>
                      </xs:element>
-                  </xs:sequence>
-                  <xs:attribute name="Name" type="xs:Name" />
-               </xs:complexType>
-            </xs:element>
-            <xs:element name="TileShape">
-               <xs:complexType>
-                  <xs:sequence>
-                     <xs:element name="Shape" type="xs:string" minOccurs="0" />
                   </xs:sequence>
                   <xs:attribute name="Name" type="xs:Name" />
                </xs:complexType>
@@ -528,10 +520,6 @@
          <xs:field xpath="@MapName" />
          <xs:field xpath="@LayerName" />
       </xs:keyref>
-      <xs:key name="TileShapeKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//TileShape" />
-         <xs:field xpath="@Name" />
-      </xs:key>
       <xs:keyref name="LayerSprite" refer="LayerKey" msdata:DeleteRule="Cascade" msdata:UpdateRule="Cascade"
          msdata:IsNested="true">
          <xs:selector xpath=".//Sprite" />
@@ -566,10 +554,6 @@
          <xs:selector xpath=".//SolidityShape" />
          <xs:field xpath="@TilesetName" />
          <xs:field xpath="@CategoryName" />
-      </xs:keyref>
-      <xs:keyref name="TileShapeSolidityShape" refer="TileShapeKey" msdata:DeleteRule="Cascade" msdata:UpdateRule="Cascade">
-         <xs:selector xpath=".//SolidityShape" />
-         <xs:field xpath="@ShapeName" />
       </xs:keyref>
       <xs:keyref name="SoliditySpriteState" refer="SolidityKey" msdata:DeleteRule="SetNull" msdata:UpdateRule="Cascade">
          <xs:selector xpath=".//SpriteState" />

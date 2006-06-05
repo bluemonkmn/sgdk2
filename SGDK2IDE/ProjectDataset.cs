@@ -69,8 +69,6 @@ namespace SGDK2 {
         
         private SpriteCategorySpriteDataTable tableSpriteCategorySprite;
         
-        private TileShapeDataTable tableTileShape;
-        
         private SolidityDataTable tableSolidity;
         
         private SolidityShapeDataTable tableSolidityShape;
@@ -126,8 +124,6 @@ namespace SGDK2 {
         private DataRelation relationSpriteDefinitionCategory;
         
         private DataRelation relationCategorySolidityShape;
-        
-        private DataRelation relationTileShapeSolidityShape;
         
         private DataRelation relationSoliditySpriteState;
         
@@ -216,9 +212,6 @@ namespace SGDK2 {
                 }
                 if ((ds.Tables["SpriteCategorySprite"] != null)) {
                     this.Tables.Add(new SpriteCategorySpriteDataTable(ds.Tables["SpriteCategorySprite"]));
-                }
-                if ((ds.Tables["TileShape"] != null)) {
-                    this.Tables.Add(new TileShapeDataTable(ds.Tables["TileShape"]));
                 }
                 if ((ds.Tables["Solidity"] != null)) {
                     this.Tables.Add(new SolidityDataTable(ds.Tables["Solidity"]));
@@ -441,14 +434,6 @@ namespace SGDK2 {
         
         [System.ComponentModel.Browsable(false)]
         [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
-        public TileShapeDataTable TileShape {
-            get {
-                return this.tableTileShape;
-            }
-        }
-        
-        [System.ComponentModel.Browsable(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         public SolidityDataTable Solidity {
             get {
                 return this.tableSolidity;
@@ -560,9 +545,6 @@ namespace SGDK2 {
             }
             if ((ds.Tables["SpriteCategorySprite"] != null)) {
                 this.Tables.Add(new SpriteCategorySpriteDataTable(ds.Tables["SpriteCategorySprite"]));
-            }
-            if ((ds.Tables["TileShape"] != null)) {
-                this.Tables.Add(new TileShapeDataTable(ds.Tables["TileShape"]));
             }
             if ((ds.Tables["Solidity"] != null)) {
                 this.Tables.Add(new SolidityDataTable(ds.Tables["Solidity"]));
@@ -687,10 +669,6 @@ namespace SGDK2 {
             if ((this.tableSpriteCategorySprite != null)) {
                 this.tableSpriteCategorySprite.InitVars();
             }
-            this.tableTileShape = ((TileShapeDataTable)(this.Tables["TileShape"]));
-            if ((this.tableTileShape != null)) {
-                this.tableTileShape.InitVars();
-            }
             this.tableSolidity = ((SolidityDataTable)(this.Tables["Solidity"]));
             if ((this.tableSolidity != null)) {
                 this.tableSolidity.InitVars();
@@ -728,7 +706,6 @@ namespace SGDK2 {
             this.relationSpriteParameterParameterValue = this.Relations["SpriteParameterParameterValue"];
             this.relationSpriteDefinitionCategory = this.Relations["SpriteDefinitionCategory"];
             this.relationCategorySolidityShape = this.Relations["CategorySolidityShape"];
-            this.relationTileShapeSolidityShape = this.Relations["TileShapeSolidityShape"];
             this.relationSoliditySpriteState = this.Relations["SoliditySpriteState"];
             this.relationFramesetSpriteState = this.Relations["FramesetSpriteState"];
         }
@@ -788,8 +765,6 @@ namespace SGDK2 {
             this.Tables.Add(this.tableSpriteCategory);
             this.tableSpriteCategorySprite = new SpriteCategorySpriteDataTable();
             this.Tables.Add(this.tableSpriteCategorySprite);
-            this.tableTileShape = new TileShapeDataTable();
-            this.Tables.Add(this.tableTileShape);
             this.tableSolidity = new SolidityDataTable();
             this.Tables.Add(this.tableSolidity);
             this.tableSolidityShape = new SolidityShapeDataTable();
@@ -1027,13 +1002,6 @@ namespace SGDK2 {
             fkc.AcceptRejectRule = System.Data.AcceptRejectRule.None;
             fkc.DeleteRule = System.Data.Rule.Cascade;
             fkc.UpdateRule = System.Data.Rule.Cascade;
-            fkc = new ForeignKeyConstraint("TileShapeSolidityShape", new DataColumn[] {
-                        this.tableTileShape.NameColumn}, new DataColumn[] {
-                        this.tableSolidityShape.ShapeNameColumn});
-            this.tableSolidityShape.Constraints.Add(fkc);
-            fkc.AcceptRejectRule = System.Data.AcceptRejectRule.None;
-            fkc.DeleteRule = System.Data.Rule.Cascade;
-            fkc.UpdateRule = System.Data.Rule.Cascade;
             this.relationFramesetFrame = new DataRelation("FramesetFrame", new DataColumn[] {
                         this.tableFrameset.NameColumn}, new DataColumn[] {
                         this.tableFrame.NameColumn}, false);
@@ -1185,10 +1153,6 @@ namespace SGDK2 {
                         this.tableSolidityShape.TilesetNameColumn,
                         this.tableSolidityShape.CategoryNameColumn}, false);
             this.Relations.Add(this.relationCategorySolidityShape);
-            this.relationTileShapeSolidityShape = new DataRelation("TileShapeSolidityShape", new DataColumn[] {
-                        this.tableTileShape.NameColumn}, new DataColumn[] {
-                        this.tableSolidityShape.ShapeNameColumn}, false);
-            this.Relations.Add(this.relationTileShapeSolidityShape);
             this.relationSoliditySpriteState = new DataRelation("SoliditySpriteState", new DataColumn[] {
                         this.tableSolidity.NameColumn}, new DataColumn[] {
                         this.tableSpriteState.SolidityNameColumn}, false);
@@ -1295,10 +1259,6 @@ namespace SGDK2 {
             return false;
         }
         
-        private bool ShouldSerializeTileShape() {
-            return false;
-        }
-        
         private bool ShouldSerializeSolidity() {
             return false;
         }
@@ -1364,8 +1324,6 @@ namespace SGDK2 {
         public delegate void SpriteCategoryRowChangeEventHandler(object sender, SpriteCategoryRowChangeEvent e);
         
         public delegate void SpriteCategorySpriteRowChangeEventHandler(object sender, SpriteCategorySpriteRowChangeEvent e);
-        
-        public delegate void TileShapeRowChangeEventHandler(object sender, TileShapeRowChangeEvent e);
         
         public delegate void SolidityRowChangeEventHandler(object sender, SolidityRowChangeEvent e);
         
@@ -6173,14 +6131,18 @@ namespace SGDK2 {
                 this.columnPlanName.Namespace = "";
                 this.columnName.AllowDBNull = false;
                 this.columnName.Namespace = "";
+                this.columnSequence.AllowDBNull = false;
                 this.columnSequence.Namespace = "";
+                this.columnType.AllowDBNull = false;
                 this.columnType.Namespace = "";
+                this.columnFunction.AllowDBNull = false;
                 this.columnFunction.Namespace = "";
                 this.columnParameter1.Namespace = "";
                 this.columnParameter2.Namespace = "";
                 this.columnParameter3.Namespace = "";
                 this.columnResultParameter.Namespace = "";
                 this.columnEndIf.Namespace = "";
+                this.columnEndIf.DefaultValue = false;
             }
             
             public PlanRuleRow NewPlanRuleRow() {
@@ -6249,12 +6211,7 @@ namespace SGDK2 {
             
             public int Sequence {
                 get {
-                    try {
-                        return ((int)(this[this.tablePlanRule.SequenceColumn]));
-                    }
-                    catch (InvalidCastException e) {
-                        throw new StrongTypingException("Cannot get value because it is DBNull.", e);
-                    }
+                    return ((int)(this[this.tablePlanRule.SequenceColumn]));
                 }
                 set {
                     this[this.tablePlanRule.SequenceColumn] = value;
@@ -6263,12 +6220,7 @@ namespace SGDK2 {
             
             public string Type {
                 get {
-                    try {
-                        return ((string)(this[this.tablePlanRule.TypeColumn]));
-                    }
-                    catch (InvalidCastException e) {
-                        throw new StrongTypingException("Cannot get value because it is DBNull.", e);
-                    }
+                    return ((string)(this[this.tablePlanRule.TypeColumn]));
                 }
                 set {
                     this[this.tablePlanRule.TypeColumn] = value;
@@ -6277,12 +6229,7 @@ namespace SGDK2 {
             
             public string Function {
                 get {
-                    try {
-                        return ((string)(this[this.tablePlanRule.FunctionColumn]));
-                    }
-                    catch (InvalidCastException e) {
-                        throw new StrongTypingException("Cannot get value because it is DBNull.", e);
-                    }
+                    return ((string)(this[this.tablePlanRule.FunctionColumn]));
                 }
                 set {
                     this[this.tablePlanRule.FunctionColumn] = value;
@@ -6347,11 +6294,11 @@ namespace SGDK2 {
             
             public bool EndIf {
                 get {
-                    try {
-                        return ((bool)(this[this.tablePlanRule.EndIfColumn]));
+                    if (this.IsEndIfNull()) {
+                        return false;
                     }
-                    catch (InvalidCastException e) {
-                        throw new StrongTypingException("Cannot get value because it is DBNull.", e);
+                    else {
+                        return ((bool)(this[this.tablePlanRule.EndIfColumn]));
                     }
                 }
                 set {
@@ -6366,30 +6313,6 @@ namespace SGDK2 {
                 set {
                     this.SetParentRow(value, this.Table.ParentRelations["SpritePlanPlanRule"]);
                 }
-            }
-            
-            public bool IsSequenceNull() {
-                return this.IsNull(this.tablePlanRule.SequenceColumn);
-            }
-            
-            public void SetSequenceNull() {
-                this[this.tablePlanRule.SequenceColumn] = System.Convert.DBNull;
-            }
-            
-            public bool IsTypeNull() {
-                return this.IsNull(this.tablePlanRule.TypeColumn);
-            }
-            
-            public void SetTypeNull() {
-                this[this.tablePlanRule.TypeColumn] = System.Convert.DBNull;
-            }
-            
-            public bool IsFunctionNull() {
-                return this.IsNull(this.tablePlanRule.FunctionColumn);
-            }
-            
-            public void SetFunctionNull() {
-                this[this.tablePlanRule.FunctionColumn] = System.Convert.DBNull;
             }
             
             public bool IsParameter1Null() {
@@ -9133,232 +9056,6 @@ namespace SGDK2 {
         }
         
         [System.Diagnostics.DebuggerStepThrough()]
-        public class TileShapeDataTable : DataTable, System.Collections.IEnumerable {
-            
-            private DataColumn columnName;
-            
-            private DataColumn columnShape;
-            
-            internal TileShapeDataTable() : 
-                    base("TileShape") {
-                this.InitClass();
-            }
-            
-            internal TileShapeDataTable(DataTable table) : 
-                    base(table.TableName) {
-                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
-                    this.CaseSensitive = table.CaseSensitive;
-                }
-                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
-                    this.Locale = table.Locale;
-                }
-                if ((table.Namespace != table.DataSet.Namespace)) {
-                    this.Namespace = table.Namespace;
-                }
-                this.Prefix = table.Prefix;
-                this.MinimumCapacity = table.MinimumCapacity;
-                this.DisplayExpression = table.DisplayExpression;
-            }
-            
-            [System.ComponentModel.Browsable(false)]
-            public int Count {
-                get {
-                    return this.Rows.Count;
-                }
-            }
-            
-            internal DataColumn NameColumn {
-                get {
-                    return this.columnName;
-                }
-            }
-            
-            internal DataColumn ShapeColumn {
-                get {
-                    return this.columnShape;
-                }
-            }
-            
-            public TileShapeRow this[int index] {
-                get {
-                    return ((TileShapeRow)(this.Rows[index]));
-                }
-            }
-            
-            public event TileShapeRowChangeEventHandler TileShapeRowChanged;
-            
-            public event TileShapeRowChangeEventHandler TileShapeRowChanging;
-            
-            public event TileShapeRowChangeEventHandler TileShapeRowDeleted;
-            
-            public event TileShapeRowChangeEventHandler TileShapeRowDeleting;
-            
-            public void AddTileShapeRow(TileShapeRow row) {
-                this.Rows.Add(row);
-            }
-            
-            public TileShapeRow AddTileShapeRow(string Name, string Shape) {
-                TileShapeRow rowTileShapeRow = ((TileShapeRow)(this.NewRow()));
-                rowTileShapeRow.ItemArray = new object[] {
-                        Name,
-                        Shape};
-                this.Rows.Add(rowTileShapeRow);
-                return rowTileShapeRow;
-            }
-            
-            public TileShapeRow FindByName(string Name) {
-                return ((TileShapeRow)(this.Rows.Find(new object[] {
-                            Name})));
-            }
-            
-            public System.Collections.IEnumerator GetEnumerator() {
-                return this.Rows.GetEnumerator();
-            }
-            
-            public override DataTable Clone() {
-                TileShapeDataTable cln = ((TileShapeDataTable)(base.Clone()));
-                cln.InitVars();
-                return cln;
-            }
-            
-            protected override DataTable CreateInstance() {
-                return new TileShapeDataTable();
-            }
-            
-            internal void InitVars() {
-                this.columnName = this.Columns["Name"];
-                this.columnShape = this.Columns["Shape"];
-            }
-            
-            private void InitClass() {
-                this.columnName = new DataColumn("Name", typeof(string), null, System.Data.MappingType.Attribute);
-                this.Columns.Add(this.columnName);
-                this.columnShape = new DataColumn("Shape", typeof(string), null, System.Data.MappingType.Element);
-                this.Columns.Add(this.columnShape);
-                this.Constraints.Add(new UniqueConstraint("TileShapeKey", new DataColumn[] {
-                                this.columnName}, true));
-                this.columnName.AllowDBNull = false;
-                this.columnName.Unique = true;
-                this.columnName.Namespace = "";
-            }
-            
-            public TileShapeRow NewTileShapeRow() {
-                return ((TileShapeRow)(this.NewRow()));
-            }
-            
-            protected override DataRow NewRowFromBuilder(DataRowBuilder builder) {
-                return new TileShapeRow(builder);
-            }
-            
-            protected override System.Type GetRowType() {
-                return typeof(TileShapeRow);
-            }
-            
-            protected override void OnRowChanged(DataRowChangeEventArgs e) {
-                base.OnRowChanged(e);
-                if ((this.TileShapeRowChanged != null)) {
-                    this.TileShapeRowChanged(this, new TileShapeRowChangeEvent(((TileShapeRow)(e.Row)), e.Action));
-                }
-            }
-            
-            protected override void OnRowChanging(DataRowChangeEventArgs e) {
-                base.OnRowChanging(e);
-                if ((this.TileShapeRowChanging != null)) {
-                    this.TileShapeRowChanging(this, new TileShapeRowChangeEvent(((TileShapeRow)(e.Row)), e.Action));
-                }
-            }
-            
-            protected override void OnRowDeleted(DataRowChangeEventArgs e) {
-                base.OnRowDeleted(e);
-                if ((this.TileShapeRowDeleted != null)) {
-                    this.TileShapeRowDeleted(this, new TileShapeRowChangeEvent(((TileShapeRow)(e.Row)), e.Action));
-                }
-            }
-            
-            protected override void OnRowDeleting(DataRowChangeEventArgs e) {
-                base.OnRowDeleting(e);
-                if ((this.TileShapeRowDeleting != null)) {
-                    this.TileShapeRowDeleting(this, new TileShapeRowChangeEvent(((TileShapeRow)(e.Row)), e.Action));
-                }
-            }
-            
-            public void RemoveTileShapeRow(TileShapeRow row) {
-                this.Rows.Remove(row);
-            }
-        }
-        
-        [System.Diagnostics.DebuggerStepThrough()]
-        public class TileShapeRow : DataRow {
-            
-            private TileShapeDataTable tableTileShape;
-            
-            internal TileShapeRow(DataRowBuilder rb) : 
-                    base(rb) {
-                this.tableTileShape = ((TileShapeDataTable)(this.Table));
-            }
-            
-            public string Name {
-                get {
-                    return ((string)(this[this.tableTileShape.NameColumn]));
-                }
-                set {
-                    this[this.tableTileShape.NameColumn] = value;
-                }
-            }
-            
-            public string Shape {
-                get {
-                    try {
-                        return ((string)(this[this.tableTileShape.ShapeColumn]));
-                    }
-                    catch (InvalidCastException e) {
-                        throw new StrongTypingException("Cannot get value because it is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableTileShape.ShapeColumn] = value;
-                }
-            }
-            
-            public bool IsShapeNull() {
-                return this.IsNull(this.tableTileShape.ShapeColumn);
-            }
-            
-            public void SetShapeNull() {
-                this[this.tableTileShape.ShapeColumn] = System.Convert.DBNull;
-            }
-            
-            public SolidityShapeRow[] GetSolidityShapeRows() {
-                return ((SolidityShapeRow[])(this.GetChildRows(this.Table.ChildRelations["TileShapeSolidityShape"])));
-            }
-        }
-        
-        [System.Diagnostics.DebuggerStepThrough()]
-        public class TileShapeRowChangeEvent : EventArgs {
-            
-            private TileShapeRow eventRow;
-            
-            private DataRowAction eventAction;
-            
-            public TileShapeRowChangeEvent(TileShapeRow row, DataRowAction action) {
-                this.eventRow = row;
-                this.eventAction = action;
-            }
-            
-            public TileShapeRow Row {
-                get {
-                    return this.eventRow;
-                }
-            }
-            
-            public DataRowAction Action {
-                get {
-                    return this.eventAction;
-                }
-            }
-        }
-        
-        [System.Diagnostics.DebuggerStepThrough()]
         public class SolidityDataTable : DataTable, System.Collections.IEnumerable {
             
             private DataColumn columnName;
@@ -9635,12 +9332,12 @@ namespace SGDK2 {
                 this.Rows.Add(row);
             }
             
-            public SolidityShapeRow AddSolidityShapeRow(SolidityRow parentSolidityRowBySoliditySolidityShape, string CategoryName, TileShapeRow parentTileShapeRowByTileShapeSolidityShape, string TilesetName) {
+            public SolidityShapeRow AddSolidityShapeRow(SolidityRow parentSolidityRowBySoliditySolidityShape, string CategoryName, string ShapeName, string TilesetName) {
                 SolidityShapeRow rowSolidityShapeRow = ((SolidityShapeRow)(this.NewRow()));
                 rowSolidityShapeRow.ItemArray = new object[] {
                         parentSolidityRowBySoliditySolidityShape[0],
                         CategoryName,
-                        parentTileShapeRowByTileShapeSolidityShape[0],
+                        ShapeName,
                         TilesetName};
                 this.Rows.Add(rowSolidityShapeRow);
                 return rowSolidityShapeRow;
@@ -9798,15 +9495,6 @@ namespace SGDK2 {
                 }
                 set {
                     this.SetParentRow(value, this.Table.ParentRelations["CategorySolidityShape"]);
-                }
-            }
-            
-            public TileShapeRow TileShapeRow {
-                get {
-                    return ((TileShapeRow)(this.GetParentRow(this.Table.ParentRelations["TileShapeSolidityShape"])));
-                }
-                set {
-                    this.SetParentRow(value, this.Table.ParentRelations["TileShapeSolidityShape"]);
                 }
             }
             

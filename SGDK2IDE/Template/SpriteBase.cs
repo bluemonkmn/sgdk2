@@ -58,6 +58,22 @@ public abstract class SpriteBase
       }
    }
 
+   public int OldPixelX
+   {
+      get
+      {
+         return (int)oldX;
+      }
+   }
+
+   public int OldPixelY
+   {
+      get
+      {
+         return (int)oldY;
+      }
+   }
+
    public SpriteState CurrentState
    {
       get
@@ -213,6 +229,8 @@ public abstract class SpriteBase
    /// </summary>
    public void MoveByVelocity()
    {
+      oldX = x;
+      oldY = y;
       x += dx;
       y += dy;
    }

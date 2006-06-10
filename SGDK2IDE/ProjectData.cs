@@ -136,6 +136,8 @@ namespace SGDK2
                return ((ProjectDataset.CoordinateRow)x).Sequence.CompareTo(((ProjectDataset.CoordinateRow)y).Sequence);
             else if (x is ProjectDataset.PlanRuleRow)
                return ((ProjectDataset.PlanRuleRow)x).Sequence.CompareTo(((ProjectDataset.PlanRuleRow)y).Sequence);
+            else if (x is ProjectDataset.SpriteRuleRow)
+               return ((ProjectDataset.SpriteRuleRow)x).Sequence.CompareTo(((ProjectDataset.SpriteRuleRow)y).Sequence);
             else
                throw new ApplicationException("Unknown data row type for comparing");
          }
@@ -1455,6 +1457,70 @@ namespace SGDK2
             return m_dsPrj.SpriteRule;
          }
       }
+      public static ProjectDataset.SpriteRuleRow[] GetSortedSpriteRules(ProjectDataset.SpriteDefinitionRow parent)
+      {
+         ProjectDataset.SpriteRuleRow[] result = parent.GetSpriteRuleRows();
+         Array.Sort(result, new DataRowComparer());
+         return result;
+      }
+      public static ProjectDataset.SpriteRuleRow InsertSpriteRule(ProjectDataset.SpriteDefinitionRow parent, string name,
+         string type, int sequence, string function, string parameter1, string parameter2, string parameter3, string resultParameter, bool endIf)
+      {
+         if (sequence < 0)
+            sequence = GetMaxSpritePlanSequence(parent) + 1;
+         foreach(ProjectDataset.SpriteRuleRow row in GetSortedSpriteRules(parent))
+            if (row.Sequence >= sequence)
+               row.Sequence += 1;
+         return m_dsPrj.SpriteRule.AddSpriteRuleRow(parent, name, sequence, type, function, parameter1, parameter2, parameter3, resultParameter, endIf);
+      }
+      
+      public static void DeleteSpriteRule(ProjectDataset.SpriteRuleRow row)
+      {
+         int oldSeq = row.Sequence;
+         ProjectDataset.SpriteDefinitionRow parent = row.SpriteDefinitionRow;
+         row.Delete();
+         foreach(ProjectDataset.SpriteRuleRow drChange in GetSortedSpriteRules(parent))
+            if (drChange.Sequence >= oldSeq)
+               drChange.Sequence -= 1;
+      }
+      
+      public static bool MoveSpriteRule(ProjectDataset.SpriteRuleRow row, bool moveDown)
+      {
+         string planName = row[m_dsPrj.SpriteRule.DefinitionNameColumn].ToString();
+         string filter = "PlanName='" + planName + "' ";
+
+         DataRow[] nextRows;
+         if (moveDown)
+            nextRows = m_dsPrj.SpriteRule.Select(filter + "and Sequence >= " + row.Sequence.ToString(), "Sequence ASC");
+         else
+            nextRows = m_dsPrj.SpriteRule.Select(filter + "and Sequence <= " + row.Sequence.ToString(), "Sequence DESC");
+         System.Diagnostics.Debug.Assert((nextRows.Length > 0) && (nextRows[0] == row), "Unexpected sprite rule sequencing error");
+         if (nextRows.Length == 1)
+            return false;
+         ProjectDataset.SpriteRuleRow nextRow = (ProjectDataset.SpriteRuleRow)nextRows[1];
+         int nextSeq = nextRow.Sequence;
+         if (moveDown)
+            System.Diagnostics.Debug.Assert(nextRow.Sequence == row.Sequence + 1, "Sprite rows are not consecutively sequenced");
+         else
+            System.Diagnostics.Debug.Assert(nextRow.Sequence == row.Sequence - 1, "Sprite rows are not consecutively sequenced");
+         nextRow.Sequence = row.Sequence;
+         row.Sequence = nextSeq;
+         return true;
+      }
+      public static ProjectDataset.SpriteRuleRow GetSpriteRule(ProjectDataset.SpriteDefinitionRow parent, string name)
+      {
+         return m_dsPrj.SpriteRule.FindByDefinitionNameName(parent.Name, name);
+      }
+      public static int GetMaxSpritePlanSequence(ProjectDataset.SpriteDefinitionRow parent)
+      {
+         int max = 0;
+         foreach (ProjectDataset.SpriteRuleRow row in parent.GetSpriteRuleRows())
+         {
+            if (row.Sequence > max)
+               max = row.Sequence;
+         }
+         return max;
+      }
       #endregion
 
       #region SpriteParameter
@@ -2299,6 +2365,18 @@ namespace SGDK2
       public static ProjectDataset.SourceCodeRow AddSourceCode(string Name, string Text)
       {
          return m_dsPrj.SourceCode.AddSourceCodeRow(Name, Text);
+      }
+      #endregion
+
+      #region Project
+      public static ProjectDataset.ProjectRow ProjectRow
+      {
+         get
+         {
+            if (m_dsPrj.Project.Count <= 0)
+               m_dsPrj.Project.AddProjectRow(GameDisplayMode.m640x480x24.ToString(), true, "http://sgdk2.sf.net", null);
+            return m_dsPrj.Project[0];
+         }
       }
       #endregion
    }

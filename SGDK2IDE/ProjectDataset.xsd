@@ -211,14 +211,14 @@
                            <xs:sequence></xs:sequence>
                            <xs:attribute name="DefinitionName" type="xs:Name" use="prohibited" />
                            <xs:attribute name="Name" type="xs:Name" />
-                           <xs:attribute name="Sequence" type="xs:int" />
-                           <xs:attribute name="Type" type="xs:string" />
-                           <xs:attribute name="Function" type="xs:Name" />
+                           <xs:attribute name="Sequence" type="xs:int" use="required" msprop:nullValue="_throw" />
+                           <xs:attribute name="Type" type="xs:string" msprop:nullValue="_throw" use="required" />
+                           <xs:attribute name="Function" type="xs:Name" use="required" msprop:nullValue="_empty" />
                            <xs:attribute name="Parameter1" type="xs:string" />
                            <xs:attribute name="Parameter2" type="xs:string" />
                            <xs:attribute name="Parameter3" type="xs:string" />
                            <xs:attribute name="ResultParameter" type="xs:Name" />
-                           <xs:attribute name="EndIf" type="xs:boolean" />
+                           <xs:attribute name="EndIf" type="xs:boolean" msprop:nullValue="false" default="false" />
                         </xs:complexType>
                      </xs:element>
                      <xs:element name="SpriteParameter">
@@ -290,6 +290,15 @@
                      <xs:element name="Text" type="xs:string" minOccurs="0" />
                   </xs:sequence>
                   <xs:attribute name="Name" type="xs:Name" />
+               </xs:complexType>
+            </xs:element>
+            <xs:element name="Project" maxOccurs="1" minOccurs="1">
+               <xs:complexType>
+                  <xs:sequence></xs:sequence>
+                  <xs:attribute name="DisplayMode" type="xs:string" use="required" />
+                  <xs:attribute name="Windowed" type="xs:boolean" use="required" msprop:nullValue="false" />
+                  <xs:attribute name="TitleText" type="xs:string" />
+                  <xs:attribute name="StartMap" type="xs:Name" msprop:nullValue="_empty" use="optional" />
                </xs:complexType>
             </xs:element>
          </xs:choice>
@@ -597,5 +606,10 @@
          <xs:selector xpath=".//SourceCode" />
          <xs:field xpath="@Name" />
       </xs:key>
+      <xs:keyref name="MapProject" refer="MapKey" msdata:ConstraintOnly="true" msdata:DeleteRule="SetNull"
+         msdata:UpdateRule="Cascade">
+         <xs:selector xpath=".//Project" />
+         <xs:field xpath="@StartMap" />
+      </xs:keyref>
    </xs:element>
 </xs:schema>

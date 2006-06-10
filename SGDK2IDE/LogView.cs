@@ -17,16 +17,14 @@ namespace SGDK2
 		/// </summary>
 		private System.ComponentModel.Container components = null;
 
-		public frmLogView()
+		public frmLogView(string text)
 		{
 			//
 			// Required for Windows Form Designer support
 			//
 			InitializeComponent();
 
-			//
-			// TODO: Add any constructor code after InitializeComponent call
-			//
+			txtLogView.Text = text;
 		}
 
 		/// <summary>

@@ -7,6 +7,19 @@ namespace SGDK2
 	/// </summary>
 	public class RemotingServices
 	{
+      public class RemoteMethodComparer : System.Collections.IComparer
+      {
+         #region IComparer Members
+         public int Compare(object x, object y)
+         {
+            if (x is RemoteMethodInfo)
+               return ((RemoteMethodInfo)x).MethodName.CompareTo(((RemoteMethodInfo)y).MethodName);
+            else
+               throw new ApplicationException("Unknown data row type for comparing");
+         }
+         #endregion
+      }
+
       [Serializable()]
       public struct RemoteParameterInfo
       {
@@ -73,6 +86,49 @@ namespace SGDK2
       public bool Contains(string name)
       {
          return InnerHashtable.ContainsKey(name);
+      }
+
+      public void InsertOperators()
+      {
+         RemotingServices.RemoteMethodInfo op;
+         op.MethodName = "+";
+         op.Arguments = new RemotingServices.RemoteParameterInfo[]
+                  {
+                     new RemotingServices.RemoteParameterInfo("left operand", typeof(int).Name, false),
+                     new RemotingServices.RemoteParameterInfo("right operand", typeof(int).Name, false)
+                  };
+         op.Description = "Return the result of adding two numbers";
+         op.ReturnType = typeof(int).Name;
+         this["+"] = op;
+
+         op.MethodName = "-";
+         op.Description = "Return the result of subtracting the right operand from the left operand";
+         this["-"] = op;
+
+         op.MethodName = "<";
+         op.Description = "Determine if the left operand is less than the right operand";
+         op.ReturnType = typeof(bool).Name;
+         this["<"] = op;
+
+         op.MethodName = "<=";
+         op.Description = "Determine if the left operand is less than or equal to the right operand";
+         this["<="] = op;
+
+         op.MethodName = "==";
+         op.Description = "Determine if the left operand is equal to the right operand";
+         this["="] = op;
+
+         op.MethodName = ">=";
+         op.Description = "Determine if the left operand is greater than or equal to the right operand";
+         this[">="] = op;
+
+         op.MethodName = ">";
+         op.Description = "Determine if the left operand is greater than the right operand";
+         this[">"] = op;
+
+         op.MethodName = "!=";
+         op.Description = "Determine if the left operand is not equal to the right operand";
+         this["!="] = op;
       }
    }
 

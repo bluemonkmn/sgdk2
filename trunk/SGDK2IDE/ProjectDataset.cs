@@ -75,6 +75,8 @@ namespace SGDK2 {
         
         private SourceCodeDataTable tableSourceCode;
         
+        private ProjectDataTable tableProject;
+        
         private DataRelation relationFramesetFrame;
         
         private DataRelation relationTileTileFrame;
@@ -221,6 +223,9 @@ namespace SGDK2 {
                 }
                 if ((ds.Tables["SourceCode"] != null)) {
                     this.Tables.Add(new SourceCodeDataTable(ds.Tables["SourceCode"]));
+                }
+                if ((ds.Tables["Project"] != null)) {
+                    this.Tables.Add(new ProjectDataTable(ds.Tables["Project"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -456,6 +461,14 @@ namespace SGDK2 {
             }
         }
         
+        [System.ComponentModel.Browsable(false)]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        public ProjectDataTable Project {
+            get {
+                return this.tableProject;
+            }
+        }
+        
         public override DataSet Clone() {
             ProjectDataset cln = ((ProjectDataset)(base.Clone()));
             cln.InitVars();
@@ -554,6 +567,9 @@ namespace SGDK2 {
             }
             if ((ds.Tables["SourceCode"] != null)) {
                 this.Tables.Add(new SourceCodeDataTable(ds.Tables["SourceCode"]));
+            }
+            if ((ds.Tables["Project"] != null)) {
+                this.Tables.Add(new ProjectDataTable(ds.Tables["Project"]));
             }
             this.DataSetName = ds.DataSetName;
             this.Prefix = ds.Prefix;
@@ -681,6 +697,10 @@ namespace SGDK2 {
             if ((this.tableSourceCode != null)) {
                 this.tableSourceCode.InitVars();
             }
+            this.tableProject = ((ProjectDataTable)(this.Tables["Project"]));
+            if ((this.tableProject != null)) {
+                this.tableProject.InitVars();
+            }
             this.relationFramesetFrame = this.Relations["FramesetFrame"];
             this.relationTileTileFrame = this.Relations["TileTileFrame"];
             this.relationTilesetTile = this.Relations["TilesetTile"];
@@ -771,6 +791,8 @@ namespace SGDK2 {
             this.Tables.Add(this.tableSolidityShape);
             this.tableSourceCode = new SourceCodeDataTable();
             this.Tables.Add(this.tableSourceCode);
+            this.tableProject = new ProjectDataTable();
+            this.Tables.Add(this.tableProject);
             ForeignKeyConstraint fkc;
             fkc = new ForeignKeyConstraint("FramesetFrame", new DataColumn[] {
                         this.tableFrameset.NameColumn}, new DataColumn[] {
@@ -1001,6 +1023,13 @@ namespace SGDK2 {
             this.tableSolidityShape.Constraints.Add(fkc);
             fkc.AcceptRejectRule = System.Data.AcceptRejectRule.None;
             fkc.DeleteRule = System.Data.Rule.Cascade;
+            fkc.UpdateRule = System.Data.Rule.Cascade;
+            fkc = new ForeignKeyConstraint("MapProject", new DataColumn[] {
+                        this.tableMap.NameColumn}, new DataColumn[] {
+                        this.tableProject.StartMapColumn});
+            this.tableProject.Constraints.Add(fkc);
+            fkc.AcceptRejectRule = System.Data.AcceptRejectRule.None;
+            fkc.DeleteRule = System.Data.Rule.SetNull;
             fkc.UpdateRule = System.Data.Rule.Cascade;
             this.relationFramesetFrame = new DataRelation("FramesetFrame", new DataColumn[] {
                         this.tableFrameset.NameColumn}, new DataColumn[] {
@@ -1271,6 +1300,10 @@ namespace SGDK2 {
             return false;
         }
         
+        private bool ShouldSerializeProject() {
+            return false;
+        }
+        
         private void SchemaChanged(object sender, System.ComponentModel.CollectionChangeEventArgs e) {
             if ((e.Action == System.ComponentModel.CollectionChangeAction.Remove)) {
                 this.InitVars();
@@ -1330,6 +1363,8 @@ namespace SGDK2 {
         public delegate void SolidityShapeRowChangeEventHandler(object sender, SolidityShapeRowChangeEvent e);
         
         public delegate void SourceCodeRowChangeEventHandler(object sender, SourceCodeRowChangeEvent e);
+        
+        public delegate void ProjectRowChangeEventHandler(object sender, ProjectRowChangeEvent e);
         
         [System.Diagnostics.DebuggerStepThrough()]
         public class GraphicSheetDataTable : DataTable, System.Collections.IEnumerable {
@@ -7497,14 +7532,18 @@ namespace SGDK2 {
                 this.columnDefinitionName.Namespace = "";
                 this.columnName.AllowDBNull = false;
                 this.columnName.Namespace = "";
+                this.columnSequence.AllowDBNull = false;
                 this.columnSequence.Namespace = "";
+                this.columnType.AllowDBNull = false;
                 this.columnType.Namespace = "";
+                this.columnFunction.AllowDBNull = false;
                 this.columnFunction.Namespace = "";
                 this.columnParameter1.Namespace = "";
                 this.columnParameter2.Namespace = "";
                 this.columnParameter3.Namespace = "";
                 this.columnResultParameter.Namespace = "";
                 this.columnEndIf.Namespace = "";
+                this.columnEndIf.DefaultValue = false;
             }
             
             public SpriteRuleRow NewSpriteRuleRow() {
@@ -7573,12 +7612,7 @@ namespace SGDK2 {
             
             public int Sequence {
                 get {
-                    try {
-                        return ((int)(this[this.tableSpriteRule.SequenceColumn]));
-                    }
-                    catch (InvalidCastException e) {
-                        throw new StrongTypingException("Cannot get value because it is DBNull.", e);
-                    }
+                    return ((int)(this[this.tableSpriteRule.SequenceColumn]));
                 }
                 set {
                     this[this.tableSpriteRule.SequenceColumn] = value;
@@ -7587,12 +7621,7 @@ namespace SGDK2 {
             
             public string Type {
                 get {
-                    try {
-                        return ((string)(this[this.tableSpriteRule.TypeColumn]));
-                    }
-                    catch (InvalidCastException e) {
-                        throw new StrongTypingException("Cannot get value because it is DBNull.", e);
-                    }
+                    return ((string)(this[this.tableSpriteRule.TypeColumn]));
                 }
                 set {
                     this[this.tableSpriteRule.TypeColumn] = value;
@@ -7601,12 +7630,7 @@ namespace SGDK2 {
             
             public string Function {
                 get {
-                    try {
-                        return ((string)(this[this.tableSpriteRule.FunctionColumn]));
-                    }
-                    catch (InvalidCastException e) {
-                        throw new StrongTypingException("Cannot get value because it is DBNull.", e);
-                    }
+                    return ((string)(this[this.tableSpriteRule.FunctionColumn]));
                 }
                 set {
                     this[this.tableSpriteRule.FunctionColumn] = value;
@@ -7671,11 +7695,11 @@ namespace SGDK2 {
             
             public bool EndIf {
                 get {
-                    try {
-                        return ((bool)(this[this.tableSpriteRule.EndIfColumn]));
+                    if (this.IsEndIfNull()) {
+                        return false;
                     }
-                    catch (InvalidCastException e) {
-                        throw new StrongTypingException("Cannot get value because it is DBNull.", e);
+                    else {
+                        return ((bool)(this[this.tableSpriteRule.EndIfColumn]));
                     }
                 }
                 set {
@@ -7690,30 +7714,6 @@ namespace SGDK2 {
                 set {
                     this.SetParentRow(value, this.Table.ParentRelations["SpriteDefinitionSpriteRule"]);
                 }
-            }
-            
-            public bool IsSequenceNull() {
-                return this.IsNull(this.tableSpriteRule.SequenceColumn);
-            }
-            
-            public void SetSequenceNull() {
-                this[this.tableSpriteRule.SequenceColumn] = System.Convert.DBNull;
-            }
-            
-            public bool IsTypeNull() {
-                return this.IsNull(this.tableSpriteRule.TypeColumn);
-            }
-            
-            public void SetTypeNull() {
-                this[this.tableSpriteRule.TypeColumn] = System.Convert.DBNull;
-            }
-            
-            public bool IsFunctionNull() {
-                return this.IsNull(this.tableSpriteRule.FunctionColumn);
-            }
-            
-            public void SetFunctionNull() {
-                this[this.tableSpriteRule.FunctionColumn] = System.Convert.DBNull;
             }
             
             public bool IsParameter1Null() {
@@ -9742,6 +9742,279 @@ namespace SGDK2 {
             }
             
             public SourceCodeRow Row {
+                get {
+                    return this.eventRow;
+                }
+            }
+            
+            public DataRowAction Action {
+                get {
+                    return this.eventAction;
+                }
+            }
+        }
+        
+        [System.Diagnostics.DebuggerStepThrough()]
+        public class ProjectDataTable : DataTable, System.Collections.IEnumerable {
+            
+            private DataColumn columnDisplayMode;
+            
+            private DataColumn columnWindowed;
+            
+            private DataColumn columnTitleText;
+            
+            private DataColumn columnStartMap;
+            
+            internal ProjectDataTable() : 
+                    base("Project") {
+                this.InitClass();
+            }
+            
+            internal ProjectDataTable(DataTable table) : 
+                    base(table.TableName) {
+                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
+                    this.CaseSensitive = table.CaseSensitive;
+                }
+                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
+                    this.Locale = table.Locale;
+                }
+                if ((table.Namespace != table.DataSet.Namespace)) {
+                    this.Namespace = table.Namespace;
+                }
+                this.Prefix = table.Prefix;
+                this.MinimumCapacity = table.MinimumCapacity;
+                this.DisplayExpression = table.DisplayExpression;
+            }
+            
+            [System.ComponentModel.Browsable(false)]
+            public int Count {
+                get {
+                    return this.Rows.Count;
+                }
+            }
+            
+            internal DataColumn DisplayModeColumn {
+                get {
+                    return this.columnDisplayMode;
+                }
+            }
+            
+            internal DataColumn WindowedColumn {
+                get {
+                    return this.columnWindowed;
+                }
+            }
+            
+            internal DataColumn TitleTextColumn {
+                get {
+                    return this.columnTitleText;
+                }
+            }
+            
+            internal DataColumn StartMapColumn {
+                get {
+                    return this.columnStartMap;
+                }
+            }
+            
+            public ProjectRow this[int index] {
+                get {
+                    return ((ProjectRow)(this.Rows[index]));
+                }
+            }
+            
+            public event ProjectRowChangeEventHandler ProjectRowChanged;
+            
+            public event ProjectRowChangeEventHandler ProjectRowChanging;
+            
+            public event ProjectRowChangeEventHandler ProjectRowDeleted;
+            
+            public event ProjectRowChangeEventHandler ProjectRowDeleting;
+            
+            public void AddProjectRow(ProjectRow row) {
+                this.Rows.Add(row);
+            }
+            
+            public ProjectRow AddProjectRow(string DisplayMode, bool Windowed, string TitleText, string StartMap) {
+                ProjectRow rowProjectRow = ((ProjectRow)(this.NewRow()));
+                rowProjectRow.ItemArray = new object[] {
+                        DisplayMode,
+                        Windowed,
+                        TitleText,
+                        StartMap};
+                this.Rows.Add(rowProjectRow);
+                return rowProjectRow;
+            }
+            
+            public System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
+            }
+            
+            public override DataTable Clone() {
+                ProjectDataTable cln = ((ProjectDataTable)(base.Clone()));
+                cln.InitVars();
+                return cln;
+            }
+            
+            protected override DataTable CreateInstance() {
+                return new ProjectDataTable();
+            }
+            
+            internal void InitVars() {
+                this.columnDisplayMode = this.Columns["DisplayMode"];
+                this.columnWindowed = this.Columns["Windowed"];
+                this.columnTitleText = this.Columns["TitleText"];
+                this.columnStartMap = this.Columns["StartMap"];
+            }
+            
+            private void InitClass() {
+                this.columnDisplayMode = new DataColumn("DisplayMode", typeof(string), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnDisplayMode);
+                this.columnWindowed = new DataColumn("Windowed", typeof(bool), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnWindowed);
+                this.columnTitleText = new DataColumn("TitleText", typeof(string), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnTitleText);
+                this.columnStartMap = new DataColumn("StartMap", typeof(string), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnStartMap);
+                this.columnDisplayMode.AllowDBNull = false;
+                this.columnDisplayMode.Namespace = "";
+                this.columnWindowed.AllowDBNull = false;
+                this.columnWindowed.Namespace = "";
+                this.columnTitleText.Namespace = "";
+                this.columnStartMap.Namespace = "";
+            }
+            
+            public ProjectRow NewProjectRow() {
+                return ((ProjectRow)(this.NewRow()));
+            }
+            
+            protected override DataRow NewRowFromBuilder(DataRowBuilder builder) {
+                return new ProjectRow(builder);
+            }
+            
+            protected override System.Type GetRowType() {
+                return typeof(ProjectRow);
+            }
+            
+            protected override void OnRowChanged(DataRowChangeEventArgs e) {
+                base.OnRowChanged(e);
+                if ((this.ProjectRowChanged != null)) {
+                    this.ProjectRowChanged(this, new ProjectRowChangeEvent(((ProjectRow)(e.Row)), e.Action));
+                }
+            }
+            
+            protected override void OnRowChanging(DataRowChangeEventArgs e) {
+                base.OnRowChanging(e);
+                if ((this.ProjectRowChanging != null)) {
+                    this.ProjectRowChanging(this, new ProjectRowChangeEvent(((ProjectRow)(e.Row)), e.Action));
+                }
+            }
+            
+            protected override void OnRowDeleted(DataRowChangeEventArgs e) {
+                base.OnRowDeleted(e);
+                if ((this.ProjectRowDeleted != null)) {
+                    this.ProjectRowDeleted(this, new ProjectRowChangeEvent(((ProjectRow)(e.Row)), e.Action));
+                }
+            }
+            
+            protected override void OnRowDeleting(DataRowChangeEventArgs e) {
+                base.OnRowDeleting(e);
+                if ((this.ProjectRowDeleting != null)) {
+                    this.ProjectRowDeleting(this, new ProjectRowChangeEvent(((ProjectRow)(e.Row)), e.Action));
+                }
+            }
+            
+            public void RemoveProjectRow(ProjectRow row) {
+                this.Rows.Remove(row);
+            }
+        }
+        
+        [System.Diagnostics.DebuggerStepThrough()]
+        public class ProjectRow : DataRow {
+            
+            private ProjectDataTable tableProject;
+            
+            internal ProjectRow(DataRowBuilder rb) : 
+                    base(rb) {
+                this.tableProject = ((ProjectDataTable)(this.Table));
+            }
+            
+            public string DisplayMode {
+                get {
+                    return ((string)(this[this.tableProject.DisplayModeColumn]));
+                }
+                set {
+                    this[this.tableProject.DisplayModeColumn] = value;
+                }
+            }
+            
+            public bool Windowed {
+                get {
+                    return ((bool)(this[this.tableProject.WindowedColumn]));
+                }
+                set {
+                    this[this.tableProject.WindowedColumn] = value;
+                }
+            }
+            
+            public string TitleText {
+                get {
+                    try {
+                        return ((string)(this[this.tableProject.TitleTextColumn]));
+                    }
+                    catch (InvalidCastException e) {
+                        throw new StrongTypingException("Cannot get value because it is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableProject.TitleTextColumn] = value;
+                }
+            }
+            
+            public string StartMap {
+                get {
+                    if (this.IsStartMapNull()) {
+                        return string.Empty;
+                    }
+                    else {
+                        return ((string)(this[this.tableProject.StartMapColumn]));
+                    }
+                }
+                set {
+                    this[this.tableProject.StartMapColumn] = value;
+                }
+            }
+            
+            public bool IsTitleTextNull() {
+                return this.IsNull(this.tableProject.TitleTextColumn);
+            }
+            
+            public void SetTitleTextNull() {
+                this[this.tableProject.TitleTextColumn] = System.Convert.DBNull;
+            }
+            
+            public bool IsStartMapNull() {
+                return this.IsNull(this.tableProject.StartMapColumn);
+            }
+            
+            public void SetStartMapNull() {
+                this[this.tableProject.StartMapColumn] = System.Convert.DBNull;
+            }
+        }
+        
+        [System.Diagnostics.DebuggerStepThrough()]
+        public class ProjectRowChangeEvent : EventArgs {
+            
+            private ProjectRow eventRow;
+            
+            private DataRowAction eventAction;
+            
+            public ProjectRowChangeEvent(ProjectRow row, DataRowAction action) {
+                this.eventRow = row;
+                this.eventAction = action;
+            }
+            
+            public ProjectRow Row {
                 get {
                     return this.eventRow;
                 }

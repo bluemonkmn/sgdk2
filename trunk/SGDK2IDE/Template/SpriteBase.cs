@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 
 /// <summary>
 /// Base class for all sprite definitions.
@@ -92,6 +93,7 @@ public abstract class SpriteBase
    /// </summary>
    public abstract int SolidWidth
    {
+      [Description("Returns the width of the sprite's solid area")]
       get;
    }
 
@@ -102,6 +104,7 @@ public abstract class SpriteBase
    /// </summary>
    public abstract int SolidHeight
    {
+      [Description("Returns the height of the sprite's solid area")]
       get;
    }
 
@@ -109,6 +112,8 @@ public abstract class SpriteBase
    {
       get;
    }
+
+   public abstract void ExecuteRules();
    #endregion
 
    #region Public Methods
@@ -148,6 +153,7 @@ public abstract class SpriteBase
    /// <param name="Slipperiness">A value from 0 to 100 where 0
    /// causes the sprite to immediately assume the velocity of the platform and
    /// 100 causes the sprite to retain its own velocity relative to the map.</param>
+   [Description("Moves this sprite according to the motion of the platform it is riding. Slipperiness is a value from 0 to 100 where 0 causes the sprite to immediately assume the velocity of the platform and 100 causes the sprite to retain its own velocity relative to the map.")]
    public void ReactToPlatform(int Slipperiness)
    {
       if (RidingOn == null)
@@ -162,6 +168,7 @@ public abstract class SpriteBase
    /// Determine if the sprite is riding another sprite
    /// </summary>
    /// <returns>True if this sprite is currently riding on another sprite</returns>
+   [Description("Determine if the sprite is riding another sprite")]
    public bool IsRidingPlatform()
    {
       return RidingOn != null;
@@ -170,6 +177,7 @@ public abstract class SpriteBase
    /// <summary>
    /// Stop riding the sprite that this sprite is currently riding, if any.
    /// </summary>
+   [Description("Stop riding the sprite that this sprite is currently riding, if any.")]
    public void StopRiding()
    {
       dx = dx + RidingOn.dx;
@@ -185,6 +193,7 @@ public abstract class SpriteBase
    /// </summary>
    /// <param name="PlatformList">List of platform sprites to check</param>
    /// <returns>True if the sprite landed on a platform.</returns>
+   [Description("Tests to see if this sprite is landing on a platform (from above). If it is, the sprite will begin riding the platform.")]
    public bool LandDownOnPlatform(SpriteCollection PlatformList)
    {
       foreach(SpriteBase spr in PlatformList)
@@ -210,15 +219,17 @@ public abstract class SpriteBase
    /// Increment or decrement horizontal velocity 
    /// </summary>
    /// <param name="delta">Amount by which to change velocity in pixels per frame per frame</param>
+   [Description("Increment or decrement horizontal velocity")]
    public void AlterXVelocity(double delta)
    {
       dx += delta;
    }
 
    /// <summary>
-   /// Increment or decrement horizontal velocity 
+   /// Increment or decrement vertical velocity 
    /// </summary>
    /// <param name="delta">Amount by which to change velocity in pixels per frame per frame</param>
+   [Description("Increment or decrement vertical velocity")]
    public void AlterYVelocity(double delta)
    {
       dy += delta;
@@ -227,6 +238,7 @@ public abstract class SpriteBase
    /// <summary>
    /// Move this sprite according to its current velocity
    /// </summary>
+   [Description("Move this sprite according to its current velocity")]
    public void MoveByVelocity()
    {
       oldX = x;
@@ -237,17 +249,20 @@ public abstract class SpriteBase
    #endregion
 
    #region Input Processing
+   [Description("Determine if the specified input is being pressed for this sprite.  InitialOnly causes this to return true only if the input has just been presssed and was not pressed before.")]
    public bool IsInputPressed(InputBits Input, bool InitialOnly)
    {
       return (0 != (inputs & Input)) && 
          (!InitialOnly || (0 == (oldinputs & Input)));
    }
 
+   [Description("Move the current set of inputs on this sprite to the old set of inputs, making room for a new set.")]
    public void CopyInputsToOld()
    {
       oldinputs = inputs;
    }
 
+   [Description("Turns on or off the specified input on this sprite.")]
    public void SetInputState(InputBits Input, bool Press)
    {
       if (Press)
@@ -256,6 +271,7 @@ public abstract class SpriteBase
          inputs &= ~Input;
    }
 
+   [Description("Turns off all current inputs on this sprite.")]
    public void ClearInputs()
    {
       inputs = 0;

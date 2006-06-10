@@ -372,6 +372,16 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "Project.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Project.resx"
+                    DependentUpon = "Project.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "ProjectData.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -522,7 +532,17 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "Template\GameForm.cs"
+                    SubType = "Form"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "Template\LayerBase.cs"
+                    SubType = "Code"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "Template\MapBase.cs"
                     SubType = "Code"
                     BuildAction = "EmbeddedResource"
                 />

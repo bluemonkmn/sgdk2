@@ -95,14 +95,15 @@ public abstract class LayerBase : System.Collections.IEnumerable
    protected SpriteCollection m_Sprites;
    private readonly System.Drawing.SizeF m_ScrollRate;
    private System.Drawing.Point m_CurrentPosition;
-   private Display m_Display;
+   private MapBase m_internalParent;
    #endregion
 
-   protected LayerBase(Tileset Tileset, Display Disp, int nLeftBuffer, int nTopBuffer, int nRightBuffer, int nBottomBuffer,
+   protected LayerBase(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer, int nBottomBuffer,
       int nColumns, int nRows, System.Drawing.Point Position, System.Drawing.SizeF ScrollRate)
    {
+      this.m_internalParent = Parent;
       this.m_Tileset = Tileset;
-      this.m_Frameset = Tileset.GetFrameset(Disp);
+      this.m_Frameset = Tileset.GetFrameset(Parent.Display);
       this.m_nLeftBuffer = nLeftBuffer;
       this.m_nTopBuffer = nTopBuffer;
       this.m_nRightBuffer = nRightBuffer;
@@ -111,7 +112,6 @@ public abstract class LayerBase : System.Collections.IEnumerable
       this.m_nRows = nRows;
       this.m_AbsolutePosition = Position;
       this.m_ScrollRate = ScrollRate;
-      this.m_Display = Disp;
    }
 
    #region Abstract Members
@@ -229,7 +229,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
       if (nStartRow < 0)
          nStartRow = 0;
 
-      Rectangle ViewRect = m_Display.DisplayRectangle;
+      Rectangle ViewRect = m_internalParent.Display.DisplayRectangle;
 
       int EndCol = (ViewRect.Width - 1 + m_nRightBuffer - m_CurrentPosition.X) / nTileWidth;
       if (EndCol >= Columns)
@@ -301,7 +301,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
    {
       get
       {
-         Rectangle result = m_Display.DisplayRectangle;
+         Rectangle result = m_internalParent.Display.DisplayRectangle;
          result.Offset(-m_CurrentPosition.X, -m_CurrentPosition.Y);
          return result;
       }
@@ -361,13 +361,13 @@ public abstract class IntLayer : LayerBase
 {
    public int[,] m_Tiles;
 
-   public IntLayer(Tileset Tileset, Display Disp, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
+   public IntLayer(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
       int nBottomBuffer, int nColumns, int nRows, System.Drawing.Point Position,
       System.Drawing.SizeF ScrollRate, string Name) : 
-      base(Tileset, Disp, nLeftBuffer, nTopBuffer, nRightBuffer,
+      base(Tileset, Parent, nLeftBuffer, nTopBuffer, nRightBuffer,
       nBottomBuffer, nColumns, nRows, Position, ScrollRate)
    {
-      System.Resources.ResourceManager resources = new System.Resources.ResourceManager(this.GetType());
+      System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
       m_Tiles = (int[,])(resources.GetObject(Name));
    }
 
@@ -398,13 +398,13 @@ public abstract class ShortLayer : LayerBase
 {
    public short[,] m_Tiles;
 
-   public ShortLayer(Tileset Tileset, Display Disp, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
+   public ShortLayer(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
       int nBottomBuffer, int nColumns, int nRows, System.Drawing.Point Position,
       System.Drawing.SizeF ScrollRate, string Name) : 
-      base(Tileset, Disp, nLeftBuffer, nTopBuffer, nRightBuffer,
+      base(Tileset, Parent, nLeftBuffer, nTopBuffer, nRightBuffer,
       nBottomBuffer, nColumns, nRows, Position, ScrollRate)
    {
-      System.Resources.ResourceManager resources = new System.Resources.ResourceManager(this.GetType());
+      System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
       m_Tiles = (short[,])(resources.GetObject(Name));
    }
 
@@ -435,13 +435,13 @@ public abstract class ByteLayer : LayerBase
 {
    public byte[,] m_Tiles;
 
-   public ByteLayer(Tileset Tileset, Display Disp, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
+   public ByteLayer(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
       int nBottomBuffer, int nColumns, int nRows, System.Drawing.Point Position,
       System.Drawing.SizeF ScrollRate, string Name) : 
-      base(Tileset, Disp, nLeftBuffer, nTopBuffer, nRightBuffer,
+      base(Tileset, Parent, nLeftBuffer, nTopBuffer, nRightBuffer,
       nBottomBuffer, nColumns, nRows, Position, ScrollRate)
    {
-      System.Resources.ResourceManager resources = new System.Resources.ResourceManager(this.GetType());
+      System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
       m_Tiles = (byte[,])(resources.GetObject(Name));
    }
 

@@ -125,6 +125,7 @@ namespace SGDK2
          this.imlPlan = new System.Windows.Forms.ImageList(this.components);
          this.splitterRules = new System.Windows.Forms.Splitter();
          this.pnlRule = new System.Windows.Forms.Panel();
+         this.txtHelpText = new System.Windows.Forms.TextBox();
          this.txtErrors = new System.Windows.Forms.TextBox();
          this.lblOutput = new System.Windows.Forms.Label();
          this.cboOutput = new System.Windows.Forms.ComboBox();
@@ -142,7 +143,6 @@ namespace SGDK2
          this.cboFunction = new System.Windows.Forms.ComboBox();
          this.pnlName = new System.Windows.Forms.Panel();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
-         this.txtHelpText = new System.Windows.Forms.TextBox();
          this.grpRules.SuspendLayout();
          this.pnlRule.SuspendLayout();
          this.pnlName.SuspendLayout();
@@ -277,6 +277,21 @@ namespace SGDK2
          this.pnlRule.Size = new System.Drawing.Size(344, 330);
          this.pnlRule.TabIndex = 2;
          // 
+         // txtHelpText
+         // 
+         this.txtHelpText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+         this.txtHelpText.BackColor = System.Drawing.SystemColors.Info;
+         this.txtHelpText.ForeColor = System.Drawing.SystemColors.InfoText;
+         this.txtHelpText.Location = new System.Drawing.Point(8, 72);
+         this.txtHelpText.Multiline = true;
+         this.txtHelpText.Name = "txtHelpText";
+         this.txtHelpText.ReadOnly = true;
+         this.txtHelpText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+         this.txtHelpText.Size = new System.Drawing.Size(320, 32);
+         this.txtHelpText.TabIndex = 37;
+         this.txtHelpText.Text = "";
+         // 
          // txtErrors
          // 
          this.txtErrors.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -323,6 +338,7 @@ namespace SGDK2
          this.txtRuleName.Size = new System.Drawing.Size(232, 20);
          this.txtRuleName.TabIndex = 33;
          this.txtRuleName.Text = "";
+         this.txtRuleName.Validating += new System.ComponentModel.CancelEventHandler(this.txtRuleName_Validating);
          this.txtRuleName.Validated += new System.EventHandler(this.txtRuleName_Validated);
          // 
          // lblRuleName
@@ -465,21 +481,6 @@ namespace SGDK2
          this.dataMonitor.PlanRuleRowDeleting += new SGDK2.ProjectDataset.PlanRuleRowChangeEventHandler(this.dataMonitor_PlanRuleRowChanging);
          this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
          // 
-         // txtHelpText
-         // 
-         this.txtHelpText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-         this.txtHelpText.BackColor = System.Drawing.SystemColors.Info;
-         this.txtHelpText.ForeColor = System.Drawing.SystemColors.InfoText;
-         this.txtHelpText.Location = new System.Drawing.Point(8, 72);
-         this.txtHelpText.Multiline = true;
-         this.txtHelpText.Name = "txtHelpText";
-         this.txtHelpText.ReadOnly = true;
-         this.txtHelpText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-         this.txtHelpText.Size = new System.Drawing.Size(320, 32);
-         this.txtHelpText.TabIndex = 37;
-         this.txtHelpText.Text = "";
-         // 
          // frmPlanEdit
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -504,6 +505,7 @@ namespace SGDK2
          {
             CodeGenerator gen = new CodeGenerator();
             string errs;
+            gen.GenerateLevel = CodeGenerator.CodeLevel.ExcludeRules;
             string assemblyFilename = gen.CompileTempAssembly(out errs);
             if ((errs != null) && (errs.Length > 0))
             {
@@ -530,19 +532,23 @@ namespace SGDK2
                m_Enums = new EnumTable();
                foreach(RemotingServices.RemoteMethodInfo mi in ruleList)
                {
-                  foreach(string allowedType in new string[]
+                  if ((mi.Description != null) && (mi.Description.Length > 0))
                   {
-                     typeof(Boolean).Name, typeof(Int32).Name, typeof(Int16).Name,
-                     typeof(Double).Name, typeof(Single).Name, typeof(void).Name
-                  })
-                  {
-                     if (string.Compare(allowedType, mi.ReturnType) == 0)
+                     foreach(string allowedType in new string[]
+                        {
+                           typeof(Boolean).Name, typeof(Int32).Name, typeof(Int16).Name,
+                           typeof(Double).Name, typeof(Single).Name, typeof(void).Name
+                        })
                      {
-                        m_AvailableRules[mi.MethodName] = mi;
-                        break;
+                        if (string.Compare(allowedType, mi.ReturnType) == 0)
+                        {
+                           m_AvailableRules[mi.MethodName] = mi;
+                           break;
+                        }
                      }
                   }
                }
+               m_AvailableRules.InsertOperators();
             }
             finally
             {
@@ -559,7 +565,10 @@ namespace SGDK2
          }
          
          cboFunction.Items.Clear();
-         foreach(RemotingServices.RemoteMethodInfo mi in m_AvailableRules.Rules)
+         RemotingServices.RemoteMethodInfo[] rules = new SGDK2.RemotingServices.RemoteMethodInfo[m_AvailableRules.Count];
+         m_AvailableRules.Rules.CopyTo(rules, 0);
+         System.Array.Sort(rules, new RemotingServices.RemoteMethodComparer());
+         foreach(RemotingServices.RemoteMethodInfo mi in rules)
          {
             if ((string.Compare(mi.ReturnType,typeof(Boolean).Name)==0) || !onlyBools)
                cboFunction.Items.Add(mi.MethodName);
@@ -626,8 +635,8 @@ namespace SGDK2
       private void FillComboWithIntVars(ComboBox cboTarget)
       {
          foreach (DataRowView drv in ProjectData.Counter.DefaultView)
-            cboTarget.Items.Add(CodeGenerator.CounterClass + ".m_" + CodeGenerator.NameToVariable(
-               ((ProjectDataset.CounterRow)drv.Row).Name));
+            cboTarget.Items.Add(CodeGenerator.CounterClass + "." + CodeGenerator.NameToVariable(
+               ((ProjectDataset.CounterRow)drv.Row).Name) + ".CurrentValue");
       }
 
       private void PopulateParameter(Label lblParameter, ComboBox cboParameter, RemotingServices.RemoteParameterInfo param)
@@ -677,8 +686,7 @@ namespace SGDK2
             cboParameter.Items.Add(bool.FalseString);
             cboParameter.Items.Add(bool.TrueString);
          }
-
-         if (string.Compare(param.TypeName, typeof(System.Drawing.Point).Name) == 0)
+         else if (string.Compare(param.TypeName, typeof(System.Drawing.Point).Name) == 0)
          {
             foreach(ProjectDataset.SpritePlanRow drPlan in ProjectData.GetSortedSpritePlans(m_Plan.LayerRowParent))
             {
@@ -687,8 +695,7 @@ namespace SGDK2
                   cboParameter.Items.Add(CodeGenerator.SpritePlanParentField + ".m_" + CodeGenerator.NameToVariable(drPlan.Name) + "[0]");
             }
          }
-
-         if (string.Compare(param.TypeName, "SpriteBase") == 0)
+         else if (string.Compare(param.TypeName, "SpriteBase") == 0)
          {
             foreach(ProjectDataset.SpriteRow drSprite in ProjectData.GetSortedSpriteRows(m_Plan.LayerRowParent))
             {
@@ -705,8 +712,7 @@ namespace SGDK2
             if (string.Compare(typeName, param.TypeName) == 0)
             {
                cboParameter.Items.Clear();
-               foreach(DataRowView drvCounter in ProjectData.Counter.DefaultView)
-                  cboParameter.Items.Add(CodeGenerator.CounterClass + ".m_" + ((ProjectDataset.CounterRow)drvCounter.Row).Name);
+               FillComboWithIntVars(cboParameter);
                break;
             }
          }
@@ -715,7 +721,9 @@ namespace SGDK2
       private string[] GetEnumInfo(string enumName)
       {
          string errs;
-         string assemblyFilename = new CodeGenerator().CompileTempAssembly(out errs);
+         CodeGenerator gen = new CodeGenerator();
+         gen.GenerateLevel = CodeGenerator.CodeLevel.ExcludeRules;
+         string assemblyFilename = gen.CompileTempAssembly(out errs);
          if (errs != null)
          {
             txtErrors.Text = errs;
@@ -1074,6 +1082,24 @@ namespace SGDK2
                CurrentRule.Function = "!" + cboFunction.Text;
             else
                CurrentRule.Function = cboFunction.Text;
+         }
+      }
+
+      private void txtRuleName_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+      {
+         ProjectDataset.PlanRuleRow pr = ProjectData.GetPlanRule(m_Plan, txtRuleName.Text);
+         if ((null != pr) && (CurrentRule != pr))
+         {
+            if (DialogResult.Cancel == MessageBox.Show(this, txtRuleName.Text + " already exists", "Plan Rule Name", MessageBoxButtons.RetryCancel, MessageBoxIcon.Exclamation))
+               txtRuleName.Text = CurrentRule.Name;
+            e.Cancel = true;
+         }
+         ProjectDataset.SpriteRow sr = ProjectData.GetSprite(m_Plan.LayerRowParent, txtRuleName.Text);
+         if (null != sr)
+         {
+            if (DialogResult.Cancel == MessageBox.Show(this, txtRuleName.Text + " conflicts with the name of an existing sprite on the same layer", "Plan Rule Name", MessageBoxButtons.RetryCancel, MessageBoxIcon.Exclamation))
+               txtRuleName.Text = CurrentRule.Name;
+            e.Cancel = true;
          }
       }
       #endregion

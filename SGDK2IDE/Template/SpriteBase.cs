@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 
 /// <summary>
 /// Base class for all sprite definitions.
@@ -47,6 +48,7 @@ public abstract class SpriteBase
    {
       get
       {
+         Debug.Assert(this.isActive, "Attempted to access PixelX on an inactive sprite");
          return (int)x;
       }
    }
@@ -55,6 +57,7 @@ public abstract class SpriteBase
    {
       get
       {
+         Debug.Assert(this.isActive, "Attempted to access PixelY on an inactive sprite");
          return (int)y;
       }
    }
@@ -63,6 +66,7 @@ public abstract class SpriteBase
    {
       get
       {
+         Debug.Assert(this.isActive, "Attempted to access OldPixelX on an inactive sprite");
          return (int)oldX;
       }
    }
@@ -71,6 +75,7 @@ public abstract class SpriteBase
    {
       get
       {
+         Debug.Assert(this.isActive, "Attempted to access OldPixelY on an inactive sprite");
          return (int)oldY;
       }
    }
@@ -79,6 +84,7 @@ public abstract class SpriteBase
    {
       get
       {
+         Debug.Assert(this.isActive, "Attempted to access CurrentState on an inactive sprite");
          return this[state];
       }
    }
@@ -119,6 +125,7 @@ public abstract class SpriteBase
    #region Public Methods
    public System.Drawing.Rectangle GetBounds()
    {
+      Debug.Assert(this.isActive, "Attempted to execute GetBounds on an inactive sprite");
       System.Drawing.Rectangle result = CurrentState.LocalBounds;
       result.Offset(PixelX, PixelY);
       return result;
@@ -126,6 +133,7 @@ public abstract class SpriteBase
 
    public Frame[] GetCurrentFramesetFrames()
    {
+      Debug.Assert(this.isActive, "Attempted to execute GetCurrentFramesetFrames on an inactive sprite");
       SpriteState curstate = CurrentState;
       Frameset stateframes = curstate.Frameset;
       int[] subframes = curstate.GetFrame(frame);
@@ -156,6 +164,7 @@ public abstract class SpriteBase
    [Description("Moves this sprite according to the motion of the platform it is riding. Slipperiness is a value from 0 to 100 where 0 causes the sprite to immediately assume the velocity of the platform and 100 causes the sprite to retain its own velocity relative to the map.")]
    public void ReactToPlatform(int Slipperiness)
    {
+      Debug.Assert(this.isActive, "Attempted to execute ReactToPlatform on an inactive sprite");
       if (RidingOn == null)
          return;
       x = RidingOn.x + RideRelativeX + dx;
@@ -171,6 +180,7 @@ public abstract class SpriteBase
    [Description("Determine if the sprite is riding another sprite")]
    public bool IsRidingPlatform()
    {
+      Debug.Assert(this.isActive, "Attempted to execute IsRidingPlatform on an inactive sprite");
       return RidingOn != null;
    }
 
@@ -180,6 +190,7 @@ public abstract class SpriteBase
    [Description("Stop riding the sprite that this sprite is currently riding, if any.")]
    public void StopRiding()
    {
+      Debug.Assert(this.isActive, "Attempted to execute StopRiding on an inactive sprite");
       dx = dx + RidingOn.dx;
       dy = RidingOn.dy;
       RidingOn = null;
@@ -196,6 +207,7 @@ public abstract class SpriteBase
    [Description("Tests to see if this sprite is landing on a platform (from above). If it is, the sprite will begin riding the platform.")]
    public bool LandDownOnPlatform(SpriteCollection PlatformList)
    {
+      Debug.Assert(this.isActive, "Attempted to execute LandDownOnPlatform on an inactive sprite");
       foreach(SpriteBase spr in PlatformList)
       {
          if((oldY + SolidHeight <= spr.oldY) &&
@@ -222,6 +234,7 @@ public abstract class SpriteBase
    [Description("Increment or decrement horizontal velocity")]
    public void AlterXVelocity(double delta)
    {
+      Debug.Assert(this.isActive, "Attempted to execute AlterXVelocity on an inactive sprite");
       dx += delta;
    }
 
@@ -232,6 +245,7 @@ public abstract class SpriteBase
    [Description("Increment or decrement vertical velocity")]
    public void AlterYVelocity(double delta)
    {
+      Debug.Assert(this.isActive, "Attempted to execute AlterYVelocity on an inactive sprite");
       dy += delta;
    }
 
@@ -241,6 +255,7 @@ public abstract class SpriteBase
    [Description("Move this sprite according to its current velocity")]
    public void MoveByVelocity()
    {
+      Debug.Assert(this.isActive, "Attempted to execute MoveByVelocity on an inactive sprite");
       oldX = x;
       oldY = y;
       x += dx;
@@ -252,6 +267,7 @@ public abstract class SpriteBase
    [Description("Determine if the specified input is being pressed for this sprite.  InitialOnly causes this to return true only if the input has just been presssed and was not pressed before.")]
    public bool IsInputPressed(InputBits Input, bool InitialOnly)
    {
+      Debug.Assert(this.isActive, "Attempted to execute IsInputPressed on an inactive sprite");
       return (0 != (inputs & Input)) && 
          (!InitialOnly || (0 == (oldinputs & Input)));
    }
@@ -259,12 +275,14 @@ public abstract class SpriteBase
    [Description("Move the current set of inputs on this sprite to the old set of inputs, making room for a new set.")]
    public void CopyInputsToOld()
    {
+      Debug.Assert(this.isActive, "Attempted to execute CopyInputsToOld on an inactive sprite");
       oldinputs = inputs;
    }
 
    [Description("Turns on or off the specified input on this sprite.")]
    public void SetInputState(InputBits Input, bool Press)
    {
+      Debug.Assert(this.isActive, "Attempted to execute SetInputState on an inactive sprite");
       if (Press)
          inputs |= Input;
       else
@@ -274,7 +292,37 @@ public abstract class SpriteBase
    [Description("Turns off all current inputs on this sprite.")]
    public void ClearInputs()
    {
+      Debug.Assert(this.isActive, "Attempted to execute ClearInputs on an inactive sprite");
       inputs = 0;
+   }
+
+   [Description("Associates the state of the specified keyboard key with the specified input on this sprite.")]
+   public void MapKeyToInput(Microsoft.DirectX.DirectInput.Key key, InputBits Input)
+   {
+      Debug.Assert(this.isActive, "Attempted to execute MapKeyToInput on an inactive sprite");
+      SetInputState(Input, Project.GameWindow.KeyboardState[key]);
+   }
+
+   [Description("Accelerate this sprite according to which directional inputs are on.  Acceleration is in tenths of a pixel per second squared.  Max is in pixels per second.")]
+   public void AccelerateByInputs(int Acceleration, int Max)
+   {
+      Debug.Assert(this.isActive, "Attempted to execute AccelerateByInputs on an inactive sprite");
+      if (0 != (inputs & InputBits.Up))
+         dy -= ((double)Acceleration)/10.0d;
+      if (dy < -(double)Max)
+         dy = -(double)Max;
+      if (0 != (inputs & InputBits.Down))
+         dy += ((double)Acceleration)/10.0d;
+      if (dy > (double)Max)
+         dy = (double)Max;
+      if (0 != (inputs & InputBits.Left))
+         dx -= ((double)Acceleration)/10.0d;
+      if (dx < -(double)Max)
+         dx = -(double)Max;
+      if (0 != (inputs & InputBits.Right))
+         dx += ((double)Acceleration)/10.0d;
+      if (dx > (double)Max)
+         dx = (double)Max;
    }
    #endregion
 }

@@ -208,7 +208,10 @@ namespace SGDK2
                case DrawingTool.FloodFill:
                {
                   Region rgnFlood;
-                  rgnFlood = GetFloodRegion(Image, Point.Round(DragStart), Point.Round(DragEnd));
+                  if (0 != (ParentEditor.CurrentOptions & ToolOptions.DisjointedColors))
+                     rgnFlood = GetColorRegion(Image, Point.Round(DragStart), Point.Round(DragEnd));
+                  else
+                     rgnFlood = GetFloodRegion(Image, Point.Round(DragStart), Point.Round(DragEnd));
                   Graphics gTemp = Graphics.FromImage(TempImage);
                   gTemp.CompositingMode = CompositingMode.SourceCopy;
                   gTemp.FillRegion(ParentEditor.CurrentBrush, rgnFlood);
@@ -327,7 +330,10 @@ namespace SGDK2
                      Region rgnFlood;
                      ResetTempImage();
                      Graphics gTemp = Graphics.FromImage(TempImage);
-                     rgnFlood = GetFloodRegion(Image, Point.Round(DragStart), Point.Round(DragStart));
+                     if (0 != (ParentEditor.CurrentOptions & ToolOptions.DisjointedColors))
+                        rgnFlood = GetColorRegion(Image, Point.Round(DragStart), Point.Round(DragStart));
+                     else
+                        rgnFlood = GetFloodRegion(Image, Point.Round(DragStart), Point.Round(DragStart));
                      gTemp.CompositingMode = CompositingMode.SourceOver;
                      gTemp.FillRegion(ParentEditor.HighlightBrush, rgnFlood);
                      rgnFlood.Dispose();
@@ -338,7 +344,10 @@ namespace SGDK2
                case DrawingTool.FloodSel:
                   if (ParentEditor.SelectedRegion != null)
                      ParentEditor.SelectedRegion.Dispose();
-                  ParentEditor.SelectedRegion = GetFloodRegion(Image, Point.Round(DragStart), Point.Round(DragStart));
+                  if (0 != (ParentEditor.CurrentOptions & ToolOptions.DisjointedColors))
+                     ParentEditor.SelectedRegion = GetColorRegion(Image, Point.Round(DragStart), Point.Round(DragStart));
+                  else
+                     ParentEditor.SelectedRegion = GetFloodRegion(Image, Point.Round(DragStart), Point.Round(DragStart));
                   DrawTransparentImage(Image, null);
                   break;
                case DrawingTool.Line:
@@ -677,7 +686,10 @@ namespace SGDK2
                      if (ParentEditor.HighlightBrush != null)
                      {
                         Region rgnFlood;
-                        rgnFlood = GetFloodRegion(Image, Point.Round(DragStart), Point.Round(DragEnd));
+                        if (0 != (ParentEditor.CurrentOptions & ToolOptions.DisjointedColors))
+                           rgnFlood = GetColorRegion(Image, Point.Round(DragStart), Point.Round(DragEnd));
+                        else
+                           rgnFlood = GetFloodRegion(Image, Point.Round(DragStart), Point.Round(DragEnd));
                         g.CompositingMode = CompositingMode.SourceOver;
                         g.FillRegion(ParentEditor.HighlightBrush, rgnFlood);
                         rgnFlood.Dispose();
@@ -687,7 +699,10 @@ namespace SGDK2
                   case DrawingTool.FloodSel:
                      if (ParentEditor.SelectedRegion != null)
                         ParentEditor.SelectedRegion.Dispose();
-                     ParentEditor.SelectedRegion = GetFloodRegion(Image, Point.Round(DragStart), Point.Round(DragEnd));
+                     if (0 != (ParentEditor.CurrentOptions & ToolOptions.DisjointedColors))
+                        ParentEditor.SelectedRegion = GetColorRegion(Image, Point.Round(DragStart), Point.Round(DragEnd));
+                     else
+                        ParentEditor.SelectedRegion = GetFloodRegion(Image, Point.Round(DragStart), Point.Round(DragEnd));
                      break;
                   case DrawingTool.GradientFill:
                      if (dist > 1)
@@ -1253,6 +1268,50 @@ namespace SGDK2
             GraphicChanged();
       }
 
+      public Region GetColorRegion(Bitmap FloodImage, Point Start, Point End)
+      {
+         if ((Start.X < 0) || (Start.Y < 0) || (Start.X >= Image.Width) || (Start.Y >= Image.Height))
+            return new Region();
+         Color StartColor = FloodImage.GetPixel(Start.X, Start.Y);
+         if ((End.X < 0) || (End.Y < 0) || (End.X >= Image.Width) || (End.Y >= Image.Height))
+            return new Region();
+         Color EndColor = FloodImage.GetPixel(End.X, End.Y);
+
+         System.Drawing.Region rgnResult = null;
+         int nLeft = -1;
+         for (int y=0; y<FloodImage.Height; y++)
+         {
+            for (int x=0; x<FloodImage.Width; x++)
+            {
+               if (IsPointFloodable(StartColor, EndColor, FloodImage.GetPixel(x, y)))
+               {
+                  if (nLeft < 0)
+                     nLeft = x;
+               }
+               else
+               {
+                  if (nLeft >= 0)
+                  {
+                     if (rgnResult == null)
+                        rgnResult = new Region(new Rectangle(nLeft, y, x - nLeft, 1));
+                     else
+                        rgnResult.Union(new Rectangle(nLeft, y, x - nLeft, 1));
+                     nLeft = -1;
+                  }
+               }
+            }
+            if (nLeft >= 0)
+            {
+               if (rgnResult == null)
+                  rgnResult = new Region(new Rectangle(nLeft, y, FloodImage.Width - nLeft, 1));
+               else
+                  rgnResult.Union(new Rectangle(nLeft, y, FloodImage.Width - nLeft, 1));
+               nLeft = -1;
+            }
+         }
+         return rgnResult;
+      }
+
       public Region GetFloodRegion(Bitmap FloodImage, Point Start, Point End)
       {
          Queue FloodQueue = new Queue();
@@ -1264,12 +1323,14 @@ namespace SGDK2
             return new Region();
          Color EndColor = FloodImage.GetPixel(End.X, End.Y);
          Boolean bSeparatorAbove, bSeparatorBelow;
-         Region rgnResult = null;
+         System.Collections.BitArray arbtRegion = new BitArray(FloodImage.Width * FloodImage.Height, false);
 
          FloodQueue.Enqueue(Start);
          while(FloodQueue.Count > 0)
          {
             ptCur = (Point)FloodQueue.Dequeue();
+            if (arbtRegion[ptCur.X + ptCur.Y * FloodImage.Width])
+               continue;
             int nMinX, nMaxX;
             for (nMinX=ptCur.X; nMinX > 0; nMinX--)
             {
@@ -1286,7 +1347,7 @@ namespace SGDK2
                   {
                      Point ptAdd = new Point(nMaxX, ptCur.Y - 1);
                      if (bSeparatorAbove)
-                        if ((rgnResult == null) || !rgnResult.IsVisible(ptAdd))
+                        if (!arbtRegion[ptAdd.X + ptAdd.Y * FloodImage.Width])
                            if (!FloodQueue.Contains(ptAdd))
                               FloodQueue.Enqueue(ptAdd);
                      bSeparatorAbove = false;
@@ -1300,7 +1361,7 @@ namespace SGDK2
                   {
                      Point ptAdd = new Point(nMaxX, ptCur.Y + 1);
                      if (bSeparatorBelow)
-                        if ((rgnResult == null) || !rgnResult.IsVisible(ptAdd))
+                        if (!arbtRegion[ptAdd.X + ptAdd.Y * FloodImage.Width])
                            if (!FloodQueue.Contains(ptAdd))
                               FloodQueue.Enqueue(ptAdd);
                      bSeparatorBelow = false;
@@ -1312,10 +1373,41 @@ namespace SGDK2
                   break;
             }
 
-            if (rgnResult == null)
-               rgnResult = new Region(new Rectangle(nMinX, ptCur.Y, nMaxX - nMinX + 1, 1));
-            else
-               rgnResult.Union(new Rectangle(nMinX, ptCur.Y, nMaxX - nMinX + 1, 1));
+            for (int x = nMinX; x <= nMaxX; x++)
+               arbtRegion[x + ptCur.Y * FloodImage.Width] = true;
+         }
+         
+         System.Drawing.Region rgnResult = null;
+         int nLeft = -1;
+         for (int y=0; y<FloodImage.Height; y++)
+         {
+            for (int x=0; x<FloodImage.Width; x++)
+            {
+               if (arbtRegion[x + y * FloodImage.Width])
+               {
+                  if (nLeft < 0)
+                     nLeft = x;
+               }
+               else
+               {
+                  if (nLeft >= 0)
+                  {
+                     if (rgnResult == null)
+                        rgnResult = new Region(new Rectangle(nLeft, y, x - nLeft, 1));
+                     else
+                        rgnResult.Union(new Rectangle(nLeft, y, x - nLeft, 1));
+                     nLeft = -1;
+                  }
+               }
+            }
+            if (nLeft >= 0)
+            {
+               if (rgnResult == null)
+                  rgnResult = new Region(new Rectangle(nLeft, y, FloodImage.Width - nLeft, 1));
+               else
+                  rgnResult.Union(new Rectangle(nLeft, y, FloodImage.Width - nLeft, 1));
+               nLeft = -1;
+            }
          }
          return rgnResult;
       }

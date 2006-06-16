@@ -1024,7 +1024,7 @@ namespace SGDK2
             case CursorMode.PlaceTile:
                int nSel = CurrentTile;
                Point TilePos = TileFromLayerPoint(m_LayerMouseCoord);
-               if ((TilePos.X < m_Layers[m_nCurLayer].Columns) && (TilePos.Y < m_Layers[m_nCurLayer].Rows))
+               if ((TilePos.X >= 0) && (TilePos.Y >= 0) && (TilePos.X < m_Layers[m_nCurLayer].Columns) && (TilePos.Y < m_Layers[m_nCurLayer].Rows))
                {
                   if (0 != (e.Button & MouseButtons.Left))
                      m_Layers[m_nCurLayer][TilePos.X, TilePos.Y] = nSel;
@@ -1263,7 +1263,7 @@ namespace SGDK2
                   ptPos.Y = MapDisplay.AutoScrollPosition.Y - CurLayer.AbsolutePosition.Y + DrawLayer.AbsolutePosition.Y;
                DrawLayer.CurrentPosition = ptPos;
             }
-            m_Layers[i].Draw(MapDisplay.Device, MapDisplay.ClientSize);
+            m_Layers[i].Draw(MapDisplay, MapDisplay.ClientSize);
          }
          MapDisplay.Device.EndScene();
          Surface sfc = MapDisplay.Device.GetRenderTarget(0);

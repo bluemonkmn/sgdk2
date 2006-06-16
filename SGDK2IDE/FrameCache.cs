@@ -22,7 +22,7 @@ namespace SGDK2
 	{
       public struct Frame
       {
-         public Texture GraphicSheetTexture;
+         public Display.TextureRef GraphicSheetTexture;
          public short CellIndex;
          public Matrix Transform;
          public Rectangle SourceRect;
@@ -135,7 +135,7 @@ namespace SGDK2
             ProjectDataset.GraphicSheetRow g = ProjectData.GetGraphicSheet(arfr[nIdx].GraphicSheet);
 
             if (m_Display != null)
-               m_arFrames[nIdx].GraphicSheetTexture = m_Display.GetTexture(g.Name, false);
+               m_arFrames[nIdx].GraphicSheetTexture = m_Display.GetTextureRef(g.Name);
             m_arFrames[nIdx].GraphicSheet = g;
             m_arFrames[nIdx].CellIndex = arfr[nIdx].CellIndex;
             m_arFrames[nIdx].Transform.M11 = arfr[nIdx].m11;

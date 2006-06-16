@@ -109,18 +109,21 @@
                     AssemblyName = "Microsoft.DirectX.Direct3DX"
                     HintPath = "..\..\..\..\..\WINDOWS\Microsoft.NET\Managed DirectX\v9.00.1126\Microsoft.DirectX.Direct3DX.dll"
                     AssemblyFolderKey = "hklm\current managed directx 9.1"
+                    Private = "True"
                 />
                 <Reference
                     Name = "Microsoft.DirectX"
                     AssemblyName = "Microsoft.DirectX"
                     HintPath = "..\..\..\WINNT\Microsoft.NET\Managed DirectX\v9.02.2904\Microsoft.DirectX.dll"
                     AssemblyFolderKey = "hklm\current managed directx 9.2"
+                    Private = "True"
                 />
                 <Reference
                     Name = "Microsoft.DirectX.Direct3D"
                     AssemblyName = "Microsoft.DirectX.Direct3D"
                     HintPath = "..\..\..\WINNT\Microsoft.NET\Managed DirectX\v9.02.2904\Microsoft.DirectX.Direct3D.dll"
                     AssemblyFolderKey = "hklm\current managed directx 9.2"
+                    Private = "True"
                 />
                 <Reference
                     Name = "Microsoft.VisualC"
@@ -132,6 +135,7 @@
                     AssemblyName = "Microsoft.DirectX.DirectInput"
                     HintPath = "..\..\..\..\..\WINDOWS\Microsoft.NET\Managed DirectX\v9.00.1126\Microsoft.DirectX.DirectInput.dll"
                     AssemblyFolderKey = "hklm\current managed directx 9.1"
+                    Private = "True"
                 />
             </References>
         </Build>
@@ -202,11 +206,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "DataChangeNotifier.resx"
-                    DependentUpon = "DataChangeNotifier.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
                     RelPath = "DataGridComboBox.cs"
                     SubType = "Component"
                     BuildAction = "Compile"
@@ -217,19 +216,9 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Display.resx"
-                    DependentUpon = "Display.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
                     RelPath = "DragPanel.cs"
                     SubType = "Component"
                     BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "DragPanel.resx"
-                    DependentUpon = "DragPanel.cs"
-                    BuildAction = "EmbeddedResource"
                 />
                 <File
                     RelPath = "FrameCache.cs"
@@ -284,6 +273,16 @@
                 <File
                     RelPath = "GraphicBrowser.resx"
                     DependentUpon = "GraphicBrowser.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "ImportGraphics.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "ImportGraphics.resx"
+                    DependentUpon = "ImportGraphics.cs"
                     BuildAction = "EmbeddedResource"
                 />
                 <File

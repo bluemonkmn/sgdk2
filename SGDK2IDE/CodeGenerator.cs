@@ -47,7 +47,11 @@ namespace SGDK2
       private const string LayerParentField = "m_ParentMap";
       private const string LayerParentArg = "ParentMap";
       public const string SpritePlanParentField = "m_ParentLayer";
+      private const string SpritePlanParentProperty = "ParentLayer";
       private const string SpritePlanParentArg = "ParentLayer";
+      private const string GameFormInstance = "GameWindow";
+      private const string GameFormType = "GameForm";
+      private const string SpriteIsActiveRef = "isActive";
       #endregion
 
       public enum CodeLevel
@@ -58,13 +62,12 @@ namespace SGDK2
 
       public System.CodeDom.Compiler.ICodeGenerator Generator = new Microsoft.CSharp.CSharpCodeProvider().CreateGenerator();
       public CodeGeneratorOptions GeneratorOptions = new CodeGeneratorOptions();
+      public bool Debug = false;
       public CodeLevel GenerateLevel = CodeLevel.IncludeAll;
 
       #region Project Level Code Generation
-      public string[] GenerateAllCode(string FolderName, out string errs)
+      public void GenerateAllCode(string FolderName, out string errs)
       {
-         System.Collections.ArrayList fileList = new System.Collections.ArrayList();
-
          if (!System.IO.Path.IsPathRooted(FolderName))
          {
             FolderName = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, FolderName);
@@ -74,27 +77,22 @@ namespace SGDK2
 
          System.IO.TextWriter err = new System.IO.StringWriter();
 
-         fileList.Add(System.IO.Path.Combine(FolderName, ProjectClass + ".cs"));
          System.IO.TextWriter txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, ProjectClass + ".cs"));
          GenerateMainCode(txt);
          txt.Close();
 
-         fileList.Add(System.IO.Path.Combine(FolderName, ProjectClass + ".resx"));
          txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, ProjectClass + ".resx"));
          GenerateResx(txt);
          txt.Close();
 
-         fileList.Add(System.IO.Path.Combine(FolderName, CounterClass + ".cs"));
          txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, CounterClass + ".cs"));
          GenerateCounters(txt);
          txt.Close();
 
-         fileList.Add(System.IO.Path.Combine(FolderName, FramesetClass + ".cs"));
          txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, FramesetClass + ".cs"));
          GenerateFramesets(txt);
          txt.Close();
 
-         fileList.Add(System.IO.Path.Combine(FolderName, TilesetClass + ".cs"));
          txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, TilesetClass + ".cs"));
          GenerateTilesets(txt, err);
          txt.Close();
@@ -102,13 +100,11 @@ namespace SGDK2
          foreach (System.Data.DataRowView drv in ProjectData.Map.DefaultView)
          {
             ProjectDataset.MapRow drMap = (ProjectDataset.MapRow)drv.Row;
-            fileList.Add(System.IO.Path.Combine(FolderName, drMap.Name + "_Map.resx"));
-            txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, drMap.Name + "_Map.resx"));
+            txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, NameToVariable(drMap.Name) + "_Map.resx"));
             GenerateMapResx(drMap, txt);
             txt.Close();
 
-            fileList.Add(System.IO.Path.Combine(FolderName, drMap.Name + "_Map.cs"));
-            txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, drMap.Name + "_Map.cs"));
+            txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, NameToVariable(drMap.Name) + "_Map.cs"));
             GenerateMap(drMap, txt);
             txt.Close();
          }
@@ -119,26 +115,93 @@ namespace SGDK2
          foreach (System.Data.DataRowView drv in ProjectData.SpriteDefinition.DefaultView)
          {
             ProjectDataset.SpriteDefinitionRow drSpriteDef = (ProjectDataset.SpriteDefinitionRow)drv.Row;
-            fileList.Add(System.IO.Path.Combine(SpritesFolder, NameToVariable(drSpriteDef.Name) + ".cs"));
             txt = new System.IO.StreamWriter(System.IO.Path.Combine(SpritesFolder, NameToVariable(drSpriteDef.Name) + ".cs"));
             GenerateSpriteDef(drSpriteDef, txt);
             txt.Close();
          }
 
-         fileList.Add(System.IO.Path.Combine(FolderName, SolidityClassName + ".cs"));
          txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, SolidityClassName + ".cs"));
          GenerateTileCategories(txt);
          GenerateSolidity(txt);
          txt.Close();
 
-         fileList.AddRange(GenerateProjectSourceCode(FolderName));
+         GenerateProjectSourceCode(FolderName);
 
          errs = err.ToString();
          err.Close();
+      }
+
+      public string[] GetCodeFileList(string FolderName)
+      {
+         System.Collections.ArrayList fileList = new System.Collections.ArrayList();
+
+         if (!System.IO.Path.IsPathRooted(FolderName))
+         {
+            FolderName = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, FolderName);
+         }
+
+         fileList.AddRange(new string[]
+            {
+               System.IO.Path.Combine(FolderName, ProjectClass + ".cs"),
+               System.IO.Path.Combine(FolderName, CounterClass + ".cs"),
+               System.IO.Path.Combine(FolderName, FramesetClass + ".cs"),
+               System.IO.Path.Combine(FolderName, TilesetClass + ".cs"),
+               System.IO.Path.Combine(FolderName, SolidityClassName + ".cs")
+            });
+
+         foreach (System.Data.DataRowView drv in ProjectData.Map.DefaultView)
+            fileList.Add(System.IO.Path.Combine(FolderName, NameToVariable(((ProjectDataset.MapRow)drv.Row).Name) + "_Map.cs"));
+
+         string SpritesFolder = System.IO.Path.Combine(FolderName, "Sprites");
+         foreach (System.Data.DataRowView drv in ProjectData.SpriteDefinition.DefaultView)
+            fileList.Add(System.IO.Path.Combine(SpritesFolder, NameToVariable(((ProjectDataset.SpriteDefinitionRow)drv.Row).Name) + ".cs"));
+
+         foreach (System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
+            fileList.Add(System.IO.Path.Combine(FolderName, ((ProjectDataset.SourceCodeRow)drv.Row).Name));
 
          return (string[])(fileList.ToArray(typeof(string)));
       }
-      
+
+      public string[] GetResxFileList(string FolderName)
+      {
+         System.Collections.ArrayList fileList = new System.Collections.ArrayList();
+         if (!System.IO.Path.IsPathRooted(FolderName))
+         {
+            FolderName = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, FolderName);
+         }
+         fileList.Add(System.IO.Path.Combine(FolderName, ProjectClass + ".resx"));
+         foreach (System.Data.DataRowView drv in ProjectData.Map.DefaultView)
+            fileList.Add(System.IO.Path.Combine(FolderName, NameToVariable(((ProjectDataset.MapRow)drv.Row).Name) + "_Map.resx"));
+         return (string[])(fileList.ToArray(typeof(string)));
+      }
+
+      public string[] GetResourcesFileList(string FolderName)
+      {
+         string[] result = GetResxFileList(FolderName);
+         for (int i=0; i<result.Length; i++)
+            result[i] = result[i].Substring(0,result[i].Length -
+               System.IO.Path.GetExtension(result[i]).Length) + ".resources";
+         return result;
+      }
+
+      public string[] GetLocalReferenceFileList(string FolderName)
+      {
+         System.Collections.ArrayList fileList = new System.Collections.ArrayList();
+         if (!System.IO.Path.IsPathRooted(FolderName))
+         {
+            FolderName = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, FolderName);
+         }
+         System.Reflection.Assembly asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Matrix));
+         fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)));
+         asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Device));
+         fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)));
+         asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Sprite));
+         fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)));
+         asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.DirectInput.KeyboardState));
+         fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)));
+         return (string[])(fileList.ToArray(typeof(string)));
+      }
+
       public string[] GenerateCodeStrings()
       {
          string errs;
@@ -216,18 +279,15 @@ namespace SGDK2
          return (string[])result.ToArray(typeof(string));
       }
       
-      public string[] GenerateProjectSourceCode(string FolderName)
+      public void GenerateProjectSourceCode(string FolderName)
       {
-         System.Collections.ArrayList fileList = new System.Collections.ArrayList();
          foreach (System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
          {
             ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
-            fileList.Add(System.IO.Path.Combine(FolderName, drCode.Name));
             System.IO.TextWriter txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, drCode.Name));
             txt.Write(drCode.Text);
             txt.Close();
          }
-         return (string[])(fileList.ToArray(typeof(string)));
       }
       #endregion
 
@@ -246,14 +306,18 @@ namespace SGDK2
          main.Statements.Add(assign);
 
          ProjectDataset.ProjectRow prj = ProjectData.ProjectRow;
-         CodeVariableDeclarationStatement declareGame = new CodeVariableDeclarationStatement("GameForm", "game",
-            new CodeObjectCreateExpression("GameForm",
+         CodeMemberField declareGame = new CodeMemberField(GameFormType, "game");
+         declareGame.Attributes = MemberAttributes.Private | MemberAttributes.Final | MemberAttributes.Static;
+         typ.Members.Add(declareGame);
+         main.Statements.Add(new CodeAssignStatement(
+            new CodeFieldReferenceExpression(
+            new CodeTypeReferenceExpression(typ.Name), declareGame.Name),
+            new CodeObjectCreateExpression(GameFormType,
             new CodeFieldReferenceExpression(
             new CodeTypeReferenceExpression("GameDisplayMode"), prj.DisplayMode),
             new CodePrimitiveExpression(prj.Windowed),
             new CodePrimitiveExpression(prj.TitleText),
-            new CodeTypeOfExpression(NameToVariable(prj.StartMap) + "_Map")));
-         main.Statements.Add(declareGame);
+            new CodeTypeOfExpression(NameToVariable(prj.StartMap) + "_Map"))));
          main.Statements.Add(new CodeMethodInvokeExpression(
             new CodeVariableReferenceExpression(declareGame.Name), "Show"));
          main.Statements.Add(new CodeMethodInvokeExpression(
@@ -267,6 +331,16 @@ namespace SGDK2
          prpRes.Type = new CodeTypeReference(typeof(System.Resources.ResourceManager));
          prpRes.GetStatements.Add(new CodeMethodReturnStatement(new CodeVariableReferenceExpression(ResourcesField)));
          typ.Members.Add(prpRes);
+
+         CodeMemberProperty prpGame = new CodeMemberProperty();
+         prpGame.HasSet = false;
+         prpGame.HasGet = true;
+         prpGame.Name = GameFormInstance;
+         prpGame.Attributes = MemberAttributes.Final | MemberAttributes.Public | MemberAttributes.Static;
+         prpGame.Type = new CodeTypeReference(GameFormType);
+         prpGame.GetStatements.Add(new CodeMethodReturnStatement(
+            new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typ.Name), "game")));
+         typ.Members.Add(prpGame);
 
          Generator.GenerateCodeFromType(typ, txt, GeneratorOptions);
       }
@@ -452,11 +526,13 @@ namespace SGDK2
          CodePrimitiveExpression minValue = new CodePrimitiveExpression((int)0);
          CodeAssignStatement assignToProp = new CodeAssignStatement(fldRef, propVal);
          CodeConditionStatement testMin = new CodeConditionStatement(
-            new CodeBinaryOperatorExpression(fldRef, CodeBinaryOperatorType.GreaterThanOrEqual,
+            new CodeBinaryOperatorExpression(new CodePropertySetValueReferenceExpression(),
+            CodeBinaryOperatorType.GreaterThanOrEqual,
             minValue), new CodeStatement[] {assignToProp}, new CodeStatement[]
                {new CodeAssignStatement(fldRef, minValue)});
          CodeConditionStatement testMax = new CodeConditionStatement(
-            new CodeBinaryOperatorExpression(fldRef, CodeBinaryOperatorType.LessThanOrEqual,
+            new CodeBinaryOperatorExpression(new CodePropertySetValueReferenceExpression(),
+            CodeBinaryOperatorType.LessThanOrEqual,
             maxValue), new CodeStatement[] {testMin}, new CodeStatement[]
                {new CodeAssignStatement(fldRef, maxValue)});
          propDecl.SetStatements.Add(testMax);
@@ -815,8 +891,7 @@ namespace SGDK2
          clsMap.Members.Add(mthDraw);
 
          mthDraw.Statements.Add(new CodeVariableDeclarationStatement(typeof(Microsoft.DirectX.Direct3D.Sprite), "spr",
-            new CodeObjectCreateExpression(typeof(Microsoft.DirectX.Direct3D.Sprite),
-            new CodeFieldReferenceExpression(fldDisplayRef, "Device"))));
+            new CodeFieldReferenceExpression(fldDisplayRef, "Sprite")));
          CodeVariableReferenceExpression refSpr = new CodeVariableReferenceExpression("spr");
          mthDraw.Statements.Add(new CodeMethodInvokeExpression(refSpr, "Begin",
             new CodeFieldReferenceExpression(
@@ -826,6 +901,100 @@ namespace SGDK2
          mthExecuteMapRules.Name = "ExecuteRules";
          mthExecuteMapRules.Attributes = MemberAttributes.Override | MemberAttributes.Public;
          clsMap.Members.Add(mthExecuteMapRules);
+
+         CodeMemberMethod mthOnScroll = new CodeMemberMethod();
+         mthOnScroll.Name = "Scroll";
+         mthOnScroll.Attributes = MemberAttributes.Public | MemberAttributes.Override;
+         CodeParameterDeclarationExpression parmPosition = 
+            new CodeParameterDeclarationExpression(typeof(System.Drawing.Point), "position");
+         mthOnScroll.Parameters.Add(parmPosition);
+         CodeArgumentReferenceExpression refPosition =
+            new CodeArgumentReferenceExpression(parmPosition.Name);
+         mthOnScroll.Statements.Add(new CodeConditionStatement(
+            new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(
+            refPosition, "X"), CodeBinaryOperatorType.GreaterThan, new CodePrimitiveExpression(0)),
+            new CodeAssignStatement(new CodePropertyReferenceExpression(
+            refPosition, "X"), new CodePrimitiveExpression(0))));
+         mthOnScroll.Statements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(
+            new CodeBinaryOperatorExpression(
+            new CodePropertyReferenceExpression(refPosition, "X"), CodeBinaryOperatorType.IdentityInequality,
+            new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(int)), "MinValue")),
+            CodeBinaryOperatorType.BooleanAnd,
+            new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(
+            refPosition, "X"), CodeBinaryOperatorType.LessThan, new CodePrimitiveExpression(-drMap.ScrollWidth))),
+            new CodeAssignStatement(new CodePropertyReferenceExpression(
+            refPosition, "X"), new CodePrimitiveExpression(-drMap.ScrollWidth))));
+         mthOnScroll.Statements.Add(new CodeConditionStatement(
+            new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(
+            refPosition, "Y"), CodeBinaryOperatorType.GreaterThan, new CodePrimitiveExpression(0)),
+            new CodeAssignStatement(new CodePropertyReferenceExpression(
+            refPosition, "Y"), new CodePrimitiveExpression(0))));
+         mthOnScroll.Statements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(
+            new CodeBinaryOperatorExpression(
+            new CodePropertyReferenceExpression(refPosition, "Y"), CodeBinaryOperatorType.IdentityInequality,
+            new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(int)), "MinValue")),
+            CodeBinaryOperatorType.BooleanAnd,
+            new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(
+            refPosition, "Y"), CodeBinaryOperatorType.LessThan, new CodePrimitiveExpression(-drMap.ScrollHeight))),
+            new CodeAssignStatement(new CodePropertyReferenceExpression(
+            refPosition, "Y"), new CodePrimitiveExpression(-drMap.ScrollHeight))));
+         clsMap.Members.Add(mthOnScroll);
+
+         CodeMemberField fldScrollMarginLeft = new CodeMemberField(typeof(short), "m_ScrollMarginLeft");
+         fldScrollMarginLeft.Attributes = MemberAttributes.Private | MemberAttributes.Final;
+         fldScrollMarginLeft.InitExpression = new CodePrimitiveExpression(drMap.ScrollMarginLeft);
+         clsMap.Members.Add(fldScrollMarginLeft);
+         CodeMemberProperty prpScrollMarginLeft = new CodeMemberProperty();
+         prpScrollMarginLeft.Name = "ScrollMarginLeft";
+         prpScrollMarginLeft.Type = new CodeTypeReference(typeof(short));
+         prpScrollMarginLeft.Attributes = MemberAttributes.Public | MemberAttributes.Override;
+         prpScrollMarginLeft.HasGet = true;
+         prpScrollMarginLeft.HasSet = false;
+         prpScrollMarginLeft.GetStatements.Add(new CodeMethodReturnStatement(
+            new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fldScrollMarginLeft.Name)));
+         clsMap.Members.Add(prpScrollMarginLeft);
+
+         CodeMemberField fldScrollMarginTop = new CodeMemberField(typeof(short), "m_ScrollMarginTop");
+         fldScrollMarginTop.Attributes = MemberAttributes.Private | MemberAttributes.Final;
+         fldScrollMarginTop.InitExpression = new CodePrimitiveExpression(drMap.ScrollMarginRight);
+         clsMap.Members.Add(fldScrollMarginTop);
+         CodeMemberProperty prpScrollMarginTop = new CodeMemberProperty();
+         prpScrollMarginTop.Name = "ScrollMarginTop";
+         prpScrollMarginTop.Type = new CodeTypeReference(typeof(short));
+         prpScrollMarginTop.Attributes = MemberAttributes.Public | MemberAttributes.Override;
+         prpScrollMarginTop.HasGet = true;
+         prpScrollMarginTop.HasSet = false;
+         prpScrollMarginTop.GetStatements.Add(new CodeMethodReturnStatement(
+            new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fldScrollMarginTop.Name)));
+         clsMap.Members.Add(prpScrollMarginTop);
+
+         CodeMemberField fldScrollMarginRight = new CodeMemberField(typeof(short), "m_ScrollMarginRight");
+         fldScrollMarginRight.Attributes = MemberAttributes.Private | MemberAttributes.Final;
+         fldScrollMarginRight.InitExpression = new CodePrimitiveExpression(drMap.ScrollMarginTop);
+         clsMap.Members.Add(fldScrollMarginRight);
+         CodeMemberProperty prpScrollMarginRight = new CodeMemberProperty();
+         prpScrollMarginRight.Name = "ScrollMarginRight";
+         prpScrollMarginRight.Type = new CodeTypeReference(typeof(short));
+         prpScrollMarginRight.Attributes = MemberAttributes.Public | MemberAttributes.Override;
+         prpScrollMarginRight.HasGet = true;
+         prpScrollMarginRight.HasSet = false;
+         prpScrollMarginRight.GetStatements.Add(new CodeMethodReturnStatement(
+            new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fldScrollMarginRight.Name)));
+         clsMap.Members.Add(prpScrollMarginRight);
+
+         CodeMemberField fldScrollMarginBottom = new CodeMemberField(typeof(short), "m_ScrollMarginBottom");
+         fldScrollMarginBottom.Attributes = MemberAttributes.Private | MemberAttributes.Final;
+         fldScrollMarginBottom.InitExpression = new CodePrimitiveExpression(drMap.ScrollMarginBottom);
+         clsMap.Members.Add(fldScrollMarginBottom);
+         CodeMemberProperty prpScrollMarginBottom = new CodeMemberProperty();
+         prpScrollMarginBottom.Name = "ScrollMarginBottom";
+         prpScrollMarginBottom.Type = new CodeTypeReference(typeof(short));
+         prpScrollMarginBottom.Attributes = MemberAttributes.Public | MemberAttributes.Override;
+         prpScrollMarginBottom.HasGet = true;
+         prpScrollMarginBottom.HasSet = false;
+         prpScrollMarginBottom.GetStatements.Add(new CodeMethodReturnStatement(
+            new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fldScrollMarginBottom.Name)));
+         clsMap.Members.Add(prpScrollMarginBottom);
 
          foreach (ProjectDataset.LayerRow drLayer in ProjectData.GetSortedLayers(drMap))
          {
@@ -905,6 +1074,14 @@ namespace SGDK2
                new CodePrimitiveExpression(drLayer.ScrollRateY)),
                new CodePrimitiveExpression(drLayer.Name))));
 
+            if ((drLayer.ScrollRateX==0) && (drLayer.ScrollRateY==0))
+               mthOnScroll.Statements.Add(new CodeCommentStatement(drLayer.Name + " does not participate in automatic scrolling"));
+            else
+               mthOnScroll.Statements.Add(new CodeMethodInvokeExpression(
+                  new CodeFieldReferenceExpression(new CodeThisReferenceExpression(),
+                  fldLayer.Name), "Move", new CodeArgumentReferenceExpression(
+                  "position")));
+
             CodeMemberProperty prpLayer = new CodeMemberProperty();
             prpLayer.Name = NameToVariable(drLayer.Name);
             prpLayer.Attributes = MemberAttributes.Public | MemberAttributes.Final;
@@ -942,6 +1119,7 @@ namespace SGDK2
 
             ProjectDataset.SpriteRow[] sprites = ProjectData.GetSortedSpriteRows(drLayer);
             System.Collections.Hashtable htCategories = new System.Collections.Hashtable();
+            CodeStatementCollection ExecuteSpriteRules = new CodeStatementCollection();
             if (sprites.Length > 0)
             {
                foreach(ProjectDataset.SpriteRow sprite in sprites)
@@ -1017,6 +1195,18 @@ namespace SGDK2
                      new CodeThisReferenceExpression(),
                      (priority == 0)?"InjectFrames":"AppendFrames",
                      (CodeExpression[])InjectParams.ToArray(typeof(CodeExpression))))));
+
+                  ExecuteSpriteRules.Add(new CodeConditionStatement(new CodeFieldReferenceExpression(
+                     new CodeFieldReferenceExpression(new CodeThisReferenceExpression(),
+                     "m_" + NameToVariable(sprite.Name)), SpriteIsActiveRef),
+                     new CodeStatement[]
+                     {
+                        new CodeExpressionStatement(
+                        new CodeMethodInvokeExpression(
+                        new CodeFieldReferenceExpression(
+                        new CodeThisReferenceExpression(),
+                        "m_" + NameToVariable(sprite.Name)), "ExecuteRules"))
+                     }));
                }
 
                if (htCategories.Count > 0)
@@ -1057,6 +1247,7 @@ namespace SGDK2
                CodeMemberMethod mthExecuteLayerRules = new CodeMemberMethod();
                mthExecuteLayerRules.Attributes = MemberAttributes.Public | MemberAttributes.Final;
                mthExecuteLayerRules.Name = "ExecuteRules";
+               mthExecuteLayerRules.Statements.AddRange(ExecuteSpriteRules);
                clsLayer.Members.Add(mthExecuteLayerRules);
                mthExecuteMapRules.Statements.Add(
                   new CodeMethodInvokeExpression(
@@ -1080,6 +1271,17 @@ namespace SGDK2
                      new CodeFieldReferenceExpression(
                      new CodeThisReferenceExpression(), SpritePlanParentField),
                      new CodeArgumentReferenceExpression(SpritePlanParentArg)));
+
+                  CodeMemberProperty prpPlanParent = new CodeMemberProperty();
+                  prpPlanParent.Name = SpritePlanParentProperty;
+                  prpPlanParent.Attributes = MemberAttributes.Public | MemberAttributes.Override;
+                  prpPlanParent.HasGet = true;
+                  prpPlanParent.HasSet = false;
+                  prpPlanParent.Type = new CodeTypeReference("LayerBase");
+                  prpPlanParent.GetStatements.Add(new CodeMethodReturnStatement(
+                     new CodeFieldReferenceExpression(
+                     new CodeThisReferenceExpression(), SpritePlanParentField)));
+                  clsPlan.Members.Add(prpPlanParent);
 
                   CodeMemberField fldPlan = new CodeMemberField(clsPlan.Name, "m_" + NameToVariable(drPlan.Name));
                   fldPlan.Attributes = MemberAttributes.Private | MemberAttributes.Final;
@@ -1310,7 +1512,6 @@ namespace SGDK2
             }
          }
          mthDraw.Statements.Add(new CodeMethodInvokeExpression(refSpr, "End"));
-         mthDraw.Statements.Add(new CodeMethodInvokeExpression(refSpr, "Dispose"));
          Generator.GenerateCodeFromType(clsMap, txt, GeneratorOptions);
       }
 
@@ -1725,6 +1926,8 @@ namespace SGDK2
          compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
          asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Sprite));
          compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
+         asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.DirectInput.KeyboardState));
+         compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
          compilerParams.ReferencedAssemblies.Add("System.Windows.Forms.dll");
          compilerParams.ReferencedAssemblies.Add("System.dll");
          compilerParams.ReferencedAssemblies.Add("System.Drawing.dll");
@@ -1745,42 +1948,43 @@ namespace SGDK2
          return compilerParams.OutputAssembly;
       }
 
+      public void CompileResources(string FolderName)
+      {
+         string[] resxList = GetResxFileList(FolderName);
+
+         foreach(string resxFile in resxList)
+         {
+            System.Resources.ResXResourceReader rd =
+               new System.Resources.ResXResourceReader(resxFile);
+            string resName = resxFile.Substring(0,resxFile.Length -
+               System.IO.Path.GetExtension(resxFile).Length) + ".resources";
+            System.Resources.ResourceWriter rw = new System.Resources.ResourceWriter(resName);
+            foreach(System.Collections.DictionaryEntry de in rd)
+               rw.AddResource(de.Key.ToString(), de.Value);
+            rw.Generate();
+            rw.Close();
+            rd.Close();
+         }
+      }
+
       public string CompileProject(string ProjectName, string FolderName, out string errs)
       {
-         string[] fileList = GenerateAllCode(FolderName, out errs);
+         if (!System.IO.Path.IsPathRooted(FolderName))
+            FolderName = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, FolderName);
+
+         string[] fileList = GetCodeFileList(FolderName);
+         string[] resourcesList = GetResourcesFileList(FolderName);
+         GenerateAllCode(FolderName, out errs);
          if (errs.Length > 0)
             return null;
 
-         System.Collections.ArrayList codeFiles = new System.Collections.ArrayList();
-         System.Collections.ArrayList resFiles = new System.Collections.ArrayList();
-         for (int i=0; i< fileList.Length; i++)
+         string resourceSwitches = string.Empty;
+         foreach (string resFile in resourcesList)
          {
-            if (fileList[i].EndsWith(".resx"))
-            {
-               System.Resources.ResXResourceReader rd =
-                  new System.Resources.ResXResourceReader(fileList[i]);
-               int newIdx = resFiles.Add(fileList[i].Substring(0,fileList[i].Length -
-                  System.IO.Path.GetExtension(fileList[i]).Length) + ".resources");
-               System.Resources.ResourceWriter rw = new System.Resources.ResourceWriter(resFiles[newIdx].ToString());
-               foreach(System.Collections.DictionaryEntry de in rd)
-                  rw.AddResource(de.Key.ToString(), de.Value);
-               rw.Generate();
-               rw.Close();
-               rd.Close();
-            }
-            else
-               codeFiles.Add(fileList[i]);
+            resourceSwitches += " /res:\"" + resFile +"\"";
          }
 
-         fileList = (string[])(codeFiles.ToArray(typeof(string)));
-         string resourceList = string.Empty;
-         foreach (string resFile in resFiles)
-         {
-            resourceList += " /res:\"" + resFile +"\"";
-         }
-
-         if (!System.IO.Path.IsPathRooted(FolderName))
-            FolderName = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, FolderName);
+         CompileResources(FolderName);
 
          Microsoft.CSharp.CSharpCodeProvider codeProvider = new Microsoft.CSharp.CSharpCodeProvider();
          System.CodeDom.Compiler.ICodeCompiler compiler = codeProvider.CreateCompiler();
@@ -1794,14 +1998,20 @@ namespace SGDK2
          asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Sprite));
          System.IO.File.Copy(asmRef.GetFiles()[0].Name, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)), true);
          compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
+         asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.DirectInput.KeyboardState));
+         System.IO.File.Copy(asmRef.GetFiles()[0].Name, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)), true);
+         compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
          compilerParams.ReferencedAssemblies.Add("System.Windows.Forms.dll");
          compilerParams.ReferencedAssemblies.Add("System.dll");
          compilerParams.ReferencedAssemblies.Add("System.Drawing.dll");
          compilerParams.ReferencedAssemblies.Add("System.Design.dll");
          compilerParams.GenerateExecutable = true;
          compilerParams.GenerateInMemory = false;
-         //compilerParams.IncludeDebugInformation = true;
-         compilerParams.CompilerOptions = " /target:winexe" + resourceList;
+         compilerParams.IncludeDebugInformation = Debug;
+         if (Debug)
+            compilerParams.CompilerOptions = "/define:DEBUG /target:winexe" + resourceSwitches;
+         else
+            compilerParams.CompilerOptions = " /target:winexe" + resourceSwitches;
          System.CodeDom.Compiler.CompilerResults results = compiler.CompileAssemblyFromFileBatch(compilerParams, fileList);
          if (results.Errors.Count > 0)
          {

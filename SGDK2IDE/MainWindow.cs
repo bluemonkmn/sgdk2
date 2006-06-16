@@ -52,7 +52,6 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuFileExit;
       private System.Windows.Forms.MenuItem mnuView;
       private System.Windows.Forms.MenuItem mnuEditProperties;
-      private System.Windows.Forms.MenuItem mnuFileSep2;
       private System.Windows.Forms.MenuItem mnuFileNewObj;
       private System.Windows.Forms.MenuItem mnuFileSep1;
       private System.Windows.Forms.ContextMenu mnuTreeView;
@@ -64,10 +63,13 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuFileNewPrj;
       private System.Windows.Forms.MenuItem mnuFileResetCode;
       private System.Windows.Forms.MenuItem mnuFileGenerate;
-      private System.Windows.Forms.MenuItem menuItem3;
       private System.Windows.Forms.MenuItem mnuFileSavePrjAs;
       private System.Windows.Forms.MenuItem mnuViewChanges;
       private System.Windows.Forms.MenuItem mnuFileRunProject;
+      private System.Windows.Forms.MenuItem mnuFileDeleteOutputFiles;
+      private System.Windows.Forms.MenuItem mnuFileSep2;
+      private System.Windows.Forms.MenuItem mnuFileSep3;
+      private System.Windows.Forms.MenuItem mnuFileRunProjectInDebugMode;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -128,10 +130,12 @@ namespace SGDK2
          this.mnuFileSep1 = new System.Windows.Forms.MenuItem();
          this.mnuFileNewObj = new System.Windows.Forms.MenuItem();
          this.mnuFileDeleteObj = new System.Windows.Forms.MenuItem();
-         this.menuItem3 = new System.Windows.Forms.MenuItem();
+         this.mnuFileSep2 = new System.Windows.Forms.MenuItem();
+         this.mnuFileRunProject = new System.Windows.Forms.MenuItem();
          this.mnuFileResetCode = new System.Windows.Forms.MenuItem();
          this.mnuFileGenerate = new System.Windows.Forms.MenuItem();
-         this.mnuFileSep2 = new System.Windows.Forms.MenuItem();
+         this.mnuFileDeleteOutputFiles = new System.Windows.Forms.MenuItem();
+         this.mnuFileSep3 = new System.Windows.Forms.MenuItem();
          this.mnuFileExit = new System.Windows.Forms.MenuItem();
          this.mnuView = new System.Windows.Forms.MenuItem();
          this.mnuEditProperties = new System.Windows.Forms.MenuItem();
@@ -140,7 +144,7 @@ namespace SGDK2
          this.pnlProjectTree = new System.Windows.Forms.Panel();
          this.lblProjectTree = new System.Windows.Forms.Label();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
-         this.mnuFileRunProject = new System.Windows.Forms.MenuItem();
+         this.mnuFileRunProjectInDebugMode = new System.Windows.Forms.MenuItem();
          this.pnlProjectTree.SuspendLayout();
          this.SuspendLayout();
          // 
@@ -265,11 +269,13 @@ namespace SGDK2
                                                                                 this.mnuFileSep1,
                                                                                 this.mnuFileNewObj,
                                                                                 this.mnuFileDeleteObj,
-                                                                                this.menuItem3,
+                                                                                this.mnuFileSep2,
                                                                                 this.mnuFileRunProject,
+                                                                                this.mnuFileRunProjectInDebugMode,
                                                                                 this.mnuFileResetCode,
                                                                                 this.mnuFileGenerate,
-                                                                                this.mnuFileSep2,
+                                                                                this.mnuFileDeleteOutputFiles,
+                                                                                this.mnuFileSep3,
                                                                                 this.mnuFileExit});
          this.mnuFile.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
          this.mnuFile.Text = "&File";
@@ -315,32 +321,47 @@ namespace SGDK2
          this.mnuFileDeleteObj.Text = "&Delete Object";
          this.mnuFileDeleteObj.Click += new System.EventHandler(this.mnuFileDeleteObj_Click);
          // 
-         // menuItem3
+         // mnuFileSep2
          // 
-         this.menuItem3.Index = 7;
-         this.menuItem3.Text = "-";
+         this.mnuFileSep2.Index = 7;
+         this.mnuFileSep2.Text = "-";
+         // 
+         // mnuFileRunProject
+         // 
+         this.mnuFileRunProject.Index = 8;
+         this.mnuFileRunProject.Shortcut = System.Windows.Forms.Shortcut.F5;
+         this.mnuFileRunProject.Text = "&Run Project";
+         this.mnuFileRunProject.Click += new System.EventHandler(this.mnuFileRunProject_Click);
          // 
          // mnuFileResetCode
          // 
-         this.mnuFileResetCode.Index = 9;
+         this.mnuFileResetCode.Index = 10;
          this.mnuFileResetCode.Text = "Reset Source &Code";
          this.mnuFileResetCode.Click += new System.EventHandler(this.mnuFileResetCode_Click);
          // 
          // mnuFileGenerate
          // 
-         this.mnuFileGenerate.Index = 10;
+         this.mnuFileGenerate.Index = 11;
+         this.mnuFileGenerate.Shortcut = System.Windows.Forms.Shortcut.F7;
          this.mnuFileGenerate.Text = "&Generate Project";
          this.mnuFileGenerate.Click += new System.EventHandler(this.mnuFileGenerate_Click);
          // 
-         // mnuFileSep2
+         // mnuFileDeleteOutputFiles
          // 
-         this.mnuFileSep2.Index = 11;
-         this.mnuFileSep2.MergeOrder = 98;
-         this.mnuFileSep2.Text = "-";
+         this.mnuFileDeleteOutputFiles.Enabled = false;
+         this.mnuFileDeleteOutputFiles.Index = 12;
+         this.mnuFileDeleteOutputFiles.Text = "Dele&te Output Files";
+         this.mnuFileDeleteOutputFiles.Click += new System.EventHandler(this.mnuFileDeleteOutputFiles_Click);
+         // 
+         // mnuFileSep3
+         // 
+         this.mnuFileSep3.Index = 13;
+         this.mnuFileSep3.MergeOrder = 98;
+         this.mnuFileSep3.Text = "-";
          // 
          // mnuFileExit
          // 
-         this.mnuFileExit.Index = 12;
+         this.mnuFileExit.Index = 14;
          this.mnuFileExit.MergeOrder = 99;
          this.mnuFileExit.Text = "E&xit";
          this.mnuFileExit.Click += new System.EventHandler(this.mnuFileExit_Click);
@@ -351,6 +372,8 @@ namespace SGDK2
          this.mnuView.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
                                                                                 this.mnuEditProperties,
                                                                                 this.mnuViewChanges});
+         this.mnuView.MergeOrder = 1;
+         this.mnuView.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
          this.mnuView.Text = "&View";
          // 
          // mnuEditProperties
@@ -370,7 +393,7 @@ namespace SGDK2
          // 
          this.mnuWindows.Index = 2;
          this.mnuWindows.MdiList = true;
-         this.mnuWindows.MergeOrder = 3;
+         this.mnuWindows.MergeOrder = 4;
          this.mnuWindows.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
          this.mnuWindows.Text = "&Windows";
          // 
@@ -455,11 +478,11 @@ namespace SGDK2
          this.dataMonitor.CounterRowChanged += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowChanged);
          this.dataMonitor.SpriteCategoryRowDeleted += new SGDK2.ProjectDataset.SpriteCategoryRowChangeEventHandler(this.dataMonitor_SpriteCategoryRowDeleted);
          // 
-         // mnuFileRunProject
+         // mnuFileRunProjectInDebugMode
          // 
-         this.mnuFileRunProject.Index = 8;
-         this.mnuFileRunProject.Text = "&Run Project";
-         this.mnuFileRunProject.Click += new System.EventHandler(this.mnuFileRunProject_Click);
+         this.mnuFileRunProjectInDebugMode.Index = 9;
+         this.mnuFileRunProjectInDebugMode.Text = "Run Project in Debug &Mode";
+         this.mnuFileRunProjectInDebugMode.Click += new System.EventHandler(this.mnuFileRunProjectInDebugMode_Click);
          // 
          // frmMain
          // 
@@ -536,6 +559,7 @@ namespace SGDK2
 
       private void DoNewProject()
       {
+         mnuFileDeleteOutputFiles.Enabled = false;
          ProjectData.Clear();
          InitializeTree();
          ProjectData.ExtendedProperties["SchemaVersion"] = "1";
@@ -1762,6 +1786,7 @@ namespace SGDK2
             {
                ProjectData.WriteXml(fd.FileName);
                m_strProjectPath = fd.FileName;
+               mnuFileDeleteOutputFiles.Enabled = true;
             }
          }
          catch(Exception ex)
@@ -1792,6 +1817,7 @@ namespace SGDK2
                m_strProjectPath = fd.FileName;
                tvwMain.CollapseAll();
                tvwMain.Nodes[0].Expand();
+               mnuFileDeleteOutputFiles.Enabled = true;
             }
          }
          catch(Exception ex)
@@ -1845,13 +1871,15 @@ namespace SGDK2
          CodeGenerator g = new CodeGenerator();
          g.GeneratorOptions.BracingStyle = "C";
          string errs;
-         g.GenerateAllCode(strFolder, out errs);
+         string outFile = g.CompileProject(System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath), strFolder, out errs);
          if (errs.Length > 0)
          {
             frmLogView frm = new frmLogView(errs);
             frm.MdiParent = this;
             frm.Show();
+            return;
          }
+         MessageBox.Show(this, outFile + " Compiled", "Generate Project", MessageBoxButtons.OK, MessageBoxIcon.Information);
       }
 
       private void mnuViewChanges_Click(object sender, System.EventArgs e)
@@ -1884,6 +1912,50 @@ namespace SGDK2
          }
          System.Diagnostics.Process.Start(outFile);
       }
+
+      private void mnuFileDeleteOutputFiles_Click(object sender, System.EventArgs e)
+      {
+         CodeGenerator g = new CodeGenerator();
+         string strFolder = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(m_strProjectPath), System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath));
+         System.Collections.Specialized.StringCollection deleteFiles = new System.Collections.Specialized.StringCollection();
+         deleteFiles.AddRange(g.GetCodeFileList(strFolder));
+         deleteFiles.AddRange(g.GetResxFileList(strFolder));
+         deleteFiles.AddRange(g.GetResourcesFileList(strFolder));
+         deleteFiles.AddRange(g.GetLocalReferenceFileList(strFolder));
+         deleteFiles.Add(System.IO.Path.Combine(strFolder, System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath) + ".exe"));
+         deleteFiles.Add(System.IO.Path.Combine(strFolder, System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath) + ".pdb"));
+         foreach(string deleteFile in deleteFiles)
+         {
+            if (System.IO.File.Exists(deleteFile))
+               System.IO.File.Delete(deleteFile);
+         }
+      }
+
+      private void mnuFileRunProjectInDebugMode_Click(object sender, System.EventArgs e)
+      {
+         if (m_strProjectPath == null)
+         {
+            mnuFileSavePrj_Click(sender, e);
+            if (m_strProjectPath == null)
+               return;
+         }
+
+         string strFolder = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(m_strProjectPath), System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath));
+         CodeGenerator g = new CodeGenerator();
+         g.GeneratorOptions.BracingStyle = "C";
+         g.Debug = true;
+         string errs;
+         string outFile = g.CompileProject(System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath), strFolder, out errs);
+         if (errs.Length > 0)
+         {
+            frmLogView frm = new frmLogView(errs);
+            frm.MdiParent = this;
+            frm.Show();
+            return;
+         }
+         System.Diagnostics.Process.Start(outFile);      
+      }
       #endregion
+
    }
 }

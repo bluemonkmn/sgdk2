@@ -694,6 +694,7 @@ namespace SGDK2
                if (drCoords.Length == 1)
                   cboParameter.Items.Add(CodeGenerator.SpritePlanParentField + ".m_" + CodeGenerator.NameToVariable(drPlan.Name) + "[0]");
             }
+            cboParameter.Items.Add(CodeGenerator.SpritePlanParentField + ".GetMousePosition()");
          }
          else if (string.Compare(param.TypeName, "SpriteBase") == 0)
          {
@@ -874,6 +875,7 @@ namespace SGDK2
                chkNot.Enabled = lblParam1.Enabled = cboParam1.Enabled =
                lblParam2.Enabled = cboParam2.Enabled =
                lblParam3.Enabled = cboParam3.Enabled =
+               lblOutput.Enabled = cboOutput.Enabled =
                chkEndIf.Enabled = false;
             return;
          }
@@ -1019,16 +1021,20 @@ namespace SGDK2
                   PopulateRules();
                break;
             case DataRowAction.Change:
-               if ((e.Row.SpritePlanRowParent == m_Plan) && (m_OldRuleName != null) &&
-                  ((String.Compare(m_OldRuleName, e.Row.Name) != 0) ||
-                  (m_OldSequence != e.Row.Sequence) ||
-                  (String.Compare(m_OldType,e.Row.Type) != 0) ||
-                  (m_OldEndIf != e.Row.EndIf)))
-                  PopulateRules();
+               if ((e.Row.SpritePlanRowParent == m_Plan) && (m_OldRuleName != null))
+               {
+                  if ((String.Compare(m_OldRuleName, e.Row.Name) != 0))
+                     tvwRules.SelectedNode.Text = e.Row.Name;
+                  else if ((m_OldSequence != e.Row.Sequence) ||
+                     (String.Compare(m_OldType,e.Row.Type) != 0) ||
+                     (m_OldEndIf != e.Row.EndIf))
+                     PopulateRules();
+               }
                break;
             case DataRowAction.Delete:
                if (m_OldRuleName != null)
                   PopulateRules();
+               EnableFields();
                break;
          }
          m_OldRuleName = null;

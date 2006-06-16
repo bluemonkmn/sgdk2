@@ -95,13 +95,13 @@ public abstract class LayerBase : System.Collections.IEnumerable
    protected SpriteCollection m_Sprites;
    private readonly System.Drawing.SizeF m_ScrollRate;
    private System.Drawing.Point m_CurrentPosition;
-   private MapBase m_internalParent;
+   private MapBase m_ParentMap;
    #endregion
 
    protected LayerBase(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer, int nBottomBuffer,
       int nColumns, int nRows, System.Drawing.Point Position, System.Drawing.SizeF ScrollRate)
    {
-      this.m_internalParent = Parent;
+      this.m_ParentMap = Parent;
       this.m_Tileset = Tileset;
       this.m_Frameset = Tileset.GetFrameset(Parent.Display);
       this.m_nLeftBuffer = nLeftBuffer;
@@ -199,6 +199,17 @@ public abstract class LayerBase : System.Collections.IEnumerable
          m_CurrentPosition = value;
       }
    }
+
+   /// <summary>
+   /// Returns the map that owns this layer
+   /// </summary>
+   public MapBase ParentMap
+   {
+      get
+      {
+         return m_ParentMap;
+      }
+   }
    #endregion
 
    #region Public methods
@@ -207,14 +218,20 @@ public abstract class LayerBase : System.Collections.IEnumerable
    /// The layer's current position is offset by its position on the map and scaled
    /// by the layer's scroll rate.
    /// </summary>
-   /// <param name="x">Horizontal position of the map</param>
-   /// <param name="y">Vertical position of the map</param>
+   /// <param name="MapPosition">Position of the map.  If one component is int.minValue,
+   /// that axis is not affected</param>
    /// <remarks>Map positions are usually negative because the map position indicates
    /// the position of the top-left corner of the map which is usually scrolled off
    /// the top-left corner of the screen to a negative position.</remarks>
-   public void Move(int x, int y)
+   public void Move(Point MapPosition)
    {
-      m_CurrentPosition = new Point(m_AbsolutePosition.X + (int)(x * m_ScrollRate.Width), m_AbsolutePosition.Y + (int)(y * m_ScrollRate.Height));
+      if (MapPosition.X != int.MinValue)
+         if (MapPosition.Y != int.MinValue)
+            m_CurrentPosition = new Point(m_AbsolutePosition.X + (int)(MapPosition.X * m_ScrollRate.Width), m_AbsolutePosition.Y + (int)(MapPosition.Y * m_ScrollRate.Height));
+         else
+            m_CurrentPosition = new Point(m_AbsolutePosition.X + (int)(MapPosition.X * m_ScrollRate.Width), m_CurrentPosition.Y);
+      else if (MapPosition.Y != int.MinValue)
+         m_CurrentPosition = new Point(m_CurrentPosition.X, m_AbsolutePosition.Y + (int)(MapPosition.Y * m_ScrollRate.Height));
    }
 
    public void Draw(Sprite spr)
@@ -229,7 +246,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
       if (nStartRow < 0)
          nStartRow = 0;
 
-      Rectangle ViewRect = m_internalParent.Display.DisplayRectangle;
+      Rectangle ViewRect = m_ParentMap.Display.DisplayRectangle;
 
       int EndCol = (ViewRect.Width - 1 + m_nRightBuffer - m_CurrentPosition.X) / nTileWidth;
       if (EndCol >= Columns)
@@ -301,7 +318,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
    {
       get
       {
-         Rectangle result = m_internalParent.Display.DisplayRectangle;
+         Rectangle result = m_ParentMap.Display.DisplayRectangle;
          result.Offset(-m_CurrentPosition.X, -m_CurrentPosition.Y);
          return result;
       }
@@ -353,6 +370,17 @@ public abstract class LayerBase : System.Collections.IEnumerable
    {
       if (m_InjectedFrames != null)
          m_InjectedFrames.Clear();
+   }
+
+   public Point GetMousePosition()
+   {
+      Point dispPos;
+      if (m_ParentMap.Display.Windowed)
+         dispPos = m_ParentMap.Display.PointToClient(System.Windows.Forms.Control.MousePosition);
+      else
+         dispPos = System.Windows.Forms.Control.MousePosition;
+      dispPos.Offset(-m_CurrentPosition.X, -m_CurrentPosition.Y);
+      return dispPos;
    }
    #endregion
 }

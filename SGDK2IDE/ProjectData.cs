@@ -2374,7 +2374,7 @@ namespace SGDK2
          get
          {
             if (m_dsPrj.Project.Count <= 0)
-               m_dsPrj.Project.AddProjectRow(GameDisplayMode.m640x480x24.ToString(), true, "http://sgdk2.sf.net", null);
+               m_dsPrj.Project.AddProjectRow(GameDisplayMode.m640x480x24.ToString(), true, "Powered by Scrolling Game Development Kit 2 (http://sgdk2.sf.net)", null);
             return m_dsPrj.Project[0];
          }
       }

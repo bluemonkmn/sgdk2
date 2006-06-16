@@ -13,7 +13,13 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
 
    public RemoteReflector(string typeName)
    {
-      reflectType = System.Reflection.Assembly.GetExecutingAssembly().GetType(typeName, true);
+      reflectType = typeof(RemoteReflector).Assembly.GetType(typeName, false);
+      if (null != reflectType)
+         return;
+      reflectType = typeof(Microsoft.DirectX.DirectInput.KeyboardState).Assembly.GetType(typeName, false);
+      if (null != reflectType)
+         return;
+      throw new System.ApplicationException("Failed to load type " + typeName);
    }
    #region IRemoteTypeInfo Members
 
@@ -48,7 +54,10 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
 
    public string[] GetEnumVals()
    {
-      return System.Enum.GetNames(reflectType);
+      string[] result = System.Enum.GetNames(reflectType);
+      for(int idx = 0; idx < result.Length; idx++)
+         result[idx] = reflectType.FullName.Replace('+','.') + "." + result[idx];
+      return result;
    }
 
    public string[] GetSubclasses()

@@ -58,14 +58,16 @@ namespace SGDK2
          this.txtLogView.Location = new System.Drawing.Point(0, 0);
          this.txtLogView.Multiline = true;
          this.txtLogView.Name = "txtLogView";
-         this.txtLogView.Size = new System.Drawing.Size(292, 273);
+         this.txtLogView.ReadOnly = true;
+         this.txtLogView.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+         this.txtLogView.Size = new System.Drawing.Size(440, 261);
          this.txtLogView.TabIndex = 0;
          this.txtLogView.Text = "";
          // 
          // frmLogView
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-         this.ClientSize = new System.Drawing.Size(292, 273);
+         this.ClientSize = new System.Drawing.Size(440, 261);
          this.Controls.Add(this.txtLogView);
          this.Name = "frmLogView";
          this.Text = "Log Viewer";

@@ -220,7 +220,7 @@ namespace SGDK2
          m_CurrentPosition = new Point(m_Layer.OffsetX + (int)(x * m_Layer.ScrollRateX), m_Layer.OffsetY + (int)(y * m_Layer.ScrollRateY));
       }
 
-      public void Draw(Device Device, Size ViewSize)
+      public void Draw(Display Display, Size ViewSize)
       {
          if (m_TileCache.Count <= 0)
             return;
@@ -242,81 +242,76 @@ namespace SGDK2
          if (EndRow >= Rows)
             EndRow = Rows - 1;
 
-         Sprite spr = new Sprite(Device);
-         try
+         Sprite spr = Display.Sprite;
+         Device Device = Display.Device;
+
+         spr.Begin(SpriteFlags.AlphaBlend);
+
+         Display.TextureRef currentTextureRef = null;
+
+         System.Collections.IEnumerator Injected = null;
+         InjectedFrame CurFrame;
+         if (m_InjectedFrames != null)
          {
-            spr.Begin(SpriteFlags.AlphaBlend);
+            Injected = m_InjectedFrames.GetEnumerator();
+            if (!Injected.MoveNext())
+               Injected = null;
+         }
 
-            Texture t = null;
-
-            System.Collections.IEnumerator Injected = null;
-            InjectedFrame CurFrame;
-            if (m_InjectedFrames != null)
+         for (int y = nStartRow; y <= EndRow; y++)
+         {
+            if (Injected != null)
             {
-               Injected = m_InjectedFrames.GetEnumerator();
-               if (!Injected.MoveNext())
-                  Injected = null;
-            }
-
-            for (int y = nStartRow; y <= EndRow; y++)
-            {
-               if (Injected != null)
+               while (((CurFrame = (InjectedFrame)Injected.Current).priority < Priority) ||
+                  ((CurFrame.priority == Priority) && (CurFrame.y < y * nTileHeight)))
                {
-                  while (((CurFrame = (InjectedFrame)Injected.Current).priority < Priority) ||
-                     ((CurFrame.priority == Priority) && (CurFrame.y < y * nTileHeight)))
+                  if ((currentTextureRef == null) || (currentTextureRef != CurFrame.frame.GraphicSheetTexture))
+                     Device.SetTexture(0, (currentTextureRef = CurFrame.frame.GraphicSheetTexture).Texture);
+                  spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
+                     CurFrame.x + m_CurrentPosition.X, CurFrame.y + m_CurrentPosition.Y, 0));
+                  spr.Draw(currentTextureRef.Texture, CurFrame.frame.SourceRect,
+                     Vector3.Empty, Vector3.Empty, -1);
+                  if (!Injected.MoveNext())
                   {
-                     if ((t == null) || (t != CurFrame.frame.GraphicSheetTexture))
-                        Device.SetTexture(0, t = CurFrame.frame.GraphicSheetTexture);
-                     spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
-                        CurFrame.x + m_CurrentPosition.X, CurFrame.y + m_CurrentPosition.Y, 0));
-                     spr.Draw(CurFrame.frame.GraphicSheetTexture, CurFrame.frame.SourceRect,
-                        Vector3.Empty, Vector3.Empty, -1);
-                     if (!Injected.MoveNext())
-                     {
-                        Injected = null;
-                        break;
-                     }
-                  }
-               }
-
-               for (int x = nStartCol; x <= EndCol; x++)
-               {
-                  int[] SubFrames = m_TileCache[this[x,y]];
-                  for (int nFrame = 0; nFrame < SubFrames.Length; nFrame++)
-                  {
-                     FrameCache.Frame f = m_FrameCache[SubFrames[nFrame]];
-                     if ((t == null) || (t != f.GraphicSheetTexture))
-                        Device.SetTexture(0, t = f.GraphicSheetTexture);
-
-                     spr.Transform = Matrix.Multiply(f.Transform, Matrix.Translation(
-                        x * nTileWidth + m_CurrentPosition.X,
-                        y * nTileHeight + m_CurrentPosition.Y, 0));
-                     spr.Draw(f.GraphicSheetTexture, f.SourceRect, Vector3.Empty, Vector3.Empty, -1);
+                     Injected = null;
+                     break;
                   }
                }
             }
 
-            while (Injected != null)
+            for (int x = nStartCol; x <= EndCol; x++)
             {
-               CurFrame = (InjectedFrame)Injected.Current;
-               if (t != CurFrame.frame.GraphicSheetTexture)
-                  Device.SetTexture(0, t = CurFrame.frame.GraphicSheetTexture);
-               spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
-                  CurFrame.x + m_CurrentPosition.X, CurFrame.y + m_CurrentPosition.Y, 0));
-               spr.Draw(CurFrame.frame.GraphicSheetTexture, CurFrame.frame.SourceRect,
-                  Vector3.Empty, Vector3.Empty, -1);
-               if (!Injected.MoveNext())
+               int[] SubFrames = m_TileCache[this[x,y]];
+               for (int nFrame = 0; nFrame < SubFrames.Length; nFrame++)
                {
-                  Injected = null;
-                  break;
+                  FrameCache.Frame f = m_FrameCache[SubFrames[nFrame]];
+                  if ((currentTextureRef == null) || (currentTextureRef != f.GraphicSheetTexture))
+                     Device.SetTexture(0, (currentTextureRef = f.GraphicSheetTexture).Texture);
+
+                  spr.Transform = Matrix.Multiply(f.Transform, Matrix.Translation(
+                     x * nTileWidth + m_CurrentPosition.X,
+                     y * nTileHeight + m_CurrentPosition.Y, 0));
+                  spr.Draw(currentTextureRef.Texture, f.SourceRect, Vector3.Empty, Vector3.Empty, -1);
                }
             }
-            spr.End();
          }
-         finally
+
+         while (Injected != null)
          {
-            spr.Dispose();
+            CurFrame = (InjectedFrame)Injected.Current;
+            if (currentTextureRef != CurFrame.frame.GraphicSheetTexture)
+               Device.SetTexture(0, (currentTextureRef = CurFrame.frame.GraphicSheetTexture).Texture);
+            spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
+               CurFrame.x + m_CurrentPosition.X, CurFrame.y + m_CurrentPosition.Y, 0));
+            spr.Draw(currentTextureRef.Texture, CurFrame.frame.SourceRect,
+               Vector3.Empty, Vector3.Empty, -1);
+            if (!Injected.MoveNext())
+            {
+               Injected = null;
+               break;
+            }
          }
+         spr.End();
       }
 
       public void InjectFrame(int x, int y, int priority, FrameCache.Frame frame)

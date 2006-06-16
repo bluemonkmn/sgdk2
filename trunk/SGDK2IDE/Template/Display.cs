@@ -91,8 +91,11 @@ public class Display : ScrollableControl
       #region IDisposable Members
       public void Dispose()
       {
-         m_Texture.Dispose();
-         m_Texture = null;
+         if (m_Texture != null)
+         {
+            m_Texture.Dispose();
+            m_Texture = null;
+         }
       }
       #endregion
    }
@@ -105,11 +108,12 @@ public class Display : ScrollableControl
    private GameDisplayMode m_GameDisplayMode;
    private BorderStyle m_BorderStyle;
    private CoverWindow m_CoverWindow = null;
+   private Sprite m_Sprite = null;
    #endregion
 
    #region Initialization and clean-up
-	public Display() : this(GameDisplayMode.m640x480x24, true)
-	{
+   public Display() : this(GameDisplayMode.m640x480x24, true)
+   {
    }
 
    public Display(GameDisplayMode mode, bool windowed)
@@ -132,12 +136,14 @@ public class Display : ScrollableControl
       }
       else
       {
-         m_pp.BackBufferCount = 2;
+         // This can improve performance in some cases, but I have not
+         // observed much difference in my testing. (See other two instances of this code)
+         //m_pp.BackBufferCount = 2; 
          m_pp.BackBufferFormat = dm.Format;
          m_pp.BackBufferWidth = dm.Width;
          m_pp.BackBufferHeight = dm.Height;
          m_CoverWindow = new CoverWindow(this);
-         m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, m_CoverWindow, CreateFlags.HardwareVertexProcessing, m_pp);
+         Recreate();
       }
       m_GameDisplayMode = mode;
    }
@@ -147,6 +153,11 @@ public class Display : ScrollableControl
       if (disposing)
       {
          DisposeAllTextures();
+         if (m_Sprite != null)
+         {
+            m_Sprite.Dispose();
+            m_Sprite = null;
+         }
          if (m_d3d != null)
          {
             m_d3d.Dispose();
@@ -173,7 +184,9 @@ public class Display : ScrollableControl
       try
       {
          if (m_d3d == null)
-            m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, this, CreateFlags.HardwareVertexProcessing, m_pp);
+         {
+            Recreate();
+         }
       }
       catch(Exception ex)
       {
@@ -181,12 +194,6 @@ public class Display : ScrollableControl
       }
 
       base.OnCreateControl ();
-   }
-
-   protected override void OnPaint(PaintEventArgs e)
-   {
-      base.OnPaint(e);
-      m_d3d.Present();
    }
 
    protected override void OnKeyDown(KeyEventArgs e)
@@ -223,12 +230,51 @@ public class Display : ScrollableControl
 
    protected override void OnResize(EventArgs e)
    {
-      if ((m_d3d != null) && (m_pp != null) && (m_pp.Windowed))
+      if (this.Size.IsEmpty)
+      {
+         DisposeAllTextures();
+         if (m_Sprite != null)
+         {
+            m_Sprite.Dispose();
+            m_Sprite = null;
+         }
+         if (m_d3d != null)
+         {
+            m_d3d.Dispose();
+            m_d3d = null;
+         }
+      }
+      else if ((m_d3d == null) && Created)
+      {
+         Recreate();
+      }
+      else if ((m_d3d != null) && (m_pp != null) && (m_pp.Windowed))
       {
          m_pp.BackBufferHeight = m_pp.BackBufferWidth = 0;
+         if (m_Sprite != null)
+         {
+            m_Sprite.Dispose();
+            m_Sprite = null;
+         }
          m_d3d.Reset(m_pp);
       }
       base.OnResize (e);
+   }
+
+   protected override void OnPaint(PaintEventArgs e)
+   {
+      if ((m_d3d == null) || (m_d3d.Disposed))
+         return;
+      int coop;
+      if (!m_d3d.CheckCooperativeLevel(out coop))
+      {
+         Microsoft.DirectX.Direct3D.ResultCode coopStatus = (Microsoft.DirectX.Direct3D.ResultCode)System.Enum.Parse(typeof(Microsoft.DirectX.Direct3D.ResultCode), coop.ToString());
+         if (coopStatus == Microsoft.DirectX.Direct3D.ResultCode.DeviceNotReset)
+            Recreate();
+         else
+            return;
+      }
+      base.OnPaint (e);
    }
    #endregion
 
@@ -302,7 +348,16 @@ public class Display : ScrollableControl
          if (value != m_pp.Windowed)
          {
             DisposeAllTextures();
-            m_d3d.Dispose();
+            if (m_Sprite != null)
+            {
+               m_Sprite.Dispose();
+               m_Sprite = null;
+            }
+            if (m_d3d != null)
+            {
+               m_d3d.Dispose();
+               m_d3d = null;
+            }
          }
 
          m_pp.Windowed = value;
@@ -320,7 +375,7 @@ public class Display : ScrollableControl
                m_CoverWindow.Dispose();
                m_CoverWindow = null;
             }
-            m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, this, CreateFlags.HardwareVertexProcessing, m_pp);
+            Recreate();
          }
          else
          {
@@ -329,11 +384,13 @@ public class Display : ScrollableControl
             DisplayMode dm = GetActualDisplayMode(m_GameDisplayMode);
             if (dm.Format == Format.Unknown)
                throw new ApplicationException("Current display does not support mode " + m_GameDisplayMode.ToString() +".");
-            m_pp.BackBufferCount = 2;
+            // This can improve performance in some cases, but I have not
+            // observed much difference in my testing. (See other two instances of this code)
+            //m_pp.BackBufferCount = 2;
             m_pp.BackBufferWidth = dm.Width;
             m_pp.BackBufferHeight = dm.Height;
             m_pp.BackBufferFormat = dm.Format;
-            m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, m_CoverWindow, CreateFlags.HardwareVertexProcessing, m_pp);
+            Recreate();
          }
       }
       get
@@ -435,24 +492,54 @@ public class Display : ScrollableControl
             DisplayMode dm = GetActualDisplayMode(m_GameDisplayMode);
             if (dm.Format == Format.Unknown)
                throw new ApplicationException("Current display does not support mode " + m_GameDisplayMode.ToString() +".");
-            m_pp.BackBufferCount = 2;
+            // This can improve performance in some cases, but I have not
+            // observed much difference in my testing. (See other two instances of this code)
+            //m_pp.BackBufferCount = 2;
             m_pp.BackBufferWidth = dm.Width;
             m_pp.BackBufferHeight = dm.Height;
             m_pp.BackBufferFormat = dm.Format;
+            if (m_Sprite != null)
+            {
+               m_Sprite.Dispose();
+               m_Sprite = null;
+            }
             m_d3d.Reset(m_pp);
          }
       }
    }
 
-   public override System.Drawing.Rectangle DisplayRectangle
+   public void Recreate()
+   {
+      DisposeAllTextures();
+      if (m_Sprite != null)
+      {
+         m_Sprite.Dispose();
+         m_Sprite = null;
+      }
+      if (m_d3d != null)
+         m_d3d.Dispose();
+      if (Windowed || (m_CoverWindow == null))
+         m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, this, CreateFlags.HardwareVertexProcessing, m_pp);
+      else
+         m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, m_CoverWindow, CreateFlags.HardwareVertexProcessing, m_pp);
+      m_d3d.DeviceReset += new EventHandler(d3d_DeviceReset);
+   }
+   
+   public Sprite Sprite
    {
       get
       {
-         if (m_pp.Windowed)
-            return ClientRectangle;
-         else
-            return new System.Drawing.Rectangle(0, 0, m_pp.BackBufferWidth, m_pp.BackBufferHeight);
+         if ((m_Sprite == null) && (m_d3d != null))
+            m_Sprite = new Sprite(m_d3d);
+         return m_Sprite;
       }
+   }
+   #endregion
+
+   #region Event Handlers
+   private void d3d_DeviceReset(object sender, EventArgs e)
+   {
+      DisposeAllTextures();
    }
    #endregion
 }

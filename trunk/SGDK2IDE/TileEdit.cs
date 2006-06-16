@@ -56,6 +56,7 @@ namespace SGDK2
       private System.Windows.Forms.NumericUpDown nudTileWidth;
       private System.Windows.Forms.NumericUpDown nudTileHeight;
       private System.Windows.Forms.Label lblTileHeight;
+      private System.Windows.Forms.StatusBar StatusBar;
       private DataChangeNotifier dataMonitor;
       #endregion
 
@@ -173,6 +174,7 @@ namespace SGDK2
          this.lblFrameCounter = new System.Windows.Forms.Label();
          this.grpAvailableFrames = new System.Windows.Forms.GroupBox();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
+         this.StatusBar = new System.Windows.Forms.StatusBar();
          this.pnlTileHeader.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.nudTileHeight)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.nudTileWidth)).BeginInit();
@@ -457,8 +459,9 @@ namespace SGDK2
          this.AvailableFrames.Location = new System.Drawing.Point(3, 16);
          this.AvailableFrames.Name = "AvailableFrames";
          this.AvailableFrames.SheetImage = null;
-         this.AvailableFrames.Size = new System.Drawing.Size(490, 112);
+         this.AvailableFrames.Size = new System.Drawing.Size(490, 122);
          this.AvailableFrames.TabIndex = 1;
+         this.AvailableFrames.CurrentCellChanged += new System.EventHandler(this.AvailableFrames_CurrentCellChanged);
          // 
          // grpTileProperties
          // 
@@ -589,29 +592,37 @@ namespace SGDK2
          this.grpAvailableFrames.Dock = System.Windows.Forms.DockStyle.Fill;
          this.grpAvailableFrames.Location = new System.Drawing.Point(0, 262);
          this.grpAvailableFrames.Name = "grpAvailableFrames";
-         this.grpAvailableFrames.Size = new System.Drawing.Size(496, 131);
+         this.grpAvailableFrames.Size = new System.Drawing.Size(496, 141);
          this.grpAvailableFrames.TabIndex = 4;
          this.grpAvailableFrames.TabStop = false;
          this.grpAvailableFrames.Text = "Available Frames";
          // 
          // dataMonitor
          // 
+         this.dataMonitor.TileRowDeleted += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowDeleted);
          this.dataMonitor.FramesetRowChanged += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.dataMonitor_FramesetRowChanged);
          this.dataMonitor.CounterRowDeleted += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowDeleted);
-         this.dataMonitor.TileRowDeleted += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowDeleted);
-         this.dataMonitor.CounterRowChanged += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowChanged);
+         this.dataMonitor.TilesetRowDeleted += new SGDK2.ProjectDataset.TilesetRowChangeEventHandler(this.dataMonitor_TilesetRowDeleted);
          this.dataMonitor.FramesetRowDeleted += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.dataMonitor_FramesetRowDeleted);
          this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
-         this.dataMonitor.TilesetRowDeleted += new SGDK2.ProjectDataset.TilesetRowChangeEventHandler(this.dataMonitor_TilesetRowDeleted);
+         this.dataMonitor.CounterRowChanged += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowChanged);
+         // 
+         // StatusBar
+         // 
+         this.StatusBar.Location = new System.Drawing.Point(0, 403);
+         this.StatusBar.Name = "StatusBar";
+         this.StatusBar.Size = new System.Drawing.Size(496, 22);
+         this.StatusBar.TabIndex = 5;
          // 
          // frmTileEdit
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-         this.ClientSize = new System.Drawing.Size(496, 393);
+         this.ClientSize = new System.Drawing.Size(496, 425);
          this.Controls.Add(this.grpAvailableFrames);
          this.Controls.Add(this.splitter1);
          this.Controls.Add(this.grpTileProperties);
          this.Controls.Add(this.pnlTileHeader);
+         this.Controls.Add(this.StatusBar);
          this.Menu = this.mnuTileset;
          this.MinimumSize = new System.Drawing.Size(432, 0);
          this.Name = "frmTileEdit";
@@ -1050,6 +1061,14 @@ namespace SGDK2
       private void nudTileHeight_ValueChanged(object sender, System.EventArgs e)
       {
          m_Tileset.TileHeight = System.Convert.ToInt16(nudTileHeight.Value);
+      }
+
+      private void AvailableFrames_CurrentCellChanged(object sender, System.EventArgs e)
+      {
+         if (AvailableFrames.GetSelectedCellCount() == 1)
+            StatusBar.Text = "Selected Frame Index in Available Frames: " + AvailableFrames.GetFirstSelectedCell().ToString();
+         else
+            StatusBar.Text = String.Empty;
       }
       #endregion
 

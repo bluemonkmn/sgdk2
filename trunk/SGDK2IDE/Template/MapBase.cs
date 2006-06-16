@@ -1,4 +1,5 @@
 using System;
+using System.Drawing;
 
 /// <summary>
 /// Base class for all maps.
@@ -15,6 +16,29 @@ public abstract class MapBase
    public abstract void Draw();
 
    public abstract void ExecuteRules();
+
+   /// <summary>
+   /// Scroll all layers to the specified coordinates after calculating relative scroll rates
+   /// </summary>
+   /// <param name="position">New coordinate. int.MinValue indicates no scrolling on this axis.</param>
+   public abstract void Scroll(Point position);
+
+   public abstract short ScrollMarginLeft
+   {
+      get;
+   }
+   public abstract short ScrollMarginTop
+   {
+      get;
+   }
+   public abstract short ScrollMarginRight
+   {
+      get;
+   }
+   public abstract short ScrollMarginBottom
+   {
+      get;
+   }
 
    public Display Display
    {

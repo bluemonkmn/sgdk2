@@ -30,9 +30,9 @@ namespace SGDK2
       m1280x1024x24
    }
 
-	/// <summary>
-	/// Manages the display device on which real-time game graphics are drawn
-	/// </summary>
+   /// <summary>
+   /// Manages the display device on which real-time game graphics are drawn
+   /// </summary>
    public class Display : ScrollableControl
    {
       #region Win32 API Constants
@@ -41,7 +41,7 @@ namespace SGDK2
       #endregion
 
       #region Embedded Classes
-      class CoverWindow : Form
+      private class CoverWindow : Form
       {
          public Display m_LinkedControl;
 
@@ -64,15 +64,63 @@ namespace SGDK2
             m_LinkedControl.OnKeyDown(e);
          }
       }
+
+      public class TextureRef : IDisposable
+      {
+         private string m_Name;
+         private Texture m_Texture = null;
+         private Display m_Display;
+      
+         public TextureRef(Display Disp, string Name)
+         {
+            m_Display = Disp;
+            m_Name = Name;
+         }
+
+         public string Name
+         {
+            get
+            {
+               return m_Name;
+            }
+         }
+
+         public void Reset()
+         {
+            m_Texture = null;
+         }
+
+         public Texture Texture
+         {
+            get
+            {
+               if (m_Texture == null)
+                  m_Texture = m_Display.GetTexture(m_Name);
+               return m_Texture;
+            }
+         }
+
+         #region IDisposable Members
+         public void Dispose()
+         {
+            if (m_Texture != null)
+            {
+               m_Texture.Dispose();
+               m_Texture = null;
+            }
+         }
+         #endregion
+      }
       #endregion
 
       #region Fields
-      private System.Collections.Specialized.HybridDictionary m_GraphicSheets = null;
-      private Device m_d3d;
+      private System.Collections.Specialized.HybridDictionary m_TextureRefs = null;
+      private Device m_d3d = null;
       private PresentParameters m_pp;
       private GameDisplayMode m_GameDisplayMode;
       private BorderStyle m_BorderStyle;
       private CoverWindow m_CoverWindow = null;
+      private Sprite m_Sprite = null;
       #endregion
 
       #region Initialization and clean-up
@@ -90,6 +138,7 @@ namespace SGDK2
          DisplayMode dm = GetActualDisplayMode(mode);
          m_pp = new PresentParameters();
          m_pp.Windowed = windowed;
+         m_pp.SwapEffect = SwapEffect.Discard;
          // Allow GetGraphics
          m_pp.PresentFlag = PresentFlag.LockableBackBuffer;
          if (windowed)
@@ -99,9 +148,14 @@ namespace SGDK2
          }
          else
          {
+            // This can improve performance in some cases, but I have not
+            // observed much difference in my testing. (See other two instances of this code)
+            //m_pp.BackBufferCount = 2; 
             m_pp.BackBufferFormat = dm.Format;
             m_pp.BackBufferWidth = dm.Width;
             m_pp.BackBufferHeight = dm.Height;
+            m_CoverWindow = new CoverWindow(this);
+            Recreate();
          }
          m_GameDisplayMode = mode;
       }
@@ -111,6 +165,11 @@ namespace SGDK2
          if (disposing)
          {
             DisposeAllTextures();
+            if (m_Sprite != null)
+            {
+               m_Sprite.Dispose();
+               m_Sprite = null;
+            }
             if (m_d3d != null)
             {
                m_d3d.Dispose();
@@ -118,6 +177,7 @@ namespace SGDK2
             }
             if (m_CoverWindow != null)
             {
+               m_CoverWindow.m_LinkedControl = null;
                m_CoverWindow.Close();
                m_CoverWindow.Dispose();
                m_CoverWindow = null;
@@ -135,7 +195,10 @@ namespace SGDK2
 
          try
          {
-            m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, this, CreateFlags.HardwareVertexProcessing, m_pp);
+            if (m_d3d == null)
+            {
+               Recreate();
+            }
          }
          catch(Exception ex)
          {
@@ -143,12 +206,6 @@ namespace SGDK2
          }
 
          base.OnCreateControl ();
-      }
-
-      protected override void OnPaint(PaintEventArgs e)
-      {
-         base.OnPaint(e);
-         //m_d3d.Present();
       }
 
       protected override void OnKeyDown(KeyEventArgs e)
@@ -185,12 +242,60 @@ namespace SGDK2
 
       protected override void OnResize(EventArgs e)
       {
-         if ((m_d3d != null) && (m_pp != null) && (m_pp.Windowed))
+         if (this.Size.IsEmpty)
+         {
+            DisposeAllTextures();
+            if (m_Sprite != null)
+            {
+               m_Sprite.Dispose();
+               m_Sprite = null;
+            }
+            if (m_d3d != null)
+            {
+               m_d3d.Dispose();
+               m_d3d = null;
+            }
+         }
+         else if ((m_d3d == null) && Created)
+         {
+            Recreate();
+         }
+         else if ((m_d3d != null) && (m_pp != null) && (m_pp.Windowed))
          {
             m_pp.BackBufferHeight = m_pp.BackBufferWidth = 0;
+            if (m_Sprite != null)
+            {
+               m_Sprite.Dispose();
+               m_Sprite = null;
+            }
             m_d3d.Reset(m_pp);
          }
          base.OnResize (e);
+      }
+
+      protected override void OnPaint(PaintEventArgs e)
+      {
+         if ((m_d3d == null) || (m_d3d.Disposed))
+            return;
+         int coop;
+         if (!m_d3d.CheckCooperativeLevel(out coop))
+         {
+            Microsoft.DirectX.Direct3D.ResultCode coopStatus = (Microsoft.DirectX.Direct3D.ResultCode)System.Enum.Parse(typeof(Microsoft.DirectX.Direct3D.ResultCode), coop.ToString());
+            if (coopStatus == Microsoft.DirectX.Direct3D.ResultCode.DeviceNotReset)
+               Recreate();
+            else
+               return;
+         }
+         base.OnPaint (e);
+      }
+
+      #endregion
+
+      #region Private members
+      private Texture GetTexture(string Name)
+      {
+         return Texture.FromBitmap(m_d3d,
+            (System.Drawing.Bitmap)ProjectData.GetGraphicSheetImage(Name, false), 0, Pool.Managed);
       }
 
       #endregion
@@ -208,43 +313,33 @@ namespace SGDK2
             UpdateStyles();
          }
       }
-      public Texture GetTexture(string Name, bool bForceReload)
-      {
-         if (m_GraphicSheets == null)
-            m_GraphicSheets = new System.Collections.Specialized.HybridDictionary();
 
-         if (m_GraphicSheets.Contains(Name))
+      public TextureRef GetTextureRef(string Name)
+      {
+         if (m_TextureRefs == null)
+            m_TextureRefs = new System.Collections.Specialized.HybridDictionary();
+
+         if (m_TextureRefs.Contains(Name))
          {
-            WeakReference wr = (WeakReference)m_GraphicSheets[Name];
-            if(bForceReload)
-            {
-               // If reload is forced, may have to dispose of old textrure
-               if (wr.IsAlive)
-                  ((Texture)wr.Target).Dispose();
-            }
-            else
-            {
-               if ((wr.IsAlive) && !((Texture)wr.Target).Disposed)
-                  return (Texture)wr.Target;
-            }
+            WeakReference wr = (WeakReference)m_TextureRefs[Name];
+            if (wr.IsAlive)
+               return (TextureRef)wr.Target;
          }
 
-         Texture tex = Texture.FromBitmap(m_d3d,
-            ProjectData.GetGraphicSheetImage(Name, bForceReload), 0, Pool.Managed);
-         m_GraphicSheets[Name] = new WeakReference(tex);
+         TextureRef tex = new TextureRef(this, Name);
+         m_TextureRefs[Name] = new WeakReference(tex);
          return tex;
       }
 
       public void DisposeAllTextures()
       {
-         if (m_GraphicSheets != null)
+         if (m_TextureRefs != null)
          {
-            foreach (DictionaryEntry de in m_GraphicSheets)
+            foreach (DictionaryEntry de in m_TextureRefs)
             {
                if (((WeakReference)de.Value).IsAlive)
-                  ((Texture)((WeakReference)de.Value).Target).Dispose();
+                  ((TextureRef)((WeakReference)de.Value).Target).Dispose();
             }
-            m_GraphicSheets = null;
          }
       }
 
@@ -263,7 +358,25 @@ namespace SGDK2
             if ((DesignMode) && (!value))
                throw new InvalidOperationException("Cannot use full screen in design mode");
 
+            if (value != m_pp.Windowed)
+            {
+               DisposeAllTextures();
+               if (m_Sprite != null)
+               {
+                  m_Sprite.Dispose();
+                  m_Sprite = null;
+               }
+               if (m_d3d != null)
+               {
+                  m_d3d.Dispose();
+                  m_d3d = null;
+               }
+            }
+            else
+               return;
+
             m_pp.Windowed = value;
+            m_pp.SwapEffect = SwapEffect.Discard;
 
             if (value)
             {
@@ -272,10 +385,12 @@ namespace SGDK2
                m_pp.BackBufferFormat = Format.Unknown;
                if (m_CoverWindow != null)
                {
+                  m_CoverWindow.m_LinkedControl = null;
                   m_CoverWindow.Close();
                   m_CoverWindow.Dispose();
                   m_CoverWindow = null;
                }
+               Recreate();
             }
             else
             {
@@ -284,12 +399,14 @@ namespace SGDK2
                DisplayMode dm = GetActualDisplayMode(m_GameDisplayMode);
                if (dm.Format == Format.Unknown)
                   throw new ApplicationException("Current display does not support mode " + m_GameDisplayMode.ToString() +".");
+               // This can improve performance in some cases, but I have not
+               // observed much difference in my testing. (See other two instances of this code)
+               //m_pp.BackBufferCount = 2;
                m_pp.BackBufferWidth = dm.Width;
                m_pp.BackBufferHeight = dm.Height;
                m_pp.BackBufferFormat = dm.Format;
+               Recreate();
             }
-            if (m_d3d != null)
-               m_d3d.Reset(m_pp);
          }
          get
          {
@@ -390,14 +507,55 @@ namespace SGDK2
                DisplayMode dm = GetActualDisplayMode(m_GameDisplayMode);
                if (dm.Format == Format.Unknown)
                   throw new ApplicationException("Current display does not support mode " + m_GameDisplayMode.ToString() +".");
+               // This can improve performance in some cases, but I have not
+               // observed much difference in my testing. (See other two instances of this code)
+               //m_pp.BackBufferCount = 2;
                m_pp.BackBufferWidth = dm.Width;
                m_pp.BackBufferHeight = dm.Height;
                m_pp.BackBufferFormat = dm.Format;
+               if (m_Sprite != null)
+               {
+                  m_Sprite.Dispose();
+                  m_Sprite = null;
+               }
                m_d3d.Reset(m_pp);
             }
          }
       }
 
-      #endregion   
+      public void Recreate()
+      {
+         DisposeAllTextures();
+         if (m_Sprite != null)
+         {
+            m_Sprite.Dispose();
+            m_Sprite = null;
+         }
+         if (m_d3d != null)
+            m_d3d.Dispose();
+         if (Windowed || (m_CoverWindow == null))
+            m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, this, CreateFlags.HardwareVertexProcessing, m_pp);
+         else
+            m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, m_CoverWindow, CreateFlags.HardwareVertexProcessing, m_pp);
+         m_d3d.DeviceReset += new EventHandler(d3d_DeviceReset);
+      }
+
+      public Sprite Sprite
+      {
+         get
+         {
+            if ((m_Sprite == null) && (m_d3d != null))
+               m_Sprite = new Sprite(m_d3d);
+            return m_Sprite;
+         }
+      }
+      #endregion
+
+      #region Event Handlers
+      private void d3d_DeviceReset(object sender, EventArgs e)
+      {
+         DisposeAllTextures();
+      }
+      #endregion
    }
 }

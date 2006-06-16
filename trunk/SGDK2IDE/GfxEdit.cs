@@ -287,6 +287,18 @@ namespace SGDK2
       private System.Windows.Forms.ToolBarButton tbsOptSep3;
       private System.Windows.Forms.ToolBarButton tbbShowGrid;
       public SGDK2.ColorSel ctlColorSel;
+      private System.Windows.Forms.MenuItem mnuImportGraphic;
+      private System.Windows.Forms.MenuItem mnuView;
+      private System.Windows.Forms.MenuItem mnuZoom;
+      private System.Windows.Forms.MenuItem mnuZoom1x1;
+      private System.Windows.Forms.MenuItem mnuZoom2x2;
+      private System.Windows.Forms.MenuItem mnuZoom4x4;
+      private System.Windows.Forms.MenuItem mnuZoom8x8;
+      private System.Windows.Forms.MenuItem mnuZoom6x6;
+      private System.Windows.Forms.MenuItem mnuFileSep;
+      private System.Windows.Forms.MenuItem mnuDisjointedColors;
+      private System.Windows.Forms.ToolBarButton tbbDisjointedColors;
+      private SGDK2.DataChangeNotifier dataMonitor;
       private System.Windows.Forms.MenuItem mnuHugePen;
       #endregion
 
@@ -461,7 +473,16 @@ namespace SGDK2
          this.mnuZoom8 = new System.Windows.Forms.MenuItem();
          this.mnuGraphicsEditor = new System.Windows.Forms.MainMenu();
          this.mnuFile = new System.Windows.Forms.MenuItem();
+         this.mnuFileSep = new System.Windows.Forms.MenuItem();
          this.mnuExportGraphic = new System.Windows.Forms.MenuItem();
+         this.mnuImportGraphic = new System.Windows.Forms.MenuItem();
+         this.mnuView = new System.Windows.Forms.MenuItem();
+         this.mnuZoom = new System.Windows.Forms.MenuItem();
+         this.mnuZoom1x1 = new System.Windows.Forms.MenuItem();
+         this.mnuZoom2x2 = new System.Windows.Forms.MenuItem();
+         this.mnuZoom4x4 = new System.Windows.Forms.MenuItem();
+         this.mnuZoom6x6 = new System.Windows.Forms.MenuItem();
+         this.mnuZoom8x8 = new System.Windows.Forms.MenuItem();
          this.mnuEdit = new System.Windows.Forms.MenuItem();
          this.mnuEditUndo = new System.Windows.Forms.MenuItem();
          this.mnuEditRedo = new System.Windows.Forms.MenuItem();
@@ -530,6 +551,7 @@ namespace SGDK2
          this.mnuToolFill = new System.Windows.Forms.MenuItem();
          this.mnuToolGradientFills = new System.Windows.Forms.MenuItem();
          this.mnuToolLock = new System.Windows.Forms.MenuItem();
+         this.mnuDisjointedColors = new System.Windows.Forms.MenuItem();
          this.mnuToolSep2 = new System.Windows.Forms.MenuItem();
          this.mnuPen = new System.Windows.Forms.MenuItem();
          this.mnuPixelPen = new System.Windows.Forms.MenuItem();
@@ -548,6 +570,7 @@ namespace SGDK2
          this.tbbFill = new System.Windows.Forms.ToolBarButton();
          this.tbbGradientFills = new System.Windows.Forms.ToolBarButton();
          this.tbbLock = new System.Windows.Forms.ToolBarButton();
+         this.tbbDisjointedColors = new System.Windows.Forms.ToolBarButton();
          this.tbsOptSep1 = new System.Windows.Forms.ToolBarButton();
          this.tbbPixelPen = new System.Windows.Forms.ToolBarButton();
          this.tbbTinyPen = new System.Windows.Forms.ToolBarButton();
@@ -564,6 +587,7 @@ namespace SGDK2
          this.tbbShowGrid = new System.Windows.Forms.ToolBarButton();
          this.ToolSplitter = new System.Windows.Forms.Splitter();
          this.ctlColorSel = new SGDK2.ColorSel();
+         this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.SuspendLayout();
          // 
          // tbrGraphicsEditor
@@ -807,6 +831,7 @@ namespace SGDK2
          // 
          this.mnuGraphicsEditor.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
                                                                                           this.mnuFile,
+                                                                                          this.mnuView,
                                                                                           this.mnuEdit,
                                                                                           this.mnuTools});
          // 
@@ -814,19 +839,86 @@ namespace SGDK2
          // 
          this.mnuFile.Index = 0;
          this.mnuFile.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                this.mnuExportGraphic});
+                                                                                this.mnuFileSep,
+                                                                                this.mnuExportGraphic,
+                                                                                this.mnuImportGraphic});
          this.mnuFile.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
          this.mnuFile.Text = "&File";
          // 
+         // mnuFileSep
+         // 
+         this.mnuFileSep.Index = 0;
+         this.mnuFileSep.MergeOrder = 1;
+         this.mnuFileSep.Text = "-";
+         // 
          // mnuExportGraphic
          // 
-         this.mnuExportGraphic.Index = 0;
+         this.mnuExportGraphic.Index = 1;
+         this.mnuExportGraphic.MergeOrder = 2;
          this.mnuExportGraphic.Text = "&Export Graphic";
          this.mnuExportGraphic.Click += new System.EventHandler(this.mnuExportGraphic_Click);
          // 
+         // mnuImportGraphic
+         // 
+         this.mnuImportGraphic.Index = 2;
+         this.mnuImportGraphic.MergeOrder = 2;
+         this.mnuImportGraphic.Text = "&Import Graphic";
+         this.mnuImportGraphic.Click += new System.EventHandler(this.mnuImportGraphic_Click);
+         // 
+         // mnuView
+         // 
+         this.mnuView.Index = 1;
+         this.mnuView.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                this.mnuZoom});
+         this.mnuView.MergeOrder = 1;
+         this.mnuView.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
+         this.mnuView.Text = "&View";
+         // 
+         // mnuZoom
+         // 
+         this.mnuZoom.Index = 0;
+         this.mnuZoom.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                this.mnuZoom1x1,
+                                                                                this.mnuZoom2x2,
+                                                                                this.mnuZoom4x4,
+                                                                                this.mnuZoom6x6,
+                                                                                this.mnuZoom8x8});
+         this.mnuZoom.Text = "&Zoom";
+         // 
+         // mnuZoom1x1
+         // 
+         this.mnuZoom1x1.Index = 0;
+         this.mnuZoom1x1.Text = "&Actual Size";
+         this.mnuZoom1x1.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuZoom2x2
+         // 
+         this.mnuZoom2x2.Index = 1;
+         this.mnuZoom2x2.Text = "&2x2 Magnification";
+         this.mnuZoom2x2.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuZoom4x4
+         // 
+         this.mnuZoom4x4.Checked = true;
+         this.mnuZoom4x4.Index = 2;
+         this.mnuZoom4x4.Text = "&4x4 Magnification";
+         this.mnuZoom4x4.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuZoom6x6
+         // 
+         this.mnuZoom6x6.Index = 3;
+         this.mnuZoom6x6.Text = "&6x6 Magnification";
+         this.mnuZoom6x6.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuZoom8x8
+         // 
+         this.mnuZoom8x8.Index = 4;
+         this.mnuZoom8x8.Text = "&8x8 Magnification";
+         this.mnuZoom8x8.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
          // mnuEdit
          // 
-         this.mnuEdit.Index = 1;
+         this.mnuEdit.Index = 2;
          this.mnuEdit.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
                                                                                 this.mnuEditUndo,
                                                                                 this.mnuEditRedo,
@@ -850,7 +942,7 @@ namespace SGDK2
                                                                                 this.mnuEditBackdrop,
                                                                                 this.mnuEditSep5,
                                                                                 this.mnuEditShowGrid});
-         this.mnuEdit.MergeOrder = 1;
+         this.mnuEdit.MergeOrder = 2;
          this.mnuEdit.Text = "&Edit";
          // 
          // mnuEditUndo
@@ -1149,7 +1241,7 @@ namespace SGDK2
          // 
          // mnuTools
          // 
-         this.mnuTools.Index = 2;
+         this.mnuTools.Index = 3;
          this.mnuTools.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
                                                                                  this.mnuToolFreeDraw,
                                                                                  this.mnuToolFreeLine,
@@ -1176,9 +1268,10 @@ namespace SGDK2
                                                                                  this.mnuToolFill,
                                                                                  this.mnuToolGradientFills,
                                                                                  this.mnuToolLock,
+                                                                                 this.mnuDisjointedColors,
                                                                                  this.mnuToolSep2,
                                                                                  this.mnuPen});
-         this.mnuTools.MergeOrder = 1;
+         this.mnuTools.MergeOrder = 3;
          this.mnuTools.Text = "&Tools";
          // 
          // mnuToolFreeDraw
@@ -1346,14 +1439,20 @@ namespace SGDK2
          this.mnuToolLock.Text = "Loc&k Tools Proportions";
          this.mnuToolLock.Click += new System.EventHandler(this.mnuTool_Click);
          // 
+         // mnuDisjointedColors
+         // 
+         this.mnuDisjointedColors.Index = 25;
+         this.mnuDisjointedColors.Text = "Affect Un&joined Color Regions";
+         this.mnuDisjointedColors.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
          // mnuToolSep2
          // 
-         this.mnuToolSep2.Index = 25;
+         this.mnuToolSep2.Index = 26;
          this.mnuToolSep2.Text = "-";
          // 
          // mnuPen
          // 
-         this.mnuPen.Index = 26;
+         this.mnuPen.Index = 27;
          this.mnuPen.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
                                                                                this.mnuPixelPen,
                                                                                this.mnuTinyPen,
@@ -1446,6 +1545,7 @@ namespace SGDK2
                                                                                       this.tbbFill,
                                                                                       this.tbbGradientFills,
                                                                                       this.tbbLock,
+                                                                                      this.tbbDisjointedColors,
                                                                                       this.tbsOptSep1,
                                                                                       this.tbbPixelPen,
                                                                                       this.tbbTinyPen,
@@ -1501,6 +1601,13 @@ namespace SGDK2
          this.tbbLock.ImageIndex = 32;
          this.tbbLock.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
          this.tbbLock.ToolTipText = "Toggle locking of proportions and rotation to nice ratios";
+         // 
+         // tbbDisjointedColors
+         // 
+         this.tbbDisjointedColors.ImageIndex = 46;
+         this.tbbDisjointedColors.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbDisjointedColors.ToolTipText = "Fill and Color Wand affect all similar colors instead of joined similar color reg" +
+            "ions";
          // 
          // tbsOptSep1
          // 
@@ -1593,11 +1700,17 @@ namespace SGDK2
          // ctlColorSel
          // 
          this.ctlColorSel.CurrentColorType = SGDK2.SelectColorType.Pen;
+         this.ctlColorSel.Cursor = System.Windows.Forms.Cursors.Default;
          this.ctlColorSel.Location = new System.Drawing.Point(328, 40);
          this.ctlColorSel.Name = "ctlColorSel";
          this.ctlColorSel.Size = new System.Drawing.Size(288, 296);
          this.ctlColorSel.TabIndex = 3;
          this.ctlColorSel.Text = "Color Selector";
+         // 
+         // dataMonitor
+         // 
+         this.dataMonitor.GraphicSheetRowDeleted += new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(this.dataMonitor_GraphicSheetRowDeleted);
+         this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
          // 
          // frmGraphicsEditor
          // 
@@ -1669,7 +1782,8 @@ namespace SGDK2
             (cTool == tbbFill) || (cTool == mnuToolFill) ||
             (cTool == tbbOutline) || (cTool == mnuToolOutline) ||
             (cTool == tbbGradientFills) || (cTool == mnuToolGradientFills) ||
-            (cTool == tbbLock) || (cTool == mnuToolLock))
+            (cTool == tbbLock) || (cTool == mnuToolLock) || (cTool == mnuDisjointedColors) ||
+            (cTool == tbbDisjointedColors))
          {
             if (cTool is ToolBarButton)
             {
@@ -1680,6 +1794,7 @@ namespace SGDK2
                mnuToolOutline.Checked = tbbOutline.Pushed;
                mnuToolGradientFills.Checked = tbbGradientFills.Pushed;
                mnuToolLock.Checked = tbbLock.Pushed;
+               mnuDisjointedColors.Checked = tbbDisjointedColors.Pushed;
             }
             else
             {
@@ -1691,12 +1806,14 @@ namespace SGDK2
                tbbOutline.Pushed = mnuToolOutline.Checked;
                tbbGradientFills.Pushed = mnuToolGradientFills.Checked;
                tbbLock.Pushed = mnuToolLock.Checked;
+               tbbDisjointedColors.Pushed = mnuDisjointedColors.Checked;
             }
          }
 
          CurrentOptions = (tbbAntiAlias.Pushed?ToolOptions.AntiAlias:0) |
             (tbbFill.Pushed?ToolOptions.Fill:0) | (tbbOutline.Pushed?ToolOptions.Outline:0) |
-            (tbbGradientFills.Pushed?ToolOptions.GradientFill:0) | (tbbLock.Pushed?ToolOptions.Lock:0);
+            (tbbGradientFills.Pushed?ToolOptions.GradientFill:0) | (tbbLock.Pushed?ToolOptions.Lock:0) |
+            (tbbDisjointedColors.Pushed?ToolOptions.DisjointedColors:0);
 
          if (selTool != DrawingTool.GradientFill)
          {
@@ -1746,33 +1863,54 @@ namespace SGDK2
             (cTool == mnuZoom2) ||
             (cTool == mnuZoom4) ||
             (cTool == mnuZoom6) ||
-            (cTool == mnuZoom8))
+            (cTool == mnuZoom8) ||
+            (cTool == mnuZoom1x1) ||
+            (cTool == mnuZoom2x2) ||
+            (cTool == mnuZoom4x4) ||
+            (cTool == mnuZoom6x6) ||
+            (cTool == mnuZoom8x8))
          {
             Boolean bSuccess = false;
-            if (cTool == mnuActualSize)
+            mnuZoom1x1.Checked = mnuZoom2x2.Checked = mnuZoom4x4.Checked = mnuZoom6x6.Checked = mnuZoom8x8.Checked = false;
+            if ((cTool == mnuActualSize) || (cTool == mnuZoom1x1))
             {
                if (bSuccess = m_frmMagnify.SetMagnify(1))
+               {
                   tbdZoom.ImageIndex = 21;
+                  mnuZoom1x1.Checked = true;
+               }
             } 
-            else if (cTool == mnuZoom2)
+            else if ((cTool == mnuZoom2) || (cTool == mnuZoom2x2))
             {
                if (bSuccess = m_frmMagnify.SetMagnify(2))
+               {
                   tbdZoom.ImageIndex = 22;
+                  mnuZoom2x2.Checked = true;
+               }
             }
-            else if (cTool == mnuZoom4)
+            else if ((cTool == mnuZoom4) || (cTool == mnuZoom4x4))
             {
                if (bSuccess = m_frmMagnify.SetMagnify(4))
+               {
                   tbdZoom.ImageIndex = 23;
+                  mnuZoom4x4.Checked = true;
+               }
             }
-            else if (cTool == mnuZoom6)
+            else if ((cTool == mnuZoom6) || (cTool == mnuZoom6x6))
             {
                if (bSuccess = m_frmMagnify.SetMagnify(6))
+               {
                   tbdZoom.ImageIndex = 24;
+                  mnuZoom6x6.Checked = true;
+               }
             }
-            else if (cTool == mnuZoom8)
+            else if ((cTool == mnuZoom8) || (cTool == mnuZoom8x8))
             {
                if (bSuccess = m_frmMagnify.SetMagnify(8))
+               {
                   tbdZoom.ImageIndex = 25;
+                  mnuZoom8x8.Checked = true;
+               }
             }
             if (bSuccess)
                foreach (MenuItem mi in new MenuItem[] {mnuActualSize, mnuZoom2, mnuZoom4, mnuZoom6, mnuZoom8})
@@ -1976,6 +2114,13 @@ namespace SGDK2
                tbbLock.Pushed = true;
                SelectTool(tbbLock);
             }
+         if ((e.KeyCode == Keys.ControlKey) && ((CurrentTool == DrawingTool.FloodFill) ||
+            (CurrentTool == DrawingTool.FloodSel)))
+            if (0 == (CurrentOptions & ToolOptions.DisjointedColors))
+            {
+               tbbDisjointedColors.Pushed = true;
+               SelectTool(tbbDisjointedColors);
+            }
          base.OnKeyDown (e);
       }
    
@@ -1986,6 +2131,13 @@ namespace SGDK2
             {
                tbbLock.Pushed = false;
                SelectTool(tbbLock);
+            }
+         if ((e.KeyCode == Keys.ControlKey) && ((CurrentTool == DrawingTool.FloodFill) ||
+            (CurrentTool == DrawingTool.FloodSel)))
+            if (0 != (CurrentOptions & ToolOptions.DisjointedColors))
+            {
+               tbbDisjointedColors.Pushed = false;
+               SelectTool(tbbDisjointedColors);
             }
          base.OnKeyUp (e);
       }
@@ -2458,6 +2610,37 @@ namespace SGDK2
          if (e.Row == m_DataSource)
             this.Close();
       }
+
+      private void mnuImportGraphic_Click(object sender, System.EventArgs e)
+      {
+         Bitmap importImage = frmImportGraphics.ImportGraphic(this.MdiParent, m_DataSource.CellWidth, m_DataSource.CellHeight);
+         Retry:
+         if (importImage != null)
+         {
+            if (!LoadImage(importImage))
+            {
+               if (MessageBox.Show(this.MdiParent, "Would you like to re-import from a subset of the imported image?", "Re-import", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+               {
+                  Bitmap importSubimage = frmImportGraphics.ImportGraphic(this.MdiParent, m_DataSource.CellWidth, m_DataSource.CellHeight, importImage);
+                  importImage.Dispose();
+                  importImage = importSubimage;
+                  goto Retry;
+               }
+               importImage.Dispose();
+            }
+         }
+      }
+
+      private void dataMonitor_GraphicSheetRowDeleted(object sender, SGDK2.ProjectDataset.GraphicSheetRowChangeEvent e)
+      {
+         if (e.Row == m_DataSource)
+            this.Close();
+      }
+
+      private void dataMonitor_Clearing(object sender, System.EventArgs e)
+      {
+         this.Close();
+      }
       #endregion
    }
    public enum DrawingTool
@@ -2491,6 +2674,7 @@ namespace SGDK2
       Outline=2,
       Fill=4,
       Lock=8,
-      GradientFill=16
+      GradientFill=16,
+      DisjointedColors=32
    }
 }

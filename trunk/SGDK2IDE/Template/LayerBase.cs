@@ -382,6 +382,43 @@ public abstract class LayerBase : System.Collections.IEnumerable
       dispPos.Offset(-m_CurrentPosition.X, -m_CurrentPosition.Y);
       return dispPos;
    }
+
+   public void ScrollSpriteIntoView(SpriteBase sprite)
+   {
+      Rectangle spriteBounds = sprite.GetBounds();
+      int newX = int.MinValue;
+      int newY = int.MinValue;
+      if (spriteBounds.Left + CurrentPosition.X < ParentMap.ScrollMarginLeft)
+      {
+         if (ScrollRate.Width > 0)
+            newX = (int)((-spriteBounds.Left + ParentMap.ScrollMarginLeft - AbsolutePosition.X) / ScrollRate.Width);
+         else
+            CurrentPosition = new Point(-spriteBounds.Left + ParentMap.ScrollMarginLeft, CurrentPosition.Y);
+      }
+      else if (spriteBounds.Right + CurrentPosition.X > VisibleArea.Width - ParentMap.ScrollMarginRight)
+      {
+         if (ScrollRate.Width > 0)
+            newX = (int)((-spriteBounds.Right + VisibleArea.Width - ParentMap.ScrollMarginRight - AbsolutePosition.X) / ScrollRate.Width);
+         else
+            CurrentPosition = new Point(-spriteBounds.Right + VisibleArea.Width - ParentMap.ScrollMarginRight, CurrentPosition.Y);
+      }
+
+      if (spriteBounds.Top + CurrentPosition.Y < ParentMap.ScrollMarginTop)
+      {
+         if (ScrollRate.Height > 0)
+            newY = (int)((-spriteBounds.Top + ParentMap.ScrollMarginTop - AbsolutePosition.Y) / ScrollRate.Height);
+         else
+            CurrentPosition = new Point(CurrentPosition.X, -spriteBounds.Top + ParentMap.ScrollMarginTop);
+      }
+      else if (spriteBounds.Bottom + CurrentPosition.Y > VisibleArea.Height - ParentMap.ScrollMarginBottom)
+      {
+         if (ScrollRate.Height > 0)
+            newY = (int)((-spriteBounds.Bottom + VisibleArea.Height - ParentMap.ScrollMarginBottom - AbsolutePosition.Y) / ScrollRate.Height);
+         else
+            CurrentPosition = new Point(CurrentPosition.X, -spriteBounds.Bottom + VisibleArea.Height - ParentMap.ScrollMarginBottom);
+      }
+      ParentMap.Scroll(new Point(newX, newY));
+   }
    #endregion
 }
 

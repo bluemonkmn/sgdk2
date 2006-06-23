@@ -1486,8 +1486,8 @@ namespace SGDK2
       
       public static bool MoveSpriteRule(ProjectDataset.SpriteRuleRow row, bool moveDown)
       {
-         string planName = row[m_dsPrj.SpriteRule.DefinitionNameColumn].ToString();
-         string filter = "PlanName='" + planName + "' ";
+         string definitionName = row[m_dsPrj.SpriteRule.DefinitionNameColumn].ToString();
+         string filter = "DefinitionName='" + definitionName + "' ";
 
          DataRow[] nextRows;
          if (moveDown)
@@ -1507,6 +1507,7 @@ namespace SGDK2
          row.Sequence = nextSeq;
          return true;
       }
+
       public static ProjectDataset.SpriteRuleRow GetSpriteRule(ProjectDataset.SpriteDefinitionRow parent, string name)
       {
          return m_dsPrj.SpriteRule.FindByDefinitionNameName(parent.Name, name);

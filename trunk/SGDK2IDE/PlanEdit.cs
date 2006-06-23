@@ -390,7 +390,10 @@ namespace SGDK2
                                                          "Do",
                                                          "If",
                                                          "And",
-                                                         "Or"});
+                                                         "Or",
+                                                         "ElseIf",
+                                                         "Else",
+                                                         "EndIf"});
          this.cboRuleType.Location = new System.Drawing.Point(8, 48);
          this.cboRuleType.Name = "cboRuleType";
          this.cboRuleType.Size = new System.Drawing.Size(56, 21);
@@ -683,8 +686,8 @@ namespace SGDK2
 
          if (string.Compare(param.TypeName, typeof(bool).Name)==0)
          {
-            cboParameter.Items.Add(bool.FalseString);
-            cboParameter.Items.Add(bool.TrueString);
+            cboParameter.Items.Add("false");
+            cboParameter.Items.Add("true");
          }
          else if (string.Compare(param.TypeName, typeof(System.Drawing.Point).Name) == 0)
          {
@@ -778,7 +781,7 @@ namespace SGDK2
                cboFunction.Text = drRule.Function;
             }
 
-            LoadFunctions(String.Compare(drRule.Type, "Do", true) != 0, false);
+            LoadFunctions(IsRuleTypeConditional(drRule.Type), false);
 
             PrepareFunction(cboFunction.Text);
 
@@ -828,13 +831,13 @@ namespace SGDK2
             {
                parentNode = tvwRules.Nodes.Add(drRule.Name);
                m_TreeNodes[drRule.Name] = parentNode;
-               if (String.Compare(drRule.Type, "If", true) != 0)
+               if (!DoesRuleTypeNest(drRule.Type))
                   parentNode = null;
                continue;
             }
             TreeNode curNode = parentNode.Nodes.Add(drRule.Name);
             m_TreeNodes[drRule.Name] = curNode;
-            if (String.Compare(drRule.Type, "If", true) == 0)
+            if (DoesRuleTypeNest(drRule.Type))
             {
                parentNode = curNode;
                continue;
@@ -881,8 +884,34 @@ namespace SGDK2
          }
 
          txtRuleName.Enabled = lblRuleName.Enabled =
-            cboRuleType.Enabled = cboFunction.Enabled = true;
-         chkEndIf.Enabled = String.Compare(cboRuleType.Text, "Do", true) == 0;
+            cboRuleType.Enabled = true;
+
+         if (String.Compare(cboRuleType.Text, "EndIf", true) == 0)
+         {
+            cboFunction.Enabled = 
+               chkNot.Enabled = lblParam1.Enabled = cboParam1.Enabled =
+               lblParam2.Enabled = cboParam2.Enabled =
+               lblParam3.Enabled = cboParam3.Enabled =
+               lblOutput.Enabled = cboOutput.Enabled =
+               chkEndIf.Enabled = false;
+            return;
+         }
+         
+         cboFunction.Enabled = true;
+
+         chkEndIf.Enabled = !IsRuleTypeConditional(cboRuleType.Text);
+      }
+
+      private bool IsRuleTypeConditional(string ruleType)
+      {
+         return (String.Compare(ruleType, "Do", true) != 0) &&
+            (String.Compare(ruleType, "Else", true) != 0);
+      }
+
+      private bool DoesRuleTypeNest(string ruleType)
+      {
+         return (String.Compare(ruleType, "If", true) == 0) ||
+            (String.Compare(ruleType, "ElseIf", true) == 0);
       }
       #endregion
 
@@ -931,9 +960,19 @@ namespace SGDK2
       {
          if (m_Loading)
             return;
-         LoadFunctions(String.Compare(cboRuleType.SelectedItem.ToString(), "Do", true) != 0, false);
+         if (String.Compare(cboRuleType.Text, "EndIf", true) == 0)
+            EnableFields();
+         else
+            LoadFunctions(IsRuleTypeConditional(cboRuleType.SelectedItem.ToString()), false);
          if (CurrentRule != null)
+         {
             CurrentRule.Type = cboRuleType.Text;
+            if (String.Compare(cboRuleType.Text, "EndIf", true) == 0)
+            {
+               CurrentRule.Function = cboRuleType.Text;
+               CurrentRule.EndIf = true;
+            }
+         }
       }
 
       private void cboFunction_SelectedIndexChanged(object sender, System.EventArgs e)

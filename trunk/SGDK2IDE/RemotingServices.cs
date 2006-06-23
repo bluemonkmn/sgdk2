@@ -116,7 +116,7 @@ namespace SGDK2
 
          op.MethodName = "==";
          op.Description = "Determine if the left operand is equal to the right operand";
-         this["="] = op;
+         this["=="] = op;
 
          op.MethodName = ">=";
          op.Description = "Determine if the left operand is greater than or equal to the right operand";
@@ -129,6 +129,16 @@ namespace SGDK2
          op.MethodName = "!=";
          op.Description = "Determine if the left operand is not equal to the right operand";
          this["!="] = op;
+
+         op.MethodName = "=";
+         op.Description = "Copy a value to a variable";
+         op.Arguments = new RemotingServices.RemoteParameterInfo[]
+                  {
+                     new RemotingServices.RemoteParameterInfo("Value", typeof(int).Name, false),
+                  };
+         op.ReturnType = typeof(int).Name;
+         this["="] = op;
+
       }
    }
 

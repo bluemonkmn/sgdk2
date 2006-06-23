@@ -136,39 +136,7 @@ public abstract class PlanBase : System.Collections.IEnumerable
    [Description("Scroll all layers on this plan's layer's map so that the specified sprite is within the scoll margins of the map")]
    public void ScrollSpriteIntoView(SpriteBase sprite)
    {
-      Rectangle spriteBounds = sprite.GetBounds();
-      int newX = int.MinValue;
-      int newY = int.MinValue;
-      if (spriteBounds.Left + ParentLayer.CurrentPosition.X < ParentLayer.ParentMap.ScrollMarginLeft)
-      {
-         if (ParentLayer.ScrollRate.Width > 0)
-            newX = (int)((-spriteBounds.Left + ParentLayer.ParentMap.ScrollMarginLeft - ParentLayer.AbsolutePosition.X) / ParentLayer.ScrollRate.Width);
-         else
-            ParentLayer.CurrentPosition = new Point(-spriteBounds.Left + ParentLayer.ParentMap.ScrollMarginLeft, ParentLayer.CurrentPosition.Y);
-      }
-      else if (spriteBounds.Right + ParentLayer.CurrentPosition.X > ParentLayer.VisibleArea.Width - ParentLayer.ParentMap.ScrollMarginRight)
-      {
-         if (ParentLayer.ScrollRate.Width > 0)
-            newX = (int)((-spriteBounds.Right + ParentLayer.VisibleArea.Width - ParentLayer.ParentMap.ScrollMarginRight - ParentLayer.AbsolutePosition.X) / ParentLayer.ScrollRate.Width);
-         else
-            ParentLayer.CurrentPosition = new Point(-spriteBounds.Right + ParentLayer.VisibleArea.Width - ParentLayer.ParentMap.ScrollMarginRight, ParentLayer.CurrentPosition.Y);
-      }
-
-      if (spriteBounds.Top + ParentLayer.CurrentPosition.Y < ParentLayer.ParentMap.ScrollMarginTop)
-      {
-         if (ParentLayer.ScrollRate.Height > 0)
-            newY = (int)((-spriteBounds.Top + ParentLayer.ParentMap.ScrollMarginTop - ParentLayer.AbsolutePosition.Y) / ParentLayer.ScrollRate.Height);
-         else
-            ParentLayer.CurrentPosition = new Point(ParentLayer.CurrentPosition.X, -spriteBounds.Top + ParentLayer.ParentMap.ScrollMarginTop);
-      }
-      else if (spriteBounds.Bottom + ParentLayer.CurrentPosition.Y > ParentLayer.VisibleArea.Height - ParentLayer.ParentMap.ScrollMarginBottom)
-      {
-         if (ParentLayer.ScrollRate.Height > 0)
-            newY = (int)((-spriteBounds.Bottom + ParentLayer.VisibleArea.Height - ParentLayer.ParentMap.ScrollMarginBottom - ParentLayer.AbsolutePosition.Y) / ParentLayer.ScrollRate.Height);
-         else
-            ParentLayer.CurrentPosition = new Point(ParentLayer.CurrentPosition.X, -spriteBounds.Bottom + ParentLayer.VisibleArea.Height - ParentLayer.ParentMap.ScrollMarginBottom);
-      }
-      ParentLayer.ParentMap.Scroll(new Point(newX, newY));
+      ParentLayer.ScrollSpriteIntoView(sprite);
    }
 
    #region IEnumerable Members

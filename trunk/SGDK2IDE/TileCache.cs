@@ -170,6 +170,11 @@ namespace SGDK2
          }
       }
 
+      public int[] GetSubFramesByFrameIndex(int nTileValue, int nFrameIndex)
+      {
+         return m_tiles[nTileValue].frames[nFrameIndex].subFrames;
+      }
+
       public short GetFrameCount(int nTileIndex)
       {
          if (nTileIndex >= m_tiles.Length)

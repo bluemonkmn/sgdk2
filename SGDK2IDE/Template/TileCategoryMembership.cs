@@ -33,7 +33,7 @@ public class TileCategoryFrameMembership : TileCategoryMembershipBase
    public TileCategoryFrameMembership(int nFrameSequenceCount, params TileFrameMembership[] membership)
    {
       m_frames = new System.Collections.BitArray[nFrameSequenceCount];
-      for (int i=0; i<(int)TileCategoryName.Count; i++)
+      for (int i=0; i<(int)nFrameSequenceCount; i++)
          m_frames[i] = new System.Collections.BitArray((int)TileCategoryName.Count);
 
       foreach(TileFrameMembership mbr in membership)

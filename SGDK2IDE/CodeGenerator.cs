@@ -54,11 +54,89 @@ namespace SGDK2
       private const string SpriteIsActiveRef = "isActive";
       #endregion
 
+      #region Embedded Types
+      private class RuleContent
+      {
+         public string Name;
+         public string Type;
+         public string Function;
+         public string Parameter1;
+         public string Parameter2;
+         public string Parameter3;
+         public string ResultParameter;
+         public bool EndIf;
+
+         public RuleContent(ProjectDataset.SpriteRuleRow row)
+         {
+            Name = row.Name;
+            Type = row.Type;
+            Function = row.Function;
+            if (row.IsParameter1Null())
+               Parameter1 = null;
+            else
+               Parameter1 = row.Parameter1;
+            if (row.IsParameter2Null())
+               Parameter2 = null;
+            else
+               Parameter2 = row.Parameter2;
+            if (row.IsParameter3Null())
+               Parameter3 = null;
+            else
+               Parameter3 = row.Parameter3;
+            if (row.IsResultParameterNull())
+               ResultParameter = null;
+            else
+               ResultParameter = row.ResultParameter;
+            EndIf = row.EndIf;
+         }
+         public RuleContent(ProjectDataset.PlanRuleRow row)
+         {
+            Name = row.Name;
+            Type = row.Type;
+            Function = row.Function;
+            if (row.IsParameter1Null())
+               Parameter1 = null;
+            else
+               Parameter1 = row.Parameter1;
+            if (row.IsParameter2Null())
+               Parameter2 = null;
+            else
+               Parameter2 = row.Parameter2;
+            if (row.IsParameter3Null())
+               Parameter3 = null;
+            else
+               Parameter3 = row.Parameter3;
+            if (row.IsResultParameterNull())
+               ResultParameter = null;
+            else
+               ResultParameter = row.ResultParameter;
+            EndIf = row.EndIf;
+         }
+      }
+      private class ConditionStackElement
+      {
+         public Boolean phase;
+         public CodeConditionStatement condition;
+         public ConditionStackElement(Boolean phase, CodeConditionStatement condition)
+         {
+            this.phase = phase;
+            this.condition = condition;
+         }
+         public CodeStatementCollection CurrentStatements
+         {
+            get
+            {
+               return phase?condition.TrueStatements:condition.FalseStatements;
+            }
+         }
+      }
+
       public enum CodeLevel
       {
          ExcludeRules,
          IncludeAll
       }
+      #endregion
 
       public System.CodeDom.Compiler.ICodeGenerator Generator = new Microsoft.CSharp.CSharpCodeProvider().CreateGenerator();
       public CodeGeneratorOptions GeneratorOptions = new CodeGeneratorOptions();
@@ -1368,143 +1446,13 @@ namespace SGDK2
                            new CodeThisReferenceExpression(), fldPlan.Name),
                            "ExecuteRules"));
 
+                        RuleContent[] ruleArray = new RuleContent[rules.Length];
+                        for (int i = 0; i < rules.Length; i++)
+                           ruleArray[i] = new RuleContent(rules[i]);
                         CodeMemberMethod mthExecuteRules = new CodeMemberMethod();
                         mthExecuteRules.Name = "ExecuteRules";
                         mthExecuteRules.Attributes = MemberAttributes.Override | MemberAttributes.Public;
-                        System.Collections.Stack stkNestedConditions = new System.Collections.Stack();
-                        foreach(ProjectDataset.PlanRuleRow drRule in rules)
-                        {
-                           if (drRule.Function.Length == 0)
-                              continue;
-                           CodeExpression invokeResult;
-                           CodeBinaryOperatorType op = CodeBinaryOperatorType.Modulus;
-                           switch(drRule.Function)
-                           {
-                              case "+":
-                                 op = CodeBinaryOperatorType.Add;
-                                 break;
-                              case "-":
-                                 op = CodeBinaryOperatorType.Subtract;
-                                 break;
-                              case "<":
-                              case "!>=":
-                                 op = CodeBinaryOperatorType.LessThan;
-                                 break;
-                              case "<=":
-                              case "!>":
-                                 op = CodeBinaryOperatorType.LessThanOrEqual;
-                                 break;
-                              case "==":
-                              case "!!=":
-                                 op = CodeBinaryOperatorType.IdentityEquality;
-                                 break;
-                              case ">=":
-                              case "!<":
-                                 op = CodeBinaryOperatorType.GreaterThanOrEqual;
-                                 break;
-                              case ">":
-                              case "!<=":
-                                 op = CodeBinaryOperatorType.GreaterThan;
-                                 break;
-                              case "!=":
-                              case "!==":
-                                 op = CodeBinaryOperatorType.IdentityInequality;
-                                 break;
-                           }
-                           if (op != CodeBinaryOperatorType.Modulus)
-                           {
-                              invokeResult = new CodeBinaryOperatorExpression(
-                                 new CodeSnippetExpression(drRule.Parameter1),
-                                 op, new CodeSnippetExpression(drRule.Parameter2));
-                           }
-                           else
-                           {
-                              CodeMethodInvokeExpression invoke;
-                              if (drRule.Function.StartsWith("!"))
-                              {
-                                 invokeResult = new CodeBinaryOperatorExpression(
-                                    invoke = new CodeMethodInvokeExpression(
-                                    new CodeThisReferenceExpression(), drRule.Function.Substring(1)),
-                                    CodeBinaryOperatorType.ValueEquality,
-                                    new CodePrimitiveExpression(false));
-                              }
-                              else
-                                 invokeResult = invoke = new CodeMethodInvokeExpression(
-                                    new CodeThisReferenceExpression(), drRule.Function);
-
-                              if (!(drRule.IsParameter1Null() || (drRule.Parameter1.Length == 0)))
-                              {
-                                 invoke.Parameters.Add(new CodeSnippetExpression(drRule.Parameter1));
-                                 if (!(drRule.IsParameter2Null() || (drRule.Parameter2.Length == 0)))
-                                 {
-                                    invoke.Parameters.Add(new CodeSnippetExpression(drRule.Parameter2));
-                                    if (!(drRule.IsParameter3Null() || (drRule.Parameter3.Length == 0)))
-                                    {
-                                       invoke.Parameters.Add(new CodeSnippetExpression(drRule.Parameter3));
-                                    }
-                                 }
-                              }
-                           }
-
-                           if (String.Compare(drRule.Type,"if",true) == 0)
-                           {
-                              CodeConditionStatement cond = new CodeConditionStatement();
-                              cond.Condition = invokeResult;
-                              stkNestedConditions.Push(cond);
-                           }
-                           else if (String.Compare(drRule.Type,"and",true) == 0)
-                           {
-                              if (stkNestedConditions.Count > 0)
-                              {
-                                 CodeConditionStatement prev = (CodeConditionStatement)stkNestedConditions.Peek();
-                                 prev.Condition = new CodeBinaryOperatorExpression(
-                                    prev.Condition, CodeBinaryOperatorType.BooleanAnd, invokeResult);
-                              }
-                           }
-                           else if (String.Compare(drRule.Type,"or",true) == 0)
-                           {
-                              if (stkNestedConditions.Count > 0)
-                              {
-                                 CodeConditionStatement prev = (CodeConditionStatement)stkNestedConditions.Peek();
-                                 prev.Condition = new CodeBinaryOperatorExpression(
-                                    prev.Condition, CodeBinaryOperatorType.BooleanAnd, invokeResult);
-                              }
-                           }
-                           else
-                           {
-                              CodeStatement stmtRule = null;
-                              if (!(drRule.IsResultParameterNull() || (drRule.ResultParameter.Length == 0)))
-                              {
-                                 stmtRule = new CodeAssignStatement(
-                                    new CodeSnippetExpression(drRule.ResultParameter),
-                                    invokeResult);
-                              }
-                              else
-                              {
-                                 stmtRule = new CodeExpressionStatement(invokeResult);
-                              }
-                              if (stkNestedConditions.Count > 0)
-                                 ((CodeConditionStatement)stkNestedConditions.Peek()).TrueStatements.Add(stmtRule);
-                              else
-                                 mthExecuteRules.Statements.Add(stmtRule);
-                              if (drRule.EndIf)
-                              {
-                                 CodeConditionStatement popVal = (CodeConditionStatement)stkNestedConditions.Pop();
-                                 if (stkNestedConditions.Count > 0)
-                                    ((CodeConditionStatement)stkNestedConditions.Peek()).TrueStatements.Add(popVal);
-                                 else
-                                    mthExecuteRules.Statements.Add(popVal);
-                              }
-                           }
-                        }
-                        while(stkNestedConditions.Count > 0)
-                        {
-                           CodeConditionStatement popVal = (CodeConditionStatement)stkNestedConditions.Pop();
-                           if (stkNestedConditions.Count > 0)
-                              ((CodeConditionStatement)stkNestedConditions.Peek()).TrueStatements.Add(popVal);
-                           else
-                              mthExecuteRules.Statements.Add(popVal);
-                        }
+                        GenerateRules(ruleArray, mthExecuteRules);
                         clsPlan.Members.Add(mthExecuteRules);
                      }
                   }
@@ -1513,6 +1461,173 @@ namespace SGDK2
          }
          mthDraw.Statements.Add(new CodeMethodInvokeExpression(refSpr, "End"));
          Generator.GenerateCodeFromType(clsMap, txt, GeneratorOptions);
+      }
+
+      private void GenerateRules(RuleContent[] rules, CodeMemberMethod mthExecuteRules)
+      {
+         System.Collections.Stack stkNestedConditions = new System.Collections.Stack();
+         foreach(RuleContent rule in rules)
+         {
+            if (rule.Function.Length == 0)
+               continue;
+            if (String.Compare(rule.Type , "EndIf", true) != 0)
+            {
+               CodeExpression invokeResult;
+               CodeBinaryOperatorType op = CodeBinaryOperatorType.Modulus;
+               switch(rule.Function)
+               {
+                  case "+":
+                     op = CodeBinaryOperatorType.Add;
+                     break;
+                  case "-":
+                     op = CodeBinaryOperatorType.Subtract;
+                     break;
+                  case "<":
+                  case "!>=":
+                     op = CodeBinaryOperatorType.LessThan;
+                     break;
+                  case "<=":
+                  case "!>":
+                     op = CodeBinaryOperatorType.LessThanOrEqual;
+                     break;
+                  case "==":
+                  case "!!=":
+                     op = CodeBinaryOperatorType.IdentityEquality;
+                     break;
+                  case ">=":
+                  case "!<":
+                     op = CodeBinaryOperatorType.GreaterThanOrEqual;
+                     break;
+                  case ">":
+                  case "!<=":
+                     op = CodeBinaryOperatorType.GreaterThan;
+                     break;
+                  case "!=":
+                  case "!==":
+                     op = CodeBinaryOperatorType.IdentityInequality;
+                     break;
+               }
+               // If function is an operator
+               if (op != CodeBinaryOperatorType.Modulus)
+               {
+                  invokeResult = new CodeBinaryOperatorExpression(
+                     new CodeSnippetExpression(rule.Parameter1),
+                     op, new CodeSnippetExpression(rule.Parameter2));
+               }
+               else if (String.Compare(rule.Function, "=", true) == 0)
+                  invokeResult = new CodeSnippetExpression(rule.Parameter1);
+               else
+               {
+                  CodeMethodInvokeExpression invoke;
+                  if (rule.Function.StartsWith("!"))
+                  {
+                     invokeResult = new CodeBinaryOperatorExpression(
+                        invoke = new CodeMethodInvokeExpression(
+                        new CodeThisReferenceExpression(), rule.Function.Substring(1)),
+                        CodeBinaryOperatorType.ValueEquality,
+                        new CodePrimitiveExpression(false));
+                  }
+                  else
+                     invokeResult = invoke = new CodeMethodInvokeExpression(
+                        new CodeThisReferenceExpression(), rule.Function);
+
+                  if (!((rule.Parameter1 == null) || (rule.Parameter1.Length == 0)))
+                  {
+                     invoke.Parameters.Add(new CodeSnippetExpression(rule.Parameter1));
+                     if (!((rule.Parameter2 == null) || (rule.Parameter2.Length == 0)))
+                     {
+                        invoke.Parameters.Add(new CodeSnippetExpression(rule.Parameter2));
+                        if (!((rule.Parameter3 == null) || (rule.Parameter3.Length == 0)))
+                        {
+                           invoke.Parameters.Add(new CodeSnippetExpression(rule.Parameter3));
+                        }
+                     }
+                  }
+               }
+
+               if (String.Compare(rule.Type,"if",true) == 0)
+               {
+                  CodeConditionStatement cond = new CodeConditionStatement();
+                  cond.Condition = invokeResult;
+                  stkNestedConditions.Push(new ConditionStackElement(true, cond));
+               }
+               else if (String.Compare(rule.Type,"and",true) == 0)
+               {
+                  if (stkNestedConditions.Count > 0)
+                  {
+                     CodeConditionStatement prev = ((ConditionStackElement)stkNestedConditions.Peek()).condition;
+                     prev.Condition = new CodeBinaryOperatorExpression(
+                        prev.Condition, CodeBinaryOperatorType.BooleanAnd, invokeResult);
+                  }
+               }
+               else if (String.Compare(rule.Type,"or",true) == 0)
+               {
+                  if (stkNestedConditions.Count > 0)
+                  {
+                     CodeConditionStatement prev = ((ConditionStackElement)stkNestedConditions.Peek()).condition;
+                     prev.Condition = new CodeBinaryOperatorExpression(
+                        prev.Condition, CodeBinaryOperatorType.BooleanOr, invokeResult);
+                  }
+               }
+               else if (String.Compare(rule.Type,"ElseIf", true) == 0)
+               {
+                  if (stkNestedConditions.Count > 0)
+                  {
+                     ((ConditionStackElement)stkNestedConditions.Peek()).phase = false;
+                     CodeConditionStatement cond = new CodeConditionStatement();
+                     cond.Condition = invokeResult;
+                     stkNestedConditions.Push(new ConditionStackElement(true, cond));
+                  }
+               }
+               else
+               {
+                  CodeStatement stmtRule = null;
+                  if (!((rule.ResultParameter == null) || (rule.ResultParameter.Length == 0)))
+                  {
+                     stmtRule = new CodeAssignStatement(
+                        new CodeSnippetExpression(rule.ResultParameter),
+                        invokeResult);
+                  }
+                  else
+                  {
+                     stmtRule = new CodeExpressionStatement(invokeResult);
+                  }
+                  if (stkNestedConditions.Count > 0)
+                  {
+                     ConditionStackElement prev = (ConditionStackElement)stkNestedConditions.Peek();
+                     if (String.Compare(rule.Type, "Else", true) == 0)
+                        prev.phase = false;
+                     prev.CurrentStatements.Add(stmtRule);
+                  }
+                  else
+                     mthExecuteRules.Statements.Add(stmtRule);
+                  if (rule.EndIf)
+                  {
+                     CodeConditionStatement popVal = ((ConditionStackElement)stkNestedConditions.Pop()).condition;
+                     if (stkNestedConditions.Count > 0)
+                        ((ConditionStackElement)stkNestedConditions.Peek()).CurrentStatements.Add(popVal);
+                     else
+                        mthExecuteRules.Statements.Add(popVal);
+                  }
+               }
+            }
+            else
+            {
+               CodeConditionStatement popVal = ((ConditionStackElement)stkNestedConditions.Pop()).condition;
+               if (stkNestedConditions.Count > 0)
+                  ((ConditionStackElement)stkNestedConditions.Peek()).CurrentStatements.Add(popVal);
+               else
+                  mthExecuteRules.Statements.Add(popVal);
+            }
+         }
+         while(stkNestedConditions.Count > 0)
+         {
+            CodeConditionStatement popVal = ((ConditionStackElement)stkNestedConditions.Pop()).condition;
+            if (stkNestedConditions.Count > 0)
+               ((ConditionStackElement)stkNestedConditions.Peek()).CurrentStatements.Add(popVal);
+            else
+               mthExecuteRules.Statements.Add(popVal);
+         }
       }
 
       public void GenerateSpriteDef(ProjectDataset.SpriteDefinitionRow drSpriteDef, System.IO.TextWriter txt)
@@ -1685,102 +1800,15 @@ namespace SGDK2
 
          // Sprite Rules
          ProjectDataset.SpriteRuleRow[] rules = ProjectData.GetSortedSpriteRules(drSpriteDef);
+         RuleContent[] ruleArray = new RuleContent[rules.Length];
          CodeMemberMethod mthExecuteRules = new CodeMemberMethod();
          mthExecuteRules.Name = "ExecuteRules";
          mthExecuteRules.Attributes = MemberAttributes.Override | MemberAttributes.Public;
-         System.Collections.Stack stkNestedConditions = new System.Collections.Stack();
          if (GenerateLevel > CodeLevel.ExcludeRules)
          {
-            foreach(ProjectDataset.SpriteRuleRow drRule in rules)
-            {
-               if (drRule.Function.Length == 0)
-                  continue;
-               CodeMethodInvokeExpression invoke;
-               CodeExpression invokeResult;
-               if (drRule.Function.StartsWith("!"))
-               {
-                  invokeResult = new CodeBinaryOperatorExpression(
-                     invoke = new CodeMethodInvokeExpression(
-                     new CodeThisReferenceExpression(), drRule.Function.Substring(1)),
-                     CodeBinaryOperatorType.ValueEquality,
-                     new CodePrimitiveExpression(false));
-               }
-               else
-                  invokeResult = invoke = new CodeMethodInvokeExpression(
-                     new CodeThisReferenceExpression(), drRule.Function);
-
-               if (!(drRule.IsParameter1Null() || (drRule.Parameter1.Length == 0)))
-               {
-                  invoke.Parameters.Add(new CodeSnippetExpression(drRule.Parameter1));
-                  if (!(drRule.IsParameter2Null() || (drRule.Parameter2.Length == 0)))
-                  {
-                     invoke.Parameters.Add(new CodeSnippetExpression(drRule.Parameter2));
-                     if (!(drRule.IsParameter3Null() || (drRule.Parameter3.Length == 0)))
-                     {
-                        invoke.Parameters.Add(new CodeSnippetExpression(drRule.Parameter3));
-                     }
-                  }
-               }
-
-               if (String.Compare(drRule.Type,"if",true) == 0)
-               {
-                  CodeConditionStatement cond = new CodeConditionStatement();
-                  cond.Condition = invokeResult;
-                  stkNestedConditions.Push(cond);
-               }
-               else if (String.Compare(drRule.Type,"and",true) == 0)
-               {
-                  if (stkNestedConditions.Count > 0)
-                  {
-                     CodeConditionStatement prev = (CodeConditionStatement)stkNestedConditions.Peek();
-                     prev.Condition = new CodeBinaryOperatorExpression(
-                        prev.Condition, CodeBinaryOperatorType.BooleanAnd, invokeResult);
-                  }
-               }
-               else if (String.Compare(drRule.Type,"or",true) == 0)
-               {
-                  if (stkNestedConditions.Count > 0)
-                  {
-                     CodeConditionStatement prev = (CodeConditionStatement)stkNestedConditions.Peek();
-                     prev.Condition = new CodeBinaryOperatorExpression(
-                        prev.Condition, CodeBinaryOperatorType.BooleanAnd, invokeResult);
-                  }
-               }
-               else
-               {
-                  CodeStatement stmtRule = null;
-                  if (!(drRule.IsResultParameterNull() || (drRule.ResultParameter.Length == 0)))
-                  {
-                     stmtRule = new CodeAssignStatement(
-                        new CodeSnippetExpression(drRule.ResultParameter),
-                        invokeResult);
-                  }
-                  else
-                  {
-                     stmtRule = new CodeExpressionStatement(invoke);
-                  }
-                  if (stkNestedConditions.Count > 0)
-                     ((CodeConditionStatement)stkNestedConditions.Peek()).TrueStatements.Add(stmtRule);
-                  else
-                     mthExecuteRules.Statements.Add(stmtRule);
-                  if (drRule.EndIf)
-                  {
-                     CodeConditionStatement popVal = (CodeConditionStatement)stkNestedConditions.Pop();
-                     if (stkNestedConditions.Count > 0)
-                        ((CodeConditionStatement)stkNestedConditions.Peek()).TrueStatements.Add(popVal);
-                     else
-                        mthExecuteRules.Statements.Add(popVal);
-                  }
-               }
-            }
-            while(stkNestedConditions.Count > 0)
-            {
-               CodeConditionStatement popVal = (CodeConditionStatement)stkNestedConditions.Pop();
-               if (stkNestedConditions.Count > 0)
-                  ((CodeConditionStatement)stkNestedConditions.Peek()).TrueStatements.Add(popVal);
-               else
-                  mthExecuteRules.Statements.Add(popVal);
-            }
+            for (int i = 0; i < rules.Length; i++)
+               ruleArray[i] = new RuleContent(rules[i]);
+            GenerateRules(ruleArray, mthExecuteRules);
          }
          clsSpriteDef.Members.Add(mthExecuteRules);
 

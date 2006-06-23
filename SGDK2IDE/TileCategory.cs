@@ -51,7 +51,7 @@ namespace SGDK2
             get
             {
                if (IsFrame)
-                  return m_TileCache[m_nTileIndex, m_nFrameIndex];
+                  return m_TileCache.GetSubFramesByFrameIndex(m_nTileIndex, m_nFrameIndex);
                else
                   return m_TileCache[m_nTileIndex];
             }

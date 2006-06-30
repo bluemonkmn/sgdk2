@@ -25,6 +25,7 @@ echo >>Input.txt /r:System.XML.dll
 echo >>Input.txt /r:Microsoft.DirectX.dll
 echo >>Input.txt /r:Microsoft.DirectX.Direct3D.dll
 echo >>Input.txt /r:Microsoft.DirectX.Direct3DX.dll
+echo >>Input.txt /r:Microsoft.DirectX.DirectInput.dll
 echo >>Input.txt /res:SGDK2.SGDK2IDE.resources
 echo >>Input.txt /res:SGDK2.frmMain.resources
 echo >>Input.txt /res:SGDK2.frmGraphicsEditor.resources
@@ -44,12 +45,21 @@ echo >>Input.txt /res:SGDK2.frmSpriteCategories.resources
 echo >>Input.txt /res:SGDK2.frmCodeEditor.resources
 echo >>Input.txt /res:SGDK2.frmPlanEdit.resources
 echo >>Input.txt /res:SGDK2.frmUnsavedChanges.resources
+echo >>Input.txt /res:SGDK2.frmImportGraphics.resources
+echo >>Input.txt /res:SGDK2.frmProject.resources
+echo >>Input.txt /res:SGDK2.frmLogView.resources
 echo >>Input.txt /res:Template\Display.cs,SGDK2.Template.Display.cs
 echo >>Input.txt /res:Template\Frame.cs,SGDK2.Template.Frame.cs
 echo >>Input.txt /res:Template\LayerBase.cs,SGDK2.Template.LayerBase.cs
 echo >>Input.txt /res:Template\SpriteBase.cs,SGDK2.Template.SpriteBase.cs
 echo >>Input.txt /res:Template\SpriteCollection.cs,SGDK2.Template.SpriteCollection.cs
 echo >>Input.txt /res:Template\Tile.cs,SGDK2.Template.Tile.cs
+echo >>Input.txt /res:Template\GameForm.cs,SGDK2.Template.GameForm.cs
+echo >>Input.txt /res:Template\MapBase.cs,SGDK2.Template.MapBase.cs
+echo >>Input.txt /res:Template\PlanBase.cs,SGDK2.Template.PlanBase.cs
+echo >>Input.txt /res:Template\SpriteState.cs,SGDK2.Template.SpriteState.cs
+echo >>Input.txt /res:Template\TileCategoryMembership.cs,SGDK2.Template.TileCategoryMembership.cs
+echo >>Input.txt /res:Template\TileShapes.cs,SGDK2.Template.TileShapes.cs
 echo >>Input.txt /res:RemoteReflector.cs,SGDK2.RemoteReflector.cs
 echo >>Input.txt AssemblyInfo.cs
 echo >>Input.txt GfxEdit.cs
@@ -91,6 +101,9 @@ echo >>Input.txt CodeGenerator.cs
 echo >>Input.txt PlanConverter.cs
 echo >>Input.txt PlanEdit.cs
 echo >>Input.txt UnsavedChanges.cs
+echo >>Input.txt ImportGraphics.cs
+echo >>Input.txt Project.cs
+echo >>Input.txt LogView.cs
 csc /noconfig @Input.txt
 del Input.txt
 del *.resources

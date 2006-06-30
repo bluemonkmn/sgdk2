@@ -60,6 +60,15 @@ class CompileResx
          rd = new System.Resources.ResXResourceReader("UnsavedChanges.resx");
          WriteResources(rd,"SGDK2.frmUnsavedChanges.resources");
          rd.Close();
+         rd = new System.Resources.ResXResourceReader("ImportGraphics.resx");
+         WriteResources(rd,"SGDK2.frmImportGraphics.resources");
+         rd.Close();
+         rd = new System.Resources.ResXResourceReader("Project.resx");
+         WriteResources(rd,"SGDK2.frmProject.resources");
+         rd.Close();
+         rd = new System.Resources.ResXResourceReader("LogView.resx");
+         WriteResources(rd,"SGDK2.frmLogView.resources");
+         rd.Close();
       }
       public static void WriteResources(System.Resources.ResXResourceReader rd, string sFile)
       {

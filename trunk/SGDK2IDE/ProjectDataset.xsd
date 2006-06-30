@@ -109,6 +109,7 @@
                                     <xs:attribute name="MapName" type="xs:Name" use="prohibited" />
                                     <xs:attribute name="Priority" type="xs:int" />
                                     <xs:attribute name="Active" type="xs:boolean" default="true" msprop:nullValue="false" />
+                                    <xs:attribute name="Solidity" type="xs:string" msprop:nullValue="_empty" />
                                  </xs:complexType>
                               </xs:element>
                               <xs:element name="SpritePlan">

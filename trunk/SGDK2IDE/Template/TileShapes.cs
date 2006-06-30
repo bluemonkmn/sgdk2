@@ -20,10 +20,14 @@ public abstract class TileShape
    public TileShape()
    {
    }
-   public abstract byte GetTopSolidPixel(byte width, byte height, byte min, byte max);
-   public abstract byte GetBottomSolidPixel(byte width, byte height, byte min, byte max);
-   public abstract byte GetLeftSolidPixel(byte width, byte height, byte min, byte max);
-   public abstract byte GetRightSolidPixel(byte width, byte height, byte min, byte max);
+   // Returns a value between 0 and height-1, inclusive, or short.MaxValue if there is no solid
+   public abstract short GetTopSolidPixel(short width, short height, short min, short max);
+   // Returns a value between 0 and height-1, inclusive, or short.MinValue if there is no solid
+   public abstract short GetBottomSolidPixel(short width, short height, short min, short max);
+   // Returns a value between 0 and width-1, inclusive, or short.MaxValue if there is no solid
+   public abstract short GetLeftSolidPixel(short width, short height, short min, short max);
+   // Returns a value between 0 and width-1, inclusive, or short.MinValue if there is no solid
+   public abstract short GetRightSolidPixel(short width, short height, short min, short max);
 }
 
 public class EmptyTileShape : TileShape
@@ -42,24 +46,24 @@ public class EmptyTileShape : TileShape
    {
    }
 
-   public override byte GetTopSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetTopSolidPixel(short width, short height, short min, short max)
    {
-      return byte.MaxValue;
+      return short.MaxValue;
    }
 
-   public override byte GetBottomSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetBottomSolidPixel(short width, short height, short min, short max)
    {
-      return byte.MaxValue;
+      return short.MinValue;
    }
 
-   public override byte GetLeftSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetLeftSolidPixel(short width, short height, short min, short max)
    {
-      return byte.MaxValue;
+      return short.MaxValue;
    }
 
-   public override byte GetRightSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetRightSolidPixel(short width, short height, short min, short max)
    {
-      return byte.MaxValue;
+      return short.MinValue;
    }
 }
 
@@ -79,24 +83,24 @@ public class SolidTileShape : TileShape
    {
    }
 
-   public override byte GetTopSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetTopSolidPixel(short width, short height, short min, short max)
    {
       return 0;
    }
 
-   public override byte GetBottomSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetBottomSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(height-1);
+      return (short)(height-1);
    }
 
-   public override byte GetLeftSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetLeftSolidPixel(short width, short height, short min, short max)
    {
       return 0;
    }
 
-   public override byte GetRightSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetRightSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(width-1);
+      return (short)(width-1);
    }
 }
 
@@ -128,24 +132,24 @@ public class UphillTileShape : TileShape
    {
    }
 
-   public override byte GetTopSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetTopSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(height * (width-max-1) / width);
+      return (short)(height * (width-max-1) / width);
    }
 
-   public override byte GetBottomSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetBottomSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(height-1);
+      return (short)(height-1);
    }
 
-   public override byte GetLeftSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetLeftSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(width * (height-max-1) / height);
+      return (short)(width * (height-max-1) / height);
    }
 
-   public override byte GetRightSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetRightSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(width-1);
+      return (short)(width-1);
    }
 }
 
@@ -177,24 +181,24 @@ public class DownhillTileShape : TileShape
    {
    }
 
-   public override byte GetTopSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetTopSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(min * height / width);
+      return (short)(min * height / width);
    }
 
-   public override byte GetBottomSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetBottomSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(height-1);
+      return (short)(height-1);
    }
 
-   public override byte GetLeftSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetLeftSolidPixel(short width, short height, short min, short max)
    {
       return 0;
    }
 
-   public override byte GetRightSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetRightSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(width - (height - min - 1) * width / height - 1);
+      return (short)(width - (height - max - 1) * width / height - 1);
    }
 }
 
@@ -226,24 +230,24 @@ public class UpCeilingTileShape : TileShape
    {
    }
 
-   public override byte GetTopSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetTopSolidPixel(short width, short height, short min, short max)
    {
       return 0;
    }
 
-   public override byte GetBottomSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetBottomSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)((width - min) * height / width);
+      return (short)(((width - min) * height - 1) / width);
    }
 
-   public override byte GetLeftSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetLeftSolidPixel(short width, short height, short min, short max)
    {
       return 0;
    }
 
-   public override byte GetRightSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetRightSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(((height - min) * width - 1) / height);
+      return (short)(((height - min) * width - 1) / height);
    }
 }
 
@@ -275,24 +279,24 @@ public class DownCeilingTileShape : TileShape
    {
    }
 
-   public override byte GetTopSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetTopSolidPixel(short width, short height, short min, short max)
    {
       return 0;
    }
 
-   public override byte GetBottomSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetBottomSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(height - (width - max - 1) * height / width - 1);
+      return (short)(height - (width - max - 1) * height / width - 1);
    }
 
-   public override byte GetLeftSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetLeftSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(min * width / height);
+      return (short)(min * width / height);
    }
 
-   public override byte GetRightSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetRightSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(width - 1);
+      return (short)(width - 1);
    }
 }
 
@@ -324,24 +328,24 @@ public class UphillRightTileShape : TileShape
    {
    }
 
-   public override byte GetTopSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetTopSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(height * (width - max - 1) / width / 2);
+      return (short)(height * (width - max - 1) / width / 2);
    }
 
-   public override byte GetBottomSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetBottomSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(height - 1);
+      return (short)(height - 1);
    }
 
-   public override byte GetLeftSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetLeftSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)((max * 2 >= height - 2) ? 0 : width * (height - max * 2 - 2) / height);
+      return (short)((max * 2 >= height - 2) ? 0 : width * (height - max * 2 - 2) / height);
    }
 
-   public override byte GetRightSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetRightSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(width - 1);
+      return (short)(width - 1);
    }
 }
 
@@ -373,24 +377,24 @@ public class UphillLeftTileShape : TileShape
    {
    }
 
-   public override byte GetTopSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetTopSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(height * (width - max - 1) / width / 2 + height / 2);
+      return (short)(height * (width - max - 1) / width / 2 + height / 2);
    }
 
-   public override byte GetBottomSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetBottomSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(height - 1);
+      return (short)(height - 1);
    }
 
-   public override byte GetLeftSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetLeftSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(((max + 1) * 2 <= height)?byte.MaxValue:width * (height - max - 1) * 2 / height);
+      return (short)(((max + 1) * 2 <= height)?short.MaxValue:width * (height - max - 1) * 2 / height);
    }
 
-   public override byte GetRightSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetRightSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(((max + 1) * 2 <= height)?byte.MaxValue:width - 1);
+      return (short)(((max + 1) * 2 <= height)?short.MinValue:width - 1);
    }
 }
 
@@ -422,24 +426,24 @@ public class DownhillLeftTileShape : TileShape
    {
    }
 
-   public override byte GetTopSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetTopSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(min * height / width / 2);
+      return (short)(min * height / width / 2);
    }
 
-   public override byte GetBottomSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetBottomSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(height-1);
+      return (short)(height-1);
    }
 
-   public override byte GetLeftSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetLeftSolidPixel(short width, short height, short min, short max)
    {
       return 0;
    }
 
-   public override byte GetRightSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetRightSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(((min + 1) * 2 > height) ? width - 1 : width * 2 - (height - min - 1) * width * 2 / height - 1);
+      return (short)(((max + 1) * 2 > height) ? width - 1 : width * 2 - (height - max - 1) * width * 2 / height - 1);
    }
 }
 
@@ -471,23 +475,75 @@ public class DownhillRightTileShape : TileShape
    {
    }
 
-   public override byte GetTopSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetTopSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)((height + min * height / width) / 2);
+      return (short)((height + min * height / width) / 2);
    }
 
-   public override byte GetBottomSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetBottomSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(height-1);
+      return (short)(height-1);
    }
 
-   public override byte GetLeftSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetLeftSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(((min + 1) * 2 <= height) ? byte.MaxValue : (byte)0);
+      return (short)(((min + 1) * 2 <= height) ? short.MaxValue : (short)0);
    }
 
-   public override byte GetRightSolidPixel(byte width, byte height, byte min, byte max)
+   public override short GetRightSolidPixel(short width, short height, short min, short max)
    {
-      return (byte)(((min + 1) * 2 <= height) ? byte.MaxValue : width - (height - min - 1) * 2 * width / height - 1);
+      return (short)(((max + 1) * 2 <= height) ? short.MinValue : width - (height - max - 1) * 2 * width / height - 1);
    }
 }
+
+
+/*
+   +--------+
+   |^^^^^^^^|
+   |        |
+   |        |
+   |        |
+   |        |
+   |        |
+   |        |
+   |        |
+   +--------+
+   (Top is solid only from above)
+*/
+public class TopSolidTileShape : TileShape
+{
+   private static TopSolidTileShape m_Value = new TopSolidTileShape();
+
+   public static TopSolidTileShape Value
+   {
+      get
+      {
+         return m_Value;
+      }
+   }
+
+   public TopSolidTileShape()
+   {
+   }
+
+   public override short GetTopSolidPixel(short width, short height, short min, short max)
+   {
+      return 0;
+   }
+
+   public override short GetBottomSolidPixel(short width, short height, short min, short max)
+   {
+      return short.MinValue;
+   }
+
+   public override short GetLeftSolidPixel(short width, short height, short min, short max)
+   {
+      return short.MaxValue;
+   }
+
+   public override short GetRightSolidPixel(short width, short height, short min, short max)
+   {
+      return short.MinValue;
+   }
+}
+

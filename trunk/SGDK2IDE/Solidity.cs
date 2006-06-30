@@ -175,6 +175,7 @@ namespace SGDK2
       private string[] GetTileShapes()
       {
          CodeGenerator gen = new CodeGenerator();
+         gen.GenerateLevel = CodeGenerator.CodeLevel.ExcludeRules;
          string errs;
          string assemblyFilename = gen.CompileTempAssembly(out errs);
          if ((errs != null) && (errs.Length > 0))

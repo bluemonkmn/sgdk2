@@ -132,6 +132,7 @@ namespace SGDK2
          this.mnuFileDeleteObj = new System.Windows.Forms.MenuItem();
          this.mnuFileSep2 = new System.Windows.Forms.MenuItem();
          this.mnuFileRunProject = new System.Windows.Forms.MenuItem();
+         this.mnuFileRunProjectInDebugMode = new System.Windows.Forms.MenuItem();
          this.mnuFileResetCode = new System.Windows.Forms.MenuItem();
          this.mnuFileGenerate = new System.Windows.Forms.MenuItem();
          this.mnuFileDeleteOutputFiles = new System.Windows.Forms.MenuItem();
@@ -144,7 +145,6 @@ namespace SGDK2
          this.pnlProjectTree = new System.Windows.Forms.Panel();
          this.lblProjectTree = new System.Windows.Forms.Label();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
-         this.mnuFileRunProjectInDebugMode = new System.Windows.Forms.MenuItem();
          this.pnlProjectTree.SuspendLayout();
          this.SuspendLayout();
          // 
@@ -218,7 +218,7 @@ namespace SGDK2
          this.tvwMain.ItemHeight = 16;
          this.tvwMain.Location = new System.Drawing.Point(0, 16);
          this.tvwMain.Name = "tvwMain";
-         this.tvwMain.Size = new System.Drawing.Size(144, 531);
+         this.tvwMain.Size = new System.Drawing.Size(176, 531);
          this.tvwMain.TabIndex = 3;
          this.tvwMain.MouseUp += new System.Windows.Forms.MouseEventHandler(this.tvwMain_MouseUp);
          this.tvwMain.DoubleClick += new System.EventHandler(this.tvwMain_DoubleClick);
@@ -244,7 +244,7 @@ namespace SGDK2
          // 
          // splitterMDI
          // 
-         this.splitterMDI.Location = new System.Drawing.Point(144, 27);
+         this.splitterMDI.Location = new System.Drawing.Point(176, 27);
          this.splitterMDI.MinSize = 20;
          this.splitterMDI.Name = "splitterMDI";
          this.splitterMDI.Size = new System.Drawing.Size(6, 547);
@@ -333,6 +333,12 @@ namespace SGDK2
          this.mnuFileRunProject.Text = "&Run Project";
          this.mnuFileRunProject.Click += new System.EventHandler(this.mnuFileRunProject_Click);
          // 
+         // mnuFileRunProjectInDebugMode
+         // 
+         this.mnuFileRunProjectInDebugMode.Index = 9;
+         this.mnuFileRunProjectInDebugMode.Text = "Run Project in Debug &Mode";
+         this.mnuFileRunProjectInDebugMode.Click += new System.EventHandler(this.mnuFileRunProjectInDebugMode_Click);
+         // 
          // mnuFileResetCode
          // 
          this.mnuFileResetCode.Index = 10;
@@ -404,7 +410,7 @@ namespace SGDK2
          this.pnlProjectTree.Dock = System.Windows.Forms.DockStyle.Left;
          this.pnlProjectTree.Location = new System.Drawing.Point(0, 27);
          this.pnlProjectTree.Name = "pnlProjectTree";
-         this.pnlProjectTree.Size = new System.Drawing.Size(144, 547);
+         this.pnlProjectTree.Size = new System.Drawing.Size(176, 547);
          this.pnlProjectTree.TabIndex = 6;
          // 
          // lblProjectTree
@@ -418,7 +424,7 @@ namespace SGDK2
          this.lblProjectTree.ImageList = this.imlMain;
          this.lblProjectTree.Location = new System.Drawing.Point(0, 0);
          this.lblProjectTree.Name = "lblProjectTree";
-         this.lblProjectTree.Size = new System.Drawing.Size(144, 16);
+         this.lblProjectTree.Size = new System.Drawing.Size(176, 16);
          this.lblProjectTree.TabIndex = 4;
          this.lblProjectTree.Text = "Project Tree";
          this.lblProjectTree.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -477,12 +483,6 @@ namespace SGDK2
          this.dataMonitor.MapRowChanging += new SGDK2.ProjectDataset.MapRowChangeEventHandler(this.dataMonitor_MapRowChanging);
          this.dataMonitor.CounterRowChanged += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowChanged);
          this.dataMonitor.SpriteCategoryRowDeleted += new SGDK2.ProjectDataset.SpriteCategoryRowChangeEventHandler(this.dataMonitor_SpriteCategoryRowDeleted);
-         // 
-         // mnuFileRunProjectInDebugMode
-         // 
-         this.mnuFileRunProjectInDebugMode.Index = 9;
-         this.mnuFileRunProjectInDebugMode.Text = "Run Project in Debug &Mode";
-         this.mnuFileRunProjectInDebugMode.Click += new System.EventHandler(this.mnuFileRunProjectInDebugMode_Click);
          // 
          // frmMain
          // 

@@ -862,7 +862,6 @@ namespace SGDK2
          // 
          this.cboOutput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-         this.cboOutput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
          this.cboOutput.Enabled = false;
          this.cboOutput.Location = new System.Drawing.Point(128, 184);
          this.cboOutput.Name = "cboOutput";
@@ -1463,6 +1462,18 @@ namespace SGDK2
             PrepareFunction(cboFunction.Text);
 
             cboRuleType.Text = drRule.Type;
+
+            if (CurrentRule != null)
+            {
+               if (!cboParam1.Enabled)
+                  CurrentRule.SetParameter1Null();
+               if (!cboParam2.Enabled)
+                  CurrentRule.SetParameter2Null();
+               if (!cboParam3.Enabled)
+                  CurrentRule.SetParameter3Null();
+               if (!cboOutput.Enabled)
+                  CurrentRule.SetResultParameterNull();
+            }
 
             if (drRule.IsParameter1Null())
                cboParam1.SelectedIndex = -1;

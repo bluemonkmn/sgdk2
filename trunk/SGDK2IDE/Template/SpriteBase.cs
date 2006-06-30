@@ -18,6 +18,8 @@ public abstract class SpriteBase
    public InputBits inputs;
    public InputBits oldinputs;
    public bool isActive;
+   public readonly LayerBase layer;
+   private Solidity m_solidity;
 
    [FlagsAttribute()]
    public enum InputBits
@@ -32,8 +34,17 @@ public abstract class SpriteBase
       Button4=128
    }
 
-   public SpriteBase(double x, double y, double dx, double dy, int state, int frame, bool active)
+   public enum Direction
+   {
+      Up=1,
+      Right=2,
+      Down=3,
+      Left=4
+   }
+
+   public SpriteBase(LayerBase layer, double x, double y, double dx, double dy, int state, int frame, bool active, Solidity solidity)
 	{
+      this.layer = layer;
       this.x = x;
       this.y = y;
       this.dx = dx;
@@ -41,6 +52,7 @@ public abstract class SpriteBase
       this.state = state;
       this.frame = frame;
       this.isActive = active;
+      this.m_solidity = solidity;
 	}
 
    #region Properties
@@ -59,6 +71,24 @@ public abstract class SpriteBase
       {
          Debug.Assert(this.isActive, "Attempted to access PixelY on an inactive sprite");
          return (int)y;
+      }
+   }
+
+   public int ProposedPixelX
+   {
+      get
+      {
+         Debug.Assert(this.isActive, "Attempted to access ProposedPixelX on an inactive sprite");
+         return (int)(x+dx);
+      }
+   }
+
+   public int ProposedPixelY
+   {
+      get
+      {
+         Debug.Assert(this.isActive, "Attempted to access ProposedPixelY on an inactive sprite");
+         return (int)(y+dy);
       }
    }
 
@@ -304,17 +334,20 @@ public abstract class SpriteBase
    }
 
    [Description("Accelerate this sprite according to which directional inputs are on.  Acceleration is in tenths of a pixel per second squared.  Max is in pixels per second.")]
-   public void AccelerateByInputs(int Acceleration, int Max)
+   public void AccelerateByInputs(int Acceleration, int Max, bool HorizontalOnly)
    {
       Debug.Assert(this.isActive, "Attempted to execute AccelerateByInputs on an inactive sprite");
-      if (0 != (inputs & InputBits.Up))
-         dy -= ((double)Acceleration)/10.0d;
-      if (dy < -(double)Max)
-         dy = -(double)Max;
-      if (0 != (inputs & InputBits.Down))
-         dy += ((double)Acceleration)/10.0d;
-      if (dy > (double)Max)
-         dy = (double)Max;
+      if (!HorizontalOnly)
+      {
+         if (0 != (inputs & InputBits.Up))
+            dy -= ((double)Acceleration)/10.0d;
+         if (dy < -(double)Max)
+            dy = -(double)Max;
+         if (0 != (inputs & InputBits.Down))
+            dy += ((double)Acceleration)/10.0d;
+         if (dy > (double)Max)
+            dy = (double)Max;
+      }
       if (0 != (inputs & InputBits.Left))
          dx -= ((double)Acceleration)/10.0d;
       if (dx < -(double)Max)
@@ -324,5 +357,210 @@ public abstract class SpriteBase
       if (dx > (double)Max)
          dx = (double)Max;
    }
+   #endregion
+
+   #region Solidity
+   public Solidity CurrentSolidity
+   {
+      [Description("Set the solidity rules to which the sprite is currently reacting")]
+      set
+      {
+         m_solidity = value;
+      }
+   }
+
+   [Description("Alter the sprite's velocity to react to solid areas on the map.  Returns true if sprite touches solid.")]
+   public bool ReactToSolid()
+   {
+      Debug.Assert(this.isActive, "Attempted to execute ReactToSolid on an inactive sprite");
+      bool hit = false;
+      double dyOrig = dy;
+
+      if (dy > 0)
+      {
+         int ground = layer.GetTopSolidPixel(new System.Drawing.Rectangle(PixelX, PixelY+SolidHeight, SolidWidth, ProposedPixelY - PixelY), m_solidity);
+         if (ground != int.MinValue)
+         {
+            dy = ground - y - SolidHeight;
+            hit = true;
+         }
+      } 
+      else if (dy < 0)
+      {
+         int ceiling = layer.GetBottomSolidPixel(new System.Drawing.Rectangle(PixelX, ProposedPixelY, SolidWidth, PixelY - ProposedPixelY), m_solidity);
+         if (ceiling != int.MinValue)
+         {
+            dy = ceiling - y + 1;
+            hit = true;
+         }
+      }
+
+      if (dx > 0)
+      {
+         int rightwall = layer.GetLeftSolidPixel(new System.Drawing.Rectangle(PixelX + SolidWidth, ProposedPixelY, ProposedPixelX - PixelX, SolidHeight), m_solidity);
+         bool hitWall = false;
+         if (rightwall != int.MinValue)
+         {
+            int maxSlopeProposedY = (int)(y + dy - dx);
+            int slopedFloor = layer.GetTopSolidPixel(new System.Drawing.Rectangle(PixelX + SolidWidth, maxSlopeProposedY + SolidHeight, ProposedPixelX - PixelX, ProposedPixelY - maxSlopeProposedY), m_solidity);
+            if (slopedFloor != int.MinValue)
+            {
+               slopedFloor--;
+               int ceiling = layer.GetBottomSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, slopedFloor - SolidHeight, SolidWidth, ProposedPixelY + SolidHeight - slopedFloor), m_solidity);
+               if (ceiling == int.MinValue)
+               {
+                  int rightwall2 = layer.GetLeftSolidPixel(new System.Drawing.Rectangle(PixelX + SolidWidth, slopedFloor - SolidHeight, ProposedPixelX - PixelX, SolidHeight), m_solidity);
+                  if (rightwall2 == int.MinValue)
+                     dy = dyOrig = slopedFloor - y - SolidHeight;
+                  else
+                     hitWall = true;
+               }
+               else
+                  hitWall = true;
+            }
+            else
+            {
+               maxSlopeProposedY = (int)(y + dy + dx);
+               int slopedCeiling = layer.GetBottomSolidPixel(new System.Drawing.Rectangle(PixelX + SolidWidth, ProposedPixelY, ProposedPixelX - PixelX, maxSlopeProposedY - ProposedPixelY), m_solidity);
+               if (slopedCeiling != int.MinValue)
+               {
+                  slopedCeiling++;
+                  int floor = layer.GetTopSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, ProposedPixelY + SolidHeight, SolidWidth, slopedCeiling - ProposedPixelY), m_solidity);
+                  if (floor == int.MinValue)
+                  {
+                     int rightwall2 = layer.GetLeftSolidPixel(new System.Drawing.Rectangle(PixelX + SolidWidth, slopedCeiling, ProposedPixelX - PixelX, SolidHeight), m_solidity);
+                     if (rightwall2 == int.MinValue)
+                        dy = dyOrig = slopedCeiling - y;
+                     else
+                        hitWall = true;
+                  }
+                  else
+                     hitWall = true;
+               }
+               else
+                  hitWall = true;
+            }
+            if (hitWall)
+            {
+               x = PixelX; // Circumvent IEEE floating point rounding errors
+               dx = rightwall - x - SolidWidth;
+            }
+            hit = true;
+         }
+      }
+      else if (dx < 0)
+      {
+         int leftwall = layer.GetRightSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, ProposedPixelY, PixelX - ProposedPixelX, SolidHeight), m_solidity);
+         bool hitWall = false;
+         if (leftwall != int.MinValue)
+         {
+            int maxSlopeProposedY = (int)(y + dy + dx);
+            int slopedFloor = layer.GetTopSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, maxSlopeProposedY + SolidHeight, PixelX - ProposedPixelX, ProposedPixelY - maxSlopeProposedY), m_solidity);
+            if (slopedFloor != int.MinValue)
+            {
+               slopedFloor--;
+               int ceiling = layer.GetBottomSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, slopedFloor - SolidHeight, SolidWidth, ProposedPixelY + SolidHeight - slopedFloor), m_solidity);
+               if (ceiling == int.MinValue)
+               {
+                  int leftwall2 = layer.GetRightSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, slopedFloor - SolidHeight, PixelX - ProposedPixelX, SolidHeight), m_solidity);
+                  if (leftwall2 == int.MinValue)
+                     dy = dyOrig = slopedFloor - y - SolidHeight;
+                  else
+                     hitWall = true;
+               }
+               else
+                  hitWall = true;
+            }
+            else
+            {
+               maxSlopeProposedY = (int)(y + dy - dx);
+               int slopedCeiling = layer.GetBottomSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, ProposedPixelY, PixelX - ProposedPixelX, maxSlopeProposedY - ProposedPixelY), m_solidity);
+               if (slopedCeiling != int.MinValue)
+               {
+                  slopedCeiling++;
+                  int floor = layer.GetTopSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, ProposedPixelY + SolidHeight, SolidWidth, slopedCeiling - ProposedPixelY), m_solidity);
+                  if (floor == int.MinValue)
+                  {
+                     int leftwall2 = layer.GetRightSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, slopedCeiling, PixelX - ProposedPixelX, SolidHeight), m_solidity);
+                     if (leftwall2 == int.MinValue)
+                        dy = dyOrig = slopedCeiling - y;
+                     else
+                        hitWall = true;
+                  }
+                  else
+                     hitWall = true;
+               }
+               else
+                  hitWall = true;
+            }
+            if (hitWall)
+            {
+               x = PixelX; // Circumvent IEEE floating point rounding errors
+               dx = leftwall - x + 1;
+            }
+            hit = true;
+         }
+      }
+
+      dy = dyOrig;
+      if (dy > 0)
+      {
+         int ground = layer.GetTopSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, PixelY+SolidHeight, SolidWidth, ProposedPixelY - PixelY), m_solidity);
+         if (ground != int.MinValue)
+         {
+            y = PixelY; // Circumvent IEEE floating point rounding errors
+            dy = ground - y - SolidHeight;
+            hit = true;
+         }
+      }
+      else if (dy < 0)
+      {
+         int ceiling = layer.GetBottomSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, ProposedPixelY, SolidWidth, PixelY - ProposedPixelY), m_solidity);
+         if (ceiling != int.MinValue)
+         {
+            y = PixelY; // Circumvent IEEE floating point rounding errors
+            dy = ceiling - y + 1;
+            hit = true;
+         }
+      }
+
+      return hit;
+   }
+
+   [Description("If the sprite's proposed position is within <Threshhold> pixels of the ground, alter its velocity so it will touch the ground.  Returns true if snap occurred.")]
+   public bool SnapToGround(int Threshhold)
+   {
+      Debug.Assert(this.isActive, "Attempted to execute SnapToGround on an inactive sprite");
+
+      int ground = layer.GetTopSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, ProposedPixelY+SolidHeight, SolidWidth, Threshhold), m_solidity);
+      if (ground != int.MinValue)
+      {
+         double newDy = ground - y - SolidHeight;
+         if (newDy > dy)
+            dy = newDy;
+         return true;
+      }
+      return false;
+   }
+
+   [Description("Determines if the sprite is blocked from moving in a particular direction by solidity on the layer.")]
+   public bool Blocked(Direction Direction)
+   {
+      Debug.Assert(this.isActive, "Attempted to execute Blocked on an inactive sprite");
+
+      switch(Direction)
+      {
+         case Direction.Up:
+            return layer.GetBottomSolidPixel(new System.Drawing.Rectangle(PixelX, PixelY-1, SolidWidth, 1), m_solidity) != int.MinValue;
+         case Direction.Right:
+            return layer.GetLeftSolidPixel(new System.Drawing.Rectangle(PixelX+SolidWidth, PixelY, 1, SolidHeight), m_solidity) != int.MinValue;
+         case Direction.Down:
+            return layer.GetTopSolidPixel(new System.Drawing.Rectangle(PixelX, PixelY+SolidHeight, SolidWidth, 1), m_solidity) != int.MinValue;
+         case Direction.Left:
+            return layer.GetRightSolidPixel(new System.Drawing.Rectangle(PixelX - 1, PixelY, 1, SolidHeight), m_solidity) != int.MinValue;
+      }
+      return false;
+   }
+
    #endregion
 }

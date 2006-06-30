@@ -210,6 +210,14 @@ public abstract class LayerBase : System.Collections.IEnumerable
          return m_ParentMap;
       }
    }
+   
+   public Tileset Tileset
+   {
+      get
+      {
+         return m_Tileset;
+      }
+   }
    #endregion
 
    #region Public methods
@@ -418,6 +426,298 @@ public abstract class LayerBase : System.Collections.IEnumerable
             CurrentPosition = new Point(CurrentPosition.X, -spriteBounds.Bottom + VisibleArea.Height - ParentMap.ScrollMarginBottom);
       }
       ParentMap.Scroll(new Point(newX, newY));
+   }
+
+   public int GetTopSolidPixel(Rectangle testArea, Solidity solid)
+   {
+      int topTile = (testArea.Top + m_Tileset.TileHeight) / m_Tileset.TileHeight - 1;
+      int bottomTile = (int)((testArea.Top + testArea.Height - 1) / m_Tileset.TileHeight);
+      int leftTile = (testArea.Left + m_Tileset.TileHeight) / m_Tileset.TileWidth - 1;
+      int rightTile = (int)((testArea.Left + testArea.Width - 1) / m_Tileset.TileWidth);
+      bool outOfBounds = false;
+      if ((topTile < 0) || (topTile >= Rows) || (bottomTile < 0) || (bottomTile >= Rows)
+         || (leftTile < 0) || (leftTile >= Columns) || (rightTile < 0) || (rightTile >= Columns))
+         outOfBounds = true;
+      short minTileTop = (short)(testArea.Top % m_Tileset.TileHeight);
+      int tileLeft = leftTile * m_Tileset.TileWidth;
+      for (int y = topTile; y <= bottomTile; y++)
+      {
+         if (rightTile == leftTile)
+         {
+            short topMost;
+            if (outOfBounds && ((leftTile < 0) || (leftTile >= Columns) || (y < 0) || (y >= Rows)))
+               topMost = 0;
+            else
+               topMost = solid.GetCurrentTileShape(m_Tileset[this[leftTile,y]]).GetTopSolidPixel(
+                  m_Tileset.TileWidth, m_Tileset.TileHeight, (short)(testArea.Left - tileLeft),
+                  (short)(testArea.Left + testArea.Width - 1 - tileLeft));
+            if ((topMost != short.MaxValue) && ((y > topTile) || (topMost >= minTileTop)))
+            {
+               int result = topMost + y * m_Tileset.TileHeight;
+               if (result < testArea.Top + testArea.Height)
+                  return result;
+               else
+                  return int.MinValue;
+            }
+         }
+         else
+         {
+            short topMost;
+            if (outOfBounds && ((leftTile < 0) || (leftTile >= Columns) || (y < 0) || (y >= Rows)))
+               topMost = 0;
+            else
+               topMost = solid.GetCurrentTileShape(m_Tileset[this[leftTile,y]]).GetTopSolidPixel(
+                  m_Tileset.TileWidth, m_Tileset.TileHeight, (short)(testArea.Left - tileLeft), (short)(m_Tileset.TileWidth - 1));
+            if ((y == topTile) && (topMost < minTileTop))
+               topMost = short.MaxValue;
+            short top;
+            for (int x = leftTile + 1; x < rightTile; x++)
+            {
+               if (outOfBounds && ((x < 0) || (x >= Columns) || (y < 0) || (y >= Rows)))
+                  top = 0;
+               else
+                  top = solid.GetCurrentTileShape(m_Tileset[this[x,y]]).GetTopSolidPixel(
+                     m_Tileset.TileWidth, m_Tileset.TileHeight, 0, (short)(m_Tileset.TileWidth - 1));
+               if ((top < topMost) && ((y > topTile) || (top >= minTileTop)))
+                  topMost = top;
+            }
+            if (outOfBounds && ((rightTile < 0) || (rightTile >= Columns) || (y < 0) || (y >= Rows)))
+               top = 0;
+            else
+               top = solid.GetCurrentTileShape(m_Tileset[this[rightTile,y]]).GetTopSolidPixel(
+                  m_Tileset.TileWidth, m_Tileset.TileHeight, 0, (short)((testArea.Left + testArea.Width - 1) % m_Tileset.TileWidth));
+            if ((top < topMost) && ((y > topTile) || (top >= minTileTop)))
+               topMost = top;
+            if (topMost != short.MaxValue)
+            {
+               int result = topMost + y * m_Tileset.TileHeight;
+               if (result < testArea.Top + testArea.Height)
+                  return result;
+               else
+                  return int.MinValue;
+            }
+         }
+      }
+      return int.MinValue;
+   }
+
+   public int GetBottomSolidPixel(Rectangle testArea, Solidity solid)
+   {
+      int topTile = (testArea.Top + m_Tileset.TileHeight) / m_Tileset.TileHeight - 1;
+      int bottomTile = (int)((testArea.Top + testArea.Height - 1) / m_Tileset.TileHeight);
+      int leftTile = (testArea.Left + m_Tileset.TileHeight) / m_Tileset.TileWidth - 1;
+      int rightTile = (int)((testArea.Left + testArea.Width - 1) / m_Tileset.TileWidth);
+      bool outOfBounds = false;
+      if ((topTile < 0) || (topTile >= Rows) || (bottomTile < 0) || (bottomTile >= Rows)
+         || (leftTile < 0) || (leftTile >= Columns) || (rightTile < 0) || (rightTile >= Columns))
+         outOfBounds = true;
+      short maxTileBottom = (short)((testArea.Top+testArea.Height-1) % m_Tileset.TileHeight);
+      int tileLeft = leftTile * m_Tileset.TileWidth;
+      for (int y = bottomTile; y >= topTile; y--)
+      {
+         if (rightTile == leftTile)
+         {
+            short bottomMost;
+            if (outOfBounds && ((leftTile < 0) || (leftTile >= Columns) || (y < 0) || (y >= Rows)))
+               bottomMost = (short)(m_Tileset.TileHeight - 1);
+            else
+               bottomMost = solid.GetCurrentTileShape(m_Tileset[this[leftTile,y]]).GetBottomSolidPixel(
+                  m_Tileset.TileWidth, m_Tileset.TileHeight, (short)(testArea.Left - tileLeft),
+                  (short)(testArea.Left + testArea.Width - 1 - tileLeft));
+            if ((bottomMost != short.MinValue) && ((y < bottomTile) || (bottomMost <= maxTileBottom)))
+            {
+               int result = bottomMost + y * m_Tileset.TileHeight;
+               if (result >= testArea.Top)
+                  return result;
+               else
+                  return int.MinValue;
+            }
+         }
+         else
+         {
+            short bottomMost;
+            if (outOfBounds && ((leftTile < 0) || (leftTile >= Columns) || (y < 0) || (y >= Rows)))
+               bottomMost = (short)(m_Tileset.TileHeight - 1);
+            else
+               bottomMost = solid.GetCurrentTileShape(m_Tileset[this[leftTile,y]]).GetBottomSolidPixel(
+                  m_Tileset.TileWidth, m_Tileset.TileHeight, (short)(testArea.Left - tileLeft), (short)(m_Tileset.TileWidth - 1));
+            if ((y == bottomTile) && (bottomMost > maxTileBottom))
+               bottomMost = short.MinValue;
+            short bottom;
+            for (int x = leftTile + 1; x < rightTile; x++)
+            {
+               if (outOfBounds && ((x < 0) || (x >= Columns) || (y < 0) || (y >= Rows)))
+                  bottom = (short)(m_Tileset.TileHeight - 1);
+               else
+                  bottom = solid.GetCurrentTileShape(m_Tileset[this[x,y]]).GetBottomSolidPixel(
+                     m_Tileset.TileWidth, m_Tileset.TileHeight, 0, (short)(m_Tileset.TileWidth - 1));
+               if ((bottom > bottomMost) && ((y < bottomTile) || (bottom <= maxTileBottom)))
+                  bottomMost = bottom;
+            }
+            if (outOfBounds && ((rightTile < 0) || (rightTile >= Columns) || (y < 0) || (y >= Rows)))
+               bottom = (short)(m_Tileset.TileHeight - 1);
+            else
+               bottom = solid.GetCurrentTileShape(m_Tileset[this[rightTile,y]]).GetBottomSolidPixel(
+                  m_Tileset.TileWidth, m_Tileset.TileHeight, 0, (short)((testArea.Left + testArea.Width - 1) % m_Tileset.TileWidth));
+            if ((bottom > bottomMost) && ((y < bottomTile) || (bottom <= maxTileBottom)))
+               bottomMost = bottom;
+            if (bottomMost != short.MinValue)
+            {
+               int result = bottomMost + y * m_Tileset.TileHeight;
+               if (result >= testArea.Top)
+                  return result;
+               else
+                  return int.MinValue;
+            }
+         }
+      }
+      return int.MinValue;
+   }
+
+   public int GetLeftSolidPixel(Rectangle testArea, Solidity solid)
+   {
+      int topTile = (testArea.Top + m_Tileset.TileHeight) / m_Tileset.TileHeight - 1;
+      int bottomTile = (int)((testArea.Top + testArea.Height - 1) / m_Tileset.TileHeight);
+      int leftTile = (testArea.Left + m_Tileset.TileHeight) / m_Tileset.TileWidth - 1;
+      int rightTile = (int)((testArea.Left + testArea.Width - 1) / m_Tileset.TileWidth);
+      bool outOfBounds = false;
+      if ((topTile < 0) || (topTile >= Rows) || (bottomTile < 0) || (bottomTile >= Rows)
+         || (leftTile < 0) || (leftTile >= Columns) || (rightTile < 0) || (rightTile >= Columns))
+         outOfBounds = true;
+      short minTileLeft = (short)(testArea.Left % m_Tileset.TileWidth);
+      int tileTop = topTile * m_Tileset.TileHeight;
+      for (int x = leftTile; x <= rightTile; x++)
+      {
+         if (bottomTile == topTile)
+         {
+            short leftMost;
+            if (outOfBounds && ((topTile < 0) || (topTile >= Rows) || (x < 0) || (x >= Columns)))
+               leftMost = 0;
+            else
+               leftMost = solid.GetCurrentTileShape(m_Tileset[this[x,topTile]]).GetLeftSolidPixel(
+                  m_Tileset.TileWidth, m_Tileset.TileHeight, (short)(testArea.Top - tileTop),
+                  (short)(testArea.Top + testArea.Height - 1 - tileTop));
+            if ((leftMost != short.MaxValue) && ((x > leftTile) || (leftMost >= minTileLeft)))
+            {
+               int result = leftMost + x * m_Tileset.TileWidth;
+               if (result < testArea.Left + testArea.Width)
+                  return result;
+               else
+                  return int.MinValue;
+            }
+         }
+         else
+         {
+            short leftMost;
+            if (outOfBounds && ((topTile < 0) || (topTile >= Rows) || (x < 0) || (x >= Columns)))
+               leftMost = 0;
+            else
+               leftMost = solid.GetCurrentTileShape(m_Tileset[this[x, topTile]]).GetLeftSolidPixel(
+                  m_Tileset.TileWidth, m_Tileset.TileHeight, (short)(testArea.Top - tileTop), (short)(m_Tileset.TileHeight - 1));
+            if ((x == leftTile) && (leftMost < minTileLeft))
+               leftMost = short.MaxValue;
+            short left;
+            for (int y = topTile + 1; y < bottomTile; y++)
+            {
+               if (outOfBounds && ((x < 0) || (x >= Columns) || (y < 0) || (y >= Rows)))
+                  left = 0;
+               else
+                  left = solid.GetCurrentTileShape(m_Tileset[this[x,y]]).GetLeftSolidPixel(
+                     m_Tileset.TileWidth, m_Tileset.TileHeight, 0, (short)(m_Tileset.TileHeight - 1));
+               if ((left < leftMost) && ((x > leftTile) || (left >= minTileLeft)))
+                  leftMost = left;
+            }
+            if (outOfBounds && ((bottomTile < 0) || (bottomTile >= Rows) || (x < 0) || (x >= Columns)))
+               left = 0;
+            else
+               left = solid.GetCurrentTileShape(m_Tileset[this[x, bottomTile]]).GetLeftSolidPixel(
+                  m_Tileset.TileWidth, m_Tileset.TileHeight, 0, (short)((testArea.Top + testArea.Height - 1) % m_Tileset.TileHeight));
+            if ((left < leftMost) && ((x > leftTile) || (left >= minTileLeft)))
+               leftMost = left;
+            if (leftMost != short.MaxValue)
+            {
+               int result = leftMost + x * m_Tileset.TileWidth;
+               if (result < testArea.Left + testArea.Width)
+                  return result;
+               else
+                  return int.MinValue;
+            }
+         }
+      }
+      return int.MinValue;
+   }
+
+   public int GetRightSolidPixel(Rectangle testArea, Solidity solid)
+   {
+      int topTile = (testArea.Top + m_Tileset.TileHeight) / m_Tileset.TileHeight - 1;
+      int bottomTile = (int)((testArea.Top + testArea.Height - 1) / m_Tileset.TileHeight);
+      int leftTile = (testArea.Left + m_Tileset.TileHeight) / m_Tileset.TileWidth - 1;
+      int rightTile = (int)((testArea.Left + testArea.Width - 1) / m_Tileset.TileWidth);
+      bool outOfBounds = false;
+      if ((topTile < 0) || (topTile >= Rows) || (bottomTile < 0) || (bottomTile >= Rows)
+         || (leftTile < 0) || (leftTile >= Columns) || (rightTile < 0) || (rightTile >= Columns))
+         outOfBounds = true;
+      short maxTileRight = (short)((testArea.Left+testArea.Width-1) % m_Tileset.TileWidth);
+      int tileTop = topTile * m_Tileset.TileHeight;
+      for (int x = rightTile; x >= leftTile; x--)
+      {
+         if (bottomTile == topTile)
+         {
+            short rightMost;
+            if (outOfBounds && ((topTile < 0) || (topTile >= Rows) || (x < 0) || (x >= Columns)))
+               rightMost = (short)(m_Tileset.TileWidth - 1);
+            else
+               rightMost = solid.GetCurrentTileShape(m_Tileset[this[x,topTile]]).GetRightSolidPixel(
+                  m_Tileset.TileWidth, m_Tileset.TileHeight, (short)(testArea.Top - tileTop),
+                  (short)(testArea.Top + testArea.Height - 1 - tileTop));
+            if ((rightMost != short.MinValue) && ((x < rightTile) || (rightMost <= maxTileRight)))
+            {
+               int result = rightMost + x * m_Tileset.TileWidth;
+               if (result >= testArea.Left)
+                  return result;
+               else
+                  return int.MinValue;
+            }
+         }
+         else
+         {
+            short rightMost;
+            if (outOfBounds && ((topTile < 0) || (topTile >= Rows) || (x < 0) || (x >= Columns)))
+               rightMost = (short)(m_Tileset.TileWidth - 1);
+            else
+               rightMost = solid.GetCurrentTileShape(m_Tileset[this[x, topTile]]).GetRightSolidPixel(
+                  m_Tileset.TileWidth, m_Tileset.TileHeight, (short)(testArea.Top - tileTop), (short)(m_Tileset.TileHeight - 1));
+            if ((x == rightTile) && (rightMost > maxTileRight))
+               rightMost = short.MinValue;
+            short right;
+            for (int y = topTile + 1; y < bottomTile; y++)
+            {
+               if (outOfBounds && ((x < 0) || (x >= Columns) || (y < 0) || (y >= Rows)))
+                  right = (short)(m_Tileset.TileWidth - 1);
+               else
+                  right = solid.GetCurrentTileShape(m_Tileset[this[x,y]]).GetRightSolidPixel(
+                     m_Tileset.TileWidth, m_Tileset.TileHeight, 0, (short)(m_Tileset.TileHeight - 1));
+               if ((right > rightMost) && ((x < rightTile) || (right <= maxTileRight)))
+                  rightMost = right;
+            }
+            if (outOfBounds && ((bottomTile < 0) || (bottomTile >= Rows) || (x < 0) || (x >= Columns)))
+               right = (short)(m_Tileset.TileWidth - 1);
+            else
+               right = solid.GetCurrentTileShape(m_Tileset[this[x, bottomTile]]).GetRightSolidPixel(
+                  m_Tileset.TileWidth, m_Tileset.TileHeight, 0, (short)((testArea.Top + testArea.Height - 1) % m_Tileset.TileHeight));
+            if ((right > rightMost) && ((x < rightTile) || (right <= maxTileRight)))
+               rightMost = right;
+            if (rightMost != short.MinValue)
+            {
+               int result = rightMost + x * m_Tileset.TileWidth;
+               if (result >= testArea.Left)
+                  return result;
+               else
+                  return int.MinValue;
+            }
+         }
+      }
+      return int.MinValue;
    }
    #endregion
 }

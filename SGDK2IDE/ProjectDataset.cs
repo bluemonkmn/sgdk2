@@ -4483,6 +4483,8 @@ namespace SGDK2 {
             
             private DataColumn columnActive;
             
+            private DataColumn columnSolidity;
+            
             internal SpriteDataTable() : 
                     base("Sprite") {
                 this.InitClass();
@@ -4583,6 +4585,12 @@ namespace SGDK2 {
                 }
             }
             
+            internal DataColumn SolidityColumn {
+                get {
+                    return this.columnSolidity;
+                }
+            }
+            
             public SpriteRow this[int index] {
                 get {
                     return ((SpriteRow)(this.Rows[index]));
@@ -4601,7 +4609,7 @@ namespace SGDK2 {
                 this.Rows.Add(row);
             }
             
-            public SpriteRow AddSpriteRow(string LayerName, string Name, string DefinitionName, string StateName, short CurrentFrame, int X, int Y, System.Single DX, System.Single DY, string MapName, int Priority, bool Active) {
+            public SpriteRow AddSpriteRow(string LayerName, string Name, string DefinitionName, string StateName, short CurrentFrame, int X, int Y, System.Single DX, System.Single DY, string MapName, int Priority, bool Active, string Solidity) {
                 SpriteRow rowSpriteRow = ((SpriteRow)(this.NewRow()));
                 rowSpriteRow.ItemArray = new object[] {
                         LayerName,
@@ -4615,7 +4623,8 @@ namespace SGDK2 {
                         DY,
                         MapName,
                         Priority,
-                        Active};
+                        Active,
+                        Solidity};
                 this.Rows.Add(rowSpriteRow);
                 return rowSpriteRow;
             }
@@ -4654,6 +4663,7 @@ namespace SGDK2 {
                 this.columnMapName = this.Columns["MapName"];
                 this.columnPriority = this.Columns["Priority"];
                 this.columnActive = this.Columns["Active"];
+                this.columnSolidity = this.Columns["Solidity"];
             }
             
             private void InitClass() {
@@ -4681,6 +4691,8 @@ namespace SGDK2 {
                 this.Columns.Add(this.columnPriority);
                 this.columnActive = new DataColumn("Active", typeof(bool), null, System.Data.MappingType.Attribute);
                 this.Columns.Add(this.columnActive);
+                this.columnSolidity = new DataColumn("Solidity", typeof(string), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnSolidity);
                 this.Constraints.Add(new UniqueConstraint("SpriteKey", new DataColumn[] {
                                 this.columnLayerName,
                                 this.columnName,
@@ -4707,6 +4719,7 @@ namespace SGDK2 {
                 this.columnPriority.Namespace = "";
                 this.columnActive.Namespace = "";
                 this.columnActive.DefaultValue = true;
+                this.columnSolidity.Namespace = "";
             }
             
             public SpriteRow NewSpriteRow() {
@@ -4894,6 +4907,20 @@ namespace SGDK2 {
                 }
             }
             
+            public string Solidity {
+                get {
+                    if (this.IsSolidityNull()) {
+                        return string.Empty;
+                    }
+                    else {
+                        return ((string)(this[this.tableSprite.SolidityColumn]));
+                    }
+                }
+                set {
+                    this[this.tableSprite.SolidityColumn] = value;
+                }
+            }
+            
             public LayerRow LayerRowParent {
                 get {
                     return ((LayerRow)(this.GetParentRow(this.Table.ParentRelations["LayerSprite"])));
@@ -4974,6 +5001,14 @@ namespace SGDK2 {
             
             public void SetActiveNull() {
                 this[this.tableSprite.ActiveColumn] = System.Convert.DBNull;
+            }
+            
+            public bool IsSolidityNull() {
+                return this.IsNull(this.tableSprite.SolidityColumn);
+            }
+            
+            public void SetSolidityNull() {
+                this[this.tableSprite.SolidityColumn] = System.Convert.DBNull;
             }
             
             public ParameterValueRow[] GetParameterValueRows() {

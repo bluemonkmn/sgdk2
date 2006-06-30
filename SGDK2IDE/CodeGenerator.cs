@@ -52,6 +52,7 @@ namespace SGDK2
       private const string GameFormInstance = "GameWindow";
       private const string GameFormType = "GameForm";
       private const string SpriteIsActiveRef = "isActive";
+      private const string UndefinedSolidityProperty = "UndefinedSolidity";
       #endregion
 
       #region Embedded Types
@@ -751,7 +752,7 @@ namespace SGDK2
                   if (frames.Count == 0)
                      TileExpr = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(EmptyTileClass), "Value");
                   else if (frames.Count == 1)
-                     TileExpr = new CodeObjectCreateExpression(SimpleTileClass, (CodeArrayCreateExpression)(frames[0] as CodeObjectCreateExpression).Parameters[1]);
+                     TileExpr = new CodeObjectCreateExpression(SimpleTileClass, ((CodeObjectCreateExpression)frames[0]).Parameters[1]);
                   else
                   {
                      System.Collections.ArrayList animArgs = new System.Collections.ArrayList();
@@ -1205,6 +1206,7 @@ namespace SGDK2
                   System.Collections.ArrayList SpriteCreateParams = new System.Collections.ArrayList();
                   ProjectDataset.SpriteStateRow drState = sprite.SpriteStateRowParent;
                   ProjectDataset.SpriteDefinitionRow drDef = drState.SpriteDefinitionRow;
+                  SpriteCreateParams.Add(new CodeThisReferenceExpression());
                   SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.X));
                   SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.Y));
                   SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.DX));
@@ -1214,6 +1216,12 @@ namespace SGDK2
                   SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.Active));
                   SpriteCreateParams.Add(new CodeFieldReferenceExpression(
                      new CodeArgumentReferenceExpression(LayerParentArg), MapDisplayField));
+                  if (ProjectData.GetSolidity(sprite.Solidity) != null)
+                     SpriteCreateParams.Add(new CodeFieldReferenceExpression(
+                        new CodeTypeReferenceExpression("Solidity"), sprite.Solidity));
+                  else
+                     SpriteCreateParams.Add(new CodeFieldReferenceExpression(
+                        new CodeTypeReferenceExpression("Solidity"), UndefinedSolidityProperty));
                   ProjectDataset.SpriteParameterRow[] sprParams = ProjectData.GetSortedSpriteParameters(drDef);
                   if (sprParams.Length > 0)
                   {
@@ -1641,6 +1649,7 @@ namespace SGDK2
          constructor.Attributes = MemberAttributes.Public;
          constructor.Parameters.AddRange(new CodeParameterDeclarationExpression[]
             {
+               new CodeParameterDeclarationExpression("LayerBase", "layer"),
                new CodeParameterDeclarationExpression(typeof(double), "x"),
                new CodeParameterDeclarationExpression(typeof(double), "y"),
                new CodeParameterDeclarationExpression(typeof(double), "dx"),
@@ -1649,10 +1658,12 @@ namespace SGDK2
                new CodeTypeReference("Sprites." + drSpriteDef.Name + ".State"), "state"),
                new CodeParameterDeclarationExpression(typeof(int), "frame"),
                new CodeParameterDeclarationExpression(typeof(bool), "active"),
-               new CodeParameterDeclarationExpression("Display", "disp")
+               new CodeParameterDeclarationExpression("Display", "disp"),
+               new CodeParameterDeclarationExpression("Solidity", "solidity")
             });
          constructor.BaseConstructorArgs.AddRange(new CodeExpression[]
             {
+               new CodeArgumentReferenceExpression("layer"),
                new CodeArgumentReferenceExpression("x"),
                new CodeArgumentReferenceExpression("y"),
                new CodeArgumentReferenceExpression("dx"),
@@ -1660,7 +1671,8 @@ namespace SGDK2
                new CodeCastExpression(typeof(int),
                new CodeArgumentReferenceExpression("state")),
                new CodeArgumentReferenceExpression("frame"),
-               new CodeArgumentReferenceExpression("active")
+               new CodeArgumentReferenceExpression("active"),
+               new CodeArgumentReferenceExpression("solidity")
             });
          foreach(ProjectDataset.SpriteParameterRow drParam in ProjectData.GetSortedSpriteParameters(drSpriteDef))
          {
@@ -1878,7 +1890,27 @@ namespace SGDK2
             new CodePropertyReferenceExpression(curElem, "shape")))));
 
          mthGetTileShape.Statements.Add(new CodeMethodReturnStatement(
-            new CodePrimitiveExpression(null)));
+            new CodeFieldReferenceExpression(
+            new CodeTypeReferenceExpression("EmptyTileShape"), "Value")));
+
+         CodeMemberField fldUndefined = new CodeMemberField(SolidityClassName, "m_UndefinedSolidity");
+         fldUndefined.Attributes = MemberAttributes.Private | MemberAttributes.Static | MemberAttributes.Final;
+         fldUndefined.InitExpression =
+            new CodeObjectCreateExpression("Solidity", 
+            new CodeArrayCreateExpression("SolidityMapping", new CodeObjectCreateExpression[] {}));
+         clsSolidity.Members.Add(fldUndefined);
+
+         CodeMemberProperty prpUndefined = new CodeMemberProperty();
+         prpUndefined.Name = UndefinedSolidityProperty;
+         prpUndefined.Type = new CodeTypeReference(SolidityClassName);
+         prpUndefined.Attributes = MemberAttributes.Public | MemberAttributes.Static | MemberAttributes.Final;
+         prpUndefined.HasSet = false;
+         prpUndefined.HasGet = true;
+         prpUndefined.GetStatements.Add(
+            new CodeMethodReturnStatement(
+            new CodeFieldReferenceExpression(
+            new CodeTypeReferenceExpression(clsSolidity.Name), fldUndefined.Name)));
+         clsSolidity.Members.Add(prpUndefined);
 
          foreach(System.Data.DataRowView drv in ProjectData.Solidity.DefaultView)
          {

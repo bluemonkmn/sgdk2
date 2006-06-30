@@ -787,6 +787,18 @@ namespace SGDK2
 
             cboRuleType.Text = drRule.Type;
 
+            if (CurrentRule != null)
+            {
+               if (!cboParam1.Enabled)
+                  CurrentRule.SetParameter1Null();
+               if (!cboParam2.Enabled)
+                  CurrentRule.SetParameter2Null();
+               if (!cboParam3.Enabled)
+                  CurrentRule.SetParameter3Null();
+               if (!cboOutput.Enabled)
+                  CurrentRule.SetResultParameterNull();
+            }
+
             if (drRule.IsParameter1Null())
                cboParam1.SelectedIndex = -1;
             else

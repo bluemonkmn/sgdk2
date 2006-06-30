@@ -1075,7 +1075,7 @@ namespace SGDK2
                   ProjectDataset.LayerRow drLayer = m_Layers[m_nCurLayer].LayerRow;
                   ProjectData.AddSprite(drLayer.Name, sp.Name, sp.DefinitionName, sp.CurrentStateName,
                      sp.CurrentFrame, sp.X, sp.Y, sp.DX, sp.DY, drLayer.MapRow.Name, sp.Priority,
-                     sp.Active, paramNames, sp.ParameterValues);
+                     sp.Active, String.Empty, paramNames, sp.ParameterValues);
                   string name;
                   int index = 1;
                   do

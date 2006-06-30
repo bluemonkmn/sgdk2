@@ -31,7 +31,8 @@ namespace SGDK2
                new ReflectionPropertyDescriptor(typ.GetProperty("CurrentStateName"), this),
                new ReflectionPropertyDescriptor(typ.GetProperty("CurrentFrame")),
                new ReflectionPropertyDescriptor(typ.GetProperty("Active")),
-               new ReflectionPropertyDescriptor(typ.GetProperty("DefinitionName"))
+               new ReflectionPropertyDescriptor(typ.GetProperty("DefinitionName")),
+               new ReflectionPropertyDescriptor(typ.GetProperty("Solidity"), this)
             });
 
             foreach(string paramName in ((SpriteProvider)context.Instance).ParameterNames)
@@ -52,10 +53,23 @@ namespace SGDK2
    
       public override System.ComponentModel.TypeConverter.StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
       {
+         if ((context.PropertyDescriptor != null) && (string.Compare(context.PropertyDescriptor.Name, "Solidity", true) == 0))
+         {
+            string[] solidityList = new string[ProjectData.Solidity.DefaultView.Count];
+            int idx = 0;
+            foreach(System.Data.DataRowView drv in ProjectData.Solidity.DefaultView)
+               solidityList[idx++] = ((ProjectDataset.SolidityRow)drv.Row).Name;
+            return new System.ComponentModel.TypeConverter.StandardValuesCollection(
+               solidityList);
+         }
+
          if (context.Instance is SpriteProvider)
          {
-            return new System.ComponentModel.TypeConverter.StandardValuesCollection(
-               ((SpriteProvider)context.Instance).GetAvailableStates());
+            if (string.Compare(context.PropertyDescriptor.Name, "CurrentStateName", true) == 0)
+            {
+               return new System.ComponentModel.TypeConverter.StandardValuesCollection(
+                  ((SpriteProvider)context.Instance).GetAvailableStates());
+            }
          }
          System.Collections.Specialized.StringCollection vals = null;
          foreach(SpriteProvider sp in (SpriteProvider[])context.Instance)
@@ -81,6 +95,8 @@ namespace SGDK2
    
       public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
       {
+         if ((context.PropertyDescriptor != null) && (string.Compare(context.PropertyDescriptor.Name, "Solidity", true) == 0))
+            return true;
          if ((context.Instance is SpriteProvider) && (context.PropertyDescriptor != null) &&
             (context.PropertyDescriptor.Name.Equals("CurrentStateName")))
             return true;
@@ -107,6 +123,7 @@ namespace SGDK2
       private float m_dy;
       private int m_priority;
       private bool m_active;
+      private string m_Solidity;
 
       private static SpriteConverter m_converter = new SpriteConverter();
 
@@ -283,6 +300,31 @@ namespace SGDK2
             else
             {
                throw new InvalidOperationException("State " + value + " does not exist");
+            }
+         }
+      }
+
+      public string Solidity
+      {
+         get
+         {
+            if (m_SpriteRow != null)
+               return m_SpriteRow.Solidity;
+            else
+               return m_Solidity;
+         }
+         set
+         {
+            if (ProjectData.GetSolidity(value) != null)
+            {
+               if (m_SpriteRow != null)
+                  m_SpriteRow.Solidity = value;
+               else
+                  m_Solidity = value;
+            }
+            else
+            {
+               throw new InvalidOperationException("Solidity " + value + " does not exist");
             }
          }
       }

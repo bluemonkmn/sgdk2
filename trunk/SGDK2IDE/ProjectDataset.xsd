@@ -249,6 +249,7 @@
                            <xs:attribute name="SolidityName" type="xs:Name" />
                            <xs:attribute name="SolidWidth" type="xs:short" use="required" msprop:nullValue="0" />
                            <xs:attribute name="SolidHeight" type="xs:short" msprop:nullValue="0" use="required" />
+                           <xs:attribute name="Sequence" type="xs:short" use="required" />
                         </xs:complexType>
                      </xs:element>
                   </xs:sequence>

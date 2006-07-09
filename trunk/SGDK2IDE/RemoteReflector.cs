@@ -46,8 +46,45 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
                rpi[j].TypeName = pi[j].ParameterType.FullName;
             else
                rpi[j].TypeName = pi[j].ParameterType.Name;
+            System.Attribute[] editors = Attribute.GetCustomAttributes(pi[j], typeof(System.ComponentModel.EditorAttribute));
+            if (editors.Length > 0)
+            {
+               rpi[j].Editors = new string[editors.Length];
+               for (int k=0; k < editors.Length; k++)
+                  rpi[j].Editors[k] = ((System.ComponentModel.EditorAttribute)editors[k]).EditorTypeName;
+            }
          }
          result[i].Arguments = rpi;
+      }
+      return result;
+   }
+
+   public SGDK2.RemotingServices.RemotePropertyInfo[] GetProperties()
+   {
+      System.Reflection.BindingFlags binder;
+      binder = System.Reflection.BindingFlags.Public |
+         System.Reflection.BindingFlags.Instance | 
+         System.Reflection.BindingFlags.SetProperty | 
+         System.Reflection.BindingFlags.GetProperty |
+         System.Reflection.BindingFlags.SetField | 
+         System.Reflection.BindingFlags.GetField;
+      System.Reflection.PropertyInfo[] pi = reflectType.GetProperties(binder);
+      System.Reflection.FieldInfo[] fi = reflectType.GetFields(binder);
+      SGDK2.RemotingServices.RemotePropertyInfo[] result = new SGDK2.RemotingServices.RemotePropertyInfo[pi.Length + fi.Length];
+      for (int i = 0; i < pi.Length; i++)
+      {
+         result[i].Name = pi[i].Name;
+         result[i].Type = pi[i].PropertyType.Name;
+         result[i].CanRead = pi[i].CanRead;
+         result[i].CanWrite = pi[i].CanWrite;
+      }
+      for (int i = 0; i < fi.Length; i++)
+      {
+         int idx = i+pi.Length;
+         result[idx].Name = fi[i].Name;
+         result[idx].Type = fi[i].FieldType.Name;
+         result[idx].CanRead = true;
+         result[idx].CanWrite = ((fi[i].Attributes & System.Reflection.FieldAttributes.InitOnly) == 0);
       }
       return result;
    }

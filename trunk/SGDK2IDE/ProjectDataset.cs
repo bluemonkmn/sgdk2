@@ -8048,6 +8048,8 @@ namespace SGDK2 {
             
             private DataColumn columnSolidHeight;
             
+            private DataColumn columnSequence;
+            
             internal SpriteStateDataTable() : 
                     base("SpriteState") {
                 this.InitClass();
@@ -8112,6 +8114,12 @@ namespace SGDK2 {
                 }
             }
             
+            internal DataColumn SequenceColumn {
+                get {
+                    return this.columnSequence;
+                }
+            }
+            
             public SpriteStateRow this[int index] {
                 get {
                     return ((SpriteStateRow)(this.Rows[index]));
@@ -8130,7 +8138,7 @@ namespace SGDK2 {
                 this.Rows.Add(row);
             }
             
-            public SpriteStateRow AddSpriteStateRow(SpriteDefinitionRow parentSpriteDefinitionRowBySpriteDefinitionState, string Name, FramesetRow parentFramesetRowByFramesetSpriteState, SolidityRow parentSolidityRowBySoliditySpriteState, short SolidWidth, short SolidHeight) {
+            public SpriteStateRow AddSpriteStateRow(SpriteDefinitionRow parentSpriteDefinitionRowBySpriteDefinitionState, string Name, FramesetRow parentFramesetRowByFramesetSpriteState, SolidityRow parentSolidityRowBySoliditySpriteState, short SolidWidth, short SolidHeight, short Sequence) {
                 SpriteStateRow rowSpriteStateRow = ((SpriteStateRow)(this.NewRow()));
                 rowSpriteStateRow.ItemArray = new object[] {
                         parentSpriteDefinitionRowBySpriteDefinitionState[0],
@@ -8138,7 +8146,8 @@ namespace SGDK2 {
                         parentFramesetRowByFramesetSpriteState[0],
                         parentSolidityRowBySoliditySpriteState[0],
                         SolidWidth,
-                        SolidHeight};
+                        SolidHeight,
+                        Sequence};
                 this.Rows.Add(rowSpriteStateRow);
                 return rowSpriteStateRow;
             }
@@ -8170,6 +8179,7 @@ namespace SGDK2 {
                 this.columnSolidityName = this.Columns["SolidityName"];
                 this.columnSolidWidth = this.Columns["SolidWidth"];
                 this.columnSolidHeight = this.Columns["SolidHeight"];
+                this.columnSequence = this.Columns["Sequence"];
             }
             
             private void InitClass() {
@@ -8185,6 +8195,8 @@ namespace SGDK2 {
                 this.Columns.Add(this.columnSolidWidth);
                 this.columnSolidHeight = new DataColumn("SolidHeight", typeof(short), null, System.Data.MappingType.Attribute);
                 this.Columns.Add(this.columnSolidHeight);
+                this.columnSequence = new DataColumn("Sequence", typeof(short), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnSequence);
                 this.Constraints.Add(new UniqueConstraint("SpriteStateKey", new DataColumn[] {
                                 this.columnDefinitionName,
                                 this.columnName}, true));
@@ -8203,6 +8215,8 @@ namespace SGDK2 {
                 this.columnSolidWidth.Namespace = "";
                 this.columnSolidHeight.AllowDBNull = false;
                 this.columnSolidHeight.Namespace = "";
+                this.columnSequence.AllowDBNull = false;
+                this.columnSequence.Namespace = "";
             }
             
             public SpriteStateRow NewSpriteStateRow() {
@@ -8307,6 +8321,15 @@ namespace SGDK2 {
                 }
                 set {
                     this[this.tableSpriteState.SolidHeightColumn] = value;
+                }
+            }
+            
+            public short Sequence {
+                get {
+                    return ((short)(this[this.tableSpriteState.SequenceColumn]));
+                }
+                set {
+                    this[this.tableSpriteState.SequenceColumn] = value;
                 }
             }
             

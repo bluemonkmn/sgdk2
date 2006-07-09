@@ -38,6 +38,7 @@ namespace SGDK2
          g_Resources = new ResourceManager("SGDK2.SGDK2IDE", Assembly.GetExecutingAssembly());
          new frmSplashForm(GetSplashImage()).Show();
          Application.Run(new frmMain());
+         CodeGenerator.ResetTempAssembly();
       }
 
       #region Private Functions
@@ -47,12 +48,20 @@ namespace SGDK2
          Graphics gc = Graphics.FromImage(bmp);
          gc.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
          Font fnt = new Font("Verdana", 9);
-         String sCopyright = "Copyright ©2000-2004\n      Benjamin Marty";
-         gc.DrawString(sCopyright, fnt, Brushes.Sienna, 101, 216);
-         gc.DrawString(sCopyright, fnt, Brushes.White, 100, 215);
+
+         System.Drawing.StringFormat fmt = new System.Drawing.StringFormat(StringFormatFlags.NoWrap | StringFormatFlags.NoClip);
+         fmt.Alignment = StringAlignment.Center;
+         String sCopyright = "Copyright ©2000-2006\nBenjamin Marty";
+         Rectangle rcFmt = new Rectangle(40, 164, 130, 25);
+         gc.DrawString(sCopyright, fnt, Brushes.Sienna, rcFmt, fmt);
+         rcFmt.Offset(-1,-1);
+         gc.DrawString(sCopyright, fnt, Brushes.White, rcFmt, fmt);
          fnt.Dispose();
          fnt = new Font("Tahoma", 8);
-         gc.DrawString("v2.0.0", fnt, Brushes.White, 140, 200);
+         AssemblyFileVersionAttribute ver = (AssemblyFileVersionAttribute)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(AssemblyFileVersionAttribute));
+         rcFmt = new Rectangle(88, 151, 27, 10);
+         gc.DrawString("v" + ver.Version, fnt, Brushes.White, rcFmt, fmt);
+         fmt.Dispose();
          fnt.Dispose();
          gc.Dispose();
          return bmp;

@@ -15,7 +15,7 @@ del SGDK2IDE.exe
 echo >Input.txt /o+ /target:winexe /win32icon:App.ico
 ;echo >>Input.txt /lib:%windir%\assembly\gac\Microsoft.DirectX\1.0.2902.0__31bf3856ad364e35
 ;echo >>Input.txt /lib:%windir%\assembly\gac\Microsoft.DirectX.Direct3D\1.0.2902.0__31bf3856ad364e35
-;echo >>Input.txt /lib:%windir%\assembly\gac\Microsoft.DirectX.Direct3DX\1.0.2902.0__31bf3856ad364e35
+;echo >>Input.txt /lib:%windir%\assembly\gac\Microsoft.DirectX.Direct3DX\1.0.2911.0__31bf3856ad364e35
 echo >>Input.txt "/lib:%windir%\microsoft.net\managed directx\v9.00.1126"
 echo >>Input.txt /r:System.Data.dll
 echo >>Input.txt /r:System.dll

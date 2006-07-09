@@ -25,12 +25,14 @@ namespace SGDK2
       {
          public string Name;
          public string TypeName;
+         public string[] Editors;
          public bool IsEnum;
          public RemoteParameterInfo(string name, string typeName, bool isEnum)
          {
             this.Name = name;
             this.TypeName = typeName;
             this.IsEnum = isEnum;
+            this.Editors = null;
          }
          public static RemoteParameterInfo Empty = new RemoteParameterInfo(null, null, false);
          public static RemoteParameterInfo Unknown = new RemoteParameterInfo(null, "unknown", false);
@@ -56,8 +58,18 @@ namespace SGDK2
       public interface IRemoteTypeInfo
       {
          RemoteMethodInfo[] GetMethods();
+         RemotePropertyInfo[] GetProperties();
          string[] GetEnumVals();
          string[] GetSubclasses();
+      }
+
+      [Serializable()]
+      public struct RemotePropertyInfo
+      {
+         public string Name;
+         public string Type;
+         public bool CanRead;
+         public bool CanWrite;
       }
    }
 

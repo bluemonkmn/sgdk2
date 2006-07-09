@@ -37,6 +37,17 @@ namespace SGDK2
       [DllImport("User32.dll")] 
       private extern static int ReleaseDC(System.IntPtr hWnd, System.IntPtr hDC);
 
+      private void InitializeComponent()
+      {
+         // 
+         // frmSplashForm
+         // 
+         this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+         this.ClientSize = new System.Drawing.Size(292, 273);
+         this.Name = "frmSplashForm";
+
+      }
+
       [DllImport("gdi32.dll", ExactSpelling=true)]
       private static extern IntPtr SelectObject(IntPtr hDC, IntPtr hObject);
       #endregion

@@ -10,8 +10,8 @@ namespace SGDK2
 	/// <summary>
 	/// Summary description for Solidity.
 	/// </summary>
-	public class frmSolidity : System.Windows.Forms.Form
-	{
+   public class frmSolidity : System.Windows.Forms.Form
+   {
       ProjectDataset.SolidityRow m_Solidity;
       ProjectDataset.TilesetRow m_CategoryTileset = null;
 
@@ -24,12 +24,12 @@ namespace SGDK2
       #endregion
 
       #region Initialization and Clean-up
-		public frmSolidity()
-		{
-			//
-			// Required for Windows Form Designer support
-			//
-			InitializeComponent();
+      public frmSolidity()
+      {
+         //
+         // Required for Windows Form Designer support
+         //
+         InitializeComponent();
 
          String sName;
          Int32 nIdx = 1;
@@ -55,29 +55,29 @@ namespace SGDK2
          InitializeGrid();
       }
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
+      /// <summary>
+      /// Clean up any resources being used.
+      /// </summary>
+      protected override void Dispose( bool disposing )
+      {
+         if( disposing )
+         {
+            if(components != null)
+            {
+               components.Dispose();
+            }
+         }
+         base.Dispose( disposing );
+      }
       #endregion
 
-		#region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+      #region Windows Form Designer generated code
+      /// <summary>
+      /// Required method for Designer support - do not modify
+      /// the contents of this method with the code editor.
+      /// </summary>
+      private void InitializeComponent()
+      {
          this.components = new System.ComponentModel.Container();
          System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(frmSolidity));
          this.lblName = new System.Windows.Forms.Label();
@@ -141,7 +141,7 @@ namespace SGDK2
          this.ResumeLayout(false);
 
       }
-		#endregion
+      #endregion
 
       #region Private Methods
       private void InitializeGrid()
@@ -176,38 +176,16 @@ namespace SGDK2
       {
          CodeGenerator gen = new CodeGenerator();
          gen.GenerateLevel = CodeGenerator.CodeLevel.ExcludeRules;
-         string errs;
-         string assemblyFilename = gen.CompileTempAssembly(out errs);
+         string errs = gen.CompileTempAssembly(false);
          if ((errs != null) && (errs.Length > 0))
          {
             MessageBox.Show(this, "Errors occurred while compiling a temporary project to generate a list of available tile shapes: " + errs, "Error Compiling Temporary Code", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            if (assemblyFilename == null)
-               return new string[] {};
+            return new string[] {};
          }
-         AppDomain tempDomain = AppDomain.CreateDomain("TempDomain");
-         try
-         {
-            string asmName = System.IO.Path.GetFileNameWithoutExtension(assemblyFilename);
-            RemotingServices.IRemoteTypeInfo reflector = tempDomain.CreateInstanceAndUnwrap(
-               asmName, "RemoteReflector", false,
-               System.Reflection.BindingFlags.CreateInstance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance,
-               null, new object[] {"TileShape"}, null, null, null) as RemotingServices.IRemoteTypeInfo;
+         RemotingServices.IRemoteTypeInfo reflector = CodeGenerator.CreateInstanceAndUnwrap(
+            "RemoteReflector", "TileShape") as RemotingServices.IRemoteTypeInfo;
 
-            return reflector.GetSubclasses();
-         }
-         finally
-         {
-            try
-            {
-               AppDomain.Unload(tempDomain);
-               if (assemblyFilename != null)
-                  System.IO.File.Delete(assemblyFilename);
-            }
-            catch (System.Exception ex)
-            {
-               MessageBox.Show(this, "Failed to delete " + assemblyFilename + ": " + ex.Message, "File Delete Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            }
-         }
+         return reflector.GetSubclasses();
       }
       #endregion
 

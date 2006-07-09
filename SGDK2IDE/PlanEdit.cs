@@ -509,62 +509,41 @@ namespace SGDK2
             CodeGenerator gen = new CodeGenerator();
             string errs;
             gen.GenerateLevel = CodeGenerator.CodeLevel.ExcludeRules;
-            string assemblyFilename = gen.CompileTempAssembly(out errs);
+            errs = gen.CompileTempAssembly(false);
             if ((errs != null) && (errs.Length > 0))
             {
                txtErrors.Text = errs;
                txtErrors.Visible = true;
+               return;
             }
 
-            if (assemblyFilename == null)
-               return;
-
             txtErrors.Visible = false;
-            AppDomain tempDomain = AppDomain.CreateDomain("TempDomain");
-            try
+            RemotingServices.IRemoteTypeInfo reflector = CodeGenerator.CreateInstanceAndUnwrap(
+               "RemoteReflector", "PlanBase") as RemotingServices.IRemoteTypeInfo;
+
+            RemotingServices.RemoteMethodInfo[] ruleList = reflector.GetMethods();
+
+            m_AvailableRules = new RuleTable();
+            m_Enums = new EnumTable();
+            foreach(RemotingServices.RemoteMethodInfo mi in ruleList)
             {
-               string asmName = System.IO.Path.GetFileNameWithoutExtension(assemblyFilename);
-               RemotingServices.IRemoteTypeInfo reflector = tempDomain.CreateInstanceAndUnwrap(
-                  asmName, "RemoteReflector", false,
-                  System.Reflection.BindingFlags.CreateInstance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance,
-                  null, new object[] {"PlanBase"}, null, null, null) as RemotingServices.IRemoteTypeInfo;
-
-               RemotingServices.RemoteMethodInfo[] ruleList = reflector.GetMethods();
-
-               m_AvailableRules = new RuleTable();
-               m_Enums = new EnumTable();
-               foreach(RemotingServices.RemoteMethodInfo mi in ruleList)
+               if ((mi.Description != null) && (mi.Description.Length > 0))
                {
-                  if ((mi.Description != null) && (mi.Description.Length > 0))
-                  {
-                     foreach(string allowedType in new string[]
-                        {
-                           typeof(Boolean).Name, typeof(Int32).Name, typeof(Int16).Name,
-                           typeof(Double).Name, typeof(Single).Name, typeof(void).Name
-                        })
+                  foreach(string allowedType in new string[]
                      {
-                        if (string.Compare(allowedType, mi.ReturnType) == 0)
-                        {
-                           m_AvailableRules[mi.MethodName] = mi;
-                           break;
-                        }
+                        typeof(Boolean).Name, typeof(Int32).Name, typeof(Int16).Name,
+                        typeof(Double).Name, typeof(Single).Name, typeof(void).Name
+                     })
+                  {
+                     if (string.Compare(allowedType, mi.ReturnType) == 0)
+                     {
+                        m_AvailableRules[mi.MethodName] = mi;
+                        break;
                      }
                   }
                }
-               m_AvailableRules.InsertOperators();
             }
-            finally
-            {
-               try
-               {
-                  AppDomain.Unload(tempDomain);
-                  System.IO.File.Delete(assemblyFilename);
-               }
-               catch (System.Exception ex)
-               {
-                  MessageBox.Show(this, "Failed to delete " + assemblyFilename + ": " + ex.Message, "File Delete Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-               }
-            }
+            m_AvailableRules.InsertOperators();
          }
          
          cboFunction.Items.Clear();
@@ -727,26 +706,20 @@ namespace SGDK2
          string errs;
          CodeGenerator gen = new CodeGenerator();
          gen.GenerateLevel = CodeGenerator.CodeLevel.ExcludeRules;
-         string assemblyFilename = gen.CompileTempAssembly(out errs);
+         errs = gen.CompileTempAssembly(false);
          if (errs != null)
          {
             txtErrors.Text = errs;
             txtErrors.Visible = true;
-         }
-
-         if (assemblyFilename == null)
             return new string[] {};
+         }
 
          txtErrors.Visible = false;
          
-         AppDomain tempDomain = AppDomain.CreateDomain("TempDomain");
          try
          {
-            string asmName = System.IO.Path.GetFileNameWithoutExtension(assemblyFilename);
-            RemotingServices.IRemoteTypeInfo reflector = tempDomain.CreateInstanceAndUnwrap(
-               asmName, "RemoteReflector", false,
-               System.Reflection.BindingFlags.CreateInstance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance,
-               null, new object[] {enumName}, null, null, null) as RemotingServices.IRemoteTypeInfo;
+            RemotingServices.IRemoteTypeInfo reflector = CodeGenerator.CreateInstanceAndUnwrap(
+               "RemoteReflector", enumName) as RemotingServices.IRemoteTypeInfo;
 
             string[] remoteResults = reflector.GetEnumVals();
 
@@ -757,11 +730,6 @@ namespace SGDK2
             MessageBox.Show(this, ex.ToString(), "GetEnumInfo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return new string[] {};
          }
-         finally
-         {
-            AppDomain.Unload(tempDomain);
-            System.IO.File.Delete(assemblyFilename);
-         }
       }
       
       private void LoadRule(ProjectDataset.PlanRuleRow drRule)
@@ -770,7 +738,12 @@ namespace SGDK2
          {
             m_Loading = true;
             txtRuleName.Text = drRule.Name;
-            if (drRule.Function.StartsWith("!"))
+            if (cboFunction.Items.Contains(drRule.Function))
+            {
+               chkNot.Checked = false;
+               cboFunction.Text = drRule.Function;
+            }
+            else if (drRule.Function.StartsWith("!"))
             {
                chkNot.Checked = true;
                cboFunction.Text = drRule.Function.Substring(1);

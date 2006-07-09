@@ -22,7 +22,7 @@ public abstract class SpriteBase
    private Solidity m_solidity;
 
    [FlagsAttribute()]
-   public enum InputBits
+      public enum InputBits
    {
       Up=1,
       Right=2,
@@ -36,14 +36,22 @@ public abstract class SpriteBase
 
    public enum Direction
    {
-      Up=1,
-      Right=2,
-      Down=3,
-      Left=4
+      Up,
+      Right,
+      Down,
+      Left
+   }
+
+   public enum SpriteAnimationType
+   {
+      ByFrame,
+      ByHorizontalVelocity,
+      ByVerticalVelocity,
+      ByVectorVelocity
    }
 
    public SpriteBase(LayerBase layer, double x, double y, double dx, double dy, int state, int frame, bool active, Solidity solidity)
-	{
+   {
       this.layer = layer;
       this.x = x;
       this.y = y;
@@ -53,7 +61,7 @@ public abstract class SpriteBase
       this.frame = frame;
       this.isActive = active;
       this.m_solidity = solidity;
-	}
+   }
 
    #region Properties
    public int PixelX
@@ -118,7 +126,6 @@ public abstract class SpriteBase
          return this[state];
       }
    }
-
    #endregion
 
    #region Virtual members
@@ -293,6 +300,38 @@ public abstract class SpriteBase
    }
    #endregion
 
+   #region States and animation
+   [Description("Advance the animation frame of this sprite according to its velocity or a constant rate")]
+   public void Animate(SpriteAnimationType Correlation)
+   {
+      switch(Correlation)
+      {
+         case SpriteAnimationType.ByFrame:
+            frame++;
+            break;
+         case SpriteAnimationType.ByHorizontalVelocity:
+            frame += System.Math.Abs(ProposedPixelX - PixelX);
+            break;
+         case SpriteAnimationType.ByVerticalVelocity:
+            frame += System.Math.Abs(ProposedPixelY - PixelY);
+            break;
+         case SpriteAnimationType.ByVectorVelocity:
+         {
+            int tmpDx = ProposedPixelX - PixelX;
+            int tmpDy = ProposedPixelY - PixelY;
+            frame += (int)(System.Math.Sqrt(tmpDx * tmpDx + tmpDy * tmpDy));
+         }
+            break;
+      }
+   }
+
+   [Description("Return the state that a rotating sprite should use in order to point in the direction it is currently travelling, assuming that FirstState points rightward and each subsequent state is one step counter-clockwise")]
+   public int GetPolarStateByVector([Editor("SpriteState", "UITypeEditor")] int FirstState, int StateCount)
+   {
+      return FirstState + ((StateCount + (int)Math.Round(System.Math.Atan2(-dy,dx) * StateCount / Math.PI)) % StateCount);
+   }
+   #endregion
+
    #region Input Processing
    [Description("Determine if the specified input is being pressed for this sprite.  InitialOnly causes this to return true only if the input has just been presssed and was not pressed before.")]
    public bool IsInputPressed(InputBits Input, bool InitialOnly)
@@ -405,13 +444,12 @@ public abstract class SpriteBase
             int slopedFloor = layer.GetTopSolidPixel(new System.Drawing.Rectangle(PixelX + SolidWidth, maxSlopeProposedY + SolidHeight, ProposedPixelX - PixelX, ProposedPixelY - maxSlopeProposedY), m_solidity);
             if (slopedFloor != int.MinValue)
             {
-               slopedFloor--;
                int ceiling = layer.GetBottomSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, slopedFloor - SolidHeight, SolidWidth, ProposedPixelY + SolidHeight - slopedFloor), m_solidity);
                if (ceiling == int.MinValue)
                {
                   int rightwall2 = layer.GetLeftSolidPixel(new System.Drawing.Rectangle(PixelX + SolidWidth, slopedFloor - SolidHeight, ProposedPixelX - PixelX, SolidHeight), m_solidity);
                   if (rightwall2 == int.MinValue)
-                     dy = dyOrig = slopedFloor - y - SolidHeight;
+                     dy = dyOrig = slopedFloor - 1 - y - SolidHeight;
                   else
                      hitWall = true;
                }
@@ -458,13 +496,12 @@ public abstract class SpriteBase
             int slopedFloor = layer.GetTopSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, maxSlopeProposedY + SolidHeight, PixelX - ProposedPixelX, ProposedPixelY - maxSlopeProposedY), m_solidity);
             if (slopedFloor != int.MinValue)
             {
-               slopedFloor--;
                int ceiling = layer.GetBottomSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, slopedFloor - SolidHeight, SolidWidth, ProposedPixelY + SolidHeight - slopedFloor), m_solidity);
                if (ceiling == int.MinValue)
                {
                   int leftwall2 = layer.GetRightSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, slopedFloor - SolidHeight, PixelX - ProposedPixelX, SolidHeight), m_solidity);
                   if (leftwall2 == int.MinValue)
-                     dy = dyOrig = slopedFloor - y - SolidHeight;
+                     dy = dyOrig = slopedFloor - 1 - y - SolidHeight;
                   else
                      hitWall = true;
                }

@@ -1547,6 +1547,7 @@ namespace SGDK2
             ndNew.EnsureVisible();
             // Add the node to the local index
             m_TreeNodes.Add(ndNew.Tag, ndNew);
+            CodeGenerator.ResetTempAssembly();
          }
       }
 
@@ -1560,6 +1561,7 @@ namespace SGDK2
             ndOld.Tag = "CD" + e.Row.Name;
             ndOld.Text = e.Row.Name;
             m_TreeNodes.Add(ndOld.Tag, ndOld);
+            CodeGenerator.ResetTempAssembly();
          }                  
       }
 
@@ -1577,6 +1579,7 @@ namespace SGDK2
             m_TreeNodes.Remove(m_AffectedNodeKeys["CD"]);
             tnCode.Parent.Nodes.Remove(tnCode);
             m_AffectedNodeKeys.Remove("CD");
+            CodeGenerator.ResetTempAssembly();
          }                        
       }
 

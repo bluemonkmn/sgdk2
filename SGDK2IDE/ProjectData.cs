@@ -138,6 +138,8 @@ namespace SGDK2
                return ((ProjectDataset.PlanRuleRow)x).Sequence.CompareTo(((ProjectDataset.PlanRuleRow)y).Sequence);
             else if (x is ProjectDataset.SpriteRuleRow)
                return ((ProjectDataset.SpriteRuleRow)x).Sequence.CompareTo(((ProjectDataset.SpriteRuleRow)y).Sequence);
+            else if (x is ProjectDataset.SpriteStateRow)
+               return ((ProjectDataset.SpriteStateRow)x).Sequence.CompareTo(((ProjectDataset.SpriteStateRow)y).Sequence);
             else
                throw new ApplicationException("Unknown data row type for comparing");
          }
@@ -1196,6 +1198,12 @@ namespace SGDK2
          Array.Sort(result, new DataRowComparer());
          return result;
       }
+      public static ProjectDataset.SpriteStateRow[] GetSortedSpriteStates(ProjectDataset.SpriteDefinitionRow row)
+      {
+         ProjectDataset.SpriteStateRow[] result = row.GetSpriteStateRows();
+         Array.Sort(result, new DataRowComparer());
+         return result;
+      }
       #endregion
 
       #region SpriteState
@@ -1254,15 +1262,63 @@ namespace SGDK2
       {
          return m_dsPrj.SpriteState.FindByDefinitionNameName(SpriteDefinition, State);
       }
-      public static ProjectDataset.SpriteStateRow AddSpriteState(ProjectDataset.SpriteDefinitionRow parent, string Name, ProjectDataset.FramesetRow Frameset, ProjectDataset.SolidityRow Solidity, short SolidWidth, short SolidHeight)
+      public static short GetMaxSpriteStateSequence(ProjectDataset.SpriteDefinitionRow parent)
       {
-         return m_dsPrj.SpriteState.AddSpriteStateRow(parent, Name, Frameset, Solidity, SolidWidth, SolidHeight);
+         short max = 0;
+         foreach (ProjectDataset.SpriteStateRow row in parent.GetSpriteStateRows())
+         {
+            if (row.Sequence > max)
+               max = row.Sequence;
+         }
+         return max;
+      }
+      public static ProjectDataset.SpriteStateRow AddSpriteState(ProjectDataset.SpriteDefinitionRow parent, string Name, ProjectDataset.FramesetRow Frameset, ProjectDataset.SolidityRow Solidity, short SolidWidth, short SolidHeight, short sequence)
+      {
+         if (sequence < 0)
+            sequence = (short)(GetMaxSpriteStateSequence(parent) + 1);
+         else
+            foreach(ProjectDataset.SpriteStateRow row in GetSortedSpriteStates(parent))
+               if (row.Sequence >= sequence)
+                  row.Sequence += 1;
+         return m_dsPrj.SpriteState.AddSpriteStateRow(parent, Name, Frameset, Solidity, SolidWidth, SolidHeight, sequence);
+      }
+      public static void DeleteSpriteState(ProjectDataset.SpriteStateRow row)
+      {
+         int oldSeq = row.Sequence;
+         ProjectDataset.SpriteDefinitionRow parent = row.SpriteDefinitionRow;
+         row.Delete();
+         foreach(ProjectDataset.SpriteStateRow drChange in GetSortedSpriteStates(parent))
+            if (drChange.Sequence >= oldSeq)
+               drChange.Sequence -= 1;
       }
       public static ProjectDataset.SpriteFrameRow[] GetSortedSpriteFrames(ProjectDataset.SpriteStateRow row)
       {
          ProjectDataset.SpriteFrameRow[] result = row.GetSpriteFrameRows();
          Array.Sort(result, new DataRowComparer());
          return result;
+      }
+      public static bool MoveSpriteState(ProjectDataset.SpriteStateRow row, bool moveDown)
+      {
+         string definitionName = row[m_dsPrj.SpriteState.DefinitionNameColumn].ToString();
+         string filter = "DefinitionName='" + definitionName + "' ";
+
+         DataRow[] nextRows;
+         if (moveDown)
+            nextRows = m_dsPrj.SpriteState.Select(filter + "and Sequence >= " + row.Sequence.ToString(), "Sequence ASC");
+         else
+            nextRows = m_dsPrj.SpriteState.Select(filter + "and Sequence <= " + row.Sequence.ToString(), "Sequence DESC");
+         System.Diagnostics.Debug.Assert((nextRows.Length > 0) && (nextRows[0] == row), "Unexpected sprite state sequencing error");
+         if (nextRows.Length == 1)
+            return false;
+         ProjectDataset.SpriteStateRow nextRow = (ProjectDataset.SpriteStateRow)nextRows[1];
+         short nextSeq = nextRow.Sequence;
+         if (moveDown)
+            System.Diagnostics.Debug.Assert(nextRow.Sequence == row.Sequence + 1, "Sprite state rows are not consecutively sequenced");
+         else
+            System.Diagnostics.Debug.Assert(nextRow.Sequence == row.Sequence - 1, "Sprite state rows are not consecutively sequenced");
+         nextRow.Sequence = row.Sequence;
+         row.Sequence = nextSeq;
+         return true;
       }
       #endregion
 
@@ -1468,9 +1524,10 @@ namespace SGDK2
       {
          if (sequence < 0)
             sequence = GetMaxSpritePlanSequence(parent) + 1;
-         foreach(ProjectDataset.SpriteRuleRow row in GetSortedSpriteRules(parent))
-            if (row.Sequence >= sequence)
-               row.Sequence += 1;
+         else
+            foreach(ProjectDataset.SpriteRuleRow row in GetSortedSpriteRules(parent))
+               if (row.Sequence >= sequence)
+                  row.Sequence += 1;
          return m_dsPrj.SpriteRule.AddSpriteRuleRow(parent, name, sequence, type, function, parameter1, parameter2, parameter3, resultParameter, endIf);
       }
       
@@ -2045,13 +2102,14 @@ namespace SGDK2
       public static ProjectDataset.PlanRuleRow InsertPlanRule(ProjectDataset.SpritePlanRow parent, string name,
          string type, int sequence, string function, string parameter1, string parameter2, string parameter3, string resultParameter, bool endIf)
       {
-         if (sequence < 0)
-            sequence = GetMaxPlanSequence(parent) + 1;
          string layerName = parent[m_dsPrj.SpritePlan.LayerNameColumn].ToString();
          string mapName = parent[m_dsPrj.SpritePlan.MapNameColumn].ToString();
-         foreach(ProjectDataset.PlanRuleRow row in GetSortedPlanRules(parent))
-            if (row.Sequence >= sequence)
-               row.Sequence += 1;
+         if (sequence < 0)
+            sequence = GetMaxPlanSequence(parent) + 1;
+         else
+            foreach(ProjectDataset.PlanRuleRow row in GetSortedPlanRules(parent))
+               if (row.Sequence >= sequence)
+                  row.Sequence += 1;
          return m_dsPrj.PlanRule.AddPlanRuleRow(mapName, layerName, parent.Name,
             name, sequence, type, function, parameter1, parameter2, parameter3, resultParameter, endIf);
       }

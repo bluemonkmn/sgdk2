@@ -14,6 +14,7 @@ namespace SGDK2
       }
 
       #region Constants
+      public const string SpritesNamespace = "Sprites";
       private const string ResourcesField = "m_res";
       private const string ResourcesProperty = "m_res";
       private const string ProjectClass = "Project";
@@ -41,7 +42,7 @@ namespace SGDK2
       private const string SolidityClassName = "Solidity";
       private const string SpriteStateClassName = "SpriteState";
       private const string SpriteStateField = "m_SpriteStates";
-      private const string SpriteStateEnumName = "State";
+      public const string SpriteStateEnumName = "State";
       private const string GetFramesetMethodName = "GetFrameset";
       private const string CoordinateTypeName = "PlanBase.Coordinate";
       private const string LayerParentField = "m_ParentMap";
@@ -137,12 +138,43 @@ namespace SGDK2
          ExcludeRules,
          IncludeAll
       }
+
+      private class TempAssembly : MarshalByRefObject, IDisposable
+      {
+         private string m_assemblyFile;
+         private AppDomain m_tempDomain;
+
+         public TempAssembly(string assemblyFile)
+         {
+            m_tempDomain = AppDomain.CreateDomain("TempDomain");
+            m_assemblyFile = assemblyFile;
+            if (!System.IO.File.Exists(assemblyFile))
+               throw new System.IO.FileNotFoundException("Specified assembly file was not found", assemblyFile);
+         }
+
+         public object CreateInstanceAndUnwrap(string typeName, object[] constructorParams)
+         {
+            string asmName = System.IO.Path.GetFileNameWithoutExtension(m_assemblyFile);
+            return m_tempDomain.CreateInstanceAndUnwrap(asmName, typeName, false,
+               System.Reflection.BindingFlags.CreateInstance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance,
+               null, constructorParams, null, null, null);
+         }
+
+         #region IDisposable Members
+         public void Dispose()
+         {
+            AppDomain.Unload(m_tempDomain);
+            System.IO.File.Delete(m_assemblyFile);
+         }
+         #endregion
+      }
       #endregion
 
       public System.CodeDom.Compiler.ICodeGenerator Generator = new Microsoft.CSharp.CSharpCodeProvider().CreateGenerator();
       public CodeGeneratorOptions GeneratorOptions = new CodeGeneratorOptions();
       public bool Debug = false;
       public CodeLevel GenerateLevel = CodeLevel.IncludeAll;
+      private static TempAssembly m_TempAssembly = null;
 
       #region Project Level Code Generation
       public void GenerateAllCode(string FolderName, out string errs)
@@ -1640,7 +1672,7 @@ namespace SGDK2
 
       public void GenerateSpriteDef(ProjectDataset.SpriteDefinitionRow drSpriteDef, System.IO.TextWriter txt)
       {
-         CodeNamespace nsSprites = new CodeNamespace("Sprites");
+         CodeNamespace nsSprites = new CodeNamespace(SpritesNamespace);
          CodeTypeDeclaration clsSpriteDef = new CodeTypeDeclaration(NameToVariable(drSpriteDef.Name));
          nsSprites.Types.Add(clsSpriteDef);
 
@@ -1702,7 +1734,7 @@ namespace SGDK2
          
          CachedSpriteDef sprCached = new CachedSpriteDef(drSpriteDef, null);
 
-         foreach(ProjectDataset.SpriteStateRow drState in drSpriteDef.GetSpriteStateRows())
+         foreach(ProjectDataset.SpriteStateRow drState in ProjectData.GetSortedSpriteStates(drSpriteDef))
          {
             enumStates.IsEnum = true;
             enumStates.Members.Add(new CodeMemberField(typeof(int), drState.Name));
@@ -1750,6 +1782,8 @@ namespace SGDK2
             StateCreators.Add(new CodeObjectCreateExpression(
                SpriteStateClassName, (CodeExpression[])stateParams.ToArray(typeof(CodeExpression))));
          }
+
+         ((CodeMemberField)enumStates.Members[0]).InitExpression = new CodePrimitiveExpression(0);
 
          FrameCache.ClearDisplayCache(null);
 
@@ -1835,6 +1869,7 @@ namespace SGDK2
          {
             enumCategories.Members.Add(new CodeMemberField(typeof(int), drCat.Name));
          }
+         ((CodeMemberField)enumCategories.Members[0]).InitExpression = new CodePrimitiveExpression(0);
          enumCategories.Members.Add(new CodeMemberField(typeof(int), "Count"));
 
          Generator.GenerateCodeFromType(enumCategories, txt, GeneratorOptions);
@@ -1963,11 +1998,25 @@ namespace SGDK2
       #endregion
 
       #region Compilation
-      public string CompileTempAssembly(out string errs)
+      /// <summary>
+      /// Compile a the temporary instance of the project to use for reflection
+      /// (retrieving function names and parameter info, etc).
+      /// </summary>
+      /// <param name="borceRecompile">Recompile even if project was already compiled</param>
+      /// <returns>Error list as a single string; null when no errors occurred</returns>
+      public string CompileTempAssembly(bool forceRecompile)
       {
-         string[] code = GenerateCodeStrings(out errs);
-         if (errs.Length > 0)
+         if ((m_TempAssembly != null) && (!forceRecompile))
             return null;
+
+         if (m_TempAssembly != null)
+            m_TempAssembly.Dispose();
+         m_TempAssembly = null;
+
+         string errs;
+         string[] code = GenerateCodeStrings(out errs);
+         if ((errs != null) && (errs.Length > 0))
+            return errs;
 
          System.IO.Stream remoteReflectorStream  = System.Reflection.Assembly.GetAssembly(typeof(SGDK2IDE)).GetManifestResourceStream("SGDK2.RemoteReflector.cs");
          System.IO.StreamReader readReflector = new System.IO.StreamReader(remoteReflectorStream);
@@ -2002,10 +2051,27 @@ namespace SGDK2
             {
                sb.Append(results.Errors[i].ToString() + Environment.NewLine);
             }
-            errs = sb.ToString();
-            return null;
+            return sb.ToString();
          }
-         return compilerParams.OutputAssembly;
+         m_TempAssembly = new TempAssembly(compilerParams.OutputAssembly);
+         return null;
+      }
+
+      public static object CreateInstanceAndUnwrap(string typeName, params object[] constructorParameters)
+      {
+         if (m_TempAssembly == null)
+            throw new ApplicationException("Temporary assembly is not compiled");
+
+         return m_TempAssembly.CreateInstanceAndUnwrap(typeName, constructorParameters);
+      }
+
+      public static void ResetTempAssembly()
+      {
+         if (m_TempAssembly != null)
+         {
+            m_TempAssembly.Dispose();
+            m_TempAssembly = null;
+         }
       }
 
       public void CompileResources(string FolderName)

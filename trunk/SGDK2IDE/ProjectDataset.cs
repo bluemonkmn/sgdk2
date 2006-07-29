@@ -8415,6 +8415,8 @@ namespace SGDK2 {
             
             private DataColumn columnDuration;
             
+            private DataColumn columnMaskAlphaLevel;
+            
             internal SpriteFrameDataTable() : 
                     base("SpriteFrame") {
                 this.InitClass();
@@ -8473,6 +8475,12 @@ namespace SGDK2 {
                 }
             }
             
+            internal DataColumn MaskAlphaLevelColumn {
+                get {
+                    return this.columnMaskAlphaLevel;
+                }
+            }
+            
             public SpriteFrameRow this[int index] {
                 get {
                     return ((SpriteFrameRow)(this.Rows[index]));
@@ -8491,14 +8499,15 @@ namespace SGDK2 {
                 this.Rows.Add(row);
             }
             
-            public SpriteFrameRow AddSpriteFrameRow(string DefinitionName, string StateName, short Sequence, int FrameValue, short Duration) {
+            public SpriteFrameRow AddSpriteFrameRow(string DefinitionName, string StateName, short Sequence, int FrameValue, short Duration, System.Byte MaskAlphaLevel) {
                 SpriteFrameRow rowSpriteFrameRow = ((SpriteFrameRow)(this.NewRow()));
                 rowSpriteFrameRow.ItemArray = new object[] {
                         DefinitionName,
                         StateName,
                         Sequence,
                         FrameValue,
-                        Duration};
+                        Duration,
+                        MaskAlphaLevel};
                 this.Rows.Add(rowSpriteFrameRow);
                 return rowSpriteFrameRow;
             }
@@ -8530,6 +8539,7 @@ namespace SGDK2 {
                 this.columnSequence = this.Columns["Sequence"];
                 this.columnFrameValue = this.Columns["FrameValue"];
                 this.columnDuration = this.Columns["Duration"];
+                this.columnMaskAlphaLevel = this.Columns["MaskAlphaLevel"];
             }
             
             private void InitClass() {
@@ -8543,6 +8553,8 @@ namespace SGDK2 {
                 this.Columns.Add(this.columnFrameValue);
                 this.columnDuration = new DataColumn("Duration", typeof(short), null, System.Data.MappingType.Attribute);
                 this.Columns.Add(this.columnDuration);
+                this.columnMaskAlphaLevel = new DataColumn("MaskAlphaLevel", typeof(System.Byte), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnMaskAlphaLevel);
                 this.Constraints.Add(new UniqueConstraint("SpriteFrameKey", new DataColumn[] {
                                 this.columnDefinitionName,
                                 this.columnStateName,
@@ -8555,6 +8567,8 @@ namespace SGDK2 {
                 this.columnSequence.Namespace = "";
                 this.columnFrameValue.Namespace = "";
                 this.columnDuration.Namespace = "";
+                this.columnMaskAlphaLevel.Namespace = "";
+                this.columnMaskAlphaLevel.DefaultValue = 0;
             }
             
             public SpriteFrameRow NewSpriteFrameRow() {
@@ -8649,6 +8663,20 @@ namespace SGDK2 {
                 }
             }
             
+            public System.Byte MaskAlphaLevel {
+                get {
+                    try {
+                        return ((System.Byte)(this[this.tableSpriteFrame.MaskAlphaLevelColumn]));
+                    }
+                    catch (InvalidCastException e) {
+                        throw new StrongTypingException("Cannot get value because it is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableSpriteFrame.MaskAlphaLevelColumn] = value;
+                }
+            }
+            
             public SpriteStateRow SpriteStateRowParent {
                 get {
                     return ((SpriteStateRow)(this.GetParentRow(this.Table.ParentRelations["SpriteStateFrame"])));
@@ -8672,6 +8700,14 @@ namespace SGDK2 {
             
             public void SetDurationNull() {
                 this[this.tableSpriteFrame.DurationColumn] = System.Convert.DBNull;
+            }
+            
+            public bool IsMaskAlphaLevelNull() {
+                return this.IsNull(this.tableSpriteFrame.MaskAlphaLevelColumn);
+            }
+            
+            public void SetMaskAlphaLevelNull() {
+                this[this.tableSpriteFrame.MaskAlphaLevelColumn] = System.Convert.DBNull;
             }
         }
         

@@ -298,6 +298,18 @@ public abstract class SpriteBase
       x += dx;
       y += dy;
    }
+
+   [Description("Limit the velocity of the sprite to the specified maximum pixels per frame")]
+   public void LimitVelocity(int Maximum)
+   {
+      Debug.Assert(this.isActive, "Attempted to execute MaxVelocity on an inactive sprite");
+      double dist = Math.Sqrt(dx * dx + dy * dy);
+      if (dist > Maximum)
+      {
+         dx = dx * Maximum / dist;
+         dy = dy * Maximum / dist;
+      }
+   }
    #endregion
 
    #region States and animation

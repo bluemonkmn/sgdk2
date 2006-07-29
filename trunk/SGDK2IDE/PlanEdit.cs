@@ -7,14 +7,15 @@ using System.Data;
 
 namespace SGDK2
 {
-	/// <summary>
-	/// Summary description for Plan.
-	/// </summary>
-	public class frmPlanEdit : System.Windows.Forms.Form
-	{
+   /// <summary>
+   /// Summary description for Plan.
+   /// </summary>
+   public class frmPlanEdit : System.Windows.Forms.Form
+   {
       #region Non-control members
       private ProjectDataset.SpritePlanRow m_Plan;
       private RuleTable m_AvailableRules = null;
+      private RemotingServices.RemotePropertyInfo[] m_PlanProperties = null;
       private EnumTable m_Enums = null;
       string m_OldRuleName = null;
       int m_OldSequence = -1;
@@ -22,6 +23,32 @@ namespace SGDK2
       bool m_OldEndIf = false;
       private Hashtable m_TreeNodes = new Hashtable();
       private bool m_Loading = false;
+      SpriteCodeRef m_SpriteContext = null;
+      #endregion
+
+      #region Embedded Classes
+      private class SpriteCodeRef
+      {
+         private ProjectDataset.SpriteRow m_drSprite;
+
+         public SpriteCodeRef(ProjectDataset.SpriteRow drSprite)
+         {
+            m_drSprite = drSprite;
+         }
+
+         public ProjectDataset.SpriteRow SpriteRow
+         {
+            get
+            {
+               return m_drSprite;
+            }
+         }
+
+         public override string ToString()
+         {
+            return CodeGenerator.SpritePlanParentField + ".m_" + CodeGenerator.NameToVariable(m_drSprite.Name);
+         }
+      }
       #endregion
 
       #region Form Designer Members
@@ -60,12 +87,12 @@ namespace SGDK2
       #endregion
 
       #region Initialization and Clean-up
-		public frmPlanEdit(ProjectDataset.LayerRow parent)
-		{
-			//
-			// Required for Windows Form Designer support
-			//
-			InitializeComponent();
+      public frmPlanEdit(ProjectDataset.LayerRow parent)
+      {
+         //
+         // Required for Windows Form Designer support
+         //
+         InitializeComponent();
 
          String sName;
          Int32 nIdx = 1;
@@ -75,7 +102,7 @@ namespace SGDK2
 
          m_Plan = ProjectData.AddSpritePlan(parent, sName, 1);
          txtName.Text = sName;
-		}
+      }
 
       public frmPlanEdit(ProjectDataset.SpritePlanRow plan)
       {
@@ -87,29 +114,29 @@ namespace SGDK2
          PopulateRules();
       }
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
+      /// <summary>
+      /// Clean up any resources being used.
+      /// </summary>
+      protected override void Dispose( bool disposing )
+      {
+         if( disposing )
+         {
+            if(components != null)
+            {
+               components.Dispose();
+            }
+         }
+         base.Dispose( disposing );
+      }
       #endregion
 
-		#region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+      #region Windows Form Designer generated code
+      /// <summary>
+      /// Required method for Designer support - do not modify
+      /// the contents of this method with the code editor.
+      /// </summary>
+      private void InitializeComponent()
+      {
          this.components = new System.ComponentModel.Container();
          System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(frmPlanEdit));
          this.lblName = new System.Windows.Forms.Label();
@@ -499,7 +526,7 @@ namespace SGDK2
          this.ResumeLayout(false);
 
       }
-		#endregion
+      #endregion
 
       #region Private Methods
       private void LoadFunctions(bool onlyBools, bool forceRefresh)
@@ -525,6 +552,7 @@ namespace SGDK2
 
             m_AvailableRules = new RuleTable();
             m_Enums = new EnumTable();
+            m_PlanProperties = reflector.GetProperties();
             foreach(RemotingServices.RemoteMethodInfo mi in ruleList)
             {
                if ((mi.Description != null) && (mi.Description.Length > 0))
@@ -543,6 +571,7 @@ namespace SGDK2
                   }
                }
             }
+
             m_AvailableRules.InsertOperators();
          }
          
@@ -559,9 +588,9 @@ namespace SGDK2
             chkNot.Checked = false;
          chkNot.Enabled = onlyBools;
 
-         PopulateParameter(lblParam1, cboParam1, RemotingServices.RemoteParameterInfo.Empty);
-         PopulateParameter(lblParam2, cboParam2, RemotingServices.RemoteParameterInfo.Empty);
-         PopulateParameter(lblParam3, cboParam3, RemotingServices.RemoteParameterInfo.Empty);
+         PopulateParameter(lblParam1, cboParam1, RemotingServices.RemoteParameterInfo.Empty, true);
+         PopulateParameter(lblParam2, cboParam2, RemotingServices.RemoteParameterInfo.Empty, true);
+         PopulateParameter(lblParam3, cboParam3, RemotingServices.RemoteParameterInfo.Empty, true);
          lblOutput.Enabled = false;
          cboOutput.Enabled = false;
          cboOutput.SelectedIndex = -1;
@@ -569,11 +598,13 @@ namespace SGDK2
 
       private void PrepareFunction(string funcName)
       {
+         m_SpriteContext = null;
+
          if ((m_AvailableRules == null) || !m_AvailableRules.Contains(funcName))
          {
-            PopulateParameter(lblParam1, cboParam1, RemotingServices.RemoteParameterInfo.Unknown);
-            PopulateParameter(lblParam2, cboParam2, RemotingServices.RemoteParameterInfo.Unknown);
-            PopulateParameter(lblParam3, cboParam3, RemotingServices.RemoteParameterInfo.Unknown);
+            PopulateParameter(lblParam1, cboParam1, RemotingServices.RemoteParameterInfo.Unknown, true);
+            PopulateParameter(lblParam2, cboParam2, RemotingServices.RemoteParameterInfo.Unknown, true);
+            PopulateParameter(lblParam3, cboParam3, RemotingServices.RemoteParameterInfo.Unknown, true);
             lblOutput.Enabled = true;
             cboOutput.Enabled = true;
             txtHelpText.Text = "The specified function name could not be located or the project failed to compile.";
@@ -585,17 +616,17 @@ namespace SGDK2
          txtHelpText.Text = mi.Description;
 
          if (mi.Arguments.Length <= 0)
-            PopulateParameter(lblParam1, cboParam1, RemotingServices.RemoteParameterInfo.Empty);
+            PopulateParameter(lblParam1, cboParam1, RemotingServices.RemoteParameterInfo.Empty, true);
          else
-            PopulateParameter(lblParam1, cboParam1, mi.Arguments[0]);
+            PopulateParameter(lblParam1, cboParam1, mi.Arguments[0], !m_Loading);
          if (mi.Arguments.Length <= 1)
-            PopulateParameter(lblParam2, cboParam2, RemotingServices.RemoteParameterInfo.Empty);
+            PopulateParameter(lblParam2, cboParam2, RemotingServices.RemoteParameterInfo.Empty, true);
          else
-            PopulateParameter(lblParam2, cboParam2, mi.Arguments[1]);
+            PopulateParameter(lblParam2, cboParam2, mi.Arguments[1], !m_Loading);
          if (mi.Arguments.Length <= 2)
-            PopulateParameter(lblParam3, cboParam3, RemotingServices.RemoteParameterInfo.Empty);
+            PopulateParameter(lblParam3, cboParam3, RemotingServices.RemoteParameterInfo.Empty, true);
          else
-            PopulateParameter(lblParam3, cboParam3, mi.Arguments[2]);
+            PopulateParameter(lblParam3, cboParam3, mi.Arguments[2], !m_Loading);
 
          if ((string.Compare(mi.ReturnType, typeof(Int32).Name) == 0) ||
             (string.Compare(mi.ReturnType, typeof(Int16).Name) == 0))
@@ -603,6 +634,8 @@ namespace SGDK2
             lblOutput.Enabled = true;
             cboOutput.Enabled = true;
             cboOutput.Items.Clear();
+            if (m_SpriteContext != null)
+               FillComboWithParams(cboOutput);
             FillComboWithIntVars(cboOutput);
          }
          else
@@ -619,13 +652,40 @@ namespace SGDK2
          foreach (DataRowView drv in ProjectData.Counter.DefaultView)
             cboTarget.Items.Add(CodeGenerator.CounterClass + "." + CodeGenerator.NameToVariable(
                ((ProjectDataset.CounterRow)drv.Row).Name) + ".CurrentValue");
+         foreach (RemotingServices.RemotePropertyInfo pi in m_PlanProperties)
+         {
+            if (pi.Type == typeof(Int32).Name)
+               cboTarget.Items.Add(CodeGenerator.NameToVariable(pi.Name));
+         }
       }
 
-      private void PopulateParameter(Label lblParameter, ComboBox cboParameter, RemotingServices.RemoteParameterInfo param)
+      private void FillComboWithParams(ComboBox cboParams)
+      {
+         ProjectDataset.SpriteDefinitionRow spriteDef = m_SpriteContext.SpriteRow.SpriteStateRowParent.SpriteDefinitionRow;
+         foreach(ProjectDataset.SpriteParameterRow prow in ProjectData.GetSortedSpriteParameters(spriteDef))
+         {
+            cboParams.Items.Add(m_SpriteContext.ToString() + "." + CodeGenerator.NameToVariable(prow.Name));
+         }
+      }
+
+      private void FillComboWithSpriteStates(ComboBox cboTarget)
+      {
+         ProjectDataset.SpriteDefinitionRow spriteDef = m_SpriteContext.SpriteRow.SpriteStateRowParent.SpriteDefinitionRow;
+         foreach(ProjectDataset.SpriteStateRow drState in ProjectData.GetSortedSpriteStates(spriteDef))
+            cboTarget.Items.Add("(int)" + CodeGenerator.SpritesNamespace + "." +
+               CodeGenerator.NameToVariable(spriteDef.Name) + "." +
+               CodeGenerator.SpriteStateEnumName + "." +
+               CodeGenerator.NameToVariable(drState.Name));
+      }
+
+      private void PopulateParameter(Label lblParameter, ComboBox cboParameter, RemotingServices.RemoteParameterInfo param, bool clearValue)
       {
          cboParameter.Items.Clear();
-         cboParameter.Text = string.Empty;
-         cboParameter.SelectedIndex = -1;
+         if (clearValue)
+         {
+            cboParameter.Text = string.Empty;
+            cboParameter.SelectedIndex = -1;
+         }
 
          if (param.IsUnknown())
          {
@@ -682,21 +742,43 @@ namespace SGDK2
          {
             foreach(ProjectDataset.SpriteRow drSprite in ProjectData.GetSortedSpriteRows(m_Plan.LayerRowParent))
             {
-               cboParameter.Items.Add(CodeGenerator.SpritePlanParentField + ".m_" + CodeGenerator.NameToVariable(drSprite.Name));
+               cboParameter.Items.Add(new SpriteCodeRef(drSprite));
             }
          }
-
-         foreach(string typeName in new string[]
+         else if (string.Compare(param.TypeName, "SpriteCollection") == 0)
+         {
+            foreach(DataRowView drv in ProjectData.SpriteCategory.DefaultView)
+            {
+               cboParameter.Items.Add(CodeGenerator.SpritePlanParentField + "." + CodeGenerator.NameToVariable(((ProjectDataset.SpriteCategoryRow)drv.Row).Name));
+            }
+         }
+         else if (param.Editors != null)
+         {
+            foreach(string editor in param.Editors)
+            {
+               if (string.Compare(editor, "SpriteState", true) == 0)
+               {
+                  if (m_SpriteContext != null)
+                     FillComboWithSpriteStates(cboParameter);
+               }
+            }
+         }
+         else 
+         {
+            foreach(string typeName in new string[]
             {
                typeof(Int32).Name, typeof(Int16).Name,
                typeof(Double).Name, typeof(Single).Name
             })
-         {
-            if (string.Compare(typeName, param.TypeName) == 0)
             {
-               cboParameter.Items.Clear();
-               FillComboWithIntVars(cboParameter);
-               break;
+               if (string.Compare(typeName, param.TypeName) == 0)
+               {
+                  cboParameter.Items.Clear();
+                  if (m_SpriteContext != null)
+                     FillComboWithParams(cboParameter);
+                  FillComboWithIntVars(cboParameter);
+                  break;
+               }
             }
          }
       }
@@ -738,6 +820,9 @@ namespace SGDK2
          {
             m_Loading = true;
             txtRuleName.Text = drRule.Name;
+            
+            LoadFunctions(IsRuleTypeConditional(drRule.Type), false);
+
             if (cboFunction.Items.Contains(drRule.Function))
             {
                chkNot.Checked = false;
@@ -753,8 +838,6 @@ namespace SGDK2
                chkNot.Checked = false;
                cboFunction.Text = drRule.Function;
             }
-
-            LoadFunctions(IsRuleTypeConditional(drRule.Type), false);
 
             PrepareFunction(cboFunction.Text);
 
@@ -775,17 +858,26 @@ namespace SGDK2
             if (drRule.IsParameter1Null())
                cboParam1.SelectedIndex = -1;
             else
+            {
                cboParam1.Text = drRule.Parameter1;
+               DetectSpriteContext(0, drRule.Parameter1, cboParam1);
+            }
 
             if (drRule.IsParameter2Null())
                cboParam2.SelectedIndex = -1;
             else
+            {
                cboParam2.Text = drRule.Parameter2;
+               DetectSpriteContext(1, drRule.Parameter2, cboParam2);
+            }
 
             if (drRule.IsParameter3Null())
                cboParam3.SelectedIndex = -1;
             else
+            {
                cboParam3.Text = drRule.Parameter3;
+               DetectSpriteContext(2, drRule.Parameter3, cboParam3);
+            }
 
             if (drRule.IsResultParameterNull())
                cboOutput.SelectedIndex = -1;
@@ -897,6 +989,32 @@ namespace SGDK2
       {
          return (String.Compare(ruleType, "If", true) == 0) ||
             (String.Compare(ruleType, "ElseIf", true) == 0);
+      }
+
+      private void DetectSpriteContext(int argIdx, string fldValue, ComboBox cboSource)
+      {
+         RemotingServices.RemoteMethodInfo rmi = m_AvailableRules[cboFunction.Text];
+         if ((argIdx >= 0) && (rmi.Arguments[argIdx].TypeName == "SpriteBase") && (cboSource.SelectedIndex >= 0) && (cboSource.Items[cboSource.SelectedIndex] is SpriteCodeRef))
+         {
+            SpriteCodeRef sprite = (SpriteCodeRef)cboSource.Items[cboSource.SelectedIndex];
+            if (sprite != null)
+            {
+               m_SpriteContext = sprite;
+               if ((rmi.Arguments.Length >= 1) && (argIdx != 0))
+                  PopulateParameter(lblParam1, cboParam1, rmi.Arguments[0], false);
+               if ((rmi.Arguments.Length >= 2) && (argIdx != 1))
+                  PopulateParameter(lblParam2, cboParam2, rmi.Arguments[1], false);
+               if ((rmi.Arguments.Length >= 3) && (argIdx != 2))
+                  PopulateParameter(lblParam3, cboParam3, rmi.Arguments[2], false);
+               if ((string.Compare(rmi.ReturnType, typeof(Int32).Name) == 0) ||
+                  (string.Compare(rmi.ReturnType, typeof(Int16).Name) == 0))
+               {
+                  cboOutput.Items.Clear();
+                  FillComboWithParams(cboOutput);
+                  FillComboWithIntVars(cboOutput);
+               }
+            }
+         }
       }
       #endregion
 
@@ -1086,11 +1204,20 @@ namespace SGDK2
 
          string fldValue = ((ComboBox)sender).Text;
          if (sender == cboParam1)
+         {
             CurrentRule.Parameter1 = fldValue;
+            DetectSpriteContext(0, fldValue, cboParam1);
+         }
          if (sender == cboParam2)
+         {
             CurrentRule.Parameter2 = fldValue;
+            DetectSpriteContext(1, fldValue, cboParam2);
+         }
          if (sender == cboParam3)
+         {
             CurrentRule.Parameter3 = fldValue;
+            DetectSpriteContext(2, fldValue, cboParam3);
+         }
          if (sender == cboOutput)
             CurrentRule.ResultParameter = fldValue;
       }

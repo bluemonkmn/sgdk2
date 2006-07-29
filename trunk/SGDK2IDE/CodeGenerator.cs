@@ -1727,17 +1727,64 @@ namespace SGDK2
          }
          clsSpriteDef.Members.Add(constructor);
 
+         ProjectDataset.SpriteStateRow[] stateRows = ProjectData.GetSortedSpriteStates(drSpriteDef);
+
          CodeTypeDeclaration enumStates = new CodeTypeDeclaration(SpriteStateEnumName);
-         System.Collections.ArrayList StateCreators = new System.Collections.ArrayList();
+         constructor.Statements.Add(new CodeAssignStatement(
+            new CodeFieldReferenceExpression(
+            new CodeThisReferenceExpression(), SpriteStateField),
+            new CodeArrayCreateExpression(
+            new CodeTypeReference(SpriteStateClassName, 1),
+            new CodePrimitiveExpression(stateRows.Length))));
 
          clsSpriteDef.Members.Add(enumStates);
+         enumStates.IsEnum = true;
          
          CachedSpriteDef sprCached = new CachedSpriteDef(drSpriteDef, null);
 
-         foreach(ProjectDataset.SpriteStateRow drState in ProjectData.GetSortedSpriteStates(drSpriteDef))
+         CodeVariableDeclarationStatement varFrameset = new CodeVariableDeclarationStatement(
+            FramesetClass, "framesetRef");
+         constructor.Statements.Add(varFrameset);
+
+         CodeVariableDeclarationStatement varBounds = new CodeVariableDeclarationStatement(
+            typeof(System.Drawing.Rectangle), "localBounds");
+         constructor.Statements.Add(varBounds);
+
+         CodeObjectCreateExpression createRect = null;
+         CodeMethodInvokeExpression getFrameset = null;
+
+         foreach(ProjectDataset.SpriteStateRow drState in stateRows)
          {
-            enumStates.IsEnum = true;
-            enumStates.Members.Add(new CodeMemberField(typeof(int), drState.Name));
+            if ((getFrameset == null) ||
+               (!((CodePrimitiveExpression)getFrameset.Parameters[0]).Value.Equals(drState.FramesetName)))
+            {
+               getFrameset = new CodeMethodInvokeExpression(
+                  new CodeTypeReferenceExpression(FramesetClass),
+                  GetFramesetMethodName, new CodePrimitiveExpression(drState.FramesetName),
+                  new CodeArgumentReferenceExpression("disp"));
+               constructor.Statements.Add(new CodeAssignStatement(
+                  new CodeVariableReferenceExpression(varFrameset.Name), getFrameset));
+            }
+
+            StateInfo sinf = sprCached[drState.Name];
+
+            if ((createRect == null) ||
+               (!((CodePrimitiveExpression)createRect.Parameters[0]).Value.Equals(sinf.Bounds.X)) ||
+               (!((CodePrimitiveExpression)createRect.Parameters[1]).Value.Equals(sinf.Bounds.Y)) ||
+               (!((CodePrimitiveExpression)createRect.Parameters[2]).Value.Equals(sinf.Bounds.Width)) ||
+               (!((CodePrimitiveExpression)createRect.Parameters[3]).Value.Equals(sinf.Bounds.Height)))
+            {
+               createRect = new CodeObjectCreateExpression(typeof(System.Drawing.Rectangle),
+                  new CodePrimitiveExpression(sinf.Bounds.X),
+                  new CodePrimitiveExpression(sinf.Bounds.Y),
+                  new CodePrimitiveExpression(sinf.Bounds.Width),
+                  new CodePrimitiveExpression(sinf.Bounds.Height));
+               
+               constructor.Statements.Add(new CodeAssignStatement(
+                  new CodeVariableReferenceExpression(varBounds.Name), createRect));
+            }
+
+            enumStates.Members.Add(new CodeMemberField(typeof(int), NameToVariable(drState.Name)));
             int nAccumulatedDuration = 0;
             System.Collections.ArrayList stateParams = new System.Collections.ArrayList();
             stateParams.Add(new CodePrimitiveExpression(drState.SolidWidth));
@@ -1746,41 +1793,72 @@ namespace SGDK2
                new CodeTypeReferenceExpression(SolidityClassName),
                NameToVariable(drState.SolidityName)));
             stateParams.Add(new CodeArgumentReferenceExpression("disp"));
-            stateParams.Add(new CodePrimitiveExpression(drState.FramesetName));
-            StateInfo sinf = sprCached[drState.Name];
-
-            stateParams.Add(new CodeObjectCreateExpression(typeof(System.Drawing.Rectangle),
-               new CodePrimitiveExpression(sinf.Bounds.X),
-               new CodePrimitiveExpression(sinf.Bounds.Y),
-               new CodePrimitiveExpression(sinf.Bounds.Width),
-               new CodePrimitiveExpression(sinf.Bounds.Height)));
+            stateParams.Add(new CodeVariableReferenceExpression(varFrameset.Name));
+            stateParams.Add(new CodeVariableReferenceExpression(varBounds.Name));
             System.Collections.ArrayList subFrames = null;
+            System.Collections.ArrayList alphas = null;
+            bool hasAlphas = false;
             foreach (ProjectDataset.SpriteFrameRow drFrame in ProjectData.GetSortedSpriteFrames(drState))
             {
                if (subFrames == null)
+               {
                   subFrames = new System.Collections.ArrayList();
+                  alphas = new System.Collections.ArrayList();
+               }
                subFrames.Add(new CodePrimitiveExpression(drFrame.FrameValue));
+               alphas.Add(new CodePrimitiveExpression(drFrame.MaskAlphaLevel));
+               if (drFrame.MaskAlphaLevel > 0)
+                  hasAlphas = true;
                if (drFrame.Duration > 0)
                {
                   nAccumulatedDuration += drFrame.Duration;
                   if (subFrames.Count == 1)
                   {
-                     stateParams.Add(new CodeObjectCreateExpression("TileFrame",
-                        new CodePrimitiveExpression(nAccumulatedDuration),
-                        (CodePrimitiveExpression)subFrames[0]));
+                     if (hasAlphas)
+                        stateParams.Add(new CodeObjectCreateExpression("SpriteFrame",
+                           new CodeVariableReferenceExpression(varBounds.Name),
+                           new CodeVariableReferenceExpression(varFrameset.Name),
+                           new CodePrimitiveExpression(nAccumulatedDuration),
+                           (CodePrimitiveExpression)subFrames[0],
+                           (CodePrimitiveExpression)alphas[0]));
+                     else
+                        stateParams.Add(new CodeObjectCreateExpression("TileFrame",
+                           new CodePrimitiveExpression(nAccumulatedDuration),
+                           (CodePrimitiveExpression)subFrames[0]));
                   }
                   else
                   {
-                     stateParams.Add(new CodeObjectCreateExpression("TileFrame",
-                        new CodePrimitiveExpression(nAccumulatedDuration),
-                        new CodeArrayCreateExpression(typeof(int), (CodeExpression[])subFrames.ToArray(typeof(CodeExpression)))));
+                     if (hasAlphas)
+                        stateParams.Add(new CodeObjectCreateExpression("SpriteFrame",
+                           new CodeVariableReferenceExpression(varBounds.Name),
+                           new CodeVariableReferenceExpression(varFrameset.Name),
+                           new CodePrimitiveExpression(nAccumulatedDuration),
+                           new CodeArrayCreateExpression(typeof(int),
+                           (CodeExpression[])subFrames.ToArray(typeof(CodeExpression))),
+                           new CodeArrayCreateExpression(typeof(byte),
+                           (CodeExpression[])alphas.ToArray(typeof(CodeExpression)))));
+                     else
+                        stateParams.Add(new CodeObjectCreateExpression("TileFrame",
+                           new CodePrimitiveExpression(nAccumulatedDuration),
+                           new CodeArrayCreateExpression(typeof(int),
+                           (CodeExpression[])subFrames.ToArray(typeof(CodeExpression)))));
                   }
                   subFrames.Clear();
+                  alphas.Clear();
+                  hasAlphas = false;
                }
             }
 
-            StateCreators.Add(new CodeObjectCreateExpression(
-               SpriteStateClassName, (CodeExpression[])stateParams.ToArray(typeof(CodeExpression))));
+            constructor.Statements.Add(new CodeAssignStatement(
+               new CodeArrayIndexerExpression(
+               new CodeFieldReferenceExpression(
+               new CodeThisReferenceExpression(), SpriteStateField),
+               new CodeCastExpression(typeof(int),
+               new CodeFieldReferenceExpression(
+               new CodeTypeReferenceExpression(enumStates.Name),
+               NameToVariable(drState.Name)))),
+               new CodeObjectCreateExpression(SpriteStateClassName,
+               (CodeExpression[])stateParams.ToArray(typeof(CodeExpression)))));
          }
 
          ((CodeMemberField)enumStates.Members[0]).InitExpression = new CodePrimitiveExpression(0);
@@ -1803,13 +1881,6 @@ namespace SGDK2
             new CodeThisReferenceExpression(), SpriteStateField),
             new CodeArgumentReferenceExpression("state"))));
          clsSpriteDef.Members.Add(prpIndexer);
-
-         constructor.Statements.Add(new CodeAssignStatement(
-            new CodeFieldReferenceExpression(
-            new CodeThisReferenceExpression(), SpriteStateField),
-            new CodeArrayCreateExpression(
-            new CodeTypeReference(SpriteStateClassName, 1),
-            (CodeObjectCreateExpression[])StateCreators.ToArray(typeof(CodeObjectCreateExpression)))));
 
          CodeMemberProperty propStateInfo = new CodeMemberProperty();
          propStateInfo.Name = "SolidWidth";

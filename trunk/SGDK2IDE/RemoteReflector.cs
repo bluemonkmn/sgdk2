@@ -64,6 +64,7 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
       System.Reflection.BindingFlags binder;
       binder = System.Reflection.BindingFlags.Public |
          System.Reflection.BindingFlags.Instance | 
+         System.Reflection.BindingFlags.Static | 
          System.Reflection.BindingFlags.SetProperty | 
          System.Reflection.BindingFlags.GetProperty |
          System.Reflection.BindingFlags.SetField | 

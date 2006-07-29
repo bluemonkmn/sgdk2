@@ -157,6 +157,9 @@ namespace SGDK2
       private System.Windows.Forms.ToolBarButton tbbMoveStateDown;
       private System.Windows.Forms.MenuItem mnuMoveStateUp;
       private System.Windows.Forms.MenuItem mnuMoveStateDown;
+      private System.Windows.Forms.Label lblMaskAlpha;
+      private System.Windows.Forms.TextBox txtMaskAlpha;
+      private System.Windows.Forms.Button btnMaskAlpha;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -230,6 +233,9 @@ namespace SGDK2
          this.pnlFrames = new System.Windows.Forms.Panel();
          this.StateFrames = new SGDK2.GraphicBrowser();
          this.pnlFrameDetails = new System.Windows.Forms.Panel();
+         this.btnMaskAlpha = new System.Windows.Forms.Button();
+         this.txtMaskAlpha = new System.Windows.Forms.TextBox();
+         this.lblMaskAlpha = new System.Windows.Forms.Label();
          this.updRepeatCount = new System.Windows.Forms.NumericUpDown();
          this.lblRepeatCount = new System.Windows.Forms.Label();
          this.lblStateFrames = new System.Windows.Forms.Label();
@@ -289,6 +295,8 @@ namespace SGDK2
          this.mnuSpriteDefinition = new System.Windows.Forms.MenuItem();
          this.mnuAddState = new System.Windows.Forms.MenuItem();
          this.mnuDeleteState = new System.Windows.Forms.MenuItem();
+         this.mnuMoveStateUp = new System.Windows.Forms.MenuItem();
+         this.mnuMoveStateDown = new System.Windows.Forms.MenuItem();
          this.mnuAddFrame = new System.Windows.Forms.MenuItem();
          this.mnuRemoveFrame = new System.Windows.Forms.MenuItem();
          this.mnuConditionSeparator = new System.Windows.Forms.MenuItem();
@@ -297,8 +305,6 @@ namespace SGDK2
          this.mnuMoveRuleUp = new System.Windows.Forms.MenuItem();
          this.mnuMoveRuleDown = new System.Windows.Forms.MenuItem();
          this.DataMonitor = new SGDK2.DataChangeNotifier(this.components);
-         this.mnuMoveStateUp = new System.Windows.Forms.MenuItem();
-         this.mnuMoveStateDown = new System.Windows.Forms.MenuItem();
          this.tabSpriteDefinition.SuspendLayout();
          this.tabStates.SuspendLayout();
          this.pnlFrames.SuspendLayout();
@@ -406,10 +412,14 @@ namespace SGDK2
          this.StateFrames.TabIndex = 1;
          this.StateFrames.CurrentCellChanged += new System.EventHandler(this.StateFrames_CurrentCellChanged);
          this.StateFrames.DragDrop += new System.Windows.Forms.DragEventHandler(this.StateFrames_DragDrop);
+         this.StateFrames.KeyDown += new System.Windows.Forms.KeyEventHandler(this.StateFrames_KeyDown);
          this.StateFrames.DragOver += new System.Windows.Forms.DragEventHandler(this.StateFrames_DragOver);
          // 
          // pnlFrameDetails
          // 
+         this.pnlFrameDetails.Controls.Add(this.btnMaskAlpha);
+         this.pnlFrameDetails.Controls.Add(this.txtMaskAlpha);
+         this.pnlFrameDetails.Controls.Add(this.lblMaskAlpha);
          this.pnlFrameDetails.Controls.Add(this.updRepeatCount);
          this.pnlFrameDetails.Controls.Add(this.lblRepeatCount);
          this.pnlFrameDetails.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -420,6 +430,36 @@ namespace SGDK2
          this.pnlFrameDetails.Name = "pnlFrameDetails";
          this.pnlFrameDetails.Size = new System.Drawing.Size(435, 24);
          this.pnlFrameDetails.TabIndex = 7;
+         // 
+         // btnMaskAlpha
+         // 
+         this.btnMaskAlpha.Dock = System.Windows.Forms.DockStyle.Left;
+         this.btnMaskAlpha.Location = new System.Drawing.Point(321, 2);
+         this.btnMaskAlpha.Name = "btnMaskAlpha";
+         this.btnMaskAlpha.Size = new System.Drawing.Size(24, 20);
+         this.btnMaskAlpha.TabIndex = 4;
+         this.btnMaskAlpha.Text = "...";
+         this.btnMaskAlpha.Click += new System.EventHandler(this.btnMaskAlpha_Click);
+         // 
+         // txtMaskAlpha
+         // 
+         this.txtMaskAlpha.Dock = System.Windows.Forms.DockStyle.Left;
+         this.txtMaskAlpha.Location = new System.Drawing.Point(273, 2);
+         this.txtMaskAlpha.Name = "txtMaskAlpha";
+         this.txtMaskAlpha.ReadOnly = true;
+         this.txtMaskAlpha.Size = new System.Drawing.Size(48, 20);
+         this.txtMaskAlpha.TabIndex = 3;
+         this.txtMaskAlpha.Text = "";
+         // 
+         // lblMaskAlpha
+         // 
+         this.lblMaskAlpha.Dock = System.Windows.Forms.DockStyle.Left;
+         this.lblMaskAlpha.Location = new System.Drawing.Point(169, 2);
+         this.lblMaskAlpha.Name = "lblMaskAlpha";
+         this.lblMaskAlpha.Size = new System.Drawing.Size(104, 20);
+         this.lblMaskAlpha.TabIndex = 2;
+         this.lblMaskAlpha.Text = "Mask Alpha Level:";
+         this.lblMaskAlpha.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
          // 
          // updRepeatCount
          // 
@@ -1024,6 +1064,18 @@ namespace SGDK2
          this.mnuDeleteState.Text = "&Delete State";
          this.mnuDeleteState.Click += new System.EventHandler(this.OnDeleteState);
          // 
+         // mnuMoveStateUp
+         // 
+         this.mnuMoveStateUp.Index = 2;
+         this.mnuMoveStateUp.Text = "Move &State Up";
+         this.mnuMoveStateUp.Click += new System.EventHandler(this.OnMoveStateUp);
+         // 
+         // mnuMoveStateDown
+         // 
+         this.mnuMoveStateDown.Index = 3;
+         this.mnuMoveStateDown.Text = "Move State Do&wn";
+         this.mnuMoveStateDown.Click += new System.EventHandler(this.OnMoveStateDown);
+         // 
          // mnuAddFrame
          // 
          this.mnuAddFrame.Index = 4;
@@ -1073,6 +1125,7 @@ namespace SGDK2
          this.DataMonitor.SpriteStateRowChanged += new SGDK2.ProjectDataset.SpriteStateRowChangeEventHandler(this.DataMonitor_SpriteStateRowChanged);
          this.DataMonitor.FramesetRowChanging += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.DataMonitor_FramesetRowChanging);
          this.DataMonitor.FramesetRowChanged += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.DataMonitor_FramesetRowChanged);
+         this.DataMonitor.SpriteParameterRowChanged += new SGDK2.ProjectDataset.SpriteParameterRowChangeEventHandler(this.DataMonitor_SpriteParameterRowChanged);
          this.DataMonitor.SolidityRowDeleted += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.DataMonitor_SolidityRowDeleted);
          this.DataMonitor.SpriteStateRowChanging += new SGDK2.ProjectDataset.SpriteStateRowChangeEventHandler(this.DataMonitor_SpriteStateRowChanging);
          this.DataMonitor.SpriteRuleRowChanging += new SGDK2.ProjectDataset.SpriteRuleRowChangeEventHandler(this.dataMonitor_SpriteRuleRowChanging);
@@ -1084,18 +1137,6 @@ namespace SGDK2
          this.DataMonitor.SpriteRuleRowDeleting += new SGDK2.ProjectDataset.SpriteRuleRowChangeEventHandler(this.dataMonitor_SpriteRuleRowChanging);
          this.DataMonitor.SpriteStateRowDeleted += new SGDK2.ProjectDataset.SpriteStateRowChangeEventHandler(this.DataMonitor_SpriteStateRowDeleted);
          this.DataMonitor.Clearing += new System.EventHandler(this.DataMonitor_Clearing);
-         // 
-         // mnuMoveStateUp
-         // 
-         this.mnuMoveStateUp.Index = 2;
-         this.mnuMoveStateUp.Text = "Move &State Up";
-         this.mnuMoveStateUp.Click += new System.EventHandler(this.OnMoveStateUp);
-         // 
-         // mnuMoveStateDown
-         // 
-         this.mnuMoveStateDown.Index = 3;
-         this.mnuMoveStateDown.Text = "Move State Do&wn";
-         this.mnuMoveStateDown.Click += new System.EventHandler(this.OnMoveStateDown);
          // 
          // frmSpriteDefinition
          // 
@@ -1312,6 +1353,8 @@ namespace SGDK2
       private void InitParameters()
       {
          grdParameters.SetDataBinding(ProjectData.SpriteDefinition, "SpriteDefinitionSpriteParameter");
+         CurrencyManager cur = (CurrencyManager)this.BindingContext[ProjectData.SpriteDefinition];
+         cur.Position = ProjectData.SpriteDefinition.DefaultView.Find(m_SpriteDef.Name);
          DataGridTableStyle ts = new DataGridTableStyle();
          ts.MappingName = "SpriteParameter";
          /*PropertyDescriptorCollection pdc = BindingContext[ProjectData.SpriteParameter, null].GetItemProperties();
@@ -1326,7 +1369,8 @@ namespace SGDK2
          cbcol.HeaderText = "Type";
          ts.GridColumnStyles.Add(cbcol);*/
 
-         grdParameters.TableStyles.Add(ts);         
+         grdParameters.TableStyles.Add(ts);
+         grdParameters.TableStyles["SpriteParameter"].GridColumnStyles["Name"].Width = 300;
          ProjectData.SpriteParameter.ColumnChanging += new System.Data.DataColumnChangeEventHandler(SpriteParameter_ColumnChanging);
       }
 
@@ -1383,7 +1427,7 @@ namespace SGDK2
       {
          foreach(ProjectDataset.SpriteParameterRow prow in m_SpriteDef.GetSpriteParameterRows())
          {
-            cboParams.Items.Add(prow.Name);
+            cboParams.Items.Add(CodeGenerator.NameToVariable(prow.Name));
          }
       }
 
@@ -1510,6 +1554,9 @@ namespace SGDK2
          {
             m_Loading = true;
             txtRuleName.Text = drRule.Name;
+
+            LoadFunctions(IsRuleTypeConditional(drRule.Type), false);
+
             if (cboFunction.Items.Contains(drRule.Function))
             {
                chkNot.Checked = false;
@@ -1525,8 +1572,6 @@ namespace SGDK2
                chkNot.Checked = false;
                cboFunction.Text = drRule.Function;
             }
-
-            LoadFunctions(IsRuleTypeConditional(drRule.Type), false);
 
             PrepareFunction(cboFunction.Text);
 
@@ -1838,7 +1883,7 @@ namespace SGDK2
       {
          try
          {
-            if (StateFrames.CurrentCellIndex < 0)
+            if ((StateFrames.CurrentCellIndex < 0) || m_Loading)
                return;
             for(int i=0; i < StateFrames.CellCount; i++)
                if ((StateFrames.Selected[i]) && (((SpriteFrame)StateFrames.FramesToDisplay[i]).Row.Duration != (short)updRepeatCount.Value))
@@ -1855,7 +1900,11 @@ namespace SGDK2
          try
          {
             if (StateFrames.CurrentCellIndex >= 0)
+            {
+               m_Loading = true;
                updRepeatCount.Value = ((SpriteFrame)(StateFrames.FramesToDisplay[StateFrames.CurrentCellIndex])).Row.Duration;
+               m_Loading = false;
+            }
          }
          catch (System.Exception ex)
          {
@@ -2053,6 +2102,12 @@ namespace SGDK2
       {
          ProjectDataset.SpriteStateRow sr = GetCurrentState();
          
+         if (sr == null)
+            return;
+
+         if (DialogResult.Yes != MessageBox.Show(this, "Are you sure you want to remove the selected " + StateFrames.GetSelectedCellCount().ToString() + " frame(s) from state " + sr.Name + "?", "Remove Frames", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            return;
+
          FrameList DeleteFrames = new FrameList();
 
          for (int i = 0; i < StateFrames.FramesToDisplay.Count; i++)
@@ -2293,6 +2348,14 @@ namespace SGDK2
          m_OldSequence = -1;
       }
 
+      private void DataMonitor_SpriteParameterRowChanged(object sender, SGDK2.ProjectDataset.SpriteParameterRowChangeEvent e)
+      {
+         if (e.Action == DataRowAction.Add)
+         {
+            ProjectData.ResyncParameters(m_SpriteDef);
+         }
+      }
+
       private void chkEndIf_CheckedChanged(object sender, System.EventArgs e)
       {
          if (m_Loading)
@@ -2359,6 +2422,30 @@ namespace SGDK2
             if (DialogResult.Cancel == MessageBox.Show(this, txtRuleName.Text + " already exists", "Sprite Rule Name", MessageBoxButtons.RetryCancel, MessageBoxIcon.Exclamation))
                txtRuleName.Text = CurrentRule.Name;
             e.Cancel = true;
+         }
+      }
+
+      private void btnMaskAlpha_Click(object sender, System.EventArgs e)
+      {
+         int count = StateFrames.GetSelectedCellCount();
+         if (count <= 0)
+         {
+            MessageBox.Show(this, "Select a frame first", "Set Collision Mask Alpha Level", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
+         int[] SelectedFrames = new int[count];
+         int selIdx = 0;
+         for (int i = 0; i < StateFrames.CellCount; i++)
+            if (StateFrames.Selected[i])
+               SelectedFrames[selIdx++] = i;
+         new frmCollisionMask(GetCurrentState(), SelectedFrames).ShowDialog(this);
+      }
+
+      private void StateFrames_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+      {
+         if (e.KeyCode == Keys.Delete)
+         {
+            mnuRemoveFrame_Click(sender, null);
          }
       }
       #endregion

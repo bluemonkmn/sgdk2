@@ -240,6 +240,8 @@
                                     <xs:attribute name="Sequence" type="xs:short" />
                                     <xs:attribute name="FrameValue" type="xs:int" />
                                     <xs:attribute name="Duration" type="xs:short" />
+                                    <xs:attribute name="MaskAlphaLevel" type="xs:unsignedByte" msprop:nullValue="_throw" use="optional"
+                                       default="0" />
                                  </xs:complexType>
                               </xs:element>
                            </xs:sequence>

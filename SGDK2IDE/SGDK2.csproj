@@ -172,6 +172,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "CollisionMask.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "CollisionMask.resx"
+                    DependentUpon = "CollisionMask.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "ColorSel.cs"
                     SubType = "UserControl"
                     BuildAction = "Compile"
@@ -514,6 +524,11 @@
                 <File
                     RelPath = "WizardBase.resx"
                     DependentUpon = "WizardBase.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "Template\CollisionMask.cs"
+                    SubType = "Code"
                     BuildAction = "EmbeddedResource"
                 />
                 <File

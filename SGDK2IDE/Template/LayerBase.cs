@@ -9,41 +9,6 @@ using Microsoft.DirectX;
 public abstract class LayerBase : System.Collections.IEnumerable
 {
    #region Embedded Classes
-   public class ActiveSpriteEnumerator : System.Collections.IEnumerator
-   {
-      private System.Collections.IEnumerator SpriteEnumerator;
-
-      public ActiveSpriteEnumerator(SpriteCollection sprites)
-      {
-         SpriteEnumerator = sprites.GetEnumerator();
-      }
-
-      #region IEnumerator Members
-
-      public void Reset()
-      {
-         SpriteEnumerator.Reset();
-      }
-
-      public object Current
-      {
-         get
-         {
-            return SpriteEnumerator.Current;
-         }
-      }
-
-      public bool MoveNext()
-      {
-         bool result;
-         while ((result = SpriteEnumerator.MoveNext()) && (!((SpriteBase)Current).isActive))
-            ;
-         return result;
-      }
-
-      #endregion
-   }
-
    private class InjectedFrame : IComparable
    {
       public int x;

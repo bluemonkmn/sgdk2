@@ -27,6 +27,11 @@ namespace SGDK2
       {
       }
 
+      static ProjectData()
+      {
+         m_dsPrj.SpriteDefinition.DefaultView.Sort = ProjectData.SpriteDefinition.NameColumn.ColumnName;
+      }
+
       #region General/Dataset
       public static event System.EventHandler Clearing;
 
@@ -1204,6 +1209,19 @@ namespace SGDK2
          Array.Sort(result, new DataRowComparer());
          return result;
       }
+      public static void ResyncParameters(ProjectDataset.SpriteDefinitionRow Definition)
+      {
+         foreach(ProjectDataset.SpriteRow drSprite in m_dsPrj.Sprite.Select(m_dsPrj.Sprite.DefinitionNameColumn.ColumnName + "='" + Definition.Name + "'", String.Empty, DataViewRowState.CurrentRows))
+         {
+            foreach(ProjectDataset.SpriteParameterRow drParam in Definition.GetSpriteParameterRows())
+            {
+               if (null == GetSpriteParameterValueRow(drSprite, drParam.Name))
+               {
+                  m_dsPrj.ParameterValue.AddParameterValueRow(drSprite[m_dsPrj.Sprite.LayerNameColumn].ToString(), drSprite.Name, drParam.Name, 0, Definition.Name, drSprite[m_dsPrj.Sprite.MapNameColumn].ToString());
+               }
+            }
+         }
+      }
       #endregion
 
       #region SpriteState
@@ -1428,7 +1446,7 @@ namespace SGDK2
                rows[nIdx].Sequence =(short)(nIdx + 1);
             }
             
-            return m_dsPrj.SpriteFrame.AddSpriteFrameRow(parent.SpriteDefinitionRow.Name, parent.Name, Sequence, FrameValue, Duration);
+            return m_dsPrj.SpriteFrame.AddSpriteFrameRow(parent.SpriteDefinitionRow.Name, parent.Name, Sequence, FrameValue, Duration, 0);
          }
          catch (System.Exception)
          {

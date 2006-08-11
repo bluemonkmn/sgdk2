@@ -230,7 +230,8 @@ public abstract class SpriteBase
       if (RidingOn == null)
          return;
 
-      if ((x+SolidWidth < RidingOn.x) || (x > RidingOn.x+RidingOn.SolidWidth))
+      if ((x+SolidWidth < RidingOn.oldX) || (x > RidingOn.oldX+RidingOn.SolidWidth) ||
+          (y+SolidHeight < RidingOn.oldY - 1) || (y+SolidHeight >= RidingOn.oldY+SolidHeight))
       {
          StopRiding();
          return;

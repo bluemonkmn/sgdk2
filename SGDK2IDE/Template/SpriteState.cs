@@ -37,14 +37,12 @@ public class SpriteState
    private Frameset m_Frameset;
    private int m_nSolidWidth;
    private int m_nSolidHeight;
-   private Solidity m_Solidity;
    private System.Drawing.Rectangle m_LocalBounds;
 
-   public SpriteState(int width, int height, Solidity solidity, Display disp, Frameset frameset, System.Drawing.Rectangle localBounds, params TileFrame[] frames)
+   public SpriteState(int width, int height, Frameset frameset, System.Drawing.Rectangle localBounds, params TileFrame[] frames)
    {
       m_nSolidWidth = width;
       m_nSolidHeight = height;
-      m_Solidity = solidity;
       m_Frameset = frameset;
       m_LocalBounds = localBounds;
       m_frames = frames;

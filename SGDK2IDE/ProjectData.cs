@@ -1290,7 +1290,7 @@ namespace SGDK2
          }
          return max;
       }
-      public static ProjectDataset.SpriteStateRow AddSpriteState(ProjectDataset.SpriteDefinitionRow parent, string Name, ProjectDataset.FramesetRow Frameset, ProjectDataset.SolidityRow Solidity, short SolidWidth, short SolidHeight, short sequence)
+      public static ProjectDataset.SpriteStateRow AddSpriteState(ProjectDataset.SpriteDefinitionRow parent, string Name, ProjectDataset.FramesetRow Frameset, short SolidWidth, short SolidHeight, short sequence)
       {
          if (sequence < 0)
             sequence = (short)(GetMaxSpriteStateSequence(parent) + 1);
@@ -1298,7 +1298,7 @@ namespace SGDK2
             foreach(ProjectDataset.SpriteStateRow row in GetSortedSpriteStates(parent))
                if (row.Sequence >= sequence)
                   row.Sequence += 1;
-         return m_dsPrj.SpriteState.AddSpriteStateRow(parent, Name, Frameset, Solidity, SolidWidth, SolidHeight, sequence);
+         return m_dsPrj.SpriteState.AddSpriteStateRow(parent, Name, Frameset, SolidWidth, SolidHeight, sequence);
       }
       public static void DeleteSpriteState(ProjectDataset.SpriteStateRow row)
       {
@@ -1423,7 +1423,7 @@ namespace SGDK2
             throw;
          }
       }
-      public static ProjectDataset.SpriteFrameRow InsertFrame(ProjectDataset.SpriteStateRow parent, short Sequence, int FrameValue, short Duration)
+      public static ProjectDataset.SpriteFrameRow InsertFrame(ProjectDataset.SpriteStateRow parent, short Sequence, int FrameValue, short Duration, byte MaskAlpha)
       {
          try
          {
@@ -1446,7 +1446,7 @@ namespace SGDK2
                rows[nIdx].Sequence =(short)(nIdx + 1);
             }
             
-            return m_dsPrj.SpriteFrame.AddSpriteFrameRow(parent.SpriteDefinitionRow.Name, parent.Name, Sequence, FrameValue, Duration, 0);
+            return m_dsPrj.SpriteFrame.AddSpriteFrameRow(parent.SpriteDefinitionRow.Name, parent.Name, Sequence, FrameValue, Duration, MaskAlpha);
          }
          catch (System.Exception)
          {

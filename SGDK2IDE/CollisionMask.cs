@@ -197,10 +197,18 @@ namespace SGDK2
                   gfx.PixelOffsetMode = PixelOffsetMode.Half;
 
                   idx = Sequence;
+                  bool hasAlpha = false;
+                  do
+                  {
+                     if (drFrames[idx].MaskAlphaLevel != 0)
+                        hasAlpha = true;
+                  } while ((idx<drFrames.Length-1) && (drFrames[idx++].Duration == 0));
+                  idx = Sequence;
                   do
                   {
                      gfxSingle.Clear(Color.Transparent);
-                     ProjectDataset.FrameRow drFrame = ProjectData.GetFrame(drFrames[idx].SpriteStateRowParent.FramesetName, drFrames[idx].FrameValue);
+                     ProjectDataset.SpriteStateRow drSpriteState = drFrames[idx].SpriteStateRowParent;
+                     ProjectDataset.FrameRow drFrame = ProjectData.GetFrame(drSpriteState.FramesetName, drFrames[idx].FrameValue);
                      using(Matrix mtx = new Matrix(drFrame.m11, drFrame.m12, drFrame.m21, drFrame.m22, drFrame.dx, drFrame.dy))
                      {
                         gfx.Transform = mtx;
@@ -215,15 +223,24 @@ namespace SGDK2
                         gfx.DrawImage(bmpFrameset, 0, 0, rcSource, GraphicsUnit.Pixel);
                         gfxSingle.DrawImage(bmpFrameset, 0, 0, rcSource, GraphicsUnit.Pixel);
                         bmpData = bmpSingle.LockBits(new Rectangle(Point.Empty, rcBound.Size), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-                        pixels = new int[bmpSingle.Width * Math.Abs(bmpData.Stride) / 4];
+                        pixels = new int[bmpSingle.Height * Math.Abs(bmpData.Stride) / 4];
                         System.Runtime.InteropServices.Marshal.Copy(bmpData.Scan0, pixels, 0, bmpSingle.Height * Math.Abs(bmpData.Stride) / 4);
                         bmpSingle.UnlockBits(bmpData);
                         for (int rowIdx = 0; rowIdx < bmpSingle.Height; rowIdx++)
                         {
                            for (int pixIdx = 0; pixIdx < bmpSingle.Width; pixIdx++)
                            {
-                              arbt[rowIdx * bmpSingle.Width + pixIdx] |=
-                                 (Color.FromArgb(pixels[rowIdx * bmpData.Stride / 4 + pixIdx]).A > drFrames[idx].MaskAlphaLevel);
+                              if (hasAlpha)
+                              {
+                                 arbt[rowIdx * bmpSingle.Width + pixIdx] |=
+                                    (Color.FromArgb(pixels[rowIdx * bmpData.Stride / 4 + pixIdx]).A > drFrames[idx].MaskAlphaLevel);
+                              }
+                              else
+                              {
+                                 arbt[rowIdx * bmpSingle.Width + pixIdx] |=
+                                    (rowIdx >= -rcBound.X) && (rowIdx < -rcBound.X + drSpriteState.SolidHeight) &&
+                                    (pixIdx >= -rcBound.Y) && (pixIdx < -rcBound.Y + drSpriteState.SolidWidth);
+                              }
                            }
                         }
                      }

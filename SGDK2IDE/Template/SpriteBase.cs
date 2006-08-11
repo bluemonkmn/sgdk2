@@ -21,6 +21,15 @@ public abstract class SpriteBase
    public readonly LayerBase layer;
    private Solidity m_solidity;
 
+   /// <summary>
+   /// Horizontal velocity relative to the sprite's environment (like a platform)
+   /// </summary>
+   public double LocalDX;
+   /// <summary>
+   /// Vertical velocity relative to the sprite's environment
+   /// </summary>
+   public double LocalDY;
+
    [FlagsAttribute()]
       public enum InputBits
    {
@@ -50,6 +59,12 @@ public abstract class SpriteBase
       ByVectorVelocity
    }
 
+   public enum Axis
+   {
+      Horizontal,
+      Vertical
+   }
+
    public SpriteBase(LayerBase layer, double x, double y, double dx, double dy, int state, int frame, bool active, Solidity solidity)
    {
       this.layer = layer;
@@ -61,6 +76,8 @@ public abstract class SpriteBase
       this.frame = frame;
       this.isActive = active;
       this.m_solidity = solidity;
+      this.LocalDX = double.NaN;
+      this.LocalDY = double.NaN;
    }
 
    #region Properties
@@ -156,7 +173,7 @@ public abstract class SpriteBase
       get;
    }
 
-   public abstract void ExecuteRules();
+   protected abstract void ExecuteRules();
    #endregion
 
    #region Public Methods
@@ -179,6 +196,17 @@ public abstract class SpriteBase
          result[idx] = stateframes[subframes[idx]];
       return result;
    }
+
+   /// <summary>
+   /// Execute the rules for this sprite if they have not already been executed this frame
+   /// </summary>
+   public void ProcessRules()
+   {
+      if (!Processed)
+         ExecuteRules();
+      Processed = true;
+   }
+
    #endregion
 
    #region Rider Feature
@@ -188,26 +216,38 @@ public abstract class SpriteBase
    /// </summary>
    public SpriteBase RidingOn;
    /// <summary>
-   /// Stores the horizontal position of this sprite relative to its platform sprite
+   /// Determines if this sprite's definition's rules have been processed yet this frame
    /// </summary>
-   public double RideRelativeX;
+   public bool Processed;
 
    /// <summary>
-   /// Moves this sprite according to the motion of the platform it is riding
+   /// Adjust this sprite's velocity according to the motion of the platform it is riding
    /// </summary>
-   /// <param name="Slipperiness">A value from 0 to 100 where 0
-   /// causes the sprite to immediately assume the velocity of the platform and
-   /// 100 causes the sprite to retain its own velocity relative to the map.</param>
    [Description("Moves this sprite according to the motion of the platform it is riding. Slipperiness is a value from 0 to 100 where 0 causes the sprite to immediately assume the velocity of the platform and 100 causes the sprite to retain its own velocity relative to the map.")]
-   public void ReactToPlatform(int Slipperiness)
+   public void ReactToPlatform()
    {
       Debug.Assert(this.isActive, "Attempted to execute ReactToPlatform on an inactive sprite");
       if (RidingOn == null)
          return;
-      x = RidingOn.x + RideRelativeX + dx;
-      dx = (Slipperiness * dx + (100-RidingOn.dx) * RidingOn.dx) / 100.0d;
-      y = RidingOn.PixelY - SolidHeight;
-      dy = 0;
+
+      if ((x+SolidWidth < RidingOn.x) || (x > RidingOn.x+RidingOn.SolidWidth))
+      {
+         StopRiding();
+         return;
+      }
+
+      // Don't try to process the platform's rules if it's already moved.
+      // Even though this is already being checked in ProcessRules, circular
+      // references (which shouldn't exist) would lead to deadlock.
+      if (!RidingOn.Processed)
+         // Ensure that the sprite that this sprite is riding moves first
+         RidingOn.ProcessRules();
+
+      if (double.IsNaN(LocalDX))
+         Debug.Fail("LocalDX is not a number");
+      else
+         dx = LocalDX + RidingOn.dx;
+      dy = RidingOn.y - SolidHeight - y;
    }
 
    /// <summary>
@@ -228,8 +268,7 @@ public abstract class SpriteBase
    public void StopRiding()
    {
       Debug.Assert(this.isActive, "Attempted to execute StopRiding on an inactive sprite");
-      dx = dx + RidingOn.dx;
-      dy = RidingOn.dy;
+      LocalDX = double.NaN;
       RidingOn = null;
    }
 
@@ -240,11 +279,13 @@ public abstract class SpriteBase
    /// they are drawn.
    /// </summary>
    /// <param name="PlatformList">List of platform sprites to check</param>
-   /// <returns>True if the sprite landed on a platform.</returns>
+   /// <returns>True if the sprite landed on a platform, False if it is already riding a platform or doesn't need to</returns>
    [Description("Tests to see if this sprite is landing on a platform (from above). If it is, the sprite will begin riding the platform.")]
    public bool LandDownOnPlatform(SpriteCollection PlatformList)
    {
       Debug.Assert(this.isActive, "Attempted to execute LandDownOnPlatform on an inactive sprite");
+      if (RidingOn != null)
+         return false;
       foreach(SpriteBase spr in PlatformList)
       {
          if((oldY + SolidHeight <= spr.oldY) &&
@@ -253,9 +294,8 @@ public abstract class SpriteBase
             (x < spr.x + spr.SolidWidth))
          {
             RidingOn = spr;
-            RideRelativeX = x - spr.x;
-            dx = dx - spr.dx;
-            y = spr.y - SolidHeight;
+            LocalDX = dx - spr.dx;
+            dy = spr.y - SolidHeight - y;
             return true;
          }
       }
@@ -299,15 +339,66 @@ public abstract class SpriteBase
       y += dy;
    }
 
-   [Description("Limit the velocity of the sprite to the specified maximum pixels per frame")]
+   [Description("Limit the velocity of the sprite to the specified maximum pixels per frame (affects only to local velocity when applicable)")]
    public void LimitVelocity(int Maximum)
    {
       Debug.Assert(this.isActive, "Attempted to execute MaxVelocity on an inactive sprite");
-      double dist = Math.Sqrt(dx * dx + dy * dy);
-      if (dist > Maximum)
+      double useDX, useDY;
+      if (double.IsNaN(LocalDX))
+         useDX = dx;
+      else
+         useDX = LocalDX;
+      if (double.IsNaN(LocalDY))
+         useDY = dy;
+      else
+         useDY = LocalDY;
+      double dist = useDX * useDX + useDY * useDY;
+      if (dist > Maximum * Maximum)
       {
-         dx = dx * Maximum / dist;
-         dy = dy * Maximum / dist;
+         dist = Math.Sqrt(dist);
+         useDX = useDX * Maximum / dist;
+         useDY = useDY * Maximum / dist;
+         if (double.IsNaN(LocalDX))
+            dx = useDX;
+         else
+            LocalDX = useDX;
+         if (double.IsNaN(LocalDY))
+            dy = useDY;
+         else
+            LocalDY = useDY;
+      }
+   }
+
+   [Description("Reduces the sprites velocity to simulate friction.  RetainPercent is a number 0 to 100 indicating how much inertia is retained.")]
+   public void ReactToInertia(int RetainPercentVertical, int RetainPercentHorizontal)
+   {
+      if (double.IsNaN(LocalDX))
+      {
+         if (Math.Abs(dx) < .01)
+            dx = 0;
+         else
+            dx *= RetainPercentHorizontal / 100.0f;
+      }
+      else
+      {
+         if (Math.Abs(LocalDX) < .01)
+            LocalDX = 0;
+         else
+            LocalDX *= RetainPercentHorizontal / 100.0f;
+      }
+      if (double.IsNaN(LocalDY))
+      {
+         if (Math.Abs(dy) < .01)
+            dy = 0;
+         else
+            dy *= RetainPercentVertical / 100.0f;
+      }
+      else
+      {
+         if (Math.Abs(LocalDY) < .01)
+            LocalDY = 0;
+         else
+            LocalDY *= RetainPercentVertical / 100.0f;
       }
    }
    #endregion
@@ -322,10 +413,16 @@ public abstract class SpriteBase
             frame++;
             break;
          case SpriteAnimationType.ByHorizontalVelocity:
-            frame += System.Math.Abs(ProposedPixelX - PixelX);
+            if (double.IsNaN(LocalDX))
+               frame += System.Math.Abs(ProposedPixelX - PixelX);
+            else
+               frame += System.Math.Abs((int)LocalDX);
             break;
          case SpriteAnimationType.ByVerticalVelocity:
-            frame += System.Math.Abs(ProposedPixelY - PixelY);
+            if (double.IsNaN(LocalDY))
+               frame += System.Math.Abs(ProposedPixelY - PixelY);
+            else
+               frame += System.Math.Abs((int)LocalDY);
             break;
          case SpriteAnimationType.ByVectorVelocity:
          {
@@ -340,7 +437,16 @@ public abstract class SpriteBase
    [Description("Return the state that a rotating sprite should use in order to point in the direction it is currently travelling, assuming that FirstState points rightward and each subsequent state is one step counter-clockwise")]
    public int GetPolarStateByVector([Editor("SpriteState", "UITypeEditor")] int FirstState, int StateCount)
    {
-      return FirstState + ((StateCount + (int)Math.Round(System.Math.Atan2(-dy,dx) * StateCount / Math.PI)) % StateCount);
+      double useDX, useDY;
+      if (double.IsNaN(LocalDX))
+         useDX = dx;
+      else
+         useDX = LocalDX;
+      if (double.IsNaN(LocalDY))
+         useDY = dy;
+      else
+         useDY = LocalDY;
+      return FirstState + ((StateCount + (int)Math.Round(System.Math.Atan2(-useDY,useDX) * StateCount / Math.PI)) % StateCount);
    }
    #endregion
 
@@ -390,23 +496,51 @@ public abstract class SpriteBase
       Debug.Assert(this.isActive, "Attempted to execute AccelerateByInputs on an inactive sprite");
       if (!HorizontalOnly)
       {
-         if (0 != (inputs & InputBits.Up))
-            dy -= ((double)Acceleration)/10.0d;
-         if (dy < -(double)Max)
-            dy = -(double)Max;
-         if (0 != (inputs & InputBits.Down))
-            dy += ((double)Acceleration)/10.0d;
-         if (dy > (double)Max)
-            dy = (double)Max;
+         if (double.IsNaN(LocalDY))
+         {
+            if (0 != (inputs & InputBits.Up))
+               dy -= ((double)Acceleration)/10.0d;
+            if (dy < -(double)Max)
+               dy = -(double)Max;
+            if (0 != (inputs & InputBits.Down))
+               dy += ((double)Acceleration)/10.0d;
+            if (dy > (double)Max)
+               dy = (double)Max;
+         }
+         else
+         {
+            if (0 != (inputs & InputBits.Up))
+               LocalDY -= ((double)Acceleration)/10.0d;
+            if (LocalDY < -(double)Max)
+               LocalDY = -(double)Max;
+            if (0 != (inputs & InputBits.Down))
+               LocalDY += ((double)Acceleration)/10.0d;
+            if (LocalDY > (double)Max)
+               LocalDY = (double)Max;
+         }
       }
-      if (0 != (inputs & InputBits.Left))
-         dx -= ((double)Acceleration)/10.0d;
-      if (dx < -(double)Max)
-         dx = -(double)Max;
-      if (0 != (inputs & InputBits.Right))
-         dx += ((double)Acceleration)/10.0d;
-      if (dx > (double)Max)
-         dx = (double)Max;
+      if (double.IsNaN(LocalDX))
+      {
+         if (0 != (inputs & InputBits.Left))
+            dx -= ((double)Acceleration)/10.0d;
+         if (dx < -(double)Max)
+            dx = -(double)Max;
+         if (0 != (inputs & InputBits.Right))
+            dx += ((double)Acceleration)/10.0d;
+         if (dx > (double)Max)
+            dx = (double)Max;
+      }
+      else
+      {
+         if (0 != (inputs & InputBits.Left))
+            LocalDX -= ((double)Acceleration)/10.0d;
+         if (LocalDX < -(double)Max)
+            LocalDX = -(double)Max;
+         if (0 != (inputs & InputBits.Right))
+            LocalDX += ((double)Acceleration)/10.0d;
+         if (LocalDX > (double)Max)
+            LocalDX = (double)Max;
+      }
    }
    #endregion
 
@@ -427,9 +561,11 @@ public abstract class SpriteBase
       bool hit = false;
       double dyOrig = dy;
 
+      int ProposedPixelY2 = (int)Math.Ceiling(y+dy);
+      int SolidPixelWidth = SolidWidth + (int)Math.Ceiling(x) - PixelX;
       if (dy > 0)
       {
-         int ground = layer.GetTopSolidPixel(new System.Drawing.Rectangle(PixelX, PixelY+SolidHeight, SolidWidth, ProposedPixelY - PixelY), m_solidity);
+         int ground = layer.GetTopSolidPixel(new System.Drawing.Rectangle(PixelX, PixelY+SolidHeight, SolidPixelWidth, ProposedPixelY2 - PixelY), m_solidity);
          if (ground != int.MinValue)
          {
             dy = ground - y - SolidHeight;
@@ -438,7 +574,7 @@ public abstract class SpriteBase
       } 
       else if (dy < 0)
       {
-         int ceiling = layer.GetBottomSolidPixel(new System.Drawing.Rectangle(PixelX, ProposedPixelY, SolidWidth, PixelY - ProposedPixelY), m_solidity);
+         int ceiling = layer.GetBottomSolidPixel(new System.Drawing.Rectangle(PixelX, ProposedPixelY, SolidPixelWidth, PixelY - ProposedPixelY), m_solidity);
          if (ceiling != int.MinValue)
          {
             dy = ceiling - y + 1;
@@ -448,18 +584,20 @@ public abstract class SpriteBase
 
       if (dx > 0)
       {
-         int rightwall = layer.GetLeftSolidPixel(new System.Drawing.Rectangle(PixelX + SolidWidth, ProposedPixelY, ProposedPixelX - PixelX, SolidHeight), m_solidity);
+         int ProposedPixelX2 = (int)Math.Ceiling(x+dx);
+         int PixelX2 = (int)Math.Ceiling(x);
+         int rightwall = layer.GetLeftSolidPixel(new System.Drawing.Rectangle(PixelX2 + SolidWidth, ProposedPixelY, ProposedPixelX2 - PixelX2, SolidHeight), m_solidity);
          bool hitWall = false;
          if (rightwall != int.MinValue)
          {
             int maxSlopeProposedY = (int)(y + dy - dx);
-            int slopedFloor = layer.GetTopSolidPixel(new System.Drawing.Rectangle(PixelX + SolidWidth, maxSlopeProposedY + SolidHeight, ProposedPixelX - PixelX, ProposedPixelY - maxSlopeProposedY), m_solidity);
+            int slopedFloor = layer.GetTopSolidPixel(new System.Drawing.Rectangle(PixelX2 + SolidWidth, maxSlopeProposedY + SolidHeight, ProposedPixelX2 - PixelX2, ProposedPixelY - maxSlopeProposedY), m_solidity);
             if (slopedFloor != int.MinValue)
             {
-               int ceiling = layer.GetBottomSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, slopedFloor - SolidHeight, SolidWidth, ProposedPixelY + SolidHeight - slopedFloor), m_solidity);
+               int ceiling = layer.GetBottomSolidPixel(new System.Drawing.Rectangle(ProposedPixelX2, slopedFloor - SolidHeight, SolidWidth, ProposedPixelY + SolidHeight - slopedFloor), m_solidity);
                if (ceiling == int.MinValue)
                {
-                  int rightwall2 = layer.GetLeftSolidPixel(new System.Drawing.Rectangle(PixelX + SolidWidth, slopedFloor - SolidHeight, ProposedPixelX - PixelX, SolidHeight), m_solidity);
+                  int rightwall2 = layer.GetLeftSolidPixel(new System.Drawing.Rectangle(PixelX2 + SolidWidth, slopedFloor - SolidHeight, ProposedPixelX2 - PixelX2, SolidHeight), m_solidity);
                   if (rightwall2 == int.MinValue)
                      dy = dyOrig = slopedFloor - 1 - y - SolidHeight;
                   else
@@ -471,14 +609,14 @@ public abstract class SpriteBase
             else
             {
                maxSlopeProposedY = (int)(y + dy + dx);
-               int slopedCeiling = layer.GetBottomSolidPixel(new System.Drawing.Rectangle(PixelX + SolidWidth, ProposedPixelY, ProposedPixelX - PixelX, maxSlopeProposedY - ProposedPixelY), m_solidity);
+               int slopedCeiling = layer.GetBottomSolidPixel(new System.Drawing.Rectangle(PixelX2 + SolidWidth, ProposedPixelY, ProposedPixelX2 - PixelX2, maxSlopeProposedY - ProposedPixelY), m_solidity);
                if (slopedCeiling != int.MinValue)
                {
                   slopedCeiling++;
-                  int floor = layer.GetTopSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, ProposedPixelY + SolidHeight, SolidWidth, slopedCeiling - ProposedPixelY), m_solidity);
+                  int floor = layer.GetTopSolidPixel(new System.Drawing.Rectangle(ProposedPixelX2, ProposedPixelY + SolidHeight, SolidWidth, slopedCeiling - ProposedPixelY), m_solidity);
                   if (floor == int.MinValue)
                   {
-                     int rightwall2 = layer.GetLeftSolidPixel(new System.Drawing.Rectangle(PixelX + SolidWidth, slopedCeiling, ProposedPixelX - PixelX, SolidHeight), m_solidity);
+                     int rightwall2 = layer.GetLeftSolidPixel(new System.Drawing.Rectangle(PixelX2 + SolidWidth, slopedCeiling, ProposedPixelX2 - PixelX2, SolidHeight), m_solidity);
                      if (rightwall2 == int.MinValue)
                         dy = dyOrig = slopedCeiling - y;
                      else
@@ -492,7 +630,6 @@ public abstract class SpriteBase
             }
             if (hitWall)
             {
-               x = PixelX; // Circumvent IEEE floating point rounding errors
                dx = rightwall - x - SolidWidth;
             }
             hit = true;
@@ -544,7 +681,6 @@ public abstract class SpriteBase
             }
             if (hitWall)
             {
-               x = PixelX; // Circumvent IEEE floating point rounding errors
                dx = leftwall - x + 1;
             }
             hit = true;
@@ -552,22 +688,23 @@ public abstract class SpriteBase
       }
 
       dy = dyOrig;
+
+      int ProposedSolidPixelWidth = SolidWidth + (int)Math.Ceiling(x+dx) - ProposedPixelX;
       if (dy > 0)
       {
-         int ground = layer.GetTopSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, PixelY+SolidHeight, SolidWidth, ProposedPixelY - PixelY), m_solidity);
+         ProposedPixelY2 = (int)Math.Ceiling(y+dy);
+         int ground = layer.GetTopSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, PixelY+SolidHeight, ProposedSolidPixelWidth, ProposedPixelY2 - PixelY), m_solidity);
          if (ground != int.MinValue)
          {
-            y = PixelY; // Circumvent IEEE floating point rounding errors
             dy = ground - y - SolidHeight;
             hit = true;
          }
       }
       else if (dy < 0)
       {
-         int ceiling = layer.GetBottomSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, ProposedPixelY, SolidWidth, PixelY - ProposedPixelY), m_solidity);
+         int ceiling = layer.GetBottomSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, ProposedPixelY, ProposedSolidPixelWidth, PixelY - ProposedPixelY), m_solidity);
          if (ceiling != int.MinValue)
          {
-            y = PixelY; // Circumvent IEEE floating point rounding errors
             dy = ceiling - y + 1;
             hit = true;
          }
@@ -581,7 +718,8 @@ public abstract class SpriteBase
    {
       Debug.Assert(this.isActive, "Attempted to execute SnapToGround on an inactive sprite");
 
-      int ground = layer.GetTopSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, ProposedPixelY+SolidHeight, SolidWidth, Threshhold), m_solidity);
+      int ProposedSolidPixelWidth = SolidWidth + (int)Math.Ceiling(x+dx) - ProposedPixelX;
+      int ground = layer.GetTopSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, ProposedPixelY+SolidHeight, ProposedSolidPixelWidth, Threshhold), m_solidity);
       if (ground != int.MinValue)
       {
          double newDy = ground - y - SolidHeight;
@@ -597,16 +735,22 @@ public abstract class SpriteBase
    {
       Debug.Assert(this.isActive, "Attempted to execute Blocked on an inactive sprite");
 
+      int SolidPixelWidth;
+      int SolidPixelHeight;
       switch(Direction)
       {
          case Direction.Up:
-            return layer.GetBottomSolidPixel(new System.Drawing.Rectangle(PixelX, PixelY-1, SolidWidth, 1), m_solidity) != int.MinValue;
+            SolidPixelWidth = SolidWidth + (int)Math.Ceiling(x) - PixelX;
+            return layer.GetBottomSolidPixel(new System.Drawing.Rectangle(PixelX, PixelY-1, SolidPixelWidth, 1), m_solidity) != int.MinValue;
          case Direction.Right:
-            return layer.GetLeftSolidPixel(new System.Drawing.Rectangle(PixelX+SolidWidth, PixelY, 1, SolidHeight), m_solidity) != int.MinValue;
+            SolidPixelHeight = SolidHeight + (int)Math.Ceiling(y) - PixelY;
+            return layer.GetLeftSolidPixel(new System.Drawing.Rectangle(PixelX+SolidWidth, PixelY, 1, SolidPixelHeight), m_solidity) != int.MinValue;
          case Direction.Down:
-            return layer.GetTopSolidPixel(new System.Drawing.Rectangle(PixelX, PixelY+SolidHeight, SolidWidth, 1), m_solidity) != int.MinValue;
+            SolidPixelWidth = SolidWidth + (int)Math.Ceiling(x) - PixelX;
+            return layer.GetTopSolidPixel(new System.Drawing.Rectangle(PixelX, PixelY+SolidHeight, SolidPixelWidth, 1), m_solidity) != int.MinValue;
          case Direction.Left:
-            return layer.GetRightSolidPixel(new System.Drawing.Rectangle(PixelX - 1, PixelY, 1, SolidHeight), m_solidity) != int.MinValue;
+            SolidPixelHeight = SolidHeight + (int)Math.Ceiling(y) - PixelY;
+            return layer.GetRightSolidPixel(new System.Drawing.Rectangle(PixelX - 1, PixelY, 1, SolidPixelHeight), m_solidity) != int.MinValue;
       }
       return false;
    }

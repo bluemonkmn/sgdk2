@@ -11,6 +11,7 @@ namespace SGDK2
    {
       public CodeGenerator()
       {
+         GeneratorOptions.IndentString = "   ";
       }
 
       #region Constants
@@ -54,6 +55,10 @@ namespace SGDK2
       private const string GameFormType = "GameForm";
       private const string SpriteIsActiveRef = "isActive";
       private const string UndefinedSolidityProperty = "UndefinedSolidity";
+      private const string SpriteProcessedRulesField = "Processed";
+      private const string LayerSpriteCategoriesBaseClassName = "LayerSpriteCategoriesBase";
+      public const string SpriteCollectionClassName = "SpriteCollection";
+      private const string LayerBaseClassName = "LayerBase";
       #endregion
 
       #region Embedded Types
@@ -236,6 +241,10 @@ namespace SGDK2
          GenerateSolidity(txt);
          txt.Close();
 
+         txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, LayerSpriteCategoriesBaseClassName + ".cs"));
+         GenerateLayerSpriteCategoriesBase(txt);
+         txt.Close();
+
          GenerateProjectSourceCode(FolderName);
 
          errs = err.ToString();
@@ -257,7 +266,8 @@ namespace SGDK2
                System.IO.Path.Combine(FolderName, CounterClass + ".cs"),
                System.IO.Path.Combine(FolderName, FramesetClass + ".cs"),
                System.IO.Path.Combine(FolderName, TilesetClass + ".cs"),
-               System.IO.Path.Combine(FolderName, SolidityClassName + ".cs")
+               System.IO.Path.Combine(FolderName, SolidityClassName + ".cs"),
+               System.IO.Path.Combine(FolderName, LayerSpriteCategoriesBaseClassName + ".cs")
             });
 
          foreach (System.Data.DataRowView drv in ProjectData.Map.DefaultView)
@@ -372,6 +382,11 @@ namespace SGDK2
          txt = new System.IO.StringWriter();
          GenerateTileCategories(txt);
          GenerateSolidity(txt);
+         txt.Close();
+         result.Add(txt.ToString());
+
+         txt = new System.IO.StringWriter();
+         GenerateLayerSpriteCategoriesBase(txt);
          txt.Close();
          result.Add(txt.ToString());
 
@@ -1146,7 +1161,7 @@ namespace SGDK2
                   new CodeParameterDeclarationExpression(typeof(System.Drawing.SizeF), "ScrollRate"),
                   new CodeParameterDeclarationExpression(typeof(string), "Name")
                });
-            CodeObjectCreateExpression createLayerSprites = new CodeObjectCreateExpression("SpriteCollection");
+            CodeObjectCreateExpression createLayerSprites = new CodeObjectCreateExpression(SpriteCollectionClassName);
             lyrConstructor.BaseConstructorArgs.AddRange(new CodeExpression[]
                {
                   new CodeArgumentReferenceExpression("Tileset"),
@@ -1228,150 +1243,23 @@ namespace SGDK2
                new CodeThisReferenceExpression(), fldLayerParent.Name),
                new CodeArgumentReferenceExpression(LayerParentArg)));
 
-            ProjectDataset.SpriteRow[] sprites = ProjectData.GetSortedSpriteRows(drLayer);
-            System.Collections.Hashtable htCategories = new System.Collections.Hashtable();
-            CodeStatementCollection ExecuteSpriteRules = new CodeStatementCollection();
-            if (sprites.Length > 0)
-            {
-               foreach(ProjectDataset.SpriteRow sprite in sprites)
-               {
-                  System.Collections.ArrayList SpriteCreateParams = new System.Collections.ArrayList();
-                  ProjectDataset.SpriteStateRow drState = sprite.SpriteStateRowParent;
-                  ProjectDataset.SpriteDefinitionRow drDef = drState.SpriteDefinitionRow;
-                  SpriteCreateParams.Add(new CodeThisReferenceExpression());
-                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.X));
-                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.Y));
-                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.DX));
-                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.DY));
-                  SpriteCreateParams.Add(new CodeFieldReferenceExpression(new CodeTypeReferenceExpression("Sprites." + NameToVariable(drDef.Name) + ".State"), NameToVariable(sprite.StateName)));
-                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.CurrentFrame));
-                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.Active));
-                  SpriteCreateParams.Add(new CodeFieldReferenceExpression(
-                     new CodeArgumentReferenceExpression(LayerParentArg), MapDisplayField));
-                  if (ProjectData.GetSolidity(sprite.Solidity) != null)
-                     SpriteCreateParams.Add(new CodeFieldReferenceExpression(
-                        new CodeTypeReferenceExpression("Solidity"), sprite.Solidity));
-                  else
-                     SpriteCreateParams.Add(new CodeFieldReferenceExpression(
-                        new CodeTypeReferenceExpression("Solidity"), UndefinedSolidityProperty));
-                  ProjectDataset.SpriteParameterRow[] sprParams = ProjectData.GetSortedSpriteParameters(drDef);
-                  if (sprParams.Length > 0)
-                  {
-                     foreach (ProjectDataset.SpriteParameterRow drParam in sprParams)
-                     {
-                        ProjectDataset.ParameterValueRow sprParam = ProjectData.GetSpriteParameterValueRow(sprite, drParam.Name);
-                        if (sprParam == null)
-                           SpriteCreateParams.Add(new CodePrimitiveExpression(0));
-                        else
-                           SpriteCreateParams.Add(new CodePrimitiveExpression(sprParam.Value));
-                     }
-                  }
-                  CodeObjectCreateExpression createSprite = new CodeObjectCreateExpression(
-                     "Sprites." + NameToVariable(drDef.Name), (CodeExpression[])
-                     SpriteCreateParams.ToArray(typeof(CodeExpression)));
-                  clsLayer.Members.Add(new CodeMemberField("Sprites." + NameToVariable(drDef.Name), "m_" + NameToVariable(sprite.Name)));
-                  lyrConstructor.Statements.Add(new CodeAssignStatement(
-                     new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "m_" + NameToVariable(sprite.Name)),
-                     createSprite));
-                  CodeFieldReferenceExpression fldrefSpr = new CodeFieldReferenceExpression(
-                     new CodeThisReferenceExpression(), "m_" + NameToVariable(sprite.Name));
-                  createLayerSprites.Parameters.Add(fldrefSpr);
-
-                  foreach(ProjectDataset.SpriteCategorySpriteRow drCatSpr in drDef.GetSpriteCategorySpriteRows())
-                  {
-                     ProjectDataset.SpriteCategoryRow drCat = drCatSpr.SpriteCategoryRow;
-                     if (!htCategories.ContainsKey(drCat.Name))
-                        htCategories[drCat.Name] = new System.Collections.ArrayList();
-                     ((System.Collections.ArrayList)htCategories[drCat.Name]).Add(fldrefSpr);                        
-                  }
-
-                  int priority;
-                  if (sprite.Priority < drLayer.Priority)
-                     priority = -1;
-                  else if (sprite.Priority > drLayer.Priority)
-                     priority = 1;
-                  else
-                     priority = 0;
-
-                  // Generate code that injects ths sprite into the layer when visible
-                  System.Collections.ArrayList InjectParams = new System.Collections.ArrayList();
-                  InjectParams.AddRange(new CodeExpression[]
-                     {
-                        new CodePropertyReferenceExpression(fldrefSpr, "PixelX"),
-                        new CodePropertyReferenceExpression(fldrefSpr, "PixelY"),
-                        new CodeMethodInvokeExpression(fldrefSpr, "GetCurrentFramesetFrames")
-                     });
-                  if (priority != 0)
-                     InjectParams.Add(new CodePrimitiveExpression(priority));
-
-                  mthInject.Statements.Add(new CodeConditionStatement(
-                     new CodeMethodInvokeExpression(
-                     new CodeThisReferenceExpression(), "IsSpriteVisible",
-                     fldrefSpr),
-                     new CodeExpressionStatement(
-                     new CodeMethodInvokeExpression(
-                     new CodeThisReferenceExpression(),
-                     (priority == 0)?"InjectFrames":"AppendFrames",
-                     (CodeExpression[])InjectParams.ToArray(typeof(CodeExpression))))));
-
-                  ExecuteSpriteRules.Add(new CodeConditionStatement(new CodeFieldReferenceExpression(
-                     new CodeFieldReferenceExpression(new CodeThisReferenceExpression(),
-                     "m_" + NameToVariable(sprite.Name)), SpriteIsActiveRef),
-                     new CodeStatement[]
-                     {
-                        new CodeExpressionStatement(
-                        new CodeMethodInvokeExpression(
-                        new CodeFieldReferenceExpression(
-                        new CodeThisReferenceExpression(),
-                        "m_" + NameToVariable(sprite.Name)), "ExecuteRules"))
-                     }));
-               }
-
-               if (htCategories.Count > 0)
-               {
-                  foreach(System.Collections.DictionaryEntry de in htCategories)
-                  {
-                     clsLayer.Members.Add(new CodeMemberField(
-                        "SpriteCollection", "m_" + NameToVariable(de.Key.ToString())));
-                     lyrConstructor.Statements.Add(new CodeAssignStatement(
-                        new CodeFieldReferenceExpression(
-                        new CodeThisReferenceExpression(), "m_" + NameToVariable(de.Key.ToString())),
-                        new CodeObjectCreateExpression("SpriteCollection",
-                        (CodeFieldReferenceExpression[])((System.Collections.ArrayList)de.Value).ToArray(
-                        typeof(CodeFieldReferenceExpression)))));
-                     CodeMemberProperty prpSpriteCat = new CodeMemberProperty();
-                     prpSpriteCat.Type = new CodeTypeReference("SpriteCollection");
-                     prpSpriteCat.Attributes = MemberAttributes.Public | MemberAttributes.Final;
-                     prpSpriteCat.HasGet = true;
-                     prpSpriteCat.HasSet = false;
-                     prpSpriteCat.Name = NameToVariable(de.Key.ToString());
-                     prpSpriteCat.GetStatements.Add(
-                        new CodeMethodReturnStatement(
-                        new CodeFieldReferenceExpression(
-                        new CodeThisReferenceExpression(), "m_" + NameToVariable(de.Key.ToString()))));
-                     clsLayer.Members.Add(prpSpriteCat);
-                  }
-               }
-            }
-            lyrConstructor.Statements.Add(new CodeAssignStatement(
-               new CodeFieldReferenceExpression(
-               new CodeThisReferenceExpression(), "m_Sprites"),
-               createLayerSprites));
-
             ProjectDataset.SpritePlanRow[] plans = ProjectData.GetSortedSpritePlans(drLayer);
+            ProjectDataset.SpriteRow[] sprites = ProjectData.GetSortedSpriteRows(drLayer);
+            CodeMemberMethod mthExecuteLayerRules = new CodeMemberMethod();
 
-            if (plans.Length > 0)
+            if ((plans.Length > 0) || (sprites.Length > 0))
             {
-               CodeMemberMethod mthExecuteLayerRules = new CodeMemberMethod();
                mthExecuteLayerRules.Attributes = MemberAttributes.Public | MemberAttributes.Final;
                mthExecuteLayerRules.Name = "ExecuteRules";
-               mthExecuteLayerRules.Statements.AddRange(ExecuteSpriteRules);
                clsLayer.Members.Add(mthExecuteLayerRules);
                mthExecuteMapRules.Statements.Add(
                   new CodeMethodInvokeExpression(
                   new CodeFieldReferenceExpression(
                   new CodeThisReferenceExpression(), fldLayer.Name), "ExecuteRules"));
+            }
 
+            if (plans.Length > 0)
+            {
                foreach(ProjectDataset.SpritePlanRow drPlan in plans)
                {
                   CodeTypeDeclaration clsPlan = new CodeTypeDeclaration(NameToVariable(drPlan.Name));
@@ -1395,7 +1283,7 @@ namespace SGDK2
                   prpPlanParent.Attributes = MemberAttributes.Public | MemberAttributes.Override;
                   prpPlanParent.HasGet = true;
                   prpPlanParent.HasSet = false;
-                  prpPlanParent.Type = new CodeTypeReference("LayerBase");
+                  prpPlanParent.Type = new CodeTypeReference(LayerBaseClassName);
                   prpPlanParent.GetStatements.Add(new CodeMethodReturnStatement(
                      new CodeFieldReferenceExpression(
                      new CodeThisReferenceExpression(), SpritePlanParentField)));
@@ -1498,6 +1386,186 @@ namespace SGDK2
                   }
                }
             }
+
+            CodeTypeDeclaration clsLayerSpriteCategories = new CodeTypeDeclaration("LayerSpriteCategories");
+            clsLayer.Members.Add(clsLayerSpriteCategories);
+
+            CodeMemberField fldSprCatLayer = new CodeMemberField(clsLayer.Name, "m_layer");
+            fldSprCatLayer.Attributes = MemberAttributes.Private;
+            clsLayerSpriteCategories.Members.Add(fldSprCatLayer);
+
+            clsLayerSpriteCategories.BaseTypes.Add(LayerSpriteCategoriesBaseClassName);
+            lyrConstructor.Statements.Add(
+               new CodeAssignStatement(
+               new CodeFieldReferenceExpression(
+               new CodeThisReferenceExpression(), "m_SpriteCategories"),
+               new CodeObjectCreateExpression(clsLayerSpriteCategories.Name, new CodeThisReferenceExpression())));
+
+            CodeConstructor constructLayerSpriteCategories = new CodeConstructor();
+            clsLayerSpriteCategories.Members.Add(constructLayerSpriteCategories);
+            constructLayerSpriteCategories.Attributes = MemberAttributes.Public;
+            constructLayerSpriteCategories.Parameters.Add(new CodeParameterDeclarationExpression(clsLayer.Name, "layer"));
+            constructLayerSpriteCategories.Statements.Add(
+               new CodeAssignStatement(
+               new CodeFieldReferenceExpression(
+               new CodeThisReferenceExpression(), "m_layer"),
+               new CodeArgumentReferenceExpression("layer")));
+
+            System.Collections.Hashtable htCategories = new System.Collections.Hashtable();
+            if (sprites.Length > 0)
+            {
+               CodeMemberMethod mthClearProcessedFlag = new CodeMemberMethod();
+               mthClearProcessedFlag.Attributes = MemberAttributes.Private;
+               mthClearProcessedFlag.Name = "ClearProcessedFlag";
+               clsLayer.Members.Add(mthClearProcessedFlag);
+               mthExecuteLayerRules.Statements.Add(new CodeMethodInvokeExpression(
+                  new CodeThisReferenceExpression(), mthClearProcessedFlag.Name));
+
+               foreach(ProjectDataset.SpriteRow sprite in sprites)
+               {
+                  System.Collections.ArrayList SpriteCreateParams = new System.Collections.ArrayList();
+                  ProjectDataset.SpriteStateRow drState = sprite.SpriteStateRowParent;
+                  ProjectDataset.SpriteDefinitionRow drDef = drState.SpriteDefinitionRow;
+                  SpriteCreateParams.Add(new CodeThisReferenceExpression());
+                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.X));
+                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.Y));
+                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.DX));
+                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.DY));
+                  SpriteCreateParams.Add(new CodeFieldReferenceExpression(new CodeTypeReferenceExpression("Sprites." + NameToVariable(drDef.Name) + ".State"), NameToVariable(sprite.StateName)));
+                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.CurrentFrame));
+                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.Active));
+                  SpriteCreateParams.Add(new CodeFieldReferenceExpression(
+                     new CodeArgumentReferenceExpression(LayerParentArg), MapDisplayField));
+                  if (ProjectData.GetSolidity(sprite.Solidity) != null)
+                     SpriteCreateParams.Add(new CodeFieldReferenceExpression(
+                        new CodeTypeReferenceExpression("Solidity"), sprite.Solidity));
+                  else
+                     SpriteCreateParams.Add(new CodeFieldReferenceExpression(
+                        new CodeTypeReferenceExpression("Solidity"), UndefinedSolidityProperty));
+                  ProjectDataset.SpriteParameterRow[] sprParams = ProjectData.GetSortedSpriteParameters(drDef);
+                  if (sprParams.Length > 0)
+                  {
+                     foreach (ProjectDataset.SpriteParameterRow drParam in sprParams)
+                     {
+                        ProjectDataset.ParameterValueRow sprParam = ProjectData.GetSpriteParameterValueRow(sprite, drParam.Name);
+                        if (sprParam == null)
+                           SpriteCreateParams.Add(new CodePrimitiveExpression(0));
+                        else
+                           SpriteCreateParams.Add(new CodePrimitiveExpression(sprParam.Value));
+                     }
+                  }
+                  CodeObjectCreateExpression createSprite = new CodeObjectCreateExpression(
+                     "Sprites." + NameToVariable(drDef.Name), (CodeExpression[])
+                     SpriteCreateParams.ToArray(typeof(CodeExpression)));
+                  clsLayer.Members.Add(new CodeMemberField("Sprites." + NameToVariable(drDef.Name), "m_" + NameToVariable(sprite.Name)));
+                  lyrConstructor.Statements.Add(new CodeAssignStatement(
+                     new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "m_" + NameToVariable(sprite.Name)),
+                     createSprite));
+                  CodeFieldReferenceExpression fldrefSpr = new CodeFieldReferenceExpression(
+                     new CodeThisReferenceExpression(), "m_" + NameToVariable(sprite.Name));
+                  createLayerSprites.Parameters.Add(fldrefSpr);
+
+                  foreach(ProjectDataset.SpriteCategorySpriteRow drCatSpr in drDef.GetSpriteCategorySpriteRows())
+                  {
+                     ProjectDataset.SpriteCategoryRow drCat = drCatSpr.SpriteCategoryRow;
+                     if (!htCategories.ContainsKey(drCat.Name))
+                        htCategories[drCat.Name] = new System.Collections.ArrayList();
+                     ((System.Collections.ArrayList)htCategories[drCat.Name]).Add(fldrefSpr);                        
+                  }
+
+                  int priority;
+                  if (sprite.Priority < drLayer.Priority)
+                     priority = -1;
+                  else if (sprite.Priority > drLayer.Priority)
+                     priority = 1;
+                  else
+                     priority = 0;
+
+                  // Generate code that injects ths sprite into the layer when visible
+                  System.Collections.ArrayList InjectParams = new System.Collections.ArrayList();
+                  InjectParams.AddRange(new CodeExpression[]
+                     {
+                        new CodePropertyReferenceExpression(fldrefSpr, "PixelX"),
+                        new CodePropertyReferenceExpression(fldrefSpr, "PixelY"),
+                        new CodeMethodInvokeExpression(fldrefSpr, "GetCurrentFramesetFrames")
+                     });
+                  if (priority != 0)
+                     InjectParams.Add(new CodePrimitiveExpression(priority));
+
+                  mthInject.Statements.Add(new CodeConditionStatement(
+                     new CodeMethodInvokeExpression(
+                     new CodeThisReferenceExpression(), "IsSpriteVisible",
+                     fldrefSpr),
+                     new CodeExpressionStatement(
+                     new CodeMethodInvokeExpression(
+                     new CodeThisReferenceExpression(),
+                     (priority == 0)?"InjectFrames":"AppendFrames",
+                     (CodeExpression[])InjectParams.ToArray(typeof(CodeExpression))))));
+
+                  mthClearProcessedFlag.Statements.Add(new CodeAssignStatement(
+                     new CodeFieldReferenceExpression(
+                     new CodeFieldReferenceExpression(
+                     new CodeThisReferenceExpression(), "m_" + NameToVariable(sprite.Name)),
+                     SpriteProcessedRulesField),
+                     new CodePrimitiveExpression(false)));
+
+                  mthExecuteLayerRules.Statements.Add(new CodeConditionStatement(new CodeFieldReferenceExpression(
+                     new CodeFieldReferenceExpression(new CodeThisReferenceExpression(),
+                     "m_" + NameToVariable(sprite.Name)), SpriteIsActiveRef),
+                     new CodeStatement[]
+                     {
+                        new CodeExpressionStatement(
+                        new CodeMethodInvokeExpression(
+                        new CodeFieldReferenceExpression(
+                        new CodeThisReferenceExpression(),
+                        "m_" + NameToVariable(sprite.Name)), "ProcessRules"))
+                     }));
+               }
+
+               if (htCategories.Count > 0)
+               {
+                  foreach(System.Collections.DictionaryEntry de in htCategories)
+                  {
+                     clsLayer.Members.Add(new CodeMemberField(
+                        SpriteCollectionClassName, "m_" + NameToVariable(de.Key.ToString())));
+                     lyrConstructor.Statements.Add(new CodeAssignStatement(
+                        new CodeFieldReferenceExpression(
+                        new CodeThisReferenceExpression(), "m_" + NameToVariable(de.Key.ToString())),
+                        new CodeObjectCreateExpression(SpriteCollectionClassName,
+                        (CodeFieldReferenceExpression[])((System.Collections.ArrayList)de.Value).ToArray(
+                        typeof(CodeFieldReferenceExpression)))));
+                     CodeMemberProperty prpSpriteCat = new CodeMemberProperty();
+                     prpSpriteCat.Type = new CodeTypeReference(SpriteCollectionClassName);
+                     prpSpriteCat.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+                     prpSpriteCat.HasGet = true;
+                     prpSpriteCat.HasSet = false;
+                     prpSpriteCat.Name = NameToVariable(de.Key.ToString());
+                     prpSpriteCat.GetStatements.Add(
+                        new CodeMethodReturnStatement(
+                        new CodeFieldReferenceExpression(
+                        new CodeThisReferenceExpression(), "m_" + NameToVariable(de.Key.ToString()))));
+                     clsLayer.Members.Add(prpSpriteCat);
+
+                     CodeMemberProperty prpLayerSpriteCategory = new CodeMemberProperty();
+                     prpLayerSpriteCategory.Type = new CodeTypeReference(SpriteCollectionClassName);
+                     prpLayerSpriteCategory.Attributes = MemberAttributes.Public | MemberAttributes.Override;
+                     prpLayerSpriteCategory.HasGet = true;
+                     prpLayerSpriteCategory.HasSet = false;
+                     prpLayerSpriteCategory.Name = prpSpriteCat.Name;
+                     prpLayerSpriteCategory.GetStatements.Add(
+                        new CodeMethodReturnStatement(
+                        new CodeFieldReferenceExpression(
+                        new CodeFieldReferenceExpression(
+                        new CodeThisReferenceExpression(), "m_layer"),
+                        "m_" + NameToVariable(de.Key.ToString()))));
+                     clsLayerSpriteCategories.Members.Add(prpLayerSpriteCategory);
+                  }
+               }
+            }
+            lyrConstructor.Statements.Add(new CodeAssignStatement(
+               new CodeFieldReferenceExpression(
+               new CodeThisReferenceExpression(), "m_Sprites"),
+               createLayerSprites));
          }
          mthDraw.Statements.Add(new CodeMethodInvokeExpression(refSpr, "End"));
          Generator.GenerateCodeFromType(clsMap, txt, GeneratorOptions);
@@ -1681,7 +1749,7 @@ namespace SGDK2
          constructor.Attributes = MemberAttributes.Public;
          constructor.Parameters.AddRange(new CodeParameterDeclarationExpression[]
             {
-               new CodeParameterDeclarationExpression("LayerBase", "layer"),
+               new CodeParameterDeclarationExpression(LayerBaseClassName, "layer"),
                new CodeParameterDeclarationExpression(typeof(double), "x"),
                new CodeParameterDeclarationExpression(typeof(double), "y"),
                new CodeParameterDeclarationExpression(typeof(double), "dx"),
@@ -1727,12 +1795,31 @@ namespace SGDK2
          }
          clsSpriteDef.Members.Add(constructor);
 
+         CodeMemberMethod initStates = new CodeMemberMethod();
+         initStates.Name = "InitializeStates";
+         initStates.Attributes = MemberAttributes.Static | MemberAttributes.Private;
+         initStates.Parameters.Add(new CodeParameterDeclarationExpression("Display", "disp"));
+         clsSpriteDef.Members.Add(initStates);
+
+         constructor.Statements.Add(new CodeConditionStatement(
+            new CodeBinaryOperatorExpression(
+            new CodeFieldReferenceExpression(
+            new CodeTypeReferenceExpression(clsSpriteDef.Name), SpriteStateField),
+            CodeBinaryOperatorType.IdentityEquality,
+            new CodePrimitiveExpression(null)), new CodeStatement[]
+            {
+               new CodeExpressionStatement(
+               new CodeMethodInvokeExpression(
+               new CodeTypeReferenceExpression(clsSpriteDef.Name),
+               initStates.Name, new CodeArgumentReferenceExpression("disp")))
+            }));
+
          ProjectDataset.SpriteStateRow[] stateRows = ProjectData.GetSortedSpriteStates(drSpriteDef);
 
          CodeTypeDeclaration enumStates = new CodeTypeDeclaration(SpriteStateEnumName);
-         constructor.Statements.Add(new CodeAssignStatement(
+         initStates.Statements.Add(new CodeAssignStatement(
             new CodeFieldReferenceExpression(
-            new CodeThisReferenceExpression(), SpriteStateField),
+            new CodeTypeReferenceExpression(clsSpriteDef.Name), SpriteStateField),
             new CodeArrayCreateExpression(
             new CodeTypeReference(SpriteStateClassName, 1),
             new CodePrimitiveExpression(stateRows.Length))));
@@ -1744,11 +1831,11 @@ namespace SGDK2
 
          CodeVariableDeclarationStatement varFrameset = new CodeVariableDeclarationStatement(
             FramesetClass, "framesetRef");
-         constructor.Statements.Add(varFrameset);
+         initStates.Statements.Add(varFrameset);
 
          CodeVariableDeclarationStatement varBounds = new CodeVariableDeclarationStatement(
             typeof(System.Drawing.Rectangle), "localBounds");
-         constructor.Statements.Add(varBounds);
+         initStates.Statements.Add(varBounds);
 
          CodeObjectCreateExpression createRect = null;
          CodeMethodInvokeExpression getFrameset = null;
@@ -1762,7 +1849,7 @@ namespace SGDK2
                   new CodeTypeReferenceExpression(FramesetClass),
                   GetFramesetMethodName, new CodePrimitiveExpression(drState.FramesetName),
                   new CodeArgumentReferenceExpression("disp"));
-               constructor.Statements.Add(new CodeAssignStatement(
+               initStates.Statements.Add(new CodeAssignStatement(
                   new CodeVariableReferenceExpression(varFrameset.Name), getFrameset));
             }
 
@@ -1780,7 +1867,7 @@ namespace SGDK2
                   new CodePrimitiveExpression(sinf.Bounds.Width),
                   new CodePrimitiveExpression(sinf.Bounds.Height));
                
-               constructor.Statements.Add(new CodeAssignStatement(
+               initStates.Statements.Add(new CodeAssignStatement(
                   new CodeVariableReferenceExpression(varBounds.Name), createRect));
             }
 
@@ -1789,10 +1876,6 @@ namespace SGDK2
             System.Collections.ArrayList stateParams = new System.Collections.ArrayList();
             stateParams.Add(new CodePrimitiveExpression(drState.SolidWidth));
             stateParams.Add(new CodePrimitiveExpression(drState.SolidHeight));
-            stateParams.Add(new CodeFieldReferenceExpression(
-               new CodeTypeReferenceExpression(SolidityClassName),
-               NameToVariable(drState.SolidityName)));
-            stateParams.Add(new CodeArgumentReferenceExpression("disp"));
             stateParams.Add(new CodeVariableReferenceExpression(varFrameset.Name));
             stateParams.Add(new CodeVariableReferenceExpression(varBounds.Name));
             System.Collections.ArrayList subFrames = null;
@@ -1849,10 +1932,10 @@ namespace SGDK2
                }
             }
 
-            constructor.Statements.Add(new CodeAssignStatement(
+            initStates.Statements.Add(new CodeAssignStatement(
                new CodeArrayIndexerExpression(
                new CodeFieldReferenceExpression(
-               new CodeThisReferenceExpression(), SpriteStateField),
+               new CodeTypeReferenceExpression(clsSpriteDef.Name), SpriteStateField),
                new CodeCastExpression(typeof(int),
                new CodeFieldReferenceExpression(
                new CodeTypeReferenceExpression(enumStates.Name),
@@ -1865,8 +1948,11 @@ namespace SGDK2
 
          FrameCache.ClearDisplayCache(null);
 
-         clsSpriteDef.Members.Add(new CodeMemberField(
-            new CodeTypeReference(SpriteStateClassName, 1), SpriteStateField));
+         CodeMemberField fldSpriteStates = new CodeMemberField(
+            new CodeTypeReference(SpriteStateClassName, 1), SpriteStateField);
+         fldSpriteStates.Attributes = MemberAttributes.Static | MemberAttributes.Private;
+         fldSpriteStates.InitExpression = new CodePrimitiveExpression(null);
+         clsSpriteDef.Members.Add(fldSpriteStates);
 
          CodeMemberProperty prpIndexer = new CodeMemberProperty();
          prpIndexer.Name = "Item";
@@ -1878,7 +1964,7 @@ namespace SGDK2
             typeof(int), "state"));
          prpIndexer.GetStatements.Add(new CodeMethodReturnStatement(
             new CodeIndexerExpression(new CodeFieldReferenceExpression(
-            new CodeThisReferenceExpression(), SpriteStateField),
+            new CodeTypeReferenceExpression(clsSpriteDef.Name), SpriteStateField),
             new CodeArgumentReferenceExpression("state"))));
          clsSpriteDef.Members.Add(prpIndexer);
 
@@ -1892,7 +1978,7 @@ namespace SGDK2
             new CodePropertyReferenceExpression(
             new CodeArrayIndexerExpression(
             new CodeFieldReferenceExpression(
-            new CodeThisReferenceExpression(), SpriteStateField),
+            new CodeTypeReferenceExpression(clsSpriteDef.Name), SpriteStateField),
             new CodeFieldReferenceExpression(
             new CodeThisReferenceExpression(), "state")),
             SpriteStateSolidWidth)));
@@ -1908,7 +1994,7 @@ namespace SGDK2
             new CodePropertyReferenceExpression(
             new CodeArrayIndexerExpression(
             new CodeFieldReferenceExpression(
-            new CodeThisReferenceExpression(), SpriteStateField),
+            new CodeTypeReferenceExpression(clsSpriteDef.Name), SpriteStateField),
             new CodeFieldReferenceExpression(
             new CodeThisReferenceExpression(), "state")),
             SpriteStateSolidHeight)));
@@ -1920,7 +2006,7 @@ namespace SGDK2
          RuleContent[] ruleArray = new RuleContent[rules.Length];
          CodeMemberMethod mthExecuteRules = new CodeMemberMethod();
          mthExecuteRules.Name = "ExecuteRules";
-         mthExecuteRules.Attributes = MemberAttributes.Override | MemberAttributes.Public;
+         mthExecuteRules.Attributes = MemberAttributes.Override | MemberAttributes.Family;
          if (GenerateLevel > CodeLevel.ExcludeRules)
          {
             for (int i = 0; i < rules.Length; i++)
@@ -1936,14 +2022,40 @@ namespace SGDK2
       {
          CodeTypeDeclaration enumCategories = new CodeTypeDeclaration("TileCategoryName");
          enumCategories.IsEnum = true;
-         foreach(ProjectDataset.CategoryRow drCat in ProjectData.Category)
+         foreach(System.Data.DataRowView drv in ProjectData.Category.DefaultView)
          {
+            ProjectDataset.CategoryRow drCat = (ProjectDataset.CategoryRow)drv.Row;
             enumCategories.Members.Add(new CodeMemberField(typeof(int), drCat.Name));
          }
          ((CodeMemberField)enumCategories.Members[0]).InitExpression = new CodePrimitiveExpression(0);
          enumCategories.Members.Add(new CodeMemberField(typeof(int), "Count"));
 
          Generator.GenerateCodeFromType(enumCategories, txt, GeneratorOptions);
+      }
+
+      public void GenerateLayerSpriteCategoriesBase(System.IO.TextWriter txt)
+      {
+         CodeTypeDeclaration clsLayerSpriteCategoriesBase = new CodeTypeDeclaration(LayerSpriteCategoriesBaseClassName);
+         CodeMemberField fldEmpty = new CodeMemberField(SpriteCollectionClassName, "m_EmptyCollection");
+         fldEmpty.Attributes = MemberAttributes.Private | MemberAttributes.Static;
+         fldEmpty.InitExpression = new CodeObjectCreateExpression(SpriteCollectionClassName);
+         clsLayerSpriteCategoriesBase.Members.Add(fldEmpty);
+
+         foreach(System.Data.DataRowView drv in ProjectData.SpriteCategory.DefaultView)
+         {
+            ProjectDataset.SpriteCategoryRow drCat = (ProjectDataset.SpriteCategoryRow)drv.Row;
+            CodeMemberProperty prpCat = new CodeMemberProperty();
+            prpCat.Name = NameToVariable(drCat.Name);
+            prpCat.Type = new CodeTypeReference(SpriteCollectionClassName);
+            prpCat.Attributes = MemberAttributes.Public;
+            prpCat.HasGet = true;
+            prpCat.HasSet = false;
+            prpCat.GetStatements.Add(new CodeMethodReturnStatement(
+               new CodeFieldReferenceExpression(
+               new CodeTypeReferenceExpression(clsLayerSpriteCategoriesBase.Name), fldEmpty.Name)));
+            clsLayerSpriteCategoriesBase.Members.Add(prpCat);
+         }
+         Generator.GenerateCodeFromType(clsLayerSpriteCategoriesBase, txt, GeneratorOptions);
       }
 
       public void GenerateSolidity(System.IO.TextWriter txt)

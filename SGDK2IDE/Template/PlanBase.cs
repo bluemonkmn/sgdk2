@@ -155,12 +155,15 @@ public abstract class PlanBase : System.Collections.IEnumerable
 
       // Normalize target vector to magnitude of Force parameter
       double dist = Math.Sqrt(dx * dx + dy * dy);
-      dx = dx * Force / dist / 10;
-      dy = dy * Force / dist / 10;
+      if (dist > 0)
+      {
+         dx = dx * Force / dist / 10;
+         dy = dy * Force / dist / 10;
 
-      // Push sprite
-      Sprite.dx += dx;
-      Sprite.dy += dy;
+         // Push sprite
+         Sprite.dx += dx;
+         Sprite.dy += dy;
+      }
    }
 
    [Description("Determine whether the sprite is within the TargetDistance of the specified coordinate.  If so, return the next CoordinateIndex, otherwise return the current CoordinateIndex.")]
@@ -190,6 +193,8 @@ public abstract class PlanBase : System.Collections.IEnumerable
       for (int idx = 0; idx < Targets.Count; idx++)
       {
          SpriteBase TargetSprite = Targets[idx];
+         if (TargetSprite == SourceSprite)
+            continue;
          if (TargetSprite.isActive)
          {
             CollisionMask targetMask = TargetSprite.CurrentState.GetMask(TargetSprite.frame);
@@ -210,6 +215,8 @@ public abstract class PlanBase : System.Collections.IEnumerable
       for (int idx = 0; idx < Targets.Count; idx++)
       {
          SpriteBase TargetSprite = Targets[idx];
+         if (TargetSprite == SourceSprite)
+            continue;
          int x1 = SourceSprite.PixelX;
          int w1 = SourceSprite.SolidWidth;
          int x2 = TargetSprite.PixelX;
@@ -229,6 +236,12 @@ public abstract class PlanBase : System.Collections.IEnumerable
    public void DeactivateCategorySprite(SpriteCollection Category, int Index)
    {
       Category[Index].isActive = false;
+   }
+
+   [Description("Determines if the specified sprite instace is active.")]
+   public bool IsSpriteActive(SpriteBase Sprite)
+   {
+      return Sprite.isActive;
    }
 
    #region IEnumerable Members

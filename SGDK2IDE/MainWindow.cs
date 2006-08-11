@@ -329,13 +329,14 @@ namespace SGDK2
          // mnuFileRunProject
          // 
          this.mnuFileRunProject.Index = 8;
-         this.mnuFileRunProject.Shortcut = System.Windows.Forms.Shortcut.F5;
+         this.mnuFileRunProject.Shortcut = System.Windows.Forms.Shortcut.CtrlF5;
          this.mnuFileRunProject.Text = "&Run Project";
          this.mnuFileRunProject.Click += new System.EventHandler(this.mnuFileRunProject_Click);
          // 
          // mnuFileRunProjectInDebugMode
          // 
          this.mnuFileRunProjectInDebugMode.Index = 9;
+         this.mnuFileRunProjectInDebugMode.Shortcut = System.Windows.Forms.Shortcut.F5;
          this.mnuFileRunProjectInDebugMode.Text = "Run Project in Debug &Mode";
          this.mnuFileRunProjectInDebugMode.Click += new System.EventHandler(this.mnuFileRunProjectInDebugMode_Click);
          // 

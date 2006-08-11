@@ -61,6 +61,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
    private readonly System.Drawing.SizeF m_ScrollRate;
    private System.Drawing.Point m_CurrentPosition;
    private MapBase m_ParentMap;
+   public LayerSpriteCategoriesBase m_SpriteCategories;
    #endregion
 
    protected LayerBase(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer, int nBottomBuffer,

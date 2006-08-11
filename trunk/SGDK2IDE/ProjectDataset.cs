@@ -127,8 +127,6 @@ namespace SGDK2 {
         
         private DataRelation relationCategorySolidityShape;
         
-        private DataRelation relationSoliditySpriteState;
-        
         private DataRelation relationFramesetSpriteState;
         
         public ProjectDataset() {
@@ -726,7 +724,6 @@ namespace SGDK2 {
             this.relationSpriteParameterParameterValue = this.Relations["SpriteParameterParameterValue"];
             this.relationSpriteDefinitionCategory = this.Relations["SpriteDefinitionCategory"];
             this.relationCategorySolidityShape = this.Relations["CategorySolidityShape"];
-            this.relationSoliditySpriteState = this.Relations["SoliditySpriteState"];
             this.relationFramesetSpriteState = this.Relations["FramesetSpriteState"];
         }
         
@@ -971,13 +968,6 @@ namespace SGDK2 {
             fkc.AcceptRejectRule = System.Data.AcceptRejectRule.None;
             fkc.DeleteRule = System.Data.Rule.Cascade;
             fkc.UpdateRule = System.Data.Rule.Cascade;
-            fkc = new ForeignKeyConstraint("SoliditySpriteState", new DataColumn[] {
-                        this.tableSolidity.NameColumn}, new DataColumn[] {
-                        this.tableSpriteState.SolidityNameColumn});
-            this.tableSpriteState.Constraints.Add(fkc);
-            fkc.AcceptRejectRule = System.Data.AcceptRejectRule.None;
-            fkc.DeleteRule = System.Data.Rule.SetNull;
-            fkc.UpdateRule = System.Data.Rule.Cascade;
             fkc = new ForeignKeyConstraint("FramesetSpriteState", new DataColumn[] {
                         this.tableFrameset.NameColumn}, new DataColumn[] {
                         this.tableSpriteState.FramesetNameColumn});
@@ -1182,10 +1172,6 @@ namespace SGDK2 {
                         this.tableSolidityShape.TilesetNameColumn,
                         this.tableSolidityShape.CategoryNameColumn}, false);
             this.Relations.Add(this.relationCategorySolidityShape);
-            this.relationSoliditySpriteState = new DataRelation("SoliditySpriteState", new DataColumn[] {
-                        this.tableSolidity.NameColumn}, new DataColumn[] {
-                        this.tableSpriteState.SolidityNameColumn}, false);
-            this.Relations.Add(this.relationSoliditySpriteState);
             this.relationFramesetSpriteState = new DataRelation("FramesetSpriteState", new DataColumn[] {
                         this.tableFrameset.NameColumn}, new DataColumn[] {
                         this.tableSpriteState.FramesetNameColumn}, false);
@@ -8042,8 +8028,6 @@ namespace SGDK2 {
             
             private DataColumn columnFramesetName;
             
-            private DataColumn columnSolidityName;
-            
             private DataColumn columnSolidWidth;
             
             private DataColumn columnSolidHeight;
@@ -8096,12 +8080,6 @@ namespace SGDK2 {
                 }
             }
             
-            internal DataColumn SolidityNameColumn {
-                get {
-                    return this.columnSolidityName;
-                }
-            }
-            
             internal DataColumn SolidWidthColumn {
                 get {
                     return this.columnSolidWidth;
@@ -8138,13 +8116,12 @@ namespace SGDK2 {
                 this.Rows.Add(row);
             }
             
-            public SpriteStateRow AddSpriteStateRow(SpriteDefinitionRow parentSpriteDefinitionRowBySpriteDefinitionState, string Name, FramesetRow parentFramesetRowByFramesetSpriteState, SolidityRow parentSolidityRowBySoliditySpriteState, short SolidWidth, short SolidHeight, short Sequence) {
+            public SpriteStateRow AddSpriteStateRow(SpriteDefinitionRow parentSpriteDefinitionRowBySpriteDefinitionState, string Name, FramesetRow parentFramesetRowByFramesetSpriteState, short SolidWidth, short SolidHeight, short Sequence) {
                 SpriteStateRow rowSpriteStateRow = ((SpriteStateRow)(this.NewRow()));
                 rowSpriteStateRow.ItemArray = new object[] {
                         parentSpriteDefinitionRowBySpriteDefinitionState[0],
                         Name,
                         parentFramesetRowByFramesetSpriteState[0],
-                        parentSolidityRowBySoliditySpriteState[0],
                         SolidWidth,
                         SolidHeight,
                         Sequence};
@@ -8176,7 +8153,6 @@ namespace SGDK2 {
                 this.columnDefinitionName = this.Columns["DefinitionName"];
                 this.columnName = this.Columns["Name"];
                 this.columnFramesetName = this.Columns["FramesetName"];
-                this.columnSolidityName = this.Columns["SolidityName"];
                 this.columnSolidWidth = this.Columns["SolidWidth"];
                 this.columnSolidHeight = this.Columns["SolidHeight"];
                 this.columnSequence = this.Columns["Sequence"];
@@ -8189,8 +8165,6 @@ namespace SGDK2 {
                 this.Columns.Add(this.columnName);
                 this.columnFramesetName = new DataColumn("FramesetName", typeof(string), null, System.Data.MappingType.Attribute);
                 this.Columns.Add(this.columnFramesetName);
-                this.columnSolidityName = new DataColumn("SolidityName", typeof(string), null, System.Data.MappingType.Attribute);
-                this.Columns.Add(this.columnSolidityName);
                 this.columnSolidWidth = new DataColumn("SolidWidth", typeof(short), null, System.Data.MappingType.Attribute);
                 this.Columns.Add(this.columnSolidWidth);
                 this.columnSolidHeight = new DataColumn("SolidHeight", typeof(short), null, System.Data.MappingType.Attribute);
@@ -8210,7 +8184,6 @@ namespace SGDK2 {
                 this.columnName.Namespace = "";
                 this.columnFramesetName.AllowDBNull = false;
                 this.columnFramesetName.Namespace = "";
-                this.columnSolidityName.Namespace = "";
                 this.columnSolidWidth.AllowDBNull = false;
                 this.columnSolidWidth.Namespace = "";
                 this.columnSolidHeight.AllowDBNull = false;
@@ -8292,20 +8265,6 @@ namespace SGDK2 {
                 }
             }
             
-            public string SolidityName {
-                get {
-                    try {
-                        return ((string)(this[this.tableSpriteState.SolidityNameColumn]));
-                    }
-                    catch (InvalidCastException e) {
-                        throw new StrongTypingException("Cannot get value because it is DBNull.", e);
-                    }
-                }
-                set {
-                    this[this.tableSpriteState.SolidityNameColumn] = value;
-                }
-            }
-            
             public short SolidWidth {
                 get {
                     return ((short)(this[this.tableSpriteState.SolidWidthColumn]));
@@ -8342,15 +8301,6 @@ namespace SGDK2 {
                 }
             }
             
-            public SolidityRow SolidityRow {
-                get {
-                    return ((SolidityRow)(this.GetParentRow(this.Table.ParentRelations["SoliditySpriteState"])));
-                }
-                set {
-                    this.SetParentRow(value, this.Table.ParentRelations["SoliditySpriteState"]);
-                }
-            }
-            
             public FramesetRow FramesetRow {
                 get {
                     return ((FramesetRow)(this.GetParentRow(this.Table.ParentRelations["FramesetSpriteState"])));
@@ -8358,14 +8308,6 @@ namespace SGDK2 {
                 set {
                     this.SetParentRow(value, this.Table.ParentRelations["FramesetSpriteState"]);
                 }
-            }
-            
-            public bool IsSolidityNameNull() {
-                return this.IsNull(this.tableSpriteState.SolidityNameColumn);
-            }
-            
-            public void SetSolidityNameNull() {
-                this[this.tableSpriteState.SolidityNameColumn] = System.Convert.DBNull;
             }
             
             public SpriteFrameRow[] GetSpriteFrameRows() {
@@ -9313,10 +9255,6 @@ namespace SGDK2 {
             
             public SolidityShapeRow[] GetSolidityShapeRows() {
                 return ((SolidityShapeRow[])(this.GetChildRows(this.Table.ChildRelations["SoliditySolidityShape"])));
-            }
-            
-            public SpriteStateRow[] GetSpriteStateRows() {
-                return ((SpriteStateRow[])(this.GetChildRows(this.Table.ChildRelations["SoliditySpriteState"])));
             }
         }
         

@@ -103,8 +103,6 @@ namespace SGDK2
       private System.Windows.Forms.Label lblAvailableFrames;
       private System.Windows.Forms.MainMenu mnuSprites;
       private SGDK2.DataChangeNotifier DataMonitor;
-      private System.Windows.Forms.Label lblSolidity;
-      private System.Windows.Forms.ComboBox cboSolidity;
       private System.Windows.Forms.MenuItem mnuSpriteDefinition;
       private System.Windows.Forms.MenuItem mnuAddState;
       private System.Windows.Forms.MenuItem mnuDeleteState;
@@ -180,7 +178,6 @@ namespace SGDK2
          txtName.Text = sName;
 
          EnableState(false);
-         FillSolidity();
          FillFramesets();
          FillStates();
          InitParameters();
@@ -194,7 +191,6 @@ namespace SGDK2
          txtName.Text = drSpriteDef.Name;
 
          EnableState(false);
-         FillSolidity();
          FillFramesets();
          FillStates();
          InitParameters();
@@ -244,8 +240,6 @@ namespace SGDK2
          this.txtStateName = new System.Windows.Forms.TextBox();
          this.lblFrameset = new System.Windows.Forms.Label();
          this.cboFrameset = new System.Windows.Forms.ComboBox();
-         this.lblSolidity = new System.Windows.Forms.Label();
-         this.cboSolidity = new System.Windows.Forms.ComboBox();
          this.lblWidthHeight = new System.Windows.Forms.Label();
          this.txtWidth = new System.Windows.Forms.TextBox();
          this.lblComma = new System.Windows.Forms.Label();
@@ -506,8 +500,6 @@ namespace SGDK2
          this.pnlSpriteState.Controls.Add(this.txtStateName);
          this.pnlSpriteState.Controls.Add(this.lblFrameset);
          this.pnlSpriteState.Controls.Add(this.cboFrameset);
-         this.pnlSpriteState.Controls.Add(this.lblSolidity);
-         this.pnlSpriteState.Controls.Add(this.cboSolidity);
          this.pnlSpriteState.Controls.Add(this.lblWidthHeight);
          this.pnlSpriteState.Controls.Add(this.txtWidth);
          this.pnlSpriteState.Controls.Add(this.lblComma);
@@ -557,27 +549,6 @@ namespace SGDK2
          this.cboFrameset.Size = new System.Drawing.Size(128, 21);
          this.cboFrameset.TabIndex = 3;
          this.cboFrameset.SelectionChangeCommitted += new System.EventHandler(this.cboFrameset_SelectionChangeCommitted);
-         // 
-         // lblSolidity
-         // 
-         this.lblSolidity.Location = new System.Drawing.Point(216, 32);
-         this.lblSolidity.Name = "lblSolidity";
-         this.lblSolidity.Size = new System.Drawing.Size(80, 21);
-         this.lblSolidity.TabIndex = 4;
-         this.lblSolidity.Text = "Solidity:";
-         this.lblSolidity.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-         // 
-         // cboSolidity
-         // 
-         this.cboSolidity.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-         this.cboSolidity.DisplayMember = "Name";
-         this.cboSolidity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-         this.cboSolidity.Location = new System.Drawing.Point(296, 32);
-         this.cboSolidity.Name = "cboSolidity";
-         this.cboSolidity.Size = new System.Drawing.Size(128, 21);
-         this.cboSolidity.TabIndex = 5;
-         this.cboSolidity.SelectionChangeCommitted += new System.EventHandler(this.cboSolidity_SelectionChangeCommitted);
          // 
          // lblWidthHeight
          // 
@@ -1126,13 +1097,10 @@ namespace SGDK2
          this.DataMonitor.FramesetRowChanging += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.DataMonitor_FramesetRowChanging);
          this.DataMonitor.FramesetRowChanged += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.DataMonitor_FramesetRowChanged);
          this.DataMonitor.SpriteParameterRowChanged += new SGDK2.ProjectDataset.SpriteParameterRowChangeEventHandler(this.DataMonitor_SpriteParameterRowChanged);
-         this.DataMonitor.SolidityRowDeleted += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.DataMonitor_SolidityRowDeleted);
          this.DataMonitor.SpriteStateRowChanging += new SGDK2.ProjectDataset.SpriteStateRowChangeEventHandler(this.DataMonitor_SpriteStateRowChanging);
          this.DataMonitor.SpriteRuleRowChanging += new SGDK2.ProjectDataset.SpriteRuleRowChangeEventHandler(this.dataMonitor_SpriteRuleRowChanging);
          this.DataMonitor.SpriteDefinitionRowDeleted += new SGDK2.ProjectDataset.SpriteDefinitionRowChangeEventHandler(this.DataMonitor_SpriteDefinitionRowDeleted);
          this.DataMonitor.SpriteRuleRowChanged += new SGDK2.ProjectDataset.SpriteRuleRowChangeEventHandler(this.dataMonitor_SpriteRuleRowChanged);
-         this.DataMonitor.SolidityRowChanging += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.DataMonitor_SolidityRowChanging);
-         this.DataMonitor.SolidityRowChanged += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.DataMonitor_SolidityRowChanged);
          this.DataMonitor.FramesetRowDeleted += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.DataMonitor_FramesetRowDeleted);
          this.DataMonitor.SpriteRuleRowDeleting += new SGDK2.ProjectDataset.SpriteRuleRowChangeEventHandler(this.dataMonitor_SpriteRuleRowChanging);
          this.DataMonitor.SpriteStateRowDeleted += new SGDK2.ProjectDataset.SpriteStateRowChangeEventHandler(this.DataMonitor_SpriteStateRowDeleted);
@@ -1266,16 +1234,6 @@ namespace SGDK2
          }
       }
 
-      private void FillSolidity()
-      {
-         cboSolidity.Items.Clear();
-         foreach(System.Data.DataRowView drv in ProjectData.Solidity.DefaultView)
-         {
-            ProjectDataset.SolidityRow dr = (ProjectDataset.SolidityRow)drv.Row;
-            cboSolidity.Items.Add(dr);
-         }
-      }
-
       private void FillFramesets()
       {
          cboFrameset.Items.Clear();
@@ -1307,15 +1265,6 @@ namespace SGDK2
             }
          }
 
-         for (int i=0; i<cboSolidity.Items.Count; i++)
-         {
-            if (cboSolidity.Items[i] == state.SolidityRow)
-            {
-               cboSolidity.SelectedIndex = i;
-               break;
-            }
-         }
-
          txtWidth.Text = state.SolidWidth.ToString();
          txtHeight.Text = state.SolidHeight.ToString();
          AvailableFrames.Frameset = StateFrames.Frameset = state.FramesetRow;
@@ -1343,9 +1292,9 @@ namespace SGDK2
       private void EnableState(bool enable)
       {
          txtStateName.Enabled = lblStateName.Enabled = cboFrameset.Enabled =
-            lblFrameset.Enabled = lblSolidity.Enabled = cboSolidity.Enabled =
-            lblStateFrames.Enabled = StateFrames.Enabled = lblAvailableFrames.Enabled =
+            lblFrameset.Enabled = lblStateFrames.Enabled = StateFrames.Enabled = lblAvailableFrames.Enabled =
             AvailableFrames.Enabled = lblRepeatCount.Enabled = updRepeatCount.Enabled =
+            btnMaskAlpha.Enabled = lblMaskAlpha.Enabled = txtMaskAlpha.Enabled =
             txtWidth.Enabled = txtHeight.Enabled = lblWidthHeight.Enabled = lblComma.Enabled =
             enable;
       }
@@ -1471,6 +1420,15 @@ namespace SGDK2
                CodeGenerator.NameToVariable(drState.Name));
       }
 
+      private void FillComboWithSpriteCollections(ComboBox cboTarget)
+      {
+         foreach(DataRowView drv in ProjectData.SpriteCategory.DefaultView)
+         {
+            cboTarget.Items.Add("layer.m_SpriteCategories." + CodeGenerator.NameToVariable(
+               ((ProjectDataset.SpriteCategoryRow)drv.Row).Name));
+         }
+      }
+
       private void PopulateParameter(Label lblParameter, ComboBox cboParameter, RemotingServices.RemoteParameterInfo param)
       {
          cboParameter.Items.Clear();
@@ -1528,6 +1486,10 @@ namespace SGDK2
                   FillComboWithSpriteStates(cboParameter);
                }
             }
+         }
+         else if (string.Compare(param.TypeName, CodeGenerator.SpriteCollectionClassName) == 0)
+         {
+            FillComboWithSpriteCollections(cboParameter);
          }
          else
          {
@@ -1779,7 +1741,7 @@ namespace SGDK2
 
          lstSpriteStates.SelectedItem = ProjectData.AddSpriteState(m_SpriteDef, sName,
             (ProjectDataset.FramesetRow)ProjectData.Frameset.DefaultView[0].Row,
-            (ProjectDataset.SolidityRow)ProjectData.Solidity.DefaultView[0].Row, 32, 32, insertIndex);
+            32, 32, insertIndex);
       }
 
       private void StateFrames_DragOver(object sender, System.Windows.Forms.DragEventArgs e)
@@ -1833,8 +1795,14 @@ namespace SGDK2
             {
                foreach (SGDK2.ProjectDataset.FrameRow fr in gb.GetSelectedFrames())
                {
+                  double dblAlpha;
+                  byte byAlpha = 0;
+                  if (Double.TryParse(txtMaskAlpha.Text, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.CurrentCulture, out dblAlpha))
+                  {
+                     byAlpha = (byte)dblAlpha;
+                  }
                   ProjectDataset.SpriteFrameRow sfr = SGDK2.ProjectData.InsertFrame(
-                     row, nCellIndex, fr.FrameValue, (short)updRepeatCount.Value);
+                     row, nCellIndex, fr.FrameValue, (short)updRepeatCount.Value, byAlpha);
                   StateFrames.FramesToDisplay.Insert(nCellIndex++, new SpriteFrame(sfr));
                }
             }
@@ -1874,11 +1842,6 @@ namespace SGDK2
          }
       }
 
-      private void cboSolidity_SelectionChangeCommitted(object sender, System.EventArgs e)
-      {
-         GetCurrentState().SolidityName = ((ProjectDataset.SolidityRow)cboSolidity.SelectedItem).Name;
-      }
-
       private void updRepeatCount_ValueChanged(object sender, System.EventArgs e)
       {
          try
@@ -1903,6 +1866,7 @@ namespace SGDK2
             {
                m_Loading = true;
                updRepeatCount.Value = ((SpriteFrame)(StateFrames.FramesToDisplay[StateFrames.CurrentCellIndex])).Row.Duration;
+               txtMaskAlpha.Text = ((SpriteFrame)(StateFrames.FramesToDisplay[StateFrames.CurrentCellIndex])).Row.MaskAlphaLevel.ToString();
                m_Loading = false;
             }
          }
@@ -2094,7 +2058,13 @@ namespace SGDK2
          }
          foreach (ProjectDataset.FrameRow fr in AvailableFrames.GetSelectedFrames())
          {
-            StateFrames.FramesToDisplay.Add(new SpriteFrame(ProjectData.InsertFrame(GetCurrentState(), -1, fr.FrameValue, (short)updRepeatCount.Value)));
+            double dblAlpha;
+            byte byAlpha = 0;
+            if (Double.TryParse(txtMaskAlpha.Text, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.CurrentCulture, out dblAlpha))
+            {
+               byAlpha = (byte)dblAlpha;
+            }
+            StateFrames.FramesToDisplay.Add(new SpriteFrame(ProjectData.InsertFrame(GetCurrentState(), -1, fr.FrameValue, (short)updRepeatCount.Value, byAlpha)));
          }
       }
 
@@ -2121,35 +2091,6 @@ namespace SGDK2
             ProjectData.DeleteSpriteFrame(sf.Row);
             StateFrames.FramesToDisplay.Remove(sf);
          }
-      }
-
-      private void DataMonitor_SolidityRowChanged(object sender, SGDK2.ProjectDataset.SolidityRowChangeEvent e)
-      {
-         if ((e.Action == System.Data.DataRowAction.Add) && (!cboSolidity.Items.Contains(e.Row)))
-         {
-            cboSolidity.Items.Add(e.Row);
-         }
-      }
-
-      private void DataMonitor_SolidityRowChanging(object sender, SGDK2.ProjectDataset.SolidityRowChangeEvent e)
-      {
-         if (e.Action == System.Data.DataRowAction.Change)
-         {
-            for (int i=0; i<cboSolidity.Items.Count; i++)
-            {
-               if (cboSolidity.Items[i] == e.Row)
-               {
-                  cboSolidity.Items[i] = e.Row;
-                  break;
-               }
-            }
-         }
-      }
-
-      private void DataMonitor_SolidityRowDeleted(object sender, SGDK2.ProjectDataset.SolidityRowChangeEvent e)
-      {
-         if (cboSolidity.Items.Contains(e.Row))
-            cboSolidity.Items.Remove(e.Row);
       }
 
       private void DataMonitor_FramesetRowChanged(object sender, SGDK2.ProjectDataset.FramesetRowChangeEvent e)
@@ -2439,6 +2380,7 @@ namespace SGDK2
             if (StateFrames.Selected[i])
                SelectedFrames[selIdx++] = i;
          new frmCollisionMask(GetCurrentState(), SelectedFrames).ShowDialog(this);
+         txtMaskAlpha.Text = ((SpriteFrame)(StateFrames.FramesToDisplay[StateFrames.CurrentCellIndex])).Row.MaskAlphaLevel.ToString();
       }
 
       private void StateFrames_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)

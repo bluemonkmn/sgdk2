@@ -248,7 +248,6 @@
                            <xs:attribute name="DefinitionName" type="xs:Name" use="prohibited" />
                            <xs:attribute name="Name" type="xs:Name" />
                            <xs:attribute name="FramesetName" type="xs:Name" />
-                           <xs:attribute name="SolidityName" type="xs:Name" />
                            <xs:attribute name="SolidWidth" type="xs:short" use="required" msprop:nullValue="0" />
                            <xs:attribute name="SolidHeight" type="xs:short" msprop:nullValue="0" use="required" />
                            <xs:attribute name="Sequence" type="xs:short" use="required" />
@@ -567,10 +566,6 @@
          <xs:selector xpath=".//SolidityShape" />
          <xs:field xpath="@TilesetName" />
          <xs:field xpath="@CategoryName" />
-      </xs:keyref>
-      <xs:keyref name="SoliditySpriteState" refer="SolidityKey" msdata:DeleteRule="SetNull" msdata:UpdateRule="Cascade">
-         <xs:selector xpath=".//SpriteState" />
-         <xs:field xpath="@SolidityName" />
       </xs:keyref>
       <xs:keyref name="SoliditySolidityShape" refer="SolidityKey" msdata:DeleteRule="Cascade" msdata:UpdateRule="Cascade"
          msdata:IsNested="true">

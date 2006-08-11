@@ -35,8 +35,7 @@ public class CollisionMask
       if (size.Width % 32 > 0)
       {
          int lastColMask = 0;
-         for (int x = 0; (x < size.Width % 32); x++)
-            lastColMask |= 1 << (31 - x);
+         lastColMask |= (-1) << (32 - (size.Width % 32));
          int lastColIdx = (int)Math.Ceiling(size.Width / 32f);
          for (int y = 0; y < size.Height; y++)
          {
@@ -90,7 +89,7 @@ public class CollisionMask
          if (m_Height >= target.m_Height + offsetY)
             maxY = target.m_Height + offsetY;
          else
-            maxY = target.m_Height;
+            maxY = m_Height;
       }
 
       int maxX;
@@ -111,7 +110,7 @@ public class CollisionMask
          if (m_Width >= target.m_Width + offsetX)
             maxX = target.m_Width + offsetX;
          else
-            maxX = target.m_Width;
+            maxX = m_Width;
       }
 
       for(int y=0; y < maxY; y++)
@@ -127,12 +126,14 @@ public class CollisionMask
             if (myColOff != 0)
             {
                if (myColIdx + 1 < m_Mask.GetUpperBound(1))
-                  myMask |= m_Mask[y+myMinY,myColIdx+1] >> (32-myColOff);
+                  myMask |= (m_Mask[y+myMinY,myColIdx+1] >> (32-myColOff)) &
+                     ~(unchecked((int)0x80000000) >> (31-myColOff));
             }
             else if (targetColOff != 0)
             {
                if (targetColIdx + 1 < target.m_Mask.GetUpperBound(1))
-                  targetMask |= target.m_Mask[y+targetMinY,targetColIdx+1] >> (32-targetColOff);
+                  targetMask |= (target.m_Mask[y+targetMinY,targetColIdx+1] >> (32-targetColOff)) &
+                     ~(unchecked((int)0x80000000) >> (31-targetColOff));
             }
             if ((myMask & targetMask) != 0)
                return true;
@@ -167,7 +168,7 @@ public class CollisionMask
                   gfxSingle.TranslateTransform(-rcBound.X, -rcBound.Y, MatrixOrder.Append);
                   gfxSingle.DrawImage(bmpGfxSheet, 0, 0, SFrame.SourceRect, GraphicsUnit.Pixel);
                   bmpData = bmpSingle.LockBits(new Rectangle(Point.Empty, rcBound.Size), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-                  pixels = new int[bmpSingle.Width * Math.Abs(bmpData.Stride) / 4];
+                  pixels = new int[bmpSingle.Height * Math.Abs(bmpData.Stride) / 4];
                   System.Runtime.InteropServices.Marshal.Copy(bmpData.Scan0, pixels, 0, bmpSingle.Height * Math.Abs(bmpData.Stride) / 4);
                   bmpSingle.UnlockBits(bmpData);
                   for (int rowIdx = 0; rowIdx < bmpSingle.Height; rowIdx++)

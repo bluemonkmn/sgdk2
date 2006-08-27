@@ -569,6 +569,20 @@ namespace SGDK2
          m_strProjectPath = null;
       }
 
+      private void DoOpenProject(string projectFile)
+      {
+         DataSet dsLoad = new DataSet();
+         dsLoad.ReadXml(projectFile);
+         ProjectData.Clear();
+         InitializeTree();
+         ProjectData.Merge(dsLoad);
+         ProjectData.AcceptChanges();
+         m_strProjectPath = projectFile;
+         tvwMain.CollapseAll();
+         tvwMain.Nodes[0].Expand();
+         mnuFileDeleteOutputFiles.Enabled = true;
+      }
+
       private void ShowMDIChild(System.Type typForm)
       {
          foreach(Form frm in this.MdiChildren)
@@ -1004,8 +1018,18 @@ namespace SGDK2
       #region Event Handlers
       private void frmMain_Load(object sender, System.EventArgs e)
       {
-         InitializeTree();
-         DoNewProject();
+         if (SGDK2IDE.g_CommandLine.ProjectFile == null)
+            DoNewProject();
+         else
+            try
+            {
+               DoOpenProject(SGDK2IDE.g_CommandLine.ProjectFile);
+            }
+            catch (System.Exception ex)
+            {
+               MessageBox.Show(this, ex.Message, "Open Project", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+               DoNewProject();
+            }
       }
 
       private void dataMonitor_GraphicSheetRowChanged(object sender, SGDK2.ProjectDataset.GraphicSheetRowChangeEvent e)
@@ -1781,8 +1805,8 @@ namespace SGDK2
             SaveFileDialog fd = new SaveFileDialog();
             fd.CheckPathExists = true;
             fd.OverwritePrompt = true;
-            fd.DefaultExt = "sg2";
-            fd.Filter = "SGDK2 Projects (*.sg2)|*.sg2|All Files (*.*)|*.*";
+            fd.DefaultExt = "sgdk2";
+            fd.Filter = "SGDK2 Projects (*.sgdk2)|*.sgdk2|All Files (*.*)|*.*";
             fd.FilterIndex = 1;
             fd.Title = "Save Project";
             fd.ValidateNames = true;
@@ -1805,23 +1829,14 @@ namespace SGDK2
          {
             OpenFileDialog fd = new OpenFileDialog();
             fd.CheckFileExists = true;
-            fd.DefaultExt = "sg2";
-            fd.Filter = "SGDK2 Projects (*.sg2)|*.sg2|All Files (*.*)|*.*";
+            fd.DefaultExt = "sgdk2";
+            fd.Filter = "SGDK2 Projects (*.sgdk2)|*.sgdk2|All Files (*.*)|*.*";
             fd.FilterIndex = 1;
             fd.Multiselect = false;
             fd.Title = "Open Project";
             if (DialogResult.OK == fd.ShowDialog(this))
             {
-               DataSet dsLoad = new DataSet();
-               dsLoad.ReadXml(fd.FileName);
-               ProjectData.Clear();
-               InitializeTree();
-               ProjectData.Merge(dsLoad);
-               ProjectData.AcceptChanges();
-               m_strProjectPath = fd.FileName;
-               tvwMain.CollapseAll();
-               tvwMain.Nodes[0].Expand();
-               mnuFileDeleteOutputFiles.Enabled = true;
+               DoOpenProject(fd.FileName);
             }
          }
          catch(Exception ex)
@@ -1871,6 +1886,8 @@ namespace SGDK2
                return;
          }
 
+         CodeGenerator.ResetTempAssembly();
+
          string strFolder = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(m_strProjectPath), System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath));
          CodeGenerator g = new CodeGenerator();
          g.GeneratorOptions.BracingStyle = "C";
@@ -1901,6 +1918,8 @@ namespace SGDK2
             if (m_strProjectPath == null)
                return;
          }
+
+         CodeGenerator.ResetTempAssembly();
 
          string strFolder = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(m_strProjectPath), System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath));
          CodeGenerator g = new CodeGenerator();
@@ -1943,6 +1962,8 @@ namespace SGDK2
             if (m_strProjectPath == null)
                return;
          }
+
+         CodeGenerator.ResetTempAssembly();
 
          string strFolder = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(m_strProjectPath), System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath));
          CodeGenerator g = new CodeGenerator();

@@ -69,6 +69,9 @@ class CompileResx
          rd = new System.Resources.ResXResourceReader("LogView.resx");
          WriteResources(rd,"SGDK2.frmLogView.resources");
          rd.Close();
+         rd = new System.Resources.ResXResourceReader("CollisionMask.resx");
+         WriteResources(rd,"SGDK2.frmCollisionMask.resources");
+         rd.Close();
       }
       public static void WriteResources(System.Resources.ResXResourceReader rd, string sFile)
       {

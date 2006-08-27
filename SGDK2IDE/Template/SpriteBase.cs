@@ -174,6 +174,9 @@ public abstract class SpriteBase
    }
 
    protected abstract void ExecuteRules();
+
+   public abstract void ClearParameters();
+
    #endregion
 
    #region Public Methods
@@ -569,7 +572,8 @@ public abstract class SpriteBase
          int ground = layer.GetTopSolidPixel(new System.Drawing.Rectangle(PixelX, PixelY+SolidHeight, SolidPixelWidth, ProposedPixelY2 - PixelY), m_solidity);
          if (ground != int.MinValue)
          {
-            dy = ground - y - SolidHeight;
+            // Do integer arithmetic before double otherwise strange rounding seems to happen
+            dy = ground - SolidHeight - y;
             hit = true;
          }
       } 
@@ -578,7 +582,8 @@ public abstract class SpriteBase
          int ceiling = layer.GetBottomSolidPixel(new System.Drawing.Rectangle(PixelX, ProposedPixelY, SolidPixelWidth, PixelY - ProposedPixelY), m_solidity);
          if (ceiling != int.MinValue)
          {
-            dy = ceiling - y + 1;
+            // Do integer arithmetic before double otherwise strange rounding seems to happen
+            dy = ceiling + 1 - y;
             hit = true;
          }
       }
@@ -600,7 +605,8 @@ public abstract class SpriteBase
                {
                   int rightwall2 = layer.GetLeftSolidPixel(new System.Drawing.Rectangle(PixelX2 + SolidWidth, slopedFloor - SolidHeight, ProposedPixelX2 - PixelX2, SolidHeight), m_solidity);
                   if (rightwall2 == int.MinValue)
-                     dy = dyOrig = slopedFloor - 1 - y - SolidHeight;
+                     // Do integer arithmetic before double otherwise strange rounding seems to happen
+                     dy = dyOrig = slopedFloor - SolidHeight - 1 - y;
                   else
                      hitWall = true;
                }
@@ -631,7 +637,8 @@ public abstract class SpriteBase
             }
             if (hitWall)
             {
-               dx = rightwall - x - SolidWidth;
+               // Do integer arithmetic before double otherwise strange rounding seems to happen
+               dx = rightwall - SolidWidth - x;
             }
             hit = true;
          }
@@ -651,7 +658,8 @@ public abstract class SpriteBase
                {
                   int leftwall2 = layer.GetRightSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, slopedFloor - SolidHeight, PixelX - ProposedPixelX, SolidHeight), m_solidity);
                   if (leftwall2 == int.MinValue)
-                     dy = dyOrig = slopedFloor - 1 - y - SolidHeight;
+                     // Do integer arithmetic before double otherwise strange rounding seems to happen
+                     dy = dyOrig = slopedFloor - SolidHeight - 1 - y;
                   else
                      hitWall = true;
                }
@@ -682,7 +690,8 @@ public abstract class SpriteBase
             }
             if (hitWall)
             {
-               dx = leftwall - x + 1;
+               // Do integer arithmetic before double otherwise strange rounding seems to happen
+               dx = leftwall + 1 - x;
             }
             hit = true;
          }
@@ -697,7 +706,8 @@ public abstract class SpriteBase
          int ground = layer.GetTopSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, PixelY+SolidHeight, ProposedSolidPixelWidth, ProposedPixelY2 - PixelY), m_solidity);
          if (ground != int.MinValue)
          {
-            dy = ground - y - SolidHeight;
+            // Do integer arithmetic before double otherwise strange rounding seems to happen
+            dy = ground - SolidHeight - y;
             hit = true;
          }
       }
@@ -706,7 +716,8 @@ public abstract class SpriteBase
          int ceiling = layer.GetBottomSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, ProposedPixelY, ProposedSolidPixelWidth, PixelY - ProposedPixelY), m_solidity);
          if (ceiling != int.MinValue)
          {
-            dy = ceiling - y + 1;
+            // Do integer arithmetic before double otherwise strange rounding seems to happen
+            dy = ceiling + 1 - y;
             hit = true;
          }
       }
@@ -723,7 +734,8 @@ public abstract class SpriteBase
       int ground = layer.GetTopSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, ProposedPixelY+SolidHeight, ProposedSolidPixelWidth, Threshhold), m_solidity);
       if (ground != int.MinValue)
       {
-         double newDy = ground - y - SolidHeight;
+         // Do integer arithmetic before double otherwise strange rounding seems to happen
+         double newDy = ground - SolidHeight - y;
          if (newDy > dy)
             dy = newDy;
          return true;
@@ -756,5 +768,214 @@ public abstract class SpriteBase
       return false;
    }
 
+   #endregion
+
+   #region Tile Interaction
+   class TouchedTile
+   {
+      public int x;
+      public int y;
+      public int tileValue;
+      public bool initial;
+      public bool processed;
+
+      public TouchedTile(int x, int y, int tileValue, bool initial)
+      {
+         this.x = x;
+         this.y = y;
+         this.tileValue = tileValue;
+         this.initial = initial;
+         processed = false;
+      }
+   }
+
+   // Do not allocate appreciable memory unless this sprite
+   // participates in tile interaction.
+   System.Collections.ArrayList TouchedTiles = null;
+
+   [Description("Collects information about tiles the sprite is currently touching.  Category should include all tiles that the sprite interacts with.  Must be called before performing any tile interaction.")]
+   public bool TouchTiles(TileCategoryName Category)
+   {
+      Debug.Assert(this.isActive, "Attempted to execute TouchTiles on an inactive sprite");
+      
+      if (TouchedTiles != null)
+         TouchedTiles.Clear();
+
+      int tw = layer.Tileset.TileWidth;
+      int th = layer.Tileset.TileHeight;
+      int minYEdge = (PixelY / th);
+      int maxY = (PixelY + SolidHeight) / th;
+      int maxYEdge = (PixelY + SolidHeight - 1) / th;
+      int minX = (PixelX - 1)/ tw;
+      int minXEdge = PixelX / tw;
+      int maxX = (PixelX + SolidHeight) / tw;
+      int maxXEdge = (PixelX + SolidHeight - 1) / tw;
+      for (int yidx = (PixelY - 1) / th; yidx <= maxY; yidx++)
+      {
+         bool isYEdge = !((yidx >= minYEdge) && (yidx <= maxYEdge));
+         for (int xidx = (isYEdge ? minXEdge : minX);
+            xidx <= (isYEdge ? maxXEdge : maxX);
+            xidx++)
+         {
+            if (layer.GetTile(xidx, yidx).IsMember(Category))
+            {
+               bool wasTouching;
+
+               if ((OldPixelX <= xidx * tw + tw) &&
+                  (OldPixelX + SolidWidth >= xidx * tw) &&
+                  (OldPixelY <= yidx * th + th) &&
+                  (OldPixelY + SolidHeight >= yidx * th))
+               {
+                  bool edgeX = (OldPixelX+SolidWidth == xidx * tw) || 
+                     (OldPixelX == xidx * tw + tw);
+                  bool edgeY = (OldPixelY+SolidHeight == yidx * th) ||
+                     (OldPixelY == yidx * th + th);
+                  if (edgeX && edgeY)
+                     wasTouching = false;
+                  else
+                     wasTouching = true;
+               }
+               else
+                  wasTouching = false;
+               
+               if (TouchedTiles == null)
+                  TouchedTiles = new System.Collections.ArrayList(10);
+               TouchedTiles.Add(new TouchedTile(xidx, yidx, layer[xidx, yidx], !wasTouching));
+            }
+         }
+      }
+      if (TouchedTiles == null)
+         return false;
+      return TouchedTiles.Count > 0;
+   }
+
+   [Description("When the sprite is touching the specified tile, and the specified counter is not maxed, clear the tile value to 0 and increment the specified counter/parameter. Returns the number of tiles affected. (Must run TouchTiles first.)")]
+   public int TileTake(int TileValue,  Counter Counter)
+   {
+      Debug.Assert(this.isActive, "Attempted to execute TileTake on an inactive sprite");
+
+      if (TouchedTiles == null)
+         return 0 ;
+
+      int result = 0;
+
+      for (int i=0; i < TouchedTiles.Count; i++)
+      {
+         TouchedTile tt = (TouchedTile)TouchedTiles[i];
+         if ((tt.tileValue == TileValue) && (!tt.processed))
+         {
+            if (Counter.CurrentValue < Counter.MaxValue)
+            {
+               Counter.CurrentValue++;
+               layer[tt.x, tt.y] = tt.tileValue = 0;
+               tt.processed = true;
+               result++;
+            }
+         }
+      }
+      return result;
+   }
+
+   [Description("When the sprite is touching the specified tile, and the specified counter is greater than 0, decrement the counter and clear the tile value to 0. Returns the number of tiles affected. (Must run TouchTiles first.)")]
+   public int TileUseUp(int TileValue,  Counter Counter)
+   {
+      Debug.Assert(this.isActive, "Attempted to execute TileUseUp on an inactive sprite");
+
+      if (TouchedTiles == null)
+         return 0;
+
+      int result = 0;
+
+      for (int i=0; i < TouchedTiles.Count; i++)
+      {
+         TouchedTile tt = (TouchedTile)TouchedTiles[i];
+         if ((tt.tileValue == TileValue) && (!tt.processed))
+         {
+            if (Counter.CurrentValue > 0)
+            {
+               Counter.CurrentValue--;
+               layer[tt.x, tt.y] = tt.tileValue = 0;
+               tt.processed = true;
+               result++;
+            }
+         }
+      }
+      return result;
+   }
+
+   [Description("Return the index of the next unprocessed tile with the specified value from the list of tiles the sprite is touching. If InitialOnly is set, only return tiles that the sprite wasn't already touching. Return -1 if no tiles are being touched. (Must run TouchTiles first.)")]
+   public int TileTouchingIndex(int TileValue, bool InitialOnly, bool MarkAsProcessed)
+   {
+      Debug.Assert(this.isActive, "Attempted to execute TileTouchingIndex on an inactive sprite");
+
+      if (TouchedTiles == null)
+         return -1;
+
+      for (int i=0; i < TouchedTiles.Count; i++)
+      {
+         TouchedTile tt = (TouchedTile)TouchedTiles[i];
+         if ((tt.tileValue == TileValue) && (!tt.processed) && (!InitialOnly || tt.initial))
+         {
+            tt.processed = MarkAsProcessed;
+            return i;
+         }
+      }
+      
+      return -1;
+   }
+
+   [Description("Activate the next inactive sprite from a category at the coordinates of a tile being touched by the player.  Use TileTouchingIndex to acquire TouchingIndex.")]
+   public int TileActivateSprite(int TouchingIndex, SpriteCollection Category, bool ClearParameters)
+   {
+      Debug.Assert(this.isActive, "Attempted to execute TileActivateSprite on an inactive sprite");
+
+      for(int i=0; i<Category.Count; i++)
+      {
+         if (!Category[i].isActive)
+         {
+            Category[i].isActive = true;
+            TouchedTile tt = (TouchedTile)TouchedTiles[TouchingIndex];
+            Category[i].x = tt.x * layer.Tileset.TileWidth;
+            Category[i].y = tt.y * layer.Tileset.TileHeight;
+            if (ClearParameters)
+               Category[i].ClearParameters();
+            Category[i].ProcessRules();
+            break;
+         }
+      }
+      return -1;
+   }
+
+   [Description("Change the specified tile that the sprite is touching to another tile. Return the number of tiles affected. (Must run TouchTiles first.)")]
+   public int TileChange(int OldTileValue, int NewTileValue, bool InitialOnly)
+   {
+      Debug.Assert(this.isActive, "Attempted to execute TileChange on an inactive sprite");
+
+      if (TouchedTiles == null)
+         return 0;
+
+      int result = 0;
+
+      for (int i=0; i < TouchedTiles.Count; i++)
+      {
+         TouchedTile tt = (TouchedTile)TouchedTiles[i];
+         if ((tt.tileValue == OldTileValue) && (!tt.processed) && (!InitialOnly || tt.initial))
+         {
+            tt.processed = true;
+            layer[tt.x, tt.y] = tt.tileValue = NewTileValue;
+            result++;
+         }
+      }
+      return result;
+   }
+
+   #endregion
+
+   #region Activation
+   [Description("Deactivate this sprite.  It will no longer be drawn, and in debug mode, will display errors if rules try to execute on it.")]
+   public void Deactivate()
+   {
+      isActive = false;
+   }
    #endregion
 }

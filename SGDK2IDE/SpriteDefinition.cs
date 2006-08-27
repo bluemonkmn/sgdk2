@@ -158,6 +158,7 @@ namespace SGDK2
       private System.Windows.Forms.Label lblMaskAlpha;
       private System.Windows.Forms.TextBox txtMaskAlpha;
       private System.Windows.Forms.Button btnMaskAlpha;
+      private System.Windows.Forms.Timer tmrPopulateRules;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -299,6 +300,7 @@ namespace SGDK2
          this.mnuMoveRuleUp = new System.Windows.Forms.MenuItem();
          this.mnuMoveRuleDown = new System.Windows.Forms.MenuItem();
          this.DataMonitor = new SGDK2.DataChangeNotifier(this.components);
+         this.tmrPopulateRules = new System.Windows.Forms.Timer(this.components);
          this.tabSpriteDefinition.SuspendLayout();
          this.tabStates.SuspendLayout();
          this.pnlFrames.SuspendLayout();
@@ -1106,6 +1108,10 @@ namespace SGDK2
          this.DataMonitor.SpriteStateRowDeleted += new SGDK2.ProjectDataset.SpriteStateRowChangeEventHandler(this.DataMonitor_SpriteStateRowDeleted);
          this.DataMonitor.Clearing += new System.EventHandler(this.DataMonitor_Clearing);
          // 
+         // tmrPopulateRules
+         // 
+         this.tmrPopulateRules.Tick += new System.EventHandler(this.tmrPopulateRules_Tick);
+         // 
          // frmSpriteDefinition
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -1386,7 +1392,14 @@ namespace SGDK2
             cboTarget.Items.Add(CodeGenerator.CounterClass + "." + CodeGenerator.NameToVariable(
                ((ProjectDataset.CounterRow)drv.Row).Name) + ".CurrentValue");
       }
-
+      
+      private void FillComboWithCounters(ComboBox cboTarget)
+      {
+         foreach (DataRowView drv in ProjectData.Counter.DefaultView)
+            cboTarget.Items.Add(CodeGenerator.CounterClass + "." + CodeGenerator.NameToVariable(
+               ((ProjectDataset.CounterRow)drv.Row).Name));
+      }
+      
       private void FillComboWithNumberMembers(ComboBox cboTarget, bool forOutput, string targetType)
       {
          foreach(RemotingServices.RemotePropertyInfo pi in m_SpriteProperties)
@@ -1491,6 +1504,16 @@ namespace SGDK2
          {
             FillComboWithSpriteCollections(cboParameter);
          }
+         else if (string.Compare(param.TypeName, typeof(Int32).Name + "&") == 0)
+         {
+            // Integer passed by reference
+            FillComboWithParams(cboParameter);
+            FillComboWithIntVars(cboParameter);
+         }
+         else if(string.Compare(param.TypeName, "Counter") == 0)
+         {
+            FillComboWithCounters(cboParameter);
+         }
          else
          {
             foreach(string typeName in new string[]
@@ -1583,9 +1606,16 @@ namespace SGDK2
          }
       }
 
+      private void QueuePopulateRules()
+      {
+         tmrPopulateRules.Stop();
+         tmrPopulateRules.Start();
+      }
+
       private void PopulateRules()
       {
          ProjectDataset.SpriteRuleRow cur = CurrentRule;
+         tvwRules.SelectedNode = null;
          tvwRules.Nodes.Clear();
          m_TreeNodes.Clear();
          TreeNode parentNode = null;
@@ -2266,7 +2296,7 @@ namespace SGDK2
          {
             case DataRowAction.Add:
                if (e.Row.SpriteDefinitionRow == m_SpriteDef)
-                  PopulateRules();
+                  QueuePopulateRules();
                break;
             case DataRowAction.Change:
                if ((e.Row.SpriteDefinitionRow == m_SpriteDef) && (m_OldRuleName != null))
@@ -2276,12 +2306,12 @@ namespace SGDK2
                   else if ((m_OldSequence != e.Row.Sequence) ||
                      (String.Compare(m_OldType,e.Row.Type) != 0) ||
                      (m_OldEndIf != e.Row.EndIf))
-                     PopulateRules();
+                     QueuePopulateRules();
                }
                break;
             case DataRowAction.Delete:
                if (m_OldRuleName != null)
-                  PopulateRules();
+                  QueuePopulateRules();
                EnableFields();
                break;
          }
@@ -2351,7 +2381,7 @@ namespace SGDK2
       {
          if (tabSpriteDefinition.SelectedTab==tabRules)
          {
-            PopulateRules();
+            QueuePopulateRules();
          }
       }
 
@@ -2389,6 +2419,12 @@ namespace SGDK2
          {
             mnuRemoveFrame_Click(sender, null);
          }
+      }
+
+      private void tmrPopulateRules_Tick(object sender, System.EventArgs e)
+      {
+         tmrPopulateRules.Stop();
+         PopulateRules();
       }
       #endregion
    }

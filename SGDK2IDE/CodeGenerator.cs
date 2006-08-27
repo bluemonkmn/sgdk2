@@ -1774,6 +1774,12 @@ namespace SGDK2
                new CodeArgumentReferenceExpression("active"),
                new CodeArgumentReferenceExpression("solidity")
             });
+
+         CodeMemberMethod mthClearParams = new CodeMemberMethod();
+         mthClearParams.Name = "ClearParameters";
+         mthClearParams.Attributes = MemberAttributes.Override | MemberAttributes.Public;
+         clsSpriteDef.Members.Add(mthClearParams);
+
          foreach(ProjectDataset.SpriteParameterRow drParam in ProjectData.GetSortedSpriteParameters(drSpriteDef))
          {
             clsSpriteDef.Members.Add(new CodeMemberField(typeof(int), "m_" + NameToVariable(drParam.Name)));
@@ -1792,6 +1798,8 @@ namespace SGDK2
             prp.GetStatements.Add(new CodeMethodReturnStatement(refParam));
             prp.SetStatements.Add(new CodeAssignStatement(refParam, new CodePropertySetValueReferenceExpression()));
             clsSpriteDef.Members.Add(prp);
+
+            mthClearParams.Statements.Add(new CodeAssignStatement(refParam, new CodePrimitiveExpression(0)));
          }
          clsSpriteDef.Members.Add(constructor);
 
@@ -1999,7 +2007,6 @@ namespace SGDK2
             new CodeThisReferenceExpression(), "state")),
             SpriteStateSolidHeight)));
          clsSpriteDef.Members.Add(propStateInfo);
-
 
          // Sprite Rules
          ProjectDataset.SpriteRuleRow[] rules = ProjectData.GetSortedSpriteRules(drSpriteDef);

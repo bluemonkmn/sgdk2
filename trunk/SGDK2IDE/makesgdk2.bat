@@ -48,6 +48,7 @@ echo >>Input.txt /res:SGDK2.frmUnsavedChanges.resources
 echo >>Input.txt /res:SGDK2.frmImportGraphics.resources
 echo >>Input.txt /res:SGDK2.frmProject.resources
 echo >>Input.txt /res:SGDK2.frmLogView.resources
+echo >>Input.txt /res:SGDK2.frmCollisionMask.resources
 echo >>Input.txt /res:Template\Display.cs,SGDK2.Template.Display.cs
 echo >>Input.txt /res:Template\Frame.cs,SGDK2.Template.Frame.cs
 echo >>Input.txt /res:Template\LayerBase.cs,SGDK2.Template.LayerBase.cs
@@ -104,6 +105,7 @@ echo >>Input.txt UnsavedChanges.cs
 echo >>Input.txt ImportGraphics.cs
 echo >>Input.txt Project.cs
 echo >>Input.txt LogView.cs
+echo >>Input.txt CollisionMask.cs
 csc /noconfig @Input.txt
 del Input.txt
 del *.resources

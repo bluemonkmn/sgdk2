@@ -90,26 +90,6 @@
                     HintPath = "..\..\..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.XML.dll"
                 />
                 <Reference
-                    Name = "System.Design"
-                    AssemblyName = "System.Design"
-                    HintPath = "..\..\..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Design.dll"
-                />
-                <Reference
-                    Name = "System.Web"
-                    AssemblyName = "System.Web"
-                    HintPath = "..\..\..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Web.dll"
-                />
-                <Reference
-                    Name = "Accessibility"
-                    AssemblyName = "Accessibility"
-                    HintPath = "..\..\..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\Accessibility.dll"
-                />
-                <Reference
-                    Name = "Microsoft.VisualC"
-                    AssemblyName = "Microsoft.VisualC"
-                    HintPath = "..\..\..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\Microsoft.VisualC.dll"
-                />
-                <Reference
                     Name = "Microsoft.DirectX.Direct3DX"
                     AssemblyName = "Microsoft.DirectX.Direct3DX"
                     HintPath = "..\..\..\..\..\WINDOWS\Microsoft.NET\DirectX for Managed Code\1.0.2911.0\Microsoft.DirectX.Direct3DX.dll"

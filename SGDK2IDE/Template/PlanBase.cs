@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using Microsoft.DirectX;
 
 /// <summary>
 /// Base class for "plans", which consist of map coordinates and rules
@@ -80,19 +81,22 @@ public abstract class PlanBase : System.Collections.IEnumerable
       sprite.y = target.Y;
    }
 
-   [Description("Write a string to the debug output without moving to the next line")]
+   [Description("Write a string to the debug output without moving to the next line"),
+   System.Diagnostics.Conditional("DEBUG")]
    public void LogDebugLabel(string Label)
    {
       Project.GameWindow.debugText.Write(Label);
    }
 
-   [Description("Write a number to the debug output and move to the next line")]
+   [Description("Write a number to the debug output and move to the next line"),
+   System.Diagnostics.Conditional("DEBUG")]
    public void LogDebugValue(int DebugValue)
    {
       Project.GameWindow.debugText.WriteLine(DebugValue.ToString());
    }
 
-   [Description("Draw the debug log on the display and reset it for the next frame")]
+   [Description("Draw the debug log on the display and reset it for the next frame"),
+   System.Diagnostics.Conditional("DEBUG")]
    public void DrawDebugLog()
    {
       Project.GameWindow.OutputDebugInfo();
@@ -243,6 +247,156 @@ public abstract class PlanBase : System.Collections.IEnumerable
    {
       return Sprite.isActive;
    }
+
+   #region Inventory / Overlay
+   public enum DrawStyle
+   {
+      ClipRightToCounter,
+      StretchRightToCounter,
+      RepeatRightToCounter,
+      ClipTopToCounter,
+      StretchTopToCounter,
+      RepeatUpToCounter
+   }
+
+   [Description("Draw the specified tile from the layer's tileset in this plan's rectangle according to the specified counter value")]
+   public void DrawCounterAsTile(int TileIndex, Counter counter, DrawStyle style)
+   {
+      System.Diagnostics.Debug.Assert(!PlanRectangle.IsEmpty, "DrawCounterAsTile was called on a plan that does not have a rectangle defined");
+      if (PlanRectangle.IsEmpty)
+         return;
+      if (counter.CurrentValue == 0)
+         return;
+      MapBase map = ParentLayer.ParentMap;
+      Display disp = map.Display;
+      Tileset ts = ParentLayer.Tileset;
+      Frameset fr = ts.GetFrameset(ParentLayer.ParentMap.Display);
+
+      switch(style)
+      {
+         case DrawStyle.ClipRightToCounter:
+            disp.Device.RenderState.ScissorTestEnable = true;
+            disp.Device.ScissorRectangle = new Rectangle(
+               PlanRectangle.X + ParentLayer.CurrentPosition.X + ParentLayer.ParentMap.View.X,
+               PlanRectangle.Y + ParentLayer.CurrentPosition.Y + ParentLayer.ParentMap.View.Y,
+               PlanRectangle.Width * counter.CurrentValue / counter.MaxValue,
+               PlanRectangle.Height);
+            foreach(int frameIndex in ts[TileIndex].CurrentFrame)
+            {
+               disp.Sprite.Transform = Matrix.Multiply(Matrix.Multiply(
+                  fr[frameIndex].Transform,
+                  Matrix.Scaling(PlanRectangle.Width / (float)ts.TileWidth, 1, 1)),
+                  Matrix.Translation(
+                  PlanRectangle.X + ParentLayer.CurrentPosition.X + ParentLayer.ParentMap.View.X,
+                  PlanRectangle.Y + ParentLayer.CurrentPosition.Y + ParentLayer.ParentMap.View.Y,
+                  0));
+               disp.Sprite.Draw(fr[frameIndex].GraphicSheetTexture.Texture, fr[frameIndex].SourceRect,
+                  Vector3.Empty, Vector3.Empty, -1);
+            }
+            break;
+         case DrawStyle.StretchRightToCounter:
+            disp.Device.RenderState.ScissorTestEnable = false;
+            foreach(int frameIndex in ts[TileIndex].CurrentFrame)
+            {
+               disp.Sprite.Transform = Matrix.Multiply(Matrix.Multiply(
+                  fr[frameIndex].Transform,
+                  Matrix.Scaling(PlanRectangle.Width * counter.CurrentValue / (float)counter.MaxValue / (float)ts.TileWidth, 1, 1)),
+                  Matrix.Translation(
+                  PlanRectangle.X + ParentLayer.CurrentPosition.X + ParentLayer.ParentMap.View.X,
+                  PlanRectangle.Y + ParentLayer.CurrentPosition.Y + ParentLayer.ParentMap.View.Y,
+                  0));
+               disp.Sprite.Draw(fr[frameIndex].GraphicSheetTexture.Texture, fr[frameIndex].SourceRect,
+                  Vector3.Empty, Vector3.Empty, -1);
+            }
+            break;
+         case DrawStyle.RepeatRightToCounter:
+            foreach(int frameIndex in ts[TileIndex].CurrentFrame)
+            {
+               int FillWidth = PlanRectangle.Width * counter.CurrentValue / counter.MaxValue;
+               disp.Device.RenderState.ScissorTestEnable = true;
+               disp.Device.ScissorRectangle = new Rectangle(
+                  PlanRectangle.X + ParentLayer.CurrentPosition.X + ParentLayer.ParentMap.View.X,
+                  PlanRectangle.Y + ParentLayer.CurrentPosition.Y + ParentLayer.ParentMap.View.Y,
+                  FillWidth, PlanRectangle.Height);
+               for (int repeat=0; repeat < (int)Math.Ceiling(FillWidth / (float)ts.TileWidth); repeat++)
+               {
+                  disp.Sprite.Transform = Matrix.Multiply(
+                     fr[frameIndex].Transform,
+                     Matrix.Translation(
+                     PlanRectangle.X + ParentLayer.CurrentPosition.X + ParentLayer.ParentMap.View.X + repeat * ts.TileWidth,
+                     PlanRectangle.Y + ParentLayer.CurrentPosition.Y + ParentLayer.ParentMap.View.Y,
+                     0));
+                  disp.Sprite.Draw(fr[frameIndex].GraphicSheetTexture.Texture, fr[frameIndex].SourceRect,
+                     Vector3.Empty, Vector3.Empty, -1);
+               }
+            }
+            break;
+         case DrawStyle.ClipTopToCounter:
+         {
+            disp.Device.RenderState.ScissorTestEnable = true;
+            int FillHeight = PlanRectangle.Height * counter.CurrentValue / counter.MaxValue;
+            disp.Device.ScissorRectangle = new Rectangle(
+               PlanRectangle.X + ParentLayer.CurrentPosition.X + ParentLayer.ParentMap.View.X,
+               PlanRectangle.Y + ParentLayer.CurrentPosition.Y + ParentLayer.ParentMap.View.Y +
+               PlanRectangle.Height - FillHeight, PlanRectangle.Width, FillHeight);
+            foreach(int frameIndex in ts[TileIndex].CurrentFrame)
+            {
+               disp.Sprite.Transform = Matrix.Multiply(Matrix.Multiply(
+                  fr[frameIndex].Transform,
+                  Matrix.Scaling(1, PlanRectangle.Height / (float)ts.TileHeight, 1)),
+                  Matrix.Translation(
+                  PlanRectangle.X + ParentLayer.CurrentPosition.X + ParentLayer.ParentMap.View.X,
+                  PlanRectangle.Y + ParentLayer.CurrentPosition.Y + ParentLayer.ParentMap.View.Y,
+                  0));
+               disp.Sprite.Draw(fr[frameIndex].GraphicSheetTexture.Texture, fr[frameIndex].SourceRect,
+                  Vector3.Empty, Vector3.Empty, -1);
+            }
+         }
+            break;
+         case DrawStyle.StretchTopToCounter:
+         {
+            disp.Device.RenderState.ScissorTestEnable = false;
+            int FillHeight = PlanRectangle.Height * counter.CurrentValue / counter.MaxValue;
+            foreach(int frameIndex in ts[TileIndex].CurrentFrame)
+            {
+               disp.Sprite.Transform = Matrix.Multiply(Matrix.Multiply(
+                  fr[frameIndex].Transform,
+                  Matrix.Scaling(1, FillHeight / (float)ts.TileHeight, 1)),
+                  Matrix.Translation(
+                  PlanRectangle.X + ParentLayer.CurrentPosition.X + ParentLayer.ParentMap.View.X,
+                  PlanRectangle.Y + ParentLayer.CurrentPosition.Y + ParentLayer.ParentMap.View.Y + PlanRectangle.Height - FillHeight,
+                  0));
+               disp.Sprite.Draw(fr[frameIndex].GraphicSheetTexture.Texture, fr[frameIndex].SourceRect,
+                  Vector3.Empty, Vector3.Empty, -1);
+            }
+         }
+            break;
+         case DrawStyle.RepeatUpToCounter:
+            foreach(int frameIndex in ts[TileIndex].CurrentFrame)
+            {
+               int FillHeight = PlanRectangle.Height * counter.CurrentValue / counter.MaxValue;
+               disp.Device.RenderState.ScissorTestEnable = true;
+               disp.Device.ScissorRectangle = new Rectangle(
+                  PlanRectangle.X + ParentLayer.CurrentPosition.X + ParentLayer.ParentMap.View.X,
+                  PlanRectangle.Y + ParentLayer.CurrentPosition.Y + ParentLayer.ParentMap.View.Y +
+                  PlanRectangle.Height - FillHeight, PlanRectangle.Width, FillHeight);
+               for (int repeat=0; repeat < (int)Math.Ceiling(FillHeight / (float)ts.TileHeight); repeat++)
+               {
+                  disp.Sprite.Transform = Matrix.Multiply(
+                     fr[frameIndex].Transform,
+                     Matrix.Translation(
+                     PlanRectangle.X + ParentLayer.CurrentPosition.X + ParentLayer.ParentMap.View.X,
+                     PlanRectangle.Y + ParentLayer.CurrentPosition.Y + ParentLayer.ParentMap.View.Y + PlanRectangle.Height - repeat * ts.TileHeight - ts.TileHeight,
+                     0));
+                  disp.Sprite.Draw(fr[frameIndex].GraphicSheetTexture.Texture, fr[frameIndex].SourceRect,
+                     Vector3.Empty, Vector3.Empty, -1);
+               }
+            }
+            break;
+      }
+      disp.Sprite.Flush();
+   }
+   #endregion
 
    #region IEnumerable Members
 

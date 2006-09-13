@@ -659,6 +659,13 @@ namespace SGDK2
          }
       }
 
+      private void FillComboWithCounters(ComboBox cboTarget)
+      {
+         foreach (DataRowView drv in ProjectData.Counter.DefaultView)
+            cboTarget.Items.Add(CodeGenerator.CounterClass + "." + CodeGenerator.NameToVariable(
+               ((ProjectDataset.CounterRow)drv.Row).Name));
+      }
+
       private void FillComboWithParams(ComboBox cboParams)
       {
          ProjectDataset.SpriteDefinitionRow spriteDef = m_SpriteContext.SpriteRow.SpriteStateRowParent.SpriteDefinitionRow;
@@ -762,6 +769,10 @@ namespace SGDK2
                      FillComboWithSpriteStates(cboParameter);
                }
             }
+         }
+         else if(string.Compare(param.TypeName, "Counter") == 0)
+         {
+            FillComboWithCounters(cboParameter);
          }
          else 
          {

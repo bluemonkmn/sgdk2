@@ -435,6 +435,9 @@ namespace SGDK2
          CodeMemberField declareGame = new CodeMemberField(GameFormType, "game");
          declareGame.Attributes = MemberAttributes.Private | MemberAttributes.Final | MemberAttributes.Static;
          typ.Members.Add(declareGame);
+         CodeExpression overlay = new CodePrimitiveExpression(null);
+         if ((prj.OverlayMap != null) && !System.Convert.IsDBNull(prj.OverlayMap) && prj.OverlayMap.Length > 0)
+            overlay = new CodeTypeOfExpression(NameToVariable(prj.OverlayMap) + "_Map");
          main.Statements.Add(new CodeAssignStatement(
             new CodeFieldReferenceExpression(
             new CodeTypeReferenceExpression(typ.Name), declareGame.Name),
@@ -443,7 +446,8 @@ namespace SGDK2
             new CodeTypeReferenceExpression("GameDisplayMode"), prj.DisplayMode),
             new CodePrimitiveExpression(prj.Windowed),
             new CodePrimitiveExpression(prj.TitleText),
-            new CodeTypeOfExpression(NameToVariable(prj.StartMap) + "_Map"))));
+            new CodeTypeOfExpression(NameToVariable(prj.StartMap) + "_Map"),
+            overlay)));
          main.Statements.Add(new CodeMethodInvokeExpression(
             new CodeVariableReferenceExpression(declareGame.Name), "Show"));
          main.Statements.Add(new CodeMethodInvokeExpression(
@@ -1016,13 +1020,6 @@ namespace SGDK2
          mthDraw.Name = "Draw";
          clsMap.Members.Add(mthDraw);
 
-         mthDraw.Statements.Add(new CodeVariableDeclarationStatement(typeof(Microsoft.DirectX.Direct3D.Sprite), "spr",
-            new CodeFieldReferenceExpression(fldDisplayRef, "Sprite")));
-         CodeVariableReferenceExpression refSpr = new CodeVariableReferenceExpression("spr");
-         mthDraw.Statements.Add(new CodeMethodInvokeExpression(refSpr, "Begin",
-            new CodeFieldReferenceExpression(
-            new CodeTypeReferenceExpression(typeof(Microsoft.DirectX.Direct3D.SpriteFlags)),"AlphaBlend")));
-
          CodeMemberMethod mthExecuteMapRules = new CodeMemberMethod();
          mthExecuteMapRules.Name = "ExecuteRules";
          mthExecuteMapRules.Attributes = MemberAttributes.Override | MemberAttributes.Public;
@@ -1121,6 +1118,40 @@ namespace SGDK2
          prpScrollMarginBottom.GetStatements.Add(new CodeMethodReturnStatement(
             new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fldScrollMarginBottom.Name)));
          clsMap.Members.Add(prpScrollMarginBottom);
+
+         if ((drMap.ViewWidth > 0) && (drMap.ViewHeight > 0))
+         {
+            CodeMemberField fldView = new CodeMemberField(typeof(System.Drawing.Rectangle), "m_View");
+            fldView.Attributes = MemberAttributes.Private | MemberAttributes.Final;
+            fldView.InitExpression = new CodeObjectCreateExpression(typeof(System.Drawing.Rectangle),
+               new CodePrimitiveExpression(drMap.ViewLeft),
+               new CodePrimitiveExpression(drMap.ViewTop),
+               new CodePrimitiveExpression(drMap.ViewWidth),
+               new CodePrimitiveExpression(drMap.ViewHeight));
+            clsMap.Members.Add(fldView);
+            CodeMemberProperty prpView = new CodeMemberProperty();
+            prpView.Name = "View";
+            prpView.Type = new CodeTypeReference(typeof(System.Drawing.Rectangle));
+            prpView.Attributes = MemberAttributes.Public | MemberAttributes.Override;
+            prpView.HasGet = true;
+            prpView.HasSet = true;
+            prpView.GetStatements.Add(new CodeMethodReturnStatement(
+               new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fldView.Name)));
+            prpView.SetStatements.Add(new CodeCommentStatement("First, assert valid rectangle in debug mode by calling base implementation"));
+            prpView.SetStatements.Add(new CodeAssignStatement(
+               new CodeFieldReferenceExpression(
+               new CodeBaseReferenceExpression(), prpView.Name),
+               new CodePropertySetValueReferenceExpression()));
+            prpView.SetStatements.Add(new CodeAssignStatement(
+               new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fldView.Name),
+               new CodeMethodInvokeExpression(
+               new CodeTypeReferenceExpression(typeof(System.Drawing.Rectangle)), "Intersect",
+               new CodeFieldReferenceExpression(
+               new CodeFieldReferenceExpression(new CodeThisReferenceExpression(),
+               MapDisplayField), "DisplayRectangle"),
+               new CodePropertySetValueReferenceExpression())));
+            clsMap.Members.Add(prpView);
+         }
 
          foreach (ProjectDataset.LayerRow drLayer in ProjectData.GetSortedLayers(drMap))
          {
@@ -1223,7 +1254,7 @@ namespace SGDK2
                "InjectSprites"));
             mthDraw.Statements.Add(new CodeMethodInvokeExpression(
                new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fldLayer.Name),
-               "Draw", refSpr));
+               "Draw"));
             mthDraw.Statements.Add(new CodeMethodInvokeExpression(
                new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fldLayer.Name),
                "ClearInjections"));
@@ -1567,7 +1598,12 @@ namespace SGDK2
                new CodeThisReferenceExpression(), "m_Sprites"),
                createLayerSprites));
          }
-         mthDraw.Statements.Add(new CodeMethodInvokeExpression(refSpr, "End"));
+         // Flush forces ScissorRectangle to apply to this batch only.
+         mthDraw.Statements.Add(new CodeMethodInvokeExpression(
+            new CodePropertyReferenceExpression(
+            new CodeFieldReferenceExpression(
+            new CodeThisReferenceExpression(), MapDisplayField),
+            "Sprite"), "Flush"));
          Generator.GenerateCodeFromType(clsMap, txt, GeneratorOptions);
       }
 

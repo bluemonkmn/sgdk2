@@ -2057,6 +2057,17 @@ namespace SGDK2
          }
          return m_dsPrj.Coordinate.AddCoordinateRow(ParentPlan.LayerRowParent.MapRow.Name, ParentPlan.LayerRowParent.Name, ParentPlan.Name, (short)(MaxSeq + 1), x, y, weight);
       }
+      public static void DeleteCoordinate(ProjectDataset.CoordinateRow row)
+      {
+         ProjectDataset.SpritePlanRow parent = row.SpritePlanRowParent;
+         int delIdx = row.Sequence;
+         row.Delete();
+         foreach(ProjectDataset.CoordinateRow coord in GetSortedCoordinates(parent))
+         {
+            if (coord.Sequence > delIdx)
+               coord.Sequence--;
+         }
+      }
       #endregion
       
       #region PlanRule
@@ -2451,7 +2462,7 @@ namespace SGDK2
          get
          {
             if (m_dsPrj.Project.Count <= 0)
-               m_dsPrj.Project.AddProjectRow(GameDisplayMode.m640x480x24.ToString(), true, "Powered by Scrolling Game Development Kit 2 (http://sgdk2.sf.net)", null);
+               m_dsPrj.Project.AddProjectRow(GameDisplayMode.m640x480x24.ToString(), true, "Powered by Scrolling Game Development Kit 2 (http://sgdk2.sf.net)", null, null);
             return m_dsPrj.Project[0];
          }
       }

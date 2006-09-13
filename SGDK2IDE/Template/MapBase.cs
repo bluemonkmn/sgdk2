@@ -40,6 +40,18 @@ public abstract class MapBase
       get;
    }
 
+   public virtual Rectangle View
+   {
+      get
+      {
+         return m_Display.DisplayRectangle;
+      }
+      set
+      {
+         System.Diagnostics.Debug.Assert(System.Drawing.Rectangle.Intersect(m_Display.DisplayRectangle, value).Equals(value));
+      }
+   }
+
    public Display Display
    {
       get

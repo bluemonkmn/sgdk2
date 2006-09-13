@@ -30,12 +30,13 @@ namespace SGDK2
          public override System.ComponentModel.TypeConverter.StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
          {
             ArrayList MapNames = new ArrayList();
+            MapNames.Add(null);
             foreach(System.Data.DataRowView drv in ProjectData.Map.DefaultView)
                MapNames.Add(((ProjectDataset.MapRow)drv.Row).Name);
             return new System.ComponentModel.TypeConverter.StandardValuesCollection(MapNames);
          }
       }
-        
+
       private class ProjectProperties
       {
          private ProjectDataset.ProjectRow project;
@@ -94,6 +95,20 @@ namespace SGDK2
             set
             {
                project.StartMap = value;
+            }
+         }
+
+         [Description("Optionally specifies a map which is always active and drawn in front"),
+         TypeConverter(typeof(MapNameProvider))]
+         public string OverlayMap
+         {
+            get
+            {
+               return project.OverlayMap;
+            }
+            set
+            {
+               project.OverlayMap = value;
             }
          }
       }

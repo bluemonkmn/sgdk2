@@ -11,30 +11,35 @@ public class GameForm : Form
    private Microsoft.DirectX.DirectInput.Device keyboard;
    private Microsoft.DirectX.DirectInput.KeyboardState m_keyboardState;
    public MapBase CurrentMap;
+   public MapBase OverlayMap;
    public System.Collections.Hashtable LoadedMaps = new System.Collections.Hashtable();
    private int m_fps = 0;
    private int m_frameCount = 0;
    private DateTime m_frameStart;
    public System.IO.StringWriter debugText = new System.IO.StringWriter();
 
-   public GameForm(GameDisplayMode mode, bool windowed, string title, System.Type initMapType)
+   public GameForm(GameDisplayMode mode, bool windowed, string title, System.Type initMapType, System.Type overlayMapType)
    {
 #if DEBUG
       MessageBox.Show("You are running in debug mode.  Unexpected runtime conditions may cause the game to halt, and if an error occurs you will have the opportunity to debug into it if you have a debugger installed and the project's source code handy", "Debug Mode Active");
 #endif
+      ClientSize = Display.GetScreenSize(mode);
       GameDisplay = new Display(mode, windowed);
       GameDisplay.BorderStyle = System.Windows.Forms.BorderStyle.None;
-      GameDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
       GameDisplay.Location = new System.Drawing.Point(0, 0);
       GameDisplay.Name = "GameDisplay";
       GameDisplay.Size = Display.GetScreenSize(mode);
-      ClientSize = Display.GetScreenSize(mode);
       Controls.Add(this.GameDisplay);
       Name = "GameForm";
       Text = title;
       KeyPreview = true;
       FormBorderStyle = FormBorderStyle.FixedSingle;
       CurrentMap = GetMap(initMapType, false);
+      if (overlayMapType != null)
+         OverlayMap = GetMap(overlayMapType, false);
+      else
+         OverlayMap = null;
+      GameDisplay.WindowedChanged += new EventHandler(GameDisplay_WindowedChanged);
    }
 
    /// <summary>
@@ -94,10 +99,17 @@ public class GameForm : Form
          else
          {
             GameDisplay.Device.BeginScene();
+            GameDisplay.Sprite.Begin(Microsoft.DirectX.Direct3D.SpriteFlags.AlphaBlend);
             CurrentMap.Draw();
             if (keyboard != null)
                m_keyboardState = keyboard.GetCurrentKeyboardState();
             CurrentMap.ExecuteRules();
+            if (OverlayMap != null)
+            {
+               OverlayMap.Draw();
+               OverlayMap.ExecuteRules();
+            }
+            GameDisplay.Sprite.End();
             GameDisplay.Device.EndScene();
             GameDisplay.Device.Present();
          }
@@ -105,12 +117,16 @@ public class GameForm : Form
       }
    }
 
+   [System.Diagnostics.Conditional("DEBUG")]
    public void OutputDebugInfo()
    {
-      Microsoft.DirectX.Direct3D.Surface sfc = GameDisplay.Device.GetRenderTarget(0);
-      Graphics g = sfc.GetGraphics();
-      g.DrawString(debugText.ToString(), this.Font, System.Drawing.Brushes.White, 0, 0);
-      sfc.ReleaseGraphics();
+      GameDisplay.Sprite.Transform = Microsoft.DirectX.Matrix.Identity;
+      if (GameDisplay.Device.RenderState.ScissorTestEnable)
+         GameDisplay.Sprite.Transform = Microsoft.DirectX.Matrix.Translation(
+            GameDisplay.Device.ScissorRectangle.X,
+            GameDisplay.Device.ScissorRectangle.Y, 0);
+      GameDisplay.D3DFont.DrawText(GameDisplay.Sprite, debugText.ToString(), GameDisplay.DisplayRectangle, Microsoft.DirectX.Direct3D.DrawTextFormat.Left, Color.White);
+
       debugText.Close();
       debugText = new System.IO.StringWriter();
       debugText.WriteLine("fps=" + m_fps.ToString());
@@ -148,5 +164,11 @@ public class GameForm : Form
       {
          return m_keyboardState;
       }
+   }
+
+   private void GameDisplay_WindowedChanged(object sender, EventArgs e)
+   {
+      if (GameDisplay.Windowed)
+         ClientSize = Display.GetScreenSize(GameDisplay.GameDisplayMode);
    }
 }

@@ -43,7 +43,6 @@ namespace SGDK2
       private System.Windows.Forms.Splitter MapSplitter;
       private SGDK2.Display MapDisplay;
       private System.Windows.Forms.MainMenu mnuMapEditor;
-      private System.Windows.Forms.MenuItem menuItem1;
       private System.ComponentModel.IContainer components;
       private SGDK2.DataChangeNotifier dataMonitor;
       private System.Windows.Forms.TabControl tabSelector;
@@ -77,6 +76,13 @@ namespace SGDK2
       private System.Windows.Forms.RadioButton rdoShowSelectedPlans;
       private System.Windows.Forms.RadioButton rdoShowAllPlans;
       private System.Windows.Forms.PropertyGrid grdPlan;
+      private System.Windows.Forms.MenuItem mnuLayers;
+      private System.Windows.Forms.MenuItem mnuEdit;
+      private System.Windows.Forms.MenuItem mnuEditDelete;
+      private System.Windows.Forms.StatusBarPanel sbpTileCoord;
+      private System.Windows.Forms.StatusBarPanel sbpPixelCoord;
+      private System.Windows.Forms.StatusBarPanel sbpTileAtCursor;
+      private System.Windows.Forms.StatusBarPanel sbpSelTile;
       private System.Windows.Forms.Splitter SpriteSplitter;
       #endregion
 
@@ -154,6 +160,8 @@ namespace SGDK2
 			//
 			InitializeComponent();
 
+         this.Text = "Edit Map Layer - " + Layer.Name;
+
          ProjectDataset.LayerRow[] lrs = ProjectData.GetSortedLayers(Layer.MapRow);
          m_Layers = new Layer[lrs.Length];
          for (int i=0; i<lrs.Length; i++)
@@ -182,6 +190,11 @@ namespace SGDK2
 					components.Dispose();
 				}
 			}
+         if (m_RefreshSpriteTimer != null)
+         {
+            m_RefreshSpriteTimer.Dispose();
+            m_RefreshSpriteTimer = null;
+         }
 			base.Dispose( disposing );
 		}
       #endregion
@@ -198,7 +211,9 @@ namespace SGDK2
          this.MapSplitter = new System.Windows.Forms.Splitter();
          this.MapDisplay = new SGDK2.Display();
          this.mnuMapEditor = new System.Windows.Forms.MainMenu();
-         this.menuItem1 = new System.Windows.Forms.MenuItem();
+         this.mnuEdit = new System.Windows.Forms.MenuItem();
+         this.mnuEditDelete = new System.Windows.Forms.MenuItem();
+         this.mnuLayers = new System.Windows.Forms.MenuItem();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.tabSelector = new System.Windows.Forms.TabControl();
          this.tabTiles = new System.Windows.Forms.TabPage();
@@ -232,6 +247,10 @@ namespace SGDK2
          this.StatusBar = new System.Windows.Forms.StatusBar();
          this.sbpStatus = new System.Windows.Forms.StatusBarPanel();
          this.sbpCtrl = new System.Windows.Forms.StatusBarPanel();
+         this.sbpTileCoord = new System.Windows.Forms.StatusBarPanel();
+         this.sbpPixelCoord = new System.Windows.Forms.StatusBarPanel();
+         this.sbpTileAtCursor = new System.Windows.Forms.StatusBarPanel();
+         this.sbpSelTile = new System.Windows.Forms.StatusBarPanel();
          this.tabSelector.SuspendLayout();
          this.tabTiles.SuspendLayout();
          this.pnlTiles.SuspendLayout();
@@ -241,13 +260,17 @@ namespace SGDK2
          this.grpPlanCoords.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.sbpStatus)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpCtrl)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpTileCoord)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpPixelCoord)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpTileAtCursor)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpSelTile)).BeginInit();
          this.SuspendLayout();
          // 
          // MapSplitter
          // 
          this.MapSplitter.Location = new System.Drawing.Point(144, 0);
          this.MapSplitter.Name = "MapSplitter";
-         this.MapSplitter.Size = new System.Drawing.Size(5, 489);
+         this.MapSplitter.Size = new System.Drawing.Size(5, 473);
          this.MapSplitter.TabIndex = 8;
          this.MapSplitter.TabStop = false;
          // 
@@ -263,36 +286,52 @@ namespace SGDK2
          this.MapDisplay.TabIndex = 10;
          this.MapDisplay.Windowed = true;
          this.MapDisplay.Paint += new System.Windows.Forms.PaintEventHandler(this.MapDisplay_Paint);
-         this.MapDisplay.MouseMove += new System.Windows.Forms.MouseEventHandler(this.DisplayMap_MouseMove);
+         this.MapDisplay.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MapDisplay_MouseMove);
          this.MapDisplay.MouseLeave += new System.EventHandler(this.MapDisplay_MouseLeave);
          this.MapDisplay.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MapDisplay_MouseDown);
          // 
          // mnuMapEditor
          // 
          this.mnuMapEditor.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                     this.menuItem1});
+                                                                                     this.mnuEdit,
+                                                                                     this.mnuLayers});
          // 
-         // menuItem1
+         // mnuEdit
          // 
-         this.menuItem1.Index = 0;
-         this.menuItem1.Text = "&Layers";
+         this.mnuEdit.Index = 0;
+         this.mnuEdit.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                this.mnuEditDelete});
+         this.mnuEdit.Text = "&Edit";
+         // 
+         // mnuEditDelete
+         // 
+         this.mnuEditDelete.Index = 0;
+         this.mnuEditDelete.Text = "&Delete Selected Object";
+         this.mnuEditDelete.Click += new System.EventHandler(this.mnuEditDelete_Click);
+         // 
+         // mnuLayers
+         // 
+         this.mnuLayers.Index = 1;
+         this.mnuLayers.MergeOrder = 2;
+         this.mnuLayers.Text = "&Layers";
          // 
          // dataMonitor
          // 
          this.dataMonitor.TileFrameRowDeleting += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
-         this.dataMonitor.TileFrameRowDeleted += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
          this.dataMonitor.SpritePlanRowDeleted += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowDeleted);
+         this.dataMonitor.LayerRowChanged += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowChanged);
          this.dataMonitor.SpritePlanRowChanged += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowChanged);
          this.dataMonitor.SpritePlanRowChanging += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowChanging);
-         this.dataMonitor.SpriteRowChanged += new SGDK2.ProjectDataset.SpriteRowChangeEventHandler(this.dataMonitor_SpriteRowChanged);
-         this.dataMonitor.SpriteRowChanging += new SGDK2.ProjectDataset.SpriteRowChangeEventHandler(this.dataMonitor_SpriteRowChanging);
          this.dataMonitor.MapRowDeleted += new SGDK2.ProjectDataset.MapRowChangeEventHandler(this.dataMonitor_MapRowDeleted);
          this.dataMonitor.LayerRowDeleted += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowDeleted);
          this.dataMonitor.TileFrameRowChanged += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
          this.dataMonitor.TileRowChanged += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowChanged);
          this.dataMonitor.TileRowDeleting += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowChanged);
+         this.dataMonitor.SpriteRowChanging += new SGDK2.ProjectDataset.SpriteRowChangeEventHandler(this.dataMonitor_SpriteRowChanging);
+         this.dataMonitor.TileFrameRowDeleted += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
+         this.dataMonitor.SpriteRowChanged += new SGDK2.ProjectDataset.SpriteRowChangeEventHandler(this.dataMonitor_SpriteRowChanged);
+         this.dataMonitor.SpriteRowDeleting += new SGDK2.ProjectDataset.SpriteRowChangeEventHandler(this.dataMonitor_SpriteRowDeleting);
          this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
-         this.dataMonitor.SpriteRowDeleted += new SGDK2.ProjectDataset.SpriteRowChangeEventHandler(this.dataMonitor_SpriteRowDeleted);
          // 
          // tabSelector
          // 
@@ -303,7 +342,7 @@ namespace SGDK2
          this.tabSelector.Location = new System.Drawing.Point(0, 0);
          this.tabSelector.Name = "tabSelector";
          this.tabSelector.SelectedIndex = 0;
-         this.tabSelector.Size = new System.Drawing.Size(144, 489);
+         this.tabSelector.Size = new System.Drawing.Size(144, 473);
          this.tabSelector.TabIndex = 13;
          this.tabSelector.SelectedIndexChanged += new System.EventHandler(this.tabSelector_SelectedIndexChanged);
          // 
@@ -312,7 +351,7 @@ namespace SGDK2
          this.tabTiles.Controls.Add(this.pnlTiles);
          this.tabTiles.Location = new System.Drawing.Point(4, 22);
          this.tabTiles.Name = "tabTiles";
-         this.tabTiles.Size = new System.Drawing.Size(136, 463);
+         this.tabTiles.Size = new System.Drawing.Size(136, 447);
          this.tabTiles.TabIndex = 0;
          this.tabTiles.Text = "Tiles";
          // 
@@ -323,7 +362,7 @@ namespace SGDK2
          this.pnlTiles.Dock = System.Windows.Forms.DockStyle.Fill;
          this.pnlTiles.Location = new System.Drawing.Point(0, 0);
          this.pnlTiles.Name = "pnlTiles";
-         this.pnlTiles.Size = new System.Drawing.Size(136, 463);
+         this.pnlTiles.Size = new System.Drawing.Size(136, 447);
          this.pnlTiles.TabIndex = 14;
          // 
          // TileSelector
@@ -339,8 +378,9 @@ namespace SGDK2
          this.TileSelector.Location = new System.Drawing.Point(0, 21);
          this.TileSelector.Name = "TileSelector";
          this.TileSelector.SheetImage = null;
-         this.TileSelector.Size = new System.Drawing.Size(136, 442);
+         this.TileSelector.Size = new System.Drawing.Size(136, 426);
          this.TileSelector.TabIndex = 9;
+         this.TileSelector.CurrentCellChanged += new System.EventHandler(this.TileSelector_CurrentCellChanged);
          // 
          // cboCategory
          // 
@@ -631,13 +671,17 @@ namespace SGDK2
          // 
          // StatusBar
          // 
-         this.StatusBar.Location = new System.Drawing.Point(149, 473);
+         this.StatusBar.Location = new System.Drawing.Point(0, 473);
          this.StatusBar.Name = "StatusBar";
          this.StatusBar.Panels.AddRange(new System.Windows.Forms.StatusBarPanel[] {
                                                                                      this.sbpStatus,
-                                                                                     this.sbpCtrl});
+                                                                                     this.sbpCtrl,
+                                                                                     this.sbpTileCoord,
+                                                                                     this.sbpPixelCoord,
+                                                                                     this.sbpTileAtCursor,
+                                                                                     this.sbpSelTile});
          this.StatusBar.ShowPanels = true;
-         this.StatusBar.Size = new System.Drawing.Size(443, 16);
+         this.StatusBar.Size = new System.Drawing.Size(592, 16);
          this.StatusBar.TabIndex = 14;
          this.StatusBar.DrawItem += new System.Windows.Forms.StatusBarDrawItemEventHandler(this.StatusBar_DrawItem);
          // 
@@ -645,7 +689,7 @@ namespace SGDK2
          // 
          this.sbpStatus.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Spring;
          this.sbpStatus.BorderStyle = System.Windows.Forms.StatusBarPanelBorderStyle.None;
-         this.sbpStatus.Width = 383;
+         this.sbpStatus.Width = 492;
          // 
          // sbpCtrl
          // 
@@ -655,14 +699,34 @@ namespace SGDK2
          this.sbpCtrl.Text = "CTRL";
          this.sbpCtrl.Width = 44;
          // 
+         // sbpTileCoord
+         // 
+         this.sbpTileCoord.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
+         this.sbpTileCoord.Width = 10;
+         // 
+         // sbpPixelCoord
+         // 
+         this.sbpPixelCoord.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
+         this.sbpPixelCoord.Width = 10;
+         // 
+         // sbpTileAtCursor
+         // 
+         this.sbpTileAtCursor.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
+         this.sbpTileAtCursor.Width = 10;
+         // 
+         // sbpSelTile
+         // 
+         this.sbpSelTile.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
+         this.sbpSelTile.Width = 10;
+         // 
          // frmMapEditor
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
          this.ClientSize = new System.Drawing.Size(592, 489);
          this.Controls.Add(this.MapDisplay);
-         this.Controls.Add(this.StatusBar);
          this.Controls.Add(this.MapSplitter);
          this.Controls.Add(this.tabSelector);
+         this.Controls.Add(this.StatusBar);
          this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
          this.KeyPreview = true;
          this.Menu = this.mnuMapEditor;
@@ -678,6 +742,10 @@ namespace SGDK2
          this.grpPlanCoords.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.sbpStatus)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpCtrl)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpTileCoord)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpPixelCoord)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpTileAtCursor)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpSelTile)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -812,7 +880,18 @@ namespace SGDK2
          m_RefreshSpriteTimer.Interval = 100;
          m_RefreshSpriteTimer.Start();
       }
-
+      private void QueueRefreshProperties()
+      {
+         if (m_RefreshSpriteTimer == null)
+         {
+            m_RefreshSpriteTimer = new Timer();
+            m_RefreshSpriteTimer.Tick += new EventHandler(RefreshSpriteProperties_Tick);
+         }
+         else
+            m_RefreshSpriteTimer.Stop();
+         m_RefreshSpriteTimer.Interval = 100;
+         m_RefreshSpriteTimer.Start();
+      }
       private void RefreshLayerSprites()
       {
          foreach(Layer layer in m_Layers)
@@ -1011,19 +1090,90 @@ namespace SGDK2
             }
          return result;
       }
+
+      private void DeleteSelectedObjects()
+      {
+         switch(GetCurrentMode())
+         {
+            case CursorMode.SelectSprite:
+               SpriteProvider[] sprites = null;
+               if (grdSprite.SelectedObjects is SpriteProvider[])
+               {
+                  sprites = new SpriteProvider[grdSprite.SelectedObjects.Length];
+                  grdSprite.SelectedObjects.CopyTo(sprites, 0);
+                  if (DialogResult.Yes != MessageBox.Show(this, "Are you sure you want to delete " + sprites.Length.ToString() + " sprites?", "Delete Sprites", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                     return;
+               } 
+               else if(grdSprite.SelectedObject is SpriteProvider)
+               {
+                  sprites = new SpriteProvider[1];
+                  sprites[0] = (SpriteProvider)grdSprite.SelectedObject;
+                  if (DialogResult.Yes != MessageBox.Show(this, "Are you sure you want to delete sprite \"" + sprites[0].Name + "\"?", "Delete Sprite", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                     return;
+               }
+               else
+               {
+                  MessageBox.Show(this, "Select sprites first.", "Delete Selection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  return;
+               }
+               foreach(SpriteProvider sp in sprites)
+                  sp.DeleteRow();
+               // Don't call QueueRefreshLayerSprites otherwise code can execute on
+               // deleted sprite rows before they are refreshed.
+               RefreshLayerSprites();
+               break;
+            case CursorMode.SelectCoordinate:
+            case CursorMode.AddCoordinate:
+               if (lstPlanCoords.SelectedIndex < 0)
+               {
+                  MessageBox.Show(this, "Select coordinates first.", "Delete Selection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  return;
+               }
+               CoordProvider[] deleteCoords = new CoordProvider[lstPlanCoords.SelectedItems.Count];
+               lstPlanCoords.SelectedItems.CopyTo(deleteCoords, 0);
+               if (DialogResult.Yes != MessageBox.Show(this, "Are you sure you want to delete " + deleteCoords.Length.ToString() + " coordinate(s) from " + deleteCoords[0].CoordinateRow.SpritePlanRowParent.Name + "?", "Delete Coordinates", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                  return;
+               foreach(CoordProvider coord in deleteCoords)
+               {
+                  ProjectData.DeleteCoordinate(coord.CoordinateRow);
+                  lstPlanCoords.Items.Remove(coord);
+               }
+               break;
+            default:
+               MessageBox.Show(this, "Please select a sprite or a coordinate to delete first", "Delete Selected Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+               break;
+         }
+      }
       #endregion
 
       #region Event Handlers
-      private void DisplayMap_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
+      private void MapDisplay_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
       {
          m_Layers[m_nCurLayer].ClearInjections();
          m_Layers[m_nCurLayer].InjectCachedSprites();
+         Point oldCoord = m_LayerMouseCoord;
          m_LayerMouseCoord = new Point(e.X - m_Layers[m_nCurLayer].CurrentPosition.X, e.Y - m_Layers[m_nCurLayer].CurrentPosition.Y);
+         sbpPixelCoord.Text = "Pixel X,Y: " + m_LayerMouseCoord.X.ToString() + "," + m_LayerMouseCoord.Y.ToString();
+         ProjectDataset.TilesetRow ts = m_Layers[m_nCurLayer].LayerRow.TilesetRow;
+         Point TilePos = TileFromLayerPoint(m_LayerMouseCoord);
+         if ((TilePos.X >= 0) && (TilePos.Y >= 0) && (TilePos.X < m_Layers[m_nCurLayer].Columns) && (TilePos.Y < m_Layers[m_nCurLayer].Rows))
+         {
+            sbpTileCoord.Text = "Tile X,Y: " + TilePos.X.ToString() + "," + TilePos.Y.ToString();
+            sbpTileAtCursor.Text = "Tile @X,Y: " + m_Layers[m_nCurLayer][(m_LayerMouseCoord.X / ts.TileWidth), (m_LayerMouseCoord.Y / ts.TileHeight)].ToString();
+         }
+         else
+         {
+            sbpTileCoord.Text = "Tile X,Y: N/A";
+            sbpTileAtCursor.Text = "Tile @X,Y: N/A";
+         }
+         if (GetCurrentMode() == CursorMode.PlaceTile)
+            sbpSelTile.Text = "Selected Tile: " + CurrentTile.ToString();
+         else
+            sbpSelTile.Text = "Selected Tile: N/A";
          switch(GetCurrentMode())
          {
             case CursorMode.PlaceTile:
                int nSel = CurrentTile;
-               Point TilePos = TileFromLayerPoint(m_LayerMouseCoord);
                if ((TilePos.X >= 0) && (TilePos.Y >= 0) && (TilePos.X < m_Layers[m_nCurLayer].Columns) && (TilePos.Y < m_Layers[m_nCurLayer].Rows))
                {
                   if (0 != (e.Button & MouseButtons.Left))
@@ -1035,6 +1185,7 @@ namespace SGDK2
             case CursorMode.PlaceSprite:
                if (SpriteSelector.CurrentCellIndex < 0)
                   return;
+            {
                SpriteProvider sp = (SpriteProvider)m_SpriteProvider[SpriteSelector.CurrentCellIndex];
                int nCount = sp.GetSubFrameCount();
                if ((sp.X != m_LayerMouseCoord.X) || (sp.Y != m_LayerMouseCoord.Y))
@@ -1047,6 +1198,41 @@ namespace SGDK2
                {
                   m_Layers[m_nCurLayer].InjectFrame(sp.X, sp.Y, sp.Priority, sp.GetSubFrame(i));
                }
+            }
+               break;
+            case CursorMode.SelectSprite:
+            {
+               SpriteProvider[] sprites = null;
+               if (grdSprite.SelectedObjects is SpriteProvider[])
+               {
+                  sprites = new SpriteProvider[grdSprite.SelectedObjects.Length];
+                  grdSprite.SelectedObjects.CopyTo(sprites, 0);
+               } 
+               else if(grdSprite.SelectedObject is SpriteProvider)
+               {
+                  sprites = new SpriteProvider[1];
+                  sprites[0] = (SpriteProvider)grdSprite.SelectedObject;
+               }
+               else
+                  break;
+               if (0 != (int)(e.Button & MouseButtons.Left))
+               {
+                  foreach (SpriteProvider sp in sprites)
+                  {
+                     sp.X += m_LayerMouseCoord.X - oldCoord.X;
+                     sp.Y += m_LayerMouseCoord.Y - oldCoord.Y;
+                  }
+                  QueueRefreshProperties();
+               }
+               foreach (SpriteProvider sp in sprites)
+               {
+                  if (sp.Bounds.Contains(m_LayerMouseCoord))
+                  {
+                     Cursor.Current = Cursors.SizeAll;
+                     break;
+                  }
+               }
+            }
                break;
          }
          MapDisplay.Invalidate();
@@ -1131,7 +1317,9 @@ namespace SGDK2
                   break;
                case CursorMode.AddCoordinate:
                   if (lstPlans.SelectedIndices.Count == 1)
-                     ProjectData.AppendPlanCoordinate((ProjectDataset.SpritePlanRow)lstPlans.SelectedItem, m_LayerMouseCoord.X, m_LayerMouseCoord.Y, 0);
+                     lstPlanCoords.Items.Add(new CoordProvider(
+                        ProjectData.AppendPlanCoordinate((ProjectDataset.SpritePlanRow)lstPlans.SelectedItem,
+                        m_LayerMouseCoord.X, m_LayerMouseCoord.Y, 0)));
                   break;
                case CursorMode.SelectCoordinate:
                   ProjectDataset.CoordinateRow drCoord = GetCoordAtPoint(m_LayerMouseCoord);
@@ -1156,7 +1344,7 @@ namespace SGDK2
          }
          catch (System.Exception ex)
          {
-            MessageBox.Show(this, ex.Message, "Error Adding Sprite", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            MessageBox.Show(this, ex.Message, "Mep Editor Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
          }
       }
 
@@ -1378,7 +1566,7 @@ namespace SGDK2
          }
       }
 
-      private void dataMonitor_SpriteRowDeleted(object sender, SGDK2.ProjectDataset.SpriteRowChangeEvent e)
+      private void dataMonitor_SpriteRowDeleting(object sender, SGDK2.ProjectDataset.SpriteRowChangeEvent e)
       {
          if (e.Action == DataRowAction.Delete)
          {
@@ -1388,7 +1576,7 @@ namespace SGDK2
                QueueRefreshLayerSprites();
                lstAvailableSprites.Items.Remove(e.Row);
             }
-         }      
+         }            
       }
 
       private void RefreshSpriteTimer_Tick(object sender, EventArgs e)
@@ -1410,6 +1598,8 @@ namespace SGDK2
       {
          m_CurrentModifiers = e.Modifiers;
          StatusBar.Invalidate();
+         if (e.KeyCode == Keys.Delete)
+            DeleteSelectedObjects();
       }
 
       private void frmMapEditor_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
@@ -1598,7 +1788,46 @@ namespace SGDK2
 
       private void tabSelector_SelectedIndexChanged(object sender, System.EventArgs e)
       {
-         MapDisplay.Invalidate();      
+         MapDisplay.Invalidate();
+         if (tabSelector.SelectedTab == tabSprites)
+         {
+            mnuEditDelete.Text = "Delete Selected Sprites";
+            mnuEditDelete.Enabled = true;
+         }
+         else if (tabSelector.SelectedTab == tabPlans)
+         {
+            mnuEditDelete.Text = "Delete Selected Coordinates";
+            mnuEditDelete.Enabled = true;
+         }
+         else
+         {
+            mnuEditDelete.Text = "Delete Selected Objects";
+            mnuEditDelete.Enabled = false;
+         }
+      }
+
+      private void dataMonitor_LayerRowChanged(object sender, SGDK2.ProjectDataset.LayerRowChangeEvent e)
+      {
+         if (e.Row == m_Layers[m_nCurLayer].LayerRow)
+         {
+            this.Text = "Edit Map Layer - " + e.Row.Name;
+         }
+      }
+
+      private void mnuEditDelete_Click(object sender, System.EventArgs e)
+      {
+         DeleteSelectedObjects();
+      }
+      private void RefreshSpriteProperties_Tick(object sender, EventArgs e)
+      {
+         m_RefreshSpriteTimer.Dispose();
+         m_RefreshSpriteTimer = null;
+         grdSprite.SelectedObject = grdSprite.SelectedObject;
+      }
+
+      private void TileSelector_CurrentCellChanged(object sender, System.EventArgs e)
+      {
+         sbpSelTile.Text = "Selected Tile: " + CurrentTile.ToString();
       }
       #endregion
    }

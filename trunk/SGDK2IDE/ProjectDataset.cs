@@ -3521,6 +3521,14 @@ namespace SGDK2 {
             
             private DataColumn columnScrollHeight;
             
+            private DataColumn columnViewLeft;
+            
+            private DataColumn columnViewTop;
+            
+            private DataColumn columnViewWidth;
+            
+            private DataColumn columnViewHeight;
+            
             internal MapDataTable() : 
                     base("Map") {
                 this.InitClass();
@@ -3591,6 +3599,30 @@ namespace SGDK2 {
                 }
             }
             
+            internal DataColumn ViewLeftColumn {
+                get {
+                    return this.columnViewLeft;
+                }
+            }
+            
+            internal DataColumn ViewTopColumn {
+                get {
+                    return this.columnViewTop;
+                }
+            }
+            
+            internal DataColumn ViewWidthColumn {
+                get {
+                    return this.columnViewWidth;
+                }
+            }
+            
+            internal DataColumn ViewHeightColumn {
+                get {
+                    return this.columnViewHeight;
+                }
+            }
+            
             public MapRow this[int index] {
                 get {
                     return ((MapRow)(this.Rows[index]));
@@ -3609,7 +3641,7 @@ namespace SGDK2 {
                 this.Rows.Add(row);
             }
             
-            public MapRow AddMapRow(string Name, short ScrollMarginLeft, short ScrollMarginTop, short ScrollMarginRight, short ScrollMarginBottom, int ScrollWidth, int ScrollHeight) {
+            public MapRow AddMapRow(string Name, short ScrollMarginLeft, short ScrollMarginTop, short ScrollMarginRight, short ScrollMarginBottom, int ScrollWidth, int ScrollHeight, short ViewLeft, short ViewTop, short ViewWidth, short ViewHeight) {
                 MapRow rowMapRow = ((MapRow)(this.NewRow()));
                 rowMapRow.ItemArray = new object[] {
                         Name,
@@ -3618,7 +3650,11 @@ namespace SGDK2 {
                         ScrollMarginRight,
                         ScrollMarginBottom,
                         ScrollWidth,
-                        ScrollHeight};
+                        ScrollHeight,
+                        ViewLeft,
+                        ViewTop,
+                        ViewWidth,
+                        ViewHeight};
                 this.Rows.Add(rowMapRow);
                 return rowMapRow;
             }
@@ -3650,6 +3686,10 @@ namespace SGDK2 {
                 this.columnScrollMarginBottom = this.Columns["ScrollMarginBottom"];
                 this.columnScrollWidth = this.Columns["ScrollWidth"];
                 this.columnScrollHeight = this.Columns["ScrollHeight"];
+                this.columnViewLeft = this.Columns["ViewLeft"];
+                this.columnViewTop = this.Columns["ViewTop"];
+                this.columnViewWidth = this.Columns["ViewWidth"];
+                this.columnViewHeight = this.Columns["ViewHeight"];
             }
             
             private void InitClass() {
@@ -3667,6 +3707,14 @@ namespace SGDK2 {
                 this.Columns.Add(this.columnScrollWidth);
                 this.columnScrollHeight = new DataColumn("ScrollHeight", typeof(int), null, System.Data.MappingType.Attribute);
                 this.Columns.Add(this.columnScrollHeight);
+                this.columnViewLeft = new DataColumn("ViewLeft", typeof(short), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnViewLeft);
+                this.columnViewTop = new DataColumn("ViewTop", typeof(short), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnViewTop);
+                this.columnViewWidth = new DataColumn("ViewWidth", typeof(short), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnViewWidth);
+                this.columnViewHeight = new DataColumn("ViewHeight", typeof(short), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnViewHeight);
                 this.Constraints.Add(new UniqueConstraint("MapKey", new DataColumn[] {
                                 this.columnName}, true));
                 this.columnName.AllowDBNull = false;
@@ -3684,6 +3732,10 @@ namespace SGDK2 {
                 this.columnScrollWidth.Caption = "Scrollable pixel width of the map independent of its layers";
                 this.columnScrollHeight.Namespace = "";
                 this.columnScrollHeight.Caption = "Scrollable pixel height of the map independent of its layers";
+                this.columnViewLeft.Namespace = "";
+                this.columnViewTop.Namespace = "";
+                this.columnViewWidth.Namespace = "";
+                this.columnViewHeight.Namespace = "";
             }
             
             public MapRow NewMapRow() {
@@ -3814,6 +3866,62 @@ namespace SGDK2 {
                 }
             }
             
+            public short ViewLeft {
+                get {
+                    if (this.IsViewLeftNull()) {
+                        return 0;
+                    }
+                    else {
+                        return ((short)(this[this.tableMap.ViewLeftColumn]));
+                    }
+                }
+                set {
+                    this[this.tableMap.ViewLeftColumn] = value;
+                }
+            }
+            
+            public short ViewTop {
+                get {
+                    if (this.IsViewTopNull()) {
+                        return 0;
+                    }
+                    else {
+                        return ((short)(this[this.tableMap.ViewTopColumn]));
+                    }
+                }
+                set {
+                    this[this.tableMap.ViewTopColumn] = value;
+                }
+            }
+            
+            public short ViewWidth {
+                get {
+                    if (this.IsViewWidthNull()) {
+                        return 0;
+                    }
+                    else {
+                        return ((short)(this[this.tableMap.ViewWidthColumn]));
+                    }
+                }
+                set {
+                    this[this.tableMap.ViewWidthColumn] = value;
+                }
+            }
+            
+            public short ViewHeight {
+                get {
+                    if (this.IsViewHeightNull()) {
+                        return 0;
+                    }
+                    else {
+                        return ((short)(this[this.tableMap.ViewHeightColumn]));
+                    }
+                }
+                set {
+                    this[this.tableMap.ViewHeightColumn] = value;
+                }
+            }
+            
             public bool IsScrollWidthNull() {
                 return this.IsNull(this.tableMap.ScrollWidthColumn);
             }
@@ -3828,6 +3936,38 @@ namespace SGDK2 {
             
             public void SetScrollHeightNull() {
                 this[this.tableMap.ScrollHeightColumn] = System.Convert.DBNull;
+            }
+            
+            public bool IsViewLeftNull() {
+                return this.IsNull(this.tableMap.ViewLeftColumn);
+            }
+            
+            public void SetViewLeftNull() {
+                this[this.tableMap.ViewLeftColumn] = System.Convert.DBNull;
+            }
+            
+            public bool IsViewTopNull() {
+                return this.IsNull(this.tableMap.ViewTopColumn);
+            }
+            
+            public void SetViewTopNull() {
+                this[this.tableMap.ViewTopColumn] = System.Convert.DBNull;
+            }
+            
+            public bool IsViewWidthNull() {
+                return this.IsNull(this.tableMap.ViewWidthColumn);
+            }
+            
+            public void SetViewWidthNull() {
+                this[this.tableMap.ViewWidthColumn] = System.Convert.DBNull;
+            }
+            
+            public bool IsViewHeightNull() {
+                return this.IsNull(this.tableMap.ViewHeightColumn);
+            }
+            
+            public void SetViewHeightNull() {
+                this[this.tableMap.ViewHeightColumn] = System.Convert.DBNull;
             }
             
             public LayerRow[] GetLayerRows() {
@@ -9797,6 +9937,8 @@ namespace SGDK2 {
             
             private DataColumn columnStartMap;
             
+            private DataColumn columnOverlayMap;
+            
             internal ProjectDataTable() : 
                     base("Project") {
                 this.InitClass();
@@ -9849,6 +9991,12 @@ namespace SGDK2 {
                 }
             }
             
+            internal DataColumn OverlayMapColumn {
+                get {
+                    return this.columnOverlayMap;
+                }
+            }
+            
             public ProjectRow this[int index] {
                 get {
                     return ((ProjectRow)(this.Rows[index]));
@@ -9867,13 +10015,14 @@ namespace SGDK2 {
                 this.Rows.Add(row);
             }
             
-            public ProjectRow AddProjectRow(string DisplayMode, bool Windowed, string TitleText, string StartMap) {
+            public ProjectRow AddProjectRow(string DisplayMode, bool Windowed, string TitleText, string StartMap, string OverlayMap) {
                 ProjectRow rowProjectRow = ((ProjectRow)(this.NewRow()));
                 rowProjectRow.ItemArray = new object[] {
                         DisplayMode,
                         Windowed,
                         TitleText,
-                        StartMap};
+                        StartMap,
+                        OverlayMap};
                 this.Rows.Add(rowProjectRow);
                 return rowProjectRow;
             }
@@ -9897,6 +10046,7 @@ namespace SGDK2 {
                 this.columnWindowed = this.Columns["Windowed"];
                 this.columnTitleText = this.Columns["TitleText"];
                 this.columnStartMap = this.Columns["StartMap"];
+                this.columnOverlayMap = this.Columns["OverlayMap"];
             }
             
             private void InitClass() {
@@ -9908,12 +10058,15 @@ namespace SGDK2 {
                 this.Columns.Add(this.columnTitleText);
                 this.columnStartMap = new DataColumn("StartMap", typeof(string), null, System.Data.MappingType.Attribute);
                 this.Columns.Add(this.columnStartMap);
+                this.columnOverlayMap = new DataColumn("OverlayMap", typeof(string), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnOverlayMap);
                 this.columnDisplayMode.AllowDBNull = false;
                 this.columnDisplayMode.Namespace = "";
                 this.columnWindowed.AllowDBNull = false;
                 this.columnWindowed.Namespace = "";
                 this.columnTitleText.Namespace = "";
                 this.columnStartMap.Namespace = "";
+                this.columnOverlayMap.Namespace = "";
             }
             
             public ProjectRow NewProjectRow() {
@@ -10017,6 +10170,20 @@ namespace SGDK2 {
                 }
             }
             
+            public string OverlayMap {
+                get {
+                    if (this.IsOverlayMapNull()) {
+                        return null;
+                    }
+                    else {
+                        return ((string)(this[this.tableProject.OverlayMapColumn]));
+                    }
+                }
+                set {
+                    this[this.tableProject.OverlayMapColumn] = value;
+                }
+            }
+            
             public bool IsTitleTextNull() {
                 return this.IsNull(this.tableProject.TitleTextColumn);
             }
@@ -10031,6 +10198,14 @@ namespace SGDK2 {
             
             public void SetStartMapNull() {
                 this[this.tableProject.StartMapColumn] = System.Convert.DBNull;
+            }
+            
+            public bool IsOverlayMapNull() {
+                return this.IsNull(this.tableProject.OverlayMapColumn);
+            }
+            
+            public void SetOverlayMapNull() {
+                this[this.tableProject.OverlayMapColumn] = System.Convert.DBNull;
             }
         }
         

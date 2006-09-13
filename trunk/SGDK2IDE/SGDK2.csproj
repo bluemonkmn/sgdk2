@@ -94,24 +94,28 @@
                     AssemblyName = "Microsoft.DirectX.Direct3DX"
                     HintPath = "..\..\..\..\..\WINDOWS\Microsoft.NET\DirectX for Managed Code\1.0.2911.0\Microsoft.DirectX.Direct3DX.dll"
                     AssemblyFolderKey = "hklm\dn\dx_1.0.2911.0"
+                    Private = "False"
                 />
                 <Reference
                     Name = "Microsoft.DirectX.DirectInput"
                     AssemblyName = "Microsoft.DirectX.DirectInput"
                     HintPath = "..\..\..\..\..\WINDOWS\Microsoft.NET\DirectX for Managed Code\1.0.2902.0\Microsoft.DirectX.DirectInput.dll"
                     AssemblyFolderKey = "hklm\dn\dx_1.0.2902.0"
+                    Private = "False"
                 />
                 <Reference
                     Name = "Microsoft.DirectX.Direct3D"
                     AssemblyName = "Microsoft.DirectX.Direct3D"
                     HintPath = "..\..\..\..\..\WINDOWS\Microsoft.NET\DirectX for Managed Code\1.0.2902.0\Microsoft.DirectX.Direct3D.dll"
                     AssemblyFolderKey = "hklm\dn\dx_1.0.2902.0"
+                    Private = "False"
                 />
                 <Reference
                     Name = "Microsoft.DirectX"
                     AssemblyName = "Microsoft.DirectX"
                     HintPath = "..\..\..\..\..\WINDOWS\Microsoft.NET\DirectX for Managed Code\1.0.2902.0\Microsoft.DirectX.dll"
                     AssemblyFolderKey = "hklm\dn\dx_1.0.2902.0"
+                    Private = "False"
                 />
             </References>
         </Build>
@@ -138,7 +142,7 @@
                 />
                 <File
                     RelPath = "CodeEditor.cs"
-                    SubType = "Form"
+                    SubType = "Component"
                     BuildAction = "Compile"
                 />
                 <File

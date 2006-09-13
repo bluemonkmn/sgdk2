@@ -28,6 +28,10 @@ public class Display : ScrollableControl
    public const int WS_BORDER = unchecked((int)0x00800000);
    #endregion
 
+   #region Events
+   public event EventHandler WindowedChanged;
+   #endregion
+
    #region Embedded Classes
    private class CoverWindow : Form
    {
@@ -109,6 +113,7 @@ public class Display : ScrollableControl
    private BorderStyle m_BorderStyle;
    private CoverWindow m_CoverWindow = null;
    private Sprite m_Sprite = null;
+   private Font m_Font = null;
    #endregion
 
    #region Initialization and clean-up
@@ -126,7 +131,7 @@ public class Display : ScrollableControl
       DisplayMode dm = GetActualDisplayMode(mode);
       m_pp = new PresentParameters();
       m_pp.Windowed = windowed;
-      m_pp.SwapEffect = SwapEffect.Discard;
+      m_pp.SwapEffect = SwapEffect.Copy; // Allows ScissorTestEnable to work in full screen
       // Allow GetGraphics
       m_pp.PresentFlag = PresentFlag.LockableBackBuffer;
       if (windowed)
@@ -158,6 +163,11 @@ public class Display : ScrollableControl
             m_Sprite.Dispose();
             m_Sprite = null;
          }
+         if (m_Font != null)
+         {
+            m_Font.Dispose();
+            m_Font = null;
+         }
          if (m_d3d != null)
          {
             m_d3d.Dispose();
@@ -179,7 +189,7 @@ public class Display : ScrollableControl
    protected override void OnCreateControl()
    {
       m_pp.DeviceWindow = this;
-      m_pp.SwapEffect = SwapEffect.Discard;
+      m_pp.SwapEffect = SwapEffect.Copy; // Allows ScissorTestEnable to work in full screen
 
       try
       {
@@ -238,6 +248,11 @@ public class Display : ScrollableControl
             m_Sprite.Dispose();
             m_Sprite = null;
          }
+         if (m_Font != null)
+         {
+            m_Font.Dispose();
+            m_Font = null;
+         }
          if (m_d3d != null)
          {
             m_d3d.Dispose();
@@ -255,6 +270,11 @@ public class Display : ScrollableControl
          {
             m_Sprite.Dispose();
             m_Sprite = null;
+         }
+         if (m_Font != null)
+         {
+            m_Font.Dispose();
+            m_Font = null;
          }
          m_d3d.Reset(m_pp);
       }
@@ -353,6 +373,11 @@ public class Display : ScrollableControl
                m_Sprite.Dispose();
                m_Sprite = null;
             }
+            if (m_Font != null)
+            {
+               m_Font.Dispose();
+               m_Font = null;
+            }
             if (m_d3d != null)
             {
                m_d3d.Dispose();
@@ -361,7 +386,7 @@ public class Display : ScrollableControl
          }
 
          m_pp.Windowed = value;
-         m_pp.SwapEffect = SwapEffect.Discard;
+         m_pp.SwapEffect = SwapEffect.Copy; // Allows ScissorTestEnable to work in full screen
 
          if (value)
          {
@@ -392,6 +417,8 @@ public class Display : ScrollableControl
             m_pp.BackBufferFormat = dm.Format;
             Recreate();
          }
+         if (WindowedChanged != null)
+            WindowedChanged(this, null);
       }
       get
       {
@@ -503,6 +530,11 @@ public class Display : ScrollableControl
                m_Sprite.Dispose();
                m_Sprite = null;
             }
+            if (m_Font != null)
+            {
+               m_Font.Dispose();
+               m_Font = null;
+            }
             m_d3d.Reset(m_pp);
          }
       }
@@ -515,6 +547,11 @@ public class Display : ScrollableControl
       {
          m_Sprite.Dispose();
          m_Sprite = null;
+      }
+      if (m_Font != null)
+      {
+         m_Font.Dispose();
+         m_Font = null;
       }
       if (m_d3d != null)
          m_d3d.Dispose();
@@ -532,6 +569,18 @@ public class Display : ScrollableControl
          if ((m_Sprite == null) && (m_d3d != null))
             m_Sprite = new Sprite(m_d3d);
          return m_Sprite;
+      }
+   }
+
+   public Font D3DFont
+   {
+      get
+      {
+         if ((m_Font == null) && (m_d3d != null))
+         {
+            m_Font = new Microsoft.DirectX.Direct3D.Font(m_d3d, Font);
+         }
+         return m_Font;
       }
    }
    #endregion

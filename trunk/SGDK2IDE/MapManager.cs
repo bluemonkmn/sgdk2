@@ -94,6 +94,23 @@ namespace SGDK2
             }
          }
    
+         [Description("Rectangle in which the layers of the map are drawn within the display (default of all 0 fills display)"),
+         Category("Layout")]
+         public Rectangle View
+         {
+            get
+            {
+               return new Rectangle(m_drMap.ViewLeft, m_drMap.ViewTop, m_drMap.ViewWidth, m_drMap.ViewHeight);
+            }
+            set
+            {
+               m_drMap.ViewLeft = (short)value.Left;
+               m_drMap.ViewTop = (short)value.Top;
+               m_drMap.ViewWidth = (short)value.Width;
+               m_drMap.ViewHeight = (short)value.Height;
+            }
+         }
+
          [Description("Scrollable pixel size of the map independent of its layers"),
          Category("Layout")]
          public Size ScrollableSize

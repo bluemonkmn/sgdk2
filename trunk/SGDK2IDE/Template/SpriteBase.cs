@@ -233,19 +233,19 @@ public abstract class SpriteBase
       if (RidingOn == null)
          return;
 
-      if ((x+SolidWidth < RidingOn.oldX) || (x > RidingOn.oldX+RidingOn.SolidWidth) ||
-          (y+SolidHeight < RidingOn.oldY - 1) || (y+SolidHeight >= RidingOn.oldY+SolidHeight))
-      {
-         StopRiding();
-         return;
-      }
-
       // Don't try to process the platform's rules if it's already moved.
       // Even though this is already being checked in ProcessRules, circular
       // references (which shouldn't exist) would lead to deadlock.
       if (!RidingOn.Processed)
          // Ensure that the sprite that this sprite is riding moves first
          RidingOn.ProcessRules();
+
+      if ((x+SolidWidth < RidingOn.oldX) || (x > RidingOn.oldX+RidingOn.SolidWidth) ||
+         (y+SolidHeight < RidingOn.oldY - 1) || (y+SolidHeight >= RidingOn.oldY+SolidHeight))
+      {
+         StopRiding();
+         return;
+      }
 
       if (double.IsNaN(LocalDX))
          Debug.Fail("LocalDX is not a number");
@@ -298,6 +298,7 @@ public abstract class SpriteBase
             (x < spr.x + spr.SolidWidth))
          {
             RidingOn = spr;
+            spr.ProcessRules();
             LocalDX = dx - spr.dx;
             dy = spr.y - SolidHeight - y;
             return true;

@@ -176,6 +176,10 @@
                      msprop:nullValue="0" />
                   <xs:attribute name="ScrollHeight" type="xs:int" msdata:Caption="Scrollable pixel height of the map independent of its layers"
                      msprop:nullValue="0" />
+                  <xs:attribute name="ViewLeft" type="xs:short" msprop:nullValue="0" />
+                  <xs:attribute name="ViewTop" type="xs:short" msprop:nullValue="0" />
+                  <xs:attribute name="ViewWidth" type="xs:short" msprop:nullValue="0" />
+                  <xs:attribute name="ViewHeight" type="xs:short" msprop:nullValue="0" />
                </xs:complexType>
             </xs:element>
             <xs:element name="Category">
@@ -302,6 +306,7 @@
                   <xs:attribute name="Windowed" type="xs:boolean" use="required" msprop:nullValue="false" />
                   <xs:attribute name="TitleText" type="xs:string" />
                   <xs:attribute name="StartMap" type="xs:Name" msprop:nullValue="_empty" use="optional" />
+                  <xs:attribute name="OverlayMap" type="xs:Name" use="optional" msprop:nullValue="_null" />
                </xs:complexType>
             </xs:element>
          </xs:choice>

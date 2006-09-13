@@ -208,7 +208,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
          m_CurrentPosition = new Point(m_CurrentPosition.X, m_AbsolutePosition.Y + (int)(MapPosition.Y * m_ScrollRate.Height));
    }
 
-   public void Draw(Sprite spr)
+   public void Draw()
    {
       int nTileWidth = m_Tileset.TileWidth;
       int nTileHeight = m_Tileset.TileHeight;
@@ -220,7 +220,16 @@ public abstract class LayerBase : System.Collections.IEnumerable
       if (nStartRow < 0)
          nStartRow = 0;
 
-      Rectangle ViewRect = m_ParentMap.Display.DisplayRectangle;
+      Rectangle ViewRect = m_ParentMap.View;
+      if ((ViewRect.Width > 0) || (ViewRect.Height > 0))
+      {
+         m_ParentMap.Display.Device.RenderState.ScissorTestEnable = true;
+         m_ParentMap.Display.Device.ScissorRectangle = ViewRect;
+      }
+      else if (m_ParentMap.Display.Device.RenderState.ScissorTestEnable)
+      {
+         m_ParentMap.Display.Device.RenderState.ScissorTestEnable = false;
+      }
 
       int EndCol = (ViewRect.Width - 1 + m_nRightBuffer - m_CurrentPosition.X) / nTileWidth;
       if (EndCol >= Columns)
@@ -237,6 +246,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
          if (!Injected.MoveNext())
             Injected = null;
       }
+
+      Sprite spr = m_ParentMap.Display.Sprite;
 
       for (int y = nStartRow; y <= EndRow; y++)
       {
@@ -292,7 +303,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
    {
       get
       {
-         Rectangle result = m_ParentMap.Display.DisplayRectangle;
+         Rectangle result = new Rectangle(new System.Drawing.Point(0), m_ParentMap.View.Size);
          result.Offset(-m_CurrentPosition.X, -m_CurrentPosition.Y);
          return result;
       }

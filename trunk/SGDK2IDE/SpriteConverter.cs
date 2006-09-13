@@ -452,6 +452,13 @@ namespace SGDK2
          }
       }
 
+      public void DeleteRow()
+      {
+         if (!IsDataRow)
+            throw new InvalidOperationException("Cannot delete un-persisted sprite");
+         m_SpriteRow.Delete();
+      }
+
       #region IProvideFrame Members
 
       public int FrameIndex

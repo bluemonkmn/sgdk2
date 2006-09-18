@@ -37,14 +37,14 @@ namespace SGDK2
          }
       }
 
-      private enum BytesPerTile
+      public enum BytesPerTile
       {
          One,
          Two,
          Four
       }
 
-      private class LayerProperties 
+      public class LayerProperties 
       {
          private LayerProperties()
          {
@@ -226,6 +226,7 @@ namespace SGDK2
             }
          }
 
+         [Description("Determines the order of layers in the map.  The lowest ZIndex is drawn farthest in the background")]
          public int ZIndex
          {
             get
@@ -265,6 +266,7 @@ namespace SGDK2
       private System.Windows.Forms.Button btnCancel;
       private SGDK2.DataChangeNotifier dataMonitor;
       private System.Windows.Forms.PropertyGrid pgrLayer;
+      private System.Windows.Forms.Button btnLayerWizard;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -332,6 +334,7 @@ namespace SGDK2
          this.btnOK = new System.Windows.Forms.Button();
          this.btnCancel = new System.Windows.Forms.Button();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
+         this.btnLayerWizard = new System.Windows.Forms.Button();
          this.SuspendLayout();
          // 
          // pgrLayer
@@ -376,12 +379,22 @@ namespace SGDK2
          this.dataMonitor.LayerRowDeleted += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowDeleted);
          this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
          // 
+         // btnLayerWizard
+         // 
+         this.btnLayerWizard.Location = new System.Drawing.Point(264, 88);
+         this.btnLayerWizard.Name = "btnLayerWizard";
+         this.btnLayerWizard.Size = new System.Drawing.Size(72, 24);
+         this.btnLayerWizard.TabIndex = 3;
+         this.btnLayerWizard.Text = "Wizard...";
+         this.btnLayerWizard.Click += new System.EventHandler(this.btnLayerWizard_Click);
+         // 
          // frmLayerManager
          // 
          this.AcceptButton = this.btnOK;
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
          this.CancelButton = this.btnCancel;
          this.ClientSize = new System.Drawing.Size(344, 293);
+         this.Controls.Add(this.btnLayerWizard);
          this.Controls.Add(this.btnCancel);
          this.Controls.Add(this.btnOK);
          this.Controls.Add(this.pgrLayer);
@@ -418,12 +431,6 @@ namespace SGDK2
                   return false;
             }
             DataObject.m_drLayer.EndEdit();
-
-            // Microsoft Dataset Bug?  Errors occur during AcceptChanges if name changes
-            // at the same time as (for example) Height.
-            //if (DataObject.m_drLayer.HasVersion(DataRowVersion.Original))
-               //if (DataObject.m_drLayer.Name.CompareTo(DataObject.m_drLayer[ProjectData.Layer.NameColumn, DataRowVersion.Original]) != 0)
-                  //DataObject.m_drLayer.AcceptChanges();
 
             if (DataObject.m_drLayer.RowState == DataRowState.Detached)
             {
@@ -499,7 +506,7 @@ namespace SGDK2
             // the bounds of the new layer dimensions into the new layer data data.
             // The boxing and unboxing might be bad here, but this operation should be rare.
             for (int nRow = 0; nRow < nMinHeight; nRow++)
-               for (int nCol = 0; nCol < nMinWidth; nCol++)
+               for (int nCol = 0; nCol < m_PersistedDimensions.Width; nCol++)
                {
                   switch (m_PersistedBytesPerTile)
                   {
@@ -581,6 +588,14 @@ namespace SGDK2
       private void dataMonitor_Clearing(object sender, System.EventArgs e)
       {
          this.Close();
+      }
+
+      private void btnLayerWizard_Click(object sender, System.EventArgs e)
+      {
+         frmLayerWizard frm = new frmLayerWizard(DataObject);
+         frm.ShowDialog(this);
+         frm.Dispose();
+         pgrLayer.SelectedObject = pgrLayer.SelectedObject;
       }
       #endregion
    }

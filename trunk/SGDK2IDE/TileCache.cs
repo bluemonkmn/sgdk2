@@ -191,4 +191,58 @@ namespace SGDK2
       }
 
    }
+
+   class TileProvider : IProvideFrame
+   {
+      private readonly TileCache m_TileCache;
+      private readonly int nTileIndex;
+
+      public TileProvider(TileCache tileCache, int i)
+      {
+         m_TileCache = tileCache;
+         nTileIndex = i;
+      }
+
+      #region IProvideFrame Members
+
+      public int FrameIndex
+      {
+         get
+         {
+            if (m_TileCache[nTileIndex].Length > 0)
+               return m_TileCache[nTileIndex][0];
+            else
+               return 0;
+         }
+      }
+
+      public int[] FrameIndexes
+      {
+         get
+         {
+            return m_TileCache[nTileIndex];
+         }
+      }
+
+      public int TileIndex
+      {
+         get
+         {
+            return nTileIndex;
+         }
+      }
+
+      public bool IsSelected
+      {
+         get
+         {
+            return false;
+         }
+         set
+         {
+         }
+      }
+
+      #endregion
+   }
 }

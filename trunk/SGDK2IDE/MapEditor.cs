@@ -83,6 +83,7 @@ namespace SGDK2
       private System.Windows.Forms.StatusBarPanel sbpPixelCoord;
       private System.Windows.Forms.StatusBarPanel sbpTileAtCursor;
       private System.Windows.Forms.StatusBarPanel sbpSelTile;
+      private System.Windows.Forms.MenuItem mnuSnapToTiles;
       private System.Windows.Forms.Splitter SpriteSplitter;
       #endregion
 
@@ -95,60 +96,6 @@ namespace SGDK2
          SelectSprite,
          AddCoordinate,
          SelectCoordinate
-      }
-
-      class TileProvider : IProvideFrame
-      {
-         private readonly TileCache m_TileCache;
-         private readonly int nTileIndex;
-
-         public TileProvider(TileCache tileCache, int i)
-         {
-            m_TileCache = tileCache;
-            nTileIndex = i;
-         }
-
-         #region IProvideFrame Members
-
-         public int FrameIndex
-         {
-            get
-            {
-               if (m_TileCache[nTileIndex].Length > 0)
-                  return m_TileCache[nTileIndex][0];
-               else
-                  return 0;
-            }
-         }
-
-         public int[] FrameIndexes
-         {
-            get
-            {
-               return m_TileCache[nTileIndex];
-            }
-         }
-
-         public int TileIndex
-         {
-            get
-            {
-               return nTileIndex;
-            }
-         }
-
-         public bool IsSelected
-         {
-            get
-            {
-               return false;
-            }
-            set
-            {
-            }
-         }
-
-         #endregion
       }
       #endregion
 
@@ -251,6 +198,7 @@ namespace SGDK2
          this.sbpPixelCoord = new System.Windows.Forms.StatusBarPanel();
          this.sbpTileAtCursor = new System.Windows.Forms.StatusBarPanel();
          this.sbpSelTile = new System.Windows.Forms.StatusBarPanel();
+         this.mnuSnapToTiles = new System.Windows.Forms.MenuItem();
          this.tabSelector.SuspendLayout();
          this.tabTiles.SuspendLayout();
          this.pnlTiles.SuspendLayout();
@@ -300,7 +248,8 @@ namespace SGDK2
          // 
          this.mnuEdit.Index = 0;
          this.mnuEdit.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                this.mnuEditDelete});
+                                                                                this.mnuEditDelete,
+                                                                                this.mnuSnapToTiles});
          this.mnuEdit.Text = "&Edit";
          // 
          // mnuEditDelete
@@ -403,7 +352,7 @@ namespace SGDK2
          this.tabSprites.Controls.Add(this.rdoSelectSprites);
          this.tabSprites.Location = new System.Drawing.Point(4, 22);
          this.tabSprites.Name = "tabSprites";
-         this.tabSprites.Size = new System.Drawing.Size(136, 463);
+         this.tabSprites.Size = new System.Drawing.Size(136, 447);
          this.tabSprites.TabIndex = 1;
          this.tabSprites.Text = "Sprites";
          // 
@@ -415,7 +364,7 @@ namespace SGDK2
          this.lstAvailableSprites.Location = new System.Drawing.Point(0, 52);
          this.lstAvailableSprites.Name = "lstAvailableSprites";
          this.lstAvailableSprites.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-         this.lstAvailableSprites.Size = new System.Drawing.Size(136, 262);
+         this.lstAvailableSprites.Size = new System.Drawing.Size(136, 246);
          this.lstAvailableSprites.TabIndex = 6;
          this.lstAvailableSprites.SelectedIndexChanged += new System.EventHandler(this.lstAvailableSprites_SelectedIndexChanged);
          // 
@@ -432,7 +381,7 @@ namespace SGDK2
          this.SpriteSelector.Location = new System.Drawing.Point(0, 52);
          this.SpriteSelector.Name = "SpriteSelector";
          this.SpriteSelector.SheetImage = null;
-         this.SpriteSelector.Size = new System.Drawing.Size(136, 262);
+         this.SpriteSelector.Size = new System.Drawing.Size(136, 246);
          this.SpriteSelector.TabIndex = 2;
          this.SpriteSelector.Visible = false;
          this.SpriteSelector.CurrentCellChanged += new System.EventHandler(this.SpriteSelector_CurrentCellChanged);
@@ -440,7 +389,7 @@ namespace SGDK2
          // SpriteSplitter
          // 
          this.SpriteSplitter.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.SpriteSplitter.Location = new System.Drawing.Point(0, 314);
+         this.SpriteSplitter.Location = new System.Drawing.Point(0, 298);
          this.SpriteSplitter.Name = "SpriteSplitter";
          this.SpriteSplitter.Size = new System.Drawing.Size(136, 5);
          this.SpriteSplitter.TabIndex = 3;
@@ -464,7 +413,7 @@ namespace SGDK2
          this.grdSprite.HelpVisible = false;
          this.grdSprite.LargeButtons = false;
          this.grdSprite.LineColor = System.Drawing.SystemColors.ScrollBar;
-         this.grdSprite.Location = new System.Drawing.Point(0, 319);
+         this.grdSprite.Location = new System.Drawing.Point(0, 303);
          this.grdSprite.Name = "grdSprite";
          this.grdSprite.Size = new System.Drawing.Size(136, 144);
          this.grdSprite.TabIndex = 0;
@@ -504,7 +453,7 @@ namespace SGDK2
          this.tabPlans.Controls.Add(this.grdPlan);
          this.tabPlans.Location = new System.Drawing.Point(4, 22);
          this.tabPlans.Name = "tabPlans";
-         this.tabPlans.Size = new System.Drawing.Size(136, 463);
+         this.tabPlans.Size = new System.Drawing.Size(136, 447);
          this.tabPlans.TabIndex = 2;
          this.tabPlans.Text = "Plans";
          // 
@@ -517,7 +466,7 @@ namespace SGDK2
          this.grpPlanList.Dock = System.Windows.Forms.DockStyle.Fill;
          this.grpPlanList.Location = new System.Drawing.Point(0, 0);
          this.grpPlanList.Name = "grpPlanList";
-         this.grpPlanList.Size = new System.Drawing.Size(136, 245);
+         this.grpPlanList.Size = new System.Drawing.Size(136, 229);
          this.grpPlanList.TabIndex = 22;
          this.grpPlanList.TabStop = false;
          this.grpPlanList.Text = "Plans";
@@ -530,7 +479,7 @@ namespace SGDK2
          this.lstPlans.Location = new System.Drawing.Point(3, 56);
          this.lstPlans.Name = "lstPlans";
          this.lstPlans.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-         this.lstPlans.Size = new System.Drawing.Size(130, 154);
+         this.lstPlans.Size = new System.Drawing.Size(130, 138);
          this.lstPlans.TabIndex = 0;
          this.lstPlans.SelectedIndexChanged += new System.EventHandler(this.lstPlans_SelectedIndexChanged);
          // 
@@ -538,7 +487,7 @@ namespace SGDK2
          // 
          this.rdoShowAllPlans.Checked = true;
          this.rdoShowAllPlans.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.rdoShowAllPlans.Location = new System.Drawing.Point(3, 210);
+         this.rdoShowAllPlans.Location = new System.Drawing.Point(3, 194);
          this.rdoShowAllPlans.Name = "rdoShowAllPlans";
          this.rdoShowAllPlans.Size = new System.Drawing.Size(130, 16);
          this.rdoShowAllPlans.TabIndex = 18;
@@ -549,7 +498,7 @@ namespace SGDK2
          // rdoShowSelectedPlans
          // 
          this.rdoShowSelectedPlans.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.rdoShowSelectedPlans.Location = new System.Drawing.Point(3, 226);
+         this.rdoShowSelectedPlans.Location = new System.Drawing.Point(3, 210);
          this.rdoShowSelectedPlans.Name = "rdoShowSelectedPlans";
          this.rdoShowSelectedPlans.Size = new System.Drawing.Size(130, 16);
          this.rdoShowSelectedPlans.TabIndex = 17;
@@ -590,7 +539,7 @@ namespace SGDK2
          // CoordSplitter
          // 
          this.CoordSplitter.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.CoordSplitter.Location = new System.Drawing.Point(0, 245);
+         this.CoordSplitter.Location = new System.Drawing.Point(0, 229);
          this.CoordSplitter.MinExtra = 93;
          this.CoordSplitter.MinSize = 72;
          this.CoordSplitter.Name = "CoordSplitter";
@@ -604,7 +553,7 @@ namespace SGDK2
          this.grpPlanCoords.Controls.Add(this.rdoAppendCoord);
          this.grpPlanCoords.Controls.Add(this.rdoSelectCoord);
          this.grpPlanCoords.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.grpPlanCoords.Location = new System.Drawing.Point(0, 250);
+         this.grpPlanCoords.Location = new System.Drawing.Point(0, 234);
          this.grpPlanCoords.Name = "grpPlanCoords";
          this.grpPlanCoords.Size = new System.Drawing.Size(136, 104);
          this.grpPlanCoords.TabIndex = 21;
@@ -645,7 +594,7 @@ namespace SGDK2
          // PlanSplitter
          // 
          this.PlanSplitter.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.PlanSplitter.Location = new System.Drawing.Point(0, 354);
+         this.PlanSplitter.Location = new System.Drawing.Point(0, 338);
          this.PlanSplitter.Name = "PlanSplitter";
          this.PlanSplitter.Size = new System.Drawing.Size(136, 5);
          this.PlanSplitter.TabIndex = 1;
@@ -658,7 +607,7 @@ namespace SGDK2
          this.grdPlan.HelpVisible = false;
          this.grdPlan.LargeButtons = false;
          this.grdPlan.LineColor = System.Drawing.SystemColors.ScrollBar;
-         this.grdPlan.Location = new System.Drawing.Point(0, 359);
+         this.grdPlan.Location = new System.Drawing.Point(0, 343);
          this.grdPlan.Name = "grdPlan";
          this.grdPlan.PropertySort = System.Windows.Forms.PropertySort.Alphabetical;
          this.grdPlan.Size = new System.Drawing.Size(136, 104);
@@ -718,6 +667,12 @@ namespace SGDK2
          // 
          this.sbpSelTile.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
          this.sbpSelTile.Width = 10;
+         // 
+         // mnuSnapToTiles
+         // 
+         this.mnuSnapToTiles.Index = 1;
+         this.mnuSnapToTiles.Text = "&Snap to Tiles";
+         this.mnuSnapToTiles.Click += new System.EventHandler(this.mnuSnapToTiles_Click);
          // 
          // frmMapEditor
          // 
@@ -835,6 +790,7 @@ namespace SGDK2
                         name = sp.DefinitionName + " " + (index++).ToString();
                      } while (ProjectData.GetSprite(m_Layers[m_nCurLayer].LayerRow, name) != null);
                      sp.Name = name;
+                     sp.Active = true;
                      m_SpriteProvider.Add(sp);
                      break;
                   }
@@ -1004,9 +960,11 @@ namespace SGDK2
          {
             if (points.Count == 2)
             {
+               // Regtangle is 1 pixel smaller than second coordinate dictates in order
+               // to allow snap-to-tile feature to create rectangles that align to tile boundaries.
                System.Drawing.Point[] pts = (System.Drawing.Point[])points.ToArray(typeof(System.Drawing.Point));
                Rectangle DrawRect = new Rectangle(Math.Min(pts[0].X, pts[1].X), Math.Min(pts[0].Y, pts[1].Y),
-                  Math.Abs(pts[0].X - pts[1].X) + 1, Math.Abs(pts[0].Y - pts[1].Y) + 1);
+                  Math.Abs(pts[0].X - pts[1].X), Math.Abs(pts[0].Y - pts[1].Y));
                System.Drawing.Brush RectBrush = new SolidBrush(System.Drawing.Color.FromArgb(96, 0, 0, 255));
                try
                {
@@ -1133,6 +1091,7 @@ namespace SGDK2
                lstPlanCoords.SelectedItems.CopyTo(deleteCoords, 0);
                if (DialogResult.Yes != MessageBox.Show(this, "Are you sure you want to delete " + deleteCoords.Length.ToString() + " coordinate(s) from " + deleteCoords[0].CoordinateRow.SpritePlanRowParent.Name + "?", "Delete Coordinates", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
                   return;
+               lstPlanCoords.SelectedIndex = -1;
                foreach(CoordProvider coord in deleteCoords)
                {
                   ProjectData.DeleteCoordinate(coord.CoordinateRow);
@@ -1153,13 +1112,18 @@ namespace SGDK2
          m_Layers[m_nCurLayer].InjectCachedSprites();
          Point oldCoord = m_LayerMouseCoord;
          m_LayerMouseCoord = new Point(e.X - m_Layers[m_nCurLayer].CurrentPosition.X, e.Y - m_Layers[m_nCurLayer].CurrentPosition.Y);
-         sbpPixelCoord.Text = "Pixel X,Y: " + m_LayerMouseCoord.X.ToString() + "," + m_LayerMouseCoord.Y.ToString();
-         ProjectDataset.TilesetRow ts = m_Layers[m_nCurLayer].LayerRow.TilesetRow;
          Point TilePos = TileFromLayerPoint(m_LayerMouseCoord);
+         if (mnuSnapToTiles.Checked)
+         {
+            ProjectDataset.TilesetRow tsr = m_Layers[m_nCurLayer].LayerRow.TilesetRow;
+            m_LayerMouseCoord.X = TilePos.X * tsr.TileWidth;
+            m_LayerMouseCoord.Y = TilePos.Y * tsr.TileHeight;
+         }
+         sbpPixelCoord.Text = "Pixel X,Y: " + m_LayerMouseCoord.X.ToString() + "," + m_LayerMouseCoord.Y.ToString();
          if ((TilePos.X >= 0) && (TilePos.Y >= 0) && (TilePos.X < m_Layers[m_nCurLayer].Columns) && (TilePos.Y < m_Layers[m_nCurLayer].Rows))
          {
             sbpTileCoord.Text = "Tile X,Y: " + TilePos.X.ToString() + "," + TilePos.Y.ToString();
-            sbpTileAtCursor.Text = "Tile @X,Y: " + m_Layers[m_nCurLayer][(m_LayerMouseCoord.X / ts.TileWidth), (m_LayerMouseCoord.Y / ts.TileHeight)].ToString();
+            sbpTileAtCursor.Text = "Tile @X,Y: " + m_Layers[m_nCurLayer][TilePos.X, TilePos.Y].ToString();
          }
          else
          {
@@ -1243,12 +1207,18 @@ namespace SGDK2
          try
          {
             m_LayerMouseCoord = new Point(e.X - m_Layers[m_nCurLayer].CurrentPosition.X, e.Y - m_Layers[m_nCurLayer].CurrentPosition.Y);
+            Point TilePos = TileFromLayerPoint(m_LayerMouseCoord);
+            if (mnuSnapToTiles.Checked)
+            {
+               ProjectDataset.TilesetRow tsr = m_Layers[m_nCurLayer].LayerRow.TilesetRow;
+               m_LayerMouseCoord.X = TilePos.X * tsr.TileWidth;
+               m_LayerMouseCoord.Y = TilePos.Y * tsr.TileHeight;
+            }
 
             switch(GetCurrentMode())
             {
                case CursorMode.PlaceTile:
                   int nSel = CurrentTile;
-                  Point TilePos = TileFromLayerPoint(m_LayerMouseCoord);
                   if ((TilePos.X < m_Layers[m_nCurLayer].Columns) && (TilePos.Y < m_Layers[m_nCurLayer].Rows))
                      m_Layers[m_nCurLayer][TilePos.X, TilePos.Y] = nSel;
                   break;
@@ -1828,6 +1798,11 @@ namespace SGDK2
       private void TileSelector_CurrentCellChanged(object sender, System.EventArgs e)
       {
          sbpSelTile.Text = "Selected Tile: " + CurrentTile.ToString();
+      }
+
+      private void mnuSnapToTiles_Click(object sender, System.EventArgs e)
+      {
+         mnuSnapToTiles.Checked = !mnuSnapToTiles.Checked;
       }
       #endregion
    }

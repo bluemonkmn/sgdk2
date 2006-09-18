@@ -21,6 +21,7 @@ namespace SGDK2
          private Control m_StepControl = null;
          public event System.EventHandler InitFunction;
          public event ValidateFunctionEvent ValidateFunction;
+         public string m_TitleText = String.Empty;
          
          public void Init()
          {
@@ -55,9 +56,20 @@ namespace SGDK2
                m_StepControl = value;
                if ((value != null) && DesignMode && (value.Parent != null))
                {
-                  value.Location = new Point(0,32);
-                  value.Size = new Size(m_StepControl.Parent.Width - 8, m_StepControl.Parent.ClientSize.Height - 72);
+                  value.Location = new Point(168,42);
+                  value.Size = new Size(m_StepControl.Parent.Width - 176, m_StepControl.Parent.ClientSize.Height - 82);
                }
+            }
+         }
+         public string TitleText
+         {
+            get
+            {
+               return m_TitleText;
+            }
+            set
+            {
+               m_TitleText = value;
             }
          }
       }
@@ -137,6 +149,9 @@ namespace SGDK2
       private System.Windows.Forms.Button btnBack;
       private System.Windows.Forms.Button btnNext;
       private System.Windows.Forms.Button btnCancel;
+      private System.Windows.Forms.PictureBox picSideImage;
+      private System.Windows.Forms.Label lblHeading;
+      private System.Windows.Forms.Label lblStepNum;
 
       /// <summary>
 		/// Required designer variable.
@@ -154,8 +169,7 @@ namespace SGDK2
          if (DesignMode)
             foreach (StepInfo si in Steps)
                si.StepControl.Visible = false;
-         m_Steps[m_nCurrentStepIndex].Init();
-		}
+      }
 
 		/// <summary>
 		/// Clean up any resources being used.
@@ -180,16 +194,20 @@ namespace SGDK2
 		/// </summary>
 		private void InitializeComponent()
 		{
+         System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(frmWizardBase));
          this.btnBack = new System.Windows.Forms.Button();
          this.btnNext = new System.Windows.Forms.Button();
          this.btnCancel = new System.Windows.Forms.Button();
+         this.picSideImage = new System.Windows.Forms.PictureBox();
+         this.lblHeading = new System.Windows.Forms.Label();
+         this.lblStepNum = new System.Windows.Forms.Label();
          this.SuspendLayout();
          // 
          // btnBack
          // 
          this.btnBack.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
          this.btnBack.FlatStyle = System.Windows.Forms.FlatStyle.System;
-         this.btnBack.Location = new System.Drawing.Point(208, 272);
+         this.btnBack.Location = new System.Drawing.Point(208, 282);
          this.btnBack.Name = "btnBack";
          this.btnBack.Size = new System.Drawing.Size(72, 24);
          this.btnBack.TabIndex = 0;
@@ -199,7 +217,7 @@ namespace SGDK2
          // btnNext
          // 
          this.btnNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-         this.btnNext.Location = new System.Drawing.Point(280, 272);
+         this.btnNext.Location = new System.Drawing.Point(280, 282);
          this.btnNext.Name = "btnNext";
          this.btnNext.Size = new System.Drawing.Size(72, 24);
          this.btnNext.TabIndex = 1;
@@ -210,21 +228,59 @@ namespace SGDK2
          // 
          this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
          this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-         this.btnCancel.Location = new System.Drawing.Point(368, 272);
+         this.btnCancel.Location = new System.Drawing.Point(368, 282);
          this.btnCancel.Name = "btnCancel";
          this.btnCancel.Size = new System.Drawing.Size(72, 24);
          this.btnCancel.TabIndex = 2;
          this.btnCancel.Text = "&Cancel";
+         // 
+         // picSideImage
+         // 
+         this.picSideImage.Image = ((System.Drawing.Image)(resources.GetObject("picSideImage.Image")));
+         this.picSideImage.Location = new System.Drawing.Point(0, 0);
+         this.picSideImage.Name = "picSideImage";
+         this.picSideImage.Size = new System.Drawing.Size(164, 313);
+         this.picSideImage.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+         this.picSideImage.TabIndex = 3;
+         this.picSideImage.TabStop = false;
+         // 
+         // lblHeading
+         // 
+         this.lblHeading.BackColor = System.Drawing.SystemColors.Window;
+         this.lblHeading.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+         this.lblHeading.ForeColor = System.Drawing.SystemColors.ControlText;
+         this.lblHeading.Location = new System.Drawing.Point(216, 0);
+         this.lblHeading.Name = "lblHeading";
+         this.lblHeading.Size = new System.Drawing.Size(232, 40);
+         this.lblHeading.TabIndex = 4;
+         this.lblHeading.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+         // 
+         // lblStepNum
+         // 
+         this.lblStepNum.BackColor = System.Drawing.SystemColors.Window;
+         this.lblStepNum.Font = new System.Drawing.Font("Tahoma", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+         this.lblStepNum.ForeColor = System.Drawing.Color.FromArgb(((System.Byte)(64)), ((System.Byte)(64)), ((System.Byte)(64)));
+         this.lblStepNum.Image = ((System.Drawing.Image)(resources.GetObject("lblStepNum.Image")));
+         this.lblStepNum.Location = new System.Drawing.Point(164, 0);
+         this.lblStepNum.Name = "lblStepNum";
+         this.lblStepNum.Size = new System.Drawing.Size(52, 40);
+         this.lblStepNum.TabIndex = 5;
+         this.lblStepNum.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
          // 
          // frmWizardBase
          // 
          this.AcceptButton = this.btnNext;
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
          this.CancelButton = this.btnCancel;
-         this.ClientSize = new System.Drawing.Size(450, 303);
+         this.ClientSize = new System.Drawing.Size(450, 313);
+         this.Controls.Add(this.lblStepNum);
+         this.Controls.Add(this.lblHeading);
+         this.Controls.Add(this.picSideImage);
          this.Controls.Add(this.btnCancel);
          this.Controls.Add(this.btnNext);
          this.Controls.Add(this.btnBack);
+         this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+         this.MaximizeBox = false;
          this.Name = "frmWizardBase";
          this.Text = "WizardBase";
          this.ResumeLayout(false);
@@ -236,6 +292,12 @@ namespace SGDK2
       protected override void OnLoad(EventArgs e)
       {
          base.OnLoad (e);
+
+         if ((m_Steps != null) && (m_Steps.Count > 0))
+         {
+            m_Steps[m_nCurrentStepIndex].Init();
+            InitHeading();
+         }
       }
       #endregion
 
@@ -244,14 +306,37 @@ namespace SGDK2
       {
          if (m_Steps[m_nCurrentStepIndex].Validate())
          {
-            m_Steps[++m_nCurrentStepIndex].Init();
+            if (m_nCurrentStepIndex < m_Steps.Count-1)
+            {
+               m_Steps[m_nCurrentStepIndex].StepControl.Visible = false;
+               m_Steps[++m_nCurrentStepIndex].Init();
+               if (m_nCurrentStepIndex == m_Steps.Count-1)
+                  btnNext.Text = "&Finish";
+               InitHeading();
+            }
+            else
+               this.Close();
          }
       }
 
       private void btnBack_Click(object sender, System.EventArgs e)
       {
-         m_Steps[m_nCurrentStepIndex].StepControl.Visible = false;
-         m_Steps[--m_nCurrentStepIndex].Init();
+         if (m_nCurrentStepIndex > 0)
+         {
+            m_Steps[m_nCurrentStepIndex].StepControl.Visible = false;
+            m_Steps[--m_nCurrentStepIndex].Init();
+            if (m_nCurrentStepIndex < m_Steps.Count-1)
+               btnNext.Text = "&Next >";
+            InitHeading();
+         }
+      }
+      #endregion
+
+      #region Private Members
+      private void InitHeading()
+      {
+         lblHeading.Text = m_Steps[m_nCurrentStepIndex].TitleText;
+         lblStepNum.Text = (m_nCurrentStepIndex + 1).ToString();
       }
       #endregion
 
@@ -283,9 +368,16 @@ namespace SGDK2
          }
          set
          {
-            foreach(StepInfo si in m_Steps)
-               if ((!(value == si)) ^ (si.StepControl.Left < -2000))
-                  si.StepControl.Left = -10000 - si.StepControl.Left;
+            for (int idx = 0; idx < m_Steps.Count; idx++)
+            {
+               if ((value != m_Steps[idx]) ^ (m_Steps[idx].StepControl.Left < -2000))
+                  m_Steps[idx].StepControl.Left = -10000 - m_Steps[idx].StepControl.Left;
+               if (value == m_Steps[idx])
+               {
+                  m_nCurrentStepIndex = idx;
+                  InitHeading();
+               }
+            }
          }
       }
       #endregion   

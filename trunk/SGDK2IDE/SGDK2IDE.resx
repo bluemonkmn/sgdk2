@@ -1254,8 +1254,8 @@
         4AgAAAAASUVORK5CYII=
       </value>
    </data>
-  <data name="Draw.cur" type="System.Byte[], mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>
+   <data name="Draw.cur" type="System.Byte[], mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <value>
         AAACAAEAICAAABAADwAwAQAAFgAAACgAAAAgAAAAQAAAAAEAAQAAAAAAgAAAAAAAAAAAAAAAAgAAAAIA
         AAAAAAAA////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAgAAAAIAAAACAAAAA
         gAAAAIAAAAAAAAAAAAABfB9AAAAAAAAAAAAAAIAAAACAAAAAgAAAAIAAAACAAAAAAAAAAIAAAAAAAAAA
@@ -1263,10 +1263,10 @@
         ////////////////f////3////////55zz////////9/////f/////////////////////////9/////
         f/////////////////////////////////8=
     </value>
-    <comment>Cursors can't be constructed correctly by .NET v1.1 so store them as bytes</comment>
-  </data>
-  <data name="Dropper.cur" type="System.Byte[], mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>
+      <comment>Cursors can't be constructed correctly by .NET v1.1 so store them as bytes</comment>
+   </data>
+   <data name="Dropper.cur" type="System.Byte[], mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <value>
         AAACAAEAICAAAAgAGAAwAQAAFgAAACgAAAAgAAAAQAAAAAEAAQAAAAAAgAAAAAAAAAAAAAAAAgAAAAIA
         AAAAAAAA////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAI
         AAAABAAAAAIAAAABAAAAAIAAAABAAAAAIAAAABAAAAAAAAAAAAAAAAAAAAAEAAAAAgAAAAEAAAAAAAAA
@@ -1274,10 +1274,10 @@
         ////zv///9d////rv///9d////rv///9d////rv///9c////rD///9gf///gD///4Af///AH///wB///
         +Af///wP///+H/////////////////////8=
     </value>
-    <comment>Cursors can't be constructed correctly by .NET v1.1 so store them as bytes</comment>
-  </data>
-  <data name="FloodFill.cur" type="System.Byte[], mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>
+      <comment>Cursors can't be constructed correctly by .NET v1.1 so store them as bytes</comment>
+   </data>
+   <data name="FloodFill.cur" type="System.Byte[], mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <value>
         AAACAAEAICAAAAcAGQAwAQAAFgAAACgAAAAgAAAAQAAAAAEAAQAAAAAAgAAAAAAAAAAAAAAAAgAAAAIA
         AAAAAAAA////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAABwAAAA+AAAA
         fwAAAP+AAAH/wAAD/+AAB//AAA//gAAf/wAAD/4AAAe8AAAD2AAAAeAAAADgAAAAQAAAAAAAAAAAAAAA
@@ -1285,10 +1285,10 @@
         gP/8PwB//D4AP/w8AB/8OAAP/DAAB/wgAA/8AAAf/AAAP/wAAH/8AAD//gAB//+AA////Af///4L////
         Df///7X////5//////////////////////8=
     </value>
-    <comment>Cursors can't be constructed correctly by .NET v1.1 so store them as bytes</comment>
-  </data>
-  <data name="FloodSel.cur" type="System.Byte[], mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>
+      <comment>Cursors can't be constructed correctly by .NET v1.1 so store them as bytes</comment>
+   </data>
+   <data name="FloodSel.cur" type="System.Byte[], mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <value>
         AAACAAEAICAAAAkACQAwAQAAFgAAACgAAAAgAAAAQAAAAAEAAQAAAAAAgAAAAAAAAAAAAAAAAgAAAAIA
         AAAAAAAA////AAAAAAAAAAAAAAAAEAAAACgAAABEAAAAiAAAARAAAAIgAAAEQAAACIAAABEAAAAiAAAA
         RAAAAIgAAAEQAAACIAAAB0AAAA+AAAAfAAABHgAAAqwAAAFQAAAAoAAAAVAAAAKoAAABEAAAAAAAAAAA
@@ -1296,10 +1296,10 @@
         8f///+P////H////j////x////4////8f///+P////H///6r///8R////g////0X///+D////Ef///6v
         //////////////////////////////////8=
     </value>
-    <comment>Cursors can't be constructed correctly by .NET v1.1 so store them as bytes</comment>
-  </data>
-  <data name="Rotate.cur" type="System.Byte[], mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>
+      <comment>Cursors can't be constructed correctly by .NET v1.1 so store them as bytes</comment>
+   </data>
+   <data name="Rotate.cur" type="System.Byte[], mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+      <value>
         AAACAAEAICAAAA8AEAAwAQAAFgAAACgAAAAgAAAAQAAAAAEAAQAAAAAAgAAAAAAAAAAAAAAAAgAAAAIA
         AAAAAAAA////AAAAAAAAAAAAAAAAAAAAAAAAB8AAABgwAABgDAAAh8IAARgxAAIgCIACQASABIACQASA
         AkAJAAEgCQABIAkAASAJAADACQAfwASAICAEgBAgAkAIIAIgCCABGDAgAIfDIABgDKAAGDBAAAfAAAAA
@@ -1307,6 +1307,6 @@
         +H/4f/w/+H/8P/D//h/w//4f8P/+H/D//z/w/+A/+H/AH/h/4B/8P/Af/B/wH/4HwB//AAAf/4ADH//g
         D7//+D////////////////////////////8=
     </value>
-    <comment>Cursors can't be constructed correctly by .NET v1.1 so store them as bytes</comment>
-  </data>   
+      <comment>Cursors can't be constructed correctly by .NET v1.1 so store them as bytes</comment>
+   </data>
 </root>

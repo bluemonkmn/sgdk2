@@ -137,6 +137,7 @@ namespace SGDK2
       private System.Windows.Forms.Button btnCancel;
       private SGDK2.DataChangeNotifier dataMonitor;
       private System.Windows.Forms.PropertyGrid pgrMap;
+      private System.Windows.Forms.Button btnScrollWizard;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -199,6 +200,7 @@ namespace SGDK2
          this.btnOK = new System.Windows.Forms.Button();
          this.btnCancel = new System.Windows.Forms.Button();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
+         this.btnScrollWizard = new System.Windows.Forms.Button();
          this.SuspendLayout();
          // 
          // pgrMap
@@ -243,12 +245,22 @@ namespace SGDK2
          this.dataMonitor.MapRowDeleted += new SGDK2.ProjectDataset.MapRowChangeEventHandler(this.dataMonitor_MapRowDeleted);
          this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
          // 
+         // btnScrollWizard
+         // 
+         this.btnScrollWizard.Location = new System.Drawing.Point(264, 80);
+         this.btnScrollWizard.Name = "btnScrollWizard";
+         this.btnScrollWizard.Size = new System.Drawing.Size(72, 24);
+         this.btnScrollWizard.TabIndex = 3;
+         this.btnScrollWizard.Text = "Wizard...";
+         this.btnScrollWizard.Click += new System.EventHandler(this.btnScrollWizard_Click);
+         // 
          // frmMapManager
          // 
          this.AcceptButton = this.btnOK;
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
          this.CancelButton = this.btnCancel;
          this.ClientSize = new System.Drawing.Size(344, 293);
+         this.Controls.Add(this.btnScrollWizard);
          this.Controls.Add(this.btnCancel);
          this.Controls.Add(this.btnOK);
          this.Controls.Add(this.pgrMap);
@@ -324,6 +336,14 @@ namespace SGDK2
       private void dataMonitor_Clearing(object sender, System.EventArgs e)
       {
          this.Close();
+      }
+
+      private void btnScrollWizard_Click(object sender, System.EventArgs e)
+      {
+         frmMapScrollWizard frm = new frmMapScrollWizard(DataObject.m_drMap);
+         frm.ShowDialog(this);
+         frm.Dispose();
+         pgrMap.SelectedObject = pgrMap.SelectedObject;
       }
       #endregion
    }

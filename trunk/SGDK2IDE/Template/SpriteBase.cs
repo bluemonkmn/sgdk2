@@ -453,6 +453,18 @@ public abstract class SpriteBase
          useDY = LocalDY;
       return FirstState + ((StateCount + (int)Math.Round(System.Math.Atan2(-useDY,useDX) * StateCount / Math.PI)) % StateCount);
    }
+
+   [Description("Switch the sprite to the the specified state")]
+   public void SwitchToState([Editor("SpriteState", "UITypeEditor")] int State)
+   {
+      state = State;
+   }
+
+   [Description("Determines if the sprite is in the specified range of states")]
+   public bool IsInState([Editor("SpriteState", "UITypeEditor")] int FirstState, [Editor("SpriteState", "UITypeEditor")] int LastState)
+   {
+      return (state <= FirstState) && (state >= LastState);
+   }
    #endregion
 
    #region Input Processing
@@ -979,4 +991,17 @@ public abstract class SpriteBase
       isActive = false;
    }
    #endregion
+
+   [Description("Determines whether the tile on the layer at the position of the center of the sprite is the specified tile")]
+   public bool IsOnTile(int TileValue)
+   {
+      return TileValue == layer[(int)((x + SolidWidth / 2) / layer.Tileset.TileWidth), (int)((y + SolidHeight / 2) / layer.Tileset.TileHeight)];
+   }
+
+   [Description("Write a number to the debug output and move to the next line"),
+   System.Diagnostics.Conditional("DEBUG")]
+   public void LogDebugValue(int DebugValue)
+   {
+      Project.GameWindow.debugText.WriteLine(DebugValue.ToString());
+   }
 }

@@ -122,6 +122,16 @@
         <Files>
             <Include>
                 <File
+                    RelPath = "About.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "About.resx"
+                    DependentUpon = "About.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "App.ico"
                     BuildAction = "Content"
                 />
@@ -291,6 +301,16 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "LayerWizard.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "LayerWizard.resx"
+                    DependentUpon = "LayerWizard.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "LogView.cs"
                     SubType = "Form"
                     BuildAction = "Compile"
@@ -311,11 +331,6 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
-                    RelPath = "Map.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "MapEditor.cs"
                     SubType = "Form"
                     BuildAction = "Compile"
@@ -333,6 +348,16 @@
                 <File
                     RelPath = "MapManager.resx"
                     DependentUpon = "MapManager.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "MapScrollWizard.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "MapScrollWizard.resx"
+                    DependentUpon = "MapScrollWizard.cs"
                     BuildAction = "EmbeddedResource"
                 />
                 <File

@@ -91,20 +91,21 @@ namespace SGDK2
       private void InitializeComponent()
       {
          this.components = new System.ComponentModel.Container();
+         System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(frmCodeEditor));
          this.DataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.rtfCode = new SGDK2.CodeEditor();
          this.tmrReparse = new System.Windows.Forms.Timer(this.components);
          this.staCode = new System.Windows.Forms.StatusBar();
          this.sbpStatus = new System.Windows.Forms.StatusBarPanel();
          this.sbpCAPS = new System.Windows.Forms.StatusBarPanel();
+         this.sbpInsert = new System.Windows.Forms.StatusBarPanel();
          this.sbpLineNum = new System.Windows.Forms.StatusBarPanel();
          this.sbpChar = new System.Windows.Forms.StatusBarPanel();
-         this.sbpInsert = new System.Windows.Forms.StatusBarPanel();
          ((System.ComponentModel.ISupportInitialize)(this.sbpStatus)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpCAPS)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpInsert)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpLineNum)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpChar)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.sbpInsert)).BeginInit();
          this.SuspendLayout();
          // 
          // DataMonitor
@@ -162,6 +163,14 @@ namespace SGDK2
          this.sbpCAPS.Text = "CAPS";
          this.sbpCAPS.Width = 45;
          // 
+         // sbpInsert
+         // 
+         this.sbpInsert.Alignment = System.Windows.Forms.HorizontalAlignment.Center;
+         this.sbpInsert.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
+         this.sbpInsert.Style = System.Windows.Forms.StatusBarPanelStyle.OwnerDraw;
+         this.sbpInsert.Text = "INS";
+         this.sbpInsert.Width = 33;
+         // 
          // sbpLineNum
          // 
          this.sbpLineNum.Alignment = System.Windows.Forms.HorizontalAlignment.Center;
@@ -174,29 +183,22 @@ namespace SGDK2
          this.sbpChar.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
          this.sbpChar.Width = 10;
          // 
-         // sbpInsert
-         // 
-         this.sbpInsert.Alignment = System.Windows.Forms.HorizontalAlignment.Center;
-         this.sbpInsert.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
-         this.sbpInsert.Style = System.Windows.Forms.StatusBarPanelStyle.OwnerDraw;
-         this.sbpInsert.Text = "INS";
-         this.sbpInsert.Width = 33;
-         // 
          // frmCodeEditor
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
          this.ClientSize = new System.Drawing.Size(456, 349);
          this.Controls.Add(this.rtfCode);
          this.Controls.Add(this.staCode);
+         this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
          this.KeyPreview = true;
          this.Name = "frmCodeEditor";
-         this.Text = "CodeEditor";
+         this.Text = "Source Code Editor";
          this.Closing += new System.ComponentModel.CancelEventHandler(this.frmCodeEditor_Closing);
          ((System.ComponentModel.ISupportInitialize)(this.sbpStatus)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpCAPS)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpInsert)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpLineNum)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpChar)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.sbpInsert)).EndInit();
          this.ResumeLayout(false);
 
       }

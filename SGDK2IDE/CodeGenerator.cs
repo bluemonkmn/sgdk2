@@ -1352,11 +1352,14 @@ namespace SGDK2
                         maxY = minY;
                         minY = drCoords[1].Y;
                      }
+                     // Rectangle size is one pixel smaller than second coordinate
+                     // In order to allow snap-to-tile feature to create rectangles
+                     // that align to tile boundaries.
                      fldRect.InitExpression = new CodeObjectCreateExpression(typeof(System.Drawing.Rectangle),
                         new CodePrimitiveExpression(minX),
                         new CodePrimitiveExpression(minY),
-                        new CodePrimitiveExpression(maxX - minX + 1),
-                        new CodePrimitiveExpression(maxY - minY + 1));
+                        new CodePrimitiveExpression(maxX - minX),
+                        new CodePrimitiveExpression(maxY - minY));
                      clsPlan.Members.Add(fldRect);
 
                      CodeMemberProperty prpRect = new CodeMemberProperty();

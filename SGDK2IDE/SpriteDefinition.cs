@@ -77,6 +77,7 @@ namespace SGDK2
       bool m_OldEndIf = false;
       private Hashtable m_TreeNodes = new Hashtable();
       private bool m_Loading = false;
+      private string m_PreparedFunction = string.Empty;
       #endregion
 
       #region Windows Forms Designer Components
@@ -1201,6 +1202,7 @@ namespace SGDK2
          PopulateParameter(lblParam1, cboParam1, RemotingServices.RemoteParameterInfo.Empty);
          PopulateParameter(lblParam2, cboParam2, RemotingServices.RemoteParameterInfo.Empty);
          PopulateParameter(lblParam3, cboParam3, RemotingServices.RemoteParameterInfo.Empty);
+         m_PreparedFunction = String.Empty;
          lblOutput.Enabled = false;
          cboOutput.Enabled = false;
          cboOutput.SelectedIndex = -1;
@@ -1331,6 +1333,9 @@ namespace SGDK2
 
       private void PrepareFunction(string funcName)
       {
+         if (m_PreparedFunction == funcName)
+            return;
+
          if ((m_AvailableRules == null) || !m_AvailableRules.Contains(funcName))
          {
             PopulateParameter(lblParam1, cboParam1, RemotingServices.RemoteParameterInfo.Unknown);
@@ -1339,6 +1344,7 @@ namespace SGDK2
             lblOutput.Enabled = true;
             cboOutput.Enabled = true;
             txtHelpText.Text = "The specified function name could not be located or the project failed to compile.";
+            m_PreparedFunction = string.Empty;
             return;
          }
 
@@ -1376,6 +1382,7 @@ namespace SGDK2
             cboOutput.Text = String.Empty;
             cboOutput.SelectedIndex = -1;
          }
+         m_PreparedFunction = funcName;
       }
 
       private void FillComboWithParams(ComboBox cboParams)

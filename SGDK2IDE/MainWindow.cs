@@ -70,6 +70,8 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuFileSep2;
       private System.Windows.Forms.MenuItem mnuFileSep3;
       private System.Windows.Forms.MenuItem mnuFileRunProjectInDebugMode;
+      private System.Windows.Forms.MenuItem mnuHelp;
+      private System.Windows.Forms.MenuItem mnuHelpAbout;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -145,6 +147,8 @@ namespace SGDK2
          this.pnlProjectTree = new System.Windows.Forms.Panel();
          this.lblProjectTree = new System.Windows.Forms.Label();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
+         this.mnuHelp = new System.Windows.Forms.MenuItem();
+         this.mnuHelpAbout = new System.Windows.Forms.MenuItem();
          this.pnlProjectTree.SuspendLayout();
          this.SuspendLayout();
          // 
@@ -256,7 +260,8 @@ namespace SGDK2
          this.mnuMain.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
                                                                                 this.mnuFile,
                                                                                 this.mnuView,
-                                                                                this.mnuWindows});
+                                                                                this.mnuWindows,
+                                                                                this.mnuHelp});
          // 
          // mnuFile
          // 
@@ -484,6 +489,19 @@ namespace SGDK2
          this.dataMonitor.MapRowChanging += new SGDK2.ProjectDataset.MapRowChangeEventHandler(this.dataMonitor_MapRowChanging);
          this.dataMonitor.CounterRowChanged += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowChanged);
          this.dataMonitor.SpriteCategoryRowDeleted += new SGDK2.ProjectDataset.SpriteCategoryRowChangeEventHandler(this.dataMonitor_SpriteCategoryRowDeleted);
+         // 
+         // mnuHelp
+         // 
+         this.mnuHelp.Index = 3;
+         this.mnuHelp.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                this.mnuHelpAbout});
+         this.mnuHelp.Text = "&Help";
+         // 
+         // mnuHelpAbout
+         // 
+         this.mnuHelpAbout.Index = 0;
+         this.mnuHelpAbout.Text = "&About";
+         this.mnuHelpAbout.Click += new System.EventHandler(this.mnuHelpAbout_Click);
          // 
          // frmMain
          // 
@@ -1013,6 +1031,34 @@ namespace SGDK2
             tvwMain.SelectedNode = ndSel;
          }
       }
+      #endregion
+
+      #region Overrides
+      protected override void OnClosing(CancelEventArgs e)
+      {
+         if (ProjectData.GetChangedTables().Length > 0)
+         {
+            switch (MessageBox.Show(this, "Changes to the project have not been saved.  Do you want to save them before exiting?", "Save Changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+            {
+               case DialogResult.Yes:
+                  if (m_strProjectPath == null)
+                     mnuFileSavePrjAs_Click(this, e);
+                  else
+                  {
+                     ProjectData.WriteXml(m_strProjectPath);
+                     ProjectData.AcceptChanges();
+                  }
+                  if (m_strProjectPath == null)
+                     e.Cancel = true;
+                  break;
+               case DialogResult.Cancel:
+                  e.Cancel = true;
+                  break;
+            }
+         }
+         base.OnClosing (e);
+      }
+
       #endregion
 
       #region Event Handlers
@@ -1568,7 +1614,7 @@ namespace SGDK2
          {
             TreeNode ndNew = ((TreeNode)m_TreeNodes["CD"]).Nodes.Add(e.Row.Name);
             ndNew.Tag = "CD" + e.Row.Name;
-            ndNew.SelectedImageIndex = ndNew.ImageIndex = 20;
+            ndNew.SelectedImageIndex = ndNew.ImageIndex = 23;
             ndNew.EnsureVisible();
             // Add the node to the local index
             m_TreeNodes.Add(ndNew.Tag, ndNew);
@@ -1979,6 +2025,11 @@ namespace SGDK2
             return;
          }
          System.Diagnostics.Process.Start(outFile);      
+      }
+
+      private void mnuHelpAbout_Click(object sender, System.EventArgs e)
+      {
+         new frmAbout().ShowDialog(this);
       }
       #endregion
 

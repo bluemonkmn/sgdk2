@@ -992,10 +992,58 @@ public abstract class SpriteBase
    }
    #endregion
 
-   [Description("Determines whether the tile on the layer at the position of the center of the sprite is the specified tile")]
-   public bool IsOnTile(int TileValue)
+   public enum RelativePosition
    {
-      return TileValue == layer[(int)((x + SolidWidth / 2) / layer.Tileset.TileWidth), (int)((y + SolidHeight / 2) / layer.Tileset.TileHeight)];
+      TopLeft,
+      TopCenter,
+      TopRight,
+      LeftMiddle,
+      CenterMiddle,
+      RightMiddle,
+      BottomLeft,
+      BottomCenter,
+      BottomRight
+   }
+
+   [Description("Examines the tile on the layer at the sprite's current position and determines if it is a member of the specified category. The RelativePosition parameter determines which part of the sprite to use when identifying a location on the layer.")]
+   public bool IsOnTile(TileCategoryName Category, RelativePosition RelativePosition)
+   {
+      int rx = PixelX;
+      int ry = PixelY;
+
+      switch (RelativePosition)
+      {
+         case RelativePosition.TopCenter:
+            rx = (int)(PixelX + SolidWidth / 2);
+            break;
+         case RelativePosition.TopRight:
+            rx = PixelX + SolidWidth - 1;
+            break;
+         case RelativePosition.LeftMiddle:
+            ry = PixelY + (int)(SolidHeight / 2);
+            break;
+         case RelativePosition.CenterMiddle:
+            rx = PixelX + (int)(SolidWidth / 2);
+            ry = PixelY + (int)(SolidHeight / 2);
+            break;
+         case RelativePosition.RightMiddle:
+            rx = PixelX + SolidWidth - 1;
+            ry = PixelY + (int)(SolidHeight / 2);
+            break;
+         case RelativePosition.BottomLeft:
+            ry = PixelY + SolidHeight -1;
+            break;
+         case RelativePosition.BottomCenter:
+            rx = PixelX + (int)(SolidWidth / 2);
+            ry = PixelY + SolidHeight - 1;
+            break;
+         case RelativePosition.BottomRight:
+            rx = PixelX + SolidWidth - 1;
+            ry = PixelY + SolidHeight - 1;
+            break;
+      }
+
+      return layer.GetTile((int)(rx / layer.Tileset.TileWidth), (int)(ry / layer.Tileset.TileHeight)).IsMember(Category);
    }
 
    [Description("Write a number to the debug output and move to the next line"),

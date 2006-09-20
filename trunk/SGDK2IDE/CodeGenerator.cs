@@ -122,18 +122,79 @@ namespace SGDK2
       }
       private class ConditionStackElement
       {
-         public Boolean phase;
-         public CodeConditionStatement condition;
-         public ConditionStackElement(Boolean phase, CodeConditionStatement condition)
+         private int mode; // 0 = If, 1 = Else, 2 = While
+         private CodeStatement statement;
+         public ConditionStackElement(CodeStatement statement)
          {
-            this.phase = phase;
-            this.condition = condition;
+            if (statement is CodeConditionStatement)
+               this.mode = 0;
+            else if (statement is CodeIterationStatement)
+               this.mode = 2;
+            else
+               throw new ApplicationException("Unexpected condition type");
+
+            this.statement = statement;
          }
-         public CodeStatementCollection CurrentStatements
+         public CodeExpression Condition
          {
             get
             {
-               return phase?condition.TrueStatements:condition.FalseStatements;
+               if (statement is CodeIterationStatement)
+                  return ((CodeIterationStatement)statement).TestExpression;
+               else
+                  return ((CodeConditionStatement)statement).Condition;
+            }
+            set
+            {
+               if (statement is CodeIterationStatement)
+                  ((CodeIterationStatement)statement).TestExpression = value;
+               else
+                  ((CodeConditionStatement)statement).Condition = value;
+            }
+         }
+         public void NextPhase()
+         {
+            if (mode == 0)
+               mode = 1;
+            else
+               System.Diagnostics.Debug.Fail("Invalid call to NextPhase");
+         }
+         public CodeStatement Statement
+         {
+            get
+            {
+               return statement;
+            }
+         }
+         public CodeConditionStatement ConditionStatement
+         {
+            get
+            {
+               return (CodeConditionStatement)statement;
+            }
+         }
+         public CodeIterationStatement IteratorStatement
+         {
+            get
+            {
+               return (CodeIterationStatement)statement;
+            }
+         }
+         public CodeStatementCollection ChildStatements
+         {
+            get
+            {
+               switch(mode)
+               {
+                  case 0:
+                     return ConditionStatement.TrueStatements;
+                  case 1:
+                     return ConditionStatement.FalseStatements;
+                  case 2:
+                     return IteratorStatement.Statements;
+                  default:
+                     throw new ApplicationException("Unexpected mode in ChildStatements");
+               }
             }
          }
       }
@@ -437,7 +498,7 @@ namespace SGDK2
          typ.Members.Add(declareGame);
          CodeExpression overlay = new CodePrimitiveExpression(null);
          if ((prj.OverlayMap != null) && !System.Convert.IsDBNull(prj.OverlayMap) && prj.OverlayMap.Length > 0)
-            overlay = new CodeTypeOfExpression(NameToVariable(prj.OverlayMap) + "_Map");
+            overlay = new CodeTypeOfExpression(NameToMapClass(prj.OverlayMap));
          main.Statements.Add(new CodeAssignStatement(
             new CodeFieldReferenceExpression(
             new CodeTypeReferenceExpression(typ.Name), declareGame.Name),
@@ -446,7 +507,7 @@ namespace SGDK2
             new CodeTypeReferenceExpression("GameDisplayMode"), prj.DisplayMode),
             new CodePrimitiveExpression(prj.Windowed),
             new CodePrimitiveExpression(prj.TitleText),
-            new CodeTypeOfExpression(NameToVariable(prj.StartMap) + "_Map"),
+            new CodeTypeOfExpression(NameToMapClass(prj.StartMap)),
             overlay)));
          main.Statements.Add(new CodeMethodInvokeExpression(
             new CodeVariableReferenceExpression(declareGame.Name), "Show"));
@@ -840,7 +901,7 @@ namespace SGDK2
                      CodeArrayCreateExpression createFrameList = new CodeArrayCreateExpression(
                         typeof(int), new CodeExpression[] {});
                      CodeFieldReferenceExpression refCategory = new CodeFieldReferenceExpression(
-                           new CodeTypeReferenceExpression("TileCategoryName"), drCat.CategoryRowParent.Name);
+                           new CodeTypeReferenceExpression("TileCategoryName"), drCat.CategorizedTilesetRowParent.Name);
                      CodeObjectCreateExpression createTileFrameMembership = new CodeObjectCreateExpression(
                         "TileFrameMembership", new CodeExpression[]
                         { refCategory, createFrameList });
@@ -1617,7 +1678,7 @@ namespace SGDK2
          {
             if (rule.Function.Length == 0)
                continue;
-            if (String.Compare(rule.Type , "EndIf", true) != 0)
+            if (String.Compare(rule.Type , "End", true) != 0)
             {
                CodeExpression invokeResult;
                CodeBinaryOperatorType op = CodeBinaryOperatorType.Modulus;
@@ -1696,13 +1757,13 @@ namespace SGDK2
                {
                   CodeConditionStatement cond = new CodeConditionStatement();
                   cond.Condition = invokeResult;
-                  stkNestedConditions.Push(new ConditionStackElement(true, cond));
+                  stkNestedConditions.Push(new ConditionStackElement(cond));
                }
                else if (String.Compare(rule.Type,"and",true) == 0)
                {
                   if (stkNestedConditions.Count > 0)
                   {
-                     CodeConditionStatement prev = ((ConditionStackElement)stkNestedConditions.Peek()).condition;
+                     ConditionStackElement prev = (ConditionStackElement)stkNestedConditions.Peek();
                      prev.Condition = new CodeBinaryOperatorExpression(
                         prev.Condition, CodeBinaryOperatorType.BooleanAnd, invokeResult);
                   }
@@ -1711,7 +1772,7 @@ namespace SGDK2
                {
                   if (stkNestedConditions.Count > 0)
                   {
-                     CodeConditionStatement prev = ((ConditionStackElement)stkNestedConditions.Peek()).condition;
+                     ConditionStackElement prev = (ConditionStackElement)stkNestedConditions.Peek();
                      prev.Condition = new CodeBinaryOperatorExpression(
                         prev.Condition, CodeBinaryOperatorType.BooleanOr, invokeResult);
                   }
@@ -1720,11 +1781,20 @@ namespace SGDK2
                {
                   if (stkNestedConditions.Count > 0)
                   {
-                     ((ConditionStackElement)stkNestedConditions.Peek()).phase = false;
-                     CodeConditionStatement cond = new CodeConditionStatement();
-                     cond.Condition = invokeResult;
-                     stkNestedConditions.Push(new ConditionStackElement(true, cond));
+                     ConditionStackElement elem = (ConditionStackElement)stkNestedConditions.Peek();
+                     if (elem.Statement is CodeConditionStatement)
+                     {
+                        elem.NextPhase();
+                        CodeConditionStatement cond = new CodeConditionStatement();
+                        cond.Condition = invokeResult;
+                        stkNestedConditions.Push(new ConditionStackElement(cond));
+                     }
                   }
+               }
+               else if (String.Compare(rule.Type, "while", true) == 0)
+               {
+                  CodeIterationStatement cond = new CodeIterationStatement(new CodeSnippetStatement(""), invokeResult, new CodeSnippetStatement(""));
+                  stkNestedConditions.Push(new ConditionStackElement(cond));
                }
                else
                {
@@ -1742,38 +1812,39 @@ namespace SGDK2
                   if (stkNestedConditions.Count > 0)
                   {
                      ConditionStackElement prev = (ConditionStackElement)stkNestedConditions.Peek();
-                     if (String.Compare(rule.Type, "Else", true) == 0)
-                        prev.phase = false;
-                     prev.CurrentStatements.Add(stmtRule);
+                     if ((String.Compare(rule.Type, "Else", true) == 0) && (prev.Statement is CodeConditionStatement))
+                        prev.NextPhase();
+                     prev.ChildStatements.Add(stmtRule);
+
+                     if (rule.EndIf)
+                     {
+                        ConditionStackElement popVal = ((ConditionStackElement)stkNestedConditions.Pop());
+                        if (stkNestedConditions.Count > 0)
+                           ((ConditionStackElement)stkNestedConditions.Peek()).ChildStatements.Add(popVal.Statement);
+                        else
+                           mthExecuteRules.Statements.Add(popVal.Statement);
+                     }
                   }
                   else
                      mthExecuteRules.Statements.Add(stmtRule);
-                  if (rule.EndIf)
-                  {
-                     CodeConditionStatement popVal = ((ConditionStackElement)stkNestedConditions.Pop()).condition;
-                     if (stkNestedConditions.Count > 0)
-                        ((ConditionStackElement)stkNestedConditions.Peek()).CurrentStatements.Add(popVal);
-                     else
-                        mthExecuteRules.Statements.Add(popVal);
-                  }
                }
             }
             else
             {
-               CodeConditionStatement popVal = ((ConditionStackElement)stkNestedConditions.Pop()).condition;
+               ConditionStackElement popVal = ((ConditionStackElement)stkNestedConditions.Pop());
                if (stkNestedConditions.Count > 0)
-                  ((ConditionStackElement)stkNestedConditions.Peek()).CurrentStatements.Add(popVal);
+                  ((ConditionStackElement)stkNestedConditions.Peek()).ChildStatements.Add(popVal.Statement);
                else
-                  mthExecuteRules.Statements.Add(popVal);
+                  mthExecuteRules.Statements.Add(popVal.Statement);
             }
          }
          while(stkNestedConditions.Count > 0)
          {
-            CodeConditionStatement popVal = ((ConditionStackElement)stkNestedConditions.Pop()).condition;
+            ConditionStackElement popVal = ((ConditionStackElement)stkNestedConditions.Pop());
             if (stkNestedConditions.Count > 0)
-               ((ConditionStackElement)stkNestedConditions.Peek()).CurrentStatements.Add(popVal);
+               ((ConditionStackElement)stkNestedConditions.Peek()).ChildStatements.Add(popVal.Statement);
             else
-               mthExecuteRules.Statements.Add(popVal);
+               mthExecuteRules.Statements.Add(popVal.Statement);
          }
       }
 
@@ -2068,9 +2139,9 @@ namespace SGDK2
       {
          CodeTypeDeclaration enumCategories = new CodeTypeDeclaration("TileCategoryName");
          enumCategories.IsEnum = true;
-         foreach(System.Data.DataRowView drv in ProjectData.Category.DefaultView)
+         foreach(System.Data.DataRowView drv in ProjectData.TileCategory.DefaultView)
          {
-            ProjectDataset.CategoryRow drCat = (ProjectDataset.CategoryRow)drv.Row;
+            ProjectDataset.TileCategoryRow drCat = (ProjectDataset.TileCategoryRow)drv.Row;
             enumCategories.Members.Add(new CodeMemberField(typeof(int), drCat.Name));
          }
          ((CodeMemberField)enumCategories.Members[0]).InitExpression = new CodePrimitiveExpression(0);
@@ -2190,7 +2261,7 @@ namespace SGDK2
                   mappings.Add(new CodeObjectCreateExpression("SolidityMapping",
                      new CodeFieldReferenceExpression(
                      new CodeTypeReferenceExpression("TileCategoryName"),
-                     drShape.CategoryRowParent.Name),
+                     drShape.TileCategoryRow.Name),
                      new CodeFieldReferenceExpression(
                      new CodeTypeReferenceExpression(NameToVariable(drShape.ShapeName)), "Value")));
                }
@@ -2223,6 +2294,10 @@ namespace SGDK2
       public static string NameToVariable(string name)
       {
          return name.Replace(" ","_");
+      }
+      public static string NameToMapClass(string name)
+      {
+         return NameToVariable(name) + "_Map";
       }
       #endregion
 

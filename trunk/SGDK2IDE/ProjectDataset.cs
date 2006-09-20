@@ -49,12 +49,6 @@ namespace SGDK2 {
         
         private PlanRuleDataTable tablePlanRule;
         
-        private CategoryDataTable tableCategory;
-        
-        private CategoryTileDataTable tableCategoryTile;
-        
-        private CategoryFrameDataTable tableCategoryFrame;
-        
         private SpriteDefinitionDataTable tableSpriteDefinition;
         
         private SpriteRuleDataTable tableSpriteRule;
@@ -77,6 +71,14 @@ namespace SGDK2 {
         
         private ProjectDataTable tableProject;
         
+        private TileCategoryDataTable tableTileCategory;
+        
+        private CategorizedTilesetDataTable tableCategorizedTileset;
+        
+        private CategoryTileDataTable tableCategoryTile;
+        
+        private CategoryFrameDataTable tableCategoryFrame;
+        
         private DataRelation relationFramesetFrame;
         
         private DataRelation relationTileTileFrame;
@@ -95,10 +97,6 @@ namespace SGDK2 {
         
         private DataRelation relationMapLayer;
         
-        private DataRelation relationCategoryTileCategoryFrame;
-        
-        private DataRelation relationCategoryCategoryTile;
-        
         private DataRelation relationSpriteStateFrame;
         
         private DataRelation relationSpriteDefinitionSpriteRule;
@@ -110,6 +108,12 @@ namespace SGDK2 {
         private DataRelation relationSpriteCategorySpriteCategorySprite;
         
         private DataRelation relationSoliditySolidityShape;
+        
+        private DataRelation relationCategoryTileCategoryFrame;
+        
+        private DataRelation relationCategoryCategoryTile;
+        
+        private DataRelation relationTileCategoryCategorizedTileset;
         
         private DataRelation relationFramesetTileset;
         
@@ -183,15 +187,6 @@ namespace SGDK2 {
                 if ((ds.Tables["PlanRule"] != null)) {
                     this.Tables.Add(new PlanRuleDataTable(ds.Tables["PlanRule"]));
                 }
-                if ((ds.Tables["Category"] != null)) {
-                    this.Tables.Add(new CategoryDataTable(ds.Tables["Category"]));
-                }
-                if ((ds.Tables["CategoryTile"] != null)) {
-                    this.Tables.Add(new CategoryTileDataTable(ds.Tables["CategoryTile"]));
-                }
-                if ((ds.Tables["CategoryFrame"] != null)) {
-                    this.Tables.Add(new CategoryFrameDataTable(ds.Tables["CategoryFrame"]));
-                }
                 if ((ds.Tables["SpriteDefinition"] != null)) {
                     this.Tables.Add(new SpriteDefinitionDataTable(ds.Tables["SpriteDefinition"]));
                 }
@@ -224,6 +219,18 @@ namespace SGDK2 {
                 }
                 if ((ds.Tables["Project"] != null)) {
                     this.Tables.Add(new ProjectDataTable(ds.Tables["Project"]));
+                }
+                if ((ds.Tables["TileCategory"] != null)) {
+                    this.Tables.Add(new TileCategoryDataTable(ds.Tables["TileCategory"]));
+                }
+                if ((ds.Tables["CategorizedTileset"] != null)) {
+                    this.Tables.Add(new CategorizedTilesetDataTable(ds.Tables["CategorizedTileset"]));
+                }
+                if ((ds.Tables["CategoryTile"] != null)) {
+                    this.Tables.Add(new CategoryTileDataTable(ds.Tables["CategoryTile"]));
+                }
+                if ((ds.Tables["CategoryFrame"] != null)) {
+                    this.Tables.Add(new CategoryFrameDataTable(ds.Tables["CategoryFrame"]));
                 }
                 this.DataSetName = ds.DataSetName;
                 this.Prefix = ds.Prefix;
@@ -357,30 +364,6 @@ namespace SGDK2 {
         
         [System.ComponentModel.Browsable(false)]
         [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
-        public CategoryDataTable Category {
-            get {
-                return this.tableCategory;
-            }
-        }
-        
-        [System.ComponentModel.Browsable(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
-        public CategoryTileDataTable CategoryTile {
-            get {
-                return this.tableCategoryTile;
-            }
-        }
-        
-        [System.ComponentModel.Browsable(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
-        public CategoryFrameDataTable CategoryFrame {
-            get {
-                return this.tableCategoryFrame;
-            }
-        }
-        
-        [System.ComponentModel.Browsable(false)]
-        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
         public SpriteDefinitionDataTable SpriteDefinition {
             get {
                 return this.tableSpriteDefinition;
@@ -467,6 +450,38 @@ namespace SGDK2 {
             }
         }
         
+        [System.ComponentModel.Browsable(false)]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        public TileCategoryDataTable TileCategory {
+            get {
+                return this.tableTileCategory;
+            }
+        }
+        
+        [System.ComponentModel.Browsable(false)]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        public CategorizedTilesetDataTable CategorizedTileset {
+            get {
+                return this.tableCategorizedTileset;
+            }
+        }
+        
+        [System.ComponentModel.Browsable(false)]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        public CategoryTileDataTable CategoryTile {
+            get {
+                return this.tableCategoryTile;
+            }
+        }
+        
+        [System.ComponentModel.Browsable(false)]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        public CategoryFrameDataTable CategoryFrame {
+            get {
+                return this.tableCategoryFrame;
+            }
+        }
+        
         public override DataSet Clone() {
             ProjectDataset cln = ((ProjectDataset)(base.Clone()));
             cln.InitVars();
@@ -527,15 +542,6 @@ namespace SGDK2 {
             if ((ds.Tables["PlanRule"] != null)) {
                 this.Tables.Add(new PlanRuleDataTable(ds.Tables["PlanRule"]));
             }
-            if ((ds.Tables["Category"] != null)) {
-                this.Tables.Add(new CategoryDataTable(ds.Tables["Category"]));
-            }
-            if ((ds.Tables["CategoryTile"] != null)) {
-                this.Tables.Add(new CategoryTileDataTable(ds.Tables["CategoryTile"]));
-            }
-            if ((ds.Tables["CategoryFrame"] != null)) {
-                this.Tables.Add(new CategoryFrameDataTable(ds.Tables["CategoryFrame"]));
-            }
             if ((ds.Tables["SpriteDefinition"] != null)) {
                 this.Tables.Add(new SpriteDefinitionDataTable(ds.Tables["SpriteDefinition"]));
             }
@@ -568,6 +574,18 @@ namespace SGDK2 {
             }
             if ((ds.Tables["Project"] != null)) {
                 this.Tables.Add(new ProjectDataTable(ds.Tables["Project"]));
+            }
+            if ((ds.Tables["TileCategory"] != null)) {
+                this.Tables.Add(new TileCategoryDataTable(ds.Tables["TileCategory"]));
+            }
+            if ((ds.Tables["CategorizedTileset"] != null)) {
+                this.Tables.Add(new CategorizedTilesetDataTable(ds.Tables["CategorizedTileset"]));
+            }
+            if ((ds.Tables["CategoryTile"] != null)) {
+                this.Tables.Add(new CategoryTileDataTable(ds.Tables["CategoryTile"]));
+            }
+            if ((ds.Tables["CategoryFrame"] != null)) {
+                this.Tables.Add(new CategoryFrameDataTable(ds.Tables["CategoryFrame"]));
             }
             this.DataSetName = ds.DataSetName;
             this.Prefix = ds.Prefix;
@@ -643,18 +661,6 @@ namespace SGDK2 {
             if ((this.tablePlanRule != null)) {
                 this.tablePlanRule.InitVars();
             }
-            this.tableCategory = ((CategoryDataTable)(this.Tables["Category"]));
-            if ((this.tableCategory != null)) {
-                this.tableCategory.InitVars();
-            }
-            this.tableCategoryTile = ((CategoryTileDataTable)(this.Tables["CategoryTile"]));
-            if ((this.tableCategoryTile != null)) {
-                this.tableCategoryTile.InitVars();
-            }
-            this.tableCategoryFrame = ((CategoryFrameDataTable)(this.Tables["CategoryFrame"]));
-            if ((this.tableCategoryFrame != null)) {
-                this.tableCategoryFrame.InitVars();
-            }
             this.tableSpriteDefinition = ((SpriteDefinitionDataTable)(this.Tables["SpriteDefinition"]));
             if ((this.tableSpriteDefinition != null)) {
                 this.tableSpriteDefinition.InitVars();
@@ -699,6 +705,22 @@ namespace SGDK2 {
             if ((this.tableProject != null)) {
                 this.tableProject.InitVars();
             }
+            this.tableTileCategory = ((TileCategoryDataTable)(this.Tables["TileCategory"]));
+            if ((this.tableTileCategory != null)) {
+                this.tableTileCategory.InitVars();
+            }
+            this.tableCategorizedTileset = ((CategorizedTilesetDataTable)(this.Tables["CategorizedTileset"]));
+            if ((this.tableCategorizedTileset != null)) {
+                this.tableCategorizedTileset.InitVars();
+            }
+            this.tableCategoryTile = ((CategoryTileDataTable)(this.Tables["CategoryTile"]));
+            if ((this.tableCategoryTile != null)) {
+                this.tableCategoryTile.InitVars();
+            }
+            this.tableCategoryFrame = ((CategoryFrameDataTable)(this.Tables["CategoryFrame"]));
+            if ((this.tableCategoryFrame != null)) {
+                this.tableCategoryFrame.InitVars();
+            }
             this.relationFramesetFrame = this.Relations["FramesetFrame"];
             this.relationTileTileFrame = this.Relations["TileTileFrame"];
             this.relationTilesetTile = this.Relations["TilesetTile"];
@@ -708,14 +730,15 @@ namespace SGDK2 {
             this.relationLayerSprite = this.Relations["LayerSprite"];
             this.relationLayerSpritePlan = this.Relations["LayerSpritePlan"];
             this.relationMapLayer = this.Relations["MapLayer"];
-            this.relationCategoryTileCategoryFrame = this.Relations["CategoryTileCategoryFrame"];
-            this.relationCategoryCategoryTile = this.Relations["CategoryCategoryTile"];
             this.relationSpriteStateFrame = this.Relations["SpriteStateFrame"];
             this.relationSpriteDefinitionSpriteRule = this.Relations["SpriteDefinitionSpriteRule"];
             this.relationSpriteDefinitionSpriteParameter = this.Relations["SpriteDefinitionSpriteParameter"];
             this.relationSpriteDefinitionState = this.Relations["SpriteDefinitionState"];
             this.relationSpriteCategorySpriteCategorySprite = this.Relations["SpriteCategorySpriteCategorySprite"];
             this.relationSoliditySolidityShape = this.Relations["SoliditySolidityShape"];
+            this.relationCategoryTileCategoryFrame = this.Relations["CategoryTileCategoryFrame"];
+            this.relationCategoryCategoryTile = this.Relations["CategoryCategoryTile"];
+            this.relationTileCategoryCategorizedTileset = this.Relations["TileCategoryCategorizedTileset"];
             this.relationFramesetTileset = this.Relations["FramesetTileset"];
             this.relationCounterTile = this.Relations["CounterTile"];
             this.relationTilesetLayer = this.Relations["TilesetLayer"];
@@ -762,12 +785,6 @@ namespace SGDK2 {
             this.Tables.Add(this.tableCoordinate);
             this.tablePlanRule = new PlanRuleDataTable();
             this.Tables.Add(this.tablePlanRule);
-            this.tableCategory = new CategoryDataTable();
-            this.Tables.Add(this.tableCategory);
-            this.tableCategoryTile = new CategoryTileDataTable();
-            this.Tables.Add(this.tableCategoryTile);
-            this.tableCategoryFrame = new CategoryFrameDataTable();
-            this.Tables.Add(this.tableCategoryFrame);
             this.tableSpriteDefinition = new SpriteDefinitionDataTable();
             this.Tables.Add(this.tableSpriteDefinition);
             this.tableSpriteRule = new SpriteRuleDataTable();
@@ -790,6 +807,14 @@ namespace SGDK2 {
             this.Tables.Add(this.tableSourceCode);
             this.tableProject = new ProjectDataTable();
             this.Tables.Add(this.tableProject);
+            this.tableTileCategory = new TileCategoryDataTable();
+            this.Tables.Add(this.tableTileCategory);
+            this.tableCategorizedTileset = new CategorizedTilesetDataTable();
+            this.Tables.Add(this.tableCategorizedTileset);
+            this.tableCategoryTile = new CategoryTileDataTable();
+            this.Tables.Add(this.tableCategoryTile);
+            this.tableCategoryFrame = new CategoryFrameDataTable();
+            this.Tables.Add(this.tableCategoryFrame);
             ForeignKeyConstraint fkc;
             fkc = new ForeignKeyConstraint("FramesetFrame", new DataColumn[] {
                         this.tableFrameset.NameColumn}, new DataColumn[] {
@@ -920,33 +945,6 @@ namespace SGDK2 {
             fkc.AcceptRejectRule = System.Data.AcceptRejectRule.None;
             fkc.DeleteRule = System.Data.Rule.Cascade;
             fkc.UpdateRule = System.Data.Rule.Cascade;
-            fkc = new ForeignKeyConstraint("TilesetCategory", new DataColumn[] {
-                        this.tableTileset.NameColumn}, new DataColumn[] {
-                        this.tableCategory.TilesetColumn});
-            this.tableCategory.Constraints.Add(fkc);
-            fkc.AcceptRejectRule = System.Data.AcceptRejectRule.None;
-            fkc.DeleteRule = System.Data.Rule.Cascade;
-            fkc.UpdateRule = System.Data.Rule.Cascade;
-            fkc = new ForeignKeyConstraint("CategoryCategoryTile", new DataColumn[] {
-                        this.tableCategory.TilesetColumn,
-                        this.tableCategory.NameColumn}, new DataColumn[] {
-                        this.tableCategoryTile.TilesetColumn,
-                        this.tableCategoryTile.CategoryColumn});
-            this.tableCategoryTile.Constraints.Add(fkc);
-            fkc.AcceptRejectRule = System.Data.AcceptRejectRule.None;
-            fkc.DeleteRule = System.Data.Rule.Cascade;
-            fkc.UpdateRule = System.Data.Rule.Cascade;
-            fkc = new ForeignKeyConstraint("CategoryTileCategoryFrame", new DataColumn[] {
-                        this.tableCategoryTile.TilesetColumn,
-                        this.tableCategoryTile.CategoryColumn,
-                        this.tableCategoryTile.TileValueColumn}, new DataColumn[] {
-                        this.tableCategoryFrame.TilesetColumn,
-                        this.tableCategoryFrame.CategoryColumn,
-                        this.tableCategoryFrame.TileValueColumn});
-            this.tableCategoryFrame.Constraints.Add(fkc);
-            fkc.AcceptRejectRule = System.Data.AcceptRejectRule.None;
-            fkc.DeleteRule = System.Data.Rule.Cascade;
-            fkc.UpdateRule = System.Data.Rule.Cascade;
             fkc = new ForeignKeyConstraint("SpriteDefinitionSpriteRule", new DataColumn[] {
                         this.tableSpriteDefinition.NameColumn}, new DataColumn[] {
                         this.tableSpriteRule.DefinitionNameColumn});
@@ -1006,9 +1004,7 @@ namespace SGDK2 {
             fkc.DeleteRule = System.Data.Rule.Cascade;
             fkc.UpdateRule = System.Data.Rule.Cascade;
             fkc = new ForeignKeyConstraint("CategorySolidityShape", new DataColumn[] {
-                        this.tableCategory.TilesetColumn,
-                        this.tableCategory.NameColumn}, new DataColumn[] {
-                        this.tableSolidityShape.TilesetNameColumn,
+                        this.tableTileCategory.NameColumn}, new DataColumn[] {
                         this.tableSolidityShape.CategoryNameColumn});
             this.tableSolidityShape.Constraints.Add(fkc);
             fkc.AcceptRejectRule = System.Data.AcceptRejectRule.None;
@@ -1020,6 +1016,40 @@ namespace SGDK2 {
             this.tableProject.Constraints.Add(fkc);
             fkc.AcceptRejectRule = System.Data.AcceptRejectRule.None;
             fkc.DeleteRule = System.Data.Rule.SetNull;
+            fkc.UpdateRule = System.Data.Rule.Cascade;
+            fkc = new ForeignKeyConstraint("TileCategoryCategorizedTileset", new DataColumn[] {
+                        this.tableTileCategory.NameColumn}, new DataColumn[] {
+                        this.tableCategorizedTileset.NameColumn});
+            this.tableCategorizedTileset.Constraints.Add(fkc);
+            fkc.AcceptRejectRule = System.Data.AcceptRejectRule.None;
+            fkc.DeleteRule = System.Data.Rule.Cascade;
+            fkc.UpdateRule = System.Data.Rule.Cascade;
+            fkc = new ForeignKeyConstraint("TilesetCategory", new DataColumn[] {
+                        this.tableTileset.NameColumn}, new DataColumn[] {
+                        this.tableCategorizedTileset.TilesetColumn});
+            this.tableCategorizedTileset.Constraints.Add(fkc);
+            fkc.AcceptRejectRule = System.Data.AcceptRejectRule.None;
+            fkc.DeleteRule = System.Data.Rule.Cascade;
+            fkc.UpdateRule = System.Data.Rule.Cascade;
+            fkc = new ForeignKeyConstraint("CategoryCategoryTile", new DataColumn[] {
+                        this.tableCategorizedTileset.TilesetColumn,
+                        this.tableCategorizedTileset.NameColumn}, new DataColumn[] {
+                        this.tableCategoryTile.TilesetColumn,
+                        this.tableCategoryTile.CategoryColumn});
+            this.tableCategoryTile.Constraints.Add(fkc);
+            fkc.AcceptRejectRule = System.Data.AcceptRejectRule.None;
+            fkc.DeleteRule = System.Data.Rule.Cascade;
+            fkc.UpdateRule = System.Data.Rule.Cascade;
+            fkc = new ForeignKeyConstraint("CategoryTileCategoryFrame", new DataColumn[] {
+                        this.tableCategoryTile.TilesetColumn,
+                        this.tableCategoryTile.CategoryColumn,
+                        this.tableCategoryTile.TileValueColumn}, new DataColumn[] {
+                        this.tableCategoryFrame.TilesetColumn,
+                        this.tableCategoryFrame.CategoryColumn,
+                        this.tableCategoryFrame.TileValueColumn});
+            this.tableCategoryFrame.Constraints.Add(fkc);
+            fkc.AcceptRejectRule = System.Data.AcceptRejectRule.None;
+            fkc.DeleteRule = System.Data.Rule.Cascade;
             fkc.UpdateRule = System.Data.Rule.Cascade;
             this.relationFramesetFrame = new DataRelation("FramesetFrame", new DataColumn[] {
                         this.tableFrameset.NameColumn}, new DataColumn[] {
@@ -1086,22 +1116,6 @@ namespace SGDK2 {
                         this.tableLayer.MapNameColumn}, false);
             this.relationMapLayer.Nested = true;
             this.Relations.Add(this.relationMapLayer);
-            this.relationCategoryTileCategoryFrame = new DataRelation("CategoryTileCategoryFrame", new DataColumn[] {
-                        this.tableCategoryTile.TilesetColumn,
-                        this.tableCategoryTile.CategoryColumn,
-                        this.tableCategoryTile.TileValueColumn}, new DataColumn[] {
-                        this.tableCategoryFrame.TilesetColumn,
-                        this.tableCategoryFrame.CategoryColumn,
-                        this.tableCategoryFrame.TileValueColumn}, false);
-            this.relationCategoryTileCategoryFrame.Nested = true;
-            this.Relations.Add(this.relationCategoryTileCategoryFrame);
-            this.relationCategoryCategoryTile = new DataRelation("CategoryCategoryTile", new DataColumn[] {
-                        this.tableCategory.TilesetColumn,
-                        this.tableCategory.NameColumn}, new DataColumn[] {
-                        this.tableCategoryTile.TilesetColumn,
-                        this.tableCategoryTile.CategoryColumn}, false);
-            this.relationCategoryCategoryTile.Nested = true;
-            this.Relations.Add(this.relationCategoryCategoryTile);
             this.relationSpriteStateFrame = new DataRelation("SpriteStateFrame", new DataColumn[] {
                         this.tableSpriteState.DefinitionNameColumn,
                         this.tableSpriteState.NameColumn}, new DataColumn[] {
@@ -1134,6 +1148,27 @@ namespace SGDK2 {
                         this.tableSolidityShape.SolidityNameColumn}, false);
             this.relationSoliditySolidityShape.Nested = true;
             this.Relations.Add(this.relationSoliditySolidityShape);
+            this.relationCategoryTileCategoryFrame = new DataRelation("CategoryTileCategoryFrame", new DataColumn[] {
+                        this.tableCategoryTile.TilesetColumn,
+                        this.tableCategoryTile.CategoryColumn,
+                        this.tableCategoryTile.TileValueColumn}, new DataColumn[] {
+                        this.tableCategoryFrame.TilesetColumn,
+                        this.tableCategoryFrame.CategoryColumn,
+                        this.tableCategoryFrame.TileValueColumn}, false);
+            this.relationCategoryTileCategoryFrame.Nested = true;
+            this.Relations.Add(this.relationCategoryTileCategoryFrame);
+            this.relationCategoryCategoryTile = new DataRelation("CategoryCategoryTile", new DataColumn[] {
+                        this.tableCategorizedTileset.TilesetColumn,
+                        this.tableCategorizedTileset.NameColumn}, new DataColumn[] {
+                        this.tableCategoryTile.TilesetColumn,
+                        this.tableCategoryTile.CategoryColumn}, false);
+            this.relationCategoryCategoryTile.Nested = true;
+            this.Relations.Add(this.relationCategoryCategoryTile);
+            this.relationTileCategoryCategorizedTileset = new DataRelation("TileCategoryCategorizedTileset", new DataColumn[] {
+                        this.tableTileCategory.NameColumn}, new DataColumn[] {
+                        this.tableCategorizedTileset.NameColumn}, false);
+            this.relationTileCategoryCategorizedTileset.Nested = true;
+            this.Relations.Add(this.relationTileCategoryCategorizedTileset);
             this.relationFramesetTileset = new DataRelation("FramesetTileset", new DataColumn[] {
                         this.tableFrameset.NameColumn}, new DataColumn[] {
                         this.tableTileset.FramesetColumn}, false);
@@ -1148,7 +1183,7 @@ namespace SGDK2 {
             this.Relations.Add(this.relationTilesetLayer);
             this.relationTilesetCategory = new DataRelation("TilesetCategory", new DataColumn[] {
                         this.tableTileset.NameColumn}, new DataColumn[] {
-                        this.tableCategory.TilesetColumn}, false);
+                        this.tableCategorizedTileset.TilesetColumn}, false);
             this.Relations.Add(this.relationTilesetCategory);
             this.relationSpriteDefinitionSprite = new DataRelation("SpriteDefinitionSprite", new DataColumn[] {
                         this.tableSpriteState.DefinitionNameColumn,
@@ -1167,9 +1202,7 @@ namespace SGDK2 {
                         this.tableSpriteCategorySprite.DefinitionNameColumn}, false);
             this.Relations.Add(this.relationSpriteDefinitionCategory);
             this.relationCategorySolidityShape = new DataRelation("CategorySolidityShape", new DataColumn[] {
-                        this.tableCategory.TilesetColumn,
-                        this.tableCategory.NameColumn}, new DataColumn[] {
-                        this.tableSolidityShape.TilesetNameColumn,
+                        this.tableTileCategory.NameColumn}, new DataColumn[] {
                         this.tableSolidityShape.CategoryNameColumn}, false);
             this.Relations.Add(this.relationCategorySolidityShape);
             this.relationFramesetSpriteState = new DataRelation("FramesetSpriteState", new DataColumn[] {
@@ -1234,18 +1267,6 @@ namespace SGDK2 {
             return false;
         }
         
-        private bool ShouldSerializeCategory() {
-            return false;
-        }
-        
-        private bool ShouldSerializeCategoryTile() {
-            return false;
-        }
-        
-        private bool ShouldSerializeCategoryFrame() {
-            return false;
-        }
-        
         private bool ShouldSerializeSpriteDefinition() {
             return false;
         }
@@ -1290,6 +1311,22 @@ namespace SGDK2 {
             return false;
         }
         
+        private bool ShouldSerializeTileCategory() {
+            return false;
+        }
+        
+        private bool ShouldSerializeCategorizedTileset() {
+            return false;
+        }
+        
+        private bool ShouldSerializeCategoryTile() {
+            return false;
+        }
+        
+        private bool ShouldSerializeCategoryFrame() {
+            return false;
+        }
+        
         private void SchemaChanged(object sender, System.ComponentModel.CollectionChangeEventArgs e) {
             if ((e.Action == System.ComponentModel.CollectionChangeAction.Remove)) {
                 this.InitVars();
@@ -1324,12 +1361,6 @@ namespace SGDK2 {
         
         public delegate void PlanRuleRowChangeEventHandler(object sender, PlanRuleRowChangeEvent e);
         
-        public delegate void CategoryRowChangeEventHandler(object sender, CategoryRowChangeEvent e);
-        
-        public delegate void CategoryTileRowChangeEventHandler(object sender, CategoryTileRowChangeEvent e);
-        
-        public delegate void CategoryFrameRowChangeEventHandler(object sender, CategoryFrameRowChangeEvent e);
-        
         public delegate void SpriteDefinitionRowChangeEventHandler(object sender, SpriteDefinitionRowChangeEvent e);
         
         public delegate void SpriteRuleRowChangeEventHandler(object sender, SpriteRuleRowChangeEvent e);
@@ -1351,6 +1382,14 @@ namespace SGDK2 {
         public delegate void SourceCodeRowChangeEventHandler(object sender, SourceCodeRowChangeEvent e);
         
         public delegate void ProjectRowChangeEventHandler(object sender, ProjectRowChangeEvent e);
+        
+        public delegate void TileCategoryRowChangeEventHandler(object sender, TileCategoryRowChangeEvent e);
+        
+        public delegate void CategorizedTilesetRowChangeEventHandler(object sender, CategorizedTilesetRowChangeEvent e);
+        
+        public delegate void CategoryTileRowChangeEventHandler(object sender, CategoryTileRowChangeEvent e);
+        
+        public delegate void CategoryFrameRowChangeEventHandler(object sender, CategoryFrameRowChangeEvent e);
         
         [System.Diagnostics.DebuggerStepThrough()]
         public class GraphicSheetDataTable : DataTable, System.Collections.IEnumerable {
@@ -2654,8 +2693,8 @@ namespace SGDK2 {
                 return ((LayerRow[])(this.GetChildRows(this.Table.ChildRelations["TilesetLayer"])));
             }
             
-            public CategoryRow[] GetCategoryRows() {
-                return ((CategoryRow[])(this.GetChildRows(this.Table.ChildRelations["TilesetCategory"])));
+            public CategorizedTilesetRow[] GetCategorizedTilesetRows() {
+                return ((CategorizedTilesetRow[])(this.GetChildRows(this.Table.ChildRelations["TilesetCategory"])));
             }
         }
         
@@ -6578,711 +6617,6 @@ namespace SGDK2 {
         }
         
         [System.Diagnostics.DebuggerStepThrough()]
-        public class CategoryDataTable : DataTable, System.Collections.IEnumerable {
-            
-            private DataColumn columnTileset;
-            
-            private DataColumn columnName;
-            
-            internal CategoryDataTable() : 
-                    base("Category") {
-                this.InitClass();
-            }
-            
-            internal CategoryDataTable(DataTable table) : 
-                    base(table.TableName) {
-                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
-                    this.CaseSensitive = table.CaseSensitive;
-                }
-                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
-                    this.Locale = table.Locale;
-                }
-                if ((table.Namespace != table.DataSet.Namespace)) {
-                    this.Namespace = table.Namespace;
-                }
-                this.Prefix = table.Prefix;
-                this.MinimumCapacity = table.MinimumCapacity;
-                this.DisplayExpression = table.DisplayExpression;
-            }
-            
-            [System.ComponentModel.Browsable(false)]
-            public int Count {
-                get {
-                    return this.Rows.Count;
-                }
-            }
-            
-            internal DataColumn TilesetColumn {
-                get {
-                    return this.columnTileset;
-                }
-            }
-            
-            internal DataColumn NameColumn {
-                get {
-                    return this.columnName;
-                }
-            }
-            
-            public CategoryRow this[int index] {
-                get {
-                    return ((CategoryRow)(this.Rows[index]));
-                }
-            }
-            
-            public event CategoryRowChangeEventHandler CategoryRowChanged;
-            
-            public event CategoryRowChangeEventHandler CategoryRowChanging;
-            
-            public event CategoryRowChangeEventHandler CategoryRowDeleted;
-            
-            public event CategoryRowChangeEventHandler CategoryRowDeleting;
-            
-            public void AddCategoryRow(CategoryRow row) {
-                this.Rows.Add(row);
-            }
-            
-            public CategoryRow AddCategoryRow(TilesetRow parentTilesetRowByTilesetCategory, string Name) {
-                CategoryRow rowCategoryRow = ((CategoryRow)(this.NewRow()));
-                rowCategoryRow.ItemArray = new object[] {
-                        parentTilesetRowByTilesetCategory[0],
-                        Name};
-                this.Rows.Add(rowCategoryRow);
-                return rowCategoryRow;
-            }
-            
-            public CategoryRow FindByTilesetName(string Tileset, string Name) {
-                return ((CategoryRow)(this.Rows.Find(new object[] {
-                            Tileset,
-                            Name})));
-            }
-            
-            public System.Collections.IEnumerator GetEnumerator() {
-                return this.Rows.GetEnumerator();
-            }
-            
-            public override DataTable Clone() {
-                CategoryDataTable cln = ((CategoryDataTable)(base.Clone()));
-                cln.InitVars();
-                return cln;
-            }
-            
-            protected override DataTable CreateInstance() {
-                return new CategoryDataTable();
-            }
-            
-            internal void InitVars() {
-                this.columnTileset = this.Columns["Tileset"];
-                this.columnName = this.Columns["Name"];
-            }
-            
-            private void InitClass() {
-                this.columnTileset = new DataColumn("Tileset", typeof(string), null, System.Data.MappingType.Attribute);
-                this.Columns.Add(this.columnTileset);
-                this.columnName = new DataColumn("Name", typeof(string), null, System.Data.MappingType.Attribute);
-                this.Columns.Add(this.columnName);
-                this.Constraints.Add(new UniqueConstraint("CategoryKey", new DataColumn[] {
-                                this.columnTileset,
-                                this.columnName}, true));
-                this.columnTileset.AllowDBNull = false;
-                this.columnTileset.Namespace = "";
-                this.columnName.AllowDBNull = false;
-                this.columnName.Namespace = "";
-            }
-            
-            public CategoryRow NewCategoryRow() {
-                return ((CategoryRow)(this.NewRow()));
-            }
-            
-            protected override DataRow NewRowFromBuilder(DataRowBuilder builder) {
-                return new CategoryRow(builder);
-            }
-            
-            protected override System.Type GetRowType() {
-                return typeof(CategoryRow);
-            }
-            
-            protected override void OnRowChanged(DataRowChangeEventArgs e) {
-                base.OnRowChanged(e);
-                if ((this.CategoryRowChanged != null)) {
-                    this.CategoryRowChanged(this, new CategoryRowChangeEvent(((CategoryRow)(e.Row)), e.Action));
-                }
-            }
-            
-            protected override void OnRowChanging(DataRowChangeEventArgs e) {
-                base.OnRowChanging(e);
-                if ((this.CategoryRowChanging != null)) {
-                    this.CategoryRowChanging(this, new CategoryRowChangeEvent(((CategoryRow)(e.Row)), e.Action));
-                }
-            }
-            
-            protected override void OnRowDeleted(DataRowChangeEventArgs e) {
-                base.OnRowDeleted(e);
-                if ((this.CategoryRowDeleted != null)) {
-                    this.CategoryRowDeleted(this, new CategoryRowChangeEvent(((CategoryRow)(e.Row)), e.Action));
-                }
-            }
-            
-            protected override void OnRowDeleting(DataRowChangeEventArgs e) {
-                base.OnRowDeleting(e);
-                if ((this.CategoryRowDeleting != null)) {
-                    this.CategoryRowDeleting(this, new CategoryRowChangeEvent(((CategoryRow)(e.Row)), e.Action));
-                }
-            }
-            
-            public void RemoveCategoryRow(CategoryRow row) {
-                this.Rows.Remove(row);
-            }
-        }
-        
-        [System.Diagnostics.DebuggerStepThrough()]
-        public class CategoryRow : DataRow {
-            
-            private CategoryDataTable tableCategory;
-            
-            internal CategoryRow(DataRowBuilder rb) : 
-                    base(rb) {
-                this.tableCategory = ((CategoryDataTable)(this.Table));
-            }
-            
-            public string Tileset {
-                get {
-                    return ((string)(this[this.tableCategory.TilesetColumn]));
-                }
-                set {
-                    this[this.tableCategory.TilesetColumn] = value;
-                }
-            }
-            
-            public string Name {
-                get {
-                    return ((string)(this[this.tableCategory.NameColumn]));
-                }
-                set {
-                    this[this.tableCategory.NameColumn] = value;
-                }
-            }
-            
-            public TilesetRow TilesetRow {
-                get {
-                    return ((TilesetRow)(this.GetParentRow(this.Table.ParentRelations["TilesetCategory"])));
-                }
-                set {
-                    this.SetParentRow(value, this.Table.ParentRelations["TilesetCategory"]);
-                }
-            }
-            
-            public CategoryTileRow[] GetCategoryTileRows() {
-                return ((CategoryTileRow[])(this.GetChildRows(this.Table.ChildRelations["CategoryCategoryTile"])));
-            }
-            
-            public SolidityShapeRow[] GetSolidityShapeRows() {
-                return ((SolidityShapeRow[])(this.GetChildRows(this.Table.ChildRelations["CategorySolidityShape"])));
-            }
-        }
-        
-        [System.Diagnostics.DebuggerStepThrough()]
-        public class CategoryRowChangeEvent : EventArgs {
-            
-            private CategoryRow eventRow;
-            
-            private DataRowAction eventAction;
-            
-            public CategoryRowChangeEvent(CategoryRow row, DataRowAction action) {
-                this.eventRow = row;
-                this.eventAction = action;
-            }
-            
-            public CategoryRow Row {
-                get {
-                    return this.eventRow;
-                }
-            }
-            
-            public DataRowAction Action {
-                get {
-                    return this.eventAction;
-                }
-            }
-        }
-        
-        [System.Diagnostics.DebuggerStepThrough()]
-        public class CategoryTileDataTable : DataTable, System.Collections.IEnumerable {
-            
-            private DataColumn columnTileset;
-            
-            private DataColumn columnCategory;
-            
-            private DataColumn columnTileValue;
-            
-            internal CategoryTileDataTable() : 
-                    base("CategoryTile") {
-                this.InitClass();
-            }
-            
-            internal CategoryTileDataTable(DataTable table) : 
-                    base(table.TableName) {
-                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
-                    this.CaseSensitive = table.CaseSensitive;
-                }
-                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
-                    this.Locale = table.Locale;
-                }
-                if ((table.Namespace != table.DataSet.Namespace)) {
-                    this.Namespace = table.Namespace;
-                }
-                this.Prefix = table.Prefix;
-                this.MinimumCapacity = table.MinimumCapacity;
-                this.DisplayExpression = table.DisplayExpression;
-            }
-            
-            [System.ComponentModel.Browsable(false)]
-            public int Count {
-                get {
-                    return this.Rows.Count;
-                }
-            }
-            
-            internal DataColumn TilesetColumn {
-                get {
-                    return this.columnTileset;
-                }
-            }
-            
-            internal DataColumn CategoryColumn {
-                get {
-                    return this.columnCategory;
-                }
-            }
-            
-            internal DataColumn TileValueColumn {
-                get {
-                    return this.columnTileValue;
-                }
-            }
-            
-            public CategoryTileRow this[int index] {
-                get {
-                    return ((CategoryTileRow)(this.Rows[index]));
-                }
-            }
-            
-            public event CategoryTileRowChangeEventHandler CategoryTileRowChanged;
-            
-            public event CategoryTileRowChangeEventHandler CategoryTileRowChanging;
-            
-            public event CategoryTileRowChangeEventHandler CategoryTileRowDeleted;
-            
-            public event CategoryTileRowChangeEventHandler CategoryTileRowDeleting;
-            
-            public void AddCategoryTileRow(CategoryTileRow row) {
-                this.Rows.Add(row);
-            }
-            
-            public CategoryTileRow AddCategoryTileRow(string Tileset, string Category, int TileValue) {
-                CategoryTileRow rowCategoryTileRow = ((CategoryTileRow)(this.NewRow()));
-                rowCategoryTileRow.ItemArray = new object[] {
-                        Tileset,
-                        Category,
-                        TileValue};
-                this.Rows.Add(rowCategoryTileRow);
-                return rowCategoryTileRow;
-            }
-            
-            public CategoryTileRow FindByTilesetCategoryTileValue(string Tileset, string Category, int TileValue) {
-                return ((CategoryTileRow)(this.Rows.Find(new object[] {
-                            Tileset,
-                            Category,
-                            TileValue})));
-            }
-            
-            public System.Collections.IEnumerator GetEnumerator() {
-                return this.Rows.GetEnumerator();
-            }
-            
-            public override DataTable Clone() {
-                CategoryTileDataTable cln = ((CategoryTileDataTable)(base.Clone()));
-                cln.InitVars();
-                return cln;
-            }
-            
-            protected override DataTable CreateInstance() {
-                return new CategoryTileDataTable();
-            }
-            
-            internal void InitVars() {
-                this.columnTileset = this.Columns["Tileset"];
-                this.columnCategory = this.Columns["Category"];
-                this.columnTileValue = this.Columns["TileValue"];
-            }
-            
-            private void InitClass() {
-                this.columnTileset = new DataColumn("Tileset", typeof(string), null, System.Data.MappingType.Hidden);
-                this.Columns.Add(this.columnTileset);
-                this.columnCategory = new DataColumn("Category", typeof(string), null, System.Data.MappingType.Hidden);
-                this.Columns.Add(this.columnCategory);
-                this.columnTileValue = new DataColumn("TileValue", typeof(int), null, System.Data.MappingType.Attribute);
-                this.Columns.Add(this.columnTileValue);
-                this.Constraints.Add(new UniqueConstraint("CategoryTileKey", new DataColumn[] {
-                                this.columnTileset,
-                                this.columnCategory,
-                                this.columnTileValue}, true));
-                this.columnTileset.AllowDBNull = false;
-                this.columnTileset.Namespace = "";
-                this.columnCategory.AllowDBNull = false;
-                this.columnCategory.Namespace = "";
-                this.columnTileValue.AllowDBNull = false;
-                this.columnTileValue.Namespace = "";
-            }
-            
-            public CategoryTileRow NewCategoryTileRow() {
-                return ((CategoryTileRow)(this.NewRow()));
-            }
-            
-            protected override DataRow NewRowFromBuilder(DataRowBuilder builder) {
-                return new CategoryTileRow(builder);
-            }
-            
-            protected override System.Type GetRowType() {
-                return typeof(CategoryTileRow);
-            }
-            
-            protected override void OnRowChanged(DataRowChangeEventArgs e) {
-                base.OnRowChanged(e);
-                if ((this.CategoryTileRowChanged != null)) {
-                    this.CategoryTileRowChanged(this, new CategoryTileRowChangeEvent(((CategoryTileRow)(e.Row)), e.Action));
-                }
-            }
-            
-            protected override void OnRowChanging(DataRowChangeEventArgs e) {
-                base.OnRowChanging(e);
-                if ((this.CategoryTileRowChanging != null)) {
-                    this.CategoryTileRowChanging(this, new CategoryTileRowChangeEvent(((CategoryTileRow)(e.Row)), e.Action));
-                }
-            }
-            
-            protected override void OnRowDeleted(DataRowChangeEventArgs e) {
-                base.OnRowDeleted(e);
-                if ((this.CategoryTileRowDeleted != null)) {
-                    this.CategoryTileRowDeleted(this, new CategoryTileRowChangeEvent(((CategoryTileRow)(e.Row)), e.Action));
-                }
-            }
-            
-            protected override void OnRowDeleting(DataRowChangeEventArgs e) {
-                base.OnRowDeleting(e);
-                if ((this.CategoryTileRowDeleting != null)) {
-                    this.CategoryTileRowDeleting(this, new CategoryTileRowChangeEvent(((CategoryTileRow)(e.Row)), e.Action));
-                }
-            }
-            
-            public void RemoveCategoryTileRow(CategoryTileRow row) {
-                this.Rows.Remove(row);
-            }
-        }
-        
-        [System.Diagnostics.DebuggerStepThrough()]
-        public class CategoryTileRow : DataRow {
-            
-            private CategoryTileDataTable tableCategoryTile;
-            
-            internal CategoryTileRow(DataRowBuilder rb) : 
-                    base(rb) {
-                this.tableCategoryTile = ((CategoryTileDataTable)(this.Table));
-            }
-            
-            public int TileValue {
-                get {
-                    return ((int)(this[this.tableCategoryTile.TileValueColumn]));
-                }
-                set {
-                    this[this.tableCategoryTile.TileValueColumn] = value;
-                }
-            }
-            
-            public CategoryRow CategoryRowParent {
-                get {
-                    return ((CategoryRow)(this.GetParentRow(this.Table.ParentRelations["CategoryCategoryTile"])));
-                }
-                set {
-                    this.SetParentRow(value, this.Table.ParentRelations["CategoryCategoryTile"]);
-                }
-            }
-            
-            public CategoryFrameRow[] GetCategoryFrameRows() {
-                return ((CategoryFrameRow[])(this.GetChildRows(this.Table.ChildRelations["CategoryTileCategoryFrame"])));
-            }
-        }
-        
-        [System.Diagnostics.DebuggerStepThrough()]
-        public class CategoryTileRowChangeEvent : EventArgs {
-            
-            private CategoryTileRow eventRow;
-            
-            private DataRowAction eventAction;
-            
-            public CategoryTileRowChangeEvent(CategoryTileRow row, DataRowAction action) {
-                this.eventRow = row;
-                this.eventAction = action;
-            }
-            
-            public CategoryTileRow Row {
-                get {
-                    return this.eventRow;
-                }
-            }
-            
-            public DataRowAction Action {
-                get {
-                    return this.eventAction;
-                }
-            }
-        }
-        
-        [System.Diagnostics.DebuggerStepThrough()]
-        public class CategoryFrameDataTable : DataTable, System.Collections.IEnumerable {
-            
-            private DataColumn columnTileset;
-            
-            private DataColumn columnCategory;
-            
-            private DataColumn columnTileValue;
-            
-            private DataColumn columnFrame;
-            
-            internal CategoryFrameDataTable() : 
-                    base("CategoryFrame") {
-                this.InitClass();
-            }
-            
-            internal CategoryFrameDataTable(DataTable table) : 
-                    base(table.TableName) {
-                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
-                    this.CaseSensitive = table.CaseSensitive;
-                }
-                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
-                    this.Locale = table.Locale;
-                }
-                if ((table.Namespace != table.DataSet.Namespace)) {
-                    this.Namespace = table.Namespace;
-                }
-                this.Prefix = table.Prefix;
-                this.MinimumCapacity = table.MinimumCapacity;
-                this.DisplayExpression = table.DisplayExpression;
-            }
-            
-            [System.ComponentModel.Browsable(false)]
-            public int Count {
-                get {
-                    return this.Rows.Count;
-                }
-            }
-            
-            internal DataColumn TilesetColumn {
-                get {
-                    return this.columnTileset;
-                }
-            }
-            
-            internal DataColumn CategoryColumn {
-                get {
-                    return this.columnCategory;
-                }
-            }
-            
-            internal DataColumn TileValueColumn {
-                get {
-                    return this.columnTileValue;
-                }
-            }
-            
-            internal DataColumn FrameColumn {
-                get {
-                    return this.columnFrame;
-                }
-            }
-            
-            public CategoryFrameRow this[int index] {
-                get {
-                    return ((CategoryFrameRow)(this.Rows[index]));
-                }
-            }
-            
-            public event CategoryFrameRowChangeEventHandler CategoryFrameRowChanged;
-            
-            public event CategoryFrameRowChangeEventHandler CategoryFrameRowChanging;
-            
-            public event CategoryFrameRowChangeEventHandler CategoryFrameRowDeleted;
-            
-            public event CategoryFrameRowChangeEventHandler CategoryFrameRowDeleting;
-            
-            public void AddCategoryFrameRow(CategoryFrameRow row) {
-                this.Rows.Add(row);
-            }
-            
-            public CategoryFrameRow AddCategoryFrameRow(string Tileset, string Category, int TileValue, short Frame) {
-                CategoryFrameRow rowCategoryFrameRow = ((CategoryFrameRow)(this.NewRow()));
-                rowCategoryFrameRow.ItemArray = new object[] {
-                        Tileset,
-                        Category,
-                        TileValue,
-                        Frame};
-                this.Rows.Add(rowCategoryFrameRow);
-                return rowCategoryFrameRow;
-            }
-            
-            public CategoryFrameRow FindByTilesetCategoryTileValueFrame(string Tileset, string Category, int TileValue, short Frame) {
-                return ((CategoryFrameRow)(this.Rows.Find(new object[] {
-                            Tileset,
-                            Category,
-                            TileValue,
-                            Frame})));
-            }
-            
-            public System.Collections.IEnumerator GetEnumerator() {
-                return this.Rows.GetEnumerator();
-            }
-            
-            public override DataTable Clone() {
-                CategoryFrameDataTable cln = ((CategoryFrameDataTable)(base.Clone()));
-                cln.InitVars();
-                return cln;
-            }
-            
-            protected override DataTable CreateInstance() {
-                return new CategoryFrameDataTable();
-            }
-            
-            internal void InitVars() {
-                this.columnTileset = this.Columns["Tileset"];
-                this.columnCategory = this.Columns["Category"];
-                this.columnTileValue = this.Columns["TileValue"];
-                this.columnFrame = this.Columns["Frame"];
-            }
-            
-            private void InitClass() {
-                this.columnTileset = new DataColumn("Tileset", typeof(string), null, System.Data.MappingType.Hidden);
-                this.Columns.Add(this.columnTileset);
-                this.columnCategory = new DataColumn("Category", typeof(string), null, System.Data.MappingType.Hidden);
-                this.Columns.Add(this.columnCategory);
-                this.columnTileValue = new DataColumn("TileValue", typeof(int), null, System.Data.MappingType.Hidden);
-                this.Columns.Add(this.columnTileValue);
-                this.columnFrame = new DataColumn("Frame", typeof(short), null, System.Data.MappingType.Attribute);
-                this.Columns.Add(this.columnFrame);
-                this.Constraints.Add(new UniqueConstraint("CategoryFrameKey", new DataColumn[] {
-                                this.columnTileset,
-                                this.columnCategory,
-                                this.columnTileValue,
-                                this.columnFrame}, true));
-                this.columnTileset.AllowDBNull = false;
-                this.columnTileset.Namespace = "";
-                this.columnCategory.AllowDBNull = false;
-                this.columnCategory.Namespace = "";
-                this.columnTileValue.AllowDBNull = false;
-                this.columnTileValue.Namespace = "";
-                this.columnFrame.AllowDBNull = false;
-                this.columnFrame.Namespace = "";
-            }
-            
-            public CategoryFrameRow NewCategoryFrameRow() {
-                return ((CategoryFrameRow)(this.NewRow()));
-            }
-            
-            protected override DataRow NewRowFromBuilder(DataRowBuilder builder) {
-                return new CategoryFrameRow(builder);
-            }
-            
-            protected override System.Type GetRowType() {
-                return typeof(CategoryFrameRow);
-            }
-            
-            protected override void OnRowChanged(DataRowChangeEventArgs e) {
-                base.OnRowChanged(e);
-                if ((this.CategoryFrameRowChanged != null)) {
-                    this.CategoryFrameRowChanged(this, new CategoryFrameRowChangeEvent(((CategoryFrameRow)(e.Row)), e.Action));
-                }
-            }
-            
-            protected override void OnRowChanging(DataRowChangeEventArgs e) {
-                base.OnRowChanging(e);
-                if ((this.CategoryFrameRowChanging != null)) {
-                    this.CategoryFrameRowChanging(this, new CategoryFrameRowChangeEvent(((CategoryFrameRow)(e.Row)), e.Action));
-                }
-            }
-            
-            protected override void OnRowDeleted(DataRowChangeEventArgs e) {
-                base.OnRowDeleted(e);
-                if ((this.CategoryFrameRowDeleted != null)) {
-                    this.CategoryFrameRowDeleted(this, new CategoryFrameRowChangeEvent(((CategoryFrameRow)(e.Row)), e.Action));
-                }
-            }
-            
-            protected override void OnRowDeleting(DataRowChangeEventArgs e) {
-                base.OnRowDeleting(e);
-                if ((this.CategoryFrameRowDeleting != null)) {
-                    this.CategoryFrameRowDeleting(this, new CategoryFrameRowChangeEvent(((CategoryFrameRow)(e.Row)), e.Action));
-                }
-            }
-            
-            public void RemoveCategoryFrameRow(CategoryFrameRow row) {
-                this.Rows.Remove(row);
-            }
-        }
-        
-        [System.Diagnostics.DebuggerStepThrough()]
-        public class CategoryFrameRow : DataRow {
-            
-            private CategoryFrameDataTable tableCategoryFrame;
-            
-            internal CategoryFrameRow(DataRowBuilder rb) : 
-                    base(rb) {
-                this.tableCategoryFrame = ((CategoryFrameDataTable)(this.Table));
-            }
-            
-            public short Frame {
-                get {
-                    return ((short)(this[this.tableCategoryFrame.FrameColumn]));
-                }
-                set {
-                    this[this.tableCategoryFrame.FrameColumn] = value;
-                }
-            }
-            
-            public CategoryTileRow CategoryTileRowParent {
-                get {
-                    return ((CategoryTileRow)(this.GetParentRow(this.Table.ParentRelations["CategoryTileCategoryFrame"])));
-                }
-                set {
-                    this.SetParentRow(value, this.Table.ParentRelations["CategoryTileCategoryFrame"]);
-                }
-            }
-        }
-        
-        [System.Diagnostics.DebuggerStepThrough()]
-        public class CategoryFrameRowChangeEvent : EventArgs {
-            
-            private CategoryFrameRow eventRow;
-            
-            private DataRowAction eventAction;
-            
-            public CategoryFrameRowChangeEvent(CategoryFrameRow row, DataRowAction action) {
-                this.eventRow = row;
-                this.eventAction = action;
-            }
-            
-            public CategoryFrameRow Row {
-                get {
-                    return this.eventRow;
-                }
-            }
-            
-            public DataRowAction Action {
-                get {
-                    return this.eventAction;
-                }
-            }
-        }
-        
-        [System.Diagnostics.DebuggerStepThrough()]
         public class SpriteDefinitionDataTable : DataTable, System.Collections.IEnumerable {
             
             private DataColumn columnName;
@@ -9432,8 +8766,6 @@ namespace SGDK2 {
             
             private DataColumn columnShapeName;
             
-            private DataColumn columnTilesetName;
-            
             internal SolidityShapeDataTable() : 
                     base("SolidityShape") {
                 this.InitClass();
@@ -9480,12 +8812,6 @@ namespace SGDK2 {
                 }
             }
             
-            internal DataColumn TilesetNameColumn {
-                get {
-                    return this.columnTilesetName;
-                }
-            }
-            
             public SolidityShapeRow this[int index] {
                 get {
                     return ((SolidityShapeRow)(this.Rows[index]));
@@ -9504,22 +8830,20 @@ namespace SGDK2 {
                 this.Rows.Add(row);
             }
             
-            public SolidityShapeRow AddSolidityShapeRow(SolidityRow parentSolidityRowBySoliditySolidityShape, string CategoryName, string ShapeName, string TilesetName) {
+            public SolidityShapeRow AddSolidityShapeRow(SolidityRow parentSolidityRowBySoliditySolidityShape, TileCategoryRow parentTileCategoryRowByCategorySolidityShape, string ShapeName) {
                 SolidityShapeRow rowSolidityShapeRow = ((SolidityShapeRow)(this.NewRow()));
                 rowSolidityShapeRow.ItemArray = new object[] {
                         parentSolidityRowBySoliditySolidityShape[0],
-                        CategoryName,
-                        ShapeName,
-                        TilesetName};
+                        parentTileCategoryRowByCategorySolidityShape[0],
+                        ShapeName};
                 this.Rows.Add(rowSolidityShapeRow);
                 return rowSolidityShapeRow;
             }
             
-            public SolidityShapeRow FindBySolidityNameCategoryNameTilesetName(string SolidityName, string CategoryName, string TilesetName) {
+            public SolidityShapeRow FindBySolidityNameCategoryName(string SolidityName, string CategoryName) {
                 return ((SolidityShapeRow)(this.Rows.Find(new object[] {
                             SolidityName,
-                            CategoryName,
-                            TilesetName})));
+                            CategoryName})));
             }
             
             public System.Collections.IEnumerator GetEnumerator() {
@@ -9540,7 +8864,6 @@ namespace SGDK2 {
                 this.columnSolidityName = this.Columns["SolidityName"];
                 this.columnCategoryName = this.Columns["CategoryName"];
                 this.columnShapeName = this.Columns["ShapeName"];
-                this.columnTilesetName = this.Columns["TilesetName"];
             }
             
             private void InitClass() {
@@ -9550,19 +8873,14 @@ namespace SGDK2 {
                 this.Columns.Add(this.columnCategoryName);
                 this.columnShapeName = new DataColumn("ShapeName", typeof(string), null, System.Data.MappingType.Attribute);
                 this.Columns.Add(this.columnShapeName);
-                this.columnTilesetName = new DataColumn("TilesetName", typeof(string), null, System.Data.MappingType.Attribute);
-                this.Columns.Add(this.columnTilesetName);
                 this.Constraints.Add(new UniqueConstraint("SolidityShapeKey", new DataColumn[] {
                                 this.columnSolidityName,
-                                this.columnCategoryName,
-                                this.columnTilesetName}, true));
+                                this.columnCategoryName}, true));
                 this.columnSolidityName.AllowDBNull = false;
                 this.columnSolidityName.Namespace = "";
                 this.columnCategoryName.AllowDBNull = false;
                 this.columnCategoryName.Namespace = "";
                 this.columnShapeName.Namespace = "";
-                this.columnTilesetName.AllowDBNull = false;
-                this.columnTilesetName.Namespace = "";
             }
             
             public SolidityShapeRow NewSolidityShapeRow() {
@@ -9643,15 +8961,6 @@ namespace SGDK2 {
                 }
             }
             
-            public string TilesetName {
-                get {
-                    return ((string)(this[this.tableSolidityShape.TilesetNameColumn]));
-                }
-                set {
-                    this[this.tableSolidityShape.TilesetNameColumn] = value;
-                }
-            }
-            
             public SolidityRow SolidityRow {
                 get {
                     return ((SolidityRow)(this.GetParentRow(this.Table.ParentRelations["SoliditySolidityShape"])));
@@ -9661,9 +8970,9 @@ namespace SGDK2 {
                 }
             }
             
-            public CategoryRow CategoryRowParent {
+            public TileCategoryRow TileCategoryRow {
                 get {
-                    return ((CategoryRow)(this.GetParentRow(this.Table.ParentRelations["CategorySolidityShape"])));
+                    return ((TileCategoryRow)(this.GetParentRow(this.Table.ParentRelations["CategorySolidityShape"])));
                 }
                 set {
                     this.SetParentRow(value, this.Table.ParentRelations["CategorySolidityShape"]);
@@ -10222,6 +9531,912 @@ namespace SGDK2 {
             }
             
             public ProjectRow Row {
+                get {
+                    return this.eventRow;
+                }
+            }
+            
+            public DataRowAction Action {
+                get {
+                    return this.eventAction;
+                }
+            }
+        }
+        
+        [System.Diagnostics.DebuggerStepThrough()]
+        public class TileCategoryDataTable : DataTable, System.Collections.IEnumerable {
+            
+            private DataColumn columnName;
+            
+            internal TileCategoryDataTable() : 
+                    base("TileCategory") {
+                this.InitClass();
+            }
+            
+            internal TileCategoryDataTable(DataTable table) : 
+                    base(table.TableName) {
+                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
+                    this.CaseSensitive = table.CaseSensitive;
+                }
+                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
+                    this.Locale = table.Locale;
+                }
+                if ((table.Namespace != table.DataSet.Namespace)) {
+                    this.Namespace = table.Namespace;
+                }
+                this.Prefix = table.Prefix;
+                this.MinimumCapacity = table.MinimumCapacity;
+                this.DisplayExpression = table.DisplayExpression;
+            }
+            
+            [System.ComponentModel.Browsable(false)]
+            public int Count {
+                get {
+                    return this.Rows.Count;
+                }
+            }
+            
+            internal DataColumn NameColumn {
+                get {
+                    return this.columnName;
+                }
+            }
+            
+            public TileCategoryRow this[int index] {
+                get {
+                    return ((TileCategoryRow)(this.Rows[index]));
+                }
+            }
+            
+            public event TileCategoryRowChangeEventHandler TileCategoryRowChanged;
+            
+            public event TileCategoryRowChangeEventHandler TileCategoryRowChanging;
+            
+            public event TileCategoryRowChangeEventHandler TileCategoryRowDeleted;
+            
+            public event TileCategoryRowChangeEventHandler TileCategoryRowDeleting;
+            
+            public void AddTileCategoryRow(TileCategoryRow row) {
+                this.Rows.Add(row);
+            }
+            
+            public TileCategoryRow AddTileCategoryRow(string Name) {
+                TileCategoryRow rowTileCategoryRow = ((TileCategoryRow)(this.NewRow()));
+                rowTileCategoryRow.ItemArray = new object[] {
+                        Name};
+                this.Rows.Add(rowTileCategoryRow);
+                return rowTileCategoryRow;
+            }
+            
+            public TileCategoryRow FindByName(string Name) {
+                return ((TileCategoryRow)(this.Rows.Find(new object[] {
+                            Name})));
+            }
+            
+            public System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
+            }
+            
+            public override DataTable Clone() {
+                TileCategoryDataTable cln = ((TileCategoryDataTable)(base.Clone()));
+                cln.InitVars();
+                return cln;
+            }
+            
+            protected override DataTable CreateInstance() {
+                return new TileCategoryDataTable();
+            }
+            
+            internal void InitVars() {
+                this.columnName = this.Columns["Name"];
+            }
+            
+            private void InitClass() {
+                this.columnName = new DataColumn("Name", typeof(string), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnName);
+                this.Constraints.Add(new UniqueConstraint("CategoryKey", new DataColumn[] {
+                                this.columnName}, true));
+                this.columnName.AllowDBNull = false;
+                this.columnName.Unique = true;
+                this.columnName.Namespace = "";
+            }
+            
+            public TileCategoryRow NewTileCategoryRow() {
+                return ((TileCategoryRow)(this.NewRow()));
+            }
+            
+            protected override DataRow NewRowFromBuilder(DataRowBuilder builder) {
+                return new TileCategoryRow(builder);
+            }
+            
+            protected override System.Type GetRowType() {
+                return typeof(TileCategoryRow);
+            }
+            
+            protected override void OnRowChanged(DataRowChangeEventArgs e) {
+                base.OnRowChanged(e);
+                if ((this.TileCategoryRowChanged != null)) {
+                    this.TileCategoryRowChanged(this, new TileCategoryRowChangeEvent(((TileCategoryRow)(e.Row)), e.Action));
+                }
+            }
+            
+            protected override void OnRowChanging(DataRowChangeEventArgs e) {
+                base.OnRowChanging(e);
+                if ((this.TileCategoryRowChanging != null)) {
+                    this.TileCategoryRowChanging(this, new TileCategoryRowChangeEvent(((TileCategoryRow)(e.Row)), e.Action));
+                }
+            }
+            
+            protected override void OnRowDeleted(DataRowChangeEventArgs e) {
+                base.OnRowDeleted(e);
+                if ((this.TileCategoryRowDeleted != null)) {
+                    this.TileCategoryRowDeleted(this, new TileCategoryRowChangeEvent(((TileCategoryRow)(e.Row)), e.Action));
+                }
+            }
+            
+            protected override void OnRowDeleting(DataRowChangeEventArgs e) {
+                base.OnRowDeleting(e);
+                if ((this.TileCategoryRowDeleting != null)) {
+                    this.TileCategoryRowDeleting(this, new TileCategoryRowChangeEvent(((TileCategoryRow)(e.Row)), e.Action));
+                }
+            }
+            
+            public void RemoveTileCategoryRow(TileCategoryRow row) {
+                this.Rows.Remove(row);
+            }
+        }
+        
+        [System.Diagnostics.DebuggerStepThrough()]
+        public class TileCategoryRow : DataRow {
+            
+            private TileCategoryDataTable tableTileCategory;
+            
+            internal TileCategoryRow(DataRowBuilder rb) : 
+                    base(rb) {
+                this.tableTileCategory = ((TileCategoryDataTable)(this.Table));
+            }
+            
+            public string Name {
+                get {
+                    return ((string)(this[this.tableTileCategory.NameColumn]));
+                }
+                set {
+                    this[this.tableTileCategory.NameColumn] = value;
+                }
+            }
+            
+            public CategorizedTilesetRow[] GetCategorizedTilesetRows() {
+                return ((CategorizedTilesetRow[])(this.GetChildRows(this.Table.ChildRelations["TileCategoryCategorizedTileset"])));
+            }
+            
+            public SolidityShapeRow[] GetSolidityShapeRows() {
+                return ((SolidityShapeRow[])(this.GetChildRows(this.Table.ChildRelations["CategorySolidityShape"])));
+            }
+        }
+        
+        [System.Diagnostics.DebuggerStepThrough()]
+        public class TileCategoryRowChangeEvent : EventArgs {
+            
+            private TileCategoryRow eventRow;
+            
+            private DataRowAction eventAction;
+            
+            public TileCategoryRowChangeEvent(TileCategoryRow row, DataRowAction action) {
+                this.eventRow = row;
+                this.eventAction = action;
+            }
+            
+            public TileCategoryRow Row {
+                get {
+                    return this.eventRow;
+                }
+            }
+            
+            public DataRowAction Action {
+                get {
+                    return this.eventAction;
+                }
+            }
+        }
+        
+        [System.Diagnostics.DebuggerStepThrough()]
+        public class CategorizedTilesetDataTable : DataTable, System.Collections.IEnumerable {
+            
+            private DataColumn columnTileset;
+            
+            private DataColumn columnName;
+            
+            internal CategorizedTilesetDataTable() : 
+                    base("CategorizedTileset") {
+                this.InitClass();
+            }
+            
+            internal CategorizedTilesetDataTable(DataTable table) : 
+                    base(table.TableName) {
+                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
+                    this.CaseSensitive = table.CaseSensitive;
+                }
+                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
+                    this.Locale = table.Locale;
+                }
+                if ((table.Namespace != table.DataSet.Namespace)) {
+                    this.Namespace = table.Namespace;
+                }
+                this.Prefix = table.Prefix;
+                this.MinimumCapacity = table.MinimumCapacity;
+                this.DisplayExpression = table.DisplayExpression;
+            }
+            
+            [System.ComponentModel.Browsable(false)]
+            public int Count {
+                get {
+                    return this.Rows.Count;
+                }
+            }
+            
+            internal DataColumn TilesetColumn {
+                get {
+                    return this.columnTileset;
+                }
+            }
+            
+            internal DataColumn NameColumn {
+                get {
+                    return this.columnName;
+                }
+            }
+            
+            public CategorizedTilesetRow this[int index] {
+                get {
+                    return ((CategorizedTilesetRow)(this.Rows[index]));
+                }
+            }
+            
+            public event CategorizedTilesetRowChangeEventHandler CategorizedTilesetRowChanged;
+            
+            public event CategorizedTilesetRowChangeEventHandler CategorizedTilesetRowChanging;
+            
+            public event CategorizedTilesetRowChangeEventHandler CategorizedTilesetRowDeleted;
+            
+            public event CategorizedTilesetRowChangeEventHandler CategorizedTilesetRowDeleting;
+            
+            public void AddCategorizedTilesetRow(CategorizedTilesetRow row) {
+                this.Rows.Add(row);
+            }
+            
+            public CategorizedTilesetRow AddCategorizedTilesetRow(TilesetRow parentTilesetRowByTilesetCategory, TileCategoryRow parentTileCategoryRowByTileCategoryCategorizedTileset) {
+                CategorizedTilesetRow rowCategorizedTilesetRow = ((CategorizedTilesetRow)(this.NewRow()));
+                rowCategorizedTilesetRow.ItemArray = new object[] {
+                        parentTilesetRowByTilesetCategory[0],
+                        parentTileCategoryRowByTileCategoryCategorizedTileset[0]};
+                this.Rows.Add(rowCategorizedTilesetRow);
+                return rowCategorizedTilesetRow;
+            }
+            
+            public CategorizedTilesetRow FindByTilesetName(string Tileset, string Name) {
+                return ((CategorizedTilesetRow)(this.Rows.Find(new object[] {
+                            Tileset,
+                            Name})));
+            }
+            
+            public System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
+            }
+            
+            public override DataTable Clone() {
+                CategorizedTilesetDataTable cln = ((CategorizedTilesetDataTable)(base.Clone()));
+                cln.InitVars();
+                return cln;
+            }
+            
+            protected override DataTable CreateInstance() {
+                return new CategorizedTilesetDataTable();
+            }
+            
+            internal void InitVars() {
+                this.columnTileset = this.Columns["Tileset"];
+                this.columnName = this.Columns["Name"];
+            }
+            
+            private void InitClass() {
+                this.columnTileset = new DataColumn("Tileset", typeof(string), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnTileset);
+                this.columnName = new DataColumn("Name", typeof(string), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnName);
+                this.Constraints.Add(new UniqueConstraint("CategorizedTilesetKey", new DataColumn[] {
+                                this.columnTileset,
+                                this.columnName}, true));
+                this.columnTileset.AllowDBNull = false;
+                this.columnTileset.Namespace = "";
+                this.columnName.AllowDBNull = false;
+                this.columnName.Namespace = "";
+            }
+            
+            public CategorizedTilesetRow NewCategorizedTilesetRow() {
+                return ((CategorizedTilesetRow)(this.NewRow()));
+            }
+            
+            protected override DataRow NewRowFromBuilder(DataRowBuilder builder) {
+                return new CategorizedTilesetRow(builder);
+            }
+            
+            protected override System.Type GetRowType() {
+                return typeof(CategorizedTilesetRow);
+            }
+            
+            protected override void OnRowChanged(DataRowChangeEventArgs e) {
+                base.OnRowChanged(e);
+                if ((this.CategorizedTilesetRowChanged != null)) {
+                    this.CategorizedTilesetRowChanged(this, new CategorizedTilesetRowChangeEvent(((CategorizedTilesetRow)(e.Row)), e.Action));
+                }
+            }
+            
+            protected override void OnRowChanging(DataRowChangeEventArgs e) {
+                base.OnRowChanging(e);
+                if ((this.CategorizedTilesetRowChanging != null)) {
+                    this.CategorizedTilesetRowChanging(this, new CategorizedTilesetRowChangeEvent(((CategorizedTilesetRow)(e.Row)), e.Action));
+                }
+            }
+            
+            protected override void OnRowDeleted(DataRowChangeEventArgs e) {
+                base.OnRowDeleted(e);
+                if ((this.CategorizedTilesetRowDeleted != null)) {
+                    this.CategorizedTilesetRowDeleted(this, new CategorizedTilesetRowChangeEvent(((CategorizedTilesetRow)(e.Row)), e.Action));
+                }
+            }
+            
+            protected override void OnRowDeleting(DataRowChangeEventArgs e) {
+                base.OnRowDeleting(e);
+                if ((this.CategorizedTilesetRowDeleting != null)) {
+                    this.CategorizedTilesetRowDeleting(this, new CategorizedTilesetRowChangeEvent(((CategorizedTilesetRow)(e.Row)), e.Action));
+                }
+            }
+            
+            public void RemoveCategorizedTilesetRow(CategorizedTilesetRow row) {
+                this.Rows.Remove(row);
+            }
+        }
+        
+        [System.Diagnostics.DebuggerStepThrough()]
+        public class CategorizedTilesetRow : DataRow {
+            
+            private CategorizedTilesetDataTable tableCategorizedTileset;
+            
+            internal CategorizedTilesetRow(DataRowBuilder rb) : 
+                    base(rb) {
+                this.tableCategorizedTileset = ((CategorizedTilesetDataTable)(this.Table));
+            }
+            
+            public string Tileset {
+                get {
+                    return ((string)(this[this.tableCategorizedTileset.TilesetColumn]));
+                }
+                set {
+                    this[this.tableCategorizedTileset.TilesetColumn] = value;
+                }
+            }
+            
+            public string Name {
+                get {
+                    return ((string)(this[this.tableCategorizedTileset.NameColumn]));
+                }
+                set {
+                    this[this.tableCategorizedTileset.NameColumn] = value;
+                }
+            }
+            
+            public TileCategoryRow TileCategoryRow {
+                get {
+                    return ((TileCategoryRow)(this.GetParentRow(this.Table.ParentRelations["TileCategoryCategorizedTileset"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["TileCategoryCategorizedTileset"]);
+                }
+            }
+            
+            public TilesetRow TilesetRow {
+                get {
+                    return ((TilesetRow)(this.GetParentRow(this.Table.ParentRelations["TilesetCategory"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["TilesetCategory"]);
+                }
+            }
+            
+            public CategoryTileRow[] GetCategoryTileRows() {
+                return ((CategoryTileRow[])(this.GetChildRows(this.Table.ChildRelations["CategoryCategoryTile"])));
+            }
+        }
+        
+        [System.Diagnostics.DebuggerStepThrough()]
+        public class CategorizedTilesetRowChangeEvent : EventArgs {
+            
+            private CategorizedTilesetRow eventRow;
+            
+            private DataRowAction eventAction;
+            
+            public CategorizedTilesetRowChangeEvent(CategorizedTilesetRow row, DataRowAction action) {
+                this.eventRow = row;
+                this.eventAction = action;
+            }
+            
+            public CategorizedTilesetRow Row {
+                get {
+                    return this.eventRow;
+                }
+            }
+            
+            public DataRowAction Action {
+                get {
+                    return this.eventAction;
+                }
+            }
+        }
+        
+        [System.Diagnostics.DebuggerStepThrough()]
+        public class CategoryTileDataTable : DataTable, System.Collections.IEnumerable {
+            
+            private DataColumn columnTileset;
+            
+            private DataColumn columnCategory;
+            
+            private DataColumn columnTileValue;
+            
+            internal CategoryTileDataTable() : 
+                    base("CategoryTile") {
+                this.InitClass();
+            }
+            
+            internal CategoryTileDataTable(DataTable table) : 
+                    base(table.TableName) {
+                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
+                    this.CaseSensitive = table.CaseSensitive;
+                }
+                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
+                    this.Locale = table.Locale;
+                }
+                if ((table.Namespace != table.DataSet.Namespace)) {
+                    this.Namespace = table.Namespace;
+                }
+                this.Prefix = table.Prefix;
+                this.MinimumCapacity = table.MinimumCapacity;
+                this.DisplayExpression = table.DisplayExpression;
+            }
+            
+            [System.ComponentModel.Browsable(false)]
+            public int Count {
+                get {
+                    return this.Rows.Count;
+                }
+            }
+            
+            internal DataColumn TilesetColumn {
+                get {
+                    return this.columnTileset;
+                }
+            }
+            
+            internal DataColumn CategoryColumn {
+                get {
+                    return this.columnCategory;
+                }
+            }
+            
+            internal DataColumn TileValueColumn {
+                get {
+                    return this.columnTileValue;
+                }
+            }
+            
+            public CategoryTileRow this[int index] {
+                get {
+                    return ((CategoryTileRow)(this.Rows[index]));
+                }
+            }
+            
+            public event CategoryTileRowChangeEventHandler CategoryTileRowChanged;
+            
+            public event CategoryTileRowChangeEventHandler CategoryTileRowChanging;
+            
+            public event CategoryTileRowChangeEventHandler CategoryTileRowDeleted;
+            
+            public event CategoryTileRowChangeEventHandler CategoryTileRowDeleting;
+            
+            public void AddCategoryTileRow(CategoryTileRow row) {
+                this.Rows.Add(row);
+            }
+            
+            public CategoryTileRow AddCategoryTileRow(string Tileset, string Category, int TileValue) {
+                CategoryTileRow rowCategoryTileRow = ((CategoryTileRow)(this.NewRow()));
+                rowCategoryTileRow.ItemArray = new object[] {
+                        Tileset,
+                        Category,
+                        TileValue};
+                this.Rows.Add(rowCategoryTileRow);
+                return rowCategoryTileRow;
+            }
+            
+            public CategoryTileRow FindByTilesetCategoryTileValue(string Tileset, string Category, int TileValue) {
+                return ((CategoryTileRow)(this.Rows.Find(new object[] {
+                            Tileset,
+                            Category,
+                            TileValue})));
+            }
+            
+            public System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
+            }
+            
+            public override DataTable Clone() {
+                CategoryTileDataTable cln = ((CategoryTileDataTable)(base.Clone()));
+                cln.InitVars();
+                return cln;
+            }
+            
+            protected override DataTable CreateInstance() {
+                return new CategoryTileDataTable();
+            }
+            
+            internal void InitVars() {
+                this.columnTileset = this.Columns["Tileset"];
+                this.columnCategory = this.Columns["Category"];
+                this.columnTileValue = this.Columns["TileValue"];
+            }
+            
+            private void InitClass() {
+                this.columnTileset = new DataColumn("Tileset", typeof(string), null, System.Data.MappingType.Hidden);
+                this.Columns.Add(this.columnTileset);
+                this.columnCategory = new DataColumn("Category", typeof(string), null, System.Data.MappingType.Hidden);
+                this.Columns.Add(this.columnCategory);
+                this.columnTileValue = new DataColumn("TileValue", typeof(int), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnTileValue);
+                this.Constraints.Add(new UniqueConstraint("CategoryTileKey", new DataColumn[] {
+                                this.columnTileset,
+                                this.columnCategory,
+                                this.columnTileValue}, true));
+                this.columnTileset.AllowDBNull = false;
+                this.columnTileset.Namespace = "";
+                this.columnCategory.AllowDBNull = false;
+                this.columnCategory.Namespace = "";
+                this.columnTileValue.AllowDBNull = false;
+                this.columnTileValue.Namespace = "";
+            }
+            
+            public CategoryTileRow NewCategoryTileRow() {
+                return ((CategoryTileRow)(this.NewRow()));
+            }
+            
+            protected override DataRow NewRowFromBuilder(DataRowBuilder builder) {
+                return new CategoryTileRow(builder);
+            }
+            
+            protected override System.Type GetRowType() {
+                return typeof(CategoryTileRow);
+            }
+            
+            protected override void OnRowChanged(DataRowChangeEventArgs e) {
+                base.OnRowChanged(e);
+                if ((this.CategoryTileRowChanged != null)) {
+                    this.CategoryTileRowChanged(this, new CategoryTileRowChangeEvent(((CategoryTileRow)(e.Row)), e.Action));
+                }
+            }
+            
+            protected override void OnRowChanging(DataRowChangeEventArgs e) {
+                base.OnRowChanging(e);
+                if ((this.CategoryTileRowChanging != null)) {
+                    this.CategoryTileRowChanging(this, new CategoryTileRowChangeEvent(((CategoryTileRow)(e.Row)), e.Action));
+                }
+            }
+            
+            protected override void OnRowDeleted(DataRowChangeEventArgs e) {
+                base.OnRowDeleted(e);
+                if ((this.CategoryTileRowDeleted != null)) {
+                    this.CategoryTileRowDeleted(this, new CategoryTileRowChangeEvent(((CategoryTileRow)(e.Row)), e.Action));
+                }
+            }
+            
+            protected override void OnRowDeleting(DataRowChangeEventArgs e) {
+                base.OnRowDeleting(e);
+                if ((this.CategoryTileRowDeleting != null)) {
+                    this.CategoryTileRowDeleting(this, new CategoryTileRowChangeEvent(((CategoryTileRow)(e.Row)), e.Action));
+                }
+            }
+            
+            public void RemoveCategoryTileRow(CategoryTileRow row) {
+                this.Rows.Remove(row);
+            }
+        }
+        
+        [System.Diagnostics.DebuggerStepThrough()]
+        public class CategoryTileRow : DataRow {
+            
+            private CategoryTileDataTable tableCategoryTile;
+            
+            internal CategoryTileRow(DataRowBuilder rb) : 
+                    base(rb) {
+                this.tableCategoryTile = ((CategoryTileDataTable)(this.Table));
+            }
+            
+            public int TileValue {
+                get {
+                    return ((int)(this[this.tableCategoryTile.TileValueColumn]));
+                }
+                set {
+                    this[this.tableCategoryTile.TileValueColumn] = value;
+                }
+            }
+            
+            public CategorizedTilesetRow CategorizedTilesetRowParent {
+                get {
+                    return ((CategorizedTilesetRow)(this.GetParentRow(this.Table.ParentRelations["CategoryCategoryTile"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["CategoryCategoryTile"]);
+                }
+            }
+            
+            public CategoryFrameRow[] GetCategoryFrameRows() {
+                return ((CategoryFrameRow[])(this.GetChildRows(this.Table.ChildRelations["CategoryTileCategoryFrame"])));
+            }
+        }
+        
+        [System.Diagnostics.DebuggerStepThrough()]
+        public class CategoryTileRowChangeEvent : EventArgs {
+            
+            private CategoryTileRow eventRow;
+            
+            private DataRowAction eventAction;
+            
+            public CategoryTileRowChangeEvent(CategoryTileRow row, DataRowAction action) {
+                this.eventRow = row;
+                this.eventAction = action;
+            }
+            
+            public CategoryTileRow Row {
+                get {
+                    return this.eventRow;
+                }
+            }
+            
+            public DataRowAction Action {
+                get {
+                    return this.eventAction;
+                }
+            }
+        }
+        
+        [System.Diagnostics.DebuggerStepThrough()]
+        public class CategoryFrameDataTable : DataTable, System.Collections.IEnumerable {
+            
+            private DataColumn columnTileset;
+            
+            private DataColumn columnCategory;
+            
+            private DataColumn columnTileValue;
+            
+            private DataColumn columnFrame;
+            
+            internal CategoryFrameDataTable() : 
+                    base("CategoryFrame") {
+                this.InitClass();
+            }
+            
+            internal CategoryFrameDataTable(DataTable table) : 
+                    base(table.TableName) {
+                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
+                    this.CaseSensitive = table.CaseSensitive;
+                }
+                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
+                    this.Locale = table.Locale;
+                }
+                if ((table.Namespace != table.DataSet.Namespace)) {
+                    this.Namespace = table.Namespace;
+                }
+                this.Prefix = table.Prefix;
+                this.MinimumCapacity = table.MinimumCapacity;
+                this.DisplayExpression = table.DisplayExpression;
+            }
+            
+            [System.ComponentModel.Browsable(false)]
+            public int Count {
+                get {
+                    return this.Rows.Count;
+                }
+            }
+            
+            internal DataColumn TilesetColumn {
+                get {
+                    return this.columnTileset;
+                }
+            }
+            
+            internal DataColumn CategoryColumn {
+                get {
+                    return this.columnCategory;
+                }
+            }
+            
+            internal DataColumn TileValueColumn {
+                get {
+                    return this.columnTileValue;
+                }
+            }
+            
+            internal DataColumn FrameColumn {
+                get {
+                    return this.columnFrame;
+                }
+            }
+            
+            public CategoryFrameRow this[int index] {
+                get {
+                    return ((CategoryFrameRow)(this.Rows[index]));
+                }
+            }
+            
+            public event CategoryFrameRowChangeEventHandler CategoryFrameRowChanged;
+            
+            public event CategoryFrameRowChangeEventHandler CategoryFrameRowChanging;
+            
+            public event CategoryFrameRowChangeEventHandler CategoryFrameRowDeleted;
+            
+            public event CategoryFrameRowChangeEventHandler CategoryFrameRowDeleting;
+            
+            public void AddCategoryFrameRow(CategoryFrameRow row) {
+                this.Rows.Add(row);
+            }
+            
+            public CategoryFrameRow AddCategoryFrameRow(string Tileset, string Category, int TileValue, short Frame) {
+                CategoryFrameRow rowCategoryFrameRow = ((CategoryFrameRow)(this.NewRow()));
+                rowCategoryFrameRow.ItemArray = new object[] {
+                        Tileset,
+                        Category,
+                        TileValue,
+                        Frame};
+                this.Rows.Add(rowCategoryFrameRow);
+                return rowCategoryFrameRow;
+            }
+            
+            public CategoryFrameRow FindByTilesetCategoryTileValueFrame(string Tileset, string Category, int TileValue, short Frame) {
+                return ((CategoryFrameRow)(this.Rows.Find(new object[] {
+                            Tileset,
+                            Category,
+                            TileValue,
+                            Frame})));
+            }
+            
+            public System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
+            }
+            
+            public override DataTable Clone() {
+                CategoryFrameDataTable cln = ((CategoryFrameDataTable)(base.Clone()));
+                cln.InitVars();
+                return cln;
+            }
+            
+            protected override DataTable CreateInstance() {
+                return new CategoryFrameDataTable();
+            }
+            
+            internal void InitVars() {
+                this.columnTileset = this.Columns["Tileset"];
+                this.columnCategory = this.Columns["Category"];
+                this.columnTileValue = this.Columns["TileValue"];
+                this.columnFrame = this.Columns["Frame"];
+            }
+            
+            private void InitClass() {
+                this.columnTileset = new DataColumn("Tileset", typeof(string), null, System.Data.MappingType.Hidden);
+                this.Columns.Add(this.columnTileset);
+                this.columnCategory = new DataColumn("Category", typeof(string), null, System.Data.MappingType.Hidden);
+                this.Columns.Add(this.columnCategory);
+                this.columnTileValue = new DataColumn("TileValue", typeof(int), null, System.Data.MappingType.Hidden);
+                this.Columns.Add(this.columnTileValue);
+                this.columnFrame = new DataColumn("Frame", typeof(short), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnFrame);
+                this.Constraints.Add(new UniqueConstraint("CategoryFrameKey", new DataColumn[] {
+                                this.columnTileset,
+                                this.columnCategory,
+                                this.columnTileValue,
+                                this.columnFrame}, true));
+                this.columnTileset.AllowDBNull = false;
+                this.columnTileset.Namespace = "";
+                this.columnCategory.AllowDBNull = false;
+                this.columnCategory.Namespace = "";
+                this.columnTileValue.AllowDBNull = false;
+                this.columnTileValue.Namespace = "";
+                this.columnFrame.AllowDBNull = false;
+                this.columnFrame.Namespace = "";
+            }
+            
+            public CategoryFrameRow NewCategoryFrameRow() {
+                return ((CategoryFrameRow)(this.NewRow()));
+            }
+            
+            protected override DataRow NewRowFromBuilder(DataRowBuilder builder) {
+                return new CategoryFrameRow(builder);
+            }
+            
+            protected override System.Type GetRowType() {
+                return typeof(CategoryFrameRow);
+            }
+            
+            protected override void OnRowChanged(DataRowChangeEventArgs e) {
+                base.OnRowChanged(e);
+                if ((this.CategoryFrameRowChanged != null)) {
+                    this.CategoryFrameRowChanged(this, new CategoryFrameRowChangeEvent(((CategoryFrameRow)(e.Row)), e.Action));
+                }
+            }
+            
+            protected override void OnRowChanging(DataRowChangeEventArgs e) {
+                base.OnRowChanging(e);
+                if ((this.CategoryFrameRowChanging != null)) {
+                    this.CategoryFrameRowChanging(this, new CategoryFrameRowChangeEvent(((CategoryFrameRow)(e.Row)), e.Action));
+                }
+            }
+            
+            protected override void OnRowDeleted(DataRowChangeEventArgs e) {
+                base.OnRowDeleted(e);
+                if ((this.CategoryFrameRowDeleted != null)) {
+                    this.CategoryFrameRowDeleted(this, new CategoryFrameRowChangeEvent(((CategoryFrameRow)(e.Row)), e.Action));
+                }
+            }
+            
+            protected override void OnRowDeleting(DataRowChangeEventArgs e) {
+                base.OnRowDeleting(e);
+                if ((this.CategoryFrameRowDeleting != null)) {
+                    this.CategoryFrameRowDeleting(this, new CategoryFrameRowChangeEvent(((CategoryFrameRow)(e.Row)), e.Action));
+                }
+            }
+            
+            public void RemoveCategoryFrameRow(CategoryFrameRow row) {
+                this.Rows.Remove(row);
+            }
+        }
+        
+        [System.Diagnostics.DebuggerStepThrough()]
+        public class CategoryFrameRow : DataRow {
+            
+            private CategoryFrameDataTable tableCategoryFrame;
+            
+            internal CategoryFrameRow(DataRowBuilder rb) : 
+                    base(rb) {
+                this.tableCategoryFrame = ((CategoryFrameDataTable)(this.Table));
+            }
+            
+            public short Frame {
+                get {
+                    return ((short)(this[this.tableCategoryFrame.FrameColumn]));
+                }
+                set {
+                    this[this.tableCategoryFrame.FrameColumn] = value;
+                }
+            }
+            
+            public CategoryTileRow CategoryTileRowParent {
+                get {
+                    return ((CategoryTileRow)(this.GetParentRow(this.Table.ParentRelations["CategoryTileCategoryFrame"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["CategoryTileCategoryFrame"]);
+                }
+            }
+        }
+        
+        [System.Diagnostics.DebuggerStepThrough()]
+        public class CategoryFrameRowChangeEvent : EventArgs {
+            
+            private CategoryFrameRow eventRow;
+            
+            private DataRowAction eventAction;
+            
+            public CategoryFrameRowChangeEvent(CategoryFrameRow row, DataRowAction action) {
+                this.eventRow = row;
+                this.eventAction = action;
+            }
+            
+            public CategoryFrameRow Row {
                 get {
                     return this.eventRow;
                 }

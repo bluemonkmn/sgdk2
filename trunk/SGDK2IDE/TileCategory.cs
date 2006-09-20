@@ -97,7 +97,7 @@ namespace SGDK2
       #endregion
 
       #region Non-control members
-      private ProjectDataset.CategoryRow m_Category;
+      private ProjectDataset.CategorizedTilesetRow m_Category;
       private TileCache m_Tiles;
       // Provides frameset info to the TilesetTiles GraphicBrowser
       private FrameList m_TileProvider;
@@ -133,26 +133,13 @@ namespace SGDK2
       private System.Windows.Forms.StatusBarPanel stpFrameIndexLabel;
       private System.Windows.Forms.StatusBarPanel stpTileIndex;
       private System.Windows.Forms.StatusBarPanel stpFrameIndex;
+      private System.Windows.Forms.Label lblTileset;
+      private System.Windows.Forms.TextBox txtTileset;
       private System.ComponentModel.IContainer components;
       #endregion
 
       #region Initialization and clean-up
-      public frmTileCategory(ProjectDataset.TilesetRow parent)
-      {
-         //
-         // Required for Windows Form Designer support
-         //
-         InitializeComponent();
-
-         int iNew;
-         for (iNew = 1; ProjectData.GetCategory(parent.Name, "New Category " + iNew.ToString()) != null; iNew++)
-            ;
-         m_Category = ProjectData.AddCategoryRow(parent, "New Category " + iNew.ToString());
-         txtName.Text = m_Category.Name;
-         InitializeTiles();
-      }
-
-      public frmTileCategory(ProjectDataset.CategoryRow row)
+      public frmTileCategory(ProjectDataset.CategorizedTilesetRow row)
       {
          //
          // Required for Windows Form Designer support
@@ -161,6 +148,7 @@ namespace SGDK2
 
          m_Category = row;
          txtName.Text = row.Name;
+         txtTileset.Text = row.Tileset;
          InitializeTiles();
       }
 
@@ -209,6 +197,8 @@ namespace SGDK2
          this.stpTileIndex = new System.Windows.Forms.StatusBarPanel();
          this.stpFrameIndexLabel = new System.Windows.Forms.StatusBarPanel();
          this.stpFrameIndex = new System.Windows.Forms.StatusBarPanel();
+         this.lblTileset = new System.Windows.Forms.Label();
+         this.txtTileset = new System.Windows.Forms.TextBox();
          this.pnlParams.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.stpTileIndexLabel)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.stpTileIndex)).BeginInit();
@@ -259,6 +249,8 @@ namespace SGDK2
          // 
          // pnlParams
          // 
+         this.pnlParams.Controls.Add(this.txtTileset);
+         this.pnlParams.Controls.Add(this.lblTileset);
          this.pnlParams.Controls.Add(this.txtName);
          this.pnlParams.Controls.Add(this.lblName);
          this.pnlParams.Dock = System.Windows.Forms.DockStyle.Top;
@@ -273,11 +265,10 @@ namespace SGDK2
             | System.Windows.Forms.AnchorStyles.Right)));
          this.txtName.Location = new System.Drawing.Point(56, 8);
          this.txtName.Name = "txtName";
-         this.txtName.Size = new System.Drawing.Size(328, 20);
+         this.txtName.ReadOnly = true;
+         this.txtName.Size = new System.Drawing.Size(136, 20);
          this.txtName.TabIndex = 2;
          this.txtName.Text = "";
-         this.txtName.Validating += new System.ComponentModel.CancelEventHandler(this.txtName_Validating);
-         this.txtName.Validated += new System.EventHandler(this.txtName_Validated);
          // 
          // lblName
          // 
@@ -328,14 +319,14 @@ namespace SGDK2
          this.dataMonitor.TileFrameRowDeleting += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
          this.dataMonitor.TileRowDeleted += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowChanged);
          this.dataMonitor.CategoryFrameRowDeleting += new SGDK2.ProjectDataset.CategoryFrameRowChangeEventHandler(this.dataMonitor_CategoryFrameRowDeleting);
-         this.dataMonitor.CategoryRowDeleted += new SGDK2.ProjectDataset.CategoryRowChangeEventHandler(this.dataMonitor_CategoryRowDeleted);
+         this.dataMonitor.CategorizedTilesetRowDeleted += new SGDK2.ProjectDataset.CategorizedTilesetRowChangeEventHandler(dataMonitor_CategorizedTilesetRowDeleted);
          this.dataMonitor.CategoryFrameRowChanged += new SGDK2.ProjectDataset.CategoryFrameRowChangeEventHandler(this.dataMonitor_CategoryFrameRowChanged);
          this.dataMonitor.TileFrameRowChanged += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
          this.dataMonitor.TileRowChanged += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowChanged);
          this.dataMonitor.CategoryTileRowChanged += new SGDK2.ProjectDataset.CategoryTileRowChangeEventHandler(this.dataMonitor_CategoryTileRowChanged);
          this.dataMonitor.CategoryTileRowDeleting += new SGDK2.ProjectDataset.CategoryTileRowChangeEventHandler(this.dataMonitor_CategoryTileRowDeleting);
-         this.dataMonitor.TileFrameRowDeleted += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
          this.dataMonitor.TileRowDeleting += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowChanged);
+         this.dataMonitor.TileFrameRowDeleted += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
          this.dataMonitor.CategoryFrameRowDeleted += new SGDK2.ProjectDataset.CategoryFrameRowChangeEventHandler(this.dataMonitor_CategoryFrameRowDeleted);
          this.dataMonitor.CategoryTileRowDeleted += new SGDK2.ProjectDataset.CategoryTileRowChangeEventHandler(this.dataMonitor_CategoryTileRowDeleted);
          this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
@@ -375,7 +366,7 @@ namespace SGDK2
          this.CategoryFrames.Location = new System.Drawing.Point(0, 266);
          this.CategoryFrames.Name = "CategoryFrames";
          this.CategoryFrames.SheetImage = null;
-         this.CategoryFrames.Size = new System.Drawing.Size(392, 119);
+         this.CategoryFrames.Size = new System.Drawing.Size(392, 135);
          this.CategoryFrames.TabIndex = 5;
          this.CategoryFrames.CurrentCellChanged += new System.EventHandler(this.CategoryFrames_CurrentCellChanged);
          this.CategoryFrames.DragDrop += new System.Windows.Forms.DragEventHandler(this.CategoryFrames_DragDrop);
@@ -392,7 +383,7 @@ namespace SGDK2
          // 
          // status
          // 
-         this.status.Location = new System.Drawing.Point(0, 385);
+         this.status.Location = new System.Drawing.Point(0, 401);
          this.status.Name = "status";
          this.status.Panels.AddRange(new System.Windows.Forms.StatusBarPanel[] {
                                                                                   this.stpTileIndexLabel,
@@ -431,10 +422,30 @@ namespace SGDK2
          this.stpFrameIndex.Text = "N/A";
          this.stpFrameIndex.Width = 33;
          // 
+         // lblTileset
+         // 
+         this.lblTileset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+         this.lblTileset.Location = new System.Drawing.Point(200, 8);
+         this.lblTileset.Name = "lblTileset";
+         this.lblTileset.Size = new System.Drawing.Size(48, 20);
+         this.lblTileset.TabIndex = 3;
+         this.lblTileset.Text = "Tileset:";
+         this.lblTileset.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+         // 
+         // txtTileset
+         // 
+         this.txtTileset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+         this.txtTileset.Location = new System.Drawing.Point(248, 8);
+         this.txtTileset.Name = "txtTileset";
+         this.txtTileset.ReadOnly = true;
+         this.txtTileset.Size = new System.Drawing.Size(136, 20);
+         this.txtTileset.TabIndex = 4;
+         this.txtTileset.Text = "";
+         // 
          // frmTileCategory
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-         this.ClientSize = new System.Drawing.Size(392, 401);
+         this.ClientSize = new System.Drawing.Size(392, 417);
          this.Controls.Add(this.CategoryFrames);
          this.Controls.Add(this.status);
          this.Controls.Add(this.splitterCategory);
@@ -558,33 +569,6 @@ namespace SGDK2
       #endregion
 
       #region Event Handlers
-      private void txtName_Validating(object sender, System.ComponentModel.CancelEventArgs e)
-      {
-         string sValid = ProjectData.ValidateName(txtName.Text);
-
-         if (sValid != null)
-         {
-            if (DialogResult.Cancel == MessageBox.Show(this, sValid, "Category Name", MessageBoxButtons.RetryCancel, MessageBoxIcon.Exclamation))
-               txtName.Text = m_Category.Name;
-            e.Cancel = true;
-         }
-         ProjectDataset.CategoryRow cr = ProjectData.GetCategory(m_Category.TilesetRow.Name, txtName.Text);
-         if ((null != cr) && (m_Category != cr))
-         {
-            if (DialogResult.Cancel == MessageBox.Show(this, txtName.Text + " already exists in this tileset", "Category Name", MessageBoxButtons.RetryCancel, MessageBoxIcon.Exclamation))
-               txtName.Text = m_Category.Name;
-            e.Cancel = true;
-         }         
-      }
-
-      private void txtName_Validated(object sender, System.EventArgs e)
-      {
-         if (m_Category.Name != txtName.Text)
-         {
-            m_Category.Name = txtName.Text;
-         }
-      }
-
       private void TilesetTiles_DragDrop(object sender, System.Windows.Forms.DragEventArgs e)
       {
          RemoveSelectionFromCategory();
@@ -623,7 +607,7 @@ namespace SGDK2
       {
          if (e.Action == DataRowAction.Add)
          {
-            if (e.Row.CategoryRowParent == m_Category)
+            if (e.Row.CategorizedTilesetRowParent == m_Category)
             {
                m_CategoryProvider.Add(new TileProvider(m_Tiles, e.Row.TileValue));
                CategoryFrames.Invalidate();
@@ -727,7 +711,7 @@ namespace SGDK2
          this.Close();
       }
 
-      private void dataMonitor_CategoryRowDeleted(object sender, SGDK2.ProjectDataset.CategoryRowChangeEvent e)
+      private void dataMonitor_CategorizedTilesetRowDeleted(object sender, SGDK2.ProjectDataset.CategorizedTilesetRowChangeEvent e)
       {
          if (e.Row == m_Category)
             this.Close();
@@ -779,7 +763,7 @@ namespace SGDK2
       {
          if (e.Action == DataRowAction.Add)
          {
-            if (e.Row.CategoryTileRowParent.CategoryRowParent == m_Category)
+            if (e.Row.CategoryTileRowParent.CategorizedTilesetRowParent == m_Category)
             {
                for (int i = 0; i < m_CategoryProvider.Count; i++)
                {

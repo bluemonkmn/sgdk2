@@ -95,13 +95,6 @@ public abstract class PlanBase : System.Collections.IEnumerable
       Project.GameWindow.debugText.WriteLine(DebugValue.ToString());
    }
 
-   [Description("Draw the debug log on the display and reset it for the next frame"),
-   System.Diagnostics.Conditional("DEBUG")]
-   public void DrawDebugLog()
-   {
-      Project.GameWindow.OutputDebugInfo();
-   }
-
    [Description("Returns true if the specified key is currently pressed")]
    public bool IsKeyPressed(Microsoft.DirectX.DirectInput.Key key)
    {
@@ -246,6 +239,20 @@ public abstract class PlanBase : System.Collections.IEnumerable
    public bool IsSpriteActive(SpriteBase Sprite)
    {
       return Sprite.isActive;
+   }
+
+   [Description("Sets a different map as the one to be drawn on the game display.  If UnloadCurrent is true, the current map will be unloaded first (which causes it to be recreated/reset when returning to it).")]
+   public void SwitchToMap([Editor("MapType", "UITypeEditor")] Type MapType, bool UnloadCurrent)
+   {
+      if (UnloadCurrent)
+         Project.GameWindow.UnloadMap(Project.GameWindow.CurrentMap.GetType());
+      Project.GameWindow.CurrentMap = Project.GameWindow.GetMap(MapType);
+   }
+
+   [Description("Unloads the specified map, which will force it to be recreated/reset next time it is used.")]
+   public void UnloadMap([Editor("MapType", "UITypeEditor")] Type MapType)
+   {
+      Project.GameWindow.UnloadMap(MapType);
    }
 
    #region Inventory / Overlay

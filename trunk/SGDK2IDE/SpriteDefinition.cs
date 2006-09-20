@@ -858,7 +858,8 @@ namespace SGDK2
                                                          "Or",
                                                          "ElseIf",
                                                          "Else",
-                                                         "EndIf"});
+                                                         "End",
+                                                         "While"});
          this.cboRuleType.Location = new System.Drawing.Point(8, 40);
          this.cboRuleType.Name = "cboRuleType";
          this.cboRuleType.Size = new System.Drawing.Size(56, 21);
@@ -872,7 +873,7 @@ namespace SGDK2
          this.chkEndIf.Name = "chkEndIf";
          this.chkEndIf.Size = new System.Drawing.Size(120, 24);
          this.chkEndIf.TabIndex = 25;
-         this.chkEndIf.Text = "End If";
+         this.chkEndIf.Text = "End If/End While";
          this.chkEndIf.CheckedChanged += new System.EventHandler(this.chkEndIf_CheckedChanged);
          // 
          // txtErrors
@@ -1685,7 +1686,7 @@ namespace SGDK2
 
          txtRuleName.Enabled = lblRuleName.Enabled =
             cboRuleType.Enabled = true;
-         if (String.Compare(cboRuleType.Text, "EndIf", true) == 0)
+         if (String.Compare(cboRuleType.Text, "End", true) == 0)
          {
             cboFunction.Enabled = 
                chkNot.Enabled = lblParam1.Enabled = cboParam1.Enabled =
@@ -1710,7 +1711,8 @@ namespace SGDK2
       private bool DoesRuleTypeNest(string ruleType)
       {
          return (String.Compare(ruleType, "If", true) == 0) ||
-            (String.Compare(ruleType, "ElseIf", true) == 0);
+            (String.Compare(ruleType, "ElseIf", true) == 0) ||
+            (String.Compare(ruleType, "While", true) == 0);
       }
       #endregion
 
@@ -2182,7 +2184,7 @@ namespace SGDK2
       {
          if (m_Loading)
             return;
-         if (String.Compare(cboRuleType.Text, "EndIf", true) == 0)
+         if (String.Compare(cboRuleType.Text, "End", true) == 0)
             EnableFields();
          else
             LoadFunctions(IsRuleTypeConditional(cboRuleType.SelectedItem.ToString()), false);
@@ -2190,7 +2192,7 @@ namespace SGDK2
          if (CurrentRule != null)
          {
             CurrentRule.Type = cboRuleType.Text;
-            if (String.Compare(cboRuleType.Text, "EndIf", true) == 0)
+            if (String.Compare(cboRuleType.Text, "End", true) == 0)
             {
                CurrentRule.Function = cboRuleType.Text;
                CurrentRule.EndIf = true;

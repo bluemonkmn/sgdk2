@@ -34,9 +34,9 @@ public class GameForm : Form
       Text = title;
       KeyPreview = true;
       FormBorderStyle = FormBorderStyle.FixedSingle;
-      CurrentMap = GetMap(initMapType, false);
+      CurrentMap = GetMap(initMapType);
       if (overlayMapType != null)
-         OverlayMap = GetMap(overlayMapType, false);
+         OverlayMap = GetMap(overlayMapType);
       else
          OverlayMap = null;
       GameDisplay.WindowedChanged += new EventHandler(GameDisplay_WindowedChanged);
@@ -109,6 +109,7 @@ public class GameForm : Form
                OverlayMap.Draw();
                OverlayMap.ExecuteRules();
             }
+            OutputDebugInfo();
             GameDisplay.Sprite.End();
             GameDisplay.Device.EndScene();
             GameDisplay.Device.Present();
@@ -121,10 +122,7 @@ public class GameForm : Form
    public void OutputDebugInfo()
    {
       GameDisplay.Sprite.Transform = Microsoft.DirectX.Matrix.Identity;
-      if (GameDisplay.Device.RenderState.ScissorTestEnable)
-         GameDisplay.Sprite.Transform = Microsoft.DirectX.Matrix.Translation(
-            GameDisplay.Device.ScissorRectangle.X,
-            GameDisplay.Device.ScissorRectangle.Y, 0);
+      GameDisplay.Device.RenderState.ScissorTestEnable = false;
       GameDisplay.D3DFont.DrawText(GameDisplay.Sprite, debugText.ToString(), GameDisplay.DisplayRectangle, Microsoft.DirectX.Direct3D.DrawTextFormat.Left, Color.White);
 
       debugText.Close();
@@ -146,9 +144,9 @@ public class GameForm : Form
       base.OnClosing(e);
    }
 
-   public MapBase GetMap(System.Type mapType, bool forceNew)
+   public MapBase GetMap(System.Type mapType)
    {
-      if (forceNew || !LoadedMaps.ContainsKey(mapType))
+      if (!LoadedMaps.ContainsKey(mapType))
       {
          MapBase result = (MapBase)mapType.GetConstructor(new System.Type[] {typeof(Display)}).Invoke(new object[] {GameDisplay});
          LoadedMaps[mapType] = result;
@@ -156,6 +154,11 @@ public class GameForm : Form
       }
       else
          return (MapBase)(LoadedMaps[mapType]);
+   }
+
+   public void UnloadMap(System.Type mapType)
+   {
+      LoadedMaps.Remove(mapType);
    }
 
    public Microsoft.DirectX.DirectInput.KeyboardState KeyboardState

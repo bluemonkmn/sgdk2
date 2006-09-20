@@ -51,10 +51,6 @@ namespace SGDK2
       ProjectDataset.TileFrameRowChangeEventHandler m_TileFrameChanging = null;
       ProjectDataset.TileFrameRowChangeEventHandler m_TileFrameDeleted = null;
       ProjectDataset.TileFrameRowChangeEventHandler m_TileFrameDeleting = null;
-      ProjectDataset.CategoryRowChangeEventHandler m_CategoryChanged = null;
-      ProjectDataset.CategoryRowChangeEventHandler m_CategoryChanging = null;
-      ProjectDataset.CategoryRowChangeEventHandler m_CategoryDeleted = null;
-      ProjectDataset.CategoryRowChangeEventHandler m_CategoryDeleting = null;
       ProjectDataset.CategoryTileRowChangeEventHandler m_CategoryTileChanged = null;
       ProjectDataset.CategoryTileRowChangeEventHandler m_CategoryTileChanging = null;
       ProjectDataset.CategoryTileRowChangeEventHandler m_CategoryTileDeleted = null;
@@ -119,6 +115,14 @@ namespace SGDK2
       ProjectDataset.PlanRuleRowChangeEventHandler m_PlanRuleChanging = null;
       ProjectDataset.PlanRuleRowChangeEventHandler m_PlanRuleDeleted = null;
       ProjectDataset.PlanRuleRowChangeEventHandler m_PlanRuleDeleting = null;
+      ProjectDataset.CategorizedTilesetRowChangeEventHandler m_CategorizedTilesetChanged = null;
+      ProjectDataset.CategorizedTilesetRowChangeEventHandler m_CategorizedTilesetChanging = null;
+      ProjectDataset.CategorizedTilesetRowChangeEventHandler m_CategorizedTilesetDeleted = null;
+      ProjectDataset.CategorizedTilesetRowChangeEventHandler m_CategorizedTilesetDeleting = null;
+      ProjectDataset.TileCategoryRowChangeEventHandler m_TileCategoryChanged = null;
+      ProjectDataset.TileCategoryRowChangeEventHandler m_TileCategoryChanging = null;
+      ProjectDataset.TileCategoryRowChangeEventHandler m_TileCategoryDeleted = null;
+      ProjectDataset.TileCategoryRowChangeEventHandler m_TileCategoryDeleting = null;
       System.EventHandler m_Clearing = null;
 
       public DataChangeNotifier(System.ComponentModel.IContainer container)
@@ -221,14 +225,6 @@ namespace SGDK2
                TileFrameRowDeleted -= m_TileFrameDeleted;
             if (m_TileFrameDeleting != null)
                TileFrameRowDeleting -= m_TileFrameDeleting;
-            if (m_CategoryChanged != null)
-               CategoryRowChanged -= m_CategoryChanged;
-            if (m_CategoryChanging != null)
-               CategoryRowChanging -= m_CategoryChanging;
-            if (m_CategoryDeleted != null)
-               CategoryRowDeleted -= m_CategoryDeleted;
-            if (m_CategoryDeleting != null)
-               CategoryRowDeleting -= m_CategoryDeleting;
             if (m_CategoryTileChanged != null)
                CategoryTileRowChanged -= m_CategoryTileChanged;
             if (m_CategoryTileChanging != null)
@@ -357,6 +353,22 @@ namespace SGDK2
                PlanRuleRowDeleted -= m_PlanRuleDeleted;
             if (m_PlanRuleDeleting != null)
                PlanRuleRowDeleting -= m_PlanRuleDeleting;
+            if (m_CategorizedTilesetChanged != null)
+               CategorizedTilesetRowChanged -= m_CategorizedTilesetChanged;
+            if (m_CategorizedTilesetChanging != null)
+               CategorizedTilesetRowChanging -= m_CategorizedTilesetChanging;
+            if (m_CategorizedTilesetDeleted != null)
+               CategorizedTilesetRowDeleted -= m_CategorizedTilesetDeleted;
+            if (m_CategorizedTilesetDeleting != null)
+               CategorizedTilesetRowDeleting -= m_CategorizedTilesetDeleting;
+            if (m_TileCategoryChanged != null)
+               TileCategoryRowChanged -= m_TileCategoryChanged;
+            if (m_TileCategoryChanging != null)
+               TileCategoryRowChanging -= m_TileCategoryChanging;
+            if (m_TileCategoryDeleted != null)
+               TileCategoryRowDeleted -= m_TileCategoryDeleted;
+            if (m_TileCategoryDeleting != null)
+               TileCategoryRowDeleting -= m_TileCategoryDeleting;
             if (m_Clearing != null)
                Clearing -= m_Clearing;
          }
@@ -949,70 +961,6 @@ namespace SGDK2
             Debug.Assert(m_TileFrameDeleting == value);
             ProjectData.TileFrameRowDeleting -= value;
             m_TileFrameDeleting = null;
-         }
-      }
-      public event ProjectDataset.CategoryRowChangeEventHandler CategoryRowChanged
-      {
-         add
-         {
-            Debug.Assert(m_CategoryChanged == null);
-            if (m_CategoryChanged != null)
-               ProjectData.CategoryRowChanged -= m_CategoryChanged;
-            ProjectData.CategoryRowChanged += m_CategoryChanged = value;
-         }
-         remove
-         {
-            Debug.Assert(m_CategoryChanged == value);
-            ProjectData.CategoryRowChanged -= value;
-            m_CategoryChanged = null;
-         }
-      }
-      public event ProjectDataset.CategoryRowChangeEventHandler CategoryRowChanging
-      {
-         add
-         {
-            Debug.Assert(m_CategoryChanging == null);
-            if (m_CategoryChanging != null)
-               ProjectData.CategoryRowChanging -= m_CategoryChanging;
-            ProjectData.CategoryRowChanging += m_CategoryChanging = value;
-         }
-         remove
-         {
-            Debug.Assert(m_CategoryChanging == value);
-            ProjectData.CategoryRowChanging -= value;
-            m_CategoryChanging = null;
-         }
-      }
-      public event ProjectDataset.CategoryRowChangeEventHandler CategoryRowDeleted
-      {
-         add
-         {
-            Debug.Assert(m_CategoryDeleted == null);
-            if (m_CategoryDeleted != null)
-               ProjectData.CategoryRowDeleted -= m_CategoryDeleted;
-            ProjectData.CategoryRowDeleted += m_CategoryDeleted = value;
-         }
-         remove
-         {
-            Debug.Assert(m_CategoryDeleted == value);
-            ProjectData.CategoryRowDeleted -= value;
-            m_CategoryDeleted = null;
-         }
-      }
-      public event ProjectDataset.CategoryRowChangeEventHandler CategoryRowDeleting
-      {
-         add
-         {
-            Debug.Assert(m_CategoryDeleting == null);
-            if (m_CategoryDeleting != null)
-               ProjectData.CategoryRowDeleting -= m_CategoryDeleting;
-            ProjectData.CategoryRowDeleting += m_CategoryDeleting = value;
-         }
-         remove
-         {
-            Debug.Assert(m_CategoryDeleting == value);
-            ProjectData.CategoryRowDeleting -= value;
-            m_CategoryDeleting = null;
          }
       }
       public event ProjectDataset.CategoryTileRowChangeEventHandler CategoryTileRowChanged
@@ -2037,6 +1985,134 @@ namespace SGDK2
             Debug.Assert(m_PlanRuleDeleting == value);
             ProjectData.PlanRuleRowDeleting -= value;
             m_PlanRuleDeleting = null;
+         }
+      }
+      public event ProjectDataset.CategorizedTilesetRowChangeEventHandler CategorizedTilesetRowChanged
+      {
+         add
+         {
+            Debug.Assert(m_CategorizedTilesetChanged == null);
+            if (m_CategorizedTilesetChanged != null)
+               ProjectData.CategorizedTilesetRowChanged -= m_CategorizedTilesetChanged;
+            ProjectData.CategorizedTilesetRowChanged += m_CategorizedTilesetChanged = value;
+         }
+         remove
+         {
+            Debug.Assert(m_CategorizedTilesetChanged == value);
+            ProjectData.CategorizedTilesetRowChanged -= value;
+            m_CategorizedTilesetChanged = null;
+         }
+      }
+      public event ProjectDataset.CategorizedTilesetRowChangeEventHandler CategorizedTilesetRowChanging
+      {
+         add
+         {
+            Debug.Assert(m_CategorizedTilesetChanging == null);
+            if (m_CategorizedTilesetChanging != null)
+               ProjectData.CategorizedTilesetRowChanging -= m_CategorizedTilesetChanging;
+            ProjectData.CategorizedTilesetRowChanging += m_CategorizedTilesetChanging = value;
+         }
+         remove
+         {
+            Debug.Assert(m_CategorizedTilesetChanging == value);
+            ProjectData.CategorizedTilesetRowChanging -= value;
+            m_CategorizedTilesetChanging = null;
+         }
+      }
+      public event ProjectDataset.CategorizedTilesetRowChangeEventHandler CategorizedTilesetRowDeleted
+      {
+         add
+         {
+            Debug.Assert(m_CategorizedTilesetDeleted == null);
+            if (m_CategorizedTilesetDeleted != null)
+               ProjectData.CategorizedTilesetRowDeleted -= m_CategorizedTilesetDeleted;
+            ProjectData.CategorizedTilesetRowDeleted += m_CategorizedTilesetDeleted = value;
+         }
+         remove
+         {
+            Debug.Assert(m_CategorizedTilesetDeleted == value);
+            ProjectData.CategorizedTilesetRowDeleted -= value;
+            m_CategorizedTilesetDeleted = null;
+         }
+      }
+      public event ProjectDataset.CategorizedTilesetRowChangeEventHandler CategorizedTilesetRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_CategorizedTilesetDeleting == null);
+            if (m_CategorizedTilesetDeleting != null)
+               ProjectData.CategorizedTilesetRowDeleting -= m_CategorizedTilesetDeleting;
+            ProjectData.CategorizedTilesetRowDeleting += m_CategorizedTilesetDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_CategorizedTilesetDeleting == value);
+            ProjectData.CategorizedTilesetRowDeleting -= value;
+            m_CategorizedTilesetDeleting = null;
+         }
+      }
+      public event ProjectDataset.TileCategoryRowChangeEventHandler TileCategoryRowChanged
+      {
+         add
+         {
+            Debug.Assert(m_TileCategoryChanged == null);
+            if (m_TileCategoryChanged != null)
+               ProjectData.TileCategoryRowChanged -= m_TileCategoryChanged;
+            ProjectData.TileCategoryRowChanged += m_TileCategoryChanged = value;
+         }
+         remove
+         {
+            Debug.Assert(m_TileCategoryChanged == value);
+            ProjectData.TileCategoryRowChanged -= value;
+            m_TileCategoryChanged = null;
+         }
+      }
+      public event ProjectDataset.TileCategoryRowChangeEventHandler TileCategoryRowChanging
+      {
+         add
+         {
+            Debug.Assert(m_TileCategoryChanging == null);
+            if (m_TileCategoryChanging != null)
+               ProjectData.TileCategoryRowChanging -= m_TileCategoryChanging;
+            ProjectData.TileCategoryRowChanging += m_TileCategoryChanging = value;
+         }
+         remove
+         {
+            Debug.Assert(m_TileCategoryChanging == value);
+            ProjectData.TileCategoryRowChanging -= value;
+            m_TileCategoryChanging = null;
+         }
+      }
+      public event ProjectDataset.TileCategoryRowChangeEventHandler TileCategoryRowDeleted
+      {
+         add
+         {
+            Debug.Assert(m_TileCategoryDeleted == null);
+            if (m_TileCategoryDeleted != null)
+               ProjectData.TileCategoryRowDeleted -= m_TileCategoryDeleted;
+            ProjectData.TileCategoryRowDeleted += m_TileCategoryDeleted = value;
+         }
+         remove
+         {
+            Debug.Assert(m_TileCategoryDeleted == value);
+            ProjectData.TileCategoryRowDeleted -= value;
+            m_TileCategoryDeleted = null;
+         }
+      }
+      public event ProjectDataset.TileCategoryRowChangeEventHandler TileCategoryRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_TileCategoryDeleting == null);
+            if (m_TileCategoryDeleting != null)
+               ProjectData.TileCategoryRowDeleting -= m_TileCategoryDeleting;
+            ProjectData.TileCategoryRowDeleting += m_TileCategoryDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_TileCategoryDeleting == value);
+            ProjectData.TileCategoryRowDeleting -= value;
+            m_TileCategoryDeleting = null;
          }
       }
       public event System.EventHandler Clearing

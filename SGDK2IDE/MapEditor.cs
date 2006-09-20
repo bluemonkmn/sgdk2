@@ -720,7 +720,7 @@ namespace SGDK2
          {
             if ((TileSelector.CurrentCellIndex < 0) || (TileSelector.CurrentCellIndex >= TileSelector.FramesToDisplay.Count))
                return 0;
-            if (cboCategory.SelectedItem is ProjectDataset.CategoryRow)
+            if (cboCategory.SelectedItem is ProjectDataset.CategorizedTilesetRow)
                return ((TileProvider)TileSelector.FramesToDisplay[TileSelector.CurrentCellIndex]).TileIndex;
             return TileSelector.CurrentCellIndex;
          }
@@ -731,7 +731,7 @@ namespace SGDK2
          return new Point(ptLayer.X / tsr.TileWidth, ptLayer.Y / tsr.TileHeight);
       }
 
-      private void LoadTileSelector(ProjectDataset.CategoryRow category)
+      private void LoadTileSelector(ProjectDataset.CategorizedTilesetRow category)
       {
          m_TileProvider = new FrameList();
          ProjectDataset.TilesetRow tsr = m_Layers[m_nCurLayer].LayerRow.TilesetRow;
@@ -805,7 +805,7 @@ namespace SGDK2
          cboCategory.Items.Clear();
          cboCategory.Items.Add("<All>");
          cboCategory.DisplayMember = "Name";
-         foreach(ProjectDataset.CategoryRow row in m_Layers[m_nCurLayer].LayerRow.TilesetRow.GetCategoryRows())
+         foreach(ProjectDataset.CategorizedTilesetRow row in m_Layers[m_nCurLayer].LayerRow.TilesetRow.GetCategorizedTilesetRows())
          {
             cboCategory.Items.Add(row);
          }
@@ -1478,8 +1478,8 @@ namespace SGDK2
 
       private void cboCategory_SelectedIndexChanged(object sender, System.EventArgs e)
       {
-         if (cboCategory.SelectedItem is ProjectDataset.CategoryRow)
-            LoadTileSelector((ProjectDataset.CategoryRow)cboCategory.SelectedItem);
+         if (cboCategory.SelectedItem is ProjectDataset.CategorizedTilesetRow)
+            LoadTileSelector((ProjectDataset.CategorizedTilesetRow)cboCategory.SelectedItem);
          else
             LoadTileSelector(null);
       }

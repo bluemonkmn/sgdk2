@@ -30,6 +30,7 @@ namespace SGDK2
       static ProjectData()
       {
          m_dsPrj.SpriteDefinition.DefaultView.Sort = ProjectData.SpriteDefinition.NameColumn.ColumnName;
+         m_dsPrj.Solidity.DefaultView.Sort = ProjectData.Solidity.NameColumn.ColumnName;
       }
 
       #region General/Dataset
@@ -998,69 +999,135 @@ namespace SGDK2
       }
       #endregion
 
-      #region Category
-      public static event ProjectDataset.CategoryRowChangeEventHandler CategoryRowChanged
+      #region TileCategory
+      public static event ProjectDataset.TileCategoryRowChangeEventHandler TileCategoryRowChanged
       {
          add
          {
-            m_dsPrj.Category.CategoryRowChanged += value;
+            m_dsPrj.TileCategory.TileCategoryRowChanged += value;
          }
          remove
          {
-            m_dsPrj.Category.CategoryRowChanged -= value;
+            m_dsPrj.TileCategory.TileCategoryRowChanged -= value;
          }
       }
-      public static event ProjectDataset.CategoryRowChangeEventHandler CategoryRowChanging
+      public static event ProjectDataset.TileCategoryRowChangeEventHandler TileCategoryRowChanging
       {
          add
          {
-            m_dsPrj.Category.CategoryRowChanging += value;
+            m_dsPrj.TileCategory.TileCategoryRowChanging += value;
          }
          remove
          {
-            m_dsPrj.Category.CategoryRowChanging -= value;
+            m_dsPrj.TileCategory.TileCategoryRowChanging -= value;
          }
       }
-      public static event ProjectDataset.CategoryRowChangeEventHandler CategoryRowDeleted
+      public static event ProjectDataset.TileCategoryRowChangeEventHandler TileCategoryRowDeleted
       {
          add
          {
-            m_dsPrj.Category.CategoryRowDeleted += value;
+            m_dsPrj.TileCategory.TileCategoryRowDeleted += value;
          }
          remove
          {
-            m_dsPrj.Category.CategoryRowDeleted -= value;
+            m_dsPrj.TileCategory.TileCategoryRowDeleted -= value;
          }
       }
-      public static event ProjectDataset.CategoryRowChangeEventHandler CategoryRowDeleting
+      public static event ProjectDataset.TileCategoryRowChangeEventHandler TileCategoryRowDeleting
       {
          add
          {
-            m_dsPrj.Category.CategoryRowDeleting += value;
+            m_dsPrj.TileCategory.TileCategoryRowDeleting += value;
          }
          remove
          {
-            m_dsPrj.Category.CategoryRowDeleting -= value;
+            m_dsPrj.TileCategory.TileCategoryRowDeleting -= value;
          }
       }
-      public static ProjectDataset.CategoryRow AddCategoryRow(ProjectDataset.TilesetRow Parent, string Name)
-      {
-         return m_dsPrj.Category.AddCategoryRow(Parent, Name);
-      }
-      public static ProjectDataset.CategoryRow NewCategory()
-      {
-         return m_dsPrj.Category.NewCategoryRow();
-      }
-      public static ProjectDataset.CategoryRow GetCategory(string Tileset, string Name)
-      {
-         return m_dsPrj.Category.FindByTilesetName(Tileset, Name);
-      }
-      public static ProjectDataset.CategoryDataTable Category
+      public static ProjectDataset.TileCategoryDataTable TileCategory
       {
          get
          {
-            return m_dsPrj.Category;
+            return m_dsPrj.TileCategory;
          }
+      }
+      public static ProjectDataset.TileCategoryRow AddTileCategoryRow(string Name)
+      {
+         return m_dsPrj.TileCategory.AddTileCategoryRow(Name);
+      }
+      public static ProjectDataset.TileCategoryRow NewTileCategory()
+      {
+         return m_dsPrj.TileCategory.NewTileCategoryRow();
+      }
+      public static ProjectDataset.TileCategoryRow GetTileCategory(string Name)
+      {
+         return m_dsPrj.TileCategory.FindByName(Name);
+      }
+      #endregion
+
+      #region CategorizedTileset
+      public static event ProjectDataset.CategorizedTilesetRowChangeEventHandler CategorizedTilesetRowChanged
+      {
+         add
+         {
+            m_dsPrj.CategorizedTileset.CategorizedTilesetRowChanged += value;
+         }
+         remove
+         {
+            m_dsPrj.CategorizedTileset.CategorizedTilesetRowChanged -= value;
+         }
+      }
+      public static event ProjectDataset.CategorizedTilesetRowChangeEventHandler CategorizedTilesetRowChanging
+      {
+         add
+         {
+            m_dsPrj.CategorizedTileset.CategorizedTilesetRowChanging += value;
+         }
+         remove
+         {
+            m_dsPrj.CategorizedTileset.CategorizedTilesetRowChanging -= value;
+         }
+      }
+      public static event ProjectDataset.CategorizedTilesetRowChangeEventHandler CategorizedTilesetRowDeleted
+      {
+         add
+         {
+            m_dsPrj.CategorizedTileset.CategorizedTilesetRowDeleted += value;
+         }
+         remove
+         {
+            m_dsPrj.CategorizedTileset.CategorizedTilesetRowDeleted -= value;
+         }
+      }
+      public static event ProjectDataset.CategorizedTilesetRowChangeEventHandler CategorizedTilesetRowDeleting
+      {
+         add
+         {
+            m_dsPrj.CategorizedTileset.CategorizedTilesetRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.CategorizedTileset.CategorizedTilesetRowDeleting -= value;
+         }
+      }
+      public static ProjectDataset.CategorizedTilesetDataTable CategorizedTileset
+      {
+         get
+         {
+            return m_dsPrj.CategorizedTileset;
+         }
+      }
+      public static ProjectDataset.CategorizedTilesetRow AddCategorizedTilesetRow(ProjectDataset.TilesetRow Tileset, ProjectDataset.TileCategoryRow Category)
+      {
+         return m_dsPrj.CategorizedTileset.AddCategorizedTilesetRow(Tileset, Category);
+      }
+      public static ProjectDataset.CategorizedTilesetRow NewCategorizedTileset()
+      {
+         return m_dsPrj.CategorizedTileset.NewCategorizedTilesetRow();
+      }
+      public static ProjectDataset.CategorizedTilesetRow GetCategorizedTileset(string Tileset, string Name)
+      {
+         return m_dsPrj.CategorizedTileset.FindByTilesetName(Tileset, Name);
       }
       #endregion
 
@@ -2466,6 +2533,6 @@ namespace SGDK2
             return m_dsPrj.Project[0];
          }
       }
-      #endregion
+      #endregion     
    }
 }

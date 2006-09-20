@@ -8,7 +8,7 @@ namespace SGDK2
    {
       private DataGridComboBox m_control = null;
       private EventHandler m_SelectionChangeEvent = null;
-      private int m_rowIndex = -1;
+      private object m_EditRow = null;
 
       public DataGridComboBoxColumn(System.ComponentModel.PropertyDescriptor desc, DataRow[] values, string foreignMember) : base(desc)
       {
@@ -43,7 +43,7 @@ namespace SGDK2
       {
          if (rowNum < dataSource.List.Count)
          {
-            if (m_rowIndex == rowNum)
+            if (m_EditRow == dataSource.List[rowNum])
             {
                if (m_control.SelectedItem is DataRow)
                   SetColumnValueAtRow(dataSource, rowNum,
@@ -54,6 +54,8 @@ namespace SGDK2
                   SetColumnValueAtRow(dataSource, rowNum, Convert.DBNull);
                Invalidate();
             }
+            else
+               m_control.Hide();
             return true;
          }
          return true;
@@ -63,11 +65,14 @@ namespace SGDK2
       {
          m_control.SetBounds(bounds.X, bounds.Y, bounds.Width, bounds.Height);
 
-         if (m_rowIndex != rowNum)
+         if ((rowNum < 0) && (m_EditRow == null))
+            return;
+
+         if ((rowNum < 0) || (rowNum > source.List.Count) || (m_EditRow != source.List[rowNum]))
          {
             m_control.SelectionChangeCommitted -= m_SelectionChangeEvent;
             m_control.SelectedIndex = -1;
-            m_rowIndex = -1; // current value does not represent value on any grid row
+            m_EditRow = null; // current value does not represent value on any grid row
 
             if (rowNum < source.List.Count)
             {
@@ -78,7 +83,7 @@ namespace SGDK2
                      m_control.SelectedIndex = i;
                      break;
                   }
-               m_rowIndex = rowNum;
+               m_EditRow = source.List[rowNum];
             } 
             m_control.SelectionChangeCommitted += m_SelectionChangeEvent;
          }

@@ -144,11 +144,11 @@ namespace SGDK2
          this.mnuEditProperties = new System.Windows.Forms.MenuItem();
          this.mnuViewChanges = new System.Windows.Forms.MenuItem();
          this.mnuWindows = new System.Windows.Forms.MenuItem();
+         this.mnuHelp = new System.Windows.Forms.MenuItem();
+         this.mnuHelpAbout = new System.Windows.Forms.MenuItem();
          this.pnlProjectTree = new System.Windows.Forms.Panel();
          this.lblProjectTree = new System.Windows.Forms.Label();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
-         this.mnuHelp = new System.Windows.Forms.MenuItem();
-         this.mnuHelpAbout = new System.Windows.Forms.MenuItem();
          this.pnlProjectTree.SuspendLayout();
          this.SuspendLayout();
          // 
@@ -409,6 +409,19 @@ namespace SGDK2
          this.mnuWindows.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
          this.mnuWindows.Text = "&Windows";
          // 
+         // mnuHelp
+         // 
+         this.mnuHelp.Index = 3;
+         this.mnuHelp.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                this.mnuHelpAbout});
+         this.mnuHelp.Text = "&Help";
+         // 
+         // mnuHelpAbout
+         // 
+         this.mnuHelpAbout.Index = 0;
+         this.mnuHelpAbout.Text = "&About";
+         this.mnuHelpAbout.Click += new System.EventHandler(this.mnuHelpAbout_Click);
+         // 
          // pnlProjectTree
          // 
          this.pnlProjectTree.Controls.Add(this.tvwMain);
@@ -444,7 +457,6 @@ namespace SGDK2
          this.dataMonitor.SourceCodeRowDeleted += new SGDK2.ProjectDataset.SourceCodeRowChangeEventHandler(this.dataMonitor_SourceCodeRowDeleted);
          this.dataMonitor.SpriteCategoryRowChanging += new SGDK2.ProjectDataset.SpriteCategoryRowChangeEventHandler(this.dataMonitor_SpriteCategoryRowChanging);
          this.dataMonitor.SpritePlanRowDeleted += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowDeleted);
-         this.dataMonitor.CategoryRowDeleting += new SGDK2.ProjectDataset.CategoryRowChangeEventHandler(this.dataMonitor_CategoryRowDeleting);
          this.dataMonitor.LayerRowChanged += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowChanged);
          this.dataMonitor.SpritePlanRowChanged += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowChanged);
          this.dataMonitor.SourceCodeRowChanging += new SGDK2.ProjectDataset.SourceCodeRowChangeEventHandler(this.dataMonitor_SourceCodeRowChanging);
@@ -460,10 +472,8 @@ namespace SGDK2
          this.dataMonitor.SpriteCategoryRowDeleting += new SGDK2.ProjectDataset.SpriteCategoryRowChangeEventHandler(this.dataMonitor_SpriteCategoryRowDeleting);
          this.dataMonitor.SolidityRowDeleting += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.dataMonitor_SolidityRowDeleting);
          this.dataMonitor.CounterRowDeleting += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowDeleting);
-         this.dataMonitor.CategoryRowChanging += new SGDK2.ProjectDataset.CategoryRowChangeEventHandler(this.dataMonitor_CategoryRowChanging);
          this.dataMonitor.SpritePlanRowChanging += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowChanging);
          this.dataMonitor.SolidityRowDeleted += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.dataMonitor_SolidityRowDeleted);
-         this.dataMonitor.CategoryRowDeleted += new SGDK2.ProjectDataset.CategoryRowChangeEventHandler(this.dataMonitor_CategoryRowDeleted);
          this.dataMonitor.TilesetRowDeleted += new SGDK2.ProjectDataset.TilesetRowChangeEventHandler(this.dataMonitor_TilesetRowDeleted);
          this.dataMonitor.MapRowDeleted += new SGDK2.ProjectDataset.MapRowChangeEventHandler(this.dataMonitor_MapRowDeleted);
          this.dataMonitor.CounterRowChanging += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowChanging);
@@ -479,7 +489,6 @@ namespace SGDK2
          this.dataMonitor.TilesetRowChanged += new SGDK2.ProjectDataset.TilesetRowChangeEventHandler(this.dataMonitor_TilesetRowChanged);
          this.dataMonitor.FramesetRowDeleted += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.dataMonitor_FramesetRowDeleted);
          this.dataMonitor.MapRowChanged += new SGDK2.ProjectDataset.MapRowChangeEventHandler(this.dataMonitor_MapRowChanged);
-         this.dataMonitor.CategoryRowChanged += new SGDK2.ProjectDataset.CategoryRowChangeEventHandler(this.dataMonitor_CategoryRowChanged);
          this.dataMonitor.FramesetRowDeleting += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.dataMonitor_FramesetRowDeleting);
          this.dataMonitor.SpritePlanRowDeleting += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowDeleting);
          this.dataMonitor.SpriteDefinitionRowChanging += new SGDK2.ProjectDataset.SpriteDefinitionRowChangeEventHandler(this.dataMonitor_SpriteDefinitionRowChanging);
@@ -489,19 +498,14 @@ namespace SGDK2
          this.dataMonitor.MapRowChanging += new SGDK2.ProjectDataset.MapRowChangeEventHandler(this.dataMonitor_MapRowChanging);
          this.dataMonitor.CounterRowChanged += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowChanged);
          this.dataMonitor.SpriteCategoryRowDeleted += new SGDK2.ProjectDataset.SpriteCategoryRowChangeEventHandler(this.dataMonitor_SpriteCategoryRowDeleted);
-         // 
-         // mnuHelp
-         // 
-         this.mnuHelp.Index = 3;
-         this.mnuHelp.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                this.mnuHelpAbout});
-         this.mnuHelp.Text = "&Help";
-         // 
-         // mnuHelpAbout
-         // 
-         this.mnuHelpAbout.Index = 0;
-         this.mnuHelpAbout.Text = "&About";
-         this.mnuHelpAbout.Click += new System.EventHandler(this.mnuHelpAbout_Click);
+         this.dataMonitor.TileCategoryRowChanging += new SGDK2.ProjectDataset.TileCategoryRowChangeEventHandler(this.dataMonitor_TileCategoryRowChanging);
+         this.dataMonitor.TileCategoryRowChanged += new SGDK2.ProjectDataset.TileCategoryRowChangeEventHandler(dataMonitor_TileCategoryRowChanged);
+         this.dataMonitor.CategorizedTilesetRowChanging += new SGDK2.ProjectDataset.CategorizedTilesetRowChangeEventHandler(dataMonitor_CategorizedTilesetRowChanging);
+         this.dataMonitor.CategorizedTilesetRowChanged += new SGDK2.ProjectDataset.CategorizedTilesetRowChangeEventHandler(dataMonitor_CategorizedTilesetRowChanged);
+         this.dataMonitor.CategorizedTilesetRowDeleting += new SGDK2.ProjectDataset.CategorizedTilesetRowChangeEventHandler(dataMonitor_CategorizedTilesetRowDeleting);
+         this.dataMonitor.CategorizedTilesetRowDeleted += new SGDK2.ProjectDataset.CategorizedTilesetRowChangeEventHandler(dataMonitor_CategorizedTilesetRowDeleted);
+         this.dataMonitor.TileCategoryRowDeleting += new SGDK2.ProjectDataset.TileCategoryRowChangeEventHandler(dataMonitor_TileCategoryRowDeleting);
+         this.dataMonitor.TileCategoryRowDeleted += new SGDK2.ProjectDataset.TileCategoryRowChangeEventHandler(dataMonitor_TileCategoryRowDeleted);
          // 
          // frmMain
          // 
@@ -543,6 +547,11 @@ namespace SGDK2
          ndFolder = new TreeNode("Tilesets", 1, 1);
          ndFolder.Tag = "TS";
          m_TreeNodes.Add("TS", ndFolder);
+         ndRoot.Nodes.Add(ndFolder);
+
+         ndFolder = new TreeNode("Tile Categories", 1, 1);
+         ndFolder.Tag = "TC";
+         m_TreeNodes.Add("TC", ndFolder);
          ndRoot.Nodes.Add(ndFolder);
 
          ndFolder = new TreeNode("Counters", 1, 1);
@@ -649,6 +658,33 @@ namespace SGDK2
                   frmNew.MdiParent = this;
                   frmNew.Show();
                   break;
+               case "TC":
+                  if ((KeyParts.Length == 0) || (KeyParts[0].Length == 0))
+                  {
+                     frmNew = new frmTileCategoryName();
+                     frmNew.MdiParent = this;
+                     frmNew.Show();
+                  }
+                  else
+                  {
+                     ProjectDataset.TilesetRow tsr = frmSelectTileset.SelectTileset();
+                     if (tsr == null)
+                        break;
+
+                     if (ProjectData.GetCategorizedTileset(tsr.Name, KeyParts[0]) != null)
+                     {
+                        if (DialogResult.OK == MessageBox.Show(this, "Tileset \"" + tsr.Name + "\" already has tiles categorized for category \"" + KeyParts[0] + "\".  The existing set of categorized tiles will load instead of adding a new one.", "Add Tileset to Tile Category", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation))
+                           frmNew = new frmTileCategory(ProjectData.GetCategorizedTileset(tsr.Name, KeyParts[0]));
+                        else
+                           break;
+                     }
+                     else
+                        frmNew = new frmTileCategory(ProjectData.AddCategorizedTilesetRow(
+                           tsr, ProjectData.GetTileCategory(KeyParts[0])));
+                     frmNew.MdiParent = this;
+                     frmNew.Show();
+                  }
+                  break;
                case "CR":
                   frmNew = new frmCounterEdit();
                   frmNew.MdiParent = this;
@@ -682,11 +718,6 @@ namespace SGDK2
                   break;
                case "PL":
                   frmNew = new frmPlanEdit(ProjectData.GetLayer(KeyParts[0], KeyParts[1]));
-                  frmNew.MdiParent = this;
-                  frmNew.Show();
-                  break;
-               case "TC":
-                  frmNew = new frmTileCategory(ProjectData.GetTileSet(KeyParts[0]));
                   frmNew.MdiParent = this;
                   frmNew.Show();
                   break;
@@ -753,6 +784,25 @@ namespace SGDK2
                frmNew.MdiParent = this;
                frmNew.Show();
                break;
+            case "TC":
+               if (Key == "TC")
+               {
+                  MessageBox.Show(this, "A specific Tile Category must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  return;
+               }
+               if (KeyParts.Length <= 1)
+               {
+                  frmNew = new frmTileCategoryName(ProjectData.GetTileCategory(KeyParts[0]));
+                  frmNew.MdiParent = this;
+                  frmNew.Show();
+               }
+               else
+               {
+                  frmNew = new frmTileCategory(ProjectData.GetCategorizedTileset(KeyParts[1], KeyParts[0]));
+                  frmNew.MdiParent = this;
+                  frmNew.Show();
+               }
+               break;
             case "CR":
                if (Key == "CR")
                {
@@ -815,16 +865,6 @@ namespace SGDK2
                   return;
                }
                frmNew = new frmPlanEdit(ProjectData.GetSpritePlan(KeyParts[0], KeyParts[1], KeyParts[2]));
-               frmNew.MdiParent = this;
-               frmNew.Show();
-               break;
-            case "TC":
-               if (KeyParts.Length <= 1)
-               {
-                  MessageBox.Show(this, "A specific Category must be selected to edit.", "Edit object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                  return;
-               }
-               frmNew = new frmTileCategory(ProjectData.GetCategory(KeyParts[0], KeyParts[1]));
                frmNew.MdiParent = this;
                frmNew.Show();
                break;
@@ -924,6 +964,27 @@ namespace SGDK2
                      ProjectData.GetTileSet(KeyParts[0]).Delete();
                   }
                   break;
+               case "TC":
+                  if (Key == "TC")
+                  {
+                     MessageBox.Show(this, "A specific Tile Category must be selected to delete.", "Delete Tileset", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                     return;
+                  }
+                  if (KeyParts.Length <= 1)
+                  {
+                     if (DialogResult.Yes == MessageBox.Show(this, "Are you sure you want to delete Tile Category \"" + KeyParts[0] + "\"?", "Delete Tile Category", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
+                     {
+                        ProjectData.GetTileCategory(KeyParts[0]).Delete();
+                     }
+                  }
+                  else
+                  {
+                     if (DialogResult.Yes == MessageBox.Show(this, "Are you sure you want to delete all tiles in Tileset \"" + KeyParts[1] + "\" from Tile Category \"" + KeyParts[0] + "\"?", "Delete Categorized Tiles", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
+                     {
+                        ProjectData.GetCategorizedTileset(KeyParts[1], KeyParts[0]).Delete();
+                     }
+                  }
+                  break;
                case "CR":
                   if (Key == "CR")
                   {
@@ -985,12 +1046,6 @@ namespace SGDK2
                   if (DialogResult.Yes == MessageBox.Show(this, "Are you sure you want to delete Plan \"" + KeyParts[2] + "\" from Layer \"" + KeyParts[1] +"\" in Map \"" + KeyParts[0] + "\"?", "Delete Plan", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
                   {
                      ProjectData.GetSpritePlan(KeyParts[0], KeyParts[1], KeyParts[2]).Delete();
-                  }
-                  break;
-               case "TC":
-                  if (DialogResult.Yes == MessageBox.Show(this, "Are you sure you want to delete Tile Category \"" + KeyParts[1] + "\" from Tileset \"" + KeyParts[0] + "\"?", "Delete Tile Category", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
-                  {
-                     ProjectData.GetCategory(KeyParts[0], KeyParts[1]).Delete();
                   }
                   break;
                case "SC":
@@ -1185,10 +1240,17 @@ namespace SGDK2
             m_TreeNodes.Remove("TS" + sOldKey);
             ndOld.Tag = "TS" + (ndOld.Text = e.Row.Name);
             m_TreeNodes.Add(ndOld.Tag, ndOld);
+         }
+      }
 
-            ndOld = (TreeNode)m_TreeNodes["TC" + sOldKey];
+      private void dataMonitor_TileCategoryRowChanging(object sender, SGDK2.ProjectDataset.TileCategoryRowChangeEvent e)
+      {
+         if (e.Action == DataRowAction.Change)
+         {
+            String sOldKey = e.Row[ProjectData.TileCategory.NameColumn, DataRowVersion.Current].ToString();
+            TreeNode ndOld = (TreeNode)m_TreeNodes["TC" + sOldKey];
             m_TreeNodes.Remove("TC" + sOldKey);
-            ndOld.Tag = "TC" + e.Row.Name;
+            ndOld.Tag = "TC" + (ndOld.Text = e.Row.Name);
             m_TreeNodes.Add(ndOld.Tag, ndOld);
          }
       }
@@ -1206,7 +1268,6 @@ namespace SGDK2
             TreeNode tnDel = (TreeNode)m_TreeNodes["TS" + m_AffectedNodeKeys["TS"]];
             m_TreeNodes.Remove("TS" + m_AffectedNodeKeys["TS"]);
             tnDel.Parent.Nodes.Remove(tnDel);
-            m_TreeNodes.Remove("TC" + m_AffectedNodeKeys["TS"]);
             m_AffectedNodeKeys.Remove("TS");
          }
       }
@@ -1220,12 +1281,17 @@ namespace SGDK2
             ndNew.SelectedImageIndex = ndNew.ImageIndex = 12;
             // Add the node to the local index
             m_TreeNodes.Add(ndNew.Tag, ndNew);
+         }
+      }
 
-            // Add the Tile Categories folder for this tileset
-            ndNew = ndNew.Nodes.Add("Tile Categories");
+      private void dataMonitor_TileCategoryRowChanged(object sender, SGDK2.ProjectDataset.TileCategoryRowChangeEvent e)
+      {
+         if (e.Action == DataRowAction.Add)
+         {
+            TreeNode ndNew = ((TreeNode)m_TreeNodes["TC"]).Nodes.Add(e.Row.Name);
             ndNew.Tag = "TC" + e.Row.Name;
-            ndNew.SelectedImageIndex = ndNew.ImageIndex = 1;
-            ndNew.EnsureVisible();
+            ndNew.SelectedImageIndex = ndNew.ImageIndex = 17;
+            // Add the node to the local index
             m_TreeNodes.Add(ndNew.Tag, ndNew);
          }
       }
@@ -1522,47 +1588,64 @@ namespace SGDK2
          }      
       }
 
-      private void dataMonitor_CategoryRowChanged(object sender, SGDK2.ProjectDataset.CategoryRowChangeEvent e)
+      private void dataMonitor_CategorizedTilesetRowChanged(object sender, SGDK2.ProjectDataset.CategorizedTilesetRowChangeEvent e)
       {
          if (e.Action == DataRowAction.Add)
          {
-            TreeNode ndNew = ((TreeNode)m_TreeNodes["TC" + e.Row.TilesetRow.Name]).Nodes.Add(e.Row.Name);
-            ndNew.Tag = "TC" + e.Row.TilesetRow.Name + "~" + e.Row.Name;
-            ndNew.SelectedImageIndex = ndNew.ImageIndex = 17;
+            TreeNode ndNew = ((TreeNode)m_TreeNodes["TC" + e.Row.Name]).Nodes.Add(e.Row.Tileset);
+            ndNew.Tag = "TC" + e.Row.Name + "~" + e.Row.TilesetRow.Name;
+            ndNew.SelectedImageIndex = ndNew.ImageIndex = 12;
             ndNew.EnsureVisible();
             // Add the node to the local index
             m_TreeNodes.Add(ndNew.Tag, ndNew);
          }      
       }
 
-      private void dataMonitor_CategoryRowChanging(object sender, SGDK2.ProjectDataset.CategoryRowChangeEvent e)
+      private void dataMonitor_CategorizedTilesetRowChanging(object sender, SGDK2.ProjectDataset.CategorizedTilesetRowChangeEvent e)
       {
          if (e.Action == DataRowAction.Change)
          {
-            String sOldKey = e.Row[ProjectData.Category.TilesetColumn, DataRowVersion.Current].ToString() + "~" + e.Row[ProjectData.Category.NameColumn, DataRowVersion.Current].ToString();
+            String sOldKey = e.Row[ProjectData.CategorizedTileset.NameColumn, DataRowVersion.Current].ToString() + "~" + e.Row[ProjectData.CategorizedTileset.TilesetColumn, DataRowVersion.Current].ToString();
             TreeNode ndOld = (TreeNode)m_TreeNodes["TC" + sOldKey];
             m_TreeNodes.Remove("TC" + sOldKey);
-            ndOld.Tag = "TC" + e.Row[ProjectData.Category.TilesetColumn, DataRowVersion.Proposed].ToString() + "~" + e.Row.Name;
+            ndOld.Tag = "TC" + e.Row[ProjectData.CategorizedTileset.NameColumn, DataRowVersion.Proposed].ToString() + "~" + e.Row.Tileset;
             ndOld.Text = e.Row.Name;
             m_TreeNodes.Add(ndOld.Tag, ndOld);
          }      
       }
 
-      private void dataMonitor_CategoryRowDeleting(object sender, SGDK2.ProjectDataset.CategoryRowChangeEvent e)
+      private void dataMonitor_CategorizedTilesetRowDeleting(object sender, SGDK2.ProjectDataset.CategorizedTilesetRowChangeEvent e)
       {
          if ((e.Action == DataRowAction.Delete) && (e.Row.HasVersion(DataRowVersion.Current)))
-            m_AffectedNodeKeys["TC"] = "TC" + e.Row[ProjectData.Category.TilesetColumn, DataRowVersion.Current].ToString() + "~" + e.Row[ProjectData.Category.NameColumn, DataRowVersion.Current].ToString();
+            m_AffectedNodeKeys["TC2"] = "TC" + e.Row[ProjectData.CategorizedTileset.NameColumn, DataRowVersion.Current].ToString() + "~" + e.Row[ProjectData.CategorizedTileset.TilesetColumn, DataRowVersion.Current].ToString();
       }
 
-      private void dataMonitor_CategoryRowDeleted(object sender, SGDK2.ProjectDataset.CategoryRowChangeEvent e)
+      private void dataMonitor_CategorizedTilesetRowDeleted(object sender, SGDK2.ProjectDataset.CategorizedTilesetRowChangeEvent e)
       {
-         if (m_AffectedNodeKeys.ContainsKey("TC"))
+         if (m_AffectedNodeKeys.ContainsKey("TC2"))
          {
-            TreeNode tnCategory = (TreeNode)m_TreeNodes[m_AffectedNodeKeys["TC"]];
-            m_TreeNodes.Remove(m_AffectedNodeKeys["TC"]);
+            TreeNode tnCategory = (TreeNode)m_TreeNodes[m_AffectedNodeKeys["TC2"]];
+            m_TreeNodes.Remove(m_AffectedNodeKeys["TC2"]);
             tnCategory.Parent.Nodes.Remove(tnCategory);
-            m_AffectedNodeKeys.Remove("TC");
+            m_AffectedNodeKeys.Remove("TC2");
          }            
+      }
+
+      private void dataMonitor_TileCategoryRowDeleting(object sender, SGDK2.ProjectDataset.TileCategoryRowChangeEvent e)
+      {
+         if ((e.Action == DataRowAction.Delete) && (e.Row.HasVersion(DataRowVersion.Current)))
+            m_AffectedNodeKeys["TC1"] = e.Row[ProjectData.TileCategory.NameColumn, DataRowVersion.Current];         
+      }
+
+      private void dataMonitor_TileCategoryRowDeleted(object sender, SGDK2.ProjectDataset.TileCategoryRowChangeEvent e)
+      {
+         if (m_AffectedNodeKeys.ContainsKey("TC1"))
+         {
+            TreeNode tnDel = (TreeNode)m_TreeNodes["TC" + m_AffectedNodeKeys["TC1"]];
+            m_TreeNodes.Remove("TC" + m_AffectedNodeKeys["TC1"]);
+            tnDel.Parent.Nodes.Remove(tnDel);
+            m_AffectedNodeKeys.Remove("TC1");
+         }
       }
 
       private void dataMonitor_SpriteCategoryRowChanged(object sender, SGDK2.ProjectDataset.SpriteCategoryRowChangeEvent e)
@@ -2032,6 +2115,5 @@ namespace SGDK2
          new frmAbout().ShowDialog(this);
       }
       #endregion
-
    }
 }

@@ -431,6 +431,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "SelectTileset.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "SelectTileset.resx"
+                    DependentUpon = "SelectTileset.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "SGDK2IDE.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -503,6 +513,16 @@
                 <File
                     RelPath = "TileCategory.resx"
                     DependentUpon = "TileCategory.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "TileCategoryName.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "TileCategoryName.resx"
+                    DependentUpon = "TileCategoryName.cs"
                     BuildAction = "EmbeddedResource"
                 />
                 <File

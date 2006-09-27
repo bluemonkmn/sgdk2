@@ -2144,7 +2144,8 @@ namespace SGDK2
             ProjectDataset.TileCategoryRow drCat = (ProjectDataset.TileCategoryRow)drv.Row;
             enumCategories.Members.Add(new CodeMemberField(typeof(int), drCat.Name));
          }
-         ((CodeMemberField)enumCategories.Members[0]).InitExpression = new CodePrimitiveExpression(0);
+         if (enumCategories.Members.Count > 0)
+            ((CodeMemberField)enumCategories.Members[0]).InitExpression = new CodePrimitiveExpression(0);
          enumCategories.Members.Add(new CodeMemberField(typeof(int), "Count"));
 
          Generator.GenerateCodeFromType(enumCategories, txt, GeneratorOptions);

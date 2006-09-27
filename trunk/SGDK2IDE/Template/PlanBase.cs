@@ -47,6 +47,9 @@ public abstract class PlanBase : System.Collections.IEnumerable
    [Description("Returns true if the specified sprite is touching this plan's rectangle")]
    public bool IsSpriteTouching(SpriteBase sprite)
    {
+      if (!sprite.isActive)
+         return false;
+
       Rectangle spriteRect = new Rectangle(sprite.PixelX, sprite.PixelY, sprite.SolidWidth, sprite.SolidHeight);
       Rectangle targetRect = PlanRectangle;
       if (!spriteRect.IntersectsWith(Rectangle.Inflate(targetRect,2,2)))
@@ -56,6 +59,14 @@ public abstract class PlanBase : System.Collections.IEnumerable
          return true;
       else
          return false;
+   }
+
+   [Description("Returns true if the specified part of the specified sprite is within the plan's rectangle")]
+   public bool IsSpriteWithin(SpriteBase sprite, SpriteBase.RelativePosition RelativePosition)
+   {
+      System.Drawing.Point rp = sprite.GetRelativePosition(RelativePosition);
+      Rectangle targetRect = PlanRectangle;
+      return targetRect.Contains(rp);
    }
 
    [Description("Returns true if the specified sprite was touching this plan's rectangle in the previous frame")]

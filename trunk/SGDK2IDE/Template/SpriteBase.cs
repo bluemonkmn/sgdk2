@@ -347,7 +347,7 @@ public abstract class SpriteBase
    [Description("Limit the velocity of the sprite to the specified maximum pixels per frame (affects only to local velocity when applicable)")]
    public void LimitVelocity(int Maximum)
    {
-      Debug.Assert(this.isActive, "Attempted to execute MaxVelocity on an inactive sprite");
+      Debug.Assert(this.isActive, "Attempted to execute LimitVelocity on an inactive sprite");
       double useDX, useDY;
       if (double.IsNaN(LocalDX))
          useDX = dx;
@@ -377,6 +377,7 @@ public abstract class SpriteBase
    [Description("Reduces the sprites velocity to simulate friction.  RetainPercent is a number 0 to 100 indicating how much inertia is retained.")]
    public void ReactToInertia(int RetainPercentVertical, int RetainPercentHorizontal)
    {
+      Debug.Assert(this.isActive, "Attempted to execute ReactToInertia on an inactive sprite");
       if (double.IsNaN(LocalDX))
       {
          if (Math.Abs(dx) < .01)
@@ -406,12 +407,59 @@ public abstract class SpriteBase
             LocalDY *= RetainPercentVertical / 100.0f;
       }
    }
+
+   [Description("Returns true if the sprite is moving in the specified direction")]
+   public bool IsMoving(Direction Direction)
+   {
+      Debug.Assert(this.isActive, "Attempted to execute IsMoving on an inactive sprite");
+      double useDX, useDY;
+      if (double.IsNaN(LocalDX))
+         useDX = dx;
+      else
+         useDX = LocalDX;
+      if (double.IsNaN(LocalDY))
+         useDY = dy;
+      else
+         useDY = LocalDY;
+
+      switch(Direction)
+      {
+         case Direction.Left:
+            return useDX < 0;
+         case Direction.Right:
+            return useDX > 0;
+         case Direction.Up:
+            return useDY < 0;
+         case Direction.Down:
+            return useDY > 0;
+      }
+      return false;
+   }
+
+   [Description("Accelerate the sprite in a direction determined by its state, assuming the first state points rightward and the number of states rotate counterclockwise 360 degrees. Acceleration is in tenths of a pixel per frame per frame.")]
+   public void PolarAccelerate(int Acceleration, [Editor("SpriteState", "UITypeEditor")] int FirstState, int StateCount)
+   {
+      Debug.Assert(this.isActive, "Attempted to execute PolarAccelerate on an inactive sprite");
+      double angle = (state - FirstState) * Math.PI * 2 / (double)StateCount;
+      double ddx = Math.Cos(angle) * Acceleration / 10.0d;
+      double ddy = -Math.Sin(angle) * Acceleration / 10.0d;
+      if (double.IsNaN(LocalDY))
+         dy += ddy;
+      else
+         LocalDY += ddy;
+
+      if (double.IsNaN(LocalDX))
+         dx += ddx;
+      else
+         LocalDX += ddx;
+   }
    #endregion
 
    #region States and animation
    [Description("Advance the animation frame of this sprite according to its velocity or a constant rate")]
    public void Animate(SpriteAnimationType Correlation)
    {
+      Debug.Assert(this.isActive, "Attempted to execute Animate on an inactive sprite");
       switch(Correlation)
       {
          case SpriteAnimationType.ByFrame:
@@ -443,6 +491,7 @@ public abstract class SpriteBase
    public int GetPolarStateByVector([Editor("SpriteState", "UITypeEditor")] int FirstState, int StateCount)
    {
       double useDX, useDY;
+      Debug.Assert(this.isActive, "Attempted to execute GetPolarStateByVector on an inactive sprite");
       if (double.IsNaN(LocalDX))
          useDX = dx;
       else
@@ -451,18 +500,20 @@ public abstract class SpriteBase
          useDY = dy;
       else
          useDY = LocalDY;
-      return FirstState + ((StateCount + (int)Math.Round(System.Math.Atan2(-useDY,useDX) * StateCount / Math.PI)) % StateCount);
+      return FirstState + ((StateCount + (int)Math.Round(System.Math.Atan2(-useDY,useDX) * StateCount / Math.PI / 2f)) % StateCount);
    }
 
    [Description("Switch the sprite to the the specified state")]
    public void SwitchToState([Editor("SpriteState", "UITypeEditor")] int State)
    {
+      Debug.Assert(this.isActive, "Attempted to execute SwitchToState on an inactive sprite");
       state = State;
    }
 
    [Description("Determines if the sprite is in the specified range of states")]
    public bool IsInState([Editor("SpriteState", "UITypeEditor")] int FirstState, [Editor("SpriteState", "UITypeEditor")] int LastState)
    {
+      Debug.Assert(this.isActive, "Attempted to execute IsInState on an inactive sprite");
       return (state <= FirstState) && (state >= LastState);
    }
    #endregion
@@ -982,16 +1033,7 @@ public abstract class SpriteBase
       return result;
    }
 
-   #endregion
-
-   #region Activation
-   [Description("Deactivate this sprite.  It will no longer be drawn, and in debug mode, will display errors if rules try to execute on it.")]
-   public void Deactivate()
-   {
-      isActive = false;
-   }
-   #endregion
-
+ 
    public enum RelativePosition
    {
       TopLeft,
@@ -1005,46 +1047,59 @@ public abstract class SpriteBase
       BottomRight
    }
 
-   [Description("Examines the tile on the layer at the sprite's current position and determines if it is a member of the specified category. The RelativePosition parameter determines which part of the sprite to use when identifying a location on the layer.")]
-   public bool IsOnTile(TileCategoryName Category, RelativePosition RelativePosition)
+   public System.Drawing.Point GetRelativePosition(RelativePosition RelativePosition)
    {
-      int rx = PixelX;
-      int ry = PixelY;
+      System.Drawing.Point rp = new System.Drawing.Point(PixelX, PixelY);
 
       switch (RelativePosition)
       {
          case RelativePosition.TopCenter:
-            rx = (int)(PixelX + SolidWidth / 2);
+            rp.X = (int)(PixelX + SolidWidth / 2);
             break;
          case RelativePosition.TopRight:
-            rx = PixelX + SolidWidth - 1;
+            rp.X = PixelX + SolidWidth - 1;
             break;
          case RelativePosition.LeftMiddle:
-            ry = PixelY + (int)(SolidHeight / 2);
+            rp.Y = PixelY + (int)(SolidHeight / 2);
             break;
          case RelativePosition.CenterMiddle:
-            rx = PixelX + (int)(SolidWidth / 2);
-            ry = PixelY + (int)(SolidHeight / 2);
+            rp.X = PixelX + (int)(SolidWidth / 2);
+            rp.Y = PixelY + (int)(SolidHeight / 2);
             break;
          case RelativePosition.RightMiddle:
-            rx = PixelX + SolidWidth - 1;
-            ry = PixelY + (int)(SolidHeight / 2);
+            rp.X = PixelX + SolidWidth - 1;
+            rp.Y = PixelY + (int)(SolidHeight / 2);
             break;
          case RelativePosition.BottomLeft:
-            ry = PixelY + SolidHeight -1;
+            rp.Y = PixelY + SolidHeight -1;
             break;
          case RelativePosition.BottomCenter:
-            rx = PixelX + (int)(SolidWidth / 2);
-            ry = PixelY + SolidHeight - 1;
+            rp.X = PixelX + (int)(SolidWidth / 2);
+            rp.Y = PixelY + SolidHeight - 1;
             break;
          case RelativePosition.BottomRight:
-            rx = PixelX + SolidWidth - 1;
-            ry = PixelY + SolidHeight - 1;
+            rp.X = PixelX + SolidWidth - 1;
+            rp.Y = PixelY + SolidHeight - 1;
             break;
       }
-
-      return layer.GetTile((int)(rx / layer.Tileset.TileWidth), (int)(ry / layer.Tileset.TileHeight)).IsMember(Category);
+      return rp;
    }
+
+   [Description("Examines the tile on the layer at the sprite's current position and determines if it is a member of the specified category. The RelativePosition parameter determines which part of the sprite to use when identifying a location on the layer. (TouchTiles is not necessary for this function.)")]
+   public bool IsOnTile(TileCategoryName Category, RelativePosition RelativePosition)
+   {
+      System.Drawing.Point rp = GetRelativePosition(RelativePosition);
+      return layer.GetTile((int)(rp.X / layer.Tileset.TileWidth), (int)(rp.Y / layer.Tileset.TileHeight)).IsMember(Category);
+   }
+   #endregion
+
+   #region Activation
+   [Description("Deactivate this sprite.  It will no longer be drawn, and in debug mode, will display errors if rules try to execute on it.")]
+   public void Deactivate()
+   {
+      isActive = false;
+   }
+   #endregion
 
    [Description("Write a number to the debug output and move to the next line"),
    System.Diagnostics.Conditional("DEBUG")]

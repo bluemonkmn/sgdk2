@@ -111,7 +111,6 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuRemoveFrame;
       private System.Windows.Forms.ListBox lstSpriteStates;
       private System.Windows.Forms.DataGrid grdParameters;
-      private System.Windows.Forms.MenuItem mnuConditionSeparator;
       private System.Windows.Forms.MenuItem mnuAddAction;
       private System.Windows.Forms.MenuItem mnuRemoveRule;
       private System.Windows.Forms.Label lblRuleName;
@@ -160,6 +159,9 @@ namespace SGDK2
       private System.Windows.Forms.TextBox txtMaskAlpha;
       private System.Windows.Forms.Button btnMaskAlpha;
       private System.Windows.Forms.Timer tmrPopulateRules;
+      private System.Windows.Forms.MenuItem mnuSpriteDefSeparator;
+      private System.Windows.Forms.MenuItem mnuSpriteDefSeparator2;
+      private System.Windows.Forms.MenuItem mnuExport;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -295,13 +297,15 @@ namespace SGDK2
          this.mnuMoveStateDown = new System.Windows.Forms.MenuItem();
          this.mnuAddFrame = new System.Windows.Forms.MenuItem();
          this.mnuRemoveFrame = new System.Windows.Forms.MenuItem();
-         this.mnuConditionSeparator = new System.Windows.Forms.MenuItem();
+         this.mnuSpriteDefSeparator = new System.Windows.Forms.MenuItem();
          this.mnuAddAction = new System.Windows.Forms.MenuItem();
          this.mnuRemoveRule = new System.Windows.Forms.MenuItem();
          this.mnuMoveRuleUp = new System.Windows.Forms.MenuItem();
          this.mnuMoveRuleDown = new System.Windows.Forms.MenuItem();
          this.DataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.tmrPopulateRules = new System.Windows.Forms.Timer(this.components);
+         this.mnuSpriteDefSeparator2 = new System.Windows.Forms.MenuItem();
+         this.mnuExport = new System.Windows.Forms.MenuItem();
          this.tabSpriteDefinition.SuspendLayout();
          this.tabStates.SuspendLayout();
          this.pnlFrames.SuspendLayout();
@@ -1018,11 +1022,13 @@ namespace SGDK2
                                                                                             this.mnuMoveStateDown,
                                                                                             this.mnuAddFrame,
                                                                                             this.mnuRemoveFrame,
-                                                                                            this.mnuConditionSeparator,
+                                                                                            this.mnuSpriteDefSeparator,
                                                                                             this.mnuAddAction,
                                                                                             this.mnuRemoveRule,
                                                                                             this.mnuMoveRuleUp,
-                                                                                            this.mnuMoveRuleDown});
+                                                                                            this.mnuMoveRuleDown,
+                                                                                            this.mnuSpriteDefSeparator2,
+                                                                                            this.mnuExport});
          this.mnuSpriteDefinition.Text = "&Sprite Definition";
          // 
          // mnuAddState
@@ -1065,10 +1071,10 @@ namespace SGDK2
          this.mnuRemoveFrame.Text = "&Remove Frame from State";
          this.mnuRemoveFrame.Click += new System.EventHandler(this.mnuRemoveFrame_Click);
          // 
-         // mnuConditionSeparator
+         // mnuSpriteDefSeparator
          // 
-         this.mnuConditionSeparator.Index = 6;
-         this.mnuConditionSeparator.Text = "-";
+         this.mnuSpriteDefSeparator.Index = 6;
+         this.mnuSpriteDefSeparator.Text = "-";
          // 
          // mnuAddAction
          // 
@@ -1113,6 +1119,17 @@ namespace SGDK2
          // tmrPopulateRules
          // 
          this.tmrPopulateRules.Tick += new System.EventHandler(this.tmrPopulateRules_Tick);
+         // 
+         // mnuSpriteDefSeparator2
+         // 
+         this.mnuSpriteDefSeparator2.Index = 11;
+         this.mnuSpriteDefSeparator2.Text = "-";
+         // 
+         // mnuExport
+         // 
+         this.mnuExport.Index = 12;
+         this.mnuExport.Text = "E&xport to template...";
+         this.mnuExport.Click += new System.EventHandler(this.mnuExport_Click);
          // 
          // frmSpriteDefinition
          // 
@@ -2434,6 +2451,53 @@ namespace SGDK2
       {
          tmrPopulateRules.Stop();
          PopulateRules();
+      }
+ 
+      private void mnuExport_Click(object sender, System.EventArgs e)
+      {
+         ProjectDataset dsExport = new ProjectDataset();
+         
+         try
+         {
+            dsExport.EnforceConstraints = false;
+            dsExport.Merge(new System.Data.DataRow[] {m_SpriteDef});
+            ProjectDataset.SpriteStateRow[] states = ProjectData.GetSortedSpriteStates(m_SpriteDef);
+            dsExport.Merge(states);
+            foreach (ProjectDataset.SpriteStateRow state in states)
+            {
+               dsExport.Merge(ProjectData.GetSortedSpriteFrames(state));
+               ProjectDataset.FrameRow[] frames = ProjectData.GetSortedFrameRows(state.FramesetRow);
+               dsExport.Merge(frames);
+               dsExport.Merge(new System.Data.DataRow[] {state.FramesetRow});
+               foreach (ProjectDataset.FrameRow frame in frames)
+               {
+                  dsExport.Merge(new System.Data.DataRow[] {ProjectData.GetGraphicSheet(frame.GraphicSheet)});
+               }
+            }
+            dsExport.Merge(ProjectData.GetSortedSpriteParameters(m_SpriteDef));
+            dsExport.Merge(ProjectData.GetSortedSpriteRules(m_SpriteDef));
+            dsExport.EnforceConstraints = true;
+
+            string comment = frmInputBox.GetInput(this, "Export Sprite Definition", "Enter any comments to save with the template", "Exported sprite definition \"" + m_SpriteDef.Name + "\"");
+            if (comment == null)
+               return;
+            
+            dsExport.Project.AddProjectRow(GameDisplayMode.m640x480x24.ToString(), true, comment, null, null);
+
+            System.Windows.Forms.SaveFileDialog dlgSave = new SaveFileDialog();
+            dlgSave.OverwritePrompt = true;
+            dlgSave.CheckPathExists = true;
+            dlgSave.DefaultExt = "sgdk2";
+            dlgSave.Filter = "SGDK 2 Data File (*.sgdk2)|*.sgdk2|All Files (*.*)|*.*";
+            dlgSave.FilterIndex = 1;
+            dlgSave.Title = "Export Sprite Definition";
+            if (DialogResult.OK == dlgSave.ShowDialog(this))
+               dsExport.WriteXml(dlgSave.FileName, XmlWriteMode.WriteSchema);
+         }
+         catch (System.Exception ex)
+         {
+            MessageBox.Show(this, ex.Message, "Export Sprite Definition", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+         }
       }
       #endregion
    }

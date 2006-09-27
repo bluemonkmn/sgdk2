@@ -286,6 +286,16 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "InputBox.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "InputBox.resx"
+                    DependentUpon = "InputBox.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "Layer.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -498,6 +508,16 @@
                 <File
                     RelPath = "SpriteDefinition.resx"
                     DependentUpon = "SpriteDefinition.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "SpriteWizard.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "SpriteWizard.resx"
+                    DependentUpon = "SpriteWizard.cs"
                     BuildAction = "EmbeddedResource"
                 />
                 <File

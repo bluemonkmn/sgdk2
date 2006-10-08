@@ -24,6 +24,7 @@ namespace SGDK2
       private Hashtable m_TreeNodes = new Hashtable();
       private bool m_Loading = false;
       SpriteCodeRef m_SpriteContext = null;
+      private Hashtable m_CustomObjects = null; // .[TypeName] -> RemoteGlobalAccessorInfo[]
       #endregion
 
       #region Embedded Classes
@@ -549,7 +550,11 @@ namespace SGDK2
             RemotingServices.IRemoteTypeInfo reflector = CodeGenerator.CreateInstanceAndUnwrap(
                "RemoteReflector", "PlanBase") as RemotingServices.IRemoteTypeInfo;
 
-            RemotingServices.RemoteMethodInfo[] ruleList = reflector.GetMethods();
+            RemotingServices.RemoteMethodInfo[] localRuleList = reflector.GetMethods();
+            RemotingServices.RemoteMethodInfo[] globalRuleList = reflector.GetGlobalFunctions();
+            RemotingServices.RemoteMethodInfo[] ruleList = new SGDK2.RemotingServices.RemoteMethodInfo[localRuleList.Length + globalRuleList.Length];
+            localRuleList.CopyTo(ruleList, 0);
+            globalRuleList.CopyTo(ruleList, localRuleList.Length);
 
             m_AvailableRules = new RuleTable();
             m_Enums = new EnumTable();
@@ -564,7 +569,7 @@ namespace SGDK2
                         typeof(Double).Name, typeof(Single).Name, typeof(void).Name
                      })
                   {
-                     if (string.Compare(allowedType, mi.ReturnType) == 0)
+                     if (string.Compare(allowedType, mi.ReturnType.Name) == 0)
                      {
                         m_AvailableRules[mi.MethodName] = mi;
                         break;
@@ -582,7 +587,7 @@ namespace SGDK2
          System.Array.Sort(rules, new RemotingServices.RemoteMethodComparer());
          foreach(RemotingServices.RemoteMethodInfo mi in rules)
          {
-            if ((string.Compare(mi.ReturnType,typeof(Boolean).Name)==0) || !onlyBools)
+            if ((string.Compare(mi.ReturnType.Name,typeof(Boolean).Name)==0) || !onlyBools)
                cboFunction.Items.Add(mi.MethodName);
          }
          if (!onlyBools)
@@ -595,6 +600,31 @@ namespace SGDK2
          lblOutput.Enabled = false;
          cboOutput.Enabled = false;
          cboOutput.SelectedIndex = -1;
+      }
+
+      private void LoadCustomObjectsProviding(string TypeName)
+      {
+         if ((m_CustomObjects != null) && (m_CustomObjects.ContainsKey(TypeName)))
+            return;
+         if (m_CustomObjects == null)
+            m_CustomObjects = new Hashtable();
+
+         CodeGenerator gen = new CodeGenerator();
+         string errs;
+         gen.GenerateLevel = CodeGenerator.CodeLevel.ExcludeRules;
+         errs = gen.CompileTempAssembly(false);
+         if ((errs != null) && (errs.Length > 0))
+         {
+            txtErrors.Text = errs;
+            txtErrors.Visible = true;
+            return;
+         }
+
+         txtErrors.Visible = false;
+         RemotingServices.IRemoteTypeInfo reflector = CodeGenerator.CreateInstanceAndUnwrap(
+            "RemoteReflector", TypeName) as RemotingServices.IRemoteTypeInfo;
+
+         m_CustomObjects[TypeName] = reflector.GetGlobalProvidersOfSelf();
       }
 
       private void PrepareFunction(string funcName)
@@ -629,15 +659,15 @@ namespace SGDK2
          else
             PopulateParameter(lblParam3, cboParam3, mi.Arguments[2], !m_Loading);
 
-         if ((string.Compare(mi.ReturnType, typeof(Int32).Name) == 0) ||
-            (string.Compare(mi.ReturnType, typeof(Int16).Name) == 0))
+         if ((string.Compare(mi.ReturnType.Name, typeof(Int32).Name) == 0) ||
+            (string.Compare(mi.ReturnType.Name, typeof(Int16).Name) == 0))
          {
             lblOutput.Enabled = true;
             cboOutput.Enabled = true;
             cboOutput.Items.Clear();
             if (m_SpriteContext != null)
-               FillComboWithParams(cboOutput);
-            FillComboWithIntVars(cboOutput);
+               FillComboWithParams(cboOutput, false);
+            FillComboWithIntVars(cboOutput, false);
          }
          else
          {
@@ -648,15 +678,15 @@ namespace SGDK2
          }
       }
 
-      private void FillComboWithIntVars(ComboBox cboTarget)
+      private void FillComboWithIntVars(ComboBox cboTarget, bool isRef)
       {
          foreach (DataRowView drv in ProjectData.Counter.DefaultView)
             cboTarget.Items.Add(CodeGenerator.CounterClass + "." + CodeGenerator.NameToVariable(
                ((ProjectDataset.CounterRow)drv.Row).Name) + ".CurrentValue");
          foreach (RemotingServices.RemotePropertyInfo pi in m_PlanProperties)
          {
-            if (pi.Type == typeof(Int32).Name)
-               cboTarget.Items.Add(CodeGenerator.NameToVariable(pi.Name));
+            if (pi.Type.Name == typeof(Int32).Name)
+               cboTarget.Items.Add((isRef ? "ref " : "") + CodeGenerator.NameToVariable(pi.Name));
          }
       }
 
@@ -667,12 +697,12 @@ namespace SGDK2
                ((ProjectDataset.CounterRow)drv.Row).Name));
       }
 
-      private void FillComboWithParams(ComboBox cboParams)
+      private void FillComboWithParams(ComboBox cboParams, bool isRef)
       {
          ProjectDataset.SpriteDefinitionRow spriteDef = m_SpriteContext.SpriteRow.SpriteStateRowParent.SpriteDefinitionRow;
          foreach(ProjectDataset.SpriteParameterRow prow in ProjectData.GetSortedSpriteParameters(spriteDef))
          {
-            cboParams.Items.Add(m_SpriteContext.ToString() + "." + CodeGenerator.NameToVariable(prow.Name));
+            cboParams.Items.Add((isRef ? "ref " : "") + m_SpriteContext.ToString() + "." + CodeGenerator.NameToVariable(prow.Name));
          }
       }
 
@@ -690,6 +720,16 @@ namespace SGDK2
       {
          foreach(DataRowView drv in ProjectData.Map.DefaultView)
             cboTarget.Items.Add("typeof(" + CodeGenerator.NameToMapClass(((ProjectDataset.MapRow)drv.Row).Name) + ")");
+      }
+
+      private void FillComboWithCustomObjects(ComboBox cboTarget, RemotingServices.RemoteParameterInfo param)
+      {
+         LoadCustomObjectsProviding(param.Type.FullName);
+         if (m_CustomObjects.ContainsKey(param.Type.FullName))
+         {
+            foreach(RemotingServices.RemoteGlobalAccessorInfo p in (RemotingServices.RemoteGlobalAccessorInfo[])m_CustomObjects[param.Type.FullName])
+               cboTarget.Items.Add(p.Type.FullName + "." + p.MemberName);
+         }
       }
 
       private void PopulateParameter(Label lblParameter, ComboBox cboParameter, RemotingServices.RemoteParameterInfo param, bool clearValue)
@@ -727,22 +767,22 @@ namespace SGDK2
          if (param.IsEnum)
          {
             string[] enumVals;
-            if (m_Enums.Contains(param.TypeName))
-               enumVals = m_Enums[param.TypeName];
+            if (m_Enums.Contains(param.Type.FullName))
+               enumVals = m_Enums[param.Type.FullName];
             else
-               enumVals = m_Enums[param.TypeName] = GetEnumInfo(param.TypeName);
+               enumVals = m_Enums[param.Type.FullName] = GetEnumInfo(param.Type.FullName);
 
             foreach (string enumVal in enumVals)
                cboParameter.Items.Add(enumVal);
             return;
          }
 
-         if (string.Compare(param.TypeName, typeof(bool).Name)==0)
+         if (string.Compare(param.Type.FullName, typeof(bool).FullName)==0)
          {
             cboParameter.Items.Add("false");
             cboParameter.Items.Add("true");
          }
-         else if (string.Compare(param.TypeName, typeof(System.Drawing.Point).Name) == 0)
+         else if (string.Compare(param.Type.FullName, typeof(System.Drawing.Point).FullName) == 0)
          {
             foreach(ProjectDataset.SpritePlanRow drPlan in ProjectData.GetSortedSpritePlans(m_Plan.LayerRowParent))
             {
@@ -752,14 +792,14 @@ namespace SGDK2
             }
             cboParameter.Items.Add(CodeGenerator.SpritePlanParentField + ".GetMousePosition()");
          }
-         else if (string.Compare(param.TypeName, "SpriteBase") == 0)
+         else if (string.Compare(param.Type.Name, "SpriteBase") == 0)
          {
             foreach(ProjectDataset.SpriteRow drSprite in ProjectData.GetSortedSpriteRows(m_Plan.LayerRowParent))
             {
                cboParameter.Items.Add(new SpriteCodeRef(drSprite));
             }
          }
-         else if (string.Compare(param.TypeName, "SpriteCollection") == 0)
+         else if (string.Compare(param.Type.Name, "SpriteCollection") == 0)
          {
             foreach(DataRowView drv in ProjectData.SpriteCategory.DefaultView)
             {
@@ -779,10 +819,20 @@ namespace SGDK2
                   case "MapType":
                      FillComboWithMapTypes(cboParameter);
                      break;
+                  case "CustomObject":
+                     FillComboWithCustomObjects(cboParameter, param);
+                     break;
                }
             }
          }
-         else if(string.Compare(param.TypeName, "Counter") == 0)
+         else if (string.Compare(param.Type.Name, typeof(Int32).Name + "&") == 0)
+         {
+            // Integer passed by reference
+            if (m_SpriteContext != null)
+               FillComboWithParams(cboParameter, true);
+            FillComboWithIntVars(cboParameter, true);
+         }
+         else if(string.Compare(param.Type.Name, "Counter") == 0)
          {
             FillComboWithCounters(cboParameter);
          }
@@ -794,12 +844,11 @@ namespace SGDK2
                typeof(Double).Name, typeof(Single).Name
             })
             {
-               if (string.Compare(typeName, param.TypeName) == 0)
+               if (string.Compare(typeName, param.Type.Name) == 0)
                {
-                  cboParameter.Items.Clear();
                   if (m_SpriteContext != null)
-                     FillComboWithParams(cboParameter);
-                  FillComboWithIntVars(cboParameter);
+                     FillComboWithParams(cboParameter, false);
+                  FillComboWithIntVars(cboParameter, false);
                   break;
                }
             }
@@ -1018,7 +1067,7 @@ namespace SGDK2
       private void DetectSpriteContext(int argIdx, string fldValue, ComboBox cboSource)
       {
          RemotingServices.RemoteMethodInfo rmi = m_AvailableRules[cboFunction.Text];
-         if ((argIdx >= 0) && (rmi.Arguments[argIdx].TypeName == "SpriteBase") && (cboSource.SelectedIndex >= 0) && (cboSource.Items[cboSource.SelectedIndex] is SpriteCodeRef))
+         if ((argIdx >= 0) && (rmi.Arguments[argIdx].Type.Name == "SpriteBase") && (cboSource.SelectedIndex >= 0) && (cboSource.Items[cboSource.SelectedIndex] is SpriteCodeRef))
          {
             SpriteCodeRef sprite = (SpriteCodeRef)cboSource.Items[cboSource.SelectedIndex];
             if (sprite != null)
@@ -1030,12 +1079,12 @@ namespace SGDK2
                   PopulateParameter(lblParam2, cboParam2, rmi.Arguments[1], false);
                if ((rmi.Arguments.Length >= 3) && (argIdx != 2))
                   PopulateParameter(lblParam3, cboParam3, rmi.Arguments[2], false);
-               if ((string.Compare(rmi.ReturnType, typeof(Int32).Name) == 0) ||
-                  (string.Compare(rmi.ReturnType, typeof(Int16).Name) == 0))
+               if ((string.Compare(rmi.ReturnType.Name, typeof(Int32).Name) == 0) ||
+                  (string.Compare(rmi.ReturnType.Name, typeof(Int16).Name) == 0))
                {
                   cboOutput.Items.Clear();
-                  FillComboWithParams(cboOutput);
-                  FillComboWithIntVars(cboOutput);
+                  FillComboWithParams(cboOutput, false);
+                  FillComboWithIntVars(cboOutput, false);
                }
             }
          }

@@ -125,6 +125,8 @@ namespace SGDK2
          this.mnuTreeView = new System.Windows.Forms.ContextMenu();
          this.mnuTreeNew = new System.Windows.Forms.MenuItem();
          this.mnuTreeEdit = new System.Windows.Forms.MenuItem();
+         this.mnuTreeDelete = new System.Windows.Forms.MenuItem();
+         this.mnuTreeImport = new System.Windows.Forms.MenuItem();
          this.splitterMDI = new System.Windows.Forms.Splitter();
          this.mnuMain = new System.Windows.Forms.MainMenu();
          this.mnuFile = new System.Windows.Forms.MenuItem();
@@ -135,6 +137,7 @@ namespace SGDK2
          this.mnuFileSep1 = new System.Windows.Forms.MenuItem();
          this.mnuFileNewObj = new System.Windows.Forms.MenuItem();
          this.mnuFileDeleteObj = new System.Windows.Forms.MenuItem();
+         this.mnuFileImportObj = new System.Windows.Forms.MenuItem();
          this.mnuFileSep2 = new System.Windows.Forms.MenuItem();
          this.mnuFileRunProject = new System.Windows.Forms.MenuItem();
          this.mnuFileRunProjectInDebugMode = new System.Windows.Forms.MenuItem();
@@ -152,9 +155,6 @@ namespace SGDK2
          this.pnlProjectTree = new System.Windows.Forms.Panel();
          this.lblProjectTree = new System.Windows.Forms.Label();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
-         this.mnuTreeDelete = new System.Windows.Forms.MenuItem();
-         this.mnuTreeImport = new System.Windows.Forms.MenuItem();
-         this.mnuFileImportObj = new System.Windows.Forms.MenuItem();
          this.pnlProjectTree.SuspendLayout();
          this.SuspendLayout();
          // 
@@ -254,6 +254,18 @@ namespace SGDK2
          this.mnuTreeEdit.Text = "&Edit";
          this.mnuTreeEdit.Click += new System.EventHandler(this.mnuTreeEdit_Click);
          // 
+         // mnuTreeDelete
+         // 
+         this.mnuTreeDelete.Index = 2;
+         this.mnuTreeDelete.Text = "&Delete";
+         this.mnuTreeDelete.Click += new System.EventHandler(this.mnuTreeDelete_Click);
+         // 
+         // mnuTreeImport
+         // 
+         this.mnuTreeImport.Index = 3;
+         this.mnuTreeImport.Text = "&Import From...";
+         this.mnuTreeImport.Click += new System.EventHandler(this.mnuTreeImport_Click);
+         // 
          // splitterMDI
          // 
          this.splitterMDI.Location = new System.Drawing.Point(176, 27);
@@ -297,52 +309,68 @@ namespace SGDK2
          // mnuFileNewPrj
          // 
          this.mnuFileNewPrj.Index = 0;
+         this.mnuFileNewPrj.MergeOrder = 1;
          this.mnuFileNewPrj.Text = "&New Project";
          this.mnuFileNewPrj.Click += new System.EventHandler(this.mnuFileNewPrj_Click);
          // 
          // mnuFileOpenPrj
          // 
          this.mnuFileOpenPrj.Index = 1;
+         this.mnuFileOpenPrj.MergeOrder = 2;
          this.mnuFileOpenPrj.Text = "&Open Project";
          this.mnuFileOpenPrj.Click += new System.EventHandler(this.mnuFileOpenPrj_Click);
          // 
          // mnuFileSavePrj
          // 
          this.mnuFileSavePrj.Index = 2;
+         this.mnuFileSavePrj.MergeOrder = 3;
          this.mnuFileSavePrj.Text = "&Save Project";
          this.mnuFileSavePrj.Click += new System.EventHandler(this.mnuFileSavePrj_Click);
          // 
          // mnuFileSavePrjAs
          // 
          this.mnuFileSavePrjAs.Index = 3;
+         this.mnuFileSavePrjAs.MergeOrder = 4;
          this.mnuFileSavePrjAs.Text = "Save Project &As...";
          this.mnuFileSavePrjAs.Click += new System.EventHandler(this.mnuFileSavePrjAs_Click);
          // 
          // mnuFileSep1
          // 
          this.mnuFileSep1.Index = 4;
+         this.mnuFileSep1.MergeOrder = 10;
          this.mnuFileSep1.Text = "-";
          // 
          // mnuFileNewObj
          // 
          this.mnuFileNewObj.Index = 5;
+         this.mnuFileNewObj.MergeOrder = 11;
          this.mnuFileNewObj.Text = "New O&bject";
          this.mnuFileNewObj.Click += new System.EventHandler(this.mnuFileNewObj_Click);
          // 
          // mnuFileDeleteObj
          // 
          this.mnuFileDeleteObj.Index = 6;
+         this.mnuFileDeleteObj.MergeOrder = 12;
          this.mnuFileDeleteObj.Text = "&Delete Object";
          this.mnuFileDeleteObj.Click += new System.EventHandler(this.mnuFileDeleteObj_Click);
+         // 
+         // mnuFileImportObj
+         // 
+         this.mnuFileImportObj.Index = 7;
+         this.mnuFileImportObj.MergeOrder = 13;
+         this.mnuFileImportObj.Text = "&Import From...";
+         this.mnuFileImportObj.Click += new System.EventHandler(this.mnuFileImportObj_Click);
          // 
          // mnuFileSep2
          // 
          this.mnuFileSep2.Index = 8;
+         this.mnuFileSep2.MergeOrder = 20;
          this.mnuFileSep2.Text = "-";
          // 
          // mnuFileRunProject
          // 
          this.mnuFileRunProject.Index = 9;
+         this.mnuFileRunProject.MergeOrder = 21;
          this.mnuFileRunProject.Shortcut = System.Windows.Forms.Shortcut.CtrlF5;
          this.mnuFileRunProject.Text = "&Run Project";
          this.mnuFileRunProject.Click += new System.EventHandler(this.mnuFileRunProject_Click);
@@ -350,6 +378,7 @@ namespace SGDK2
          // mnuFileRunProjectInDebugMode
          // 
          this.mnuFileRunProjectInDebugMode.Index = 10;
+         this.mnuFileRunProjectInDebugMode.MergeOrder = 22;
          this.mnuFileRunProjectInDebugMode.Shortcut = System.Windows.Forms.Shortcut.F5;
          this.mnuFileRunProjectInDebugMode.Text = "Run Project in Debug &Mode";
          this.mnuFileRunProjectInDebugMode.Click += new System.EventHandler(this.mnuFileRunProjectInDebugMode_Click);
@@ -357,12 +386,14 @@ namespace SGDK2
          // mnuFileResetCode
          // 
          this.mnuFileResetCode.Index = 11;
+         this.mnuFileResetCode.MergeOrder = 23;
          this.mnuFileResetCode.Text = "R&eset Source Code";
          this.mnuFileResetCode.Click += new System.EventHandler(this.mnuFileResetCode_Click);
          // 
          // mnuFileGenerate
          // 
          this.mnuFileGenerate.Index = 12;
+         this.mnuFileGenerate.MergeOrder = 24;
          this.mnuFileGenerate.Shortcut = System.Windows.Forms.Shortcut.F7;
          this.mnuFileGenerate.Text = "&Generate Project";
          this.mnuFileGenerate.Click += new System.EventHandler(this.mnuFileGenerate_Click);
@@ -371,6 +402,7 @@ namespace SGDK2
          // 
          this.mnuFileDeleteOutputFiles.Enabled = false;
          this.mnuFileDeleteOutputFiles.Index = 13;
+         this.mnuFileDeleteOutputFiles.MergeOrder = 25;
          this.mnuFileDeleteOutputFiles.Text = "Dele&te Output Files";
          this.mnuFileDeleteOutputFiles.Click += new System.EventHandler(this.mnuFileDeleteOutputFiles_Click);
          // 
@@ -518,24 +550,6 @@ namespace SGDK2
          this.dataMonitor.CounterRowChanged += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowChanged);
          this.dataMonitor.SpriteCategoryRowDeleted += new SGDK2.ProjectDataset.SpriteCategoryRowChangeEventHandler(this.dataMonitor_SpriteCategoryRowDeleted);
          // 
-         // mnuTreeDelete
-         // 
-         this.mnuTreeDelete.Index = 2;
-         this.mnuTreeDelete.Text = "&Delete";
-         this.mnuTreeDelete.Click += new System.EventHandler(this.mnuTreeDelete_Click);
-         // 
-         // mnuTreeImport
-         // 
-         this.mnuTreeImport.Index = 3;
-         this.mnuTreeImport.Text = "&Import From...";
-         this.mnuTreeImport.Click += new System.EventHandler(this.mnuTreeImport_Click);
-         // 
-         // mnuFileImportObj
-         // 
-         this.mnuFileImportObj.Index = 7;
-         this.mnuFileImportObj.Text = "&Import From...";
-         this.mnuFileImportObj.Click += new System.EventHandler(this.mnuFileImportObj_Click);
-         // 
          // frmMain
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -548,7 +562,6 @@ namespace SGDK2
          this.Menu = this.mnuMain;
          this.Name = "frmMain";
          this.Text = "Scrolling Game Development Kit";
-         this.Load += new System.EventHandler(this.frmMain_Load);
          this.pnlProjectTree.ResumeLayout(false);
          this.ResumeLayout(false);
 
@@ -756,7 +769,41 @@ namespace SGDK2
                   frmNew.Show();
                   break;
                case "CD":
-                  MessageBox.Show(this, "New code objects cannot be added", "New Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  string sName = frmInputBox.GetInput(MdiParent, "New Custom Code Object", "Enter a name for the new object", String.Empty);
+                  if (sName == null)
+                     return;
+                  string sBareName;
+                  if (sName.EndsWith(".cs"))
+                     sBareName = sName.Substring(0, sName.Length - 3);
+                  else if (sName.EndsWith(".dll"))
+                     sBareName = sName.Substring(0, sName.Length - 4);
+                  else
+                  {
+                     sBareName = sName;
+                     sName += ".cs";
+                  }
+                  if (!sName.EndsWith(".dll"))
+                  {
+                     string msg = ProjectData.ValidateName(sBareName);
+                     if (msg != null)
+                     {
+                        MessageBox.Show(this, "Invalid name \"" + sBareName + "\": " + msg, "New Custom Code Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return;
+                     }
+                  }
+                  if (null != ProjectData.GetSourceCode(sName))
+                  {
+                     MessageBox.Show(this, "The specified custom object name already exists", "New Custom Code Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                     return;
+                  }
+                  if (sName.EndsWith(".cs"))
+                  {
+                     frmNew = new frmCodeEditor(sName, KeyParts[KeyParts.Length-1]);
+                     frmNew.MdiParent = this;
+                     frmNew.Show();
+                  }
+                  else
+                     ProjectData.AddSourceCode(sName, null, null, true, null);
                   break;
                default:
                   m_ContextNode = m_ContextNode.Parent;
@@ -913,9 +960,14 @@ namespace SGDK2
                   MessageBox.Show(this, "A specific Code object must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                   return;
                }
-               ProjectDataset.SourceCodeRow row = ProjectData.GetSourceCode(KeyParts[0]);
+               if (KeyParts[0].EndsWith(".dll"))
+               {
+                  MessageBox.Show(this, "Cannot edit DLL reference items.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  return;
+               }
+               ProjectDataset.SourceCodeRow row = ProjectData.GetSourceCode(KeyParts[KeyParts.Length - 1]);
                if (row == null)
-                  row = ProjectData.AddSourceCode(KeyParts[0], "");
+                  row = ProjectData.AddSourceCode(KeyParts[0], String.Empty, String.Empty, true, null);
                frmNew = new frmCodeEditor(row);
                frmNew.MdiParent = this;
                frmNew.Show();
@@ -1090,7 +1142,19 @@ namespace SGDK2
                   }
                   break;
                case "CD":
-                  MessageBox.Show(this, "Code objects cannot be deleted.", "Delete Code", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  ProjectDataset.SourceCodeRow row = ProjectData.GetSourceCode(KeyParts[KeyParts.Length-1]);
+                  if (row != null)
+                  {
+                     if (!row.IsCustomObject)
+                     {
+                        MessageBox.Show(this, "Only custom code objects can be deleted.", "Delete Code", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        return;
+                     }
+                     if (DialogResult.Yes == MessageBox.Show(this, "Are you sure you want to delete custom code object \"" + KeyParts[0] + "\"?", "Delete Source Code", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
+                     {
+                        ProjectData.DeleteSourceCode(row);
+                     }
+                  }
                   break;
                default:
                   MessageBox.Show(this, "Cannot delete the selected type", "Delete Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -1126,6 +1190,22 @@ namespace SGDK2
                MessageBox.Show(this, "Only Sprite Definitions can be imported.", "Import From...", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                break;
          }
+      }
+      private string GetSourceCodeKey(ProjectDataset.SourceCodeRow drCode, DataRowVersion version)
+      {
+         string name;
+         if (drCode.HasVersion(version))
+            name = drCode[ProjectData.SourceCode.NameColumn, version].ToString();
+         else
+            name = drCode.Name;
+         string dep;
+         if (Convert.IsDBNull(drCode[ProjectData.SourceCode.DependsOnColumn, DataRowVersion.Current]))
+            dep = null;
+         else
+            dep = drCode[ProjectData.SourceCode.DependsOnColumn, DataRowVersion.Current].ToString();
+         if ((dep == null) || (dep.Length <= 0))
+            return "CD" + name;
+         return GetSourceCodeKey(ProjectData.GetSourceCode(dep), version) + "~" + name;
       }
       #endregion
 
@@ -1168,10 +1248,7 @@ namespace SGDK2
          base.OnClosing (e);
       }
 
-      #endregion
-
-      #region Event Handlers
-      private void frmMain_Load(object sender, System.EventArgs e)
+      protected override void OnLoad(EventArgs e)
       {
          if (SGDK2IDE.g_CommandLine.ProjectFile == null)
             DoNewProject();
@@ -1185,8 +1262,12 @@ namespace SGDK2
                MessageBox.Show(this, ex.Message, "Open Project", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                DoNewProject();
             }
+         base.OnLoad (e);
       }
 
+      #endregion
+
+      #region Event Handlers
       private void dataMonitor_GraphicSheetRowChanged(object sender, SGDK2.ProjectDataset.GraphicSheetRowChangeEvent e)
       {
          if (e.Action == DataRowAction.Add)
@@ -1749,9 +1830,24 @@ namespace SGDK2
       {
          if (e.Action == DataRowAction.Add)
          {
-            TreeNode ndNew = ((TreeNode)m_TreeNodes["CD"]).Nodes.Add(e.Row.Name);
-            ndNew.Tag = "CD" + e.Row.Name;
-            ndNew.SelectedImageIndex = ndNew.ImageIndex = 23;
+            string parent = String.Empty;
+            ProjectDataset.SourceCodeRow treeRow = e.Row;
+            while (!treeRow.IsDependsOnNull() && treeRow.DependsOn.Length > 0)
+            {
+               if (parent.Length > 0)
+                  parent = "~" + parent;
+               parent = treeRow.DependsOn + parent;
+               treeRow = ProjectData.GetSourceCode(treeRow.DependsOn);
+            }
+            TreeNode ndNew = ((TreeNode)m_TreeNodes["CD" + parent]).Nodes.Add(e.Row.Name);
+            if (parent.Length == 0)
+               ndNew.Tag = "CD" + e.Row.Name;
+            else
+               ndNew.Tag = "CD" + parent + "~" + e.Row.Name;
+            if (e.Row.IsCustomObject)
+               ndNew.SelectedImageIndex = ndNew.ImageIndex = 24;
+            else
+               ndNew.SelectedImageIndex = ndNew.ImageIndex = 23;
             ndNew.EnsureVisible();
             // Add the node to the local index
             m_TreeNodes.Add(ndNew.Tag, ndNew);
@@ -1763,12 +1859,14 @@ namespace SGDK2
       {
          if (e.Action == DataRowAction.Change)
          {
-            String sOldKey = e.Row[ProjectData.SourceCode.NameColumn, DataRowVersion.Current].ToString();
-            TreeNode ndOld = (TreeNode)m_TreeNodes["CD" + sOldKey];
-            m_TreeNodes.Remove("CD" + sOldKey);
-            ndOld.Tag = "CD" + e.Row.Name;
+            String sOldKey = GetSourceCodeKey(e.Row, DataRowVersion.Current);
+            TreeNode ndOld = (TreeNode)m_TreeNodes[sOldKey];
+            m_TreeNodes.Remove(sOldKey);
+            ndOld.Tag = GetSourceCodeKey(e.Row, DataRowVersion.Proposed);
             ndOld.Text = e.Row.Name;
             m_TreeNodes.Add(ndOld.Tag, ndOld);
+            foreach(ProjectDataset.SourceCodeRow child in ProjectData.GetDependentSourceCode(e.Row))
+               child.DependsOn = e.Row.Name;
             CodeGenerator.ResetTempAssembly();
          }                  
       }
@@ -1776,7 +1874,7 @@ namespace SGDK2
       private void dataMonitor_SourceCodeRowDeleting(object sender, SGDK2.ProjectDataset.SourceCodeRowChangeEvent e)
       {
          if ((e.Action == DataRowAction.Delete) && (e.Row.HasVersion(DataRowVersion.Current)))
-            m_AffectedNodeKeys["CD"] = "CD" + e.Row[ProjectData.SourceCode.NameColumn, DataRowVersion.Current].ToString();
+            m_AffectedNodeKeys["CD"] = GetSourceCodeKey(e.Row, DataRowVersion.Current);
       }
 
       private void dataMonitor_SourceCodeRowDeleted(object sender, SGDK2.ProjectDataset.SourceCodeRowChangeEvent e)
@@ -2063,15 +2161,43 @@ namespace SGDK2
 
       private void mnuFileResetCode_Click(object sender, System.EventArgs e)
       {
-         while (ProjectData.SourceCode.DefaultView.Count > 0)
-            ProjectData.SourceCode.DefaultView[0].Row.Delete();
+         DataView dv = new DataView(ProjectData.SourceCode, "IsCustomObject=false", String.Empty, DataViewRowState.CurrentRows);
 
-         foreach (string resourceName in System.Reflection.Assembly.GetAssembly(typeof(SGDK2IDE)).GetManifestResourceNames())
+         string[] embeddedCodeFiles = System.Reflection.Assembly.GetAssembly(typeof(SGDK2IDE)).GetManifestResourceNames();
+         for (int rowIdx = 0; rowIdx < dv.Count; rowIdx++)
+         {
+            int rscIdx;
+            for (rscIdx = 0; rscIdx < embeddedCodeFiles.Length; rscIdx++)
+            {
+               if (embeddedCodeFiles[rscIdx].StartsWith("SGDK2.Template."))
+               {
+                  if (string.Compare(((ProjectDataset.SourceCodeRow)dv[rowIdx].Row).Name, embeddedCodeFiles[rscIdx].Substring(15), true) == 0)
+                     break;
+               }
+            }
+            if (rscIdx >= embeddedCodeFiles.Length)
+               dv[rowIdx--].Row.Delete();
+         }
+
+         foreach (string resourceName in embeddedCodeFiles)
          {
             if (resourceName.StartsWith("SGDK2.Template."))
             {
                System.IO.TextReader stm = new System.IO.StreamReader(System.Reflection.Assembly.GetAssembly(typeof(SGDK2IDE)).GetManifestResourceStream(resourceName));
-               ProjectData.SourceCode.AddSourceCodeRow(resourceName.Substring(15), stm.ReadToEnd());
+
+               int rowIdx;
+               for (rowIdx = 0; rowIdx < dv.Count; rowIdx++)
+               {
+                  if (string.Compare(((ProjectDataset.SourceCodeRow)dv[rowIdx].Row).Name, resourceName.Substring(15), true) == 0)
+                  {
+                     string resetText = stm.ReadToEnd();
+                     if (((ProjectDataset.SourceCodeRow)dv[rowIdx].Row).Text != resetText)
+                        ((ProjectDataset.SourceCodeRow)dv[rowIdx].Row).Text = resetText;
+                     break;
+                  }
+               }
+               if (rowIdx >= dv.Count)
+                  ProjectData.AddSourceCode(resourceName.Substring(15), stm.ReadToEnd(), null, false, null);
                stm.Close();
             }
          }
@@ -2145,6 +2271,7 @@ namespace SGDK2
          deleteFiles.AddRange(g.GetResxFileList(strFolder));
          deleteFiles.AddRange(g.GetResourcesFileList(strFolder));
          deleteFiles.AddRange(g.GetLocalReferenceFileList(strFolder));
+         deleteFiles.AddRange(g.GetEmbeddedResourceList(strFolder));
          deleteFiles.Add(System.IO.Path.Combine(strFolder, System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath) + ".exe"));
          deleteFiles.Add(System.IO.Path.Combine(strFolder, System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath) + ".pdb"));
          foreach(string deleteFile in deleteFiles)

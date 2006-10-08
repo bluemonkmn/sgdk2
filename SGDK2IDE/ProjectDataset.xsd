@@ -268,8 +268,11 @@
                <xs:complexType>
                   <xs:sequence>
                      <xs:element name="Text" type="xs:string" minOccurs="0" />
+                     <xs:element name="CustomObjectData" type="xs:base64Binary" minOccurs="0" />
                   </xs:sequence>
                   <xs:attribute name="Name" type="xs:Name" />
+                  <xs:attribute name="IsCustomObject" type="xs:boolean" msprop:nullValue="false" default="false" />
+                  <xs:attribute name="DependsOn" type="xs:Name" />
                </xs:complexType>
             </xs:element>
             <xs:element name="Project" maxOccurs="1" minOccurs="1">

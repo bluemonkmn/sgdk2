@@ -6,9 +6,10 @@ using Microsoft.DirectX;
 /// <summary>
 /// Base class for "plans", which consist of map coordinates and rules
 /// </summary>
-public abstract class PlanBase : System.Collections.IEnumerable
+public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
 {
    public static int SharedTemp1;
+   public static int TargetDistance = 5;
 
 	protected PlanBase()
 	{
@@ -92,20 +93,6 @@ public abstract class PlanBase : System.Collections.IEnumerable
       sprite.y = target.Y;
    }
 
-   [Description("Write a string to the debug output without moving to the next line"),
-   System.Diagnostics.Conditional("DEBUG")]
-   public void LogDebugLabel(string Label)
-   {
-      Project.GameWindow.debugText.Write(Label);
-   }
-
-   [Description("Write a number to the debug output and move to the next line"),
-   System.Diagnostics.Conditional("DEBUG")]
-   public void LogDebugValue(int DebugValue)
-   {
-      Project.GameWindow.debugText.WriteLine(DebugValue.ToString());
-   }
-
    [Description("Returns true if the specified key is currently pressed")]
    public bool IsKeyPressed(Microsoft.DirectX.DirectInput.Key key)
    {
@@ -174,13 +161,28 @@ public abstract class PlanBase : System.Collections.IEnumerable
       }
    }
 
-   [Description("Determine whether the sprite is within the TargetDistance of the specified coordinate.  If so, return the next CoordinateIndex, otherwise return the current CoordinateIndex.")]
-   public int CheckNextCoordinate(SpriteBase Sprite, int CoordinateIndex, int TargetDistance)
+   [Description("Determine whether the sprite is within the TargetDistance of the specified coordinate, and has waited for the number of frames determined by the coordinate's weight based on the specified WaitCounter after reaching it.  If so, return the next CoordinateIndex, otherwise return the current CoordinateIndex.")]
+   public int CheckNextCoordinate(SpriteBase Sprite, int CoordinateIndex, ref int WaitCounter)
    {
+      if (WaitCounter > 0)
+      {
+         if (++WaitCounter > this[CoordinateIndex].weight)
+         {
+            WaitCounter = 0;
+            return (CoordinateIndex + 1) % Count;
+         }
+         else
+            return CoordinateIndex;
+      }
       int dx = this[CoordinateIndex].x - Sprite.PixelX;
       int dy = this[CoordinateIndex].y - Sprite.PixelY;
       if (Math.Sqrt(dx * dx + dy * dy) < TargetDistance)
-         return (CoordinateIndex + 1) % Count;
+      {
+         if (this[CoordinateIndex].weight > 0)
+            WaitCounter++;
+         else
+            return (CoordinateIndex + 1) % Count;
+      }
       return CoordinateIndex;
    }
 
@@ -250,20 +252,6 @@ public abstract class PlanBase : System.Collections.IEnumerable
    public bool IsSpriteActive(SpriteBase Sprite)
    {
       return Sprite.isActive;
-   }
-
-   [Description("Sets a different map as the one to be drawn on the game display.  If UnloadCurrent is true, the current map will be unloaded first (which causes it to be recreated/reset when returning to it).")]
-   public void SwitchToMap([Editor("MapType", "UITypeEditor")] Type MapType, bool UnloadCurrent)
-   {
-      if (UnloadCurrent)
-         Project.GameWindow.UnloadMap(Project.GameWindow.CurrentMap.GetType());
-      Project.GameWindow.CurrentMap = Project.GameWindow.GetMap(MapType);
-   }
-
-   [Description("Unloads the specified map, which will force it to be recreated/reset next time it is used.")]
-   public void UnloadMap([Editor("MapType", "UITypeEditor")] Type MapType)
-   {
-      Project.GameWindow.UnloadMap(MapType);
    }
 
    #region Inventory / Overlay

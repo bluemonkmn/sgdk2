@@ -7,29 +7,26 @@ using System.Windows.Forms;
 namespace SGDK2
 {
 	/// <summary>
-	/// Summary description for InputBox.
+	/// Summary description for CustomObjectData.
 	/// </summary>
-	public class frmInputBox : System.Windows.Forms.Form
+	public class frmCustomObjectData : System.Windows.Forms.Form
 	{
-      private System.Windows.Forms.TextBox txtInput;
+      private System.Windows.Forms.TextBox txtData;
       private System.Windows.Forms.Button btnOK;
       private System.Windows.Forms.Button btnCancel;
-      private System.Windows.Forms.Label lblPrompt;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
 		private System.ComponentModel.Container components = null;
 
-		private frmInputBox()
+		private frmCustomObjectData(string source)
 		{
 			//
 			// Required for Windows Form Designer support
 			//
 			InitializeComponent();
 
-			//
-			// TODO: Add any constructor code after InitializeComponent call
-			//
+         txtData.Text = source;
 		}
 
 		/// <summary>
@@ -54,80 +51,70 @@ namespace SGDK2
 		/// </summary>
 		private void InitializeComponent()
 		{
-         this.txtInput = new System.Windows.Forms.TextBox();
+         this.txtData = new System.Windows.Forms.TextBox();
          this.btnOK = new System.Windows.Forms.Button();
          this.btnCancel = new System.Windows.Forms.Button();
-         this.lblPrompt = new System.Windows.Forms.Label();
          this.SuspendLayout();
          // 
-         // txtInput
+         // txtData
          // 
-         this.txtInput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-         this.txtInput.Location = new System.Drawing.Point(8, 24);
-         this.txtInput.Name = "txtInput";
-         this.txtInput.Size = new System.Drawing.Size(298, 20);
-         this.txtInput.TabIndex = 0;
-         this.txtInput.Text = "";
+         this.txtData.AcceptsReturn = true;
+         this.txtData.Dock = System.Windows.Forms.DockStyle.Top;
+         this.txtData.Location = new System.Drawing.Point(0, 0);
+         this.txtData.MaxLength = 99999999;
+         this.txtData.Multiline = true;
+         this.txtData.Name = "txtData";
+         this.txtData.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+         this.txtData.Size = new System.Drawing.Size(474, 192);
+         this.txtData.TabIndex = 0;
+         this.txtData.Text = "";
          // 
          // btnOK
          // 
-         this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
          this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-         this.btnOK.Location = new System.Drawing.Point(152, 56);
+         this.btnOK.Location = new System.Drawing.Point(312, 200);
          this.btnOK.Name = "btnOK";
          this.btnOK.Size = new System.Drawing.Size(72, 24);
          this.btnOK.TabIndex = 1;
-         this.btnOK.Text = "OK";
+         this.btnOK.Text = "&OK";
          // 
          // btnCancel
          // 
-         this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
          this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-         this.btnCancel.Location = new System.Drawing.Point(232, 56);
+         this.btnCancel.Location = new System.Drawing.Point(392, 200);
          this.btnCancel.Name = "btnCancel";
          this.btnCancel.Size = new System.Drawing.Size(72, 24);
          this.btnCancel.TabIndex = 2;
          this.btnCancel.Text = "Cancel";
          // 
-         // lblPrompt
-         // 
-         this.lblPrompt.Location = new System.Drawing.Point(8, 0);
-         this.lblPrompt.Name = "lblPrompt";
-         this.lblPrompt.Size = new System.Drawing.Size(296, 24);
-         this.lblPrompt.TabIndex = 3;
-         this.lblPrompt.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-         // 
-         // frmInputBox
+         // frmCustomObjectData
          // 
          this.AcceptButton = this.btnOK;
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
          this.CancelButton = this.btnCancel;
-         this.ClientSize = new System.Drawing.Size(314, 87);
-         this.Controls.Add(this.lblPrompt);
+         this.ClientSize = new System.Drawing.Size(474, 231);
          this.Controls.Add(this.btnCancel);
          this.Controls.Add(this.btnOK);
-         this.Controls.Add(this.txtInput);
+         this.Controls.Add(this.txtData);
          this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
          this.MaximizeBox = false;
-         this.Name = "frmInputBox";
+         this.Name = "frmCustomObjectData";
          this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+         this.Text = "Edit Custom Object Data As Text";
          this.ResumeLayout(false);
 
       }
 		#endregion
-
-      public static string GetInput(IWin32Window parent, string Title, string Prompt, string Default)
+	
+      public static string EditText(IWin32Window owner, string source)
       {
-         frmInputBox frm = new frmInputBox();
+         frmCustomObjectData frm = new frmCustomObjectData(source);
          try
          {
-            frm.Text = Title;
-            frm.lblPrompt.Text = Prompt;
-            frm.txtInput.Text = Default;
-            if (DialogResult.OK == frm.ShowDialog(parent))
-               return frm.txtInput.Text;
-            return null;
+            if (DialogResult.OK == frm.ShowDialog(owner))
+               return frm.txtData.Text;
+            else
+               return null;
          }
          finally
          {

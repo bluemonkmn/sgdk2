@@ -23,6 +23,80 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
    }
    #region IRemoteTypeInfo Members
 
+   public SGDK2.RemotingServices.RemoteGlobalAccessorInfo[] GetGlobalProvidersOfSelf()
+   {
+      System.Reflection.BindingFlags binder;
+      binder = System.Reflection.BindingFlags.Public |
+         System.Reflection.BindingFlags.Static | 
+         System.Reflection.BindingFlags.GetProperty |
+         System.Reflection.BindingFlags.GetField;
+
+      System.Collections.ArrayList result = new System.Collections.ArrayList();
+
+      foreach (System.Type type in reflectType.Assembly.GetTypes())
+      {
+         System.Reflection.PropertyInfo[] pi = type.GetProperties(binder);
+         System.Reflection.FieldInfo[] fi = type.GetFields(binder);
+         for (int i = 0; i < pi.Length; i++)
+         {
+            if (reflectType.IsAssignableFrom(pi[i].PropertyType))
+               result.Add(new SGDK2.RemotingServices.RemoteGlobalAccessorInfo(
+                  new SGDK2.RemotingServices.RemoteTypeName(type), pi[i].Name));
+         }
+         for (int i = 0; i < fi.Length; i++)
+         {
+            if (reflectType.IsAssignableFrom(fi[i].FieldType))
+               result.Add(new SGDK2.RemotingServices.RemoteGlobalAccessorInfo(
+                  new SGDK2.RemotingServices.RemoteTypeName(type), fi[i].Name));
+         }
+      }
+
+      return (SGDK2.RemotingServices.RemoteGlobalAccessorInfo[])result.ToArray(typeof(SGDK2.RemotingServices.RemoteGlobalAccessorInfo));
+   }
+
+   public SGDK2.RemotingServices.RemoteMethodInfo[] GetGlobalFunctions()
+   {
+      System.Collections.ArrayList result = new System.Collections.ArrayList();
+
+      foreach (System.Type type in reflectType.Assembly.GetTypes())
+      {
+         System.Reflection.MethodInfo[] mi = type.GetMethods(
+            System.Reflection.BindingFlags.Public |
+            System.Reflection.BindingFlags.Static | 
+            System.Reflection.BindingFlags.InvokeMethod);
+         for (int i = 0; i < mi.Length; i++)
+         {
+            System.ComponentModel.DescriptionAttribute da = System.Attribute.GetCustomAttribute(mi[i], typeof(System.ComponentModel.DescriptionAttribute), false) as System.ComponentModel.DescriptionAttribute;
+            if ((da == null) || (da.Description == null))
+               continue;
+
+            SGDK2.RemotingServices.RemoteMethodInfo current;
+            current.MethodName = type.FullName + "." + mi[i].Name;
+            current.Description = da.Description;
+            current.ReturnType = new SGDK2.RemotingServices.RemoteTypeName(mi[i].ReturnType);
+            System.Reflection.ParameterInfo[] pi = mi[i].GetParameters();
+            SGDK2.RemotingServices.RemoteParameterInfo[] rpi = new SGDK2.RemotingServices.RemoteParameterInfo[pi.Length];
+            for (int j = 0; j < pi.Length; j++)
+            {
+               rpi[j].Name = pi[j].Name;
+               rpi[j].IsEnum = pi[j].ParameterType.IsEnum;
+               rpi[j].Type = new SGDK2.RemotingServices.RemoteTypeName(pi[j].ParameterType);
+               System.Attribute[] editors = Attribute.GetCustomAttributes(pi[j], typeof(System.ComponentModel.EditorAttribute));
+               if (editors.Length > 0)
+               {
+                  rpi[j].Editors = new string[editors.Length];
+                  for (int k=0; k < editors.Length; k++)
+                     rpi[j].Editors[k] = ((System.ComponentModel.EditorAttribute)editors[k]).EditorTypeName;
+               }
+            }
+            current.Arguments = rpi;
+            result.Add(current);
+         }
+      }
+
+      return (SGDK2.RemotingServices.RemoteMethodInfo[])result.ToArray(typeof(SGDK2.RemotingServices.RemoteMethodInfo));
+   }
+
    public SGDK2.RemotingServices.RemoteMethodInfo[] GetMethods()
    {
       System.Reflection.MethodInfo[] mi = reflectType.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.InvokeMethod);
@@ -30,7 +104,7 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
       for (int i = 0; i < mi.Length; i++)
       {
          result[i].MethodName = mi[i].Name;
-         result[i].ReturnType = mi[i].ReturnType.Name;
+         result[i].ReturnType = new SGDK2.RemotingServices.RemoteTypeName(mi[i].ReturnType);
          System.ComponentModel.DescriptionAttribute da = System.Attribute.GetCustomAttribute(mi[i], typeof(System.ComponentModel.DescriptionAttribute), false) as System.ComponentModel.DescriptionAttribute;
          if (da == null)
             result[i].Description = String.Empty;
@@ -42,10 +116,7 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
          {
             rpi[j].Name = pi[j].Name;
             rpi[j].IsEnum = pi[j].ParameterType.IsEnum;
-            if (pi[j].ParameterType.IsEnum)
-               rpi[j].TypeName = pi[j].ParameterType.FullName;
-            else
-               rpi[j].TypeName = pi[j].ParameterType.Name;
+            rpi[j].Type = new SGDK2.RemotingServices.RemoteTypeName(pi[j].ParameterType);
             System.Attribute[] editors = Attribute.GetCustomAttributes(pi[j], typeof(System.ComponentModel.EditorAttribute));
             if (editors.Length > 0)
             {
@@ -75,7 +146,7 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
       for (int i = 0; i < pi.Length; i++)
       {
          result[i].Name = pi[i].Name;
-         result[i].Type = pi[i].PropertyType.Name;
+         result[i].Type = new SGDK2.RemotingServices.RemoteTypeName(pi[i].PropertyType);
          result[i].CanRead = pi[i].CanRead;
          result[i].CanWrite = pi[i].CanWrite;
       }
@@ -83,7 +154,7 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
       {
          int idx = i+pi.Length;
          result[idx].Name = fi[i].Name;
-         result[idx].Type = fi[i].FieldType.Name;
+         result[idx].Type = new SGDK2.RemotingServices.RemoteTypeName(fi[i].FieldType);
          result[idx].CanRead = true;
          result[idx].CanWrite = ((fi[i].Attributes & System.Reflection.FieldAttributes.InitOnly) == 0);
       }
@@ -98,16 +169,16 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
       return result;
    }
 
-   public string[] GetSubclasses()
+   public SGDK2.RemotingServices.RemoteTypeName[] GetSubclasses()
    {
       System.Collections.ArrayList result = new System.Collections.ArrayList();
       System.Type[] types = reflectType.Assembly.GetTypes();
       for (int i=0; i<types.Length; i++)
       {
          if (types[i].IsSubclassOf(reflectType))
-            result.Add(types[i].Name);
+            result.Add(new SGDK2.RemotingServices.RemoteTypeName(types[i]));
       }
-      return (string[])result.ToArray(typeof(string));
+      return (SGDK2.RemotingServices.RemoteTypeName[])result.ToArray(typeof(SGDK2.RemotingServices.RemoteTypeName));
    }
    #endregion
 }

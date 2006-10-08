@@ -2517,9 +2517,23 @@ namespace SGDK2
       {
          return m_dsPrj.SourceCode.FindByName(Name);
       }
-      public static ProjectDataset.SourceCodeRow AddSourceCode(string Name, string Text)
+      public static ProjectDataset.SourceCodeRow AddSourceCode(string Name, string Text, string DependsOn, bool IsCustomObject, byte[] CustomObjectData)
       {
-         return m_dsPrj.SourceCode.AddSourceCodeRow(Name, Text);
+         return m_dsPrj.SourceCode.AddSourceCodeRow(Name, IsCustomObject, DependsOn, Text, CustomObjectData);
+      }
+      public static void DeleteSourceCode(ProjectDataset.SourceCodeRow row)
+      {
+         foreach(ProjectDataset.SourceCodeRow dep in GetDependentSourceCode(row))
+            DeleteSourceCode(dep);
+         row.Delete();
+      }
+      public static ProjectDataset.SourceCodeRow[] GetDependentSourceCode(ProjectDataset.SourceCodeRow parent)
+      {
+         DataView dvCurrent = new DataView(SourceCode, SourceCode.DependsOnColumn + "='" + parent[SourceCode.NameColumn, DataRowVersion.Current].ToString() + "'", String.Empty, DataViewRowState.CurrentRows);
+         ProjectDataset.SourceCodeRow[] result = new SGDK2.ProjectDataset.SourceCodeRow[dvCurrent.Count];
+         for(int i = 0; i < result.Length; i++)
+            result[i] = (ProjectDataset.SourceCodeRow)dvCurrent[i].Row;
+         return result;
       }
       #endregion
 

@@ -5,7 +5,7 @@ using System.Diagnostics;
 /// <summary>
 /// Base class for all sprite definitions.
 /// </summary>
-public abstract class SpriteBase
+public abstract class SpriteBase : GeneralRules
 {
    public double x;
    public double y;
@@ -1100,11 +1100,4 @@ public abstract class SpriteBase
       isActive = false;
    }
    #endregion
-
-   [Description("Write a number to the debug output and move to the next line"),
-   System.Diagnostics.Conditional("DEBUG")]
-   public void LogDebugValue(int DebugValue)
-   {
-      Project.GameWindow.debugText.WriteLine(DebugValue.ToString());
-   }
 }

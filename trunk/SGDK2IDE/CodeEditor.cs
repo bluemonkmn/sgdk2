@@ -13,6 +13,7 @@ namespace SGDK2
    {
       #region Non-control members
       ProjectDataset.SourceCodeRow m_SourceCode;
+      frmFindReplace m_frmFindReplace = null;
       #endregion
 
       private SGDK2.DataChangeNotifier DataMonitor;
@@ -31,6 +32,21 @@ namespace SGDK2
       private System.Windows.Forms.StatusBarPanel sbpCAPS;
       private System.Windows.Forms.StatusBarPanel sbpStatus;
       private System.Windows.Forms.StatusBarPanel sbpInsert;
+      private System.Windows.Forms.MenuItem mnuEdit;
+      private System.Windows.Forms.MenuItem mnuEditFind;
+      private System.Windows.Forms.MenuItem mnuEditReplace;
+      private System.Windows.Forms.MenuItem mnuEditGoto;
+      private System.Windows.Forms.MenuItem mnuFindNext;
+      private System.Windows.Forms.MainMenu mnuCodeEditor;
+      private System.Windows.Forms.Timer tmrInvalidateStatus;
+      private System.Windows.Forms.MenuItem mnuEmbeddedData;
+      private System.Windows.Forms.MenuItem mnuDataLoad;
+      private System.Windows.Forms.MenuItem mnuDataEdit;
+      private System.Windows.Forms.MenuItem mnuDataClear;
+      private System.Windows.Forms.MenuItem mnuFile;
+      private System.Windows.Forms.MenuItem mnuFileRename;
+      private System.Windows.Forms.MenuItem mnuFileSeparator;
+      private System.Windows.Forms.OpenFileDialog dlgEmbeddedFile;
       private const int ST_KEEPUNDO = 1;
       private struct POINT
       {
@@ -56,6 +72,16 @@ namespace SGDK2
       #endregion
 
       #region Initialization and Clean-up
+      public frmCodeEditor(string Name, string DependsOn)
+      {
+         // This call is required by the Windows Form Designer.
+         InitializeComponent();
+
+         m_SourceCode = ProjectData.AddSourceCode(Name, CodeGenerator.GetCustomCodeTemplate(Name), DependsOn, true, null);
+         rtfCode.Rtf = ConvertToRTF(m_SourceCode.Text);
+         mnuFileSeparator.Visible = mnuFileRename.Visible = mnuEmbeddedData.Visible = true;
+      }
+
       public frmCodeEditor(ProjectDataset.SourceCodeRow drSourceCode)
       {
          //
@@ -65,6 +91,11 @@ namespace SGDK2
 
          m_SourceCode = drSourceCode;
          rtfCode.Rtf = ConvertToRTF(m_SourceCode.Text);
+
+         if (m_SourceCode.IsCustomObject)
+            mnuFileSeparator.Visible = mnuFileRename.Visible = mnuEmbeddedData.Visible = true;
+
+         InitClearMenuItem();
       }
 
       /// <summary>
@@ -78,6 +109,8 @@ namespace SGDK2
             {
                components.Dispose();
             }
+            if (m_frmFindReplace != null)
+               m_frmFindReplace.Dispose();
          }
          base.Dispose( disposing );
       }
@@ -101,6 +134,21 @@ namespace SGDK2
          this.sbpInsert = new System.Windows.Forms.StatusBarPanel();
          this.sbpLineNum = new System.Windows.Forms.StatusBarPanel();
          this.sbpChar = new System.Windows.Forms.StatusBarPanel();
+         this.mnuCodeEditor = new System.Windows.Forms.MainMenu();
+         this.mnuFile = new System.Windows.Forms.MenuItem();
+         this.mnuFileSeparator = new System.Windows.Forms.MenuItem();
+         this.mnuFileRename = new System.Windows.Forms.MenuItem();
+         this.mnuEdit = new System.Windows.Forms.MenuItem();
+         this.mnuEditFind = new System.Windows.Forms.MenuItem();
+         this.mnuFindNext = new System.Windows.Forms.MenuItem();
+         this.mnuEditReplace = new System.Windows.Forms.MenuItem();
+         this.mnuEditGoto = new System.Windows.Forms.MenuItem();
+         this.mnuEmbeddedData = new System.Windows.Forms.MenuItem();
+         this.mnuDataLoad = new System.Windows.Forms.MenuItem();
+         this.mnuDataEdit = new System.Windows.Forms.MenuItem();
+         this.mnuDataClear = new System.Windows.Forms.MenuItem();
+         this.tmrInvalidateStatus = new System.Windows.Forms.Timer(this.components);
+         this.dlgEmbeddedFile = new System.Windows.Forms.OpenFileDialog();
          ((System.ComponentModel.ISupportInitialize)(this.sbpStatus)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpCAPS)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpInsert)).BeginInit();
@@ -110,6 +158,7 @@ namespace SGDK2
          // 
          // DataMonitor
          // 
+         this.DataMonitor.SourceCodeRowDeleted += new SGDK2.ProjectDataset.SourceCodeRowChangeEventHandler(this.DataMonitor_SourceCodeRowDeleted);
          this.DataMonitor.Clearing += new System.EventHandler(this.DataMonitor_Clearing);
          // 
          // rtfCode
@@ -117,6 +166,7 @@ namespace SGDK2
          this.rtfCode.AcceptsTab = true;
          this.rtfCode.Dock = System.Windows.Forms.DockStyle.Fill;
          this.rtfCode.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+         this.rtfCode.HideSelection = false;
          this.rtfCode.Location = new System.Drawing.Point(0, 0);
          this.rtfCode.Name = "rtfCode";
          this.rtfCode.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedBoth;
@@ -183,6 +233,115 @@ namespace SGDK2
          this.sbpChar.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
          this.sbpChar.Width = 10;
          // 
+         // mnuCodeEditor
+         // 
+         this.mnuCodeEditor.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                      this.mnuFile,
+                                                                                      this.mnuEdit,
+                                                                                      this.mnuEmbeddedData});
+         // 
+         // mnuFile
+         // 
+         this.mnuFile.Index = 0;
+         this.mnuFile.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                this.mnuFileSeparator,
+                                                                                this.mnuFileRename});
+         this.mnuFile.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
+         this.mnuFile.Text = "&File";
+         // 
+         // mnuFileSeparator
+         // 
+         this.mnuFileSeparator.Index = 0;
+         this.mnuFileSeparator.MergeOrder = 8;
+         this.mnuFileSeparator.Text = "-";
+         this.mnuFileSeparator.Visible = false;
+         // 
+         // mnuFileRename
+         // 
+         this.mnuFileRename.Index = 1;
+         this.mnuFileRename.MergeOrder = 8;
+         this.mnuFileRename.Text = "Rename &Custom Code Object";
+         this.mnuFileRename.Visible = false;
+         this.mnuFileRename.Click += new System.EventHandler(this.mnuFileRename_Click);
+         // 
+         // mnuEdit
+         // 
+         this.mnuEdit.Index = 1;
+         this.mnuEdit.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                this.mnuEditFind,
+                                                                                this.mnuFindNext,
+                                                                                this.mnuEditReplace,
+                                                                                this.mnuEditGoto});
+         this.mnuEdit.Text = "&Edit";
+         // 
+         // mnuEditFind
+         // 
+         this.mnuEditFind.Index = 0;
+         this.mnuEditFind.Shortcut = System.Windows.Forms.Shortcut.CtrlF;
+         this.mnuEditFind.Text = "&Find...";
+         this.mnuEditFind.Click += new System.EventHandler(this.mnuEditFind_Click);
+         // 
+         // mnuFindNext
+         // 
+         this.mnuFindNext.Index = 1;
+         this.mnuFindNext.Shortcut = System.Windows.Forms.Shortcut.F3;
+         this.mnuFindNext.Text = "Find &Next";
+         this.mnuFindNext.Click += new System.EventHandler(this.mnuFindNext_Click);
+         // 
+         // mnuEditReplace
+         // 
+         this.mnuEditReplace.Index = 2;
+         this.mnuEditReplace.Shortcut = System.Windows.Forms.Shortcut.CtrlH;
+         this.mnuEditReplace.Text = "&Replace...";
+         this.mnuEditReplace.Click += new System.EventHandler(this.mnuEditReplace_Click);
+         // 
+         // mnuEditGoto
+         // 
+         this.mnuEditGoto.Index = 3;
+         this.mnuEditGoto.Shortcut = System.Windows.Forms.Shortcut.CtrlG;
+         this.mnuEditGoto.Text = "&Go To Line...";
+         this.mnuEditGoto.Click += new System.EventHandler(this.mnuEditGoto_Click);
+         // 
+         // mnuEmbeddedData
+         // 
+         this.mnuEmbeddedData.Index = 2;
+         this.mnuEmbeddedData.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                        this.mnuDataLoad,
+                                                                                        this.mnuDataEdit,
+                                                                                        this.mnuDataClear});
+         this.mnuEmbeddedData.MergeOrder = 2;
+         this.mnuEmbeddedData.Text = "&Embedded Data";
+         this.mnuEmbeddedData.Visible = false;
+         // 
+         // mnuDataLoad
+         // 
+         this.mnuDataLoad.Index = 0;
+         this.mnuDataLoad.Text = "&Load From File...";
+         this.mnuDataLoad.Click += new System.EventHandler(this.mnuDataLoad_Click);
+         // 
+         // mnuDataEdit
+         // 
+         this.mnuDataEdit.Index = 1;
+         this.mnuDataEdit.Text = "&Edit As Text...";
+         this.mnuDataEdit.Click += new System.EventHandler(this.mnuDataEdit_Click);
+         // 
+         // mnuDataClear
+         // 
+         this.mnuDataClear.Enabled = false;
+         this.mnuDataClear.Index = 2;
+         this.mnuDataClear.Text = "&Clear";
+         this.mnuDataClear.Click += new System.EventHandler(this.mnuDataClear_Click);
+         // 
+         // tmrInvalidateStatus
+         // 
+         this.tmrInvalidateStatus.Tick += new System.EventHandler(this.tmrInvalidateStatus_Tick);
+         // 
+         // dlgEmbeddedFile
+         // 
+         this.dlgEmbeddedFile.AddExtension = false;
+         this.dlgEmbeddedFile.Filter = "All Files (*.*)|*.*";
+         this.dlgEmbeddedFile.Title = "Select File To Embed";
+         // 
          // frmCodeEditor
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -191,6 +350,7 @@ namespace SGDK2
          this.Controls.Add(this.staCode);
          this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
          this.KeyPreview = true;
+         this.Menu = this.mnuCodeEditor;
          this.Name = "frmCodeEditor";
          this.Text = "Source Code Editor";
          this.Closing += new System.ComponentModel.CancelEventHandler(this.frmCodeEditor_Closing);
@@ -204,85 +364,13 @@ namespace SGDK2
       }
       #endregion
 
-      #region Event Handlers
-      private void DataMonitor_Clearing(object sender, System.EventArgs e)
-      {
-         this.Close();
-      }
-
-      private void frmCodeEditor_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-      {
-         if (m_SourceCode.Text != rtfCode.Text)
-            m_SourceCode.Text = rtfCode.Text;
-      }
-      
-      private void rtfCode_TextChanged(object sender, System.EventArgs e)
-      {
-         QueueReparse();
-      }
-      
-      private void tmrReparse_Tick(object sender, System.EventArgs e)
-      {
-         tmrReparse.Stop();
-         try
-         {
-            POINT scrollPos = new POINT();
-            SendScrollPosMessage(rtfCode.Handle, EM_GETSCROLLPOS, IntPtr.Zero, ref scrollPos);
-            rtfCode.Visible = false;
-            int selStart = rtfCode.SelectionStart;
-            int selLen = rtfCode.SelectionLength;
-            // Keep the undo buffer while updating the RTF content
-            SETTEXTEX st = new SETTEXTEX();
-            st.flags = ST_KEEPUNDO;
-            st.codepage = (uint)System.Globalization.CultureInfo.CurrentUICulture.TextInfo.ANSICodePage;
-            SendSetTextMessage(rtfCode.Handle, EM_SETTEXTEX, ref st, ConvertToRTF(rtfCode.Text));
-            rtfCode.SelectionStart = selStart;
-            rtfCode.SelectionLength = selLen;
-            SendScrollPosMessage(rtfCode.Handle, EM_SETSCROLLPOS, IntPtr.Zero, ref scrollPos);
-            m_SourceCode.Text = rtfCode.Text;
-         }
-         finally
-         {
-            rtfCode.Visible = true;
-            tmrReparse.Stop();
-         }         
-      }
-      private void rtfCode_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
-      {
-         staCode.Invalidate();
-      }
-      private void rtfCode_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
+      #region Overrides
+      protected override void OnLoad(EventArgs e)
       {
          UpdateStatus();
+         base.OnLoad (e);
       }
-      private void staCode_DrawItem(object sender, System.Windows.Forms.StatusBarDrawItemEventArgs sbdevent)
-      {
-         if (sbdevent.Panel == sbpCAPS)
-         {
-            Brush b = SystemBrushes.ControlText;
-            if (0 == (GetKeyState(Keys.CapsLock) & 1))
-               b = SystemBrushes.ControlDark;
-            StringFormat sf = new StringFormat(StringFormatFlags.NoWrap);
-            sf.Alignment = StringAlignment.Center;
-            sf.LineAlignment = StringAlignment.Center;
-            sbdevent.Graphics.DrawString(sbdevent.Panel.Text, ((StatusBar)sender).Font, b, sbdevent.Bounds,sf);
 
-            UpdateStatus();
-         } 
-         else if (sbdevent.Panel == sbpInsert)
-         {
-            Brush b = SystemBrushes.ControlDark;
-            if (rtfCode.InsertMode)
-               b = SystemBrushes.ControlText;
-            StringFormat sf = new StringFormat(StringFormatFlags.NoWrap);
-            sf.Alignment = StringAlignment.Center;
-            sf.LineAlignment = StringAlignment.Center;
-            sbdevent.Graphics.DrawString(sbdevent.Panel.Text, ((StatusBar)sender).Font, b, sbdevent.Bounds,sf);
-         }
-      }
-      #endregion
-
-      #region Overrides
       protected override void WndProc(ref Message m)
       {
          switch(m.Msg)
@@ -378,7 +466,7 @@ namespace SGDK2
             return sb.ToString();
          }
          else
-            return source;
+            return source.Substring(start, length);
       }
 
       private string ConvertToRTF(string code)
@@ -393,7 +481,7 @@ namespace SGDK2
             @"{\colortbl ;\red0\green0\blue255;\red0\green128\blue0;\red139\green0\blue139;\red128\green128\blue128;\red165\green42\blue42;}" + "\r\n" +
             @"\viewkind4\uc1\pard\tx315\tx630\tx945\tx1260\tx1575\tx1890\tx2205\tx2520\tx2835\tx3150\tx3465\cf1\f0\fs17 ");
 
-         int currentColor = 0;
+         int currentColor = -1;
 
          for (curPos = 0; (tokenLen = ParseToken(code, curPos, out type)) > 0; curPos += tokenLen)
          {
@@ -567,7 +655,7 @@ namespace SGDK2
             if ((type != TokenType.White) && (lineState != LineState.PreProcessor))
                lineState = LineState.Other;
          }
-         rtf.Append("}");
+         rtf.Append("\\par}");
          return rtf.ToString();
       }
 
@@ -788,8 +876,354 @@ namespace SGDK2
       #region Private Methods
       private void UpdateStatus()
       {
+         tmrInvalidateStatus.Stop();
+         tmrInvalidateStatus.Start();
+      }
+
+      private void InitClearMenuItem()
+      {
+         if (m_SourceCode.IsCustomObjectDataNull())
+         {
+            mnuDataClear.Text = "&Clear (No Data)";
+            mnuDataClear.Enabled = false;
+         }
+         else
+         {
+            string size;
+            if (m_SourceCode.CustomObjectData.Length < 1024)
+               size = m_SourceCode.CustomObjectData.Length.ToString() + " bytes";
+            else if (m_SourceCode.CustomObjectData.Length < 1024*1024)
+               size = ((int)(m_SourceCode.CustomObjectData.Length / 1024)).ToString() + " KB";
+            else if (m_SourceCode.CustomObjectData.Length < 1024 * 1024 * 1024)
+               size = ((int)(m_SourceCode.CustomObjectData.Length / (1024 * 1024))).ToString() + " MB";
+            else
+               size = ((int)(m_SourceCode.CustomObjectData.Length / (1024 * 1024 * 1024))).ToString() + " GB";
+
+            mnuDataClear.Text = "&Clear (" + size + ")";
+            mnuDataClear.Enabled = true;
+         }
+      }
+      #endregion
+
+      #region Public Methods
+      public void DoFindNext()
+      {
+         if (m_frmFindReplace == null)
+         {
+            m_frmFindReplace = new frmFindReplace(this, false);
+            m_frmFindReplace.Show();
+            return;
+         }
+
+         int start, end;
+         RichTextBoxFinds options = m_frmFindReplace.Options;
+         if (0 != (options & RichTextBoxFinds.Reverse))
+         {
+            start = 0;
+            end = rtfCode.SelectionStart - 1;
+         }
+         else
+         {
+            start = rtfCode.SelectionStart + 1;
+            end = rtfCode.TextLength - 1;
+         }
+         int result = rtfCode.Find(m_frmFindReplace.FindString, start, end, m_frmFindReplace.Options);
+         if (result < 0)
+            result = rtfCode.Find(m_frmFindReplace.FindString, m_frmFindReplace.Options);
+         if (result < 0)
+            MessageBox.Show(this, "The specified text was found anywhere in " + m_SourceCode.Name, "Find Text", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+         UpdateStatus();
+      }
+
+      public void DoReplace()
+      {
+         if (m_frmFindReplace == null)
+         {
+            m_frmFindReplace = new frmFindReplace(this, true);
+            m_frmFindReplace.Show();
+            return;
+         }
+
+         if (rtfCode.SelectedText != m_frmFindReplace.FindString)
+            DoFindNext();
+         else if (rtfCode.SelectedText == m_frmFindReplace.FindString)
+         {
+            rtfCode.SelectedText = m_frmFindReplace.ReplaceString;
+            DoFindNext();
+         }
+      }
+
+      public void DoReplaceAll()
+      {
+         if (m_frmFindReplace == null)
+         {
+            m_frmFindReplace = new frmFindReplace(this, true);
+            m_frmFindReplace.Show();
+            return;
+         }
+
+         int start;
+         RichTextBoxFinds options = m_frmFindReplace.Options & ~RichTextBoxFinds.Reverse;
+         int result = rtfCode.Find(m_frmFindReplace.FindString, m_frmFindReplace.Options);
+         int replacements = 0;
+         while (result >= 0)
+         {
+            start = rtfCode.SelectionStart + m_frmFindReplace.ReplaceString.Length;
+            rtfCode.SelectedText = m_frmFindReplace.ReplaceString;
+            replacements++;
+            result = rtfCode.Find(m_frmFindReplace.FindString, start, m_frmFindReplace.Options);
+         }
+         if (replacements == 0)
+            MessageBox.Show(this, "The specified text was found anywhere in " + m_SourceCode.Name, "Find Text", MessageBoxButtons.OK, MessageBoxIcon.Information);
+         else
+            MessageBox.Show(this, "Replaced " + replacements.ToString() + " occurrences.", "Replace All", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+         UpdateStatus();
+      }
+      #endregion
+
+      #region Event Handlers
+      private void DataMonitor_Clearing(object sender, System.EventArgs e)
+      {
+         this.Close();
+      }
+
+      private void frmCodeEditor_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+      {
+         if ((m_SourceCode.RowState != System.Data.DataRowState.Detached) && (m_SourceCode.RowState != System.Data.DataRowState.Deleted))
+            if (m_SourceCode.Text.Replace("\r", String.Empty) != rtfCode.Text.Replace("\r", String.Empty))
+            {
+               m_SourceCode.Text = rtfCode.Text;
+               CodeGenerator.ResetTempAssembly();
+            }
+      }
+      
+      private void rtfCode_TextChanged(object sender, System.EventArgs e)
+      {
+         QueueReparse();
+      }
+      
+      private void tmrReparse_Tick(object sender, System.EventArgs e)
+      {
+         tmrReparse.Stop();
+         try
+         {
+            POINT scrollPos = new POINT();
+            SendScrollPosMessage(rtfCode.Handle, EM_GETSCROLLPOS, IntPtr.Zero, ref scrollPos);
+            rtfCode.Visible = false;
+            int selStart = rtfCode.SelectionStart;
+            int selLen = rtfCode.SelectionLength;
+            // Keep the undo buffer while updating the RTF content
+            SETTEXTEX st = new SETTEXTEX();
+            st.flags = ST_KEEPUNDO;
+            st.codepage = (uint)System.Globalization.CultureInfo.CurrentUICulture.TextInfo.ANSICodePage;
+            SendSetTextMessage(rtfCode.Handle, EM_SETTEXTEX, ref st, ConvertToRTF(rtfCode.Text));
+            rtfCode.SelectionStart = selStart;
+            rtfCode.SelectionLength = selLen;
+            SendScrollPosMessage(rtfCode.Handle, EM_SETSCROLLPOS, IntPtr.Zero, ref scrollPos);
+            if (m_SourceCode.Text.Replace("\r", String.Empty) != rtfCode.Text.Replace("\r", String.Empty))
+            {
+               m_SourceCode.Text = rtfCode.Text;
+               CodeGenerator.ResetTempAssembly();
+            }
+         }
+         finally
+         {
+            rtfCode.Visible = true;
+            tmrReparse.Stop();
+         }         
+      }
+      private void rtfCode_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+      {
+         UpdateStatus();
+      }
+      private void rtfCode_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
+      {
+         UpdateStatus();
+      }
+      private void staCode_DrawItem(object sender, System.Windows.Forms.StatusBarDrawItemEventArgs sbdevent)
+      {
+         if (sbdevent.Panel == sbpCAPS)
+         {
+            Brush b = SystemBrushes.ControlText;
+            if (0 == (GetKeyState(Keys.CapsLock) & 1))
+               b = SystemBrushes.ControlDark;
+            StringFormat sf = new StringFormat(StringFormatFlags.NoWrap);
+            sf.Alignment = StringAlignment.Center;
+            sf.LineAlignment = StringAlignment.Center;
+            sbdevent.Graphics.DrawString(sbdevent.Panel.Text, ((StatusBar)sender).Font, b, sbdevent.Bounds,sf);
+         } 
+         else if (sbdevent.Panel == sbpInsert)
+         {
+            Brush b = SystemBrushes.ControlDark;
+            if (rtfCode.InsertMode)
+               b = SystemBrushes.ControlText;
+            StringFormat sf = new StringFormat(StringFormatFlags.NoWrap);
+            sf.Alignment = StringAlignment.Center;
+            sf.LineAlignment = StringAlignment.Center;
+            sbdevent.Graphics.DrawString(sbdevent.Panel.Text, ((StatusBar)sender).Font, b, sbdevent.Bounds,sf);
+         }
+      }
+      private void mnuFindNext_Click(object sender, System.EventArgs e)
+      {
+         DoFindNext();
+      }
+
+      private void tmrInvalidateStatus_Tick(object sender, System.EventArgs e)
+      {
+         tmrInvalidateStatus.Stop();
          sbpChar.Text = "Char " + (rtfCode.GetCurrentLineCharIndex()+1).ToString();
          sbpLineNum.Text = "Line " + (rtfCode.GetLineFromCharIndex(rtfCode.SelectionStart)+1).ToString();
+         staCode.Invalidate();
+      }
+      private void mnuEditFind_Click(object sender, System.EventArgs e)
+      {
+         if (null == m_frmFindReplace)
+            m_frmFindReplace = new frmFindReplace(this, false);
+         else
+            m_frmFindReplace.SetMode(false);
+
+         m_frmFindReplace.Show();
+         m_frmFindReplace.InitFocus();
+      }
+
+      private void mnuEditReplace_Click(object sender, System.EventArgs e)
+      {
+         if (null == m_frmFindReplace)
+            m_frmFindReplace = new frmFindReplace(this, true);
+         else
+            m_frmFindReplace.SetMode(true);
+
+         m_frmFindReplace.Show();
+         m_frmFindReplace.InitFocus();      
+      }
+
+      private void mnuEditGoto_Click(object sender, System.EventArgs e)
+      {
+         string line = frmInputBox.GetInput(this, "Go To Line", "Enter line number", String.Empty);
+         if (line != null)
+         {
+            double lineNum;
+            if (!double.TryParse(line, System.Globalization.NumberStyles.Integer, System.Threading.Thread.CurrentThread.CurrentCulture, out lineNum) || lineNum < 0)
+               MessageBox.Show(this, "Invalid line number", "Go To Line", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            rtfCode.Select(rtfCode.GetLineStartCharIndex((int)lineNum-1), 0);
+            UpdateStatus();
+         }
+
+      }
+
+      private void mnuFileRename_Click(object sender, System.EventArgs e)
+      {
+         string sName = frmInputBox.GetInput(this, "Rename Custom Code Object", "Specify a new name", m_SourceCode.Name);
+         if ((sName == null) || (sName == m_SourceCode.Name))
+            return;
+
+         string sBareName;
+         if (sName.EndsWith(".cs"))
+            sBareName = sName.Substring(0, sName.Length - 3);
+         else if (sName.EndsWith(".dll"))
+            sBareName = sName.Substring(0, sName.Length - 4);
+         else
+         {
+            sBareName = sName;
+            sName += ".cs";
+         }
+
+         string msg = ProjectData.ValidateName(sBareName);
+         if (msg != null)
+         {
+            MessageBox.Show(this, "Invalid name \"" + sBareName + "\": " + msg, "Rename Custom Code Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
+
+         if (ProjectData.GetSourceCode(sName) != null)
+         {
+            MessageBox.Show(this, "The specified custom object name already exists", "Rename Custom Code Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
+
+         m_SourceCode.Name = sName;
+      }
+
+      private void mnuDataClear_Click(object sender, System.EventArgs e)
+      {
+         if (DialogResult.Yes == MessageBox.Show(this, "Are you sure you want to delete the data associated with this custom code object?", "Clear Custom Object Data", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+         {
+            m_SourceCode.SetCustomObjectDataNull();
+            InitClearMenuItem();
+         }
+      }
+
+      private void mnuDataLoad_Click(object sender, System.EventArgs e)
+      {
+         if (!m_SourceCode.IsCustomObjectDataNull())
+         {
+            if (DialogResult.OK != MessageBox.Show(this, "Loading new data will replace existing data associated with this code object.", "Load Custom Object Data", MessageBoxButtons.OKCancel, MessageBoxIcon.Information))
+               return;
+         }
+         if (DialogResult.OK == dlgEmbeddedFile.ShowDialog(this))
+         {
+            try
+            {
+               System.IO.BinaryReader br = new System.IO.BinaryReader(dlgEmbeddedFile.OpenFile());
+               try
+               {
+                  m_SourceCode.CustomObjectData = br.ReadBytes((int)br.BaseStream.Length);
+               }
+               finally
+               {
+                  br.Close();
+               }
+               InitClearMenuItem();
+            }
+            catch(System.Exception ex)
+            {
+               MessageBox.Show(this, ex.Message, "Load Custom Object Data", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+         }
+      }
+
+      private void mnuDataEdit_Click(object sender, System.EventArgs e)
+      {
+         if (!m_SourceCode.IsCustomObjectDataNull())
+         {
+            string editString = System.Text.Encoding.UTF8.GetString(m_SourceCode.CustomObjectData);
+            byte[] identity = System.Text.Encoding.UTF8.GetBytes(editString);
+            bool identical = true;
+            if (identity.Length != m_SourceCode.CustomObjectData.Length)
+               identical = false;
+            else
+            {
+               for (int i=0; i<identity.Length; i++)
+                  if (m_SourceCode.CustomObjectData[i] != identity[i])
+                  {
+                     identical = false;
+                     System.Diagnostics.Debug.WriteLine(editString.Substring(i,100));
+                     break;
+                  }
+            }
+            if (!identical)
+            {
+               if (DialogResult.OK != MessageBox.Show(this, "The data embedded in this object appears to be binary and *WILL* be irrevocably corrupted if OK is pressed after viewing in the text editor.", "Edit Data As Text", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation))
+                  return;
+            }
+            if (null != (editString = frmCustomObjectData.EditText(this, editString)))
+               m_SourceCode.CustomObjectData = System.Text.Encoding.UTF8.GetBytes(editString);
+         }
+         else
+         {
+            string result = frmCustomObjectData.EditText(this, String.Empty);
+            if (result != null)
+               m_SourceCode.CustomObjectData = System.Text.Encoding.UTF8.GetBytes(result);
+         }
+         InitClearMenuItem();
+      }
+
+      private void DataMonitor_SourceCodeRowDeleted(object sender, SGDK2.ProjectDataset.SourceCodeRowChangeEvent e)
+      {
+         if (m_SourceCode == e.Row)
+            this.Close();
       }
       #endregion
    }
@@ -817,6 +1251,34 @@ namespace SGDK2
          if (i<=0)
             return this.SelectionStart;
          return this.SelectionStart - i - 1;
+      }
+
+      public int GetLineStartCharIndex(int line)
+      {
+         int index = this.TextLength / 2;
+         int step = (int)Math.Ceiling(index / 2d);
+         while(step > 0)
+         {
+            int charLine = GetLineFromCharIndex(index);
+            if (charLine > line)
+               index -= step;
+            else if (charLine < line)
+               index += step;
+            else
+            {
+               if (index <= 0)
+                  return index;
+               if (GetLineFromCharIndex(index-1) < line)
+                  return index;
+               index -= step;
+            }
+            if (index < 0)
+               return 0;
+            else if (index >= this.TextLength)
+               return this.TextLength - 1;
+            step = (int)Math.Ceiling(step / 2d);
+         }
+         return index;
       }
 
       protected override bool ProcessKeyMessage(ref Message m)

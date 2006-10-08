@@ -9018,7 +9018,13 @@ namespace SGDK2 {
             
             private DataColumn columnName;
             
+            private DataColumn columnIsCustomObject;
+            
+            private DataColumn columnDependsOn;
+            
             private DataColumn columnText;
+            
+            private DataColumn columnCustomObjectData;
             
             internal SourceCodeDataTable() : 
                     base("SourceCode") {
@@ -9054,9 +9060,27 @@ namespace SGDK2 {
                 }
             }
             
+            internal DataColumn IsCustomObjectColumn {
+                get {
+                    return this.columnIsCustomObject;
+                }
+            }
+            
+            internal DataColumn DependsOnColumn {
+                get {
+                    return this.columnDependsOn;
+                }
+            }
+            
             internal DataColumn TextColumn {
                 get {
                     return this.columnText;
+                }
+            }
+            
+            internal DataColumn CustomObjectDataColumn {
+                get {
+                    return this.columnCustomObjectData;
                 }
             }
             
@@ -9078,11 +9102,14 @@ namespace SGDK2 {
                 this.Rows.Add(row);
             }
             
-            public SourceCodeRow AddSourceCodeRow(string Name, string Text) {
+            public SourceCodeRow AddSourceCodeRow(string Name, bool IsCustomObject, string DependsOn, string Text, System.Byte[] CustomObjectData) {
                 SourceCodeRow rowSourceCodeRow = ((SourceCodeRow)(this.NewRow()));
                 rowSourceCodeRow.ItemArray = new object[] {
                         Name,
-                        Text};
+                        IsCustomObject,
+                        DependsOn,
+                        Text,
+                        CustomObjectData};
                 this.Rows.Add(rowSourceCodeRow);
                 return rowSourceCodeRow;
             }
@@ -9108,19 +9135,31 @@ namespace SGDK2 {
             
             internal void InitVars() {
                 this.columnName = this.Columns["Name"];
+                this.columnIsCustomObject = this.Columns["IsCustomObject"];
+                this.columnDependsOn = this.Columns["DependsOn"];
                 this.columnText = this.Columns["Text"];
+                this.columnCustomObjectData = this.Columns["CustomObjectData"];
             }
             
             private void InitClass() {
                 this.columnName = new DataColumn("Name", typeof(string), null, System.Data.MappingType.Attribute);
                 this.Columns.Add(this.columnName);
+                this.columnIsCustomObject = new DataColumn("IsCustomObject", typeof(bool), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnIsCustomObject);
+                this.columnDependsOn = new DataColumn("DependsOn", typeof(string), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnDependsOn);
                 this.columnText = new DataColumn("Text", typeof(string), null, System.Data.MappingType.Element);
                 this.Columns.Add(this.columnText);
+                this.columnCustomObjectData = new DataColumn("CustomObjectData", typeof(System.Byte[]), null, System.Data.MappingType.Element);
+                this.Columns.Add(this.columnCustomObjectData);
                 this.Constraints.Add(new UniqueConstraint("SourceCodeKey", new DataColumn[] {
                                 this.columnName}, true));
                 this.columnName.AllowDBNull = false;
                 this.columnName.Unique = true;
                 this.columnName.Namespace = "";
+                this.columnIsCustomObject.Namespace = "";
+                this.columnIsCustomObject.DefaultValue = false;
+                this.columnDependsOn.Namespace = "";
             }
             
             public SourceCodeRow NewSourceCodeRow() {
@@ -9187,6 +9226,34 @@ namespace SGDK2 {
                 }
             }
             
+            public bool IsCustomObject {
+                get {
+                    if (this.IsIsCustomObjectNull()) {
+                        return false;
+                    }
+                    else {
+                        return ((bool)(this[this.tableSourceCode.IsCustomObjectColumn]));
+                    }
+                }
+                set {
+                    this[this.tableSourceCode.IsCustomObjectColumn] = value;
+                }
+            }
+            
+            public string DependsOn {
+                get {
+                    try {
+                        return ((string)(this[this.tableSourceCode.DependsOnColumn]));
+                    }
+                    catch (InvalidCastException e) {
+                        throw new StrongTypingException("Cannot get value because it is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableSourceCode.DependsOnColumn] = value;
+                }
+            }
+            
             public string Text {
                 get {
                     try {
@@ -9201,12 +9268,50 @@ namespace SGDK2 {
                 }
             }
             
+            public System.Byte[] CustomObjectData {
+                get {
+                    try {
+                        return ((System.Byte[])(this[this.tableSourceCode.CustomObjectDataColumn]));
+                    }
+                    catch (InvalidCastException e) {
+                        throw new StrongTypingException("Cannot get value because it is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableSourceCode.CustomObjectDataColumn] = value;
+                }
+            }
+            
+            public bool IsIsCustomObjectNull() {
+                return this.IsNull(this.tableSourceCode.IsCustomObjectColumn);
+            }
+            
+            public void SetIsCustomObjectNull() {
+                this[this.tableSourceCode.IsCustomObjectColumn] = System.Convert.DBNull;
+            }
+            
+            public bool IsDependsOnNull() {
+                return this.IsNull(this.tableSourceCode.DependsOnColumn);
+            }
+            
+            public void SetDependsOnNull() {
+                this[this.tableSourceCode.DependsOnColumn] = System.Convert.DBNull;
+            }
+            
             public bool IsTextNull() {
                 return this.IsNull(this.tableSourceCode.TextColumn);
             }
             
             public void SetTextNull() {
                 this[this.tableSourceCode.TextColumn] = System.Convert.DBNull;
+            }
+            
+            public bool IsCustomObjectDataNull() {
+                return this.IsNull(this.tableSourceCode.CustomObjectDataColumn);
+            }
+            
+            public void SetCustomObjectDataNull() {
+                this[this.tableSourceCode.CustomObjectDataColumn] = System.Convert.DBNull;
             }
         }
         

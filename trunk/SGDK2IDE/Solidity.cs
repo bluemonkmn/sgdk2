@@ -184,7 +184,11 @@ namespace SGDK2
          RemotingServices.IRemoteTypeInfo reflector = CodeGenerator.CreateInstanceAndUnwrap(
             "RemoteReflector", "TileShape") as RemotingServices.IRemoteTypeInfo;
 
-         return reflector.GetSubclasses();
+         RemotingServices.RemoteTypeName[] subclasses = reflector.GetSubclasses();
+         string[] shapes = new string[subclasses.Length];
+         for(int i = 0; i < subclasses.Length; i++)
+            shapes[i] = subclasses[i].Name;
+         return shapes;
       }
       #endregion
 

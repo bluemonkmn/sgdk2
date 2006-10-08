@@ -24,25 +24,25 @@ namespace SGDK2
       public struct RemoteParameterInfo
       {
          public string Name;
-         public string TypeName;
+         public RemoteTypeName Type;
          public string[] Editors;
          public bool IsEnum;
-         public RemoteParameterInfo(string name, string typeName, bool isEnum)
+         public RemoteParameterInfo(string name, RemoteTypeName type, bool isEnum)
          {
             this.Name = name;
-            this.TypeName = typeName;
+            this.Type = type;
             this.IsEnum = isEnum;
             this.Editors = null;
          }
-         public static RemoteParameterInfo Empty = new RemoteParameterInfo(null, null, false);
-         public static RemoteParameterInfo Unknown = new RemoteParameterInfo(null, "unknown", false);
+         public static RemoteParameterInfo Empty = new RemoteParameterInfo(null, RemoteTypeName.Empty, false);
+         public static RemoteParameterInfo Unknown = new RemoteParameterInfo(null, RemoteTypeName.Unknown , false);
          public bool IsEmpty()
          {
-            return (Name == null) && (TypeName == null);
+            return (Name == null) && (Type.FullName == RemoteTypeName.Empty.FullName);
          }
          public bool IsUnknown()
          {
-            return String.Compare(TypeName, Unknown.TypeName) == 0;
+            return String.Compare(Type.FullName, RemoteTypeName.Unknown.FullName) == 0;
          }
       }
 
@@ -51,23 +51,77 @@ namespace SGDK2
       {
          public string MethodName;
          public RemoteParameterInfo[] Arguments;
-         public string ReturnType;
+         public RemoteTypeName ReturnType;
          public string Description;
+      }
+
+      [Serializable()]
+      public struct RemoteGlobalAccessorInfo
+      {
+         public RemoteTypeName Type;
+         public string MemberName;
+         public RemoteGlobalAccessorInfo(RemoteTypeName Type, string MemberName)
+         {
+            this.Type = Type;
+            this.MemberName = MemberName;
+         }
+      }
+
+      [Serializable()]
+      public struct RemoteTypeName
+      {
+         public string Name;
+         public string FullName;
+         public RemoteTypeName(string fullName)
+         {
+            this.FullName = fullName;
+            if (FullName == null)
+            {
+               Name = null;
+               return;
+            }
+            int dotPos = fullName.LastIndexOf('.');
+            if (dotPos >= 0)
+               this.Name = fullName.Substring(dotPos + 1);
+            else
+               this.Name = fullName;
+         }
+         public RemoteTypeName(Type type)
+         {
+            this.FullName = type.FullName;
+            this.Name = type.Name;
+         }
+         public static RemoteTypeName Unknown
+         {
+            get
+            {
+               return new RemoteTypeName("unknown");
+            }
+         }
+         public static RemoteTypeName Empty
+         {
+            get
+            {
+               return new RemoteTypeName((string)null);
+            }
+         }
       }
 
       public interface IRemoteTypeInfo
       {
          RemoteMethodInfo[] GetMethods();
          RemotePropertyInfo[] GetProperties();
+         RemoteGlobalAccessorInfo[] GetGlobalProvidersOfSelf();
+         RemoteMethodInfo[] GetGlobalFunctions();
          string[] GetEnumVals();
-         string[] GetSubclasses();
+         RemoteTypeName[] GetSubclasses();
       }
 
       [Serializable()]
       public struct RemotePropertyInfo
       {
          public string Name;
-         public string Type;
+         public RemoteTypeName Type;
          public bool CanRead;
          public bool CanWrite;
       }
@@ -104,13 +158,14 @@ namespace SGDK2
       {
          RemotingServices.RemoteMethodInfo op;
          op.MethodName = "+";
+         RemotingServices.RemoteTypeName intName = new RemotingServices.RemoteTypeName(typeof(int));
          op.Arguments = new RemotingServices.RemoteParameterInfo[]
                   {
-                     new RemotingServices.RemoteParameterInfo("left operand", typeof(int).Name, false),
-                     new RemotingServices.RemoteParameterInfo("right operand", typeof(int).Name, false)
+                     new RemotingServices.RemoteParameterInfo("left operand", intName, false),
+                     new RemotingServices.RemoteParameterInfo("right operand", intName, false)
                   };
          op.Description = "Return the result of adding two numbers";
-         op.ReturnType = typeof(int).Name;
+         op.ReturnType = intName;
          this["+"] = op;
 
          op.MethodName = "-";
@@ -119,7 +174,7 @@ namespace SGDK2
 
          op.MethodName = "<";
          op.Description = "Determine if the left operand is less than the right operand";
-         op.ReturnType = typeof(bool).Name;
+         op.ReturnType = new SGDK2.RemotingServices.RemoteTypeName(typeof(bool));
          this["<"] = op;
 
          op.MethodName = "<=";
@@ -146,11 +201,10 @@ namespace SGDK2
          op.Description = "Copy a value to a variable";
          op.Arguments = new RemotingServices.RemoteParameterInfo[]
                   {
-                     new RemotingServices.RemoteParameterInfo("Value", typeof(int).Name, false),
+                     new RemotingServices.RemoteParameterInfo("Value", intName, false),
                   };
-         op.ReturnType = typeof(int).Name;
+         op.ReturnType = intName;
          this["="] = op;
-
       }
    }
 

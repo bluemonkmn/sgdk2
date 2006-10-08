@@ -307,6 +307,7 @@ namespace SGDK2
          txt.Close();
 
          GenerateProjectSourceCode(FolderName);
+         GenerateEmbeddedResources(FolderName);
 
          errs = err.ToString();
          err.Close();
@@ -339,7 +340,11 @@ namespace SGDK2
             fileList.Add(System.IO.Path.Combine(SpritesFolder, NameToVariable(((ProjectDataset.SpriteDefinitionRow)drv.Row).Name) + ".cs"));
 
          foreach (System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
-            fileList.Add(System.IO.Path.Combine(FolderName, ((ProjectDataset.SourceCodeRow)drv.Row).Name));
+         {
+            ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
+            if (!drCode.IsTextNull() && (drCode.Text.Trim().Length > 0) && drCode.Name.EndsWith(".cs"))
+               fileList.Add(System.IO.Path.Combine(FolderName, drCode.Name));
+         }
 
          return (string[])(fileList.ToArray(typeof(string)));
       }
@@ -348,9 +353,7 @@ namespace SGDK2
       {
          System.Collections.ArrayList fileList = new System.Collections.ArrayList();
          if (!System.IO.Path.IsPathRooted(FolderName))
-         {
             FolderName = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, FolderName);
-         }
          fileList.Add(System.IO.Path.Combine(FolderName, ProjectClass + ".resx"));
          foreach (System.Data.DataRowView drv in ProjectData.Map.DefaultView)
             fileList.Add(System.IO.Path.Combine(FolderName, NameToVariable(((ProjectDataset.MapRow)drv.Row).Name) + "_Map.resx"));
@@ -364,6 +367,20 @@ namespace SGDK2
             result[i] = result[i].Substring(0,result[i].Length -
                System.IO.Path.GetExtension(result[i]).Length) + ".resources";
          return result;
+      }
+
+      public string[] GetEmbeddedResourceList(string FolderName)
+      {
+         System.Collections.ArrayList fileList = new System.Collections.ArrayList();
+         if (!System.IO.Path.IsPathRooted(FolderName))
+            FolderName = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, FolderName);
+         foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
+         {
+            ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
+            if ((!drCode.IsCustomObjectDataNull()) && drCode.Name.EndsWith(".cs"))
+               fileList.Add(System.IO.Path.Combine(FolderName, drCode.Name.Substring(0, drCode.Name.Length - 3)) + ".bin");
+         }
+         return (string[])(fileList.ToArray(typeof(string)));
       }
 
       public string[] GetLocalReferenceFileList(string FolderName)
@@ -381,6 +398,12 @@ namespace SGDK2
          fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)));
          asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.DirectInput.KeyboardState));
          fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)));
+         foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
+         {
+            ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
+            if (drCode.Name.EndsWith(".dll"))
+               fileList.Add(System.IO.Path.Combine(FolderName, drCode.Name));
+         }
          return (string[])(fileList.ToArray(typeof(string)));
       }
 
@@ -404,7 +427,8 @@ namespace SGDK2
          foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
          {
             ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
-            result.Add(drCode.Text);
+            if (!drCode.IsTextNull() && (drCode.Text.Trim().Length > 0) && drCode.Name.EndsWith(".cs"))
+               result.Add(drCode.Text);
          }
 
          txt = new System.IO.StringWriter();
@@ -471,9 +495,26 @@ namespace SGDK2
          foreach (System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
          {
             ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
-            System.IO.TextWriter txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, drCode.Name));
-            txt.Write(drCode.Text);
-            txt.Close();
+            if (!drCode.IsTextNull() && (drCode.Text.Trim().Length > 0) && drCode.Name.EndsWith(".cs"))
+            {
+               System.IO.TextWriter txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, drCode.Name));
+               txt.Write(drCode.Text);
+               txt.Close();
+            }
+         }
+      }
+
+      public void GenerateEmbeddedResources(string FolderName)
+      {
+         foreach (System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
+         {
+            ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
+            if (drCode.Name.EndsWith(".cs") && !drCode.IsCustomObjectDataNull())
+            {
+               System.IO.FileStream fs = new System.IO.FileStream(System.IO.Path.Combine(FolderName, drCode.Name.Substring(0,drCode.Name.Length - 3) + ".bin"), System.IO.FileMode.Create);
+               fs.Write(drCode.CustomObjectData, 0, drCode.CustomObjectData.Length);
+               fs.Close();
+            }
          }
       }
       #endregion
@@ -1727,17 +1768,35 @@ namespace SGDK2
                else
                {
                   CodeMethodInvokeExpression invoke;
+                  CodeExpression target;
+                  string functionName;
+                  if (rule.Function.IndexOf(".") >= 0)
+                  {
+                     int dotPos = rule.Function.LastIndexOf('.');
+                     string typeName = rule.Function.Substring(0,dotPos);
+                     if (typeName.StartsWith("!"))
+                        typeName = typeName.Substring(1);
+                     target = new CodeTypeReferenceExpression(typeName);
+                     functionName = rule.Function.Substring(dotPos+1);
+                  }
+                  else
+                  {
+                     target = new CodeThisReferenceExpression();
+                     if (rule.Function.StartsWith("!"))
+                        functionName = rule.Function.Substring(1);
+                     else
+                        functionName = rule.Function;
+                  }
                   if (rule.Function.StartsWith("!"))
                   {
                      invokeResult = new CodeBinaryOperatorExpression(
                         invoke = new CodeMethodInvokeExpression(
-                        new CodeThisReferenceExpression(), rule.Function.Substring(1)),
+                        target, functionName),
                         CodeBinaryOperatorType.ValueEquality,
                         new CodePrimitiveExpression(false));
                   }
                   else
-                     invokeResult = invoke = new CodeMethodInvokeExpression(
-                        new CodeThisReferenceExpression(), rule.Function);
+                     invokeResult = invoke = new CodeMethodInvokeExpression(target, functionName);
 
                   if (!((rule.Parameter1 == null) || (rule.Parameter1.Length == 0)))
                   {
@@ -1892,24 +1951,15 @@ namespace SGDK2
 
          foreach(ProjectDataset.SpriteParameterRow drParam in ProjectData.GetSortedSpriteParameters(drSpriteDef))
          {
-            clsSpriteDef.Members.Add(new CodeMemberField(typeof(int), "m_" + NameToVariable(drParam.Name)));
+            CodeMemberField fldParam = new CodeMemberField(typeof(int), NameToVariable(drParam.Name));
+            fldParam.Attributes = MemberAttributes.Public;
+            clsSpriteDef.Members.Add(fldParam);
             CodeFieldReferenceExpression refParam = new CodeFieldReferenceExpression(
-               new CodeThisReferenceExpression(), "m_" + NameToVariable(drParam.Name));
+               new CodeThisReferenceExpression(), NameToVariable(drParam.Name));
             constructor.Parameters.Add(new CodeParameterDeclarationExpression(
                typeof(int), NameToVariable(drParam.Name)));
             constructor.Statements.Add(new CodeAssignStatement(refParam,               
                new CodeArgumentReferenceExpression(NameToVariable(drParam.Name))));
-            CodeMemberProperty prp = new CodeMemberProperty();
-            prp.Attributes = MemberAttributes.Public | MemberAttributes.Final;
-            prp.Name = NameToVariable(drParam.Name);
-            prp.HasGet = true;
-            prp.HasSet = true;
-            prp.Type = new CodeTypeReference(typeof(int));
-            prp.GetStatements.Add(new CodeMethodReturnStatement(refParam));
-            prp.SetStatements.Add(new CodeAssignStatement(refParam, new CodePropertySetValueReferenceExpression()));
-            clsSpriteDef.Members.Add(prp);
-
-            mthClearParams.Statements.Add(new CodeAssignStatement(refParam, new CodePrimitiveExpression(0)));
          }
          clsSpriteDef.Members.Add(constructor);
 
@@ -2300,6 +2350,13 @@ namespace SGDK2
       {
          return NameToVariable(name) + "_Map";
       }
+      public static string GetCustomCodeTemplate(string name)
+      {
+         if (name.EndsWith(".cs"))
+            name = name.Substring(0, name.Length - 3);
+         return "namespace CustomObjects\r\n{\r\n   public class " + NameToVariable(name) +
+            "\r\n   {\r\n\r\n   }\r\n}\r\n";
+      }
       #endregion
 
       #region Compilation
@@ -2347,6 +2404,12 @@ namespace SGDK2
          compilerParams.ReferencedAssemblies.Add("System.Drawing.dll");
          compilerParams.ReferencedAssemblies.Add("System.Design.dll");
          compilerParams.ReferencedAssemblies.Add(System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, "SGDK2IDE.exe"));
+         foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
+         {
+            ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
+            if (drCode.Name.EndsWith(".dll"))
+               compilerParams.ReferencedAssemblies.Add(drCode.Name);
+         }
          compilerParams.GenerateExecutable = false;
          System.CodeDom.Compiler.CompilerResults results = compiler.CompileAssemblyFromSourceBatch(compilerParams, code);
          if (results.Errors.Count > 0)
@@ -2436,6 +2499,24 @@ namespace SGDK2
          compilerParams.ReferencedAssemblies.Add("System.dll");
          compilerParams.ReferencedAssemblies.Add("System.Drawing.dll");
          compilerParams.ReferencedAssemblies.Add("System.Design.dll");
+         foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
+         {
+            ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
+            if (drCode.Name.EndsWith(".dll"))
+            {
+               try
+               {
+                  string assyPath = System.Reflection.Assembly.LoadFrom(drCode.Name).GetModules(false)[0].FullyQualifiedName;
+                  System.IO.File.Copy(assyPath, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(drCode.Name)), true);
+               }
+               catch(System.Exception)
+               {
+               }
+               compilerParams.ReferencedAssemblies.Add(drCode.Name);
+            }
+            else if (drCode.Name.EndsWith(".cs") && !drCode.IsCustomObjectDataNull())
+               resourceSwitches += " /res:\"" + System.IO.Path.Combine(FolderName, drCode.Name.Substring(0,drCode.Name.Length - 3) + ".bin") + "\"";
+         }
          compilerParams.GenerateExecutable = true;
          compilerParams.GenerateInMemory = false;
          compilerParams.IncludeDebugInformation = Debug;

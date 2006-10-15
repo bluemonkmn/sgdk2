@@ -2444,7 +2444,7 @@ namespace SGDK2
             ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
             if (drCode.Name.EndsWith(".dll") && !IsOldDll(GetProjectRelativePath(drCode.Name)))
             {
-               string assyPath = System.Reflection.Assembly.Load(drCode.Name.Substring(0,drCode.Name.Length - 4)).GetModules(false)[0].FullyQualifiedName;
+               string assyPath = System.Reflection.Assembly.LoadWithPartialName(drCode.Name.Substring(0,drCode.Name.Length - 4)).GetModules(false)[0].FullyQualifiedName;
                compilerParams.ReferencedAssemblies.Add(assyPath);
             }
          }
@@ -2551,7 +2551,8 @@ namespace SGDK2
                {
                   try
                   {
-                     string assyPath = System.Reflection.Assembly.Load(drCode.Name.Substring(0,drCode.Name.Length - 4)).GetModules(false)[0].FullyQualifiedName;
+                     System.Reflection.Assembly assy = System.Reflection.Assembly.LoadWithPartialName(drCode.Name.Substring(0,drCode.Name.Length - 4));
+                     string assyPath = assy.GetModules(false)[0].FullyQualifiedName;
                      string targetPath = System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(drCode.Name));
                      System.IO.File.Copy(assyPath, targetPath, true);
                      compilerParams.ReferencedAssemblies.Add(targetPath);

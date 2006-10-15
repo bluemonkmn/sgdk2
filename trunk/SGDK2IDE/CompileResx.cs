@@ -72,6 +72,36 @@ class CompileResx
          rd = new System.Resources.ResXResourceReader("CollisionMask.resx");
          WriteResources(rd,"SGDK2.frmCollisionMask.resources");
          rd.Close();
+         rd = new System.Resources.ResXResourceReader("FindReplace.resx");
+         WriteResources(rd,"SGDK2.frmFindReplace.resources");
+         rd.Close();
+         rd = new System.Resources.ResXResourceReader("InputBox.resx");
+         WriteResources(rd,"SGDK2.frmInputBox.resources");
+         rd.Close();
+         rd = new System.Resources.ResXResourceReader("TileCategoryName.resx");
+         WriteResources(rd,"SGDK2.frmTileCategoryName.resources");
+         rd.Close();
+         rd = new System.Resources.ResXResourceReader("SpriteWizard.resx");
+         WriteResources(rd,"SGDK2.frmSpriteImportWizard.resources");
+         rd.Close();
+         rd = new System.Resources.ResXResourceReader("About.resx");
+         WriteResources(rd,"SGDK2.frmAbout.resources");
+         rd.Close();
+         rd = new System.Resources.ResXResourceReader("WizardBase.resx");
+         WriteResources(rd,"SGDK2.frmWizardBase.resources");
+         rd.Close();
+         rd = new System.Resources.ResXResourceReader("SelectTileset.resx");
+         WriteResources(rd,"SGDK2.frmSelectTileset.resources");
+         rd.Close();
+         rd = new System.Resources.ResXResourceReader("MapScrollWizard.resx");
+         WriteResources(rd,"SGDK2.frmMapScrollWizard.resources");
+         rd.Close();
+         rd = new System.Resources.ResXResourceReader("LayerWizard.resx");
+         WriteResources(rd,"SGDK2.frmLayerWizard.resources");
+         rd.Close();
+         rd = new System.Resources.ResXResourceReader("CustomObjectData.resx");
+         WriteResources(rd,"SGDK2.frmCustomObjectData.resources");
+         rd.Close();
       }
       public static void WriteResources(System.Resources.ResXResourceReader rd, string sFile)
       {

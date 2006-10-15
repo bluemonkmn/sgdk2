@@ -49,6 +49,16 @@ echo >>Input.txt /res:SGDK2.frmImportGraphics.resources
 echo >>Input.txt /res:SGDK2.frmProject.resources
 echo >>Input.txt /res:SGDK2.frmLogView.resources
 echo >>Input.txt /res:SGDK2.frmCollisionMask.resources
+echo >>Input.txt /res:SGDK2.frmFindReplace.resources
+echo >>Input.txt /res:SGDK2.frmInputBox.resources
+echo >>Input.txt /res:SGDK2.frmTileCategoryName.resources
+echo >>Input.txt /res:SGDK2.frmSpriteImportWizard.resources
+echo >>Input.txt /res:SGDK2.frmAbout.resources
+echo >>Input.txt /res:SGDK2.frmWizardBase.resources
+echo >>Input.txt /res:SGDK2.frmSelectTileset.resources
+echo >>Input.txt /res:SGDK2.frmMapScrollWizard.resources
+echo >>Input.txt /res:SGDK2.frmLayerWizard.resources
+echo >>Input.txt /res:SGDK2.frmCustomObjectData.resources
 echo >>Input.txt /res:Template\Display.cs,SGDK2.Template.Display.cs
 echo >>Input.txt /res:Template\Frame.cs,SGDK2.Template.Frame.cs
 echo >>Input.txt /res:Template\LayerBase.cs,SGDK2.Template.LayerBase.cs
@@ -61,6 +71,8 @@ echo >>Input.txt /res:Template\PlanBase.cs,SGDK2.Template.PlanBase.cs
 echo >>Input.txt /res:Template\SpriteState.cs,SGDK2.Template.SpriteState.cs
 echo >>Input.txt /res:Template\TileCategoryMembership.cs,SGDK2.Template.TileCategoryMembership.cs
 echo >>Input.txt /res:Template\TileShapes.cs,SGDK2.Template.TileShapes.cs
+echo >>Input.txt /res:Template\GeneralRules.cs,SGDK2.Template.GeneralRules.cs
+echo >>Input.txt /res:Template\CollisionMask.cs,SGDK2.Template.CollisionMask.cs
 echo >>Input.txt /res:RemoteReflector.cs,SGDK2.RemoteReflector.cs
 echo >>Input.txt AssemblyInfo.cs
 echo >>Input.txt GfxEdit.cs
@@ -82,7 +94,6 @@ echo >>Input.txt Layer.cs
 echo >>Input.txt TileEdit.cs
 echo >>Input.txt FrameCache.cs
 echo >>Input.txt TileCache.cs
-echo >>Input.txt Map.cs
 echo >>Input.txt DataChangeNotifier.cs
 echo >>Input.txt NewTileValue.cs
 echo >>Input.txt CounterEdit.cs
@@ -106,6 +117,16 @@ echo >>Input.txt ImportGraphics.cs
 echo >>Input.txt Project.cs
 echo >>Input.txt LogView.cs
 echo >>Input.txt CollisionMask.cs
+echo >>Input.txt FindReplace.cs
+echo >>Input.txt InputBox.cs
+echo >>Input.txt TileCategoryName.cs
+echo >>Input.txt SpriteWizard.cs
+echo >>Input.txt About.cs
+echo >>Input.txt WizardBase.cs
+echo >>Input.txt SelectTileset.cs
+echo >>Input.txt MapScrollWizard.cs
+echo >>Input.txt LayerWizard.cs
+echo >>Input.txt CustomObjectData.cs
 csc /noconfig @Input.txt
 del Input.txt
 del *.resources

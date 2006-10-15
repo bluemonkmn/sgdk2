@@ -35,6 +35,7 @@ namespace SGDK2
       #region Non-Control Members
       public static ResourceManager g_Resources = null;
       public static CommandLineArgs g_CommandLine = new CommandLineArgs();
+      private static frmMain mainWindow = null;
       #endregion
 
       private SGDK2IDE()
@@ -53,7 +54,7 @@ namespace SGDK2
          g_Resources = new ResourceManager("SGDK2.SGDK2IDE", Assembly.GetExecutingAssembly());
          CreateFileAssociation();
          new frmSplashForm(GetSplashImage()).Show();
-         Application.Run(new frmMain());
+         Application.Run(mainWindow = new frmMain());
          CodeGenerator.ResetTempAssembly();
          return 0;
       }
@@ -221,6 +222,14 @@ namespace SGDK2
          Cursor cur = new Cursor(stm);
          stm.Close();
          return cur;
+      }
+
+      public static string CurrentProjectFile
+      {
+         get
+         {
+            return mainWindow.ProjectFile;
+         }
       }
       #endregion
    }

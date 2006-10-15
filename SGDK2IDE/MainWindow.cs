@@ -27,7 +27,7 @@ namespace SGDK2
       Int32 m_nPinStatus; // 0 == Pinned, 1 == Unpinned Collapsed, 2 = Unpinned Expanded
       Boolean m_bOverPin = false;
       TreeNode m_ContextNode = null;
-      string m_strProjectPath;
+      private string m_strProjectPath;
       private Hashtable m_AffectedNodeKeys = new Hashtable();
       #endregion
 
@@ -960,7 +960,7 @@ namespace SGDK2
                   MessageBox.Show(this, "A specific Code object must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                   return;
                }
-               if (KeyParts[0].EndsWith(".dll"))
+               if (KeyParts[KeyParts.Length - 1].EndsWith(".dll"))
                {
                   MessageBox.Show(this, "Cannot edit DLL reference items.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                   return;
@@ -1218,6 +1218,16 @@ namespace SGDK2
             ndSel.EnsureVisible();
             ndSel.Expand();
             tvwMain.SelectedNode = ndSel;
+         }
+      }
+      #endregion
+
+      #region Public Properties
+      public string ProjectFile
+      {
+         get
+         {
+            return m_strProjectPath;
          }
       }
       #endregion

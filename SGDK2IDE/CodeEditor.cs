@@ -992,11 +992,14 @@ namespace SGDK2
       private void frmCodeEditor_Closing(object sender, System.ComponentModel.CancelEventArgs e)
       {
          if ((m_SourceCode.RowState != System.Data.DataRowState.Detached) && (m_SourceCode.RowState != System.Data.DataRowState.Deleted))
-            if (m_SourceCode.Text.Replace("\r", String.Empty) != rtfCode.Text.Replace("\r", String.Empty))
+         {
+            string rtfCodeText = rtfCode.Text.Replace("\r", String.Empty);
+            if (m_SourceCode.Text.Replace("\r", String.Empty) != rtfCodeText)
             {
-               m_SourceCode.Text = rtfCode.Text;
+               m_SourceCode.Text = rtfCodeText.Replace("\n","\r\n");
                CodeGenerator.ResetTempAssembly();
             }
+         }
       }
       
       private void rtfCode_TextChanged(object sender, System.EventArgs e)
@@ -1022,9 +1025,10 @@ namespace SGDK2
             rtfCode.SelectionStart = selStart;
             rtfCode.SelectionLength = selLen;
             SendScrollPosMessage(rtfCode.Handle, EM_SETSCROLLPOS, IntPtr.Zero, ref scrollPos);
-            if (m_SourceCode.Text.Replace("\r", String.Empty) != rtfCode.Text.Replace("\r", String.Empty))
+            string rtfCodeText = rtfCode.Text.Replace("\r", String.Empty);
+            if (m_SourceCode.Text.Replace("\r", String.Empty) != rtfCodeText)
             {
-               m_SourceCode.Text = rtfCode.Text;
+               m_SourceCode.Text = rtfCodeText.Replace("\n","\r\n");
                CodeGenerator.ResetTempAssembly();
             }
          }

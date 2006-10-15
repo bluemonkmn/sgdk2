@@ -2357,6 +2357,41 @@ namespace SGDK2
          return "namespace CustomObjects\r\n{\r\n   public class " + NameToVariable(name) +
             "\r\n   {\r\n\r\n   }\r\n}\r\n";
       }
+      public static string GetProjectRelativePath(string fileName)
+      {
+         if ((!System.IO.Path.IsPathRooted(fileName)) && (SGDK2IDE.CurrentProjectFile != null))
+            return System.IO.Path.Combine(System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile), fileName);
+         return fileName;
+      }
+      public static bool IsOldDll(string fileName)
+      {
+         if (!System.IO.File.Exists(fileName))
+            return false;
+         System.IO.FileStream file = new System.IO.FileStream(fileName, System.IO.FileMode.Open, System.IO.FileAccess.Read);
+         try
+         {
+            byte[] tmp = new byte[file.Length];
+            file.Read(tmp, 0, (int)file.Length);
+            byte[] seekText = System.Text.Encoding.ASCII.GetBytes("_CorDllMain");
+            for (int pos = Array.IndexOf(tmp, seekText[0]); pos >= 0; pos = Array.IndexOf(tmp, seekText[0], pos))
+            {
+               int count;
+               for (count=1; count < seekText.Length; count++)
+               {
+                  if (seekText[count] != tmp[pos+count])
+                     break;
+               }
+               if (count >= seekText.Length)
+                  return false;
+               pos += count;
+            }
+            return true;
+         }
+         finally
+         {
+            file.Close();
+         }
+      }
       #endregion
 
       #region Compilation
@@ -2407,8 +2442,11 @@ namespace SGDK2
          foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
          {
             ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
-            if (drCode.Name.EndsWith(".dll"))
-               compilerParams.ReferencedAssemblies.Add(drCode.Name);
+            if (drCode.Name.EndsWith(".dll") && !IsOldDll(GetProjectRelativePath(drCode.Name)))
+            {
+               string assyPath = System.Reflection.Assembly.Load(drCode.Name.Substring(0,drCode.Name.Length - 4)).GetModules(false)[0].FullyQualifiedName;
+               compilerParams.ReferencedAssemblies.Add(assyPath);
+            }
          }
          compilerParams.GenerateExecutable = false;
          System.CodeDom.Compiler.CompilerResults results = compiler.CompileAssemblyFromSourceBatch(compilerParams, code);
@@ -2468,6 +2506,7 @@ namespace SGDK2
 
          string[] fileList = GetCodeFileList(FolderName);
          string[] resourcesList = GetResourcesFileList(FolderName);
+         System.Collections.ArrayList OldDlls = new System.Collections.ArrayList();
          GenerateAllCode(FolderName, out errs);
          if (errs.Length > 0)
             return null;
@@ -2504,15 +2543,23 @@ namespace SGDK2
             ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
             if (drCode.Name.EndsWith(".dll"))
             {
-               try
+               if (IsOldDll(GetProjectRelativePath(drCode.Name)))
                {
-                  string assyPath = System.Reflection.Assembly.LoadFrom(drCode.Name).GetModules(false)[0].FullyQualifiedName;
-                  System.IO.File.Copy(assyPath, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(drCode.Name)), true);
+                  OldDlls.Add(GetProjectRelativePath(drCode.Name));
                }
-               catch(System.Exception)
+               else
                {
+                  try
+                  {
+                     string assyPath = System.Reflection.Assembly.Load(drCode.Name.Substring(0,drCode.Name.Length - 4)).GetModules(false)[0].FullyQualifiedName;
+                     string targetPath = System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(drCode.Name));
+                     System.IO.File.Copy(assyPath, targetPath, true);
+                     compilerParams.ReferencedAssemblies.Add(targetPath);
+                  }
+                  catch(System.Exception)
+                  {
+                  }
                }
-               compilerParams.ReferencedAssemblies.Add(drCode.Name);
             }
             else if (drCode.Name.EndsWith(".cs") && !drCode.IsCustomObjectDataNull())
                resourceSwitches += " /res:\"" + System.IO.Path.Combine(FolderName, drCode.Name.Substring(0,drCode.Name.Length - 3) + ".bin") + "\"";
@@ -2534,6 +2581,15 @@ namespace SGDK2
             }
             errs = sb.ToString();
             return null;
+         }
+         else
+         {
+            foreach(string dllFile in OldDlls)
+            {
+               System.IO.File.Copy(dllFile,
+                  System.IO.Path.Combine(System.IO.Path.GetDirectoryName(results.PathToAssembly),
+                  System.IO.Path.GetFileName(dllFile)), true);
+            }
          }
          return compilerParams.OutputAssembly;
       }

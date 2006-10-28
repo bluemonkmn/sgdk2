@@ -90,7 +90,8 @@ namespace SGDK2
          InitializeComponent();
 
          m_SourceCode = drSourceCode;
-         rtfCode.Rtf = ConvertToRTF(m_SourceCode.Text);
+         if (!m_SourceCode.IsTextNull())
+            rtfCode.Rtf = ConvertToRTF(m_SourceCode.Text);
 
          if (m_SourceCode.IsCustomObject)
             mnuFileSeparator.Visible = mnuFileRename.Visible = mnuEmbeddedData.Visible = true;
@@ -159,6 +160,7 @@ namespace SGDK2
          // DataMonitor
          // 
          this.DataMonitor.SourceCodeRowDeleted += new SGDK2.ProjectDataset.SourceCodeRowChangeEventHandler(this.DataMonitor_SourceCodeRowDeleted);
+         this.DataMonitor.SourceCodeRowChanged += new SGDK2.ProjectDataset.SourceCodeRowChangeEventHandler(this.DataMonitor_SourceCodeRowChanged);
          this.DataMonitor.Clearing += new System.EventHandler(this.DataMonitor_Clearing);
          // 
          // rtfCode
@@ -368,6 +370,7 @@ namespace SGDK2
       protected override void OnLoad(EventArgs e)
       {
          UpdateStatus();
+         Text = "Source Code Editor - " + m_SourceCode.Name;
          base.OnLoad (e);
       }
 
@@ -889,19 +892,31 @@ namespace SGDK2
          }
          else
          {
-            string size;
-            if (m_SourceCode.CustomObjectData.Length < 1024)
-               size = m_SourceCode.CustomObjectData.Length.ToString() + " bytes";
-            else if (m_SourceCode.CustomObjectData.Length < 1024*1024)
-               size = ((int)(m_SourceCode.CustomObjectData.Length / 1024)).ToString() + " KB";
-            else if (m_SourceCode.CustomObjectData.Length < 1024 * 1024 * 1024)
-               size = ((int)(m_SourceCode.CustomObjectData.Length / (1024 * 1024))).ToString() + " MB";
-            else
-               size = ((int)(m_SourceCode.CustomObjectData.Length / (1024 * 1024 * 1024))).ToString() + " GB";
-
-            mnuDataClear.Text = "&Clear (" + size + ")";
+            mnuDataClear.Text = "&Clear (" + ProjectData.GetCustomObjectDataSize(m_SourceCode) + ")";
             mnuDataClear.Enabled = true;
          }
+      }
+      #endregion
+
+      #region Public Static Members
+      public static void Edit(Form MdiParent, ProjectDataset.SourceCodeRow EditRow)
+      {
+         foreach(Form frm in MdiParent.MdiChildren)
+         {
+            frmCodeEditor f = frm as frmCodeEditor;
+            if (f != null)
+            {
+               if (f.m_SourceCode == EditRow)
+               {
+                  f.Activate();
+                  return;
+               }
+            }
+         }
+
+         frmCodeEditor frmNew = new frmCodeEditor(EditRow);
+         frmNew.MdiParent = MdiParent;
+         frmNew.Show();
       }
       #endregion
 
@@ -994,7 +1009,8 @@ namespace SGDK2
          if ((m_SourceCode.RowState != System.Data.DataRowState.Detached) && (m_SourceCode.RowState != System.Data.DataRowState.Deleted))
          {
             string rtfCodeText = rtfCode.Text.Replace("\r", String.Empty);
-            if (m_SourceCode.Text.Replace("\r", String.Empty) != rtfCodeText)
+            if ((m_SourceCode.IsTextNull() && (rtfCodeText.Length > 0)) ||
+                (!m_SourceCode.IsTextNull()) && (m_SourceCode.Text.Replace("\r", String.Empty) != rtfCodeText))
             {
                m_SourceCode.Text = rtfCodeText.Replace("\n","\r\n");
                CodeGenerator.ResetTempAssembly();
@@ -1026,7 +1042,8 @@ namespace SGDK2
             rtfCode.SelectionLength = selLen;
             SendScrollPosMessage(rtfCode.Handle, EM_SETSCROLLPOS, IntPtr.Zero, ref scrollPos);
             string rtfCodeText = rtfCode.Text.Replace("\r", String.Empty);
-            if (m_SourceCode.Text.Replace("\r", String.Empty) != rtfCodeText)
+            if ((m_SourceCode.IsTextNull() && (rtfCodeText.Length > 0)) ||
+               (!m_SourceCode.IsTextNull()) && (m_SourceCode.Text.Replace("\r", String.Empty) != rtfCodeText))
             {
                m_SourceCode.Text = rtfCodeText.Replace("\n","\r\n");
                CodeGenerator.ResetTempAssembly();
@@ -1228,6 +1245,14 @@ namespace SGDK2
       {
          if (m_SourceCode == e.Row)
             this.Close();
+      }
+
+      private void DataMonitor_SourceCodeRowChanged(object sender, SGDK2.ProjectDataset.SourceCodeRowChangeEvent e)
+      {
+         if (m_SourceCode == e.Row)
+         {
+            Text = "Source Code Editor - " + e.Row.Name;
+         }
       }
       #endregion
    }

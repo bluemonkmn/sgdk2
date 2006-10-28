@@ -130,10 +130,16 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
       throw new NotImplementedException("Attempted to execute rules on plan " + this.GetType().Name + " without any rules");
    }
 
-   [Description("Scroll all layers on this plan's layer's map so that the specified sprite is within the scoll margins of the map")]
-   public void ScrollSpriteIntoView(SpriteBase sprite)
+   [Description("Scroll all layers on this plan's layer's map so that the specified sprite is within the scroll margins of the map")]
+   public void ScrollSpriteIntoView(SpriteBase Sprite)
    {
-      ParentLayer.ScrollSpriteIntoView(sprite);
+      ParentLayer.ScrollSpriteIntoView(Sprite);
+   }
+
+   [Description("Alter a sprite's velocity so that it remains within the map's visible area or within the scroll margins, according to this plan's layer's position within the map.")]
+   public void PushSpriteIntoView(SpriteBase Sprite, bool StayInScrollMargins)
+   {
+      ParentLayer.PushSpriteIntoView(Sprite, StayInScrollMargins);
    }
 
    [Description("Alter the velocity of the specified sprite to go toward a coordinate associated with the current plan.  CoordinateIndex indicates the which coordinate in the plan to head toward, and Force is how hard to push the sprite in tenths of a pixel per frame per frame")]

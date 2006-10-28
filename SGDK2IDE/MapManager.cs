@@ -311,6 +311,28 @@ namespace SGDK2
       }      
       #endregion
 
+      #region Public Static Members
+      public static void Edit(Form MdiParent, ProjectDataset.MapRow EditRow)
+      {
+         foreach(Form frm in MdiParent.MdiChildren)
+         {
+            frmMapManager f = frm as frmMapManager;
+            if (f != null)
+            {
+               if (f.DataObject.m_drMap == EditRow)
+               {
+                  f.Activate();
+                  return;
+               }
+            }
+         }
+
+         frmMapManager frmNew = new frmMapManager(EditRow);
+         frmNew.MdiParent = MdiParent;
+         frmNew.Show();
+      }
+      #endregion
+
       #region Event Handlers
       private void btnOK_Click(object sender, System.EventArgs e)
       {

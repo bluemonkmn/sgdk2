@@ -192,6 +192,28 @@ namespace SGDK2
       }
       #endregion
 
+      #region Public Static Members
+      public static void Edit(Form MdiParent, ProjectDataset.SolidityRow EditRow)
+      {
+         foreach(Form frm in MdiParent.MdiChildren)
+         {
+            frmSolidity f = frm as frmSolidity;
+            if (f != null)
+            {
+               if (f.m_Solidity == EditRow)
+               {
+                  f.Activate();
+                  return;
+               }
+            }
+         }
+
+         frmSolidity frmNew = new frmSolidity(EditRow);
+         frmNew.MdiParent = MdiParent;
+         frmNew.Show();
+      }
+      #endregion
+
       #region Event Handlers
       private void txtName_Validating(object sender, System.ComponentModel.CancelEventArgs e)
       {

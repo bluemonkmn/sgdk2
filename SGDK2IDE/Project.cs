@@ -182,6 +182,26 @@ namespace SGDK2
       }
 		#endregion
 
+
+      #region Public Static Members
+      public static void Edit(Form MdiParent)
+      {
+         foreach(Form frm in MdiParent.MdiChildren)
+         {
+            frmProject f = frm as frmProject;
+            if (f != null)
+            {
+               f.Activate();
+               return;
+            }
+         }
+
+         frmProject frmNew = new frmProject();
+         frmNew.MdiParent = MdiParent;
+         frmNew.Show();
+      }
+      #endregion
+      
       private void DataMonitor_Clearing(object sender, System.EventArgs e)
       {
          this.Close();

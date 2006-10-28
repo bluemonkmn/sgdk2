@@ -652,20 +652,6 @@ namespace SGDK2
          mnuFileDeleteOutputFiles.Enabled = true;
       }
 
-      private void ShowMDIChild(System.Type typForm)
-      {
-         foreach(Form frm in this.MdiChildren)
-            if (typForm.IsInstanceOfType(frm))
-            {
-               frm.Activate();
-               return;
-            }
-
-         Form frmNew = (Form)typForm.GetConstructor(System.Type.EmptyTypes).Invoke(null);
-         frmNew.MdiParent = this;
-         frmNew.Show();
-      }
-
       private void NewObject()
       {
          for (bool bCreatedObject = false; !bCreatedObject; bCreatedObject = !bCreatedObject)
@@ -803,7 +789,8 @@ namespace SGDK2
                      frmNew.Show();
                   }
                   else
-                     ProjectData.AddSourceCode(sName, null, null, true, null);
+                     ProjectData.AddSourceCode(sName, "/*\r\n   Because this is a binary file, this text only\r\n" +
+                        "   serves as a comment and will not be compiled.\r\n*/", null, true, null);
                   break;
                default:
                   m_ContextNode = m_ContextNode.Parent;
@@ -815,15 +802,12 @@ namespace SGDK2
 
       private void EditObject()
       {
-         Form frmNew;
          String Key = m_ContextNode.Tag.ToString();
          string[] KeyParts = Key.Substring(2).Split('~');
          switch(Key.Substring(0,2))
          {
             case "Pr":
-               frmNew = new frmProject();
-               frmNew.MdiParent = this;
-               frmNew.Show();
+               frmProject.Edit(this);
                break;
             case "GS":
                if (Key == "GS")
@@ -831,14 +815,10 @@ namespace SGDK2
                   MessageBox.Show(this, "A specific graphic sheet must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                   return;
                }
-               frmNew = new frmGfxSheet(ProjectData.GetGraphicSheet(KeyParts[0]));
-               frmNew.MdiParent = this;
-               frmNew.Show();
+               frmGfxSheet.Edit(this, ProjectData.GetGraphicSheet(KeyParts[0]));
                break;
             case "GE":
-               frmNew = new frmGraphicsEditor(ProjectData.GetGraphicSheet(KeyParts[0]));
-               frmNew.MdiParent = this;
-               frmNew.Show();
+               frmGraphicsEditor.Edit(this, ProjectData.GetGraphicSheet(KeyParts[0]));
                break;
             case "FS":
                if (Key == "FS")
@@ -846,9 +826,7 @@ namespace SGDK2
                   MessageBox.Show(this, "A specific Frameset must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                   return;
                }
-               frmNew = new frmFrameEdit(ProjectData.GetFrameSet(KeyParts[0]));
-               frmNew.MdiParent = this;
-               frmNew.Show();
+               frmFrameEdit.Edit(this, ProjectData.GetFrameSet(KeyParts[0]));
                break;
             case "TS":
                if (Key == "TS")
@@ -856,9 +834,7 @@ namespace SGDK2
                   MessageBox.Show(this, "A specific Tileset must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                   return;
                }
-               frmNew = new frmTileEdit(ProjectData.GetTileSet(KeyParts[0]));
-               frmNew.MdiParent = this;
-               frmNew.Show();
+               frmTileEdit.Edit(this, ProjectData.GetTileSet(KeyParts[0]));
                break;
             case "TC":
                if (Key == "TC")
@@ -867,17 +843,9 @@ namespace SGDK2
                   return;
                }
                if (KeyParts.Length <= 1)
-               {
-                  frmNew = new frmTileCategoryName(ProjectData.GetTileCategory(KeyParts[0]));
-                  frmNew.MdiParent = this;
-                  frmNew.Show();
-               }
+                  frmTileCategoryName.Edit(this, ProjectData.GetTileCategory(KeyParts[0]));
                else
-               {
-                  frmNew = new frmTileCategory(ProjectData.GetCategorizedTileset(KeyParts[1], KeyParts[0]));
-                  frmNew.MdiParent = this;
-                  frmNew.Show();
-               }
+                  frmTileCategory.Edit(this, ProjectData.GetCategorizedTileset(KeyParts[1], KeyParts[0]));
                break;
             case "CR":
                if (Key == "CR")
@@ -885,9 +853,7 @@ namespace SGDK2
                   MessageBox.Show(this, "A specific Counter must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                   return;
                }
-               frmNew = new frmCounterEdit(ProjectData.GetCounter(KeyParts[0]));
-               frmNew.MdiParent = this;
-               frmNew.Show();
+               frmCounterEdit.Edit(this, ProjectData.GetCounter(KeyParts[0]));
                break;
             case "SD":
                if (Key == "SD")
@@ -895,9 +861,7 @@ namespace SGDK2
                   MessageBox.Show(this, "A specific Sprite Definition must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                   return;
                }
-               frmNew = new frmSpriteDefinition(ProjectData.GetSpriteDefinition(KeyParts[0]));
-               frmNew.MdiParent = this;
-               frmNew.Show();
+               frmSpriteDefinition.Edit(this, ProjectData.GetSpriteDefinition(KeyParts[0]));
                break;
             case "SY":
                if (Key == "SY")
@@ -905,9 +869,7 @@ namespace SGDK2
                   MessageBox.Show(this, "A specific Solidity must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                   return;
                }
-               frmNew = new frmSolidity(ProjectData.GetSolidity(KeyParts[0]));
-               frmNew.MdiParent = this;
-               frmNew.Show();
+               frmSolidity.Edit(this, ProjectData.GetSolidity(KeyParts[0]));
                break;
             case "MP":
                if (Key == "MP")
@@ -915,9 +877,7 @@ namespace SGDK2
                   MessageBox.Show(this, "A specific Map must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                   return;
                }
-               frmNew = new frmMapManager(ProjectData.GetMap(KeyParts[0]));
-               frmNew.MdiParent = this;
-               frmNew.Show();
+               frmMapManager.Edit(this, ProjectData.GetMap(KeyParts[0]));
                break;
             case "LR":
                if (KeyParts.Length <= 1)
@@ -925,14 +885,10 @@ namespace SGDK2
                   MessageBox.Show(this, "A specific Layer must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                   return;
                }
-               frmNew = new frmLayerManager(ProjectData.GetLayer(KeyParts[0], KeyParts[1]));
-               frmNew.MdiParent = this;
-               frmNew.Show();
+               frmLayerManager.Edit(this, ProjectData.GetLayer(KeyParts[0], KeyParts[1]));
                break;
             case "LE":
-               frmNew = new frmMapEditor(ProjectData.GetLayer(KeyParts[0], KeyParts[1]));
-               frmNew.MdiParent = this;
-               frmNew.Show();
+               frmMapEditor.Edit(this, ProjectData.GetLayer(KeyParts[0], KeyParts[1]));
                break;
             case "PL":
                if (KeyParts.Length <= 2)
@@ -940,9 +896,7 @@ namespace SGDK2
                   MessageBox.Show(this, "A specific Plan must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                   return;
                }
-               frmNew = new frmPlanEdit(ProjectData.GetSpritePlan(KeyParts[0], KeyParts[1], KeyParts[2]));
-               frmNew.MdiParent = this;
-               frmNew.Show();
+               frmPlanEdit.Edit(this, ProjectData.GetSpritePlan(KeyParts[0], KeyParts[1], KeyParts[2]));
                break;
             case "SC":
                if (Key == "SC")
@@ -950,9 +904,7 @@ namespace SGDK2
                   MessageBox.Show(this, "A specific Sprite Category must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                   return;
                }
-               frmNew = new frmSpriteCategory(ProjectData.GetSpriteCategory(KeyParts[0]));
-               frmNew.MdiParent = this;
-               frmNew.Show();
+               frmSpriteCategory.Edit(this, ProjectData.GetSpriteCategory(KeyParts[0]));
                break;
             case "CD":
                if (Key == "CD")
@@ -960,17 +912,10 @@ namespace SGDK2
                   MessageBox.Show(this, "A specific Code object must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                   return;
                }
-               if (KeyParts[KeyParts.Length - 1].EndsWith(".dll"))
-               {
-                  MessageBox.Show(this, "Cannot edit DLL reference items.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                  return;
-               }
                ProjectDataset.SourceCodeRow row = ProjectData.GetSourceCode(KeyParts[KeyParts.Length - 1]);
                if (row == null)
                   row = ProjectData.AddSourceCode(KeyParts[0], String.Empty, String.Empty, true, null);
-               frmNew = new frmCodeEditor(row);
-               frmNew.MdiParent = this;
-               frmNew.Show();
+               frmCodeEditor.Edit(this, row);
                break;
             default:
                MessageBox.Show(this, "Cannot display editor for the selected type", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -1182,10 +1127,19 @@ namespace SGDK2
          switch(Key.Substring(0,2))
          {
             case "SD":
+            {
                frmSpriteImportWizard frm = new frmSpriteImportWizard();
                frm.ShowDialog(this);
                frm.Dispose();
                break;
+            }
+            case "CD":
+            {
+               frmCodeImport frm = new frmCodeImport();
+               frm.ShowDialog(this);
+               frm.Dispose();
+               break;
+            }
             default:
                MessageBox.Show(this, "Only Sprite Definitions can be imported.", "Import From...", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                break;

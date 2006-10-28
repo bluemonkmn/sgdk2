@@ -378,7 +378,7 @@ namespace SGDK2
          {
             ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
             if ((!drCode.IsCustomObjectDataNull()) && drCode.Name.EndsWith(".cs"))
-               fileList.Add(System.IO.Path.Combine(FolderName, drCode.Name.Substring(0, drCode.Name.Length - 3)) + ".bin");
+               fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileNameWithoutExtension(drCode.Name)) + ".bin");
          }
          return (string[])(fileList.ToArray(typeof(string)));
       }
@@ -402,7 +402,7 @@ namespace SGDK2
          {
             ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
             if (drCode.Name.EndsWith(".dll"))
-               fileList.Add(System.IO.Path.Combine(FolderName, drCode.Name));
+               fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(drCode.Name)));
          }
          return (string[])(fileList.ToArray(typeof(string)));
       }
@@ -511,7 +511,13 @@ namespace SGDK2
             ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
             if (drCode.Name.EndsWith(".cs") && !drCode.IsCustomObjectDataNull())
             {
-               System.IO.FileStream fs = new System.IO.FileStream(System.IO.Path.Combine(FolderName, drCode.Name.Substring(0,drCode.Name.Length - 3) + ".bin"), System.IO.FileMode.Create);
+               System.IO.FileStream fs = new System.IO.FileStream(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileNameWithoutExtension(drCode.Name) + ".bin"), System.IO.FileMode.Create);
+               fs.Write(drCode.CustomObjectData, 0, drCode.CustomObjectData.Length);
+               fs.Close();
+            }
+            else if (drCode.Name.EndsWith(".dll") && !drCode.IsCustomObjectDataNull())
+            {
+               System.IO.FileStream fs = new System.IO.FileStream(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(drCode.Name)), System.IO.FileMode.Create);
                fs.Write(drCode.CustomObjectData, 0, drCode.CustomObjectData.Length);
                fs.Close();
             }
@@ -2444,8 +2450,12 @@ namespace SGDK2
             ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
             if (drCode.Name.EndsWith(".dll") && !IsOldDll(GetProjectRelativePath(drCode.Name)))
             {
-               string assyPath = System.Reflection.Assembly.LoadWithPartialName(drCode.Name.Substring(0,drCode.Name.Length - 4)).GetModules(false)[0].FullyQualifiedName;
-               compilerParams.ReferencedAssemblies.Add(assyPath);
+               System.Reflection.Assembly refAssy = System.Reflection.Assembly.LoadWithPartialName(System.IO.Path.GetFileNameWithoutExtension(drCode.Name));
+               if (refAssy != null)
+               {
+                  string assyPath = refAssy.GetModules(false)[0].FullyQualifiedName;
+                  compilerParams.ReferencedAssemblies.Add(assyPath);
+               }
             }
          }
          compilerParams.GenerateExecutable = false;
@@ -2551,7 +2561,7 @@ namespace SGDK2
                {
                   try
                   {
-                     System.Reflection.Assembly assy = System.Reflection.Assembly.LoadWithPartialName(drCode.Name.Substring(0,drCode.Name.Length - 4));
+                     System.Reflection.Assembly assy = System.Reflection.Assembly.LoadWithPartialName(System.IO.Path.GetFileNameWithoutExtension(drCode.Name));
                      string assyPath = assy.GetModules(false)[0].FullyQualifiedName;
                      string targetPath = System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(drCode.Name));
                      System.IO.File.Copy(assyPath, targetPath, true);
@@ -2563,7 +2573,7 @@ namespace SGDK2
                }
             }
             else if (drCode.Name.EndsWith(".cs") && !drCode.IsCustomObjectDataNull())
-               resourceSwitches += " /res:\"" + System.IO.Path.Combine(FolderName, drCode.Name.Substring(0,drCode.Name.Length - 3) + ".bin") + "\"";
+               resourceSwitches += " /res:\"" + System.IO.Path.Combine(FolderName, System.IO.Path.GetFileNameWithoutExtension(drCode.Name) + ".bin") + "\"";
          }
          compilerParams.GenerateExecutable = true;
          compilerParams.GenerateInMemory = false;

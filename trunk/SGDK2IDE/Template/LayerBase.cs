@@ -405,6 +405,59 @@ public abstract class LayerBase : System.Collections.IEnumerable
       ParentMap.Scroll(new Point(newX, newY));
    }
 
+   public void PushSpriteIntoView(SpriteBase sprite, bool stayInScrollMargins)
+   {
+      Rectangle spriteBounds = sprite.GetBounds();
+      int marginLeft;
+      int marginTop;
+      int marginRight;
+      int marginBottom;
+      if (stayInScrollMargins)
+      {
+         marginLeft = ParentMap.ScrollMarginLeft;
+         marginTop = ParentMap.ScrollMarginTop;
+         marginRight = ParentMap.ScrollMarginRight;
+         marginBottom = ParentMap.ScrollMarginBottom;
+      }
+      else
+      {
+         marginLeft = 0;
+         marginTop = 0;
+         marginRight = 0;
+         marginBottom = 0;
+      }
+
+      if (spriteBounds.Left + CurrentPosition.X < marginLeft)
+      {
+         if (double.IsNaN(sprite.LocalDX))
+            sprite.dx = marginLeft - CurrentPosition.X - spriteBounds.Left;
+         else
+            sprite.LocalDX = marginLeft - CurrentPosition.X - spriteBounds.Left - sprite.RidingOn.dx;
+      }
+      else if (spriteBounds.Right + CurrentPosition.X > VisibleArea.Width - marginRight)
+      {
+         if (double.IsNaN(sprite.LocalDX))
+            sprite.dx = VisibleArea.Width - marginRight - CurrentPosition.X - spriteBounds.Right;
+         else
+            sprite.LocalDX = VisibleArea.Width - marginRight - CurrentPosition.X - spriteBounds.Right - sprite.RidingOn.dx;
+      }
+
+      if (spriteBounds.Top + CurrentPosition.Y < marginTop)
+      {
+         if (double.IsNaN(sprite.LocalDY))
+            sprite.dy = marginTop - spriteBounds.Top - CurrentPosition.Y;
+         else
+            sprite.LocalDY = marginTop - spriteBounds.Top - CurrentPosition.Y - sprite.RidingOn.dy;
+      }
+      else if (spriteBounds.Bottom + CurrentPosition.Y > VisibleArea.Height - marginBottom)
+      {
+         if (double.IsNaN(sprite.LocalDY))
+            sprite.dy = VisibleArea.Height - marginBottom - spriteBounds.Bottom - CurrentPosition.Y;
+         else
+            sprite.LocalDY = VisibleArea.Height - marginBottom - spriteBounds.Bottom - CurrentPosition.Y - sprite.RidingOn.dy;
+      }
+   }
+
    public int GetTopSolidPixel(Rectangle testArea, Solidity solid)
    {
       int topTile = (testArea.Top + m_Tileset.TileHeight) / m_Tileset.TileHeight - 1;

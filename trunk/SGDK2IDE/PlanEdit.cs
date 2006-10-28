@@ -1091,6 +1091,28 @@ namespace SGDK2
       }
       #endregion
 
+      #region Public Static Members
+      public static void Edit(Form MdiParent, ProjectDataset.SpritePlanRow EditRow)
+      {
+         foreach(Form frm in MdiParent.MdiChildren)
+         {
+            frmPlanEdit f = frm as frmPlanEdit;
+            if (f != null)
+            {
+               if (f.m_Plan == EditRow)
+               {
+                  f.Activate();
+                  return;
+               }
+            }
+         }
+
+         frmPlanEdit frmNew = new frmPlanEdit(EditRow);
+         frmNew.MdiParent = MdiParent;
+         frmNew.Show();
+      }
+      #endregion
+
       #region Events Handlers
       private void txtName_Validated(object sender, System.EventArgs e)
       {

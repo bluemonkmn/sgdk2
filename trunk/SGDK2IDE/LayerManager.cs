@@ -566,6 +566,28 @@ namespace SGDK2
 
       #endregion
 
+      #region Public Static Members
+      public static void Edit(Form MdiParent, ProjectDataset.LayerRow EditRow)
+      {
+         foreach(Form frm in MdiParent.MdiChildren)
+         {
+            frmLayerManager f = frm as frmLayerManager;
+            if (f != null)
+            {
+               if (f.DataObject.m_drLayer == EditRow)
+               {
+                  f.Activate();
+                  return;
+               }
+            }
+         }
+
+         frmLayerManager frmNew = new frmLayerManager(EditRow);
+         frmNew.MdiParent = MdiParent;
+         frmNew.Show();
+      }
+      #endregion
+
       #region Event Handlers
       private void btnOK_Click(object sender, System.EventArgs e)
       {

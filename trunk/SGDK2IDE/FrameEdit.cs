@@ -1198,6 +1198,28 @@ namespace SGDK2
       }
       #endregion
 
+      #region Public Static Members
+      public static void Edit(Form MdiParent, ProjectDataset.FramesetRow EditRow)
+      {
+         foreach(Form frm in MdiParent.MdiChildren)
+         {
+            frmFrameEdit f = frm as frmFrameEdit;
+            if (f != null)
+            {
+               if (f.FrameBrowser.Frameset == EditRow)
+               {
+                  f.Activate();
+                  return;
+               }
+            }
+         }
+
+         frmFrameEdit frmNew = new frmFrameEdit(EditRow);
+         frmNew.MdiParent = MdiParent;
+         frmNew.Show();
+      }
+      #endregion
+
       #region Overrides
       protected override void OnLoad(EventArgs e)
       {

@@ -182,6 +182,28 @@ namespace SGDK2
       }
       #endregion
 
+      #region Public Static Members
+      public static void Edit(Form MdiParent, ProjectDataset.SpriteCategoryRow EditRow)
+      {
+         foreach(Form frm in MdiParent.MdiChildren)
+         {
+            frmSpriteCategory f = frm as frmSpriteCategory;
+            if (f != null)
+            {
+               if (f.m_Category == EditRow)
+               {
+                  f.Activate();
+                  return;
+               }
+            }
+         }
+
+         frmSpriteCategory frmNew = new frmSpriteCategory(EditRow);
+         frmNew.MdiParent = MdiParent;
+         frmNew.Show();
+      }
+      #endregion
+
       #region Overrides
       protected override void OnLoad(EventArgs e)
       {

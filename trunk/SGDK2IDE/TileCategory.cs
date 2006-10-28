@@ -568,6 +568,28 @@ namespace SGDK2
       }
       #endregion
 
+      #region Public Static Members
+      public static void Edit(Form MdiParent, ProjectDataset.CategorizedTilesetRow EditRow)
+      {
+         foreach(Form frm in MdiParent.MdiChildren)
+         {
+            frmTileCategory f = frm as frmTileCategory;
+            if (f != null)
+            {
+               if (f.m_Category == EditRow)
+               {
+                  f.Activate();
+                  return;
+               }
+            }
+         }
+
+         frmTileCategory frmNew = new frmTileCategory(EditRow);
+         frmNew.MdiParent = MdiParent;
+         frmNew.Show();
+      }
+      #endregion
+
       #region Event Handlers
       private void TilesetTiles_DragDrop(object sender, System.Windows.Forms.DragEventArgs e)
       {

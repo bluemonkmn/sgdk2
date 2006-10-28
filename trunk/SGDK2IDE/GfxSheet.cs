@@ -377,6 +377,28 @@ namespace SGDK2
       }
       #endregion
 
+      #region Public Static Members
+      public static void Edit(Form MdiParent, ProjectDataset.GraphicSheetRow EditRow)
+      {
+         foreach(Form frm in MdiParent.MdiChildren)
+         {
+            frmGfxSheet f = frm as frmGfxSheet;
+            if (f != null)
+            {
+               if (f.DataObject.m_drGfx == EditRow)
+               {
+                  f.Activate();
+                  return;
+               }
+            }
+         }
+
+         frmGfxSheet frmNew = new frmGfxSheet(EditRow);
+         frmNew.MdiParent = MdiParent;
+         frmNew.Show();
+      }
+      #endregion
+
       #region Event Handlers
       private void btnOK_Click(object sender, System.EventArgs e)
       {

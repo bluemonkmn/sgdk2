@@ -175,6 +175,28 @@ namespace SGDK2
       }
 		#endregion
 
+      #region Public Static Members
+      public static void Edit(Form MdiParent, ProjectDataset.TileCategoryRow EditRow)
+      {
+         foreach(Form frm in MdiParent.MdiChildren)
+         {
+            frmTileCategoryName f = frm as frmTileCategoryName;
+            if (f != null)
+            {
+               if (f.m_Category == EditRow)
+               {
+                  f.Activate();
+                  return;
+               }
+            }
+         }
+
+         frmTileCategoryName frmNew = new frmTileCategoryName(EditRow);
+         frmNew.MdiParent = MdiParent;
+         frmNew.Show();
+      }
+      #endregion
+      
       protected override void OnLoad(EventArgs e)
       {
          foreach(System.Data.DataRowView drv in ProjectData.Tileset.DefaultView)

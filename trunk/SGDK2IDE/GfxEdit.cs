@@ -1920,6 +1920,28 @@ namespace SGDK2
       }
       #endregion
 
+      #region Public Static Members
+      public static void Edit(Form MdiParent, ProjectDataset.GraphicSheetRow EditRow)
+      {
+         foreach(Form frm in MdiParent.MdiChildren)
+         {
+            frmGraphicsEditor f = frm as frmGraphicsEditor;
+            if (f != null)
+            {
+               if (f.m_DataSource == EditRow)
+               {
+                  f.Activate();
+                  return;
+               }
+            }
+         }
+
+         frmGraphicsEditor frmNew = new frmGraphicsEditor(EditRow);
+         frmNew.MdiParent = MdiParent;
+         frmNew.Show();
+      }
+      #endregion
+
       #region Public Methods
       public void DeleteFloatingSelection()
       {

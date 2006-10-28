@@ -183,6 +183,28 @@ namespace SGDK2
       }
 		#endregion
 
+      #region Public Static Members
+      public static void Edit(Form MdiParent, ProjectDataset.CounterRow EditRow)
+      {
+         foreach(Form frm in MdiParent.MdiChildren)
+         {
+            frmCounterEdit f = frm as frmCounterEdit;
+            if (f != null)
+            {
+               if (f.m_Counter == EditRow)
+               {
+                  f.Activate();
+                  return;
+               }
+            }
+         }
+
+         frmCounterEdit frmNew = new frmCounterEdit(EditRow);
+         frmNew.MdiParent = MdiParent;
+         frmNew.Show();
+      }
+      #endregion
+
       #region Event Handlers
       private void nudMaximum_ValueChanged(object sender, System.EventArgs e)
       {

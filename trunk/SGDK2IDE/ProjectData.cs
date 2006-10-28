@@ -2535,6 +2535,17 @@ namespace SGDK2
             result[i] = (ProjectDataset.SourceCodeRow)dvCurrent[i].Row;
          return result;
       }
+      public static string GetCustomObjectDataSize(ProjectDataset.SourceCodeRow row)
+      {
+         if (row.CustomObjectData.Length < 1024)
+            return row.CustomObjectData.Length.ToString() + " bytes";
+         else if (row.CustomObjectData.Length < 1024*1024)
+            return ((int)(row.CustomObjectData.Length / 1024)).ToString() + " KB";
+         else if (row.CustomObjectData.Length < 1024 * 1024 * 1024)
+            return ((int)(row.CustomObjectData.Length / (1024 * 1024))).ToString() + " MB";
+         else
+            return ((int)(row.CustomObjectData.Length / (1024 * 1024 * 1024))).ToString() + " GB";
+      }
       #endregion
 
       #region Project

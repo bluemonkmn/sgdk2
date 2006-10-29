@@ -47,6 +47,7 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuFileRename;
       private System.Windows.Forms.MenuItem mnuFileSeparator;
       private System.Windows.Forms.OpenFileDialog dlgEmbeddedFile;
+      private System.Windows.Forms.MenuItem mnuDataPlay;
       private const int ST_KEEPUNDO = 1;
       private struct POINT
       {
@@ -150,6 +151,7 @@ namespace SGDK2
          this.mnuDataClear = new System.Windows.Forms.MenuItem();
          this.tmrInvalidateStatus = new System.Windows.Forms.Timer(this.components);
          this.dlgEmbeddedFile = new System.Windows.Forms.OpenFileDialog();
+         this.mnuDataPlay = new System.Windows.Forms.MenuItem();
          ((System.ComponentModel.ISupportInitialize)(this.sbpStatus)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpCAPS)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpInsert)).BeginInit();
@@ -310,7 +312,8 @@ namespace SGDK2
          this.mnuEmbeddedData.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
                                                                                         this.mnuDataLoad,
                                                                                         this.mnuDataEdit,
-                                                                                        this.mnuDataClear});
+                                                                                        this.mnuDataClear,
+                                                                                        this.mnuDataPlay});
          this.mnuEmbeddedData.MergeOrder = 2;
          this.mnuEmbeddedData.Text = "&Embedded Data";
          this.mnuEmbeddedData.Visible = false;
@@ -343,6 +346,12 @@ namespace SGDK2
          this.dlgEmbeddedFile.AddExtension = false;
          this.dlgEmbeddedFile.Filter = "All Files (*.*)|*.*";
          this.dlgEmbeddedFile.Title = "Select File To Embed";
+         // 
+         // mnuDataPlay
+         // 
+         this.mnuDataPlay.Index = 3;
+         this.mnuDataPlay.Text = "&Play with FMOD";
+         this.mnuDataPlay.Click += new System.EventHandler(this.mnuDataPlay_Click);
          // 
          // frmCodeEditor
          // 
@@ -1253,6 +1262,11 @@ namespace SGDK2
          {
             Text = "Source Code Editor - " + e.Row.Name;
          }
+      }
+
+      private void mnuDataPlay_Click(object sender, System.EventArgs e)
+      {
+         frmSoundPlayer.PlaySound(this, m_SourceCode.CustomObjectData);
       }
       #endregion
    }

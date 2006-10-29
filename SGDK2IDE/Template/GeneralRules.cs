@@ -4,8 +4,13 @@ using System.ComponentModel;
 /// <summary>
 /// Implements rules common to sprites and plans
 /// </summary>
-public class GeneralRules
+public abstract class GeneralRules
 {
+   public abstract LayerBase ParentLayer
+   {
+      get;
+   }
+
    [Description("Write a string to the debug output without moving to the next line"),
    System.Diagnostics.Conditional("DEBUG")]
    public void LogDebugLabel(string Label)

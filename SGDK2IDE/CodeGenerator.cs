@@ -1507,7 +1507,7 @@ namespace SGDK2
 
                   if (GenerateLevel > CodeLevel.ExcludeRules)
                   {
-                     ProjectDataset.PlanRuleRow[] rules = ProjectData.GetSortedPlanRules(drPlan);
+                     ProjectDataset.PlanRuleRow[] rules = ProjectData.GetSortedPlanRules(drPlan, false);
                      if (rules.Length > 0)
                      {
                         mthExecuteLayerRules.Statements.Add(
@@ -2175,7 +2175,7 @@ namespace SGDK2
          clsSpriteDef.Members.Add(propStateInfo);
 
          // Sprite Rules
-         ProjectDataset.SpriteRuleRow[] rules = ProjectData.GetSortedSpriteRules(drSpriteDef);
+         ProjectDataset.SpriteRuleRow[] rules = ProjectData.GetSortedSpriteRules(drSpriteDef,false);
          RuleContent[] ruleArray = new RuleContent[rules.Length];
          CodeMemberMethod mthExecuteRules = new CodeMemberMethod();
          mthExecuteRules.Name = "ExecuteRules";

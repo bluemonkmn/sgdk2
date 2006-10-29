@@ -18,7 +18,7 @@ public abstract class SpriteBase : GeneralRules
    public InputBits inputs;
    public InputBits oldinputs;
    public bool isActive;
-   public readonly LayerBase layer;
+   private LayerBase layer;
    private Solidity m_solidity;
 
    /// <summary>
@@ -141,6 +141,14 @@ public abstract class SpriteBase : GeneralRules
       {
          Debug.Assert(this.isActive, "Attempted to access CurrentState on an inactive sprite");
          return this[state];
+      }
+   }
+
+   public override LayerBase ParentLayer
+   {
+      get
+      {
+         return layer;
       }
    }
    #endregion
@@ -452,6 +460,18 @@ public abstract class SpriteBase : GeneralRules
          dx += ddx;
       else
          LocalDX += ddx;
+   }
+   
+   [Description("Scroll all layers on this sprite's layer's map so that the sprite is within the scroll margins of the map")]
+   public void ScrollSpriteIntoView()
+   {
+      ParentLayer.ScrollSpriteIntoView(this);
+   }
+
+   [Description("Alter this sprite's velocity so that it remains within the map's visible area or within the scroll margins, according to this sprite's layer's position within the map.")]
+   public void PushSpriteIntoView(bool StayInScrollMargins)
+   {
+      ParentLayer.PushSpriteIntoView(this, StayInScrollMargins);
    }
    #endregion
 

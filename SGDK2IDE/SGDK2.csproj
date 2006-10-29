@@ -251,6 +251,11 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "fmod.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "FrameCache.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -498,6 +503,16 @@
                 <File
                     RelPath = "Solidity.resx"
                     DependentUpon = "Solidity.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "SoundPlayer.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "SoundPlayer.resx"
+                    DependentUpon = "SoundPlayer.cs"
                     BuildAction = "EmbeddedResource"
                 />
                 <File

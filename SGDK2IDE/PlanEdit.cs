@@ -84,6 +84,7 @@ namespace SGDK2
       private System.Windows.Forms.ToolBarButton tbbMoveDown;
       private System.Windows.Forms.Panel pnlRule;
       private System.Windows.Forms.TextBox txtHelpText;
+      private System.Windows.Forms.CheckBox chkSuspended;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -153,6 +154,7 @@ namespace SGDK2
          this.imlPlan = new System.Windows.Forms.ImageList(this.components);
          this.splitterRules = new System.Windows.Forms.Splitter();
          this.pnlRule = new System.Windows.Forms.Panel();
+         this.chkSuspended = new System.Windows.Forms.CheckBox();
          this.txtHelpText = new System.Windows.Forms.TextBox();
          this.txtErrors = new System.Windows.Forms.TextBox();
          this.lblOutput = new System.Windows.Forms.Label();
@@ -191,7 +193,7 @@ namespace SGDK2
          this.txtName.Dock = System.Windows.Forms.DockStyle.Fill;
          this.txtName.Location = new System.Drawing.Point(74, 2);
          this.txtName.Name = "txtName";
-         this.txtName.Size = new System.Drawing.Size(436, 20);
+         this.txtName.Size = new System.Drawing.Size(468, 20);
          this.txtName.TabIndex = 1;
          this.txtName.Text = "";
          this.txtName.Validating += new System.ComponentModel.CancelEventHandler(this.txtName_Validating);
@@ -206,7 +208,7 @@ namespace SGDK2
          this.grpRules.Dock = System.Windows.Forms.DockStyle.Fill;
          this.grpRules.Location = new System.Drawing.Point(0, 24);
          this.grpRules.Name = "grpRules";
-         this.grpRules.Size = new System.Drawing.Size(512, 349);
+         this.grpRules.Size = new System.Drawing.Size(544, 389);
          this.grpRules.TabIndex = 2;
          this.grpRules.TabStop = false;
          this.grpRules.Text = "Rules";
@@ -219,7 +221,7 @@ namespace SGDK2
          this.tvwRules.Location = new System.Drawing.Point(3, 41);
          this.tvwRules.Name = "tvwRules";
          this.tvwRules.SelectedImageIndex = -1;
-         this.tvwRules.Size = new System.Drawing.Size(157, 305);
+         this.tvwRules.Size = new System.Drawing.Size(165, 345);
          this.tvwRules.TabIndex = 0;
          this.tvwRules.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvwRules_AfterSelect);
          // 
@@ -237,7 +239,7 @@ namespace SGDK2
          this.tbRules.Location = new System.Drawing.Point(3, 16);
          this.tbRules.Name = "tbRules";
          this.tbRules.ShowToolTips = true;
-         this.tbRules.Size = new System.Drawing.Size(157, 25);
+         this.tbRules.Size = new System.Drawing.Size(165, 25);
          this.tbRules.TabIndex = 3;
          this.tbRules.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tbRules_ButtonClick);
          // 
@@ -274,15 +276,16 @@ namespace SGDK2
          // splitterRules
          // 
          this.splitterRules.Dock = System.Windows.Forms.DockStyle.Right;
-         this.splitterRules.Location = new System.Drawing.Point(160, 16);
+         this.splitterRules.Location = new System.Drawing.Point(168, 16);
          this.splitterRules.Name = "splitterRules";
-         this.splitterRules.Size = new System.Drawing.Size(5, 330);
+         this.splitterRules.Size = new System.Drawing.Size(5, 370);
          this.splitterRules.TabIndex = 1;
          this.splitterRules.TabStop = false;
          // 
          // pnlRule
          // 
          this.pnlRule.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+         this.pnlRule.Controls.Add(this.chkSuspended);
          this.pnlRule.Controls.Add(this.txtHelpText);
          this.pnlRule.Controls.Add(this.txtErrors);
          this.pnlRule.Controls.Add(this.lblOutput);
@@ -300,10 +303,19 @@ namespace SGDK2
          this.pnlRule.Controls.Add(this.chkNot);
          this.pnlRule.Controls.Add(this.cboFunction);
          this.pnlRule.Dock = System.Windows.Forms.DockStyle.Right;
-         this.pnlRule.Location = new System.Drawing.Point(165, 16);
+         this.pnlRule.Location = new System.Drawing.Point(173, 16);
          this.pnlRule.Name = "pnlRule";
-         this.pnlRule.Size = new System.Drawing.Size(344, 330);
+         this.pnlRule.Size = new System.Drawing.Size(368, 370);
          this.pnlRule.TabIndex = 2;
+         // 
+         // chkSuspended
+         // 
+         this.chkSuspended.Location = new System.Drawing.Point(8, 32);
+         this.chkSuspended.Name = "chkSuspended";
+         this.chkSuspended.Size = new System.Drawing.Size(320, 16);
+         this.chkSuspended.TabIndex = 38;
+         this.chkSuspended.Text = "Suspend this rule";
+         this.chkSuspended.CheckedChanged += new System.EventHandler(this.chkSuspended_CheckedChanged);
          // 
          // txtHelpText
          // 
@@ -311,12 +323,12 @@ namespace SGDK2
             | System.Windows.Forms.AnchorStyles.Right)));
          this.txtHelpText.BackColor = System.Drawing.SystemColors.Info;
          this.txtHelpText.ForeColor = System.Drawing.SystemColors.InfoText;
-         this.txtHelpText.Location = new System.Drawing.Point(8, 72);
+         this.txtHelpText.Location = new System.Drawing.Point(8, 80);
          this.txtHelpText.Multiline = true;
          this.txtHelpText.Name = "txtHelpText";
          this.txtHelpText.ReadOnly = true;
          this.txtHelpText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-         this.txtHelpText.Size = new System.Drawing.Size(320, 32);
+         this.txtHelpText.Size = new System.Drawing.Size(344, 32);
          this.txtHelpText.TabIndex = 37;
          this.txtHelpText.Text = "";
          // 
@@ -325,12 +337,12 @@ namespace SGDK2
          this.txtErrors.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-         this.txtErrors.Location = new System.Drawing.Point(8, 240);
+         this.txtErrors.Location = new System.Drawing.Point(8, 248);
          this.txtErrors.Multiline = true;
          this.txtErrors.Name = "txtErrors";
          this.txtErrors.ReadOnly = true;
          this.txtErrors.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-         this.txtErrors.Size = new System.Drawing.Size(320, 80);
+         this.txtErrors.Size = new System.Drawing.Size(344, 112);
          this.txtErrors.TabIndex = 36;
          this.txtErrors.Text = "";
          this.txtErrors.Visible = false;
@@ -338,7 +350,7 @@ namespace SGDK2
          // lblOutput
          // 
          this.lblOutput.Enabled = false;
-         this.lblOutput.Location = new System.Drawing.Point(8, 184);
+         this.lblOutput.Location = new System.Drawing.Point(8, 192);
          this.lblOutput.Name = "lblOutput";
          this.lblOutput.Size = new System.Drawing.Size(128, 21);
          this.lblOutput.TabIndex = 34;
@@ -350,9 +362,9 @@ namespace SGDK2
          this.cboOutput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
          this.cboOutput.Enabled = false;
-         this.cboOutput.Location = new System.Drawing.Point(136, 184);
+         this.cboOutput.Location = new System.Drawing.Point(136, 192);
          this.cboOutput.Name = "cboOutput";
-         this.cboOutput.Size = new System.Drawing.Size(192, 21);
+         this.cboOutput.Size = new System.Drawing.Size(216, 21);
          this.cboOutput.TabIndex = 35;
          this.cboOutput.Validated += new System.EventHandler(this.cboParam_Validated);
          // 
@@ -363,7 +375,7 @@ namespace SGDK2
          this.txtRuleName.Enabled = false;
          this.txtRuleName.Location = new System.Drawing.Point(96, 8);
          this.txtRuleName.Name = "txtRuleName";
-         this.txtRuleName.Size = new System.Drawing.Size(232, 20);
+         this.txtRuleName.Size = new System.Drawing.Size(256, 20);
          this.txtRuleName.TabIndex = 33;
          this.txtRuleName.Text = "";
          this.txtRuleName.Validating += new System.ComponentModel.CancelEventHandler(this.txtRuleName_Validating);
@@ -382,7 +394,7 @@ namespace SGDK2
          // chkEndIf
          // 
          this.chkEndIf.Enabled = false;
-         this.chkEndIf.Location = new System.Drawing.Point(8, 208);
+         this.chkEndIf.Location = new System.Drawing.Point(8, 216);
          this.chkEndIf.Name = "chkEndIf";
          this.chkEndIf.Size = new System.Drawing.Size(120, 24);
          this.chkEndIf.TabIndex = 31;
@@ -392,7 +404,7 @@ namespace SGDK2
          // lblParam3
          // 
          this.lblParam3.Enabled = false;
-         this.lblParam3.Location = new System.Drawing.Point(8, 160);
+         this.lblParam3.Location = new System.Drawing.Point(8, 168);
          this.lblParam3.Name = "lblParam3";
          this.lblParam3.Size = new System.Drawing.Size(128, 21);
          this.lblParam3.TabIndex = 29;
@@ -404,9 +416,9 @@ namespace SGDK2
          this.cboParam3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
          this.cboParam3.Enabled = false;
-         this.cboParam3.Location = new System.Drawing.Point(136, 160);
+         this.cboParam3.Location = new System.Drawing.Point(136, 168);
          this.cboParam3.Name = "cboParam3";
-         this.cboParam3.Size = new System.Drawing.Size(192, 21);
+         this.cboParam3.Size = new System.Drawing.Size(216, 21);
          this.cboParam3.TabIndex = 30;
          this.cboParam3.Validated += new System.EventHandler(this.cboParam_Validated);
          // 
@@ -423,7 +435,7 @@ namespace SGDK2
                                                          "Else",
                                                          "End",
                                                          "While"});
-         this.cboRuleType.Location = new System.Drawing.Point(8, 48);
+         this.cboRuleType.Location = new System.Drawing.Point(8, 56);
          this.cboRuleType.Name = "cboRuleType";
          this.cboRuleType.Size = new System.Drawing.Size(56, 21);
          this.cboRuleType.TabIndex = 22;
@@ -432,7 +444,7 @@ namespace SGDK2
          // lblParam2
          // 
          this.lblParam2.Enabled = false;
-         this.lblParam2.Location = new System.Drawing.Point(8, 136);
+         this.lblParam2.Location = new System.Drawing.Point(8, 144);
          this.lblParam2.Name = "lblParam2";
          this.lblParam2.Size = new System.Drawing.Size(128, 21);
          this.lblParam2.TabIndex = 27;
@@ -442,7 +454,7 @@ namespace SGDK2
          // lblParam1
          // 
          this.lblParam1.Enabled = false;
-         this.lblParam1.Location = new System.Drawing.Point(8, 112);
+         this.lblParam1.Location = new System.Drawing.Point(8, 120);
          this.lblParam1.Name = "lblParam1";
          this.lblParam1.Size = new System.Drawing.Size(128, 21);
          this.lblParam1.TabIndex = 25;
@@ -454,9 +466,9 @@ namespace SGDK2
          this.cboParam2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
          this.cboParam2.Enabled = false;
-         this.cboParam2.Location = new System.Drawing.Point(136, 136);
+         this.cboParam2.Location = new System.Drawing.Point(136, 144);
          this.cboParam2.Name = "cboParam2";
-         this.cboParam2.Size = new System.Drawing.Size(192, 21);
+         this.cboParam2.Size = new System.Drawing.Size(216, 21);
          this.cboParam2.TabIndex = 28;
          this.cboParam2.Validated += new System.EventHandler(this.cboParam_Validated);
          // 
@@ -465,16 +477,16 @@ namespace SGDK2
          this.cboParam1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
          this.cboParam1.Enabled = false;
-         this.cboParam1.Location = new System.Drawing.Point(136, 112);
+         this.cboParam1.Location = new System.Drawing.Point(136, 120);
          this.cboParam1.Name = "cboParam1";
-         this.cboParam1.Size = new System.Drawing.Size(192, 21);
+         this.cboParam1.Size = new System.Drawing.Size(216, 21);
          this.cboParam1.TabIndex = 26;
          this.cboParam1.Validated += new System.EventHandler(this.cboParam_Validated);
          // 
          // chkNot
          // 
          this.chkNot.Enabled = false;
-         this.chkNot.Location = new System.Drawing.Point(80, 48);
+         this.chkNot.Location = new System.Drawing.Point(80, 56);
          this.chkNot.Name = "chkNot";
          this.chkNot.Size = new System.Drawing.Size(56, 21);
          this.chkNot.TabIndex = 23;
@@ -486,9 +498,9 @@ namespace SGDK2
          this.cboFunction.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
          this.cboFunction.Enabled = false;
-         this.cboFunction.Location = new System.Drawing.Point(136, 48);
+         this.cboFunction.Location = new System.Drawing.Point(136, 56);
          this.cboFunction.Name = "cboFunction";
-         this.cboFunction.Size = new System.Drawing.Size(192, 21);
+         this.cboFunction.Size = new System.Drawing.Size(216, 21);
          this.cboFunction.TabIndex = 24;
          this.cboFunction.Validated += new System.EventHandler(this.cboFunction_Validated);
          this.cboFunction.SelectedIndexChanged += new System.EventHandler(this.cboFunction_SelectedIndexChanged);
@@ -501,7 +513,7 @@ namespace SGDK2
          this.pnlName.DockPadding.All = 2;
          this.pnlName.Location = new System.Drawing.Point(0, 0);
          this.pnlName.Name = "pnlName";
-         this.pnlName.Size = new System.Drawing.Size(512, 24);
+         this.pnlName.Size = new System.Drawing.Size(544, 24);
          this.pnlName.TabIndex = 3;
          // 
          // dataMonitor
@@ -516,7 +528,7 @@ namespace SGDK2
          // frmPlanEdit
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-         this.ClientSize = new System.Drawing.Size(512, 373);
+         this.ClientSize = new System.Drawing.Size(544, 413);
          this.Controls.Add(this.grpRules);
          this.Controls.Add(this.pnlName);
          this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -957,6 +969,7 @@ namespace SGDK2
                cboOutput.Text = drRule.ResultParameter;
 
             chkEndIf.Checked = drRule.EndIf;
+            chkSuspended.Checked = drRule.Suspended;
          }
          catch(System.Exception ex)
          {
@@ -974,7 +987,7 @@ namespace SGDK2
          tvwRules.Nodes.Clear();
          m_TreeNodes.Clear();
          TreeNode parentNode = null;
-         foreach(ProjectDataset.PlanRuleRow drRule in ProjectData.GetSortedPlanRules(m_Plan))
+         foreach(ProjectDataset.PlanRuleRow drRule in ProjectData.GetSortedPlanRules(m_Plan, true))
          {
             if (parentNode == null)
             {
@@ -1028,7 +1041,7 @@ namespace SGDK2
                lblParam2.Enabled = cboParam2.Enabled =
                lblParam3.Enabled = cboParam3.Enabled =
                lblOutput.Enabled = cboOutput.Enabled =
-               chkEndIf.Enabled = false;
+               chkEndIf.Enabled = chkSuspended.Enabled = false;
             return;
          }
 
@@ -1042,7 +1055,7 @@ namespace SGDK2
                lblParam2.Enabled = cboParam2.Enabled =
                lblParam3.Enabled = cboParam3.Enabled =
                lblOutput.Enabled = cboOutput.Enabled =
-               chkEndIf.Enabled = false;
+               chkEndIf.Enabled = chkSuspended.Enabled = false;
             return;
          }
          
@@ -1206,7 +1219,7 @@ namespace SGDK2
             int newSeq = -1;
             if (CurrentRule != null)
                newSeq = CurrentRule.Sequence + 1;
-            ProjectDataset.PlanRuleRow drRule = ProjectData.InsertPlanRule(m_Plan, newPlanName, "Do", newSeq, cboFunction.Text, null, null, null, null, false);
+            ProjectDataset.PlanRuleRow drRule = ProjectData.InsertPlanRule(m_Plan, newPlanName, "Do", newSeq, cboFunction.Text, null, null, null, null, false, false);
             tvwRules.SelectedNode = GetNodeFromRow(drRule);
          }
          else if (e.Button == tbbDeleteRule)
@@ -1353,6 +1366,14 @@ namespace SGDK2
                txtRuleName.Text = CurrentRule.Name;
             e.Cancel = true;
          }
+      }
+
+      private void chkSuspended_CheckedChanged(object sender, System.EventArgs e)
+      {
+         if (m_Loading)
+            return;
+         if (CurrentRule != null)
+            CurrentRule.Suspended = chkSuspended.Checked;
       }
       #endregion
    }

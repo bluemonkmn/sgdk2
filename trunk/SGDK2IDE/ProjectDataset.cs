@@ -6154,6 +6154,8 @@ namespace SGDK2 {
             
             private DataColumn columnEndIf;
             
+            private DataColumn columnSuspended;
+            
             internal PlanRuleDataTable() : 
                     base("PlanRule") {
                 this.InitClass();
@@ -6254,6 +6256,12 @@ namespace SGDK2 {
                 }
             }
             
+            internal DataColumn SuspendedColumn {
+                get {
+                    return this.columnSuspended;
+                }
+            }
+            
             public PlanRuleRow this[int index] {
                 get {
                     return ((PlanRuleRow)(this.Rows[index]));
@@ -6272,7 +6280,7 @@ namespace SGDK2 {
                 this.Rows.Add(row);
             }
             
-            public PlanRuleRow AddPlanRuleRow(string MapName, string LayerName, string PlanName, string Name, int Sequence, string Type, string Function, string Parameter1, string Parameter2, string Parameter3, string ResultParameter, bool EndIf) {
+            public PlanRuleRow AddPlanRuleRow(string MapName, string LayerName, string PlanName, string Name, int Sequence, string Type, string Function, string Parameter1, string Parameter2, string Parameter3, string ResultParameter, bool EndIf, bool Suspended) {
                 PlanRuleRow rowPlanRuleRow = ((PlanRuleRow)(this.NewRow()));
                 rowPlanRuleRow.ItemArray = new object[] {
                         MapName,
@@ -6286,7 +6294,8 @@ namespace SGDK2 {
                         Parameter2,
                         Parameter3,
                         ResultParameter,
-                        EndIf};
+                        EndIf,
+                        Suspended};
                 this.Rows.Add(rowPlanRuleRow);
                 return rowPlanRuleRow;
             }
@@ -6326,6 +6335,7 @@ namespace SGDK2 {
                 this.columnParameter3 = this.Columns["Parameter3"];
                 this.columnResultParameter = this.Columns["ResultParameter"];
                 this.columnEndIf = this.Columns["EndIf"];
+                this.columnSuspended = this.Columns["Suspended"];
             }
             
             private void InitClass() {
@@ -6353,6 +6363,8 @@ namespace SGDK2 {
                 this.Columns.Add(this.columnResultParameter);
                 this.columnEndIf = new DataColumn("EndIf", typeof(bool), null, System.Data.MappingType.Attribute);
                 this.Columns.Add(this.columnEndIf);
+                this.columnSuspended = new DataColumn("Suspended", typeof(bool), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnSuspended);
                 this.Constraints.Add(new UniqueConstraint("PlanRuleKey", new DataColumn[] {
                                 this.columnMapName,
                                 this.columnLayerName,
@@ -6378,6 +6390,8 @@ namespace SGDK2 {
                 this.columnResultParameter.Namespace = "";
                 this.columnEndIf.Namespace = "";
                 this.columnEndIf.DefaultValue = false;
+                this.columnSuspended.Namespace = "";
+                this.columnSuspended.DefaultValue = false;
             }
             
             public PlanRuleRow NewPlanRuleRow() {
@@ -6541,6 +6555,20 @@ namespace SGDK2 {
                 }
             }
             
+            public bool Suspended {
+                get {
+                    if (this.IsSuspendedNull()) {
+                        return false;
+                    }
+                    else {
+                        return ((bool)(this[this.tablePlanRule.SuspendedColumn]));
+                    }
+                }
+                set {
+                    this[this.tablePlanRule.SuspendedColumn] = value;
+                }
+            }
+            
             public SpritePlanRow SpritePlanRowParent {
                 get {
                     return ((SpritePlanRow)(this.GetParentRow(this.Table.ParentRelations["SpritePlanPlanRule"])));
@@ -6588,6 +6616,14 @@ namespace SGDK2 {
             
             public void SetEndIfNull() {
                 this[this.tablePlanRule.EndIfColumn] = System.Convert.DBNull;
+            }
+            
+            public bool IsSuspendedNull() {
+                return this.IsNull(this.tablePlanRule.SuspendedColumn);
+            }
+            
+            public void SetSuspendedNull() {
+                this[this.tablePlanRule.SuspendedColumn] = System.Convert.DBNull;
             }
         }
         
@@ -6843,6 +6879,8 @@ namespace SGDK2 {
             
             private DataColumn columnEndIf;
             
+            private DataColumn columnSuspended;
+            
             internal SpriteRuleDataTable() : 
                     base("SpriteRule") {
                 this.InitClass();
@@ -6931,6 +6969,12 @@ namespace SGDK2 {
                 }
             }
             
+            internal DataColumn SuspendedColumn {
+                get {
+                    return this.columnSuspended;
+                }
+            }
+            
             public SpriteRuleRow this[int index] {
                 get {
                     return ((SpriteRuleRow)(this.Rows[index]));
@@ -6949,7 +6993,7 @@ namespace SGDK2 {
                 this.Rows.Add(row);
             }
             
-            public SpriteRuleRow AddSpriteRuleRow(SpriteDefinitionRow parentSpriteDefinitionRowBySpriteDefinitionSpriteRule, string Name, int Sequence, string Type, string Function, string Parameter1, string Parameter2, string Parameter3, string ResultParameter, bool EndIf) {
+            public SpriteRuleRow AddSpriteRuleRow(SpriteDefinitionRow parentSpriteDefinitionRowBySpriteDefinitionSpriteRule, string Name, int Sequence, string Type, string Function, string Parameter1, string Parameter2, string Parameter3, string ResultParameter, bool EndIf, bool Suspended) {
                 SpriteRuleRow rowSpriteRuleRow = ((SpriteRuleRow)(this.NewRow()));
                 rowSpriteRuleRow.ItemArray = new object[] {
                         parentSpriteDefinitionRowBySpriteDefinitionSpriteRule[0],
@@ -6961,7 +7005,8 @@ namespace SGDK2 {
                         Parameter2,
                         Parameter3,
                         ResultParameter,
-                        EndIf};
+                        EndIf,
+                        Suspended};
                 this.Rows.Add(rowSpriteRuleRow);
                 return rowSpriteRuleRow;
             }
@@ -6997,6 +7042,7 @@ namespace SGDK2 {
                 this.columnParameter3 = this.Columns["Parameter3"];
                 this.columnResultParameter = this.Columns["ResultParameter"];
                 this.columnEndIf = this.Columns["EndIf"];
+                this.columnSuspended = this.Columns["Suspended"];
             }
             
             private void InitClass() {
@@ -7020,6 +7066,8 @@ namespace SGDK2 {
                 this.Columns.Add(this.columnResultParameter);
                 this.columnEndIf = new DataColumn("EndIf", typeof(bool), null, System.Data.MappingType.Attribute);
                 this.Columns.Add(this.columnEndIf);
+                this.columnSuspended = new DataColumn("Suspended", typeof(bool), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnSuspended);
                 this.Constraints.Add(new UniqueConstraint("SpriteRuleKey", new DataColumn[] {
                                 this.columnDefinitionName,
                                 this.columnName}, true));
@@ -7039,6 +7087,8 @@ namespace SGDK2 {
                 this.columnResultParameter.Namespace = "";
                 this.columnEndIf.Namespace = "";
                 this.columnEndIf.DefaultValue = false;
+                this.columnSuspended.Namespace = "";
+                this.columnSuspended.DefaultValue = false;
             }
             
             public SpriteRuleRow NewSpriteRuleRow() {
@@ -7202,6 +7252,20 @@ namespace SGDK2 {
                 }
             }
             
+            public bool Suspended {
+                get {
+                    if (this.IsSuspendedNull()) {
+                        return false;
+                    }
+                    else {
+                        return ((bool)(this[this.tableSpriteRule.SuspendedColumn]));
+                    }
+                }
+                set {
+                    this[this.tableSpriteRule.SuspendedColumn] = value;
+                }
+            }
+            
             public SpriteDefinitionRow SpriteDefinitionRow {
                 get {
                     return ((SpriteDefinitionRow)(this.GetParentRow(this.Table.ParentRelations["SpriteDefinitionSpriteRule"])));
@@ -7249,6 +7313,14 @@ namespace SGDK2 {
             
             public void SetEndIfNull() {
                 this[this.tableSpriteRule.EndIfColumn] = System.Convert.DBNull;
+            }
+            
+            public bool IsSuspendedNull() {
+                return this.IsNull(this.tableSpriteRule.SuspendedColumn);
+            }
+            
+            public void SetSuspendedNull() {
+                this[this.tableSpriteRule.SuspendedColumn] = System.Convert.DBNull;
             }
         }
         

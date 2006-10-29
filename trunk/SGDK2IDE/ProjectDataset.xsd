@@ -142,6 +142,7 @@
                                              <xs:attribute name="Parameter3" type="xs:string" />
                                              <xs:attribute name="ResultParameter" type="xs:Name" />
                                              <xs:attribute name="EndIf" type="xs:boolean" msprop:nullValue="false" default="false" />
+                                             <xs:attribute name="Suspended" type="xs:boolean" default="false" msprop:nullValue="false" />
                                           </xs:complexType>
                                        </xs:element>
                                     </xs:sequence>
@@ -198,6 +199,7 @@
                            <xs:attribute name="Parameter3" type="xs:string" />
                            <xs:attribute name="ResultParameter" type="xs:Name" />
                            <xs:attribute name="EndIf" type="xs:boolean" msprop:nullValue="false" default="false" />
+                           <xs:attribute name="Suspended" type="xs:boolean" msprop:nullValue="false" default="false" />
                         </xs:complexType>
                      </xs:element>
                      <xs:element name="SpriteParameter">

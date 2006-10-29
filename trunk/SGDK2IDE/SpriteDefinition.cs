@@ -163,6 +163,7 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuSpriteDefSeparator;
       private System.Windows.Forms.MenuItem mnuSpriteDefSeparator2;
       private System.Windows.Forms.MenuItem mnuExport;
+      private System.Windows.Forms.CheckBox chkSuspended;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -303,10 +304,11 @@ namespace SGDK2
          this.mnuRemoveRule = new System.Windows.Forms.MenuItem();
          this.mnuMoveRuleUp = new System.Windows.Forms.MenuItem();
          this.mnuMoveRuleDown = new System.Windows.Forms.MenuItem();
-         this.DataMonitor = new SGDK2.DataChangeNotifier(this.components);
-         this.tmrPopulateRules = new System.Windows.Forms.Timer(this.components);
          this.mnuSpriteDefSeparator2 = new System.Windows.Forms.MenuItem();
          this.mnuExport = new System.Windows.Forms.MenuItem();
+         this.DataMonitor = new SGDK2.DataChangeNotifier(this.components);
+         this.tmrPopulateRules = new System.Windows.Forms.Timer(this.components);
+         this.chkSuspended = new System.Windows.Forms.CheckBox();
          this.tabSpriteDefinition.SuspendLayout();
          this.tabStates.SuspendLayout();
          this.pnlFrames.SuspendLayout();
@@ -711,10 +713,10 @@ namespace SGDK2
          this.tvwRules.Dock = System.Windows.Forms.DockStyle.Fill;
          this.tvwRules.HideSelection = false;
          this.tvwRules.ImageIndex = -1;
-         this.tvwRules.Location = new System.Drawing.Point(0, 40);
+         this.tvwRules.Location = new System.Drawing.Point(0, 25);
          this.tvwRules.Name = "tvwRules";
          this.tvwRules.SelectedImageIndex = -1;
-         this.tvwRules.Size = new System.Drawing.Size(187, 319);
+         this.tvwRules.Size = new System.Drawing.Size(187, 334);
          this.tvwRules.TabIndex = 0;
          this.tvwRules.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvwRules_AfterSelect);
          // 
@@ -732,7 +734,7 @@ namespace SGDK2
          this.tbrRules.Location = new System.Drawing.Point(0, 0);
          this.tbrRules.Name = "tbrRules";
          this.tbrRules.ShowToolTips = true;
-         this.tbrRules.Size = new System.Drawing.Size(187, 40);
+         this.tbrRules.Size = new System.Drawing.Size(187, 25);
          this.tbrRules.TabIndex = 28;
          this.tbrRules.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tbrRules_ButtonClick);
          // 
@@ -771,6 +773,7 @@ namespace SGDK2
          // 
          // pnlRules
          // 
+         this.pnlRules.Controls.Add(this.chkSuspended);
          this.pnlRules.Controls.Add(this.txtHelpText);
          this.pnlRules.Controls.Add(this.txtRuleName);
          this.pnlRules.Controls.Add(this.chkNot);
@@ -797,7 +800,7 @@ namespace SGDK2
          // 
          this.txtHelpText.BackColor = System.Drawing.SystemColors.Info;
          this.txtHelpText.ForeColor = System.Drawing.SystemColors.InfoText;
-         this.txtHelpText.Location = new System.Drawing.Point(8, 72);
+         this.txtHelpText.Location = new System.Drawing.Point(8, 80);
          this.txtHelpText.Multiline = true;
          this.txtHelpText.Name = "txtHelpText";
          this.txtHelpText.ReadOnly = true;
@@ -822,7 +825,7 @@ namespace SGDK2
          // chkNot
          // 
          this.chkNot.Enabled = false;
-         this.chkNot.Location = new System.Drawing.Point(72, 40);
+         this.chkNot.Location = new System.Drawing.Point(72, 56);
          this.chkNot.Name = "chkNot";
          this.chkNot.Size = new System.Drawing.Size(56, 21);
          this.chkNot.TabIndex = 15;
@@ -834,9 +837,9 @@ namespace SGDK2
          this.cboParam3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
          this.cboParam3.Enabled = false;
-         this.cboParam3.Location = new System.Drawing.Point(128, 160);
+         this.cboParam3.Location = new System.Drawing.Point(128, 168);
          this.cboParam3.Name = "cboParam3";
-         this.cboParam3.Size = new System.Drawing.Size(229, 20);
+         this.cboParam3.Size = new System.Drawing.Size(229, 21);
          this.cboParam3.TabIndex = 22;
          this.cboParam3.Validated += new System.EventHandler(this.cboParam_Validated);
          // 
@@ -845,9 +848,9 @@ namespace SGDK2
          this.cboFunction.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
          this.cboFunction.Enabled = false;
-         this.cboFunction.Location = new System.Drawing.Point(128, 40);
+         this.cboFunction.Location = new System.Drawing.Point(128, 56);
          this.cboFunction.Name = "cboFunction";
-         this.cboFunction.Size = new System.Drawing.Size(229, 20);
+         this.cboFunction.Size = new System.Drawing.Size(229, 21);
          this.cboFunction.TabIndex = 16;
          this.cboFunction.Validated += new System.EventHandler(this.cboFunction_Validated);
          this.cboFunction.SelectedIndexChanged += new System.EventHandler(this.cboFunction_SelectedIndexChanged);
@@ -865,7 +868,7 @@ namespace SGDK2
                                                          "Else",
                                                          "End",
                                                          "While"});
-         this.cboRuleType.Location = new System.Drawing.Point(8, 40);
+         this.cboRuleType.Location = new System.Drawing.Point(8, 56);
          this.cboRuleType.Name = "cboRuleType";
          this.cboRuleType.Size = new System.Drawing.Size(56, 21);
          this.cboRuleType.TabIndex = 14;
@@ -874,7 +877,7 @@ namespace SGDK2
          // chkEndIf
          // 
          this.chkEndIf.Enabled = false;
-         this.chkEndIf.Location = new System.Drawing.Point(8, 208);
+         this.chkEndIf.Location = new System.Drawing.Point(8, 216);
          this.chkEndIf.Name = "chkEndIf";
          this.chkEndIf.Size = new System.Drawing.Size(120, 24);
          this.chkEndIf.TabIndex = 25;
@@ -886,12 +889,12 @@ namespace SGDK2
          this.txtErrors.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-         this.txtErrors.Location = new System.Drawing.Point(8, 232);
+         this.txtErrors.Location = new System.Drawing.Point(8, 248);
          this.txtErrors.Multiline = true;
          this.txtErrors.Name = "txtErrors";
          this.txtErrors.ReadOnly = true;
          this.txtErrors.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-         this.txtErrors.Size = new System.Drawing.Size(349, 120);
+         this.txtErrors.Size = new System.Drawing.Size(349, 104);
          this.txtErrors.TabIndex = 26;
          this.txtErrors.Text = "";
          this.txtErrors.Visible = false;
@@ -899,7 +902,7 @@ namespace SGDK2
          // lblOutput
          // 
          this.lblOutput.Enabled = false;
-         this.lblOutput.Location = new System.Drawing.Point(8, 184);
+         this.lblOutput.Location = new System.Drawing.Point(8, 192);
          this.lblOutput.Name = "lblOutput";
          this.lblOutput.Size = new System.Drawing.Size(120, 21);
          this.lblOutput.TabIndex = 23;
@@ -911,16 +914,16 @@ namespace SGDK2
          this.cboOutput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
          this.cboOutput.Enabled = false;
-         this.cboOutput.Location = new System.Drawing.Point(128, 184);
+         this.cboOutput.Location = new System.Drawing.Point(128, 192);
          this.cboOutput.Name = "cboOutput";
-         this.cboOutput.Size = new System.Drawing.Size(229, 20);
+         this.cboOutput.Size = new System.Drawing.Size(229, 21);
          this.cboOutput.TabIndex = 24;
          this.cboOutput.Validated += new System.EventHandler(this.cboParam_Validated);
          // 
          // lblParam2
          // 
          this.lblParam2.Enabled = false;
-         this.lblParam2.Location = new System.Drawing.Point(8, 136);
+         this.lblParam2.Location = new System.Drawing.Point(8, 144);
          this.lblParam2.Name = "lblParam2";
          this.lblParam2.Size = new System.Drawing.Size(120, 21);
          this.lblParam2.TabIndex = 19;
@@ -930,7 +933,7 @@ namespace SGDK2
          // lblParam1
          // 
          this.lblParam1.Enabled = false;
-         this.lblParam1.Location = new System.Drawing.Point(8, 112);
+         this.lblParam1.Location = new System.Drawing.Point(8, 120);
          this.lblParam1.Name = "lblParam1";
          this.lblParam1.Size = new System.Drawing.Size(120, 21);
          this.lblParam1.TabIndex = 17;
@@ -942,9 +945,9 @@ namespace SGDK2
          this.cboParam2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
          this.cboParam2.Enabled = false;
-         this.cboParam2.Location = new System.Drawing.Point(128, 136);
+         this.cboParam2.Location = new System.Drawing.Point(128, 144);
          this.cboParam2.Name = "cboParam2";
-         this.cboParam2.Size = new System.Drawing.Size(229, 20);
+         this.cboParam2.Size = new System.Drawing.Size(229, 21);
          this.cboParam2.TabIndex = 20;
          this.cboParam2.Validated += new System.EventHandler(this.cboParam_Validated);
          // 
@@ -953,16 +956,16 @@ namespace SGDK2
          this.cboParam1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
          this.cboParam1.Enabled = false;
-         this.cboParam1.Location = new System.Drawing.Point(128, 112);
+         this.cboParam1.Location = new System.Drawing.Point(128, 120);
          this.cboParam1.Name = "cboParam1";
-         this.cboParam1.Size = new System.Drawing.Size(229, 20);
+         this.cboParam1.Size = new System.Drawing.Size(229, 21);
          this.cboParam1.TabIndex = 18;
          this.cboParam1.Validated += new System.EventHandler(this.cboParam_Validated);
          // 
          // lblParam3
          // 
          this.lblParam3.Enabled = false;
-         this.lblParam3.Location = new System.Drawing.Point(8, 160);
+         this.lblParam3.Location = new System.Drawing.Point(8, 168);
          this.lblParam3.Name = "lblParam3";
          this.lblParam3.Size = new System.Drawing.Size(120, 21);
          this.lblParam3.TabIndex = 21;
@@ -1101,6 +1104,17 @@ namespace SGDK2
          this.mnuMoveRuleDown.Text = "&Move Rule Down";
          this.mnuMoveRuleDown.Click += new System.EventHandler(this.OnMoveRuleDown);
          // 
+         // mnuSpriteDefSeparator2
+         // 
+         this.mnuSpriteDefSeparator2.Index = 11;
+         this.mnuSpriteDefSeparator2.Text = "-";
+         // 
+         // mnuExport
+         // 
+         this.mnuExport.Index = 12;
+         this.mnuExport.Text = "E&xport to template...";
+         this.mnuExport.Click += new System.EventHandler(this.mnuExport_Click);
+         // 
          // DataMonitor
          // 
          this.DataMonitor.SpriteRuleRowDeleted += new SGDK2.ProjectDataset.SpriteRuleRowChangeEventHandler(this.dataMonitor_SpriteRuleRowChanged);
@@ -1121,16 +1135,14 @@ namespace SGDK2
          // 
          this.tmrPopulateRules.Tick += new System.EventHandler(this.tmrPopulateRules_Tick);
          // 
-         // mnuSpriteDefSeparator2
+         // chkSuspended
          // 
-         this.mnuSpriteDefSeparator2.Index = 11;
-         this.mnuSpriteDefSeparator2.Text = "-";
-         // 
-         // mnuExport
-         // 
-         this.mnuExport.Index = 12;
-         this.mnuExport.Text = "E&xport to template...";
-         this.mnuExport.Click += new System.EventHandler(this.mnuExport_Click);
+         this.chkSuspended.Location = new System.Drawing.Point(8, 32);
+         this.chkSuspended.Name = "chkSuspended";
+         this.chkSuspended.Size = new System.Drawing.Size(344, 16);
+         this.chkSuspended.TabIndex = 28;
+         this.chkSuspended.Text = "Suspend this rule";
+         this.chkSuspended.CheckedChanged += new System.EventHandler(this.chkSuspended_CheckedChanged);
          // 
          // frmSpriteDefinition
          // 
@@ -1516,7 +1528,7 @@ namespace SGDK2
       {
          foreach(DataRowView drv in ProjectData.SpriteCategory.DefaultView)
          {
-            cboTarget.Items.Add("layer.m_SpriteCategories." + CodeGenerator.NameToVariable(
+            cboTarget.Items.Add("ParentLayer.m_SpriteCategories." + CodeGenerator.NameToVariable(
                ((ProjectDataset.SpriteCategoryRow)drv.Row).Name));
          }
       }
@@ -1682,6 +1694,7 @@ namespace SGDK2
                cboOutput.Text = drRule.ResultParameter;
 
             chkEndIf.Checked = drRule.EndIf;
+            chkSuspended.Checked = drRule.Suspended;
          }
          catch(System.Exception ex)
          {
@@ -1706,7 +1719,7 @@ namespace SGDK2
          tvwRules.Nodes.Clear();
          m_TreeNodes.Clear();
          TreeNode parentNode = null;
-         foreach(ProjectDataset.SpriteRuleRow drRule in ProjectData.GetSortedSpriteRules(m_SpriteDef))
+         foreach(ProjectDataset.SpriteRuleRow drRule in ProjectData.GetSortedSpriteRules(m_SpriteDef,true))
          {
             if (parentNode == null)
             {
@@ -1759,7 +1772,7 @@ namespace SGDK2
                chkNot.Enabled = lblParam1.Enabled = cboParam1.Enabled =
                lblParam2.Enabled = cboParam2.Enabled =
                lblParam3.Enabled = cboParam3.Enabled =
-               chkEndIf.Enabled = false;
+               chkEndIf.Enabled = chkSuspended.Enabled = false;
             return;
          }
 
@@ -1772,7 +1785,7 @@ namespace SGDK2
                lblParam2.Enabled = cboParam2.Enabled =
                lblParam3.Enabled = cboParam3.Enabled =
                lblOutput.Enabled = cboOutput.Enabled =
-               chkEndIf.Enabled = false;
+               chkEndIf.Enabled = chkSuspended.Enabled = false;
             return;
          }
          
@@ -2336,7 +2349,7 @@ namespace SGDK2
          int newSeq = -1;
          if (CurrentRule != null)
             newSeq = CurrentRule.Sequence + 1;
-         ProjectData.InsertSpriteRule(m_SpriteDef, newName, "Do", newSeq, string.Empty, null, null, null, null, false);
+         ProjectData.InsertSpriteRule(m_SpriteDef, newName, "Do", newSeq, string.Empty, null, null, null, null, false, false);
       }
       private void OnDeleteRule(object sender, System.EventArgs e)
       {
@@ -2443,6 +2456,14 @@ namespace SGDK2
             return;
          if (CurrentRule != null)
             CurrentRule.EndIf = chkEndIf.Checked;
+      }
+
+      private void chkSuspended_CheckedChanged(object sender, System.EventArgs e)
+      {
+         if (m_Loading)
+            return;
+         if (CurrentRule != null)
+            CurrentRule.Suspended = chkSuspended.Checked;
       }
 
       private void tvwRules_AfterSelect(object sender, System.Windows.Forms.TreeViewEventArgs e)
@@ -2559,7 +2580,7 @@ namespace SGDK2
                }
             }
             dsExport.Merge(ProjectData.GetSortedSpriteParameters(m_SpriteDef));
-            dsExport.Merge(ProjectData.GetSortedSpriteRules(m_SpriteDef));
+            dsExport.Merge(ProjectData.GetSortedSpriteRules(m_SpriteDef,true));
             dsExport.EnforceConstraints = true;
 
             string comment = frmInputBox.GetInput(this, "Export Sprite Definition", "Enter any comments to save with the template", "Exported sprite definition \"" + m_SpriteDef.Name + "\"");

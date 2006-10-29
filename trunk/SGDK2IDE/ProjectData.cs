@@ -1598,22 +1598,29 @@ namespace SGDK2
             return m_dsPrj.SpriteRule;
          }
       }
-      public static ProjectDataset.SpriteRuleRow[] GetSortedSpriteRules(ProjectDataset.SpriteDefinitionRow parent)
+      public static ProjectDataset.SpriteRuleRow[] GetSortedSpriteRules(ProjectDataset.SpriteDefinitionRow parent, bool includeSuspended)
       {
+         if (!includeSuspended)
+         {
+            string filter = m_dsPrj.SpriteRule.DefinitionNameColumn.ColumnName + "='" + parent.Name +
+            "' and Suspended=false";
+            return (ProjectDataset.SpriteRuleRow[])m_dsPrj.SpriteRule.Select(filter, "Sequence");
+         }
          ProjectDataset.SpriteRuleRow[] result = parent.GetSpriteRuleRows();
          Array.Sort(result, new DataRowComparer());
          return result;
       }
       public static ProjectDataset.SpriteRuleRow InsertSpriteRule(ProjectDataset.SpriteDefinitionRow parent, string name,
-         string type, int sequence, string function, string parameter1, string parameter2, string parameter3, string resultParameter, bool endIf)
+         string type, int sequence, string function, string parameter1, string parameter2, string parameter3, string resultParameter,
+         bool endIf, bool suspended)
       {
          if (sequence < 0)
             sequence = GetMaxSpritePlanSequence(parent) + 1;
          else
-            foreach(ProjectDataset.SpriteRuleRow row in GetSortedSpriteRules(parent))
+            foreach(ProjectDataset.SpriteRuleRow row in GetSortedSpriteRules(parent,true))
                if (row.Sequence >= sequence)
                   row.Sequence += 1;
-         return m_dsPrj.SpriteRule.AddSpriteRuleRow(parent, name, sequence, type, function, parameter1, parameter2, parameter3, resultParameter, endIf);
+         return m_dsPrj.SpriteRule.AddSpriteRuleRow(parent, name, sequence, type, function, parameter1, parameter2, parameter3, resultParameter, endIf, suspended);
       }
       
       public static void DeleteSpriteRule(ProjectDataset.SpriteRuleRow row)
@@ -1621,7 +1628,7 @@ namespace SGDK2
          int oldSeq = row.Sequence;
          ProjectDataset.SpriteDefinitionRow parent = row.SpriteDefinitionRow;
          row.Delete();
-         foreach(ProjectDataset.SpriteRuleRow drChange in GetSortedSpriteRules(parent))
+         foreach(ProjectDataset.SpriteRuleRow drChange in GetSortedSpriteRules(parent,true))
             if (drChange.Sequence >= oldSeq)
                drChange.Sequence -= 1;
       }
@@ -2189,25 +2196,34 @@ namespace SGDK2
             return m_dsPrj.PlanRule;
          }
       }
-      public static ProjectDataset.PlanRuleRow[] GetSortedPlanRules(ProjectDataset.SpritePlanRow parent)
+      public static ProjectDataset.PlanRuleRow[] GetSortedPlanRules(ProjectDataset.SpritePlanRow parent, bool includeSuspended)
       {
+         if (!includeSuspended)
+         {
+            string filter = m_dsPrj.PlanRule.MapNameColumn.ColumnName + "='" + parent[m_dsPrj.SpritePlan.MapNameColumn].ToString() +
+               "' and " + m_dsPrj.PlanRule.LayerNameColumn.ColumnName + "='" + parent[m_dsPrj.SpritePlan.LayerNameColumn].ToString() +
+               "' and " + m_dsPrj.PlanRule.PlanNameColumn.ColumnName + "='" + parent.Name + 
+               "' and Suspended=false";
+            return (ProjectDataset.PlanRuleRow[])m_dsPrj.PlanRule.Select(filter, "Sequence");
+         }
          ProjectDataset.PlanRuleRow[] result = parent.GetPlanRuleRows();
          Array.Sort(result, new DataRowComparer());
          return result;
       }
       public static ProjectDataset.PlanRuleRow InsertPlanRule(ProjectDataset.SpritePlanRow parent, string name,
-         string type, int sequence, string function, string parameter1, string parameter2, string parameter3, string resultParameter, bool endIf)
+         string type, int sequence, string function, string parameter1, string parameter2, string parameter3,
+         string resultParameter, bool endIf, bool suspended)
       {
          string layerName = parent[m_dsPrj.SpritePlan.LayerNameColumn].ToString();
          string mapName = parent[m_dsPrj.SpritePlan.MapNameColumn].ToString();
          if (sequence < 0)
             sequence = GetMaxPlanSequence(parent) + 1;
          else
-            foreach(ProjectDataset.PlanRuleRow row in GetSortedPlanRules(parent))
+            foreach(ProjectDataset.PlanRuleRow row in GetSortedPlanRules(parent, true))
                if (row.Sequence >= sequence)
                   row.Sequence += 1;
          return m_dsPrj.PlanRule.AddPlanRuleRow(mapName, layerName, parent.Name,
-            name, sequence, type, function, parameter1, parameter2, parameter3, resultParameter, endIf);
+            name, sequence, type, function, parameter1, parameter2, parameter3, resultParameter, endIf, suspended);
       }
       
       public static void DeletePlanRule(ProjectDataset.PlanRuleRow row)
@@ -2215,7 +2231,7 @@ namespace SGDK2
          int oldSeq = row.Sequence;
          ProjectDataset.SpritePlanRow parent = row.SpritePlanRowParent;
          row.Delete();
-         foreach(ProjectDataset.PlanRuleRow drChange in GetSortedPlanRules(parent))
+         foreach(ProjectDataset.PlanRuleRow drChange in GetSortedPlanRules(parent, true))
             if (drChange.Sequence >= oldSeq)
                drChange.Sequence -= 1;
       }

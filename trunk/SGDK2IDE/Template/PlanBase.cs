@@ -32,11 +32,6 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
       }
    }
 
-   public abstract LayerBase ParentLayer
-   {
-      get;
-   }
-
    public virtual Rectangle PlanRectangle
    {
       get

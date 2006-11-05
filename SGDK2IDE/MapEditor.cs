@@ -34,7 +34,7 @@ namespace SGDK2
       private Timer m_RefreshSpriteTimer = null;
       private Keys m_CurrentModifiers = Keys.None;
       private bool m_ReflectingSelection = false;
-      private bool m_ChangingName = false;
+      private bool m_UpdatingList = false;
       private Point m_LayerMouseCoord = Point.Empty;
       private Point m_DragStart = Point.Empty;
       private int m_DeletedKey = -1;
@@ -188,9 +188,6 @@ namespace SGDK2
          this.rdoAddSprites = new System.Windows.Forms.RadioButton();
          this.rdoSelectSprites = new System.Windows.Forms.RadioButton();
          this.tabPlans = new System.Windows.Forms.TabPage();
-         this.tabTools = new System.Windows.Forms.TabPage();
-         this.rdoToolPaste = new System.Windows.Forms.RadioButton();
-         this.rdoToolCopy = new System.Windows.Forms.RadioButton();
          this.grpPlanList = new System.Windows.Forms.GroupBox();
          this.lstPlans = new System.Windows.Forms.ListBox();
          this.rdoShowAllPlans = new System.Windows.Forms.RadioButton();
@@ -206,6 +203,10 @@ namespace SGDK2
          this.rdoSelectCoord = new System.Windows.Forms.RadioButton();
          this.PlanSplitter = new System.Windows.Forms.Splitter();
          this.grdPlan = new System.Windows.Forms.PropertyGrid();
+         this.tabTools = new System.Windows.Forms.TabPage();
+         this.rdoToolPasteTransparent = new System.Windows.Forms.RadioButton();
+         this.rdoToolPaste = new System.Windows.Forms.RadioButton();
+         this.rdoToolCopy = new System.Windows.Forms.RadioButton();
          this.StatusBar = new System.Windows.Forms.StatusBar();
          this.sbpStatus = new System.Windows.Forms.StatusBarPanel();
          this.sbpCtrl = new System.Windows.Forms.StatusBarPanel();
@@ -213,15 +214,14 @@ namespace SGDK2
          this.sbpPixelCoord = new System.Windows.Forms.StatusBarPanel();
          this.sbpTileAtCursor = new System.Windows.Forms.StatusBarPanel();
          this.sbpSelTile = new System.Windows.Forms.StatusBarPanel();
-         this.rdoToolPasteTransparent = new System.Windows.Forms.RadioButton();
          this.tabSelector.SuspendLayout();
          this.tabTiles.SuspendLayout();
          this.pnlTiles.SuspendLayout();
          this.tabSprites.SuspendLayout();
          this.tabPlans.SuspendLayout();
-         this.tabTools.SuspendLayout();
          this.grpPlanList.SuspendLayout();
          this.grpPlanCoords.SuspendLayout();
+         this.tabTools.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.sbpStatus)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpCtrl)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpTileCoord)).BeginInit();
@@ -272,6 +272,7 @@ namespace SGDK2
          // mnuEditDelete
          // 
          this.mnuEditDelete.Index = 0;
+         this.mnuEditDelete.Shortcut = System.Windows.Forms.Shortcut.Del;
          this.mnuEditDelete.Text = "&Delete Selected Object";
          this.mnuEditDelete.Click += new System.EventHandler(this.mnuEditDelete_Click);
          // 
@@ -293,9 +294,9 @@ namespace SGDK2
          this.dataMonitor.SpritePlanRowDeleted += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowDeleted);
          this.dataMonitor.LayerRowChanged += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowChanged);
          this.dataMonitor.SpritePlanRowChanged += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowChanged);
+         this.dataMonitor.TileFrameRowChanged += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
          this.dataMonitor.SpritePlanRowChanging += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowChanging);
          this.dataMonitor.LayerRowDeleted += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowDeleted);
-         this.dataMonitor.TileFrameRowChanged += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
          this.dataMonitor.TileRowChanged += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowChanged);
          this.dataMonitor.TileRowDeleting += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowChanged);
          this.dataMonitor.SpriteRowChanging += new SGDK2.ProjectDataset.SpriteRowChangeEventHandler(this.dataMonitor_SpriteRowChanging);
@@ -385,11 +386,12 @@ namespace SGDK2
          this.lstAvailableSprites.DisplayMember = "Name";
          this.lstAvailableSprites.Dock = System.Windows.Forms.DockStyle.Fill;
          this.lstAvailableSprites.IntegralHeight = false;
-         this.lstAvailableSprites.Location = new System.Drawing.Point(0, 53);
+         this.lstAvailableSprites.Location = new System.Drawing.Point(0, 52);
          this.lstAvailableSprites.Name = "lstAvailableSprites";
          this.lstAvailableSprites.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-         this.lstAvailableSprites.Size = new System.Drawing.Size(168, 245);
+         this.lstAvailableSprites.Size = new System.Drawing.Size(168, 246);
          this.lstAvailableSprites.TabIndex = 6;
+         this.lstAvailableSprites.Enter += new System.EventHandler(this.lstAvailableSprites_Enter);
          this.lstAvailableSprites.SelectedIndexChanged += new System.EventHandler(this.lstAvailableSprites_SelectedIndexChanged);
          // 
          // SpriteSelector
@@ -402,10 +404,10 @@ namespace SGDK2
          this.SpriteSelector.Frameset = null;
          this.SpriteSelector.FramesToDisplay = null;
          this.SpriteSelector.GraphicSheet = null;
-         this.SpriteSelector.Location = new System.Drawing.Point(0, 53);
+         this.SpriteSelector.Location = new System.Drawing.Point(0, 52);
          this.SpriteSelector.Name = "SpriteSelector";
          this.SpriteSelector.SheetImage = null;
-         this.SpriteSelector.Size = new System.Drawing.Size(168, 245);
+         this.SpriteSelector.Size = new System.Drawing.Size(168, 246);
          this.SpriteSelector.TabIndex = 2;
          this.SpriteSelector.Visible = false;
          this.SpriteSelector.CurrentCellChanged += new System.EventHandler(this.SpriteSelector_CurrentCellChanged);
@@ -425,7 +427,7 @@ namespace SGDK2
          this.cboSpriteCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
          this.cboSpriteCategory.Location = new System.Drawing.Point(0, 32);
          this.cboSpriteCategory.Name = "cboSpriteCategory";
-         this.cboSpriteCategory.Size = new System.Drawing.Size(168, 21);
+         this.cboSpriteCategory.Size = new System.Drawing.Size(168, 20);
          this.cboSpriteCategory.TabIndex = 1;
          this.cboSpriteCategory.Visible = false;
          this.cboSpriteCategory.SelectedIndexChanged += new System.EventHandler(this.cboSpriteCategory_SelectedIndexChanged);
@@ -445,6 +447,8 @@ namespace SGDK2
          this.grdSprite.ToolbarVisible = false;
          this.grdSprite.ViewBackColor = System.Drawing.SystemColors.Window;
          this.grdSprite.ViewForeColor = System.Drawing.SystemColors.WindowText;
+         this.grdSprite.Enter += new System.EventHandler(this.grdSprite_Enter);
+         this.grdSprite.Leave += new System.EventHandler(this.grdSprite_Leave);
          // 
          // rdoAddSprites
          // 
@@ -468,39 +472,6 @@ namespace SGDK2
          this.rdoSelectSprites.Text = "Select Sprites";
          this.rdoSelectSprites.CheckedChanged += new System.EventHandler(this.rdoSpriteMode_CheckedChanged);
          // 
-         // tabTools
-         // 
-         this.tabTools.Controls.Add(this.rdoToolPasteTransparent);
-         this.tabTools.Controls.Add(this.rdoToolPaste);
-         this.tabTools.Controls.Add(this.rdoToolCopy);
-         this.tabTools.Location = new System.Drawing.Point(4, 22);
-         this.tabTools.Name = "tabTools";
-         this.tabTools.Size = new System.Drawing.Size(168, 447);
-         this.tabTools.TabIndex = 3;
-         this.tabTools.Text = "Tools";
-         // 
-         // rdoToolPaste
-         // 
-         this.rdoToolPaste.Appearance = System.Windows.Forms.Appearance.Button;
-         this.rdoToolPaste.Dock = System.Windows.Forms.DockStyle.Top;
-         this.rdoToolPaste.Location = new System.Drawing.Point(0, 24);
-         this.rdoToolPaste.Name = "rdoToolPaste";
-         this.rdoToolPaste.Size = new System.Drawing.Size(168, 24);
-         this.rdoToolPaste.TabIndex = 1;
-         this.rdoToolPaste.Text = "Paste";
-         this.rdoToolPaste.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-         // 
-         // rdoToolCopy
-         // 
-         this.rdoToolCopy.Appearance = System.Windows.Forms.Appearance.Button;
-         this.rdoToolCopy.Dock = System.Windows.Forms.DockStyle.Top;
-         this.rdoToolCopy.Location = new System.Drawing.Point(0, 0);
-         this.rdoToolCopy.Name = "rdoToolCopy";
-         this.rdoToolCopy.Size = new System.Drawing.Size(168, 24);
-         this.rdoToolCopy.TabIndex = 0;
-         this.rdoToolCopy.Text = "Copy";
-         this.rdoToolCopy.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-         // 
          // tabPlans
          // 
          this.tabPlans.Controls.Add(this.grpPlanList);
@@ -523,7 +494,7 @@ namespace SGDK2
          this.grpPlanList.Dock = System.Windows.Forms.DockStyle.Fill;
          this.grpPlanList.Location = new System.Drawing.Point(0, 0);
          this.grpPlanList.Name = "grpPlanList";
-         this.grpPlanList.Size = new System.Drawing.Size(168, 229);
+         this.grpPlanList.Size = new System.Drawing.Size(168, 197);
          this.grpPlanList.TabIndex = 22;
          this.grpPlanList.TabStop = false;
          this.grpPlanList.Text = "Plans";
@@ -533,18 +504,20 @@ namespace SGDK2
          this.lstPlans.DisplayMember = "Name";
          this.lstPlans.Dock = System.Windows.Forms.DockStyle.Fill;
          this.lstPlans.IntegralHeight = false;
-         this.lstPlans.Location = new System.Drawing.Point(3, 56);
+         this.lstPlans.Location = new System.Drawing.Point(3, 41);
          this.lstPlans.Name = "lstPlans";
          this.lstPlans.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-         this.lstPlans.Size = new System.Drawing.Size(162, 138);
+         this.lstPlans.Size = new System.Drawing.Size(162, 121);
          this.lstPlans.TabIndex = 0;
+         this.lstPlans.Leave += new System.EventHandler(this.lstPlans_Leave);
+         this.lstPlans.Enter += new System.EventHandler(this.lstPlans_Enter);
          this.lstPlans.SelectedIndexChanged += new System.EventHandler(this.lstPlans_SelectedIndexChanged);
          // 
          // rdoShowAllPlans
          // 
          this.rdoShowAllPlans.Checked = true;
          this.rdoShowAllPlans.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.rdoShowAllPlans.Location = new System.Drawing.Point(3, 194);
+         this.rdoShowAllPlans.Location = new System.Drawing.Point(3, 162);
          this.rdoShowAllPlans.Name = "rdoShowAllPlans";
          this.rdoShowAllPlans.Size = new System.Drawing.Size(162, 16);
          this.rdoShowAllPlans.TabIndex = 18;
@@ -555,7 +528,7 @@ namespace SGDK2
          // rdoShowSelectedPlans
          // 
          this.rdoShowSelectedPlans.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.rdoShowSelectedPlans.Location = new System.Drawing.Point(3, 210);
+         this.rdoShowSelectedPlans.Location = new System.Drawing.Point(3, 178);
          this.rdoShowSelectedPlans.Name = "rdoShowSelectedPlans";
          this.rdoShowSelectedPlans.Size = new System.Drawing.Size(162, 16);
          this.rdoShowSelectedPlans.TabIndex = 17;
@@ -573,7 +546,7 @@ namespace SGDK2
          this.tbPlans.Location = new System.Drawing.Point(3, 16);
          this.tbPlans.Name = "tbPlans";
          this.tbPlans.ShowToolTips = true;
-         this.tbPlans.Size = new System.Drawing.Size(162, 40);
+         this.tbPlans.Size = new System.Drawing.Size(162, 25);
          this.tbPlans.TabIndex = 16;
          this.tbPlans.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tbPlans_ButtonClick);
          // 
@@ -596,7 +569,7 @@ namespace SGDK2
          // CoordSplitter
          // 
          this.CoordSplitter.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.CoordSplitter.Location = new System.Drawing.Point(0, 229);
+         this.CoordSplitter.Location = new System.Drawing.Point(0, 197);
          this.CoordSplitter.MinExtra = 93;
          this.CoordSplitter.MinSize = 72;
          this.CoordSplitter.Name = "CoordSplitter";
@@ -610,7 +583,7 @@ namespace SGDK2
          this.grpPlanCoords.Controls.Add(this.rdoAppendCoord);
          this.grpPlanCoords.Controls.Add(this.rdoSelectCoord);
          this.grpPlanCoords.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.grpPlanCoords.Location = new System.Drawing.Point(0, 234);
+         this.grpPlanCoords.Location = new System.Drawing.Point(0, 202);
          this.grpPlanCoords.Name = "grpPlanCoords";
          this.grpPlanCoords.Size = new System.Drawing.Size(168, 104);
          this.grpPlanCoords.TabIndex = 21;
@@ -626,6 +599,8 @@ namespace SGDK2
          this.lstPlanCoords.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
          this.lstPlanCoords.Size = new System.Drawing.Size(162, 53);
          this.lstPlanCoords.TabIndex = 17;
+         this.lstPlanCoords.Leave += new System.EventHandler(this.lstPlanCoords_Leave);
+         this.lstPlanCoords.Enter += new System.EventHandler(this.lstPlanCoords_Enter);
          this.lstPlanCoords.SelectedIndexChanged += new System.EventHandler(this.lstPlanCoords_SelectedIndexChanged);
          // 
          // rdoAppendCoord
@@ -651,7 +626,7 @@ namespace SGDK2
          // PlanSplitter
          // 
          this.PlanSplitter.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.PlanSplitter.Location = new System.Drawing.Point(0, 338);
+         this.PlanSplitter.Location = new System.Drawing.Point(0, 306);
          this.PlanSplitter.Name = "PlanSplitter";
          this.PlanSplitter.Size = new System.Drawing.Size(168, 5);
          this.PlanSplitter.TabIndex = 1;
@@ -661,19 +636,63 @@ namespace SGDK2
          // 
          this.grdPlan.CommandsVisibleIfAvailable = true;
          this.grdPlan.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.grdPlan.HelpVisible = false;
          this.grdPlan.LargeButtons = false;
          this.grdPlan.LineColor = System.Drawing.SystemColors.ScrollBar;
-         this.grdPlan.Location = new System.Drawing.Point(0, 343);
+         this.grdPlan.Location = new System.Drawing.Point(0, 311);
          this.grdPlan.Name = "grdPlan";
          this.grdPlan.PropertySort = System.Windows.Forms.PropertySort.Alphabetical;
-         this.grdPlan.Size = new System.Drawing.Size(168, 104);
+         this.grdPlan.Size = new System.Drawing.Size(168, 136);
          this.grdPlan.TabIndex = 6;
          this.grdPlan.Text = "PropertyGrid";
          this.grdPlan.ToolbarVisible = false;
          this.grdPlan.ViewBackColor = System.Drawing.SystemColors.Window;
          this.grdPlan.ViewForeColor = System.Drawing.SystemColors.WindowText;
+         this.grdPlan.Enter += new System.EventHandler(this.grdPlan_Enter);
          this.grdPlan.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.grdPlan_PropertyValueChanged);
+         // 
+         // tabTools
+         // 
+         this.tabTools.Controls.Add(this.rdoToolPasteTransparent);
+         this.tabTools.Controls.Add(this.rdoToolPaste);
+         this.tabTools.Controls.Add(this.rdoToolCopy);
+         this.tabTools.Location = new System.Drawing.Point(4, 22);
+         this.tabTools.Name = "tabTools";
+         this.tabTools.Size = new System.Drawing.Size(168, 447);
+         this.tabTools.TabIndex = 3;
+         this.tabTools.Text = "Tools";
+         // 
+         // rdoToolPasteTransparent
+         // 
+         this.rdoToolPasteTransparent.Appearance = System.Windows.Forms.Appearance.Button;
+         this.rdoToolPasteTransparent.Dock = System.Windows.Forms.DockStyle.Top;
+         this.rdoToolPasteTransparent.Location = new System.Drawing.Point(0, 48);
+         this.rdoToolPasteTransparent.Name = "rdoToolPasteTransparent";
+         this.rdoToolPasteTransparent.Size = new System.Drawing.Size(168, 24);
+         this.rdoToolPasteTransparent.TabIndex = 2;
+         this.rdoToolPasteTransparent.Text = "Paste Transparent";
+         this.rdoToolPasteTransparent.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+         // 
+         // rdoToolPaste
+         // 
+         this.rdoToolPaste.Appearance = System.Windows.Forms.Appearance.Button;
+         this.rdoToolPaste.Dock = System.Windows.Forms.DockStyle.Top;
+         this.rdoToolPaste.Location = new System.Drawing.Point(0, 24);
+         this.rdoToolPaste.Name = "rdoToolPaste";
+         this.rdoToolPaste.Size = new System.Drawing.Size(168, 24);
+         this.rdoToolPaste.TabIndex = 1;
+         this.rdoToolPaste.Text = "Paste";
+         this.rdoToolPaste.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+         // 
+         // rdoToolCopy
+         // 
+         this.rdoToolCopy.Appearance = System.Windows.Forms.Appearance.Button;
+         this.rdoToolCopy.Dock = System.Windows.Forms.DockStyle.Top;
+         this.rdoToolCopy.Location = new System.Drawing.Point(0, 0);
+         this.rdoToolCopy.Name = "rdoToolCopy";
+         this.rdoToolCopy.Size = new System.Drawing.Size(168, 24);
+         this.rdoToolCopy.TabIndex = 0;
+         this.rdoToolCopy.Text = "Copy";
+         this.rdoToolCopy.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
          // 
          // StatusBar
          // 
@@ -725,17 +744,6 @@ namespace SGDK2
          this.sbpSelTile.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
          this.sbpSelTile.Width = 10;
          // 
-         // rdoToolPasteTransparent
-         // 
-         this.rdoToolPasteTransparent.Appearance = System.Windows.Forms.Appearance.Button;
-         this.rdoToolPasteTransparent.Dock = System.Windows.Forms.DockStyle.Top;
-         this.rdoToolPasteTransparent.Location = new System.Drawing.Point(0, 48);
-         this.rdoToolPasteTransparent.Name = "rdoToolPasteTransparent";
-         this.rdoToolPasteTransparent.Size = new System.Drawing.Size(168, 24);
-         this.rdoToolPasteTransparent.TabIndex = 2;
-         this.rdoToolPasteTransparent.Text = "Paste Transparent";
-         this.rdoToolPasteTransparent.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-         // 
          // frmMapEditor
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -755,9 +763,9 @@ namespace SGDK2
          this.pnlTiles.ResumeLayout(false);
          this.tabSprites.ResumeLayout(false);
          this.tabPlans.ResumeLayout(false);
-         this.tabTools.ResumeLayout(false);
          this.grpPlanList.ResumeLayout(false);
          this.grpPlanCoords.ResumeLayout(false);
+         this.tabTools.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.sbpStatus)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpCtrl)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpTileCoord)).EndInit();
@@ -1221,8 +1229,13 @@ namespace SGDK2
             case CursorMode.AddCoordinate:
                if (lstPlanCoords.SelectedIndex < 0)
                {
-                  MessageBox.Show(this, "Select coordinates first.", "Delete Selection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                  return;
+                  if (lstPlans.SelectedIndex < 0)
+                  {
+                     MessageBox.Show(this, "Select coordinates or a plan first.", "Delete Selection", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                     return;
+                  }
+                  DeleteSelectedPlans();
+                  break;
                }
                CoordProvider[] deleteCoords = new CoordProvider[lstPlanCoords.SelectedItems.Count];
                lstPlanCoords.SelectedItems.CopyTo(deleteCoords, 0);
@@ -1238,6 +1251,60 @@ namespace SGDK2
             default:
                MessageBox.Show(this, "Please select a sprite or a coordinate to delete first", "Delete Selected Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                break;
+         }
+      }
+
+      private void DisableDelete()
+      {
+         mnuEditDelete.Text = "Delete Selected Objects";
+         mnuEditDelete.Enabled = false;      
+      }
+
+      private void DeleteCoordinatesMode()
+      {
+         mnuEditDelete.Text = "Delete Selected Coordinates";
+         mnuEditDelete.Enabled = true;
+      }
+
+      private void DeleteSpriteMode()
+      {
+         mnuEditDelete.Text = "Delete Selected Sprites";
+         mnuEditDelete.Enabled = true;
+      }
+
+      private void DeleteSelectedPlans()
+      {
+         string msg;
+         if (lstPlans.SelectedIndices.Count > 1)
+         {
+            msg = "Are you sure you want to delete the selected " + lstPlans.SelectedIndices.Count.ToString() + " plans?";
+         }
+         else if (lstPlans.SelectedIndices.Count == 1)
+         {
+            msg = "Are you sure you want to delete the selected plan?";
+         }
+         else
+         {
+            MessageBox.Show(this, "Must select a plan before deleting plans.", "Delete Plans", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
+
+         if (MessageBox.Show(this, msg, "Delete Plans", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+         {
+            grdPlan.SelectedObject = null;
+            m_UpdatingList = true;
+            try
+            {
+               for (int i = 0; i < lstPlans.Items.Count;)
+                  if (lstPlans.GetSelected(i))
+                     ((ProjectDataset.SpritePlanRow)lstPlans.Items[i]).Delete();
+                  else
+                     i++;
+            }
+            finally
+            {
+               m_UpdatingList = false;
+            }
          }
       }
       #endregion
@@ -1384,6 +1451,8 @@ namespace SGDK2
                m_LayerMouseCoord.Y = TilePos.Y * tsr.TileHeight;
             }
 
+            MapDisplay.Focus();
+
             switch(GetCurrentMode())
             {
                case CursorMode.PlaceTile:
@@ -1452,11 +1521,13 @@ namespace SGDK2
                            ReflectSelection(arsp[0]);
                         }
                      }
+                     DeleteSpriteMode();
                   }
                   else
                   {
                      grdSprite.SelectedObject = null;
                      lstAvailableSprites.SelectedIndex = -1;
+                     DisableDelete();
                   }
                   break;
                case CursorMode.AddCoordinate:
@@ -1469,7 +1540,10 @@ namespace SGDK2
                   ProjectDataset.CoordinateRow drCoord = GetCoordAtPoint(m_LayerMouseCoord);
                   lstPlanCoords.ClearSelected();
                   if (drCoord == null)
+                  {
                      lstPlans.ClearSelected();
+                     DisableDelete();
+                  }
                   else
                   {
                      if(!lstPlans.GetSelected(lstPlans.Items.IndexOf(drCoord.SpritePlanRowParent)))
@@ -1482,6 +1556,7 @@ namespace SGDK2
                         if (((CoordProvider)lstPlanCoords.Items[i]).CoordinateRow == drCoord)
                            lstPlanCoords.SelectedIndex = i;
                      }
+                     DeleteCoordinatesMode();
                   }
                   break;
                case CursorMode.Copy:
@@ -1735,9 +1810,9 @@ namespace SGDK2
                for (int i = 0; i<lstAvailableSprites.Items.Count; i++)
                   if (lstAvailableSprites.Items[i] == e.Row)
                   {
-                     m_ChangingName = true;
+                     m_UpdatingList = true;
                      lstAvailableSprites.Items[i] = e.Row; // Force refresh;
-                     m_ChangingName = false;
+                     m_UpdatingList = false;
                   }
             }
          }
@@ -1775,8 +1850,6 @@ namespace SGDK2
       {
          m_CurrentModifiers = e.Modifiers;
          StatusBar.Invalidate();
-         if (e.KeyCode == Keys.Delete)
-            DeleteSelectedObjects();
       }
 
       private void frmMapEditor_KeyUp(object sender, System.Windows.Forms.KeyEventArgs e)
@@ -1816,7 +1889,7 @@ namespace SGDK2
 
       private void lstAvailableSprites_SelectedIndexChanged(object sender, System.EventArgs e)
       {
-         if (m_ReflectingSelection || m_ChangingName)
+         if (m_ReflectingSelection || m_UpdatingList)
             return;
          if (lstAvailableSprites.SelectedIndex < 0)
          {
@@ -1854,9 +1927,9 @@ namespace SGDK2
          {
             if (e.Row.HasVersion(DataRowVersion.Current) && (e.Row[ProjectData.SpritePlan.NameColumn, DataRowVersion.Current].ToString().CompareTo(e.Row.Name) != 0))
             {
-               m_ChangingName = true;
+               m_UpdatingList = true;
                lstPlans.Items[lstPlans.Items.IndexOf(e.Row)] = e.Row;
-               m_ChangingName = false;
+               m_UpdatingList = false;
             }
          }
       }
@@ -1881,35 +1954,13 @@ namespace SGDK2
          }
          else if (e.Button == tbbDeletePlan)
          {
-            string msg;
-            if (lstPlans.SelectedIndices.Count > 1)
-            {
-               msg = "Are you sure you want to delete the selected " + lstPlans.SelectedIndices.Count.ToString() + " plans?";
-            }
-            else if (lstPlans.SelectedIndices.Count == 1)
-            {
-               msg = "Are you sure you want to delete the selected plan?";
-            }
-            else
-            {
-               MessageBox.Show(this, "Must select a plan before deleting plans.", "Delete Plans", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-               return;
-            }
-
-            if (MessageBox.Show(this, msg, "Delete Plans", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
-            {
-               for (int i = 0; i < lstPlans.Items.Count;)
-                  if (lstPlans.GetSelected(i))
-                     ((ProjectDataset.SpritePlanRow)lstPlans.Items[i]).Delete();
-                  else
-                     i++;
-            }
+            DeleteSelectedPlans();
          }
       }
 
       private void lstPlans_SelectedIndexChanged(object sender, System.EventArgs e)
       {
-         if (m_ChangingName)
+         if (m_UpdatingList)
             return;
          lstPlanCoords.Items.Clear();
          if (lstPlans.SelectedIndices.Count > 1)
@@ -1968,18 +2019,17 @@ namespace SGDK2
          MapDisplay.Invalidate();
          if (tabSelector.SelectedTab == tabSprites)
          {
-            mnuEditDelete.Text = "Delete Selected Sprites";
-            mnuEditDelete.Enabled = true;
-         }
-         else if (tabSelector.SelectedTab == tabPlans)
-         {
-            mnuEditDelete.Text = "Delete Selected Coordinates";
-            mnuEditDelete.Enabled = true;
+            DeleteSpriteMode();
          }
          else
          {
-            mnuEditDelete.Text = "Delete Selected Objects";
-            mnuEditDelete.Enabled = false;
+            DisableDelete();
+         }
+
+         if (tabSelector.SelectedTab == tabPlans)
+         {
+            PlanProvider.ResetCustomProperties();
+            PlanParamDescriptor.ResetCustomProperties();
          }
       }
 
@@ -1999,7 +2049,10 @@ namespace SGDK2
       {
          m_RefreshSpriteTimer.Dispose();
          m_RefreshSpriteTimer = null;
-         grdSprite.SelectedObject = grdSprite.SelectedObject;
+         if ((grdSprite.SelectedObjects != null) && (grdSprite.SelectedObjects.Length > 1))
+            grdSprite.SelectedObjects = grdSprite.SelectedObjects;
+         else
+            grdSprite.SelectedObject = grdSprite.SelectedObject;
       }
 
       private void TileSelector_CurrentCellChanged(object sender, System.EventArgs e)
@@ -2017,6 +2070,47 @@ namespace SGDK2
          ((MenuItem)sender).Checked = !((MenuItem)sender).Checked;
          MapDisplay.Invalidate();
       }
-      #endregion
+
+      private void lstPlans_Enter(object sender, System.EventArgs e)
+      {
+         mnuEditDelete.Text = "Delete Selected Plan";
+         mnuEditDelete.Enabled = true;
+      }
+
+      private void lstPlans_Leave(object sender, System.EventArgs e)
+      {
+         DisableDelete();
+      }
+
+      private void lstPlanCoords_Enter(object sender, System.EventArgs e)
+      {
+         DeleteCoordinatesMode();
+      }
+
+      private void lstPlanCoords_Leave(object sender, System.EventArgs e)
+      {
+         DisableDelete();
+      }
+
+      private void grdPlan_Enter(object sender, System.EventArgs e)
+      {
+         DisableDelete();
+      }
+
+      private void grdSprite_Enter(object sender, System.EventArgs e)
+      {
+         DisableDelete();
+      }
+
+      private void grdSprite_Leave(object sender, System.EventArgs e)
+      {
+         DeleteSpriteMode();
+      }
+
+      private void lstAvailableSprites_Enter(object sender, System.EventArgs e)
+      {
+         DeleteSpriteMode();
+      }
    }
+   #endregion
 }

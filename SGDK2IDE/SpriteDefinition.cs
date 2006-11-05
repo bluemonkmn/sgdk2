@@ -79,6 +79,7 @@ namespace SGDK2
       private bool m_Loading = false;
       private string m_PreparedFunction = string.Empty;
       private Hashtable m_CustomObjects = null; // .[TypeName] -> RemoteGlobalAccessorInfo[]
+      private ProjectDataset.SpriteRuleRow m_SelectAfterInsert = null;
       #endregion
 
       #region Windows Forms Designer Components
@@ -1189,7 +1190,7 @@ namespace SGDK2
 
             txtErrors.Visible = false;
             RemotingServices.IRemoteTypeInfo reflector = CodeGenerator.CreateInstanceAndUnwrap(
-               "RemoteReflector", "SpriteBase") as RemotingServices.IRemoteTypeInfo;
+               "RemoteReflector", CodeGenerator.SpriteBaseClass) as RemotingServices.IRemoteTypeInfo;
 
             RemotingServices.RemoteMethodInfo[] localRuleList = reflector.GetMethods();
             RemotingServices.RemoteMethodInfo[] globalRuleList = reflector.GetGlobalFunctions();
@@ -1528,7 +1529,7 @@ namespace SGDK2
       {
          foreach(DataRowView drv in ProjectData.SpriteCategory.DefaultView)
          {
-            cboTarget.Items.Add("ParentLayer.m_SpriteCategories." + CodeGenerator.NameToVariable(
+            cboTarget.Items.Add("ParentLayer." + CodeGenerator.SpriteCategoriesFieldName + "." + CodeGenerator.NameToVariable(
                ((ProjectDataset.SpriteCategoryRow)drv.Row).Name));
          }
       }
@@ -1739,7 +1740,12 @@ namespace SGDK2
             if (drRule.EndIf)
                parentNode = parentNode.Parent;
          }
-         if (cur != null)
+         if (m_SelectAfterInsert != null)
+         {
+            tvwRules.SelectedNode = GetNodeFromRow(m_SelectAfterInsert);
+            m_SelectAfterInsert = null;
+         }
+         else if (cur != null)
             tvwRules.SelectedNode = GetNodeFromRow(cur);
       }
 
@@ -2340,6 +2346,9 @@ namespace SGDK2
       } 
       private void OnAddRule(object sender, System.EventArgs e)
       {
+         if (!Validate())
+            return;
+
          int i = 0;
          string newName;
          do
@@ -2349,7 +2358,7 @@ namespace SGDK2
          int newSeq = -1;
          if (CurrentRule != null)
             newSeq = CurrentRule.Sequence + 1;
-         ProjectData.InsertSpriteRule(m_SpriteDef, newName, "Do", newSeq, string.Empty, null, null, null, null, false, false);
+         m_SelectAfterInsert = ProjectData.InsertSpriteRule(m_SpriteDef, newName, "Do", newSeq, string.Empty, null, null, null, null, false, false);
       }
       private void OnDeleteRule(object sender, System.EventArgs e)
       {
@@ -2362,6 +2371,9 @@ namespace SGDK2
       }
       private void OnMoveRuleUp(object sender, System.EventArgs e)
       {
+         if (!Validate())
+            return;
+
          if (CurrentRule == null)
          {
             MessageBox.Show(this, "Select a rule first", "Move Rule Up", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -2371,6 +2383,9 @@ namespace SGDK2
       }
       private void OnMoveRuleDown(object sender, System.EventArgs e)
       {
+         if (!Validate())
+            return;
+
          if (CurrentRule == null)
          {
             MessageBox.Show(this, "Select a rule first", "Move Rule Down", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -2560,6 +2575,9 @@ namespace SGDK2
  
       private void mnuExport_Click(object sender, System.EventArgs e)
       {
+         if (!Validate())
+            return;
+
          ProjectDataset dsExport = new ProjectDataset();
          
          try

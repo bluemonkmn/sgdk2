@@ -586,21 +586,18 @@ namespace SGDK2
 
       public void OnComponentChanged()
       {
-         // TODO:  Add SpriteProvider.OnComponentChanged implementation
       }
 
       public IContainer Container
       {
          get
          {
-            // TODO:  Add SpriteProvider.Container getter implementation
             return null;
          }
       }
 
       public bool OnComponentChanging()
       {
-         // TODO:  Add SpriteProvider.OnComponentChanging implementation
          return false;
       }
 

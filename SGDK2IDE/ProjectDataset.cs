@@ -49,6 +49,8 @@ namespace SGDK2 {
         
         private PlanRuleDataTable tablePlanRule;
         
+        private PlanParameterValueDataTable tablePlanParameterValue;
+        
         private SpriteDefinitionDataTable tableSpriteDefinition;
         
         private SpriteRuleDataTable tableSpriteRule;
@@ -90,6 +92,8 @@ namespace SGDK2 {
         private DataRelation relationSpritePlanCoordinate;
         
         private DataRelation relationSpritePlanPlanRule;
+        
+        private DataRelation relationSpritePlanPlanParameterValue;
         
         private DataRelation relationLayerSprite;
         
@@ -186,6 +190,9 @@ namespace SGDK2 {
                 }
                 if ((ds.Tables["PlanRule"] != null)) {
                     this.Tables.Add(new PlanRuleDataTable(ds.Tables["PlanRule"]));
+                }
+                if ((ds.Tables["PlanParameterValue"] != null)) {
+                    this.Tables.Add(new PlanParameterValueDataTable(ds.Tables["PlanParameterValue"]));
                 }
                 if ((ds.Tables["SpriteDefinition"] != null)) {
                     this.Tables.Add(new SpriteDefinitionDataTable(ds.Tables["SpriteDefinition"]));
@@ -359,6 +366,14 @@ namespace SGDK2 {
         public PlanRuleDataTable PlanRule {
             get {
                 return this.tablePlanRule;
+            }
+        }
+        
+        [System.ComponentModel.Browsable(false)]
+        [System.ComponentModel.DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Content)]
+        public PlanParameterValueDataTable PlanParameterValue {
+            get {
+                return this.tablePlanParameterValue;
             }
         }
         
@@ -542,6 +557,9 @@ namespace SGDK2 {
             if ((ds.Tables["PlanRule"] != null)) {
                 this.Tables.Add(new PlanRuleDataTable(ds.Tables["PlanRule"]));
             }
+            if ((ds.Tables["PlanParameterValue"] != null)) {
+                this.Tables.Add(new PlanParameterValueDataTable(ds.Tables["PlanParameterValue"]));
+            }
             if ((ds.Tables["SpriteDefinition"] != null)) {
                 this.Tables.Add(new SpriteDefinitionDataTable(ds.Tables["SpriteDefinition"]));
             }
@@ -661,6 +679,10 @@ namespace SGDK2 {
             if ((this.tablePlanRule != null)) {
                 this.tablePlanRule.InitVars();
             }
+            this.tablePlanParameterValue = ((PlanParameterValueDataTable)(this.Tables["PlanParameterValue"]));
+            if ((this.tablePlanParameterValue != null)) {
+                this.tablePlanParameterValue.InitVars();
+            }
             this.tableSpriteDefinition = ((SpriteDefinitionDataTable)(this.Tables["SpriteDefinition"]));
             if ((this.tableSpriteDefinition != null)) {
                 this.tableSpriteDefinition.InitVars();
@@ -727,6 +749,7 @@ namespace SGDK2 {
             this.relationSpriteParameterValue = this.Relations["SpriteParameterValue"];
             this.relationSpritePlanCoordinate = this.Relations["SpritePlanCoordinate"];
             this.relationSpritePlanPlanRule = this.Relations["SpritePlanPlanRule"];
+            this.relationSpritePlanPlanParameterValue = this.Relations["SpritePlanPlanParameterValue"];
             this.relationLayerSprite = this.Relations["LayerSprite"];
             this.relationLayerSpritePlan = this.Relations["LayerSpritePlan"];
             this.relationMapLayer = this.Relations["MapLayer"];
@@ -785,6 +808,8 @@ namespace SGDK2 {
             this.Tables.Add(this.tableCoordinate);
             this.tablePlanRule = new PlanRuleDataTable();
             this.Tables.Add(this.tablePlanRule);
+            this.tablePlanParameterValue = new PlanParameterValueDataTable();
+            this.Tables.Add(this.tablePlanParameterValue);
             this.tableSpriteDefinition = new SpriteDefinitionDataTable();
             this.Tables.Add(this.tableSpriteDefinition);
             this.tableSpriteRule = new SpriteRuleDataTable();
@@ -945,6 +970,17 @@ namespace SGDK2 {
             fkc.AcceptRejectRule = System.Data.AcceptRejectRule.None;
             fkc.DeleteRule = System.Data.Rule.Cascade;
             fkc.UpdateRule = System.Data.Rule.Cascade;
+            fkc = new ForeignKeyConstraint("SpritePlanPlanParameterValue", new DataColumn[] {
+                        this.tableSpritePlan.MapNameColumn,
+                        this.tableSpritePlan.LayerNameColumn,
+                        this.tableSpritePlan.NameColumn}, new DataColumn[] {
+                        this.tablePlanParameterValue.MapNameColumn,
+                        this.tablePlanParameterValue.LayerNameColumn,
+                        this.tablePlanParameterValue.PlanNameColumn});
+            this.tablePlanParameterValue.Constraints.Add(fkc);
+            fkc.AcceptRejectRule = System.Data.AcceptRejectRule.None;
+            fkc.DeleteRule = System.Data.Rule.Cascade;
+            fkc.UpdateRule = System.Data.Rule.Cascade;
             fkc = new ForeignKeyConstraint("SpriteDefinitionSpriteRule", new DataColumn[] {
                         this.tableSpriteDefinition.NameColumn}, new DataColumn[] {
                         this.tableSpriteRule.DefinitionNameColumn});
@@ -1097,6 +1133,15 @@ namespace SGDK2 {
                         this.tablePlanRule.PlanNameColumn}, false);
             this.relationSpritePlanPlanRule.Nested = true;
             this.Relations.Add(this.relationSpritePlanPlanRule);
+            this.relationSpritePlanPlanParameterValue = new DataRelation("SpritePlanPlanParameterValue", new DataColumn[] {
+                        this.tableSpritePlan.MapNameColumn,
+                        this.tableSpritePlan.LayerNameColumn,
+                        this.tableSpritePlan.NameColumn}, new DataColumn[] {
+                        this.tablePlanParameterValue.MapNameColumn,
+                        this.tablePlanParameterValue.LayerNameColumn,
+                        this.tablePlanParameterValue.PlanNameColumn}, false);
+            this.relationSpritePlanPlanParameterValue.Nested = true;
+            this.Relations.Add(this.relationSpritePlanPlanParameterValue);
             this.relationLayerSprite = new DataRelation("LayerSprite", new DataColumn[] {
                         this.tableLayer.MapNameColumn,
                         this.tableLayer.NameColumn}, new DataColumn[] {
@@ -1267,6 +1312,10 @@ namespace SGDK2 {
             return false;
         }
         
+        private bool ShouldSerializePlanParameterValue() {
+            return false;
+        }
+        
         private bool ShouldSerializeSpriteDefinition() {
             return false;
         }
@@ -1360,6 +1409,8 @@ namespace SGDK2 {
         public delegate void CoordinateRowChangeEventHandler(object sender, CoordinateRowChangeEvent e);
         
         public delegate void PlanRuleRowChangeEventHandler(object sender, PlanRuleRowChangeEvent e);
+        
+        public delegate void PlanParameterValueRowChangeEventHandler(object sender, PlanParameterValueRowChangeEvent e);
         
         public delegate void SpriteDefinitionRowChangeEventHandler(object sender, SpriteDefinitionRowChangeEvent e);
         
@@ -5751,6 +5802,10 @@ namespace SGDK2 {
             public PlanRuleRow[] GetPlanRuleRows() {
                 return ((PlanRuleRow[])(this.GetChildRows(this.Table.ChildRelations["SpritePlanPlanRule"])));
             }
+            
+            public PlanParameterValueRow[] GetPlanParameterValueRows() {
+                return ((PlanParameterValueRow[])(this.GetChildRows(this.Table.ChildRelations["SpritePlanPlanParameterValue"])));
+            }
         }
         
         [System.Diagnostics.DebuggerStepThrough()]
@@ -6640,6 +6695,312 @@ namespace SGDK2 {
             }
             
             public PlanRuleRow Row {
+                get {
+                    return this.eventRow;
+                }
+            }
+            
+            public DataRowAction Action {
+                get {
+                    return this.eventAction;
+                }
+            }
+        }
+        
+        [System.Diagnostics.DebuggerStepThrough()]
+        public class PlanParameterValueDataTable : DataTable, System.Collections.IEnumerable {
+            
+            private DataColumn columnMapName;
+            
+            private DataColumn columnLayerName;
+            
+            private DataColumn columnPlanName;
+            
+            private DataColumn columnName;
+            
+            private DataColumn columnValue;
+            
+            internal PlanParameterValueDataTable() : 
+                    base("PlanParameterValue") {
+                this.InitClass();
+            }
+            
+            internal PlanParameterValueDataTable(DataTable table) : 
+                    base(table.TableName) {
+                if ((table.CaseSensitive != table.DataSet.CaseSensitive)) {
+                    this.CaseSensitive = table.CaseSensitive;
+                }
+                if ((table.Locale.ToString() != table.DataSet.Locale.ToString())) {
+                    this.Locale = table.Locale;
+                }
+                if ((table.Namespace != table.DataSet.Namespace)) {
+                    this.Namespace = table.Namespace;
+                }
+                this.Prefix = table.Prefix;
+                this.MinimumCapacity = table.MinimumCapacity;
+                this.DisplayExpression = table.DisplayExpression;
+            }
+            
+            [System.ComponentModel.Browsable(false)]
+            public int Count {
+                get {
+                    return this.Rows.Count;
+                }
+            }
+            
+            internal DataColumn MapNameColumn {
+                get {
+                    return this.columnMapName;
+                }
+            }
+            
+            internal DataColumn LayerNameColumn {
+                get {
+                    return this.columnLayerName;
+                }
+            }
+            
+            internal DataColumn PlanNameColumn {
+                get {
+                    return this.columnPlanName;
+                }
+            }
+            
+            internal DataColumn NameColumn {
+                get {
+                    return this.columnName;
+                }
+            }
+            
+            internal DataColumn ValueColumn {
+                get {
+                    return this.columnValue;
+                }
+            }
+            
+            public PlanParameterValueRow this[int index] {
+                get {
+                    return ((PlanParameterValueRow)(this.Rows[index]));
+                }
+            }
+            
+            public event PlanParameterValueRowChangeEventHandler PlanParameterValueRowChanged;
+            
+            public event PlanParameterValueRowChangeEventHandler PlanParameterValueRowChanging;
+            
+            public event PlanParameterValueRowChangeEventHandler PlanParameterValueRowDeleted;
+            
+            public event PlanParameterValueRowChangeEventHandler PlanParameterValueRowDeleting;
+            
+            public void AddPlanParameterValueRow(PlanParameterValueRow row) {
+                this.Rows.Add(row);
+            }
+            
+            public PlanParameterValueRow AddPlanParameterValueRow(string MapName, string LayerName, string PlanName, string Name, string Value) {
+                PlanParameterValueRow rowPlanParameterValueRow = ((PlanParameterValueRow)(this.NewRow()));
+                rowPlanParameterValueRow.ItemArray = new object[] {
+                        MapName,
+                        LayerName,
+                        PlanName,
+                        Name,
+                        Value};
+                this.Rows.Add(rowPlanParameterValueRow);
+                return rowPlanParameterValueRow;
+            }
+            
+            public PlanParameterValueRow FindByMapNameLayerNamePlanNameName(string MapName, string LayerName, string PlanName, string Name) {
+                return ((PlanParameterValueRow)(this.Rows.Find(new object[] {
+                            MapName,
+                            LayerName,
+                            PlanName,
+                            Name})));
+            }
+            
+            public System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
+            }
+            
+            public override DataTable Clone() {
+                PlanParameterValueDataTable cln = ((PlanParameterValueDataTable)(base.Clone()));
+                cln.InitVars();
+                return cln;
+            }
+            
+            protected override DataTable CreateInstance() {
+                return new PlanParameterValueDataTable();
+            }
+            
+            internal void InitVars() {
+                this.columnMapName = this.Columns["MapName"];
+                this.columnLayerName = this.Columns["LayerName"];
+                this.columnPlanName = this.Columns["PlanName"];
+                this.columnName = this.Columns["Name"];
+                this.columnValue = this.Columns["Value"];
+            }
+            
+            private void InitClass() {
+                this.columnMapName = new DataColumn("MapName", typeof(string), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnMapName);
+                this.columnLayerName = new DataColumn("LayerName", typeof(string), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnLayerName);
+                this.columnPlanName = new DataColumn("PlanName", typeof(string), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnPlanName);
+                this.columnName = new DataColumn("Name", typeof(string), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnName);
+                this.columnValue = new DataColumn("Value", typeof(string), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnValue);
+                this.Constraints.Add(new UniqueConstraint("PlanParameterValueKey", new DataColumn[] {
+                                this.columnMapName,
+                                this.columnLayerName,
+                                this.columnPlanName,
+                                this.columnName}, true));
+                this.columnMapName.AllowDBNull = false;
+                this.columnMapName.Namespace = "";
+                this.columnLayerName.AllowDBNull = false;
+                this.columnLayerName.Namespace = "";
+                this.columnPlanName.AllowDBNull = false;
+                this.columnPlanName.Namespace = "";
+                this.columnName.AllowDBNull = false;
+                this.columnName.Namespace = "";
+                this.columnValue.Namespace = "";
+            }
+            
+            public PlanParameterValueRow NewPlanParameterValueRow() {
+                return ((PlanParameterValueRow)(this.NewRow()));
+            }
+            
+            protected override DataRow NewRowFromBuilder(DataRowBuilder builder) {
+                return new PlanParameterValueRow(builder);
+            }
+            
+            protected override System.Type GetRowType() {
+                return typeof(PlanParameterValueRow);
+            }
+            
+            protected override void OnRowChanged(DataRowChangeEventArgs e) {
+                base.OnRowChanged(e);
+                if ((this.PlanParameterValueRowChanged != null)) {
+                    this.PlanParameterValueRowChanged(this, new PlanParameterValueRowChangeEvent(((PlanParameterValueRow)(e.Row)), e.Action));
+                }
+            }
+            
+            protected override void OnRowChanging(DataRowChangeEventArgs e) {
+                base.OnRowChanging(e);
+                if ((this.PlanParameterValueRowChanging != null)) {
+                    this.PlanParameterValueRowChanging(this, new PlanParameterValueRowChangeEvent(((PlanParameterValueRow)(e.Row)), e.Action));
+                }
+            }
+            
+            protected override void OnRowDeleted(DataRowChangeEventArgs e) {
+                base.OnRowDeleted(e);
+                if ((this.PlanParameterValueRowDeleted != null)) {
+                    this.PlanParameterValueRowDeleted(this, new PlanParameterValueRowChangeEvent(((PlanParameterValueRow)(e.Row)), e.Action));
+                }
+            }
+            
+            protected override void OnRowDeleting(DataRowChangeEventArgs e) {
+                base.OnRowDeleting(e);
+                if ((this.PlanParameterValueRowDeleting != null)) {
+                    this.PlanParameterValueRowDeleting(this, new PlanParameterValueRowChangeEvent(((PlanParameterValueRow)(e.Row)), e.Action));
+                }
+            }
+            
+            public void RemovePlanParameterValueRow(PlanParameterValueRow row) {
+                this.Rows.Remove(row);
+            }
+        }
+        
+        [System.Diagnostics.DebuggerStepThrough()]
+        public class PlanParameterValueRow : DataRow {
+            
+            private PlanParameterValueDataTable tablePlanParameterValue;
+            
+            internal PlanParameterValueRow(DataRowBuilder rb) : 
+                    base(rb) {
+                this.tablePlanParameterValue = ((PlanParameterValueDataTable)(this.Table));
+            }
+            
+            public string MapName {
+                get {
+                    return ((string)(this[this.tablePlanParameterValue.MapNameColumn]));
+                }
+                set {
+                    this[this.tablePlanParameterValue.MapNameColumn] = value;
+                }
+            }
+            
+            public string LayerName {
+                get {
+                    return ((string)(this[this.tablePlanParameterValue.LayerNameColumn]));
+                }
+                set {
+                    this[this.tablePlanParameterValue.LayerNameColumn] = value;
+                }
+            }
+            
+            public string PlanName {
+                get {
+                    return ((string)(this[this.tablePlanParameterValue.PlanNameColumn]));
+                }
+                set {
+                    this[this.tablePlanParameterValue.PlanNameColumn] = value;
+                }
+            }
+            
+            public string Name {
+                get {
+                    return ((string)(this[this.tablePlanParameterValue.NameColumn]));
+                }
+                set {
+                    this[this.tablePlanParameterValue.NameColumn] = value;
+                }
+            }
+            
+            public string Value {
+                get {
+                    try {
+                        return ((string)(this[this.tablePlanParameterValue.ValueColumn]));
+                    }
+                    catch (InvalidCastException e) {
+                        throw new StrongTypingException("Cannot get value because it is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tablePlanParameterValue.ValueColumn] = value;
+                }
+            }
+            
+            public SpritePlanRow SpritePlanRowParent {
+                get {
+                    return ((SpritePlanRow)(this.GetParentRow(this.Table.ParentRelations["SpritePlanPlanParameterValue"])));
+                }
+                set {
+                    this.SetParentRow(value, this.Table.ParentRelations["SpritePlanPlanParameterValue"]);
+                }
+            }
+            
+            public bool IsValueNull() {
+                return this.IsNull(this.tablePlanParameterValue.ValueColumn);
+            }
+            
+            public void SetValueNull() {
+                this[this.tablePlanParameterValue.ValueColumn] = System.Convert.DBNull;
+            }
+        }
+        
+        [System.Diagnostics.DebuggerStepThrough()]
+        public class PlanParameterValueRowChangeEvent : EventArgs {
+            
+            private PlanParameterValueRow eventRow;
+            
+            private DataRowAction eventAction;
+            
+            public PlanParameterValueRowChangeEvent(PlanParameterValueRow row, DataRowAction action) {
+                this.eventRow = row;
+                this.eventAction = action;
+            }
+            
+            public PlanParameterValueRow Row {
                 get {
                     return this.eventRow;
                 }

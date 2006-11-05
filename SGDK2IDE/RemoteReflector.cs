@@ -149,6 +149,10 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
          result[i].Type = new SGDK2.RemotingServices.RemoteTypeName(pi[i].PropertyType);
          result[i].CanRead = pi[i].CanRead;
          result[i].CanWrite = pi[i].CanWrite;
+         if (pi[i].IsDefined(typeof(System.ComponentModel.DescriptionAttribute), true))
+            result[i].Description = ((System.ComponentModel.DescriptionAttribute)System.Attribute.GetCustomAttribute(pi[i], typeof(System.ComponentModel.DescriptionAttribute))).Description;
+         else
+            result[i].Description = String.Empty;
       }
       for (int i = 0; i < fi.Length; i++)
       {
@@ -157,8 +161,21 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
          result[idx].Type = new SGDK2.RemotingServices.RemoteTypeName(fi[i].FieldType);
          result[idx].CanRead = true;
          result[idx].CanWrite = ((fi[i].Attributes & System.Reflection.FieldAttributes.InitOnly) == 0);
+         if (fi[i].IsDefined(typeof(System.ComponentModel.DescriptionAttribute), true))
+            result[idx].Description = ((System.ComponentModel.DescriptionAttribute)System.Attribute.GetCustomAttribute(fi[i], typeof(System.ComponentModel.DescriptionAttribute))).Description;
+         else
+            result[idx].Description = String.Empty;
+         result[idx].Static = (0 != (int)(fi[i].Attributes & System.Reflection.FieldAttributes.Static));
       }
       return result;
+   }
+
+   public bool IsEnum
+   {
+      get
+      {
+         return reflectType.IsEnum;
+      }
    }
 
    public string[] GetEnumVals()

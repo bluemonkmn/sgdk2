@@ -123,6 +123,10 @@ namespace SGDK2
       ProjectDataset.TileCategoryRowChangeEventHandler m_TileCategoryChanging = null;
       ProjectDataset.TileCategoryRowChangeEventHandler m_TileCategoryDeleted = null;
       ProjectDataset.TileCategoryRowChangeEventHandler m_TileCategoryDeleting = null;
+      ProjectDataset.PlanParameterValueRowChangeEventHandler m_PlanParameterValueChanged = null;
+      ProjectDataset.PlanParameterValueRowChangeEventHandler m_PlanParameterValueChanging = null;
+      ProjectDataset.PlanParameterValueRowChangeEventHandler m_PlanParameterValueDeleted = null;
+      ProjectDataset.PlanParameterValueRowChangeEventHandler m_PlanParameterValueDeleting = null;
       System.EventHandler m_Clearing = null;
 
       public DataChangeNotifier(System.ComponentModel.IContainer container)
@@ -369,6 +373,14 @@ namespace SGDK2
                TileCategoryRowDeleted -= m_TileCategoryDeleted;
             if (m_TileCategoryDeleting != null)
                TileCategoryRowDeleting -= m_TileCategoryDeleting;
+            if (m_PlanParameterValueChanged != null)
+               PlanParameterValueRowChanged -= m_PlanParameterValueChanged;
+            if (m_PlanParameterValueChanging != null)
+               PlanParameterValueRowChanging -= m_PlanParameterValueChanging;
+            if (m_PlanParameterValueDeleted != null)
+               PlanParameterValueRowDeleted -= m_PlanParameterValueDeleted;
+            if (m_PlanParameterValueDeleting != null)
+               PlanParameterValueRowDeleting -= m_PlanParameterValueDeleting;
             if (m_Clearing != null)
                Clearing -= m_Clearing;
          }
@@ -2113,6 +2125,70 @@ namespace SGDK2
             Debug.Assert(m_TileCategoryDeleting == value);
             ProjectData.TileCategoryRowDeleting -= value;
             m_TileCategoryDeleting = null;
+         }
+      }
+      public event ProjectDataset.PlanParameterValueRowChangeEventHandler PlanParameterValueRowChanged
+      {
+         add
+         {
+            Debug.Assert(m_PlanParameterValueChanged == null);
+            if (m_PlanParameterValueChanged != null)
+               ProjectData.PlanParameterValueRowChanged -= m_PlanParameterValueChanged;
+            ProjectData.PlanParameterValueRowChanged += m_PlanParameterValueChanged = value;
+         }
+         remove
+         {
+            Debug.Assert(m_PlanParameterValueChanged == value);
+            ProjectData.PlanParameterValueRowChanged -= value;
+            m_PlanParameterValueChanged = null;
+         }
+      }
+      public event ProjectDataset.PlanParameterValueRowChangeEventHandler PlanParameterValueRowChanging
+      {
+         add
+         {
+            Debug.Assert(m_PlanParameterValueChanging == null);
+            if (m_PlanParameterValueChanging != null)
+               ProjectData.PlanParameterValueRowChanging -= m_PlanParameterValueChanging;
+            ProjectData.PlanParameterValueRowChanging += m_PlanParameterValueChanging = value;
+         }
+         remove
+         {
+            Debug.Assert(m_PlanParameterValueChanging == value);
+            ProjectData.PlanParameterValueRowChanging -= value;
+            m_PlanParameterValueChanging = null;
+         }
+      }
+      public event ProjectDataset.PlanParameterValueRowChangeEventHandler PlanParameterValueRowDeleted
+      {
+         add
+         {
+            Debug.Assert(m_PlanParameterValueDeleted == null);
+            if (m_PlanParameterValueDeleted != null)
+               ProjectData.PlanParameterValueRowDeleted -= m_PlanParameterValueDeleted;
+            ProjectData.PlanParameterValueRowDeleted += m_PlanParameterValueDeleted = value;
+         }
+         remove
+         {
+            Debug.Assert(m_PlanParameterValueDeleted == value);
+            ProjectData.PlanParameterValueRowDeleted -= value;
+            m_PlanParameterValueDeleted = null;
+         }
+      }
+      public event ProjectDataset.PlanParameterValueRowChangeEventHandler PlanParameterValueRowDeleting
+      {
+         add
+         {
+            Debug.Assert(m_PlanParameterValueDeleting == null);
+            if (m_PlanParameterValueDeleting != null)
+               ProjectData.PlanParameterValueRowDeleting -= m_PlanParameterValueDeleting;
+            ProjectData.PlanParameterValueRowDeleting += m_PlanParameterValueDeleting = value;
+         }
+         remove
+         {
+            Debug.Assert(m_PlanParameterValueDeleting == value);
+            ProjectData.PlanParameterValueRowDeleting -= value;
+            m_PlanParameterValueDeleting = null;
          }
       }
       public event System.EventHandler Clearing

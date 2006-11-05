@@ -300,6 +300,8 @@ public abstract class SpriteBase : GeneralRules
          return false;
       foreach(SpriteBase spr in PlatformList)
       {
+         if (!spr.isActive)
+            continue;
          if((oldY + SolidHeight <= spr.oldY) &&
             (y + SolidHeight > spr.y) &&
             (x + SolidWidth > spr.x) &&

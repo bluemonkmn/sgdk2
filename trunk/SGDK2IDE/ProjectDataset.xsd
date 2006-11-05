@@ -145,6 +145,16 @@
                                              <xs:attribute name="Suspended" type="xs:boolean" default="false" msprop:nullValue="false" />
                                           </xs:complexType>
                                        </xs:element>
+                                       <xs:element name="PlanParameterValue">
+                                          <xs:complexType>
+                                             <xs:sequence></xs:sequence>
+                                             <xs:attribute name="MapName" type="xs:Name" />
+                                             <xs:attribute name="LayerName" type="xs:Name" />
+                                             <xs:attribute name="PlanName" type="xs:Name" />
+                                             <xs:attribute name="Name" type="xs:Name" />
+                                             <xs:attribute name="Value" type="xs:string" />
+                                          </xs:complexType>
+                                       </xs:element>
                                     </xs:sequence>
                                     <xs:attribute name="MapName" type="xs:Name" use="prohibited" />
                                     <xs:attribute name="LayerName" type="xs:Name" use="prohibited" />
@@ -633,5 +643,19 @@
          <xs:selector xpath=".//CategorizedTileset" />
          <xs:field xpath="@Name" />
       </xs:keyref>
+      <xs:keyref name="SpritePlanPlanParameterValue" refer="SpritePlanKey" msdata:DeleteRule="Cascade"
+         msdata:UpdateRule="Cascade" msdata:IsNested="true">
+         <xs:selector xpath=".//PlanParameterValue" />
+         <xs:field xpath="@MapName" />
+         <xs:field xpath="@LayerName" />
+         <xs:field xpath="@PlanName" />
+      </xs:keyref>
+      <xs:key name="PlanParameterValueKey" msdata:PrimaryKey="true">
+         <xs:selector xpath=".//PlanParameterValue" />
+         <xs:field xpath="@MapName" />
+         <xs:field xpath="@LayerName" />
+         <xs:field xpath="@PlanName" />
+         <xs:field xpath="@Name" />
+      </xs:key>
    </xs:element>
 </xs:schema>

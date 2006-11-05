@@ -2575,5 +2575,66 @@ namespace SGDK2
          }
       }
       #endregion     
+
+      #region PlanParameterValue
+      public static event ProjectDataset.PlanParameterValueRowChangeEventHandler PlanParameterValueRowChanged
+      {
+         add
+         {
+            m_dsPrj.PlanParameterValue.PlanParameterValueRowChanged += value;
+         }
+         remove
+         {
+            m_dsPrj.PlanParameterValue.PlanParameterValueRowChanged -= value;
+         }
+      }
+      public static event ProjectDataset.PlanParameterValueRowChangeEventHandler PlanParameterValueRowChanging
+      {
+         add
+         {
+            m_dsPrj.PlanParameterValue.PlanParameterValueRowChanging += value;
+         }
+         remove
+         {
+            m_dsPrj.PlanParameterValue.PlanParameterValueRowChanging -= value;
+         }
+      }
+      public static event ProjectDataset.PlanParameterValueRowChangeEventHandler PlanParameterValueRowDeleted
+      {
+         add
+         {
+            m_dsPrj.PlanParameterValue.PlanParameterValueRowDeleted += value;
+         }
+         remove
+         {
+            m_dsPrj.PlanParameterValue.PlanParameterValueRowDeleted -= value;
+         }
+      }
+      public static event ProjectDataset.PlanParameterValueRowChangeEventHandler PlanParameterValueRowDeleting
+      {
+         add
+         {
+            m_dsPrj.PlanParameterValue.PlanParameterValueRowDeleting += value;
+         }
+         remove
+         {
+            m_dsPrj.PlanParameterValue.PlanParameterValueRowDeleting -= value;
+         }
+      }
+      public static ProjectDataset.PlanParameterValueDataTable PlanParameterValue
+      {
+         get
+         {
+            return m_dsPrj.PlanParameterValue;
+         }
+      }
+      public static ProjectDataset.PlanParameterValueRow AddPlanParameterValue(ProjectDataset.SpritePlanRow parent, string parameterName, string parameterValue)
+      {
+         return m_dsPrj.PlanParameterValue.AddPlanParameterValueRow(
+            parent[m_dsPrj.SpritePlan.MapNameColumn].ToString(),
+            parent[m_dsPrj.SpritePlan.LayerNameColumn].ToString(),
+            parent.Name, parameterName, parameterValue);
+      }
+      #endregion
    }
 }

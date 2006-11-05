@@ -629,6 +629,26 @@ namespace SGDK2
 
       private void DoNewProject()
       {
+         if (ProjectData.GetChangedTables().Length > 0)
+         {
+            switch (MessageBox.Show(this, "Changes to the project have not been saved.  Do you want to save them before clearing the project?", "Save Changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+            {
+               case DialogResult.Yes:
+                  if (m_strProjectPath == null)
+                     mnuFileSavePrjAs_Click(this, null);
+                  else
+                  {
+                     ProjectData.WriteXml(m_strProjectPath);
+                     ProjectData.AcceptChanges();
+                  }
+                  if (m_strProjectPath == null)
+                     return;
+                  break;
+               case DialogResult.Cancel:
+                  return;
+            }
+         }
+
          mnuFileDeleteOutputFiles.Enabled = false;
          ProjectData.Clear();
          InitializeTree();
@@ -2072,6 +2092,26 @@ namespace SGDK2
       {
          try
          {
+            if (ProjectData.GetChangedTables().Length > 0)
+            {
+               switch (MessageBox.Show(this, "Changes to the project have not been saved.  Do you want to save them before loading another project?", "Save Changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+               {
+                  case DialogResult.Yes:
+                     if (m_strProjectPath == null)
+                        mnuFileSavePrjAs_Click(this, e);
+                     else
+                     {
+                        ProjectData.WriteXml(m_strProjectPath);
+                        ProjectData.AcceptChanges();
+                     }
+                     if (m_strProjectPath == null)
+                        return;
+                     break;
+                  case DialogResult.Cancel:
+                     return;
+               }
+            }
+
             OpenFileDialog fd = new OpenFileDialog();
             fd.CheckFileExists = true;
             fd.DefaultExt = "sgdk2";
@@ -2202,6 +2242,9 @@ namespace SGDK2
 
       private void mnuFileRunProject_Click(object sender, System.EventArgs e)
       {
+         if (!Validate())
+            return;
+
          if (m_strProjectPath == null)
          {
             mnuFileSavePrj_Click(sender, e);
@@ -2247,6 +2290,9 @@ namespace SGDK2
 
       private void mnuFileRunProjectInDebugMode_Click(object sender, System.EventArgs e)
       {
+         if (!Validate())
+            return;
+
          if (m_strProjectPath == null)
          {
             mnuFileSavePrj_Click(sender, e);

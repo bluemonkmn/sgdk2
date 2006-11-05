@@ -102,6 +102,15 @@ class CompileResx
          rd = new System.Resources.ResXResourceReader("CustomObjectData.resx");
          WriteResources(rd,"SGDK2.frmCustomObjectData.resources");
          rd.Close();
+         rd = new System.Resources.ResXResourceReader("CodeImport.resx");
+         WriteResources(rd,"SGDK2.frmCodeImport.resources");
+         rd.Close();
+         rd = new System.Resources.ResXResourceReader("SoundPlayer.resx");
+         WriteResources(rd,"SGDK2.frmSoundPlayer.resources");
+         rd.Close();
+         rd = new System.Resources.ResXResourceReader("SelectSpriteParameter.resx");
+         WriteResources(rd,"SGDK2.frmSelectSpriteParameter.resources");
+         rd.Close();
       }
       public static void WriteResources(System.Resources.ResXResourceReader rd, string sFile)
       {

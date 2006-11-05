@@ -16,6 +16,7 @@ namespace SGDK2
 
       #region Constants
       public const string SpritesNamespace = "Sprites";
+      public const string SpriteBaseClass = "SpriteBase";
       private const string ResourcesField = "m_res";
       private const string ResourcesProperty = "m_res";
       private const string ProjectClass = "Project";
@@ -49,7 +50,7 @@ namespace SGDK2
       private const string LayerParentField = "m_ParentMap";
       private const string LayerParentArg = "ParentMap";
       public const string SpritePlanParentField = "m_ParentLayer";
-      private const string SpritePlanParentProperty = "ParentLayer";
+      public const string SpritePlanParentProperty = "ParentLayer";
       private const string SpritePlanParentArg = "ParentLayer";
       private const string GameFormInstance = "GameWindow";
       private const string GameFormType = "GameForm";
@@ -57,8 +58,11 @@ namespace SGDK2
       private const string UndefinedSolidityProperty = "UndefinedSolidity";
       private const string SpriteProcessedRulesField = "Processed";
       private const string LayerSpriteCategoriesBaseClassName = "LayerSpriteCategoriesBase";
+      public const string LayerSpriteCategoriesClassName = "LayerSpriteCategories";
       public const string SpriteCollectionClassName = "SpriteCollection";
       private const string LayerBaseClassName = "LayerBase";
+      public const string PlanBaseClassName = "PlanBase";
+      public const string SpriteCategoriesFieldName = "m_SpriteCategories";
       #endregion
 
       #region Embedded Types
@@ -948,7 +952,7 @@ namespace SGDK2
                      CodeArrayCreateExpression createFrameList = new CodeArrayCreateExpression(
                         typeof(int), new CodeExpression[] {});
                      CodeFieldReferenceExpression refCategory = new CodeFieldReferenceExpression(
-                           new CodeTypeReferenceExpression("TileCategoryName"), drCat.CategorizedTilesetRowParent.Name);
+                        new CodeTypeReferenceExpression("TileCategoryName"), drCat.CategorizedTilesetRowParent.Name);
                      CodeObjectCreateExpression createTileFrameMembership = new CodeObjectCreateExpression(
                         "TileFrameMembership", new CodeExpression[]
                         { refCategory, createFrameList });
@@ -1397,139 +1401,136 @@ namespace SGDK2
                   new CodeThisReferenceExpression(), fldLayer.Name), "ExecuteRules"));
             }
 
-            if (plans.Length > 0)
+            foreach(ProjectDataset.SpritePlanRow drPlan in plans)
             {
-               foreach(ProjectDataset.SpritePlanRow drPlan in plans)
-               {
-                  CodeTypeDeclaration clsPlan = new CodeTypeDeclaration(NameToVariable(drPlan.Name));
-                  clsLayer.Members.Add(clsPlan);
-                  clsPlan.BaseTypes.Add("PlanBase");
+               CodeTypeDeclaration clsPlan = new CodeTypeDeclaration(NameToVariable(drPlan.Name));
+               clsLayer.Members.Add(clsPlan);
+               clsPlan.BaseTypes.Add(PlanBaseClassName);
 
-                  clsPlan.Members.Add(new CodeMemberField(clsLayer.Name, SpritePlanParentField));
+               clsPlan.Members.Add(new CodeMemberField(clsLayer.Name, SpritePlanParentField));
 
-                  CodeConstructor planConstructor = new CodeConstructor();
-                  clsPlan.Members.Add(planConstructor);
-                  planConstructor.Attributes = MemberAttributes.Public | MemberAttributes.Final;
-                  planConstructor.Parameters.Add(new CodeParameterDeclarationExpression(
-                     clsLayer.Name, SpritePlanParentArg));
-                  planConstructor.Statements.Add(new CodeAssignStatement(
-                     new CodeFieldReferenceExpression(
-                     new CodeThisReferenceExpression(), SpritePlanParentField),
-                     new CodeArgumentReferenceExpression(SpritePlanParentArg)));
+               CodeConstructor planConstructor = new CodeConstructor();
+               clsPlan.Members.Add(planConstructor);
+               planConstructor.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+               planConstructor.Parameters.Add(new CodeParameterDeclarationExpression(
+                  clsLayer.Name, SpritePlanParentArg));
+               planConstructor.Statements.Add(new CodeAssignStatement(
+                  new CodeFieldReferenceExpression(
+                  new CodeThisReferenceExpression(), SpritePlanParentField),
+                  new CodeArgumentReferenceExpression(SpritePlanParentArg)));
 
-                  CodeMemberProperty prpPlanParent = new CodeMemberProperty();
-                  prpPlanParent.Name = SpritePlanParentProperty;
-                  prpPlanParent.Attributes = MemberAttributes.Public | MemberAttributes.Override;
-                  prpPlanParent.HasGet = true;
-                  prpPlanParent.HasSet = false;
-                  prpPlanParent.Type = new CodeTypeReference(LayerBaseClassName);
-                  prpPlanParent.GetStatements.Add(new CodeMethodReturnStatement(
-                     new CodeFieldReferenceExpression(
-                     new CodeThisReferenceExpression(), SpritePlanParentField)));
-                  clsPlan.Members.Add(prpPlanParent);
+               CodeMemberProperty prpPlanParent = new CodeMemberProperty();
+               prpPlanParent.Name = SpritePlanParentProperty;
+               prpPlanParent.Attributes = MemberAttributes.Public | MemberAttributes.Override;
+               prpPlanParent.HasGet = true;
+               prpPlanParent.HasSet = false;
+               prpPlanParent.Type = new CodeTypeReference(LayerBaseClassName);
+               prpPlanParent.GetStatements.Add(new CodeMethodReturnStatement(
+                  new CodeFieldReferenceExpression(
+                  new CodeThisReferenceExpression(), SpritePlanParentField)));
+               clsPlan.Members.Add(prpPlanParent);
 
-                  CodeMemberField fldPlan = new CodeMemberField(clsPlan.Name, "m_" + NameToVariable(drPlan.Name));
-                  fldPlan.Attributes = MemberAttributes.Private | MemberAttributes.Final;
-                  clsLayer.Members.Add(fldPlan);
-                  lyrConstructor.Statements.Add(new CodeAssignStatement(
-                     new CodeFieldReferenceExpression(
-                     new CodeThisReferenceExpression(), fldPlan.Name),
-                     new CodeObjectCreateExpression(clsPlan.Name,
-                     new CodeThisReferenceExpression())));
+               CodeMemberField fldPlan = new CodeMemberField(clsPlan.Name, "m_" + NameToVariable(drPlan.Name));
+               fldPlan.Attributes = MemberAttributes.Private | MemberAttributes.Final;
+               clsLayer.Members.Add(fldPlan);
+               lyrConstructor.Statements.Add(new CodeAssignStatement(
+                  new CodeFieldReferenceExpression(
+                  new CodeThisReferenceExpression(), fldPlan.Name),
+                  new CodeObjectCreateExpression(clsPlan.Name,
+                  new CodeThisReferenceExpression())));
                
-                  ProjectDataset.CoordinateRow[] drCoords = ProjectData.GetSortedCoordinates(drPlan);
-                  if (drCoords.Length == 2)
+               ProjectDataset.CoordinateRow[] drCoords = ProjectData.GetSortedCoordinates(drPlan);
+               if (drCoords.Length == 2)
+               {
+                  CodeMemberField fldRect = new CodeMemberField(typeof(System.Drawing.Rectangle), "m_PlanRectangle");
+                  fldRect.Attributes = MemberAttributes.Private | MemberAttributes.Final;
+                  int minX = drCoords[0].X;
+                  int maxX;
+                  if (drCoords[1].X >= minX)
+                     maxX = drCoords[1].X;
+                  else
                   {
-                     CodeMemberField fldRect = new CodeMemberField(typeof(System.Drawing.Rectangle), "m_PlanRectangle");
-                     fldRect.Attributes = MemberAttributes.Private | MemberAttributes.Final;
-                     int minX = drCoords[0].X;
-                     int maxX;
-                     if (drCoords[1].X >= minX)
-                        maxX = drCoords[1].X;
-                     else
-                     {
-                        maxX = minX;
-                        minX = drCoords[1].X;
-                     }
-                     int minY = drCoords[0].Y;
-                     int maxY;
-                     if (drCoords[1].Y >= minY)
-                        maxY = drCoords[1].Y;
-                     else
-                     {
-                        maxY = minY;
-                        minY = drCoords[1].Y;
-                     }
-                     // Rectangle size is one pixel smaller than second coordinate
-                     // In order to allow snap-to-tile feature to create rectangles
-                     // that align to tile boundaries.
-                     fldRect.InitExpression = new CodeObjectCreateExpression(typeof(System.Drawing.Rectangle),
-                        new CodePrimitiveExpression(minX),
-                        new CodePrimitiveExpression(minY),
-                        new CodePrimitiveExpression(maxX - minX),
-                        new CodePrimitiveExpression(maxY - minY));
-                     clsPlan.Members.Add(fldRect);
-
-                     CodeMemberProperty prpRect = new CodeMemberProperty();
-                     prpRect.Type = new CodeTypeReference(typeof(System.Drawing.Rectangle));
-                     prpRect.Name = "PlanRectangle";
-                     prpRect.Attributes = MemberAttributes.Public | MemberAttributes.Override;
-                     prpRect.HasGet = true;
-                     prpRect.HasSet = false;
-                     prpRect.GetStatements.Add(new CodeMethodReturnStatement(
-                        new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fldRect.Name)));
-                     clsPlan.Members.Add(prpRect);
+                     maxX = minX;
+                     minX = drCoords[1].X;
                   }
-                  CodeMemberField fldCoords = new CodeMemberField(new CodeTypeReference(CoordinateTypeName, 1), "m_Coords");
-                  fldCoords.Attributes = MemberAttributes.Private | MemberAttributes.Final;
-                  fldCoords.InitExpression = new CodeArrayCreateExpression();
-                  ((CodeArrayCreateExpression)fldCoords.InitExpression).CreateType = new CodeTypeReference(CoordinateTypeName);
-                  foreach (ProjectDataset.CoordinateRow drCoord in drCoords)
-                  {  
-                     ((CodeArrayCreateExpression)fldCoords.InitExpression).Initializers.Add(
-                        new CodeObjectCreateExpression(CoordinateTypeName,
-                        new CodePrimitiveExpression(drCoord.X),
-                        new CodePrimitiveExpression(drCoord.Y),
-                        new CodePrimitiveExpression(drCoord.Weight)));
-                  }
-                  clsPlan.Members.Add(fldCoords);
-
-                  CodeMemberProperty prpCoords = new CodeMemberProperty();
-                  prpCoords.Name = "Coordinates";
-                  prpCoords.Attributes = MemberAttributes.Family | MemberAttributes.Override;
-                  prpCoords.Type = new CodeTypeReference(CoordinateTypeName,1);
-                  prpCoords.HasGet = true;
-                  prpCoords.HasSet = false;
-                  prpCoords.GetStatements.Add(new CodeMethodReturnStatement(
-                     new CodeFieldReferenceExpression(
-                     new CodeThisReferenceExpression(), fldCoords.Name)));
-                  clsPlan.Members.Add(prpCoords);
-
-                  if (GenerateLevel > CodeLevel.ExcludeRules)
+                  int minY = drCoords[0].Y;
+                  int maxY;
+                  if (drCoords[1].Y >= minY)
+                     maxY = drCoords[1].Y;
+                  else
                   {
-                     ProjectDataset.PlanRuleRow[] rules = ProjectData.GetSortedPlanRules(drPlan, false);
-                     if (rules.Length > 0)
-                     {
-                        mthExecuteLayerRules.Statements.Add(
-                           new CodeMethodInvokeExpression(
-                           new CodeFieldReferenceExpression(
-                           new CodeThisReferenceExpression(), fldPlan.Name),
-                           "ExecuteRules"));
+                     maxY = minY;
+                     minY = drCoords[1].Y;
+                  }
+                  // Rectangle size is one pixel smaller than second coordinate
+                  // In order to allow snap-to-tile feature to create rectangles
+                  // that align to tile boundaries.
+                  fldRect.InitExpression = new CodeObjectCreateExpression(typeof(System.Drawing.Rectangle),
+                     new CodePrimitiveExpression(minX),
+                     new CodePrimitiveExpression(minY),
+                     new CodePrimitiveExpression(maxX - minX),
+                     new CodePrimitiveExpression(maxY - minY));
+                  clsPlan.Members.Add(fldRect);
 
-                        RuleContent[] ruleArray = new RuleContent[rules.Length];
-                        for (int i = 0; i < rules.Length; i++)
-                           ruleArray[i] = new RuleContent(rules[i]);
-                        CodeMemberMethod mthExecuteRules = new CodeMemberMethod();
-                        mthExecuteRules.Name = "ExecuteRules";
-                        mthExecuteRules.Attributes = MemberAttributes.Override | MemberAttributes.Public;
-                        GenerateRules(ruleArray, mthExecuteRules);
-                        clsPlan.Members.Add(mthExecuteRules);
-                     }
+                  CodeMemberProperty prpRect = new CodeMemberProperty();
+                  prpRect.Type = new CodeTypeReference(typeof(System.Drawing.Rectangle));
+                  prpRect.Name = "PlanRectangle";
+                  prpRect.Attributes = MemberAttributes.Public | MemberAttributes.Override;
+                  prpRect.HasGet = true;
+                  prpRect.HasSet = false;
+                  prpRect.GetStatements.Add(new CodeMethodReturnStatement(
+                     new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fldRect.Name)));
+                  clsPlan.Members.Add(prpRect);
+               }
+               CodeMemberField fldCoords = new CodeMemberField(new CodeTypeReference(CoordinateTypeName, 1), "m_Coords");
+               fldCoords.Attributes = MemberAttributes.Private | MemberAttributes.Final;
+               fldCoords.InitExpression = new CodeArrayCreateExpression();
+               ((CodeArrayCreateExpression)fldCoords.InitExpression).CreateType = new CodeTypeReference(CoordinateTypeName);
+               foreach (ProjectDataset.CoordinateRow drCoord in drCoords)
+               {  
+                  ((CodeArrayCreateExpression)fldCoords.InitExpression).Initializers.Add(
+                     new CodeObjectCreateExpression(CoordinateTypeName,
+                     new CodePrimitiveExpression(drCoord.X),
+                     new CodePrimitiveExpression(drCoord.Y),
+                     new CodePrimitiveExpression(drCoord.Weight)));
+               }
+               clsPlan.Members.Add(fldCoords);
+
+               CodeMemberProperty prpCoords = new CodeMemberProperty();
+               prpCoords.Name = "Coordinates";
+               prpCoords.Attributes = MemberAttributes.Family | MemberAttributes.Override;
+               prpCoords.Type = new CodeTypeReference(CoordinateTypeName,1);
+               prpCoords.HasGet = true;
+               prpCoords.HasSet = false;
+               prpCoords.GetStatements.Add(new CodeMethodReturnStatement(
+                  new CodeFieldReferenceExpression(
+                  new CodeThisReferenceExpression(), fldCoords.Name)));
+               clsPlan.Members.Add(prpCoords);
+
+               if (GenerateLevel > CodeLevel.ExcludeRules)
+               {
+                  ProjectDataset.PlanRuleRow[] rules = ProjectData.GetSortedPlanRules(drPlan, false);
+                  if (rules.Length > 0)
+                  {
+                     mthExecuteLayerRules.Statements.Add(
+                        new CodeMethodInvokeExpression(
+                        new CodeFieldReferenceExpression(
+                        new CodeThisReferenceExpression(), fldPlan.Name),
+                        "ExecuteRules"));
+
+                     RuleContent[] ruleArray = new RuleContent[rules.Length];
+                     for (int i = 0; i < rules.Length; i++)
+                        ruleArray[i] = new RuleContent(rules[i]);
+                     CodeMemberMethod mthExecuteRules = new CodeMemberMethod();
+                     mthExecuteRules.Name = "ExecuteRules";
+                     mthExecuteRules.Attributes = MemberAttributes.Override | MemberAttributes.Public;
+                     GenerateRules(ruleArray, mthExecuteRules);
+                     clsPlan.Members.Add(mthExecuteRules);
                   }
                }
             }
 
-            CodeTypeDeclaration clsLayerSpriteCategories = new CodeTypeDeclaration("LayerSpriteCategories");
+            CodeTypeDeclaration clsLayerSpriteCategories = new CodeTypeDeclaration(LayerSpriteCategoriesClassName);
             clsLayer.Members.Add(clsLayerSpriteCategories);
 
             CodeMemberField fldSprCatLayer = new CodeMemberField(clsLayer.Name, "m_layer");
@@ -1537,11 +1538,6 @@ namespace SGDK2
             clsLayerSpriteCategories.Members.Add(fldSprCatLayer);
 
             clsLayerSpriteCategories.BaseTypes.Add(LayerSpriteCategoriesBaseClassName);
-            lyrConstructor.Statements.Add(
-               new CodeAssignStatement(
-               new CodeFieldReferenceExpression(
-               new CodeThisReferenceExpression(), "m_SpriteCategories"),
-               new CodeObjectCreateExpression(clsLayerSpriteCategories.Name, new CodeThisReferenceExpression())));
 
             CodeConstructor constructLayerSpriteCategories = new CodeConstructor();
             clsLayerSpriteCategories.Members.Add(constructLayerSpriteCategories);
@@ -1612,7 +1608,10 @@ namespace SGDK2
                      ProjectDataset.SpriteCategoryRow drCat = drCatSpr.SpriteCategoryRow;
                      if (!htCategories.ContainsKey(drCat.Name))
                         htCategories[drCat.Name] = new System.Collections.ArrayList();
-                     ((System.Collections.ArrayList)htCategories[drCat.Name]).Add(fldrefSpr);                        
+                     ((System.Collections.ArrayList)htCategories[drCat.Name]).Add(
+                        new CodeFieldReferenceExpression(
+                        new CodeArgumentReferenceExpression(constructLayerSpriteCategories.Parameters[0].Name),
+                        fldrefSpr.FieldName));
                   }
 
                   int priority;
@@ -1668,46 +1667,60 @@ namespace SGDK2
                {
                   foreach(System.Collections.DictionaryEntry de in htCategories)
                   {
-                     clsLayer.Members.Add(new CodeMemberField(
+                     clsLayerSpriteCategories.Members.Add(new CodeMemberField(
                         SpriteCollectionClassName, "m_" + NameToVariable(de.Key.ToString())));
-                     lyrConstructor.Statements.Add(new CodeAssignStatement(
+                     constructLayerSpriteCategories.Statements.Add(new CodeAssignStatement(
                         new CodeFieldReferenceExpression(
                         new CodeThisReferenceExpression(), "m_" + NameToVariable(de.Key.ToString())),
                         new CodeObjectCreateExpression(SpriteCollectionClassName,
                         (CodeFieldReferenceExpression[])((System.Collections.ArrayList)de.Value).ToArray(
                         typeof(CodeFieldReferenceExpression)))));
-                     CodeMemberProperty prpSpriteCat = new CodeMemberProperty();
-                     prpSpriteCat.Type = new CodeTypeReference(SpriteCollectionClassName);
-                     prpSpriteCat.Attributes = MemberAttributes.Public | MemberAttributes.Final;
-                     prpSpriteCat.HasGet = true;
-                     prpSpriteCat.HasSet = false;
-                     prpSpriteCat.Name = NameToVariable(de.Key.ToString());
-                     prpSpriteCat.GetStatements.Add(
-                        new CodeMethodReturnStatement(
-                        new CodeFieldReferenceExpression(
-                        new CodeThisReferenceExpression(), "m_" + NameToVariable(de.Key.ToString()))));
-                     clsLayer.Members.Add(prpSpriteCat);
 
                      CodeMemberProperty prpLayerSpriteCategory = new CodeMemberProperty();
                      prpLayerSpriteCategory.Type = new CodeTypeReference(SpriteCollectionClassName);
                      prpLayerSpriteCategory.Attributes = MemberAttributes.Public | MemberAttributes.Override;
                      prpLayerSpriteCategory.HasGet = true;
                      prpLayerSpriteCategory.HasSet = false;
-                     prpLayerSpriteCategory.Name = prpSpriteCat.Name;
+                     prpLayerSpriteCategory.Name = NameToVariable(de.Key.ToString());
                      prpLayerSpriteCategory.GetStatements.Add(
                         new CodeMethodReturnStatement(
                         new CodeFieldReferenceExpression(
-                        new CodeFieldReferenceExpression(
-                        new CodeThisReferenceExpression(), "m_layer"),
+                        new CodeThisReferenceExpression(),
                         "m_" + NameToVariable(de.Key.ToString()))));
                      clsLayerSpriteCategories.Members.Add(prpLayerSpriteCategory);
                   }
                }
             }
+
+            // Initialize plan parameters after other objects are initialized because
+            // the plan parameters might refer to them.
+            foreach(ProjectDataset.SpritePlanRow drPlan in plans)
+            {
+               ProjectDataset.PlanParameterValueRow[] planParams = drPlan.GetPlanParameterValueRows();
+               if (planParams.Length > 0)
+               {
+                  foreach(ProjectDataset.PlanParameterValueRow planParam in planParams)
+                  {
+                     lyrConstructor.Statements.Add(new CodeAssignStatement(
+                        new CodeFieldReferenceExpression(
+                        new CodeFieldReferenceExpression(
+                        new CodeThisReferenceExpression(),
+                        "m_" + NameToVariable(drPlan.Name)),
+                        planParam.Name), new CodeSnippetExpression(planParam.Value)));
+                  }
+               }
+            }
+
             lyrConstructor.Statements.Add(new CodeAssignStatement(
                new CodeFieldReferenceExpression(
                new CodeThisReferenceExpression(), "m_Sprites"),
                createLayerSprites));
+
+            lyrConstructor.Statements.Add(
+               new CodeAssignStatement(
+               new CodeFieldReferenceExpression(
+               new CodeThisReferenceExpression(), SpriteCategoriesFieldName),
+               new CodeObjectCreateExpression(clsLayerSpriteCategories.Name, new CodeThisReferenceExpression())));
          }
          // Flush forces ScissorRectangle to apply to this batch only.
          mthDraw.Statements.Add(new CodeMethodInvokeExpression(
@@ -1919,7 +1932,7 @@ namespace SGDK2
          CodeTypeDeclaration clsSpriteDef = new CodeTypeDeclaration(NameToVariable(drSpriteDef.Name));
          nsSprites.Types.Add(clsSpriteDef);
 
-         clsSpriteDef.BaseTypes.Add("SpriteBase");
+         clsSpriteDef.BaseTypes.Add(SpriteBaseClass);
          CodeConstructor constructor = new CodeConstructor();
          constructor.Attributes = MemberAttributes.Public;
          constructor.Parameters.AddRange(new CodeParameterDeclarationExpression[]
@@ -2401,6 +2414,27 @@ namespace SGDK2
       #endregion
 
       #region Compilation
+      private class frmWaitWindow : System.Windows.Forms.Form
+      {
+         public frmWaitWindow()
+         {
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.TopMost = true;
+            this.Size = new System.Drawing.Size(320,80);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.ControlBox = false;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            System.Windows.Forms.Label lblStatus = new System.Windows.Forms.Label();
+            lblStatus.Dock = System.Windows.Forms.DockStyle.Fill;
+            lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            lblStatus.Text = "Compiling temporary project for runtime property inspection";
+            this.Controls.Add(lblStatus);
+            this.Show();
+            this.Update();
+         }
+      }
+      
       /// <summary>
       /// Compile a the temporary instance of the project to use for reflection
       /// (retrieving function names and parameter info, etc).
@@ -2416,60 +2450,63 @@ namespace SGDK2
             m_TempAssembly.Dispose();
          m_TempAssembly = null;
 
-         string errs;
-         string[] code = GenerateCodeStrings(out errs);
-         if ((errs != null) && (errs.Length > 0))
-            return errs;
-
-         System.IO.Stream remoteReflectorStream  = System.Reflection.Assembly.GetAssembly(typeof(SGDK2IDE)).GetManifestResourceStream("SGDK2.RemoteReflector.cs");
-         System.IO.StreamReader readReflector = new System.IO.StreamReader(remoteReflectorStream);
-         string[] tmpcode = new string[code.Length + 1];
-         code.CopyTo(tmpcode, 0);
-         tmpcode[code.Length] = readReflector.ReadToEnd();
-         code = tmpcode;
-         readReflector.Close();
-         
-         Microsoft.CSharp.CSharpCodeProvider codeProvider = new Microsoft.CSharp.CSharpCodeProvider();
-         System.CodeDom.Compiler.ICodeCompiler compiler = codeProvider.CreateCompiler();
-         System.CodeDom.Compiler.CompilerParameters compilerParams = new System.CodeDom.Compiler.CompilerParameters(new string[] {}, System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, "SGDK2Tmp.dll"));
-         System.Reflection.Assembly asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Matrix));
-         compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
-         asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Device));
-         compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
-         asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Sprite));
-         compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
-         asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.DirectInput.KeyboardState));
-         compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
-         compilerParams.ReferencedAssemblies.Add("System.Windows.Forms.dll");
-         compilerParams.ReferencedAssemblies.Add("System.dll");
-         compilerParams.ReferencedAssemblies.Add("System.Drawing.dll");
-         compilerParams.ReferencedAssemblies.Add("System.Design.dll");
-         compilerParams.ReferencedAssemblies.Add(System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, "SGDK2IDE.exe"));
-         foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
+         using (new frmWaitWindow())
          {
-            ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
-            if (drCode.Name.EndsWith(".dll") && !IsOldDll(GetProjectRelativePath(drCode.Name)))
+            string errs;
+            string[] code = GenerateCodeStrings(out errs);
+            if ((errs != null) && (errs.Length > 0))
+               return errs;
+
+            System.IO.Stream remoteReflectorStream  = System.Reflection.Assembly.GetAssembly(typeof(SGDK2IDE)).GetManifestResourceStream("SGDK2.RemoteReflector.cs");
+            System.IO.StreamReader readReflector = new System.IO.StreamReader(remoteReflectorStream);
+            string[] tmpcode = new string[code.Length + 1];
+            code.CopyTo(tmpcode, 0);
+            tmpcode[code.Length] = readReflector.ReadToEnd();
+            code = tmpcode;
+            readReflector.Close();
+         
+            Microsoft.CSharp.CSharpCodeProvider codeProvider = new Microsoft.CSharp.CSharpCodeProvider();
+            System.CodeDom.Compiler.ICodeCompiler compiler = codeProvider.CreateCompiler();
+            System.CodeDom.Compiler.CompilerParameters compilerParams = new System.CodeDom.Compiler.CompilerParameters(new string[] {}, System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, "SGDK2Tmp.dll"));
+            System.Reflection.Assembly asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Matrix));
+            compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
+            asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Device));
+            compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
+            asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Sprite));
+            compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
+            asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.DirectInput.KeyboardState));
+            compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
+            compilerParams.ReferencedAssemblies.Add("System.Windows.Forms.dll");
+            compilerParams.ReferencedAssemblies.Add("System.dll");
+            compilerParams.ReferencedAssemblies.Add("System.Drawing.dll");
+            compilerParams.ReferencedAssemblies.Add("System.Design.dll");
+            compilerParams.ReferencedAssemblies.Add(System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, "SGDK2IDE.exe"));
+            foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
             {
-               System.Reflection.Assembly refAssy = System.Reflection.Assembly.LoadWithPartialName(System.IO.Path.GetFileNameWithoutExtension(drCode.Name));
-               if (refAssy != null)
+               ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
+               if (drCode.Name.EndsWith(".dll") && !IsOldDll(GetProjectRelativePath(drCode.Name)))
                {
-                  string assyPath = refAssy.GetModules(false)[0].FullyQualifiedName;
-                  compilerParams.ReferencedAssemblies.Add(assyPath);
+                  System.Reflection.Assembly refAssy = System.Reflection.Assembly.LoadWithPartialName(System.IO.Path.GetFileNameWithoutExtension(drCode.Name));
+                  if (refAssy != null)
+                  {
+                     string assyPath = refAssy.GetModules(false)[0].FullyQualifiedName;
+                     compilerParams.ReferencedAssemblies.Add(assyPath);
+                  }
                }
             }
-         }
-         compilerParams.GenerateExecutable = false;
-         System.CodeDom.Compiler.CompilerResults results = compiler.CompileAssemblyFromSourceBatch(compilerParams, code);
-         if (results.Errors.Count > 0)
-         {
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
-            for (int i = 0; i < results.Errors.Count; i++)
+            compilerParams.GenerateExecutable = false;
+            System.CodeDom.Compiler.CompilerResults results = compiler.CompileAssemblyFromSourceBatch(compilerParams, code);
+            if (results.Errors.Count > 0)
             {
-               sb.Append(results.Errors[i].ToString() + Environment.NewLine);
+               System.Text.StringBuilder sb = new System.Text.StringBuilder();
+               for (int i = 0; i < results.Errors.Count; i++)
+               {
+                  sb.Append(results.Errors[i].ToString() + Environment.NewLine);
+               }
+               return sb.ToString();
             }
-            return sb.ToString();
+            m_TempAssembly = new TempAssembly(compilerParams.OutputAssembly);
          }
-         m_TempAssembly = new TempAssembly(compilerParams.OutputAssembly);
          return null;
       }
 

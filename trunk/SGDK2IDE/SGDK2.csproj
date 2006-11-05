@@ -476,6 +476,16 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "SelectSpriteParameter.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "SelectSpriteParameter.resx"
+                    DependentUpon = "SelectSpriteParameter.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "SelectTileset.cs"
                     SubType = "Form"
                     BuildAction = "Compile"

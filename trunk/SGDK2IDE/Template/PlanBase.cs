@@ -9,7 +9,8 @@ using Microsoft.DirectX;
 public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
 {
    public static int SharedTemp1;
-   public static int TargetDistance = 5;
+   [Description("How close must a sprite be to a coordinate in this plan before heading to the next (default=5)")]
+   public int TargetDistance = 5;
 
 	protected PlanBase()
 	{

@@ -113,6 +113,10 @@ namespace SGDK2
          RemotePropertyInfo[] GetProperties();
          RemoteGlobalAccessorInfo[] GetGlobalProvidersOfSelf();
          RemoteMethodInfo[] GetGlobalFunctions();
+         bool IsEnum
+         {
+            get;
+         }
          string[] GetEnumVals();
          RemoteTypeName[] GetSubclasses();
       }
@@ -124,6 +128,8 @@ namespace SGDK2
          public RemoteTypeName Type;
          public bool CanRead;
          public bool CanWrite;
+         public string Description;
+         public bool Static;
       }
    }
 

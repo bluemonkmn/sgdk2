@@ -6,6 +6,7 @@ using Microsoft.DirectX;
 /// <summary>
 /// Summary description for LayerBase.
 /// </summary>
+[Serializable()]
 public abstract class LayerBase : System.Collections.IEnumerable
 {
    #region Embedded Classes
@@ -48,6 +49,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
    #region Fields
    protected readonly Tileset m_Tileset;
    private Frameset m_Frameset;
+   [NonSerialized()]
    private System.Collections.ArrayList m_InjectedFrames = null;
    
    private readonly int m_nLeftBuffer;
@@ -752,6 +754,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
    #endregion
 }
 
+[Serializable()]
 public abstract class IntLayer : LayerBase
 {
    public int[,] m_Tiles;
@@ -789,6 +792,7 @@ public abstract class IntLayer : LayerBase
    }
 }
 
+[Serializable()]
 public abstract class ShortLayer : LayerBase
 {
    public short[,] m_Tiles;
@@ -826,6 +830,7 @@ public abstract class ShortLayer : LayerBase
    }
 }
 
+[Serializable()]
 public abstract class ByteLayer : LayerBase
 {
    public byte[,] m_Tiles;

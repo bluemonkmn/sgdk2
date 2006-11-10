@@ -5,6 +5,7 @@ using System.Diagnostics;
 /// <summary>
 /// Base class for all sprite definitions.
 /// </summary>
+[Serializable()]
 public abstract class SpriteBase : GeneralRules
 {
    public double x;
@@ -229,6 +230,7 @@ public abstract class SpriteBase : GeneralRules
    /// <summary>
    /// Determines if this sprite's definition's rules have been processed yet this frame
    /// </summary>
+   [NonSerialized()]
    public bool Processed;
 
    /// <summary>
@@ -877,6 +879,7 @@ public abstract class SpriteBase : GeneralRules
 
    // Do not allocate appreciable memory unless this sprite
    // participates in tile interaction.
+   [NonSerialized()]
    System.Collections.ArrayList TouchedTiles = null;
 
    [Description("Collects information about tiles the sprite is currently touching.  Category should include all tiles that the sprite interacts with.  Must be called before performing any tile interaction.")]

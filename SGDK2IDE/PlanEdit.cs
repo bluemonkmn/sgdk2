@@ -1154,6 +1154,12 @@ namespace SGDK2
 
       private void DetectSpriteContext(int argIdx, string fldValue, ComboBox cboSource)
       {
+         if (m_AvailableRules == null)
+            return;
+
+         if (!m_AvailableRules.Contains(cboFunction.Text))
+            return;
+
          RemotingServices.RemoteMethodInfo rmi = m_AvailableRules[cboFunction.Text];
          if ((argIdx >= 0) && (rmi.Arguments[argIdx].Type.Name == CodeGenerator.SpriteBaseClass) && (cboSource.SelectedIndex >= 0) && (cboSource.Items[cboSource.SelectedIndex] is SpriteCodeRef))
          {

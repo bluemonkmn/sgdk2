@@ -4,9 +4,11 @@ using System.Drawing;
 /// <summary>
 /// Base class for all maps.
 /// </summary>
+[Serializable()]
 public abstract class MapBase
 {
    protected Display m_Display;
+   public Type m_CameFromMapType = null;
     
    public MapBase(Display Disp)
    {

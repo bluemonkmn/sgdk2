@@ -12,6 +12,7 @@ path %windir%;%windir%\System32;%windir%\Microsoft.NET\Framework\v1.1.4322
 csc CompileResx.cs
 CompileResx.exe
 del SGDK2IDE.exe
+csc /o+ /target:library /out:Reflect.dll Reflect\RemotingServices.cs Reflect\AssemblyInfo.cs
 echo >Input.txt /o+ /target:winexe /win32icon:App.ico
 ;echo >>Input.txt /lib:%windir%\assembly\gac\Microsoft.DirectX\1.0.2902.0__31bf3856ad364e35
 ;echo >>Input.txt /lib:%windir%\assembly\gac\Microsoft.DirectX.Direct3D\1.0.2902.0__31bf3856ad364e35
@@ -26,6 +27,7 @@ echo >>Input.txt /r:Microsoft.DirectX.dll
 echo >>Input.txt /r:Microsoft.DirectX.Direct3D.dll
 echo >>Input.txt /r:Microsoft.DirectX.Direct3DX.dll
 echo >>Input.txt /r:Microsoft.DirectX.DirectInput.dll
+echo >>Input.txt /r:Reflect.dll
 echo >>Input.txt /res:SGDK2.SGDK2IDE.resources
 echo >>Input.txt /res:SGDK2.frmMain.resources
 echo >>Input.txt /res:SGDK2.frmGraphicsEditor.resources
@@ -106,7 +108,6 @@ echo >>Input.txt SpriteDefinition.cs
 echo >>Input.txt Solidity.cs
 echo >>Input.txt TileCategory.cs
 echo >>Input.txt DataGridComboBox.cs
-echo >>Input.txt RemotingServices.cs
 echo >>Input.txt SpriteCache.cs
 echo >>Input.txt SpriteConverter.cs
 echo >>Input.txt SpriteCategories.cs

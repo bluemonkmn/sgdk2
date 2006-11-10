@@ -6,6 +6,7 @@ using Microsoft.DirectX;
 /// <summary>
 /// Base class for "plans", which consist of map coordinates and rules
 /// </summary>
+[Serializable()]
 public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
 {
    public static int SharedTemp1;
@@ -16,6 +17,7 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
 	{
 	}
 
+   [Serializable()]
    public struct Coordinate
    {
       public int x;

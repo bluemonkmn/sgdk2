@@ -3,6 +3,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SGDK2", "SGDK2.csproj", "{A
 	ProjectSection(ProjectDependencies) = postProject
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reflect", "Reflect\Reflect.csproj", "{C8D38510-B197-47A1-9CE0-C2ED6187278E}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfiguration) = preSolution
 		Debug = Debug
@@ -13,6 +17,10 @@ Global
 		{A1F1DF5A-C16F-4439-BC2B-E99FE2904941}.Debug.Build.0 = Debug|.NET
 		{A1F1DF5A-C16F-4439-BC2B-E99FE2904941}.Release.ActiveCfg = Release|.NET
 		{A1F1DF5A-C16F-4439-BC2B-E99FE2904941}.Release.Build.0 = Release|.NET
+		{C8D38510-B197-47A1-9CE0-C2ED6187278E}.Debug.ActiveCfg = Debug|.NET
+		{C8D38510-B197-47A1-9CE0-C2ED6187278E}.Debug.Build.0 = Debug|.NET
+		{C8D38510-B197-47A1-9CE0-C2ED6187278E}.Release.ActiveCfg = Release|.NET
+		{C8D38510-B197-47A1-9CE0-C2ED6187278E}.Release.Build.0 = Release|.NET
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 	EndGlobalSection

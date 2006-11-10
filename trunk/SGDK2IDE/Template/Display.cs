@@ -21,7 +21,8 @@ public enum GameDisplayMode
 /// <summary>
 /// Manages the display device on which real-time game graphics are drawn
 /// </summary>
-public class Display : ScrollableControl
+[Serializable()]
+public class Display : ScrollableControl, System.Runtime.Serialization.ISerializable
 {
    #region Win32 API Constants
    public const int WS_EX_CLIENTEDGE = unchecked((int)0x00000200);
@@ -589,6 +590,36 @@ public class Display : ScrollableControl
    private void d3d_DeviceReset(object sender, EventArgs e)
    {
       DisposeAllTextures();
+   }
+   #endregion
+
+   #region ISerializable Members
+
+   public void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+   {
+      info.SetType(typeof(DisplayRef));
+   }
+
+   #endregion
+}
+
+[Serializable()]
+public class DisplayRef : System.Runtime.Serialization.IObjectReference, System.Runtime.Serialization.ISerializable
+{
+
+   private DisplayRef(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+   {
+   }
+
+   public void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+   {
+      throw new System.NotImplementedException("Unexpected serialization call");
+   }
+
+   #region IObjectReference Members
+   public object GetRealObject(System.Runtime.Serialization.StreamingContext context)
+   {
+      return Project.GameWindow.GameDisplay;
    }
    #endregion
 }

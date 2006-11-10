@@ -3,7 +3,8 @@ using System;
 namespace SGDK2
 {
 	/// <summary>
-	/// Summary description for RemotingServices.
+	/// Defines interfaces for passing type information accross application domains
+	/// without loading the remote assembly into the main domain.
 	/// </summary>
 	public class RemotingServices
 	{
@@ -133,7 +134,7 @@ namespace SGDK2
       }
    }
 
-   class RuleTable : System.Collections.DictionaryBase
+   public class RuleTable : System.Collections.DictionaryBase
    {
       public RemotingServices.RemoteMethodInfo this[string name]
       {
@@ -214,7 +215,7 @@ namespace SGDK2
       }
    }
 
-   class EnumTable : System.Collections.DictionaryBase
+   public class EnumTable : System.Collections.DictionaryBase
    {
       public string[] this[string name]
       {

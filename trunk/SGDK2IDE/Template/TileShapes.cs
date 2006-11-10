@@ -1,6 +1,7 @@
 using System;
 
-public struct SolidityMapping
+[Serializable()]
+public struct SolidityMapping : System.Runtime.Serialization.ISerializable
 {
    public TileCategoryName category;
    public TileShape shape;
@@ -9,6 +10,20 @@ public struct SolidityMapping
    {
       this.category = category;
       this.shape = shape;
+   }
+
+   private SolidityMapping(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+   {
+      category = (TileCategoryName)info.GetInt32("TileCategoryName");
+      shape = (TileShape)System.Type.GetType(info.GetString("TileShapeName"), true, false).GetProperty("Value",
+         System.Reflection.BindingFlags.GetProperty | System.Reflection.BindingFlags.Static |
+         System.Reflection.BindingFlags.Public).GetValue(null, null);
+   }
+
+   public void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+   {
+      info.AddValue("TileCategoryName", (System.Int32)category);
+      info.AddValue("TileShapeName", shape.GetType().Name);
    }
 }
 

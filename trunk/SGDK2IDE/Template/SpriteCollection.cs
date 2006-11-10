@@ -3,6 +3,7 @@ using System;
 /// <summary>
 /// Categorizes / collects sprite instances
 /// </summary>
+[Serializable()]
 public class SpriteCollection : System.Collections.ReadOnlyCollectionBase
 {
    public SpriteCollection(params SpriteBase[] sprites)

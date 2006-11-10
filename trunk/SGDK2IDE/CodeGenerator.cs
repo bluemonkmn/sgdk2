@@ -63,6 +63,11 @@ namespace SGDK2
       private const string LayerBaseClassName = "LayerBase";
       public const string PlanBaseClassName = "PlanBase";
       public const string SpriteCategoriesFieldName = "m_SpriteCategories";
+      private const string TilesetRefClassName = "TilesetRef";
+      private const string TilesetIndexSerializeName = "TilesetIndex";
+      private const string FramesetRefClassName = "FramesetRef";
+      private const string FramesetSerializeName = "FramesetName";
+      private const string GameDisplayField = "GameDisplay";
       #endregion
 
       #region Embedded Types
@@ -310,6 +315,10 @@ namespace SGDK2
          GenerateLayerSpriteCategoriesBase(txt);
          txt.Close();
 
+         txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, "AssemblyInfo.cs"));
+         GenerateAssemblyInfo(txt);
+         txt.Close();
+
          GenerateProjectSourceCode(FolderName);
          GenerateEmbeddedResources(FolderName);
 
@@ -333,7 +342,8 @@ namespace SGDK2
                System.IO.Path.Combine(FolderName, FramesetClass + ".cs"),
                System.IO.Path.Combine(FolderName, TilesetClass + ".cs"),
                System.IO.Path.Combine(FolderName, SolidityClassName + ".cs"),
-               System.IO.Path.Combine(FolderName, LayerSpriteCategoriesBaseClassName + ".cs")
+               System.IO.Path.Combine(FolderName, LayerSpriteCategoriesBaseClassName + ".cs"),
+               System.IO.Path.Combine(FolderName, "AssemblyInfo.cs")
             });
 
          foreach (System.Data.DataRowView drv in ProjectData.Map.DefaultView)
@@ -479,6 +489,11 @@ namespace SGDK2
          txt.Close();
          result.Add(txt.ToString());
 
+         txt = new System.IO.StringWriter();
+         GenerateAssemblyInfo(txt);
+         txt.Close();
+         result.Add(txt.ToString());
+
          foreach (System.Data.DataRowView drv in ProjectData.SpriteDefinition.DefaultView)
          {
             ProjectDataset.SpriteDefinitionRow drSpriteDef = (ProjectDataset.SpriteDefinitionRow)drv.Row;
@@ -607,13 +622,81 @@ namespace SGDK2
       public void GenerateFramesets(System.IO.TextWriter txt)
       {
          CodeTypeDeclaration framesetClassDecl = new CodeTypeDeclaration(FramesetClass);
+         framesetClassDecl.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
+         framesetClassDecl.BaseTypes.Add(typeof(System.Runtime.Serialization.ISerializable));
          framesetClassDecl.Members.Add(new CodeMemberField(new CodeTypeReference(FrameClass, 1), "m_arFrames"));
          framesetClassDecl.Members.Add(new CodeMemberField("Display", "m_Display"));
+         CodeMemberField fldFramesetName = new CodeMemberField(typeof(string), "Name");
+         framesetClassDecl.Members.Add(fldFramesetName);
          CodeConstructor framesetConstructor = new CodeConstructor();
          framesetConstructor.Attributes = MemberAttributes.Final | MemberAttributes.Private;
          framesetConstructor.Parameters.Add(new CodeParameterDeclarationExpression(typeof(string), "Name"));
          framesetConstructor.Parameters.Add(new CodeParameterDeclarationExpression(new CodeTypeReference("Display"), "disp"));
+         framesetConstructor.Statements.Add(
+            new CodeAssignStatement(
+            new CodeFieldReferenceExpression(
+            new CodeThisReferenceExpression(), fldFramesetName.Name),
+            new CodeArgumentReferenceExpression("Name")));
          framesetClassDecl.Members.Add(framesetConstructor);
+
+         // Implement ISerializable
+         CodeMemberMethod mthGetObjectData = CreateGetObjectDataMethod();
+         framesetClassDecl.Members.Add(mthGetObjectData);
+         mthGetObjectData.Statements.Add(
+            new CodeMethodInvokeExpression(
+            new CodeArgumentReferenceExpression("info"),
+            "SetType", new CodeExpression[]
+            {new CodeTypeOfExpression(FramesetRefClassName)}));
+         mthGetObjectData.Statements.Add(
+                  new CodeMethodInvokeExpression(
+                  new CodeArgumentReferenceExpression("info"),
+                  "AddValue", new CodeExpression[]
+               {
+                  new CodePrimitiveExpression(FramesetSerializeName),
+                  new CodeFieldReferenceExpression(
+                  new CodeThisReferenceExpression(), fldFramesetName.Name)
+               }));
+
+
+         CodeTypeDeclaration classFramesetRef = new CodeTypeDeclaration(FramesetRefClassName);
+         classFramesetRef.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
+         classFramesetRef.BaseTypes.Add(typeof(System.Runtime.Serialization.IObjectReference));
+         classFramesetRef.BaseTypes.Add(typeof(System.Runtime.Serialization.ISerializable));
+         CodeMemberField fldFramesetRefName = new CodeMemberField(typeof(string), "m_FramesetName");
+         classFramesetRef.Members.Add(fldFramesetRefName);
+         CodeConstructor framesetRefConstructor = new CodeConstructor();
+         classFramesetRef.Members.Add(framesetRefConstructor);
+         framesetRefConstructor.Parameters.Add(
+            new CodeParameterDeclarationExpression(
+            typeof(System.Runtime.Serialization.SerializationInfo), "info"));
+         framesetRefConstructor.Parameters.Add(
+            new CodeParameterDeclarationExpression(
+            typeof(System.Runtime.Serialization.StreamingContext), "context"));
+         framesetRefConstructor.Statements.Add(
+            new CodeAssignStatement(
+            new CodeFieldReferenceExpression(
+            new CodeThisReferenceExpression(), fldFramesetRefName.Name),
+            new CodeMethodInvokeExpression(
+            new CodeArgumentReferenceExpression("info"), "GetString",
+            new CodeExpression[]
+            {new CodePrimitiveExpression(FramesetSerializeName)})));
+
+         CodeMemberMethod mthRefGetObjectData = CreateGetObjectDataMethod();
+         classFramesetRef.Members.Add(mthRefGetObjectData);
+         mthRefGetObjectData.Statements.Add(
+            new CodeThrowExceptionStatement(
+            new CodeObjectCreateExpression(typeof(NotImplementedException),
+            new CodeExpression[]
+            { new CodePrimitiveExpression("Unexpected serialization call") })));
+
+         CodeMemberMethod mthGetRealObject = new CodeMemberMethod();
+         classFramesetRef.Members.Add(mthGetRealObject);
+         mthGetRealObject.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+         mthGetRealObject.Name = "GetRealObject";
+         mthGetRealObject.Parameters.Add(
+            new CodeParameterDeclarationExpression(
+            typeof(System.Runtime.Serialization.StreamingContext), "context"));
+         mthGetRealObject.ReturnType = new CodeTypeReference(typeof(object));
 
          CodeMemberField fldFramesetCache = new CodeMemberField(typeof(System.Collections.Hashtable), "m_CachedFramesets");
          framesetClassDecl.Members.Add(fldFramesetCache);
@@ -663,6 +746,20 @@ namespace SGDK2
 
          CodeConditionStatement topCondition = new CodeConditionStatement();
          CodeConditionStatement curCondition = topCondition;
+
+         mthGetRealObject.Statements.Add(
+            new CodeMethodReturnStatement(
+            new CodeMethodInvokeExpression(
+            new CodeTypeReferenceExpression(FramesetClass),
+            mthGetFrameset.Name, new CodeExpression[]
+            {
+               new CodeFieldReferenceExpression(
+               new CodeThisReferenceExpression(), fldFramesetRefName.Name),
+               new CodeFieldReferenceExpression(
+               new CodePropertyReferenceExpression(
+               new CodeTypeReferenceExpression(ProjectClass), GameFormInstance),
+               GameDisplayField)
+            })));
 
          foreach(System.Data.DataRowView drv in ProjectData.Frameset.DefaultView)
          {
@@ -735,6 +832,7 @@ namespace SGDK2
          framesetClassDecl.Members.Add(countProp);
 
          Generator.GenerateCodeFromType(framesetClassDecl, txt, GeneratorOptions);
+         Generator.GenerateCodeFromType(classFramesetRef, txt, GeneratorOptions);
       }
 
       public void GenerateCounters(System.IO.TextWriter txt)
@@ -814,9 +912,63 @@ namespace SGDK2
       public void GenerateTilesets(System.IO.TextWriter txt, System.IO.TextWriter err)
       {
          CodeTypeDeclaration classTileset = new CodeTypeDeclaration(TilesetClass);
+         classTileset.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
+         classTileset.BaseTypes.Add(typeof(System.Runtime.Serialization.ISerializable));
          CodeTypeConstructor staticConstructor = new CodeTypeConstructor();
          classTileset.Members.Add(staticConstructor);
          staticConstructor.Attributes |= MemberAttributes.Static;
+
+         // Implement ISerializable
+         CodeMemberMethod mthGetObjectData = CreateGetObjectDataMethod();
+         classTileset.Members.Add(mthGetObjectData);
+         mthGetObjectData.Statements.Add(
+            new CodeMethodInvokeExpression(
+            new CodeArgumentReferenceExpression("info"),
+            "SetType", new CodeExpression[]
+            {new CodeTypeOfExpression(TilesetRefClassName)}));            
+
+         CodeTypeDeclaration classTilesetRef = new CodeTypeDeclaration(TilesetRefClassName);
+         classTilesetRef.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
+         classTilesetRef.BaseTypes.Add(typeof(System.Runtime.Serialization.IObjectReference));
+         classTilesetRef.BaseTypes.Add(typeof(System.Runtime.Serialization.ISerializable));
+         CodeMemberField fldTilesetRefInst = new CodeMemberField(TilesetClass, "m_Tileset");
+         classTilesetRef.Members.Add(fldTilesetRefInst);
+         CodeConstructor tilesetRefConstructor = new CodeConstructor();
+         classTilesetRef.Members.Add(tilesetRefConstructor);
+         tilesetRefConstructor.Parameters.Add(
+            new CodeParameterDeclarationExpression(
+            typeof(System.Runtime.Serialization.SerializationInfo), "info"));
+         tilesetRefConstructor.Parameters.Add(
+            new CodeParameterDeclarationExpression(
+            typeof(System.Runtime.Serialization.StreamingContext), "context"));
+         CodeVariableDeclarationStatement varTilesetIndex =
+            new CodeVariableDeclarationStatement(typeof(int), "tilesetIndex",
+            new CodeMethodInvokeExpression(
+            new CodeArgumentReferenceExpression("info"), "GetInt32",
+            new CodeExpression[]
+            { new CodePrimitiveExpression(TilesetIndexSerializeName) }));
+         tilesetRefConstructor.Statements.Add(varTilesetIndex);
+
+         CodeMemberMethod mthRefGetObjectData = CreateGetObjectDataMethod();
+         classTilesetRef.Members.Add(mthRefGetObjectData);
+         mthRefGetObjectData.Statements.Add(
+            new CodeThrowExceptionStatement(
+            new CodeObjectCreateExpression(typeof(NotImplementedException),
+            new CodeExpression[]
+            { new CodePrimitiveExpression("Unexpected serialization call") })));
+
+         CodeMemberMethod mthGetRealObject = new CodeMemberMethod();
+         classTilesetRef.Members.Add(mthGetRealObject);
+         mthGetRealObject.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+         mthGetRealObject.Name = "GetRealObject";
+         mthGetRealObject.Parameters.Add(
+            new CodeParameterDeclarationExpression(
+            typeof(System.Runtime.Serialization.StreamingContext), "context"));
+         mthGetRealObject.ReturnType = new CodeTypeReference(typeof(object));
+         mthGetRealObject.Statements.Add(
+            new CodeMethodReturnStatement(
+            new CodeFieldReferenceExpression(
+            new CodeThisReferenceExpression(), fldTilesetRefInst.Name)));
 
          CodeMemberField fldTiles = new CodeMemberField(new CodeTypeReference(TileBaseClass, 1), TilesField);
          fldTiles.Attributes = MemberAttributes.Final | MemberAttributes.Private;
@@ -849,6 +1001,7 @@ namespace SGDK2
 
          CodeVariableReferenceExpression varTileList = new CodeVariableReferenceExpression(TileListVar);
 
+         int nTilesetIndex = 0;
          foreach(System.Data.DataRowView drv in ProjectData.Tileset.DefaultView)
          {
             ProjectDataset.TilesetRow drTileset = (ProjectDataset.TilesetRow)drv.Row;
@@ -991,9 +1144,45 @@ namespace SGDK2
                new CodePrimitiveExpression(drTileset.TileWidth),
                new CodePrimitiveExpression(drTileset.TileHeight),
                new CodePrimitiveExpression(drTileset.Frameset))));
-         }
 
-         CodeMemberProperty prpTile = new CodeMemberProperty();
+            mthGetObjectData.Statements.Add(
+               new CodeConditionStatement(
+               new CodeBinaryOperatorExpression(
+               new CodePropertyReferenceExpression(
+               new CodeTypeReferenceExpression(TilesetClass), prpTileset.Name),
+               CodeBinaryOperatorType.IdentityEquality,
+               new CodeThisReferenceExpression()),
+               new CodeStatement[]
+               {
+                  new CodeExpressionStatement(
+                  new CodeMethodInvokeExpression(
+                  new CodeArgumentReferenceExpression("info"),
+                  "AddValue", new CodeExpression[]
+               {
+                  new CodePrimitiveExpression(TilesetIndexSerializeName),
+                  new CodePrimitiveExpression(nTilesetIndex)
+               }))
+               }));
+
+            tilesetRefConstructor.Statements.Add(
+               new CodeConditionStatement(
+               new CodeBinaryOperatorExpression(
+               new CodeVariableReferenceExpression(varTilesetIndex.Name),
+               CodeBinaryOperatorType.ValueEquality,
+               new CodePrimitiveExpression(nTilesetIndex++)),
+               new CodeStatement[]
+               {
+                  new CodeAssignStatement(
+                  new CodeFieldReferenceExpression(
+                  new CodeThisReferenceExpression(), fldTilesetRefInst.Name),
+                  new CodeFieldReferenceExpression(
+                  new CodeTypeReferenceExpression(TilesetClass),
+                  prpTileset.Name)),
+                  new CodeMethodReturnStatement()
+               }));
+      }
+
+      CodeMemberProperty prpTile = new CodeMemberProperty();
          prpTile.Name = "Item";
          CodeParameterDeclarationExpression indexParam = new CodeParameterDeclarationExpression(typeof(int), "index");
          prpTile.Parameters.Add(indexParam);
@@ -1058,8 +1247,8 @@ namespace SGDK2
             new CodePropertyReferenceExpression(new CodeFieldReferenceExpression(
             new CodeThisReferenceExpression(), TilesField), "Length")));
          classTileset.Members.Add(prpTileCount);
-         
          Generator.GenerateCodeFromType(classTileset, txt, GeneratorOptions);
+         Generator.GenerateCodeFromType(classTilesetRef, txt, GeneratorOptions);
       }
 
       public void GenerateMapResx(ProjectDataset.MapRow drMap, System.IO.TextWriter txt)
@@ -1118,6 +1307,7 @@ namespace SGDK2
       {
          CodeTypeDeclaration clsMap = new CodeTypeDeclaration(NameToVariable(drMap.Name) + "_Map");
          clsMap.BaseTypes.Add("MapBase");
+         clsMap.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
          CodeConstructor constructor = new CodeConstructor();
          constructor.Attributes = MemberAttributes.Final | MemberAttributes.Public;
          constructor.Parameters.Add(new CodeParameterDeclarationExpression("Display", "Disp"));
@@ -1286,6 +1476,7 @@ namespace SGDK2
 
             CodeTypeDeclaration clsLayer = new CodeTypeDeclaration(NameToVariable(drLayer.Name)+ "_Lyr");
             clsLayer.BaseTypes.Add(lyrTyp);
+            clsLayer.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
             lyrTyp = new CodeTypeReference(clsLayer.Name);
             CodeConstructor lyrConstructor = new CodeConstructor();
             clsLayer.Members.Add(lyrConstructor);
@@ -1405,6 +1596,7 @@ namespace SGDK2
             {
                CodeTypeDeclaration clsPlan = new CodeTypeDeclaration(NameToVariable(drPlan.Name));
                clsLayer.Members.Add(clsPlan);
+               clsPlan.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
                clsPlan.BaseTypes.Add(PlanBaseClassName);
 
                clsPlan.Members.Add(new CodeMemberField(clsLayer.Name, SpritePlanParentField));
@@ -1532,6 +1724,7 @@ namespace SGDK2
 
             CodeTypeDeclaration clsLayerSpriteCategories = new CodeTypeDeclaration(LayerSpriteCategoriesClassName);
             clsLayer.Members.Add(clsLayerSpriteCategories);
+            clsLayerSpriteCategories.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
 
             CodeMemberField fldSprCatLayer = new CodeMemberField(clsLayer.Name, "m_layer");
             fldSprCatLayer.Attributes = MemberAttributes.Private;
@@ -1931,6 +2124,7 @@ namespace SGDK2
          CodeNamespace nsSprites = new CodeNamespace(SpritesNamespace);
          CodeTypeDeclaration clsSpriteDef = new CodeTypeDeclaration(NameToVariable(drSpriteDef.Name));
          nsSprites.Types.Add(clsSpriteDef);
+         clsSpriteDef.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
 
          clsSpriteDef.BaseTypes.Add(SpriteBaseClass);
          CodeConstructor constructor = new CodeConstructor();
@@ -2223,6 +2417,7 @@ namespace SGDK2
       public void GenerateLayerSpriteCategoriesBase(System.IO.TextWriter txt)
       {
          CodeTypeDeclaration clsLayerSpriteCategoriesBase = new CodeTypeDeclaration(LayerSpriteCategoriesBaseClassName);
+         clsLayerSpriteCategoriesBase.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
          CodeMemberField fldEmpty = new CodeMemberField(SpriteCollectionClassName, "m_EmptyCollection");
          fldEmpty.Attributes = MemberAttributes.Private | MemberAttributes.Static;
          fldEmpty.InitExpression = new CodeObjectCreateExpression(SpriteCollectionClassName);
@@ -2248,6 +2443,7 @@ namespace SGDK2
       public void GenerateSolidity(System.IO.TextWriter txt)
       {
          CodeTypeDeclaration clsSolidity = new CodeTypeDeclaration(SolidityClassName);
+         clsSolidity.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
          CodeConstructor constructor = new CodeConstructor();
          clsSolidity.Members.Add(constructor);
          CodeMemberField fldMappings = new CodeMemberField(
@@ -2358,10 +2554,31 @@ namespace SGDK2
 
          Generator.GenerateCodeFromType(clsSolidity, txt, GeneratorOptions);
       }
-      #endregion
 
-      #region Utility Functions
-      public static string NameToVariable(string name)
+      public void GenerateAssemblyInfo(System.IO.TextWriter txt)
+      {
+         CodeCompileUnit attributes = new CodeCompileUnit();
+         attributes.AssemblyCustomAttributes.Add(
+            new CodeAttributeDeclaration("System.Reflection.AssemblyVersion", new CodeAttributeArgument[]
+            { new CodeAttributeArgument(new CodePrimitiveExpression("1.0.0.0")) }));
+         
+         attributes.AssemblyCustomAttributes.Add(
+            new CodeAttributeDeclaration("System.Reflection.AssemblyCompany", new CodeAttributeArgument[]
+            { new CodeAttributeArgument(new CodePrimitiveExpression("Scrolling Game Development Kit")) }));
+
+         if (SGDK2IDE.CurrentProjectFile != null)
+         {
+            attributes.AssemblyCustomAttributes.Add(
+               new CodeAttributeDeclaration("System.Reflection.AssemblyProduct", new CodeAttributeArgument[]
+              { new CodeAttributeArgument(new CodePrimitiveExpression(System.IO.Path.GetFileNameWithoutExtension(SGDK2IDE.CurrentProjectFile))) }));
+         }
+
+         Generator.GenerateCodeFromCompileUnit(attributes, txt, GeneratorOptions);
+      }
+   #endregion
+
+   #region Utility Functions
+   public static string NameToVariable(string name)
       {
          return name.Replace(" ","_");
       }
@@ -2376,10 +2593,24 @@ namespace SGDK2
          return "namespace CustomObjects\r\n{\r\n   public class " + NameToVariable(name) +
             "\r\n   {\r\n\r\n   }\r\n}\r\n";
       }
-      public static string GetProjectRelativePath(string fileName)
+      public static string FindFullPath(string fileName)
       {
-         if ((!System.IO.Path.IsPathRooted(fileName)) && (SGDK2IDE.CurrentProjectFile != null))
-            return System.IO.Path.Combine(System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile), fileName);
+         string result;
+
+         if (!System.IO.Path.IsPathRooted(fileName))
+         {
+            if (SGDK2IDE.CurrentProjectFile != null)
+            {
+               result = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile), fileName);
+               if (System.IO.File.Exists(result))
+                  return result;
+            }
+         }
+         else if (System.IO.File.Exists(fileName))
+            return fileName;
+         result = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, System.IO.Path.GetFileName(fileName));
+         if (System.IO.File.Exists(result))
+            return result;
          return fileName;
       }
       public static bool IsOldDll(string fileName)
@@ -2410,6 +2641,20 @@ namespace SGDK2
          {
             file.Close();
          }
+      }
+      private CodeMemberMethod CreateGetObjectDataMethod()
+      {
+         CodeMemberMethod mthGetObjectData = new CodeMemberMethod();
+         mthGetObjectData.Name = "GetObjectData";
+         mthGetObjectData.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+         CodeParameterDeclarationExpression paramSerInfo = 
+            new CodeParameterDeclarationExpression(
+            typeof(System.Runtime.Serialization.SerializationInfo), "info");
+         mthGetObjectData.Parameters.Add(paramSerInfo);
+         mthGetObjectData.Parameters.Add(
+            new CodeParameterDeclarationExpression(
+            typeof(System.Runtime.Serialization.StreamingContext), "context"));
+         return mthGetObjectData;
       }
       #endregion
 
@@ -2480,11 +2725,11 @@ namespace SGDK2
             compilerParams.ReferencedAssemblies.Add("System.dll");
             compilerParams.ReferencedAssemblies.Add("System.Drawing.dll");
             compilerParams.ReferencedAssemblies.Add("System.Design.dll");
-            compilerParams.ReferencedAssemblies.Add(System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, "SGDK2IDE.exe"));
+            compilerParams.ReferencedAssemblies.Add(System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, "Reflect.dll"));
             foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
             {
                ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
-               if (drCode.Name.EndsWith(".dll") && !IsOldDll(GetProjectRelativePath(drCode.Name)))
+               if (drCode.Name.EndsWith(".dll") && !IsOldDll(FindFullPath(drCode.Name)))
                {
                   System.Reflection.Assembly refAssy = System.Reflection.Assembly.LoadWithPartialName(System.IO.Path.GetFileNameWithoutExtension(drCode.Name));
                   if (refAssy != null)
@@ -2590,9 +2835,9 @@ namespace SGDK2
             ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
             if (drCode.Name.EndsWith(".dll"))
             {
-               if (IsOldDll(GetProjectRelativePath(drCode.Name)))
+               if (IsOldDll(FindFullPath(drCode.Name)))
                {
-                  OldDlls.Add(GetProjectRelativePath(drCode.Name));
+                  OldDlls.Add(FindFullPath(drCode.Name));
                }
                else
                {

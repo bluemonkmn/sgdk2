@@ -459,7 +459,7 @@ namespace SGDK2
       /// </summary>
       /// <param name="dblHue">Number from 0 to 2*pi</param>
       /// <param name="dblSat">Number from 0 to 1 where 1 is maximum saturation and 0 is gray</param>
-      private Color HStoRGB(double dblHue, double dblSat)
+      private static Color HStoRGB(double dblHue, double dblSat)
       {
          double RangedAngle = dblHue * 3.0 / Math.PI;
          int red, green, blue;
@@ -508,9 +508,9 @@ namespace SGDK2
          return Color.FromArgb(red, green, blue);
       }
 
-      private Color HSVtoRGB(double dblHue, double dblSat, double dblVal)
+      public static Color HSVtoRGB(double dblHue, double dblSat, double dblVal)
       {
-         Color SelColor = HStoRGB(m_fHue, m_fSat);
+         Color SelColor = HStoRGB(dblHue, dblSat);
          SelColor = Color.FromArgb(
             (int)Math.Round(SelColor.R * dblVal),
             (int)Math.Round(SelColor.G * dblVal),
@@ -518,7 +518,7 @@ namespace SGDK2
          return SelColor;
       }
 
-      private float ScaleComponents(int high, int mid, int low)
+      private static float ScaleComponents(int high, int mid, int low)
       {
          float fHigh, fMid, fLow;
          if (high > 0)
@@ -541,7 +541,7 @@ namespace SGDK2
          return fMid;
       }
 
-      private void RGBtoHSV(Color clr, out float hue, out float sat, out float val)
+      public static void RGBtoHSV(Color clr, out float hue, out float sat, out float val)
       {
          hue = sat = val = 0.0f;
 
@@ -586,7 +586,7 @@ namespace SGDK2
          }
       }
 
-      private Bitmap MakeColorWheel(int Diameter)
+      public static Bitmap MakeColorWheel(int Diameter)
       {
          int Ctr = Diameter / 2;
 

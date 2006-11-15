@@ -111,6 +111,9 @@ class CompileResx
          rd = new System.Resources.ResXResourceReader("SelectSpriteParameter.resx");
          WriteResources(rd,"SGDK2.frmSelectSpriteParameter.resources");
          rd.Close();
+         rd = new System.Resources.ResXResourceReader("HueMapParams.resx");
+         WriteResources(rd,"SGDK2.frmHueMapParams.resources");
+         rd.Close();
       }
       public static void WriteResources(System.Resources.ResXResourceReader rd, string sFile)
       {

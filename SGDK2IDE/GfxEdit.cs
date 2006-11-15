@@ -299,6 +299,10 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuDisjointedColors;
       private System.Windows.Forms.ToolBarButton tbbDisjointedColors;
       private SGDK2.DataChangeNotifier dataMonitor;
+      private System.Windows.Forms.ToolBarButton tbbHueMap;
+      private System.Windows.Forms.ToolBarButton tbbNoise;
+      private System.Windows.Forms.MenuItem mnuHueMap;
+      private System.Windows.Forms.MenuItem mnuNoise;
       private System.Windows.Forms.MenuItem mnuHugePen;
       #endregion
 
@@ -464,6 +468,8 @@ namespace SGDK2
          this.tbbHOffset = new System.Windows.Forms.ToolBarButton();
          this.tbbVOffset = new System.Windows.Forms.ToolBarButton();
          this.tbbTilePreview = new System.Windows.Forms.ToolBarButton();
+         this.tbbHueMap = new System.Windows.Forms.ToolBarButton();
+         this.tbbNoise = new System.Windows.Forms.ToolBarButton();
          this.imlGraphicsEditor = new System.Windows.Forms.ImageList(this.components);
          this.mnuCZoom = new System.Windows.Forms.ContextMenu();
          this.mnuActualSize = new System.Windows.Forms.MenuItem();
@@ -588,6 +594,8 @@ namespace SGDK2
          this.ToolSplitter = new System.Windows.Forms.Splitter();
          this.ctlColorSel = new SGDK2.ColorSel();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
+         this.mnuHueMap = new System.Windows.Forms.MenuItem();
+         this.mnuNoise = new System.Windows.Forms.MenuItem();
          this.SuspendLayout();
          // 
          // tbrGraphicsEditor
@@ -620,7 +628,9 @@ namespace SGDK2
                                                                                              this.tbbVFlip,
                                                                                              this.tbbHOffset,
                                                                                              this.tbbVOffset,
-                                                                                             this.tbbTilePreview});
+                                                                                             this.tbbTilePreview,
+                                                                                             this.tbbHueMap,
+                                                                                             this.tbbNoise});
          this.tbrGraphicsEditor.ButtonSize = new System.Drawing.Size(23, 22);
          this.tbrGraphicsEditor.Divider = false;
          this.tbrGraphicsEditor.Dock = System.Windows.Forms.DockStyle.Left;
@@ -781,6 +791,16 @@ namespace SGDK2
          this.tbbTilePreview.ImageIndex = 43;
          this.tbbTilePreview.ToolTipText = "Preview how graphic will appear when tiled";
          // 
+         // tbbHueMap
+         // 
+         this.tbbHueMap.ImageIndex = 47;
+         this.tbbHueMap.ToolTipText = "Remap colors";
+         // 
+         // tbbNoise
+         // 
+         this.tbbNoise.ImageIndex = 48;
+         this.tbbNoise.ToolTipText = "Add noise";
+         // 
          // imlGraphicsEditor
          // 
          this.imlGraphicsEditor.ImageSize = new System.Drawing.Size(15, 15);
@@ -937,6 +957,8 @@ namespace SGDK2
                                                                                 this.mnuEditHOffset,
                                                                                 this.mnuEditVOffset,
                                                                                 this.mnuEditTilePreview,
+                                                                                this.mnuHueMap,
+                                                                                this.mnuNoise,
                                                                                 this.mnuEditSep4,
                                                                                 this.mnuEditSelectionHighlight,
                                                                                 this.mnuEditBackdrop,
@@ -1053,12 +1075,12 @@ namespace SGDK2
          // 
          // mnuEditSep4
          // 
-         this.mnuEditSep4.Index = 17;
+         this.mnuEditSep4.Index = 19;
          this.mnuEditSep4.Text = "-";
          // 
          // mnuEditSelectionHighlight
          // 
-         this.mnuEditSelectionHighlight.Index = 18;
+         this.mnuEditSelectionHighlight.Index = 20;
          this.mnuEditSelectionHighlight.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
                                                                                                   this.mnuEditShowHighlight,
                                                                                                   this.mnuEditHighlightSep1,
@@ -1160,7 +1182,7 @@ namespace SGDK2
          // 
          // mnuEditBackdrop
          // 
-         this.mnuEditBackdrop.Index = 19;
+         this.mnuEditBackdrop.Index = 21;
          this.mnuEditBackdrop.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
                                                                                         this.mnuEditBackWhiteDiamond,
                                                                                         this.mnuEditBackBlackDiamond,
@@ -1230,12 +1252,12 @@ namespace SGDK2
          // 
          // mnuEditSep5
          // 
-         this.mnuEditSep5.Index = 20;
+         this.mnuEditSep5.Index = 22;
          this.mnuEditSep5.Text = "-";
          // 
          // mnuEditShowGrid
          // 
-         this.mnuEditShowGrid.Index = 21;
+         this.mnuEditShowGrid.Index = 23;
          this.mnuEditShowGrid.Text = "&Grid";
          this.mnuEditShowGrid.Click += new System.EventHandler(this.mnuEditShowGrid_Click);
          // 
@@ -1712,6 +1734,18 @@ namespace SGDK2
          this.dataMonitor.GraphicSheetRowDeleted += new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(this.dataMonitor_GraphicSheetRowDeleted);
          this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
          // 
+         // mnuHueMap
+         // 
+         this.mnuHueMap.Index = 17;
+         this.mnuHueMap.Text = "Re&map Hues";
+         this.mnuHueMap.Click += new System.EventHandler(this.mnuHueMap_Click);
+         // 
+         // mnuNoise
+         // 
+         this.mnuNoise.Index = 18;
+         this.mnuNoise.Text = "Add &Noise";
+         this.mnuNoise.Click += new System.EventHandler(this.mnuNoise_Click);
+         // 
          // frmGraphicsEditor
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -1917,6 +1951,64 @@ namespace SGDK2
                   mi.Checked = (mi == cTool);
             ArrangePanes();
          }
+      }
+
+      private void RemapHues(frmHueMapParams frm, Bitmap target)
+      {
+         int maxX, maxY;
+         maxX = target.Width;
+         maxY = target.Height;
+
+         for (int y=0; y<maxY; y++)
+            for (int x=0; x<maxX; x++)
+            {
+               System.Drawing.Color clr;
+               clr = target.GetPixel(x,y);
+               if ((FloatingSelection == null) && (SelectedRegion != null) &&
+                  (!SelectedRegion.IsVisible((float)x, (float)y)))
+                        continue;
+               if (clr.A > 0)
+               {
+                  float oldHue;
+                  float oldSat;
+                  float oldVal;
+                  ColorSel.RGBtoHSV(clr, out oldHue, out oldSat, out oldVal);
+                  oldHue *= 180.0f / (float)Math.PI;
+
+                  // number 0-1 representing distance of hue into source range
+                  float rangeDistance = -1;
+                  if (frm.sourceHueRange > 0)
+                  {
+                     if ((oldHue >= frm.sourceStartHue) &&
+                        (oldHue <= frm.sourceStartHue + frm.sourceHueRange))
+                        rangeDistance = (oldHue - frm.sourceStartHue) / frm.sourceHueRange;
+                     else if ((oldHue + 360.0f >= frm.sourceStartHue) &&
+                        (oldHue + 360.0f <= frm.sourceStartHue + frm.sourceHueRange))
+                        rangeDistance = (oldHue + 360.0f - frm.sourceStartHue) / frm.sourceHueRange;
+                  }
+                  else
+                  {
+                     if ((oldHue <= frm.sourceStartHue) &&
+                        (oldHue >= frm.sourceStartHue + frm.sourceHueRange))
+                        rangeDistance = (oldHue - frm.sourceStartHue) / frm.sourceHueRange;
+                     else if ((oldHue - 360.0f <= frm.sourceStartHue) &&
+                        (oldHue - 360.0f >= frm.sourceStartHue + frm.sourceHueRange))
+                        rangeDistance = (oldHue - 360.0f - frm.sourceStartHue) / frm.sourceHueRange;
+                  }
+
+                  if (rangeDistance < 0)
+                     continue;
+
+                  float newHue = frm.targetStartHue + frm.targetHueRange * rangeDistance;
+                  while (newHue < 0)
+                     newHue += 360.0f;
+                  while (newHue >= 360.0f)
+                     newHue -= 360.0f;
+
+                  clr = ColorSel.HSVtoRGB(newHue * Math.PI / 180.0f, oldSat, oldVal);
+                  target.SetPixel(x, y, clr);
+               }
+            }
       }
       #endregion
 
@@ -2217,6 +2309,18 @@ namespace SGDK2
          if (e.Button == tbdCustomTool)
          {
             mnuCustomTool_Click(tbdCustomTool, null);
+            return;
+         }
+
+         if (e.Button == tbbHueMap)
+         {
+            mnuHueMap_Click(tbbHueMap, null);
+            return;
+         }
+
+         if (e.Button == tbbNoise)
+         {
+            mnuNoise_Click(tbbNoise, null);
             return;
          }
 
@@ -2662,6 +2766,137 @@ namespace SGDK2
       private void dataMonitor_Clearing(object sender, System.EventArgs e)
       {
          this.Close();
+      }
+
+      private void mnuHueMap_Click(object sender, System.EventArgs e)
+      {
+         using (frmHueMapParams frm = new frmHueMapParams())
+         {
+            frm.Preview += new EventHandler(HueRemap_Preview);
+            if (frm.ShowDialog(this) == DialogResult.OK)
+            {
+               if (FloatingSelection == null)
+                  RemapHues(frm, m_imgCurrentGraphic);
+               else
+                  RemapHues(frm, FloatingSelection);
+               m_frmMagnify.DrawTransparentImage(m_imgCurrentGraphic, null);
+               m_frmActual.DrawTransparentImage(m_imgCurrentGraphic, null);
+               ChildPane_GraphicChanged();      
+            }
+            else
+            {
+               m_frmMagnify.DrawTransparentImage(m_imgCurrentGraphic, null);
+               m_frmActual.DrawTransparentImage(m_imgCurrentGraphic, null);
+            }
+         }
+      }
+
+      private void mnuNoise_Click(object sender, System.EventArgs e)
+      {
+         Random rnd = new Random();
+         int maxX, maxY;
+         if (FloatingSelection != null)
+         {
+            maxX = FloatingSelection.Width;
+            maxY = FloatingSelection.Height;
+         }
+         else
+         {
+            maxX = m_imgCurrentGraphic.Width;
+            maxY = m_imgCurrentGraphic.Height;
+         }
+
+         string userEntry = frmInputBox.GetInput(this, "Add Noise", "Noise Level (1-255)", "24");
+         if (userEntry == null)
+            return;
+         int noiseLevel;
+         try
+         {
+            noiseLevel = int.Parse(userEntry);
+         }
+         catch(System.Exception ex)
+         {
+            MessageBox.Show(this, ex.Message, "Error Parsing Noise Level", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
+
+         for (int y=0; y<maxY; y++)
+            for (int x=0; x<maxX; x++)
+            {
+               System.Drawing.Color clr;
+               if (FloatingSelection != null)
+                  clr = FloatingSelection.GetPixel(x,y);
+               else
+               {
+                  if (SelectedRegion != null)
+                  {
+                     if (!SelectedRegion.IsVisible((float)x, (float)y))
+                        continue;
+                  }
+                  clr = m_imgCurrentGraphic.GetPixel(x,y);
+               }
+               if (clr.A > 0)
+               {
+                  byte newR = clr.R, newG = clr.G, newB = clr.B;
+                  int delta = rnd.Next(-noiseLevel,noiseLevel);
+                  if (newR + delta <= byte.MaxValue)
+                     if (newR + delta >= 0)
+                        newR += (byte)delta;
+                     else
+                        newR = 0;
+                  else
+                     newR = byte.MaxValue;
+                  if (newG + delta <= byte.MaxValue)
+                     if (newG + delta >= 0)
+                        newG += (byte)delta;
+                     else
+                        newG = 0;
+                  else
+                     newG = byte.MaxValue;
+                  if (newB + delta <= byte.MaxValue)
+                     if (newB + delta >= 0)
+                        newB += (byte)delta;
+                     else
+                        newB = 0;
+                  else
+                     newB = byte.MaxValue;
+                  clr = Color.FromArgb(clr.A, newR, newG, newB);
+                  if (FloatingSelection != null)
+                     FloatingSelection.SetPixel(x, y, clr);
+                  else
+                     m_imgCurrentGraphic.SetPixel(x, y, clr);
+               }
+            }
+         m_frmMagnify.DrawTransparentImage(m_imgCurrentGraphic, null);
+         m_frmActual.DrawTransparentImage(m_imgCurrentGraphic, null);
+         ChildPane_GraphicChanged();      
+      }
+
+      private void HueRemap_Preview(object sender, EventArgs e)
+      {
+         Bitmap target, tmp;
+         if (FloatingSelection != null)
+         {
+            target = (Bitmap)FloatingSelection.Clone();
+            RemapHues((frmHueMapParams)sender, target);
+            tmp = FloatingSelection;
+            FloatingSelection = target;
+            m_frmMagnify.DrawTransparentImage(m_imgCurrentGraphic, null);
+            m_frmActual.DrawTransparentImage(m_imgCurrentGraphic, null);
+            FloatingSelection = tmp;
+            target.Dispose();
+         }
+         else
+         {
+            target = (Bitmap)m_imgCurrentGraphic.Clone();
+            RemapHues((frmHueMapParams)sender, target);
+            tmp = m_imgCurrentGraphic;
+            m_imgCurrentGraphic = target;
+            m_frmMagnify.DrawTransparentImage(m_imgCurrentGraphic, null);
+            m_frmActual.DrawTransparentImage(m_imgCurrentGraphic, null);
+            m_imgCurrentGraphic = tmp;
+            target.Dispose();
+         }
       }
       #endregion
    }

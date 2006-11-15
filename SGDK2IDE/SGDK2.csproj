@@ -122,6 +122,11 @@
                     Project = "{C8D38510-B197-47A1-9CE0-C2ED6187278E}"
                     Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
                 />
+                <Reference
+                    Name = "Microsoft.VisualC"
+                    AssemblyName = "Microsoft.VisualC"
+                    HintPath = "..\..\..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\Microsoft.VisualC.dll"
+                />
             </References>
         </Build>
         <Files>
@@ -313,6 +318,16 @@
                 <File
                     RelPath = "GraphicBrowser.resx"
                     DependentUpon = "GraphicBrowser.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "HueMapParams.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "HueMapParams.resx"
+                    DependentUpon = "HueMapParams.cs"
                     BuildAction = "EmbeddedResource"
                 />
                 <File

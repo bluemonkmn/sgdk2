@@ -35,6 +35,11 @@ namespace SGDK2
       /// Determines whether this view should draw a grid when magnified.
       /// </summary>
       public Boolean ShowGrid;
+
+      /// <summary>
+      /// Last known mouse position
+      /// </summary>
+      public PointF DragEnd;
       #endregion
 
       #region Events
@@ -147,7 +152,7 @@ namespace SGDK2
       {
          try
          {
-            PointF DragEnd = ConvertMouseCoordsToPoint(e.X, e.Y);
+            DragEnd = ConvertMouseCoordsToPoint(e.X, e.Y);
             GraphicsPath pathTemp = null;
 
             switch(ParentEditor.CurrentTool)
@@ -370,11 +375,7 @@ namespace SGDK2
       {
          try
          {
-            ResetTempImage();
-            PointF DragEnd = ConvertMouseCoordsToPoint(e.X, e.Y);
-
-            Graphics g = Graphics.FromImage(TempImage);
-            ParentEditor.InitGraphicsSettings(g);
+            DragEnd = ConvertMouseCoordsToPoint(e.X, e.Y);
 
             this.Text = GetScaleFactorString() + " " + DragEnd.X.ToString() + "," + DragEnd.Y.ToString();
 
@@ -383,414 +384,440 @@ namespace SGDK2
                (ParentEditor.CurrentTool == DrawingTool.FreeLine))) ||
                ((ParentEditor.SelectionOutline != null) && (ParentEditor.CurrentTool == DrawingTool.SelFree)))
             {
-               PointF LT = new PointF(DragStart.X < DragEnd.X ? DragStart.X : DragEnd.X,
-                  DragStart.Y < DragEnd.Y ? DragStart.Y : DragEnd.Y);
-               PointF RB = new PointF(DragStart.X > DragEnd.X ? DragStart.X : DragEnd.X,
-                  DragStart.Y > DragEnd.Y ? DragStart.Y : DragEnd.Y);
-               RectangleF rcCur = RectangleF.FromLTRB( LT.X, LT.Y, RB.X, RB.Y);
-               float dist = (float)Math.Sqrt((DragStart.X - DragEnd.X) * (DragStart.X - DragEnd.X) +
-                  (DragStart.Y - DragEnd.Y) * (DragStart.Y - DragEnd.Y));
-
-               switch (ParentEditor.CurrentTool)
+               ResetTempImage();
+               using (Graphics g = Graphics.FromImage(TempImage))
                {
-                  case DrawingTool.Bezier:
-                  case DrawingTool.FreeLine:
-                  case DrawingTool.Line:
-                  case DrawingTool.GradientFill:
-                     if (0 != (ParentEditor.CurrentOptions & ToolOptions.Lock))
-                     {
-                        if (Math.Abs(DragEnd.Y - DragStart.Y) < 1)
+                  ParentEditor.InitGraphicsSettings(g);
+
+                  PointF LT = new PointF(DragStart.X < DragEnd.X ? DragStart.X : DragEnd.X,
+                     DragStart.Y < DragEnd.Y ? DragStart.Y : DragEnd.Y);
+                  PointF RB = new PointF(DragStart.X > DragEnd.X ? DragStart.X : DragEnd.X,
+                     DragStart.Y > DragEnd.Y ? DragStart.Y : DragEnd.Y);
+                  RectangleF rcCur = RectangleF.FromLTRB( LT.X, LT.Y, RB.X, RB.Y);
+                  float dist = (float)Math.Sqrt((DragStart.X - DragEnd.X) * (DragStart.X - DragEnd.X) +
+                     (DragStart.Y - DragEnd.Y) * (DragStart.Y - DragEnd.Y));
+
+                  switch (ParentEditor.CurrentTool)
+                  {
+                     case DrawingTool.Bezier:
+                     case DrawingTool.FreeLine:
+                     case DrawingTool.Line:
+                     case DrawingTool.GradientFill:
+                        if (0 != (ParentEditor.CurrentOptions & ToolOptions.Lock))
                         {
-                           DragEnd.Y = DragStart.Y;
-                        }
-                        else
-                        {
-                           float fRatio = (DragEnd.X - DragStart.X) / (DragEnd.Y - DragStart.Y);
-                           if (Math.Abs(fRatio) < 0.25f)
-                              DragEnd.X = DragStart.X;
-                           else if (Math.Abs(fRatio) < 0.75f)
-                              DragEnd.X = DragStart.X + (DragEnd.Y - DragStart.Y) * Math.Sign(fRatio) / 2f;
-                           else if (Math.Abs(fRatio) < 1.5f)
-                              DragEnd.X = DragStart.X + (DragEnd.Y - DragStart.Y) * Math.Sign(fRatio);
-                           else if (Math.Abs(fRatio) < 4f)
-                              DragEnd.Y = DragStart.Y + (DragEnd.X - DragStart.X) * Math.Sign(fRatio) / 2f;
-                           else
+                           if (Math.Abs(DragEnd.Y - DragStart.Y) < 1)
+                           {
                               DragEnd.Y = DragStart.Y;
+                           }
+                           else
+                           {
+                              float fRatio = (DragEnd.X - DragStart.X) / (DragEnd.Y - DragStart.Y);
+                              if (Math.Abs(fRatio) < 0.25f)
+                                 DragEnd.X = DragStart.X;
+                              else if (Math.Abs(fRatio) < 0.75f)
+                                 DragEnd.X = DragStart.X + (DragEnd.Y - DragStart.Y) * Math.Sign(fRatio) / 2f;
+                              else if (Math.Abs(fRatio) < 1.5f)
+                                 DragEnd.X = DragStart.X + (DragEnd.Y - DragStart.Y) * Math.Sign(fRatio);
+                              else if (Math.Abs(fRatio) < 4f)
+                                 DragEnd.Y = DragStart.Y + (DragEnd.X - DragStart.X) * Math.Sign(fRatio) / 2f;
+                              else
+                                 DragEnd.Y = DragStart.Y;
+                           }
                         }
-                     }
-                     break;
-               }
+                        break;
+                  }
 
-               switch(ParentEditor.CurrentTool)
-               {
-                  case DrawingTool.Line:
-                     if (e.Button == MouseButtons.Right)
-                     {
-                        if ((DragEnd.X < Image.Width) && (DragEnd.Y < Image.Height) &&
-                           (DragEnd.X > 0) && (DragEnd.Y > 0))
-                           ParentEditor.PickColor(Image.GetPixel((int)DragEnd.X, (int)DragEnd.Y));
-                        break;
-                     }
-                     g.DrawLine(ParentEditor.CurrentPen, DragStart, DragEnd);
-                     break;
-                  case DrawingTool.Rectangle:
-                     if (e.Button == MouseButtons.Right)
-                     {
-                        if ((DragEnd.X < Image.Width) && (DragEnd.Y < Image.Height) &&
-                           (DragEnd.X > 0) && (DragEnd.Y > 0))
-                           ParentEditor.PickColor(Image.GetPixel((int)DragEnd.X, (int)DragEnd.Y));
-                        break;
-                     }
-                     if (0 != (ParentEditor.CurrentOptions & ToolOptions.Lock))
-                        if (rcCur.Width > rcCur.Height)
-                           rcCur.Height = rcCur.Width;
-                        else
-                           rcCur.Width = rcCur.Height;
-                     if (0 != (ParentEditor.CurrentOptions & ToolOptions.Fill))
-                     {
-                        if (0 != (ParentEditor.CurrentOptions & ToolOptions.GradientFill))
+                  switch(ParentEditor.CurrentTool)
+                  {
+                     case DrawingTool.Line:
+                        if (e.Button == MouseButtons.Right)
                         {
-                           if ((rcCur.Width > 1) && (rcCur.Height > 1))
+                           if ((DragEnd.X < Image.Width) && (DragEnd.Y < Image.Height) &&
+                              (DragEnd.X > 0) && (DragEnd.Y > 0))
+                              ParentEditor.PickColor(Image.GetPixel((int)DragEnd.X, (int)DragEnd.Y));
+                           break;
+                        }
+                        g.DrawLine(ParentEditor.CurrentPen, DragStart, DragEnd);
+                        break;
+                     case DrawingTool.Rectangle:
+                        if (e.Button == MouseButtons.Right)
+                        {
+                           if ((DragEnd.X < Image.Width) && (DragEnd.Y < Image.Height) &&
+                              (DragEnd.X > 0) && (DragEnd.Y > 0))
+                              ParentEditor.PickColor(Image.GetPixel((int)DragEnd.X, (int)DragEnd.Y));
+                           break;
+                        }
+                        if (0 != (ParentEditor.CurrentOptions & ToolOptions.Lock))
+                           if (rcCur.Width > rcCur.Height)
+                              rcCur.Height = rcCur.Width;
+                           else
+                              rcCur.Width = rcCur.Height;
+                        if (0 != (ParentEditor.CurrentOptions & ToolOptions.Fill))
+                        {
+                           if (0 != (ParentEditor.CurrentOptions & ToolOptions.GradientFill))
                            {
-                              GraphicsPath gpRect = new GraphicsPath();
-                              gpRect.AddRectangle(rcCur);
-                              PathGradientBrush pgb = new PathGradientBrush(gpRect);
-                              if (ParentEditor.CurrentBrush is SolidBrush)
+                              if ((rcCur.Width > 1) && (rcCur.Height > 1))
                               {
-                                 pgb.CenterColor = ((SolidBrush)ParentEditor.CurrentBrush).Color;
-                                 pgb.SurroundColors = new Color[] {ParentEditor.CurrentPen.Color};
-                                 g.FillPath(pgb, gpRect);
+                                 GraphicsPath gpRect = new GraphicsPath();
+                                 gpRect.AddRectangle(rcCur);
+                                 PathGradientBrush pgb = new PathGradientBrush(gpRect);
+                                 if (ParentEditor.CurrentBrush is SolidBrush)
+                                 {
+                                    pgb.CenterColor = ((SolidBrush)ParentEditor.CurrentBrush).Color;
+                                    pgb.SurroundColors = new Color[] {ParentEditor.CurrentPen.Color};
+                                    g.FillPath(pgb, gpRect);
+                                 }
+                                 else
+                                    g.FillRectangle(ParentEditor.CurrentBrush, rcCur);
+                                 gpRect.Dispose();
+                                 pgb.Dispose();
                               }
-                              else
-                                 g.FillRectangle(ParentEditor.CurrentBrush, rcCur);
-                              gpRect.Dispose();
-                              pgb.Dispose();
+                           }
+                           else
+                              g.FillRectangle(ParentEditor.CurrentBrush, rcCur);
+                        }
+                        if (0 != (ParentEditor.CurrentOptions & ToolOptions.Outline))
+                           g.DrawRectangle(ParentEditor.CurrentPen, rcCur.Left, rcCur.Top, rcCur.Width, rcCur.Height);
+                        break;
+                     case DrawingTool.Ellipse:
+                        if (e.Button == MouseButtons.Right)
+                        {
+                           if ((DragEnd.X < Image.Width) && (DragEnd.Y < Image.Height) &&
+                              (DragEnd.X > 0) && (DragEnd.Y > 0))
+                              ParentEditor.PickColor(Image.GetPixel((int)DragEnd.X, (int)DragEnd.Y));
+                           break;
+                        }
+                        if (0 != (ParentEditor.CurrentOptions & ToolOptions.Lock))
+                           if (rcCur.Width > rcCur.Height)
+                              rcCur.Height = rcCur.Width;
+                           else
+                              rcCur.Width = rcCur.Height;
+                        if (0 != (ParentEditor.CurrentOptions & ToolOptions.Fill))
+                        {
+                           if (0 != (ParentEditor.CurrentOptions & ToolOptions.GradientFill))
+                           {
+                              if ((rcCur.Width > 1) && (rcCur.Height > 1))
+                              {
+                                 GraphicsPath gpEllipse = new GraphicsPath();
+                                 gpEllipse.AddEllipse(rcCur);
+                                 PathGradientBrush pgb = new PathGradientBrush(gpEllipse);
+                                 if (ParentEditor.CurrentBrush is SolidBrush)
+                                 {
+                                    pgb.CenterColor = ((SolidBrush)ParentEditor.CurrentBrush).Color;
+                                    pgb.SurroundColors = new Color[] {ParentEditor.CurrentPen.Color};
+                                    g.FillPath(pgb, gpEllipse);
+                                 }
+                                 else
+                                    g.FillEllipse(ParentEditor.CurrentBrush, rcCur);
+                                 gpEllipse.Dispose();
+                                 pgb.Dispose();
+                              }
+                           }
+                           else
+                              g.FillEllipse(ParentEditor.CurrentBrush, rcCur);
+                        }
+                        if (0 != (ParentEditor.CurrentOptions & ToolOptions.Outline))
+                           g.DrawEllipse(ParentEditor.CurrentPen, rcCur);
+                        break;
+                     case DrawingTool.FreeDraw:
+                        if (e.Button == MouseButtons.Right)
+                        {
+                           if ((DragEnd.X < Image.Width) && (DragEnd.Y < Image.Height) &&
+                              (DragEnd.X > 0) && (DragEnd.Y > 0))
+                              ParentEditor.PickColor(Image.GetPixel((int)DragEnd.X, (int)DragEnd.Y));
+                           break;
+                        }
+                        goto case DrawingTool.FreeLine;
+                     case DrawingTool.FreeLine:
+                     case DrawingTool.Erase:
+                        Cursor = m_DrawCursor;
+                        if ((e.Button == MouseButtons.Left) && ((dist >= 1) || (ParentEditor.FreehandPoints == null) ||
+                           (ParentEditor.CurrentTool != DrawingTool.FreeLine)))
+                        {
+                           AppendFreehandPoint(DragEnd);
+                           DragStart = DragEnd;
+                        }
+                        else if (ParentEditor.FreehandPoints != null)
+                        {
+                           ParentEditor.FreehandPoints[ParentEditor.FreehandPoints.Length - 1] = DragEnd;
+                        }
+                        if (ParentEditor.FreehandPoints != null)
+                        {
+                           if (DrawingTool.Erase == ParentEditor.CurrentTool)
+                           {
+                              Pen penErase = new Pen(Color.Transparent, ParentEditor.CurrentPen.Width);
+                              penErase.SetLineCap(LineCap.Round, LineCap.Round, DashCap.Flat);
+                              penErase.LineJoin = LineJoin.Round;
+                              g.CompositingMode = CompositingMode.SourceCopy;
+                              g.SmoothingMode = SmoothingMode.None;
+                              g.DrawLines(penErase, ParentEditor.FreehandPoints);
+                              penErase.Dispose();
+                           }
+                           else
+                           {
+                              if (0 != (ParentEditor.CurrentOptions & ToolOptions.Fill))
+                              {
+                                 if ((ParentEditor.CurrentBrush is SolidBrush) && (0 != (ParentEditor.CurrentOptions & ToolOptions.GradientFill)))
+                                 {
+                                    if (IsSelectionOutlineLongEnoughToDraw(ParentEditor.FreehandPoints))
+                                    {
+                                       GraphicsPath gpTemp = new GraphicsPath();
+                                       gpTemp.AddLines(ParentEditor.FreehandPoints);
+                                       gpTemp.CloseAllFigures();
+                                       PathGradientBrush pgb = new PathGradientBrush(gpTemp);
+                                       pgb.CenterColor = ((SolidBrush)ParentEditor.CurrentBrush).Color;
+                                       pgb.SurroundColors = new Color[] {ParentEditor.CurrentPen.Color};
+                                       g.FillPath(pgb, gpTemp);
+                                       pgb.Dispose();
+                                       gpTemp.Dispose();
+                                    }
+                                 }
+                                 else
+                                    g.FillPolygon(ParentEditor.CurrentBrush, ParentEditor.FreehandPoints);
+                              }
+                              if (0 != (ParentEditor.CurrentOptions & ToolOptions.Outline))
+                              {
+                                 if (0 != (ParentEditor.CurrentOptions & ToolOptions.Fill))
+                                    g.DrawPolygon(ParentEditor.CurrentPen, ParentEditor.FreehandPoints);
+                                 else
+                                    g.DrawLines(ParentEditor.CurrentPen, ParentEditor.FreehandPoints);
+                              }
                            }
                         }
-                        else
-                           g.FillRectangle(ParentEditor.CurrentBrush, rcCur);
-                     }
-                     if (0 != (ParentEditor.CurrentOptions & ToolOptions.Outline))
-                        g.DrawRectangle(ParentEditor.CurrentPen, rcCur.Left, rcCur.Top, rcCur.Width, rcCur.Height);
-                     break;
-                  case DrawingTool.Ellipse:
-                     if (e.Button == MouseButtons.Right)
-                     {
-                        if ((DragEnd.X < Image.Width) && (DragEnd.Y < Image.Height) &&
-                           (DragEnd.X > 0) && (DragEnd.Y > 0))
-                           ParentEditor.PickColor(Image.GetPixel((int)DragEnd.X, (int)DragEnd.Y));
                         break;
-                     }
-                     if (0 != (ParentEditor.CurrentOptions & ToolOptions.Lock))
-                        if (rcCur.Width > rcCur.Height)
-                           rcCur.Height = rcCur.Width;
-                        else
-                           rcCur.Width = rcCur.Height;
-                     if (0 != (ParentEditor.CurrentOptions & ToolOptions.Fill))
-                     {
-                        if (0 != (ParentEditor.CurrentOptions & ToolOptions.GradientFill))
+                     case DrawingTool.Bezier:
+                        Cursor = m_DrawCursor;
+                        if (ParentEditor.FreehandPoints != null)
                         {
-                           if ((rcCur.Width > 1) && (rcCur.Height > 1))
-                           {
-                              GraphicsPath gpEllipse = new GraphicsPath();
-                              gpEllipse.AddEllipse(rcCur);
-                              PathGradientBrush pgb = new PathGradientBrush(gpEllipse);
-                              if (ParentEditor.CurrentBrush is SolidBrush)
-                              {
-                                 pgb.CenterColor = ((SolidBrush)ParentEditor.CurrentBrush).Color;
-                                 pgb.SurroundColors = new Color[] {ParentEditor.CurrentPen.Color};
-                                 g.FillPath(pgb, gpEllipse);
-                              }
-                              else
-                                 g.FillEllipse(ParentEditor.CurrentBrush, rcCur);
-                              gpEllipse.Dispose();
-                              pgb.Dispose();
-                           }
-                        }
-                        else
-                           g.FillEllipse(ParentEditor.CurrentBrush, rcCur);
-                     }
-                     if (0 != (ParentEditor.CurrentOptions & ToolOptions.Outline))
-                        g.DrawEllipse(ParentEditor.CurrentPen, rcCur);
-                     break;
-                  case DrawingTool.FreeDraw:
-                     if (e.Button == MouseButtons.Right)
-                     {
-                        if ((DragEnd.X < Image.Width) && (DragEnd.Y < Image.Height) &&
-                           (DragEnd.X > 0) && (DragEnd.Y > 0))
-                           ParentEditor.PickColor(Image.GetPixel((int)DragEnd.X, (int)DragEnd.Y));
-                        break;
-                     }
-                     goto case DrawingTool.FreeLine;
-                  case DrawingTool.FreeLine:
-                  case DrawingTool.Erase:
-                     Cursor = m_DrawCursor;
-                     if ((e.Button == MouseButtons.Left) && ((dist >= 1) || (ParentEditor.FreehandPoints == null) ||
-                        (ParentEditor.CurrentTool != DrawingTool.FreeLine)))
-                     {
-                        AppendFreehandPoint(DragEnd);
-                        DragStart = DragEnd;
-                     }
-                     else if (ParentEditor.FreehandPoints != null)
-                     {
-                        ParentEditor.FreehandPoints[ParentEditor.FreehandPoints.Length - 1] = DragEnd;
-                     }
-                     if (ParentEditor.FreehandPoints != null)
-                     {
-                        if (DrawingTool.Erase == ParentEditor.CurrentTool)
-                        {
-                           Pen penErase = new Pen(Color.Transparent, ParentEditor.CurrentPen.Width);
-                           penErase.SetLineCap(LineCap.Round, LineCap.Round, DashCap.Flat);
-                           penErase.LineJoin = LineJoin.Round;
-                           g.CompositingMode = CompositingMode.SourceCopy;
-                           g.SmoothingMode = SmoothingMode.None;
-                           g.DrawLines(penErase, ParentEditor.FreehandPoints);
-                           penErase.Dispose();
-                        }
-                        else
-                        {
+                           ParentEditor.FreehandPoints[ParentEditor.FreehandPoints.Length - 1] = DragEnd;
+                           GraphicsPath gpTemp = GetBezierPath();
                            if (0 != (ParentEditor.CurrentOptions & ToolOptions.Fill))
                            {
+                              gpTemp.CloseAllFigures();
                               if ((ParentEditor.CurrentBrush is SolidBrush) && (0 != (ParentEditor.CurrentOptions & ToolOptions.GradientFill)))
                               {
                                  if (IsSelectionOutlineLongEnoughToDraw(ParentEditor.FreehandPoints))
                                  {
-                                    GraphicsPath gpTemp = new GraphicsPath();
-                                    gpTemp.AddLines(ParentEditor.FreehandPoints);
-                                    gpTemp.CloseAllFigures();
                                     PathGradientBrush pgb = new PathGradientBrush(gpTemp);
                                     pgb.CenterColor = ((SolidBrush)ParentEditor.CurrentBrush).Color;
                                     pgb.SurroundColors = new Color[] {ParentEditor.CurrentPen.Color};
                                     g.FillPath(pgb, gpTemp);
                                     pgb.Dispose();
-                                    gpTemp.Dispose();
                                  }
                               }
                               else
-                                 g.FillPolygon(ParentEditor.CurrentBrush, ParentEditor.FreehandPoints);
+                                 g.FillPath(ParentEditor.CurrentBrush, gpTemp);
                            }
                            if (0 != (ParentEditor.CurrentOptions & ToolOptions.Outline))
-                           {
-                              if (0 != (ParentEditor.CurrentOptions & ToolOptions.Fill))
-                                 g.DrawPolygon(ParentEditor.CurrentPen, ParentEditor.FreehandPoints);
-                              else
-                                 g.DrawLines(ParentEditor.CurrentPen, ParentEditor.FreehandPoints);
-                           }
-                        }
-                     }
-                     break;
-                  case DrawingTool.Bezier:
-                     Cursor = m_DrawCursor;
-                     if (ParentEditor.FreehandPoints != null)
-                     {
-                        ParentEditor.FreehandPoints[ParentEditor.FreehandPoints.Length - 1] = DragEnd;
-                        GraphicsPath gpTemp = GetBezierPath();
-                        if (0 != (ParentEditor.CurrentOptions & ToolOptions.Fill))
-                        {
-                           gpTemp.CloseAllFigures();
-                           if ((ParentEditor.CurrentBrush is SolidBrush) && (0 != (ParentEditor.CurrentOptions & ToolOptions.GradientFill)))
-                           {
-                              if (IsSelectionOutlineLongEnoughToDraw(ParentEditor.FreehandPoints))
-                              {
-                                 PathGradientBrush pgb = new PathGradientBrush(gpTemp);
-                                 pgb.CenterColor = ((SolidBrush)ParentEditor.CurrentBrush).Color;
-                                 pgb.SurroundColors = new Color[] {ParentEditor.CurrentPen.Color};
-                                 g.FillPath(pgb, gpTemp);
-                                 pgb.Dispose();
-                              }
-                           }
-                           else
-                              g.FillPath(ParentEditor.CurrentBrush, gpTemp);
-                        }
-                        if (0 != (ParentEditor.CurrentOptions & ToolOptions.Outline))
-                           g.DrawPath(ParentEditor.CurrentPen, gpTemp);
+                              g.DrawPath(ParentEditor.CurrentPen, gpTemp);
 
-                        gpTemp.Dispose();
-                     }
-                     break;
-                  case DrawingTool.SelRect:
-                     if (ParentEditor.SelectedRegion != null)
-                        ParentEditor.SelectedRegion.Dispose();
-                     ParentEditor.SelectedRegion = new Region(rcCur);
-                     ParentEditor.SelectionOutline = new PointF[] { new PointF(rcCur.X, rcCur.Y),
-                                                                     new PointF(rcCur.X+rcCur.Width, rcCur.Y),
-                                                                     new PointF(rcCur.X+rcCur.Width, rcCur.Y + rcCur.Height),
-                                                                     new PointF(rcCur.X, rcCur.Y + rcCur.Height), 
-                                                                     new PointF(rcCur.X, rcCur.Y) };
-                     break;
-                  case DrawingTool.SelFree:
-                     Cursor = m_DrawCursor;
-                     if ((e.Button == MouseButtons.Left) && ((dist >= 1) || (ParentEditor.SelectionOutline == null)))
-                     {
-                        AppendSelectionPoint(DragEnd);
-                        DragStart = DragEnd;
-                     }
-                     else if ((ParentEditor.SelectionOutline != null) && (ParentEditor.SelectedRegion == null))
-                     {
-                        ParentEditor.SelectionOutline[ParentEditor.SelectionOutline.Length - 1] = DragEnd;
-                     }
-                     break;
-                  case DrawingTool.Translate:
-                     if (ParentEditor.TempTransform != null)
-                        ParentEditor.TempTransform.Dispose();
-                     if (ParentEditor.FloatingSelection == null)
-                        FloatSelection();
-                     if (ParentEditor.SelectionTransform == null)
-                        ParentEditor.SelectionTransform = new Matrix();
-                     ParentEditor.SelectionTransform.Translate(DragEnd.X - DragStart.X,
-                        DragEnd.Y - DragStart.Y, MatrixOrder.Append);
-                     DragStart = DragEnd;
-                     break;
-                  case DrawingTool.Rotate:
-                     if (ParentEditor.TempTransform != null)
-                        ParentEditor.TempTransform.Dispose();
-                     if (ParentEditor.FloatingSelection == null)
-                        FloatSelection();
-                     if (ParentEditor.SelectionTransform == null)
-                        ParentEditor.SelectionTransform = new Matrix();
-                     ParentEditor.TempTransform = new Matrix();
-                     float fRotate = 2 * (DragEnd.Y - DragStart.Y + DragEnd.X - DragStart.X);
-                     if (0 != (ParentEditor.CurrentOptions & ToolOptions.Lock))
-                        fRotate = (float)(Math.Round(fRotate * 24f / 360f) * 360f / 24f);
-                     ParentEditor.TempTransform.RotateAt(fRotate,
-                        new PointF(ParentEditor.FloatingSelection.Width / 2f,
-                        ParentEditor.FloatingSelection.Height / 2f), MatrixOrder.Prepend);
-                     break;
-                  case DrawingTool.Scale:
-                     if (ParentEditor.TempTransform != null)
-                        ParentEditor.TempTransform.Dispose();
-                     if (ParentEditor.FloatingSelection == null)
-                        FloatSelection();
-                     if (ParentEditor.SelectionTransform == null)
-                        ParentEditor.SelectionTransform = new Matrix();
-                     ParentEditor.TempTransform = new Matrix();
-                     float ScaleX = 1 + (DragEnd.X - DragStart.X) * 2 / Image.Width;
-                     if (Math.Abs(ScaleX) < .1) ScaleX = .1f;
-                     float ScaleY = 1 + (DragEnd.Y - DragStart.Y) * 2 / Image.Height;
-                     if (Math.Abs(ScaleY) < .1) ScaleY = .1f;
-                     if (0 != (ParentEditor.CurrentOptions & ToolOptions.Lock))
-                        if (ScaleX > ScaleY)
-                           ScaleY = ScaleX;
-                        else
-                           ScaleX = ScaleY;
-                     ParentEditor.TempTransform.Scale(ScaleX, ScaleY);
-                     break;
-                  case DrawingTool.Dropper:
-                     Cursor = m_DropperCursor;
-                     if ((DragEnd.X < Image.Width) && (DragEnd.Y < Image.Height) &&
-                        (DragEnd.X > 0) && (DragEnd.Y > 0))
-                        ParentEditor.PickColor(Image.GetPixel((int)DragEnd.X, (int)DragEnd.Y));
-                     break;
-                  case DrawingTool.FloodFill:
-                  {
-                     if (ParentEditor.HighlightBrush != null)
-                     {
-                        Region rgnFlood;
-                        if (0 != (ParentEditor.CurrentOptions & ToolOptions.DisjointedColors))
-                           rgnFlood = GetColorRegion(Image, Point.Round(DragStart), Point.Round(DragEnd));
-                        else
-                           rgnFlood = GetFloodRegion(Image, Point.Round(DragStart), Point.Round(DragEnd));
-                        g.CompositingMode = CompositingMode.SourceOver;
-                        g.FillRegion(ParentEditor.HighlightBrush, rgnFlood);
-                        rgnFlood.Dispose();
-                     }
-                  }
-                     break;
-                  case DrawingTool.FloodSel:
-                     if (ParentEditor.SelectedRegion != null)
-                        ParentEditor.SelectedRegion.Dispose();
-                     if (0 != (ParentEditor.CurrentOptions & ToolOptions.DisjointedColors))
-                        ParentEditor.SelectedRegion = GetColorRegion(Image, Point.Round(DragStart), Point.Round(DragEnd));
-                     else
-                        ParentEditor.SelectedRegion = GetFloodRegion(Image, Point.Round(DragStart), Point.Round(DragEnd));
-                     break;
-                  case DrawingTool.GradientFill:
-                     if (dist > 1)
-                     {
-                        if (ParentEditor.CurrentBrush != null)
-                           ParentEditor.CurrentBrush.Dispose();
-                        ParentEditor.CurrentBrush = new LinearGradientBrush(DragStart, DragEnd, ParentEditor.ctlColorSel.m_BrushColor, ParentEditor.ctlColorSel.m_PenColor);
-                        ((LinearGradientBrush)ParentEditor.CurrentBrush).WrapMode = WrapMode.TileFlipXY;
+                           gpTemp.Dispose();
+                        }
+                        break;
+                     case DrawingTool.SelRect:
                         if (ParentEditor.SelectedRegion != null)
-                           g.FillRegion(ParentEditor.CurrentBrush, ParentEditor.SelectedRegion);
-                        else
-                           g.FillRectangle(ParentEditor.CurrentBrush, -.5f, -.5f, Image.Width + 1, Image.Height + 1);
-                     }
-                     break;
-                  case DrawingTool.AirBrush:
-                     if (e.Button == MouseButtons.Right)
-                     {
+                           ParentEditor.SelectedRegion.Dispose();
+                        ParentEditor.SelectedRegion = new Region(rcCur);
+                        ParentEditor.SelectionOutline = new PointF[] { new PointF(rcCur.X, rcCur.Y),
+                                                                        new PointF(rcCur.X+rcCur.Width, rcCur.Y),
+                                                                        new PointF(rcCur.X+rcCur.Width, rcCur.Y + rcCur.Height),
+                                                                        new PointF(rcCur.X, rcCur.Y + rcCur.Height), 
+                                                                        new PointF(rcCur.X, rcCur.Y) };
+                        break;
+                     case DrawingTool.SelFree:
+                        Cursor = m_DrawCursor;
+                        if ((e.Button == MouseButtons.Left) && ((dist >= 1) || (ParentEditor.SelectionOutline == null)))
+                        {
+                           AppendSelectionPoint(DragEnd);
+                           DragStart = DragEnd;
+                        }
+                        else if ((ParentEditor.SelectionOutline != null) && (ParentEditor.SelectedRegion == null))
+                        {
+                           ParentEditor.SelectionOutline[ParentEditor.SelectionOutline.Length - 1] = DragEnd;
+                        }
+                        break;
+                     case DrawingTool.Translate:
+                        if (ParentEditor.TempTransform != null)
+                           ParentEditor.TempTransform.Dispose();
+                        if (ParentEditor.FloatingSelection == null)
+                           FloatSelection();
+                        if (ParentEditor.SelectionTransform == null)
+                           ParentEditor.SelectionTransform = new Matrix();
+                        ParentEditor.SelectionTransform.Translate(DragEnd.X - DragStart.X,
+                           DragEnd.Y - DragStart.Y, MatrixOrder.Append);
+                        DragStart = DragEnd;
+                        break;
+                     case DrawingTool.Rotate:
+                        if (ParentEditor.TempTransform != null)
+                           ParentEditor.TempTransform.Dispose();
+                        if (ParentEditor.FloatingSelection == null)
+                           FloatSelection();
+                        if (ParentEditor.SelectionTransform == null)
+                           ParentEditor.SelectionTransform = new Matrix();
+                        ParentEditor.TempTransform = new Matrix();
+                        float fRotate = 2 * (DragEnd.Y - DragStart.Y + DragEnd.X - DragStart.X);
+                        if (0 != (ParentEditor.CurrentOptions & ToolOptions.Lock))
+                           fRotate = (float)(Math.Round(fRotate * 24f / 360f) * 360f / 24f);
+                        ParentEditor.TempTransform.RotateAt(fRotate,
+                           new PointF(ParentEditor.FloatingSelection.Width / 2f,
+                           ParentEditor.FloatingSelection.Height / 2f), MatrixOrder.Prepend);
+                        break;
+                     case DrawingTool.Scale:
+                        if (ParentEditor.TempTransform != null)
+                           ParentEditor.TempTransform.Dispose();
+                        if (ParentEditor.FloatingSelection == null)
+                           FloatSelection();
+                        if (ParentEditor.SelectionTransform == null)
+                           ParentEditor.SelectionTransform = new Matrix();
+                        ParentEditor.TempTransform = new Matrix();
+                        float ScaleX = 1 + (DragEnd.X - DragStart.X) * 2 / Image.Width;
+                        if (Math.Abs(ScaleX) < .1) ScaleX = .1f;
+                        float ScaleY = 1 + (DragEnd.Y - DragStart.Y) * 2 / Image.Height;
+                        if (Math.Abs(ScaleY) < .1) ScaleY = .1f;
+                        if (0 != (ParentEditor.CurrentOptions & ToolOptions.Lock))
+                           if (ScaleX > ScaleY)
+                              ScaleY = ScaleX;
+                           else
+                              ScaleX = ScaleY;
+                        ParentEditor.TempTransform.Scale(ScaleX, ScaleY);
+                        break;
+                     case DrawingTool.Dropper:
+                        Cursor = m_DropperCursor;
                         if ((DragEnd.X < Image.Width) && (DragEnd.Y < Image.Height) &&
                            (DragEnd.X > 0) && (DragEnd.Y > 0))
                            ParentEditor.PickColor(Image.GetPixel((int)DragEnd.X, (int)DragEnd.Y));
                         break;
+                     case DrawingTool.FloodFill:
+                     {
+                        if (ParentEditor.HighlightBrush != null)
+                        {
+                           Region rgnFlood;
+                           if (0 != (ParentEditor.CurrentOptions & ToolOptions.DisjointedColors))
+                              rgnFlood = GetColorRegion(Image, Point.Round(DragStart), Point.Round(DragEnd));
+                           else
+                              rgnFlood = GetFloodRegion(Image, Point.Round(DragStart), Point.Round(DragEnd));
+                           g.CompositingMode = CompositingMode.SourceOver;
+                           g.FillRegion(ParentEditor.HighlightBrush, rgnFlood);
+                           rgnFlood.Dispose();
+                        }
                      }
-                  {
-                     float fAngle = (float)(m_Random.NextDouble() * Math.PI * 2);
-                     float fDist = (float)(m_Random.NextDouble() * ParentEditor.CurrentPen.Width / 2);
-                     PointF ptRand = new PointF((float)(DragEnd.X + Math.Cos(fAngle) * fDist), (float)(DragEnd.Y + Math.Sin(fAngle) * fDist));
-                     g.FillRectangle(ParentEditor.CurrentBrush, ptRand.X - .49f, ptRand.Y - .49f, 1, 1);
-                     SGDK2IDE.CopyImage(Image, TempImage);
-                  }
-                     break;
-                  case DrawingTool.Smooth:
-                     Blur(TempImage, new Rectangle((int)(DragEnd.X - ParentEditor.CurrentPen.Width / 2),
-                        (int)(DragEnd.Y - ParentEditor.CurrentPen.Width / 2), (int)(ParentEditor.CurrentPen.Width),
-                        (int)(ParentEditor.CurrentPen.Width)));
-                     SGDK2IDE.CopyImage(Image,TempImage);
-                     break;
-                  case DrawingTool.Custom:
-                     CustTool.DrawTool(ParentEditor.m_CustomTool, g, DragStart, DragEnd, ParentEditor.CurrentPen, ParentEditor.CurrentBrush, ParentEditor.CurrentOptions);
-                     break;
-               }
-            }
-            else
-            {
-               switch(ParentEditor.CurrentTool)
-               {
-                  case DrawingTool.SelFree:
-                  case DrawingTool.SelRect:
-                     Cursor = m_DrawCursor;
-                     break;
-                  case DrawingTool.Translate:
-                     Cursor = Cursors.SizeAll;
-                     break;
-                  case DrawingTool.Rotate:
-                     Cursor = m_RotateCursor;
-                     break;
-                  case DrawingTool.Scale:
-                     Cursor = Cursors.SizeNWSE;
-                     break;
-                  case DrawingTool.Dropper:
-                     Cursor = m_DropperCursor;
-                     break;
-                  case DrawingTool.FloodFill:
-                     Cursor = m_FloodFillCursor;
-                     g.FillRectangle(ParentEditor.CurrentBrush, DragEnd.X - .5f, DragEnd.Y - .5f, 1, 1);
-                     break;
-                  case DrawingTool.FloodSel:
-                     Cursor = m_FloodSelCursor;
-                     break;
-                  case DrawingTool.AirBrush:
-                     Cursor = m_DrawCursor;
-                     g.FillEllipse(ParentEditor.CurrentBrush, DragEnd.X - ParentEditor.CurrentPen.Width / 2.0f,
-                        DragEnd.Y - ParentEditor.CurrentPen.Width / 2.0f, ParentEditor.CurrentPen.Width,
-                        ParentEditor.CurrentPen.Width);
-                     break;
-                  case DrawingTool.Smooth:
-                     Cursor = m_DrawCursor;
-                     for (int nIdx = 0; nIdx < 3; nIdx++)
+                        break;
+                     case DrawingTool.FloodSel:
+                        if (ParentEditor.SelectedRegion != null)
+                           ParentEditor.SelectedRegion.Dispose();
+                        if (0 != (ParentEditor.CurrentOptions & ToolOptions.DisjointedColors))
+                           ParentEditor.SelectedRegion = GetColorRegion(Image, Point.Round(DragStart), Point.Round(DragEnd));
+                        else
+                           ParentEditor.SelectedRegion = GetFloodRegion(Image, Point.Round(DragStart), Point.Round(DragEnd));
+                        break;
+                     case DrawingTool.GradientFill:
+                        if (dist > 1)
+                        {
+                           if (ParentEditor.CurrentBrush != null)
+                              ParentEditor.CurrentBrush.Dispose();
+                           ParentEditor.CurrentBrush = new LinearGradientBrush(DragStart, DragEnd, ParentEditor.ctlColorSel.m_BrushColor, ParentEditor.ctlColorSel.m_PenColor);
+                           ((LinearGradientBrush)ParentEditor.CurrentBrush).WrapMode = WrapMode.TileFlipXY;
+                           if (ParentEditor.SelectedRegion != null)
+                              g.FillRegion(ParentEditor.CurrentBrush, ParentEditor.SelectedRegion);
+                           else
+                              g.FillRectangle(ParentEditor.CurrentBrush, -.5f, -.5f, Image.Width + 1, Image.Height + 1);
+                        }
+                        break;
+                     case DrawingTool.AirBrush:
+                        if (e.Button == MouseButtons.Right)
+                        {
+                           if ((DragEnd.X < Image.Width) && (DragEnd.Y < Image.Height) &&
+                              (DragEnd.X > 0) && (DragEnd.Y > 0))
+                              ParentEditor.PickColor(Image.GetPixel((int)DragEnd.X, (int)DragEnd.Y));
+                           break;
+                        }
+                     {
+                        float fAngle = (float)(m_Random.NextDouble() * Math.PI * 2);
+                        float fDist = (float)(m_Random.NextDouble() * ParentEditor.CurrentPen.Width / 2);
+                        PointF ptRand = new PointF((float)(DragEnd.X + Math.Cos(fAngle) * fDist), (float)(DragEnd.Y + Math.Sin(fAngle) * fDist));
+                        g.FillRectangle(ParentEditor.CurrentBrush, ptRand.X - .49f, ptRand.Y - .49f, 1, 1);
+                        SGDK2IDE.CopyImage(Image, TempImage);
+                     }
+                        break;
+                     case DrawingTool.Smooth:
                         Blur(TempImage, new Rectangle((int)(DragEnd.X - ParentEditor.CurrentPen.Width / 2),
                            (int)(DragEnd.Y - ParentEditor.CurrentPen.Width / 2), (int)(ParentEditor.CurrentPen.Width),
                            (int)(ParentEditor.CurrentPen.Width)));
-                     break;
-                  default:
-                     Cursor = m_DrawCursor;
-                     if ((ParentEditor.CurrentTool == DrawingTool.Line) ||
-                        (ParentEditor.CurrentTool == DrawingTool.Erase) ||
-                        (0 != (ParentEditor.CurrentOptions & ToolOptions.Outline)))
-                     {
-                        GraphicsPath gpTemp = new GraphicsPath( new PointF[]
+                        SGDK2IDE.CopyImage(Image,TempImage);
+                        break;
+                     case DrawingTool.Custom:
+                        CustTool.DrawTool(ParentEditor.m_CustomTool, g, DragStart, DragEnd, ParentEditor.CurrentPen, ParentEditor.CurrentBrush, ParentEditor.CurrentOptions);
+                        break;
+                  }
+               }
+               DrawTransparentImage(TempImage, null);
+            }
+            else
+            {
+               DrawCurrentToolState();
+            }
+            if (ViewChanged != null)
+               ViewChanged();
+         }
+         catch(Exception ex)
+         {
+            MessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+         }
+      }
+
+      public void DrawCurrentToolState()
+      {
+         ResetTempImage();
+
+         using (Graphics g = Graphics.FromImage(TempImage))
+         {
+            ParentEditor.InitGraphicsSettings(g);
+
+            switch(ParentEditor.CurrentTool)
+            {
+               case DrawingTool.SelFree:
+               case DrawingTool.SelRect:
+                  Cursor = m_DrawCursor;
+                  break;
+               case DrawingTool.Translate:
+                  Cursor = Cursors.SizeAll;
+                  break;
+               case DrawingTool.Rotate:
+                  Cursor = m_RotateCursor;
+                  break;
+               case DrawingTool.Scale:
+                  Cursor = Cursors.SizeNWSE;
+                  break;
+               case DrawingTool.Dropper:
+                  Cursor = m_DropperCursor;
+                  break;
+               case DrawingTool.FloodFill:
+                  Cursor = m_FloodFillCursor;
+                  g.FillRectangle(ParentEditor.CurrentBrush, DragEnd.X - .5f, DragEnd.Y - .5f, 1, 1);
+                  break;
+               case DrawingTool.FloodSel:
+                  Cursor = m_FloodSelCursor;
+                  break;
+               case DrawingTool.AirBrush:
+                  Cursor = m_DrawCursor;
+                  g.FillEllipse(ParentEditor.CurrentBrush, DragEnd.X - ParentEditor.CurrentPen.Width / 2.0f,
+                     DragEnd.Y - ParentEditor.CurrentPen.Width / 2.0f, ParentEditor.CurrentPen.Width,
+                     ParentEditor.CurrentPen.Width);
+                  break;
+               case DrawingTool.Smooth:
+                  Cursor = m_DrawCursor;
+                  for (int nIdx = 0; nIdx < 3; nIdx++)
+                     Blur(TempImage, new Rectangle((int)(DragEnd.X - ParentEditor.CurrentPen.Width / 2),
+                        (int)(DragEnd.Y - ParentEditor.CurrentPen.Width / 2), (int)(ParentEditor.CurrentPen.Width),
+                        (int)(ParentEditor.CurrentPen.Width)));
+                  break;
+               default:
+                  Cursor = m_DrawCursor;
+                  if ((ParentEditor.CurrentTool == DrawingTool.Line) ||
+                     (ParentEditor.CurrentTool == DrawingTool.Erase) ||
+                     (0 != (ParentEditor.CurrentOptions & ToolOptions.Outline)))
+                  {
+                     GraphicsPath gpTemp = new GraphicsPath( new PointF[]
                         {
                            new PointF(DragEnd.X, DragEnd.Y - .49f),
                            new PointF(DragEnd.X, DragEnd.Y + .5f),
@@ -804,35 +831,27 @@ namespace SGDK2
                            (byte)PathPointType.Line
                         });
 
-                        if (ParentEditor.CurrentTool == DrawingTool.Erase)
-                        {
-                           Pen penErase = new Pen(Color.Transparent, ParentEditor.CurrentPen.Width);
-                           penErase.SetLineCap(LineCap.Round, LineCap.Round, DashCap.Flat);
-                           g.CompositingMode = CompositingMode.SourceCopy;
-                           g.SmoothingMode = SmoothingMode.None;
-                           g.DrawPath(penErase, gpTemp);
-                           penErase.Dispose();
-                        }
-                        else
-                           g.DrawPath(ParentEditor.CurrentPen, gpTemp);
-                        gpTemp.Dispose();
+                     if (ParentEditor.CurrentTool == DrawingTool.Erase)
+                     {
+                        Pen penErase = new Pen(Color.Transparent, ParentEditor.CurrentPen.Width);
+                        penErase.SetLineCap(LineCap.Round, LineCap.Round, DashCap.Flat);
+                        g.CompositingMode = CompositingMode.SourceCopy;
+                        g.SmoothingMode = SmoothingMode.None;
+                        g.DrawPath(penErase, gpTemp);
+                        penErase.Dispose();
                      }
                      else
-                     {
-                        g.FillRectangle(ParentEditor.CurrentBrush, DragEnd.X - .5f, DragEnd.Y - .5f, 1f, 1f);
-                     }
-                     break;
-               }
+                        g.DrawPath(ParentEditor.CurrentPen, gpTemp);
+                     gpTemp.Dispose();
+                  }
+                  else
+                  {
+                     g.FillRectangle(ParentEditor.CurrentBrush, DragEnd.X - .5f, DragEnd.Y - .5f, 1f, 1f);
+                  }
+                  break;
             }
-            g.Dispose();
-            DrawTransparentImage(TempImage, null);
-            if (ViewChanged != null)
-               ViewChanged();
          }
-         catch(Exception ex)
-         {
-            MessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-         }
+         DrawTransparentImage(TempImage, null);
       }
 
       private void frmGraphicPane_MouseLeave(object sender, System.EventArgs e)

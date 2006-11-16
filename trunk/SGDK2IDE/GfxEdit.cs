@@ -170,7 +170,6 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuToolSep1;
       private System.Windows.Forms.MenuItem mnuToolSep2;
       private System.Windows.Forms.MenuItem mnuPen;
-      private System.Windows.Forms.MenuItem mnuPenSep1;
       private System.Windows.Forms.ContextMenu mnuCZoom;
       private System.Windows.Forms.MenuItem mnuActualSize;
       private System.Windows.Forms.MenuItem mnuZoom2;
@@ -303,6 +302,13 @@ namespace SGDK2
       private System.Windows.Forms.ToolBarButton tbbNoise;
       private System.Windows.Forms.MenuItem mnuHueMap;
       private System.Windows.Forms.MenuItem mnuNoise;
+      private System.Windows.Forms.MenuItem mnuZoomIncrease;
+      private System.Windows.Forms.MenuItem mnuZoomDecrease;
+      private System.Windows.Forms.MenuItem mnuZoomSeparator;
+      private System.Windows.Forms.MenuItem mnuPenSep2;
+      private System.Windows.Forms.MenuItem mnuPenIncrease;
+      private System.Windows.Forms.MenuItem mnuPenDecrease;
+      private System.Windows.Forms.MenuItem mnuPenSep1;
       private System.Windows.Forms.MenuItem mnuHugePen;
       #endregion
 
@@ -489,6 +495,9 @@ namespace SGDK2
          this.mnuZoom4x4 = new System.Windows.Forms.MenuItem();
          this.mnuZoom6x6 = new System.Windows.Forms.MenuItem();
          this.mnuZoom8x8 = new System.Windows.Forms.MenuItem();
+         this.mnuZoomSeparator = new System.Windows.Forms.MenuItem();
+         this.mnuZoomDecrease = new System.Windows.Forms.MenuItem();
+         this.mnuZoomIncrease = new System.Windows.Forms.MenuItem();
          this.mnuEdit = new System.Windows.Forms.MenuItem();
          this.mnuEditUndo = new System.Windows.Forms.MenuItem();
          this.mnuEditRedo = new System.Windows.Forms.MenuItem();
@@ -507,6 +516,8 @@ namespace SGDK2
          this.mnuEditHOffset = new System.Windows.Forms.MenuItem();
          this.mnuEditVOffset = new System.Windows.Forms.MenuItem();
          this.mnuEditTilePreview = new System.Windows.Forms.MenuItem();
+         this.mnuHueMap = new System.Windows.Forms.MenuItem();
+         this.mnuNoise = new System.Windows.Forms.MenuItem();
          this.mnuEditSep4 = new System.Windows.Forms.MenuItem();
          this.mnuEditSelectionHighlight = new System.Windows.Forms.MenuItem();
          this.mnuEditShowHighlight = new System.Windows.Forms.MenuItem();
@@ -568,6 +579,9 @@ namespace SGDK2
          this.mnuHugePen = new System.Windows.Forms.MenuItem();
          this.mnu64Pen = new System.Windows.Forms.MenuItem();
          this.mnuPenSep1 = new System.Windows.Forms.MenuItem();
+         this.mnuPenIncrease = new System.Windows.Forms.MenuItem();
+         this.mnuPenDecrease = new System.Windows.Forms.MenuItem();
+         this.mnuPenSep2 = new System.Windows.Forms.MenuItem();
          this.mnuRoundPen = new System.Windows.Forms.MenuItem();
          this.mnuSquarePen = new System.Windows.Forms.MenuItem();
          this.tbrOptions = new System.Windows.Forms.ToolBar();
@@ -594,8 +608,6 @@ namespace SGDK2
          this.ToolSplitter = new System.Windows.Forms.Splitter();
          this.ctlColorSel = new SGDK2.ColorSel();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
-         this.mnuHueMap = new System.Windows.Forms.MenuItem();
-         this.mnuNoise = new System.Windows.Forms.MenuItem();
          this.SuspendLayout();
          // 
          // tbrGraphicsEditor
@@ -902,7 +914,10 @@ namespace SGDK2
                                                                                 this.mnuZoom2x2,
                                                                                 this.mnuZoom4x4,
                                                                                 this.mnuZoom6x6,
-                                                                                this.mnuZoom8x8});
+                                                                                this.mnuZoom8x8,
+                                                                                this.mnuZoomSeparator,
+                                                                                this.mnuZoomDecrease,
+                                                                                this.mnuZoomIncrease});
          this.mnuZoom.Text = "&Zoom";
          // 
          // mnuZoom1x1
@@ -935,6 +950,23 @@ namespace SGDK2
          this.mnuZoom8x8.Index = 4;
          this.mnuZoom8x8.Text = "&8x8 Magnification";
          this.mnuZoom8x8.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuZoomSeparator
+         // 
+         this.mnuZoomSeparator.Index = 5;
+         this.mnuZoomSeparator.Text = "-";
+         // 
+         // mnuZoomDecrease
+         // 
+         this.mnuZoomDecrease.Index = 6;
+         this.mnuZoomDecrease.Text = "&Decrease Magnification\t-";
+         this.mnuZoomDecrease.Click += new System.EventHandler(this.mnuZoomDecrease_Click);
+         // 
+         // mnuZoomIncrease
+         // 
+         this.mnuZoomIncrease.Index = 7;
+         this.mnuZoomIncrease.Text = "&Increase Magnification\t+";
+         this.mnuZoomIncrease.Click += new System.EventHandler(this.mnuZoomIncrease_Click);
          // 
          // mnuEdit
          // 
@@ -1072,6 +1104,18 @@ namespace SGDK2
          this.mnuEditTilePreview.Index = 16;
          this.mnuEditTilePreview.Text = "Previe&w Tiling";
          this.mnuEditTilePreview.Click += new System.EventHandler(this.mnuEditTilePreview_Click);
+         // 
+         // mnuHueMap
+         // 
+         this.mnuHueMap.Index = 17;
+         this.mnuHueMap.Text = "Re&map Hues";
+         this.mnuHueMap.Click += new System.EventHandler(this.mnuHueMap_Click);
+         // 
+         // mnuNoise
+         // 
+         this.mnuNoise.Index = 18;
+         this.mnuNoise.Text = "Add &Noise";
+         this.mnuNoise.Click += new System.EventHandler(this.mnuNoise_Click);
          // 
          // mnuEditSep4
          // 
@@ -1484,6 +1528,9 @@ namespace SGDK2
                                                                                this.mnuHugePen,
                                                                                this.mnu64Pen,
                                                                                this.mnuPenSep1,
+                                                                               this.mnuPenDecrease,
+                                                                               this.mnuPenIncrease,
+                                                                               this.mnuPenSep2,
                                                                                this.mnuRoundPen,
                                                                                this.mnuSquarePen});
          this.mnuPen.Text = "Pen";
@@ -1542,18 +1589,37 @@ namespace SGDK2
          this.mnuPenSep1.Index = 7;
          this.mnuPenSep1.Text = "-";
          // 
+         // mnuPenIncrease
+         // 
+         this.mnuPenIncrease.Index = 9;
+         this.mnuPenIncrease.Text = "&Increase Size\t]";
+         this.mnuPenIncrease.Click += new System.EventHandler(this.mnuPenIncrease_Click);
+         // 
+         // mnuPenDecrease
+         // 
+         this.mnuPenDecrease.Index = 8;
+         this.mnuPenDecrease.Text = "&Decrease Size\t[";
+         this.mnuPenDecrease.Click += new System.EventHandler(this.mnuPenDecrease_Click);
+         // 
+         // mnuPenSep2
+         // 
+         this.mnuPenSep2.Index = 10;
+         this.mnuPenSep2.Text = "-";
+         // 
          // mnuRoundPen
          // 
          this.mnuRoundPen.Checked = true;
-         this.mnuRoundPen.Index = 8;
+         this.mnuRoundPen.Index = 11;
          this.mnuRoundPen.RadioCheck = true;
+         this.mnuRoundPen.Shortcut = System.Windows.Forms.Shortcut.F9;
          this.mnuRoundPen.Text = "&Round";
          this.mnuRoundPen.Click += new System.EventHandler(this.mnuTool_Click);
          // 
          // mnuSquarePen
          // 
-         this.mnuSquarePen.Index = 9;
+         this.mnuSquarePen.Index = 12;
          this.mnuSquarePen.RadioCheck = true;
+         this.mnuSquarePen.Shortcut = System.Windows.Forms.Shortcut.F10;
          this.mnuSquarePen.Text = "S&quare";
          this.mnuSquarePen.Click += new System.EventHandler(this.mnuTool_Click);
          // 
@@ -1734,18 +1800,6 @@ namespace SGDK2
          this.dataMonitor.GraphicSheetRowDeleted += new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(this.dataMonitor_GraphicSheetRowDeleted);
          this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
          // 
-         // mnuHueMap
-         // 
-         this.mnuHueMap.Index = 17;
-         this.mnuHueMap.Text = "Re&map Hues";
-         this.mnuHueMap.Click += new System.EventHandler(this.mnuHueMap_Click);
-         // 
-         // mnuNoise
-         // 
-         this.mnuNoise.Index = 18;
-         this.mnuNoise.Text = "Add &Noise";
-         this.mnuNoise.Click += new System.EventHandler(this.mnuNoise_Click);
-         // 
          // frmGraphicsEditor
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -1760,6 +1814,7 @@ namespace SGDK2
          this.Menu = this.mnuGraphicsEditor;
          this.Name = "frmGraphicsEditor";
          this.Text = "Graphics Editor";
+         this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.frmGraphicsEditor_KeyPress);
          this.ResumeLayout(false);
 
       }
@@ -2366,11 +2421,13 @@ namespace SGDK2
       private void Magnify_ViewChanged()
       {
          m_frmActual.DrawTransparentImage(m_frmMagnify.TempImage, null);
+         m_frmActual.DragEnd = m_frmMagnify.DragEnd;
       }
 
       private void Actual_ViewChanged()
       {
          m_frmMagnify.DrawTransparentImage(m_frmActual.TempImage, null);
+         m_frmMagnify.DragEnd = m_frmActual.DragEnd;
       }
 
       private void ChildPane_GraphicChanged()
@@ -2897,6 +2954,93 @@ namespace SGDK2
             m_imgCurrentGraphic = tmp;
             target.Dispose();
          }
+      }
+
+      private void mnuZoomDecrease_Click(object sender, System.EventArgs e)
+      {
+         if (mnuZoom2x2.Checked || mnuZoom2.Checked)
+            SelectTool(mnuActualSize);
+         else if (mnuZoom4x4.Checked || mnuZoom4.Checked)
+            SelectTool(mnuZoom2);
+         else if (mnuZoom6x6.Checked || mnuZoom6.Checked)
+            SelectTool(mnuZoom4);
+         else if (mnuZoom8x8.Checked || mnuZoom8.Checked)
+            SelectTool(mnuZoom6);
+      }
+
+      private void mnuZoomIncrease_Click(object sender, System.EventArgs e)
+      {
+         if (mnuZoom1x1.Checked || mnuActualSize.Checked)
+            SelectTool(mnuZoom2);
+         else if (mnuZoom2x2.Checked || mnuZoom2.Checked)
+            SelectTool(mnuZoom4);
+         else if (mnuZoom4x4.Checked || mnuZoom4.Checked)
+            SelectTool(mnuZoom6);
+         else if (mnuZoom6x6.Checked || mnuZoom6.Checked)
+            SelectTool(mnuZoom8);
+      }
+
+      private void frmGraphicsEditor_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)
+      {
+         switch(e.KeyChar)
+         {
+            case '-':
+               mnuZoomDecrease_Click(sender, e);
+               break;
+            case '+':
+               mnuZoomIncrease_Click(sender, e);
+               break;
+            case '[':
+               mnuPenDecrease_Click(sender, e);
+               break;
+            case ']':
+               mnuPenIncrease_Click(sender, e);
+               break;
+         }
+      }
+
+      private void mnuPenDecrease_Click(object sender, System.EventArgs e)
+      {
+         int curSize = 0;
+         PenInfo newSel = new PenInfo(null, null, 0);
+         foreach (PenInfo pi in m_arPens)
+         {
+            if (pi.Menu.Checked)
+            {
+               curSize = pi.PenSize;
+               break;
+            }
+         }
+         foreach (PenInfo pi in m_arPens)
+         {
+            if ((pi.PenSize < curSize) && ((newSel.Menu == null) || (pi.PenSize > newSel.PenSize)))
+               newSel = pi;
+         }
+         SelectTool(newSel.Menu);
+         m_frmActual.DrawCurrentToolState();
+         m_frmMagnify.DrawCurrentToolState();
+      }
+
+      private void mnuPenIncrease_Click(object sender, System.EventArgs e)
+      {
+         int curSize = 0;
+         PenInfo newSel = new PenInfo(null, null, 0);
+         foreach (PenInfo pi in m_arPens)
+         {
+            if (pi.Menu.Checked)
+            {
+               curSize = pi.PenSize;
+               break;
+            }
+         }
+         foreach (PenInfo pi in m_arPens)
+         {
+            if ((pi.PenSize > curSize) && ((newSel.Menu == null) || (pi.PenSize < newSel.PenSize)))
+               newSel = pi;
+         }
+         SelectTool(newSel.Menu);
+         m_frmActual.DrawCurrentToolState();
+         m_frmMagnify.DrawCurrentToolState();
       }
       #endregion
    }

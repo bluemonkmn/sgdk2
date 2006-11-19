@@ -270,7 +270,7 @@ namespace SGDK2
                   spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
                      CurFrame.x + m_CurrentPosition.X, CurFrame.y + m_CurrentPosition.Y, 0));
                   spr.Draw(currentTextureRef.Texture, CurFrame.frame.SourceRect,
-                     Vector3.Empty, Vector3.Empty, -1);
+                     Vector3.Empty, Vector3.Empty, CurFrame.frame.Color);
                   if (!Injected.MoveNext())
                   {
                      Injected = null;
@@ -291,7 +291,7 @@ namespace SGDK2
                   spr.Transform = Matrix.Multiply(f.Transform, Matrix.Translation(
                      x * nTileWidth + m_CurrentPosition.X,
                      y * nTileHeight + m_CurrentPosition.Y, 0));
-                  spr.Draw(currentTextureRef.Texture, f.SourceRect, Vector3.Empty, Vector3.Empty, -1);
+                  spr.Draw(currentTextureRef.Texture, f.SourceRect, Vector3.Empty, Vector3.Empty, f.Color);
                }
             }
          }
@@ -304,7 +304,7 @@ namespace SGDK2
             spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
                CurFrame.x + m_CurrentPosition.X, CurFrame.y + m_CurrentPosition.Y, 0));
             spr.Draw(currentTextureRef.Texture, CurFrame.frame.SourceRect,
-               Vector3.Empty, Vector3.Empty, -1);
+               Vector3.Empty, Vector3.Empty, CurFrame.frame.Color);
             if (!Injected.MoveNext())
             {
                Injected = null;

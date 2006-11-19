@@ -32,6 +32,7 @@
                            <xs:attribute name="dx" type="xs:float" default="0" />
                            <xs:attribute name="dy" type="xs:float" default="0" />
                            <xs:attribute name="Name" type="xs:Name" use="prohibited" />
+                           <xs:attribute name="color" type="xs:int" default="-1" msprop:nullValue="-1" />
                         </xs:complexType>
                      </xs:element>
                   </xs:sequence>

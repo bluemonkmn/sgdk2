@@ -54,6 +54,7 @@ namespace SGDK2
 
       #region Non-Control members
       Matrix m_CurrentTransform = new Matrix();
+      int m_CurrentColor = -1;
       Bitmap m_CurrentImage = null;
       DateTime dtLastPaintError = DateTime.MinValue;
       MouseZone m_DragType = MouseZone.Outside;
@@ -127,6 +128,15 @@ namespace SGDK2
       private System.Windows.Forms.Label label1;
       private System.Windows.Forms.Button btnLoadGCell;
       private SGDK2.DataChangeNotifier dataMonitor;
+      private System.Windows.Forms.Label lblColorAdjust;
+      private System.Windows.Forms.Label lblRed;
+      private System.Windows.Forms.TextBox txtRed;
+      private System.Windows.Forms.TextBox txtGreen;
+      private System.Windows.Forms.Label lblGreen;
+      private System.Windows.Forms.TextBox txtAlpha;
+      private System.Windows.Forms.Label lblAlpha;
+      private System.Windows.Forms.TextBox txtBlue;
+      private System.Windows.Forms.Label lblBlue;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -222,6 +232,15 @@ namespace SGDK2
          this.mnuCounter90 = new System.Windows.Forms.MenuItem();
          this.mnuCounter90Origin = new System.Windows.Forms.MenuItem();
          this.mnuCounter90Center = new System.Windows.Forms.MenuItem();
+         this.txtAlpha = new System.Windows.Forms.TextBox();
+         this.lblAlpha = new System.Windows.Forms.Label();
+         this.txtBlue = new System.Windows.Forms.TextBox();
+         this.lblBlue = new System.Windows.Forms.Label();
+         this.txtGreen = new System.Windows.Forms.TextBox();
+         this.lblGreen = new System.Windows.Forms.Label();
+         this.txtRed = new System.Windows.Forms.TextBox();
+         this.lblRed = new System.Windows.Forms.Label();
+         this.lblColorAdjust = new System.Windows.Forms.Label();
          this.txtDY = new System.Windows.Forms.TextBox();
          this.txtDX = new System.Windows.Forms.TextBox();
          this.txtM22 = new System.Windows.Forms.TextBox();
@@ -272,7 +291,7 @@ namespace SGDK2
          this.pnlFrameSet.Dock = System.Windows.Forms.DockStyle.Fill;
          this.pnlFrameSet.Location = new System.Drawing.Point(0, 0);
          this.pnlFrameSet.Name = "pnlFrameSet";
-         this.pnlFrameSet.Size = new System.Drawing.Size(464, 407);
+         this.pnlFrameSet.Size = new System.Drawing.Size(464, 423);
          this.pnlFrameSet.TabIndex = 21;
          // 
          // pnlFrames
@@ -282,7 +301,7 @@ namespace SGDK2
          this.pnlFrames.Dock = System.Windows.Forms.DockStyle.Fill;
          this.pnlFrames.Location = new System.Drawing.Point(272, 0);
          this.pnlFrames.Name = "pnlFrames";
-         this.pnlFrames.Size = new System.Drawing.Size(192, 407);
+         this.pnlFrames.Size = new System.Drawing.Size(192, 423);
          this.pnlFrames.TabIndex = 25;
          // 
          // FrameBrowser
@@ -300,7 +319,7 @@ namespace SGDK2
          this.FrameBrowser.Location = new System.Drawing.Point(0, 80);
          this.FrameBrowser.Name = "FrameBrowser";
          this.FrameBrowser.SheetImage = null;
-         this.FrameBrowser.Size = new System.Drawing.Size(192, 327);
+         this.FrameBrowser.Size = new System.Drawing.Size(192, 343);
          this.FrameBrowser.TabIndex = 6;
          this.FrameBrowser.DragDrop += new System.Windows.Forms.DragEventHandler(this.FrameBrowser_DragDrop);
          this.FrameBrowser.DragOver += new System.Windows.Forms.DragEventHandler(this.FrameBrowser_DragOver);
@@ -385,6 +404,15 @@ namespace SGDK2
          this.pnlTransform.AllowDrop = true;
          this.pnlTransform.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
          this.pnlTransform.ContextMenu = this.mnuContext;
+         this.pnlTransform.Controls.Add(this.txtAlpha);
+         this.pnlTransform.Controls.Add(this.lblAlpha);
+         this.pnlTransform.Controls.Add(this.txtBlue);
+         this.pnlTransform.Controls.Add(this.lblBlue);
+         this.pnlTransform.Controls.Add(this.txtGreen);
+         this.pnlTransform.Controls.Add(this.lblGreen);
+         this.pnlTransform.Controls.Add(this.txtRed);
+         this.pnlTransform.Controls.Add(this.lblRed);
+         this.pnlTransform.Controls.Add(this.lblColorAdjust);
          this.pnlTransform.Controls.Add(this.txtDY);
          this.pnlTransform.Controls.Add(this.txtDX);
          this.pnlTransform.Controls.Add(this.txtM22);
@@ -410,7 +438,7 @@ namespace SGDK2
          this.pnlTransform.Dock = System.Windows.Forms.DockStyle.Left;
          this.pnlTransform.Location = new System.Drawing.Point(0, 0);
          this.pnlTransform.Name = "pnlTransform";
-         this.pnlTransform.Size = new System.Drawing.Size(272, 407);
+         this.pnlTransform.Size = new System.Drawing.Size(272, 423);
          this.pnlTransform.TabIndex = 0;
          this.pnlTransform.Resize += new System.EventHandler(this.pnlTransform_Resize);
          this.pnlTransform.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnlTransform_MouseUp);
@@ -564,10 +592,99 @@ namespace SGDK2
          this.mnuCounter90Center.Text = "Around center";
          this.mnuCounter90Center.Click += new System.EventHandler(this.mnuContextItem_Click);
          // 
+         // txtAlpha
+         // 
+         this.txtAlpha.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+         this.txtAlpha.Location = new System.Drawing.Point(224, 400);
+         this.txtAlpha.Name = "txtAlpha";
+         this.txtAlpha.Size = new System.Drawing.Size(32, 20);
+         this.txtAlpha.TabIndex = 31;
+         this.txtAlpha.Text = "";
+         this.txtAlpha.TextChanged += new System.EventHandler(this.ColorControl_Changed);
+         // 
+         // lblAlpha
+         // 
+         this.lblAlpha.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+         this.lblAlpha.Location = new System.Drawing.Point(200, 400);
+         this.lblAlpha.Name = "lblAlpha";
+         this.lblAlpha.Size = new System.Drawing.Size(24, 20);
+         this.lblAlpha.TabIndex = 30;
+         this.lblAlpha.Text = "A:";
+         this.lblAlpha.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+         // 
+         // txtBlue
+         // 
+         this.txtBlue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+         this.txtBlue.Location = new System.Drawing.Point(160, 400);
+         this.txtBlue.Name = "txtBlue";
+         this.txtBlue.Size = new System.Drawing.Size(32, 20);
+         this.txtBlue.TabIndex = 29;
+         this.txtBlue.Text = "";
+         this.txtBlue.TextChanged += new System.EventHandler(this.ColorControl_Changed);
+         // 
+         // lblBlue
+         // 
+         this.lblBlue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+         this.lblBlue.Location = new System.Drawing.Point(136, 400);
+         this.lblBlue.Name = "lblBlue";
+         this.lblBlue.Size = new System.Drawing.Size(24, 20);
+         this.lblBlue.TabIndex = 28;
+         this.lblBlue.Text = "B:";
+         this.lblBlue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+         // 
+         // txtGreen
+         // 
+         this.txtGreen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+         this.txtGreen.Location = new System.Drawing.Point(96, 400);
+         this.txtGreen.Name = "txtGreen";
+         this.txtGreen.Size = new System.Drawing.Size(32, 20);
+         this.txtGreen.TabIndex = 27;
+         this.txtGreen.Text = "";
+         this.txtGreen.TextChanged += new System.EventHandler(this.ColorControl_Changed);
+         // 
+         // lblGreen
+         // 
+         this.lblGreen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+         this.lblGreen.Location = new System.Drawing.Point(72, 400);
+         this.lblGreen.Name = "lblGreen";
+         this.lblGreen.Size = new System.Drawing.Size(24, 20);
+         this.lblGreen.TabIndex = 26;
+         this.lblGreen.Text = "G:";
+         this.lblGreen.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+         // 
+         // txtRed
+         // 
+         this.txtRed.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+         this.txtRed.Location = new System.Drawing.Point(32, 400);
+         this.txtRed.Name = "txtRed";
+         this.txtRed.Size = new System.Drawing.Size(32, 20);
+         this.txtRed.TabIndex = 24;
+         this.txtRed.Text = "";
+         this.txtRed.TextChanged += new System.EventHandler(this.ColorControl_Changed);
+         // 
+         // lblRed
+         // 
+         this.lblRed.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+         this.lblRed.Location = new System.Drawing.Point(8, 400);
+         this.lblRed.Name = "lblRed";
+         this.lblRed.Size = new System.Drawing.Size(24, 20);
+         this.lblRed.TabIndex = 23;
+         this.lblRed.Text = "R:";
+         this.lblRed.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+         // 
+         // lblColorAdjust
+         // 
+         this.lblColorAdjust.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+         this.lblColorAdjust.Location = new System.Drawing.Point(8, 384);
+         this.lblColorAdjust.Name = "lblColorAdjust";
+         this.lblColorAdjust.Size = new System.Drawing.Size(264, 16);
+         this.lblColorAdjust.TabIndex = 22;
+         this.lblColorAdjust.Text = "Color adjustment (0=eliminate, 255=retain 100%):";
+         // 
          // txtDY
          // 
          this.txtDY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-         this.txtDY.Location = new System.Drawing.Point(184, 376);
+         this.txtDY.Location = new System.Drawing.Point(184, 360);
          this.txtDY.Name = "txtDY";
          this.txtDY.Size = new System.Drawing.Size(56, 20);
          this.txtDY.TabIndex = 21;
@@ -577,7 +694,7 @@ namespace SGDK2
          // txtDX
          // 
          this.txtDX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-         this.txtDX.Location = new System.Drawing.Point(184, 352);
+         this.txtDX.Location = new System.Drawing.Point(184, 336);
          this.txtDX.Name = "txtDX";
          this.txtDX.Size = new System.Drawing.Size(56, 20);
          this.txtDX.TabIndex = 18;
@@ -587,7 +704,7 @@ namespace SGDK2
          // txtM22
          // 
          this.txtM22.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-         this.txtM22.Location = new System.Drawing.Point(120, 376);
+         this.txtM22.Location = new System.Drawing.Point(120, 360);
          this.txtM22.Name = "txtM22";
          this.txtM22.Size = new System.Drawing.Size(56, 20);
          this.txtM22.TabIndex = 20;
@@ -597,7 +714,7 @@ namespace SGDK2
          // txtM21
          // 
          this.txtM21.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-         this.txtM21.Location = new System.Drawing.Point(56, 376);
+         this.txtM21.Location = new System.Drawing.Point(56, 360);
          this.txtM21.Name = "txtM21";
          this.txtM21.Size = new System.Drawing.Size(56, 20);
          this.txtM21.TabIndex = 19;
@@ -607,7 +724,7 @@ namespace SGDK2
          // txtM12
          // 
          this.txtM12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-         this.txtM12.Location = new System.Drawing.Point(120, 352);
+         this.txtM12.Location = new System.Drawing.Point(120, 336);
          this.txtM12.Name = "txtM12";
          this.txtM12.Size = new System.Drawing.Size(56, 20);
          this.txtM12.TabIndex = 17;
@@ -617,7 +734,7 @@ namespace SGDK2
          // txtM11
          // 
          this.txtM11.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-         this.txtM11.Location = new System.Drawing.Point(56, 352);
+         this.txtM11.Location = new System.Drawing.Point(56, 336);
          this.txtM11.Name = "txtM11";
          this.txtM11.Size = new System.Drawing.Size(56, 20);
          this.txtM11.TabIndex = 16;
@@ -627,7 +744,7 @@ namespace SGDK2
          // lblMatrix
          // 
          this.lblMatrix.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-         this.lblMatrix.Location = new System.Drawing.Point(8, 352);
+         this.lblMatrix.Location = new System.Drawing.Point(8, 336);
          this.lblMatrix.Name = "lblMatrix";
          this.lblMatrix.Size = new System.Drawing.Size(48, 32);
          this.lblMatrix.TabIndex = 15;
@@ -642,7 +759,7 @@ namespace SGDK2
                                                                     0,
                                                                     0,
                                                                     65536});
-         this.nudYScale.Location = new System.Drawing.Point(184, 272);
+         this.nudYScale.Location = new System.Drawing.Point(184, 256);
          this.nudYScale.Maximum = new System.Decimal(new int[] {
                                                                   128,
                                                                   0,
@@ -673,7 +790,7 @@ namespace SGDK2
                                                                     0,
                                                                     0,
                                                                     65536});
-         this.nudXScale.Location = new System.Drawing.Point(64, 272);
+         this.nudXScale.Location = new System.Drawing.Point(64, 256);
          this.nudXScale.Maximum = new System.Decimal(new int[] {
                                                                   128,
                                                                   0,
@@ -698,7 +815,7 @@ namespace SGDK2
          // btnMore
          // 
          this.btnMore.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-         this.btnMore.Location = new System.Drawing.Point(168, 320);
+         this.btnMore.Location = new System.Drawing.Point(168, 304);
          this.btnMore.Name = "btnMore";
          this.btnMore.Size = new System.Drawing.Size(72, 24);
          this.btnMore.TabIndex = 14;
@@ -709,7 +826,7 @@ namespace SGDK2
          // 
          this.nudXOffset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
          this.nudXOffset.DecimalPlaces = 1;
-         this.nudXOffset.Location = new System.Drawing.Point(64, 296);
+         this.nudXOffset.Location = new System.Drawing.Point(64, 280);
          this.nudXOffset.Maximum = new System.Decimal(new int[] {
                                                                    128,
                                                                    0,
@@ -730,7 +847,7 @@ namespace SGDK2
          // 
          this.nudYOffset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
          this.nudYOffset.DecimalPlaces = 1;
-         this.nudYOffset.Location = new System.Drawing.Point(184, 296);
+         this.nudYOffset.Location = new System.Drawing.Point(184, 280);
          this.nudYOffset.Maximum = new System.Decimal(new int[] {
                                                                    128,
                                                                    0,
@@ -750,7 +867,7 @@ namespace SGDK2
          // lblXOffset
          // 
          this.lblXOffset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-         this.lblXOffset.Location = new System.Drawing.Point(8, 296);
+         this.lblXOffset.Location = new System.Drawing.Point(8, 280);
          this.lblXOffset.Name = "lblXOffset";
          this.lblXOffset.Size = new System.Drawing.Size(56, 20);
          this.lblXOffset.TabIndex = 8;
@@ -760,7 +877,7 @@ namespace SGDK2
          // btnApply
          // 
          this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-         this.btnApply.Location = new System.Drawing.Point(88, 320);
+         this.btnApply.Location = new System.Drawing.Point(88, 304);
          this.btnApply.Name = "btnApply";
          this.btnApply.Size = new System.Drawing.Size(72, 24);
          this.btnApply.TabIndex = 13;
@@ -771,7 +888,7 @@ namespace SGDK2
          // btnReset
          // 
          this.btnReset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-         this.btnReset.Location = new System.Drawing.Point(8, 320);
+         this.btnReset.Location = new System.Drawing.Point(8, 304);
          this.btnReset.Name = "btnReset";
          this.btnReset.Size = new System.Drawing.Size(72, 24);
          this.btnReset.TabIndex = 12;
@@ -782,7 +899,7 @@ namespace SGDK2
          // lblYOffset
          // 
          this.lblYOffset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-         this.lblYOffset.Location = new System.Drawing.Point(128, 296);
+         this.lblYOffset.Location = new System.Drawing.Point(128, 280);
          this.lblYOffset.Name = "lblYOffset";
          this.lblYOffset.Size = new System.Drawing.Size(56, 20);
          this.lblYOffset.TabIndex = 10;
@@ -792,7 +909,7 @@ namespace SGDK2
          // lblYScale
          // 
          this.lblYScale.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-         this.lblYScale.Location = new System.Drawing.Point(128, 272);
+         this.lblYScale.Location = new System.Drawing.Point(128, 256);
          this.lblYScale.Name = "lblYScale";
          this.lblYScale.Size = new System.Drawing.Size(56, 20);
          this.lblYScale.TabIndex = 6;
@@ -802,7 +919,7 @@ namespace SGDK2
          // lblXScale
          // 
          this.lblXScale.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-         this.lblXScale.Location = new System.Drawing.Point(8, 272);
+         this.lblXScale.Location = new System.Drawing.Point(8, 256);
          this.lblXScale.Name = "lblXScale";
          this.lblXScale.Size = new System.Drawing.Size(56, 20);
          this.lblXScale.TabIndex = 4;
@@ -814,7 +931,7 @@ namespace SGDK2
          this.chkRotateAroundCenter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
          this.chkRotateAroundCenter.Checked = true;
          this.chkRotateAroundCenter.CheckState = System.Windows.Forms.CheckState.Checked;
-         this.chkRotateAroundCenter.Location = new System.Drawing.Point(128, 248);
+         this.chkRotateAroundCenter.Location = new System.Drawing.Point(128, 232);
          this.chkRotateAroundCenter.Name = "chkRotateAroundCenter";
          this.chkRotateAroundCenter.Size = new System.Drawing.Size(112, 16);
          this.chkRotateAroundCenter.TabIndex = 3;
@@ -824,7 +941,7 @@ namespace SGDK2
          // lblRotate
          // 
          this.lblRotate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-         this.lblRotate.Location = new System.Drawing.Point(8, 248);
+         this.lblRotate.Location = new System.Drawing.Point(8, 232);
          this.lblRotate.Name = "lblRotate";
          this.lblRotate.Size = new System.Drawing.Size(56, 20);
          this.lblRotate.TabIndex = 1;
@@ -834,7 +951,7 @@ namespace SGDK2
          // txtRotate
          // 
          this.txtRotate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-         this.txtRotate.Location = new System.Drawing.Point(64, 248);
+         this.txtRotate.Location = new System.Drawing.Point(64, 232);
          this.txtRotate.Name = "txtRotate";
          this.txtRotate.Size = new System.Drawing.Size(56, 20);
          this.txtRotate.TabIndex = 2;
@@ -845,7 +962,7 @@ namespace SGDK2
          // 
          this.trbRotate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
          this.trbRotate.LargeChange = 15;
-         this.trbRotate.Location = new System.Drawing.Point(0, 208);
+         this.trbRotate.Location = new System.Drawing.Point(0, 192);
          this.trbRotate.Maximum = 180;
          this.trbRotate.Minimum = -179;
          this.trbRotate.Name = "trbRotate";
@@ -862,7 +979,7 @@ namespace SGDK2
          this.pnlGraphicSheet.Controls.Add(this.cboGraphicSheet);
          this.pnlGraphicSheet.Controls.Add(this.CellBrowser);
          this.pnlGraphicSheet.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.pnlGraphicSheet.Location = new System.Drawing.Point(0, 413);
+         this.pnlGraphicSheet.Location = new System.Drawing.Point(0, 429);
          this.pnlGraphicSheet.Name = "pnlGraphicSheet";
          this.pnlGraphicSheet.Size = new System.Drawing.Size(464, 120);
          this.pnlGraphicSheet.TabIndex = 2;
@@ -932,7 +1049,7 @@ namespace SGDK2
          // splitterGraphicSheet
          // 
          this.splitterGraphicSheet.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.splitterGraphicSheet.Location = new System.Drawing.Point(0, 407);
+         this.splitterGraphicSheet.Location = new System.Drawing.Point(0, 423);
          this.splitterGraphicSheet.Name = "splitterGraphicSheet";
          this.splitterGraphicSheet.Size = new System.Drawing.Size(464, 6);
          this.splitterGraphicSheet.TabIndex = 23;
@@ -940,15 +1057,15 @@ namespace SGDK2
          // 
          // dataMonitor
          // 
-         this.dataMonitor.GraphicSheetRowDeleted += new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(this.GraphicSheet_GraphicSheetRowChange);
          this.dataMonitor.GraphicSheetRowChanged += new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(this.GraphicSheet_GraphicSheetRowChange);
-         this.dataMonitor.Clearing += new System.EventHandler(this.ProjectData_Clearing);
+         this.dataMonitor.GraphicSheetRowDeleted += new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(this.GraphicSheet_GraphicSheetRowChange);
          this.dataMonitor.FramesetRowDeleted += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.Frameset_FramesetRowDeleted);
+         this.dataMonitor.Clearing += new System.EventHandler(this.ProjectData_Clearing);
          // 
          // frmFrameEdit
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-         this.ClientSize = new System.Drawing.Size(464, 533);
+         this.ClientSize = new System.Drawing.Size(464, 549);
          this.Controls.Add(this.pnlFrameSet);
          this.Controls.Add(this.splitterGraphicSheet);
          this.Controls.Add(this.pnlGraphicSheet);
@@ -1111,6 +1228,23 @@ namespace SGDK2
          return Double.TryParse(s, System.Globalization.NumberStyles.Number, System.Globalization.NumberFormatInfo.CurrentInfo, out result);
       }
 
+      private Boolean ParseByte(string s, out byte result)
+      {
+         double data;
+         if (!Double.TryParse(s, System.Globalization.NumberStyles.AllowLeadingWhite | System.Globalization.NumberStyles.AllowTrailingWhite, System.Globalization.CultureInfo.InvariantCulture, out data))
+         {
+            result = 255;
+            return false;
+         }
+         if (data>255)
+         {
+            result = 255;
+            return false;
+         }
+         result = (byte)data;
+         return true;
+      }
+
       private Matrix GetTransform()
       {
          Double dblParse;
@@ -1150,6 +1284,15 @@ namespace SGDK2
          txtDY.Text = m_CurrentTransform.Elements[5].ToString();
       }
 
+      private void LoadColorAdjust()
+      {
+         byte[] clr = BitConverter.GetBytes(m_CurrentColor);
+         txtRed.Text = clr[2].ToString();
+         txtGreen.Text = clr[1].ToString();
+         txtBlue.Text = clr[0].ToString();
+         txtAlpha.Text = clr[3].ToString();
+      }
+
       private bool StoreMatrix()
       {
          Double dblM11, dblM12, dblM21, dblM22, dblDX, dblDY;
@@ -1166,6 +1309,20 @@ namespace SGDK2
                (float)dblM11, (float)dblM12,
                (float)dblM21, (float)dblM22,
                (float)dblDX, (float)dblDY);
+            return true;
+         }
+         return false;
+      }
+
+      private bool StoreColorAdjust()
+      {
+         byte R, G, B, A;
+         if (ParseByte(txtRed.Text, out R) &&
+            ParseByte(txtGreen.Text, out G) &&
+            ParseByte(txtBlue.Text, out B) &&
+            ParseByte(txtAlpha.Text, out A))
+         {
+            m_CurrentColor = BitConverter.ToInt32(new byte[] {B,G,R,A}, 0);
             return true;
          }
          return false;
@@ -1192,8 +1349,10 @@ namespace SGDK2
          if (m_CurrentTransform != null)
             m_CurrentTransform.Dispose();
          m_CurrentTransform = new Matrix(fr.m11, fr.m12, fr.m21, fr.m22, fr.dx, fr.dy);
+         m_CurrentColor = fr.color;
          ResetControls();
          LoadMatrix();
+         LoadColorAdjust();
          pnlTransform.Invalidate();
       }
       #endregion
@@ -1284,7 +1443,7 @@ namespace SGDK2
                ProjectData.InsertFrame(FrameBrowser.Frameset,
                   nFrameValue, m_sCurrentSheetName, m_nCurrentCellIndex,
                   m_CurrentTransform.Elements[0], m_CurrentTransform.Elements[1], m_CurrentTransform.Elements[2],
-                  m_CurrentTransform.Elements[3], m_CurrentTransform.Elements[4], m_CurrentTransform.Elements[5]);
+                  m_CurrentTransform.Elements[3], m_CurrentTransform.Elements[4], m_CurrentTransform.Elements[5], m_CurrentColor);
             }
             else
             {
@@ -1301,7 +1460,8 @@ namespace SGDK2
                         ProjectData.InsertFrame(FrameBrowser.Frameset, nFrameValue++,
                            selframes[nIdx].GraphicSheet, selframes[nIdx].CellIndex,
                            selframes[nIdx].m11, selframes[nIdx].m12, selframes[nIdx].m21,
-                           selframes[nIdx].m22, selframes[nIdx].dx, selframes[nIdx].dy);
+                           selframes[nIdx].m22, selframes[nIdx].dx, selframes[nIdx].dy,
+                           selframes[nIdx].color);
                      }
                   }
                }
@@ -1313,7 +1473,7 @@ namespace SGDK2
                      {
                         ProjectData.InsertFrame(FrameBrowser.Frameset,
                            nFrameValue++, gb.GraphicSheet.Name, nIdx,
-                           1, 0, 0, 1, 0, 0);
+                           1, 0, 0, 1, 0, 0,-1);
                      }
                   }
                }
@@ -1353,7 +1513,31 @@ namespace SGDK2
             CtlTransform.Dispose();
             e.Graphics.Transform = PaintTransform;
             e.Graphics.TranslateTransform(m_ptCenter.X, m_ptCenter.Y, MatrixOrder.Append);
-            e.Graphics.DrawImage(m_CurrentImage, 0, 0);
+            if (m_CurrentColor != -1)
+            {
+               byte[] clr = BitConverter.GetBytes(m_CurrentColor);
+               System.Drawing.Imaging.ColorMatrix cm = new System.Drawing.Imaging.ColorMatrix(
+                  new float[][]
+               {
+                  new float[] {(float)clr[2]/255.0f, 0, 0, 0, 0},
+                  new float[] {0, (float)clr[1]/255.0f, 0, 0, 0},
+                  new float[] {0, 0, (float)clr[0]/255.0f, 0, 0},
+                  new float[] {0, 0, 0, (float)clr[3]/255.0f, 0},
+                  new float[] {0, 0, 0, 0, 1}
+               });
+               using (System.Drawing.Imaging.ImageAttributes attr = new System.Drawing.Imaging.ImageAttributes())
+               {
+                  attr.SetColorMatrices(cm, cm);
+                  e.Graphics.DrawImage(m_CurrentImage,
+                     new Rectangle(0,0,m_CurrentImage.Width,m_CurrentImage.Height),
+                     0,0,m_CurrentImage.Width,m_CurrentImage.Height,
+                     System.Drawing.GraphicsUnit.Pixel, attr);
+               }
+            }
+            else
+            {
+               e.Graphics.DrawImage(m_CurrentImage, 0, 0);
+            }
             
             e.Graphics.ResetTransform();
             e.Graphics.TranslateTransform(m_ptCenter.X, m_ptCenter.Y, MatrixOrder.Append);
@@ -1411,6 +1595,7 @@ namespace SGDK2
          RoundMatrix(ref m_CurrentTransform);
          ResetControls();
          LoadMatrix();
+         LoadColorAdjust();
       }
 
       private void btnReset_Click(object sender, System.EventArgs e)
@@ -1418,8 +1603,10 @@ namespace SGDK2
          if (m_CurrentTransform != null)
             m_CurrentTransform.Dispose();
          m_CurrentTransform = new Matrix();
+         m_CurrentColor = -1;
          ResetControls();
          LoadMatrix();
+         LoadColorAdjust();
          pnlTransform.Invalidate();
       }
 
@@ -1498,6 +1685,12 @@ namespace SGDK2
          pnlTransform.Invalidate();
       }
 
+      private void ColorControl_Changed(object sender, System.EventArgs e)
+      {
+         StoreColorAdjust();
+         pnlTransform.Invalidate();
+      }
+
       private void btnSaveFrame_Click(object sender, System.EventArgs e)
       {
          ProjectDataset.FrameRow[] arfr = FrameBrowser.GetSelectedFrames();
@@ -1514,6 +1707,7 @@ namespace SGDK2
          arfr[0].m22 = m_CurrentTransform.Elements[3];
          arfr[0].dx = m_CurrentTransform.Elements[4];
          arfr[0].dy = m_CurrentTransform.Elements[5];
+         arfr[0].color = m_CurrentColor;
       }
 
       private void pnlTransform_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -1700,7 +1894,7 @@ namespace SGDK2
             if (CellBrowser.Selected[nIdx])
             {
                ProjectData.AddFrameRow(FrameBrowser.Frameset, FrameBrowser.CellCount,
-                  CellBrowser.GraphicSheet.Name, nIdx, 1f, 0f, 0f, 1f, 0f, 0f);
+                  CellBrowser.GraphicSheet.Name, nIdx, 1f, 0f, 0f, 1f, 0f, 0f, -1);
             }
          }
       }
@@ -1769,6 +1963,7 @@ namespace SGDK2
       {
          FrameBrowser.Frameset.Name = txtFramesetName.Text;
       }
-      #endregion      
+
+      #endregion
    }
 }

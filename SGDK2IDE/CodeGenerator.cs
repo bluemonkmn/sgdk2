@@ -790,7 +790,10 @@ namespace SGDK2
                   (drFrame.dx == im.M41) &&
                   (drFrame.dy == im.M42))
                {
-                  frameParams.Add(new CodeObjectCreateExpression(FrameClass, getTextureExp, cellExp, rectExp));
+                  if (drFrame.color == -1)
+                     frameParams.Add(new CodeObjectCreateExpression(FrameClass, getTextureExp, cellExp, rectExp));
+                  else
+                     frameParams.Add(new CodeObjectCreateExpression(FrameClass, getTextureExp, cellExp, rectExp, new CodePrimitiveExpression(drFrame.color)));
                }
                else
                {
@@ -800,7 +803,10 @@ namespace SGDK2
                   CodePrimitiveExpression m22Exp = new CodePrimitiveExpression(drFrame.m22);
                   CodePrimitiveExpression m41Exp = new CodePrimitiveExpression(drFrame.dx);
                   CodePrimitiveExpression m42Exp = new CodePrimitiveExpression(drFrame.dy);
-                  frameParams.Add(new CodeObjectCreateExpression(FrameClass, getTextureExp, cellExp, m11Exp, m12Exp, m21Exp, m22Exp, m41Exp, m42Exp, rectExp));
+                  if (drFrame.color == -1)
+                     frameParams.Add(new CodeObjectCreateExpression(FrameClass, getTextureExp, cellExp, m11Exp, m12Exp, m21Exp, m22Exp, m41Exp, m42Exp, rectExp));
+                  else
+                     frameParams.Add(new CodeObjectCreateExpression(FrameClass, getTextureExp, cellExp, m11Exp, m12Exp, m21Exp, m22Exp, m41Exp, m42Exp, rectExp, new CodePrimitiveExpression(drFrame.color)));
                }
             }
             CodeArrayCreateExpression createArray = new CodeArrayCreateExpression(FrameClass,(CodeExpression[])frameParams.ToArray(typeof(CodeExpression)));
@@ -2173,6 +2179,7 @@ namespace SGDK2
                typeof(int), NameToVariable(drParam.Name)));
             constructor.Statements.Add(new CodeAssignStatement(refParam,               
                new CodeArgumentReferenceExpression(NameToVariable(drParam.Name))));
+            mthClearParams.Statements.Add(new CodeAssignStatement(refParam, new CodePrimitiveExpression(0)));
          }
          clsSpriteDef.Members.Add(constructor);
 

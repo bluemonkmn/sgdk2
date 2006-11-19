@@ -400,7 +400,7 @@ namespace SGDK2
       /// <returns></returns>
       public static ProjectDataset.FrameRow InsertFrame(ProjectDataset.FramesetRow parent,
          int FrameValue, string GraphicSheet, short CellIndex,
-         float m11, float m12, float m21, float m22, float dx, float dy)
+         float m11, float m12, float m21, float m22, float dx, float dy, int color)
       {
          ProjectDataset.FrameRow drNew = m_dsPrj.Frame.NewFrameRow();
          drNew.FramesetRow = parent;
@@ -416,6 +416,7 @@ namespace SGDK2
          drNew.m22 = m22;
          drNew.dx = dx;
          drNew.dy = dy;
+         drNew.color = color;
          DataRow[] ardr = m_dsPrj.Frame.Select("Name='" + parent.Name + "' AND FrameValue>=" + FrameValue.ToString(), "FrameValue DESC");
          m_dsPrj.Frame.Rows.InsertAt(drNew, FrameValue);
          foreach(ProjectDataset.FrameRow dr in ardr)
@@ -463,9 +464,9 @@ namespace SGDK2
       }
       public static ProjectDataset.FrameRow AddFrameRow(
          ProjectDataset.FramesetRow Frameset, int FrameValue, string GraphicSheet, short CellIndex,
-         float m11, float m12, float m21, float m22, float dx, float dy)
+         float m11, float m12, float m21, float m22, float dx, float dy, int color)
       {
-         return m_dsPrj.Frame.AddFrameRow(FrameValue, GraphicSheet, CellIndex, m11, m12, m21, m22, dx, dy, Frameset);
+         return m_dsPrj.Frame.AddFrameRow(FrameValue, GraphicSheet, CellIndex, m11, m12, m21, m22, dx, dy, Frameset, color);
       }
       public static ProjectDataset.FrameRow GetFrame(string Frameset, int FrameValue)
       {

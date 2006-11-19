@@ -2033,6 +2033,8 @@ namespace SGDK2 {
             
             private DataColumn columnName;
             
+            private DataColumn columncolor;
+            
             internal FrameDataTable() : 
                     base("Frame") {
                 this.InitClass();
@@ -2121,6 +2123,12 @@ namespace SGDK2 {
                 }
             }
             
+            internal DataColumn colorColumn {
+                get {
+                    return this.columncolor;
+                }
+            }
+            
             public FrameRow this[int index] {
                 get {
                     return ((FrameRow)(this.Rows[index]));
@@ -2139,7 +2147,7 @@ namespace SGDK2 {
                 this.Rows.Add(row);
             }
             
-            public FrameRow AddFrameRow(int FrameValue, string GraphicSheet, short CellIndex, System.Single m11, System.Single m12, System.Single m21, System.Single m22, System.Single dx, System.Single dy, FramesetRow parentFramesetRowByFramesetFrame) {
+            public FrameRow AddFrameRow(int FrameValue, string GraphicSheet, short CellIndex, System.Single m11, System.Single m12, System.Single m21, System.Single m22, System.Single dx, System.Single dy, FramesetRow parentFramesetRowByFramesetFrame, int color) {
                 FrameRow rowFrameRow = ((FrameRow)(this.NewRow()));
                 rowFrameRow.ItemArray = new object[] {
                         FrameValue,
@@ -2151,7 +2159,8 @@ namespace SGDK2 {
                         m22,
                         dx,
                         dy,
-                        parentFramesetRowByFramesetFrame[0]};
+                        parentFramesetRowByFramesetFrame[0],
+                        color};
                 this.Rows.Add(rowFrameRow);
                 return rowFrameRow;
             }
@@ -2187,6 +2196,7 @@ namespace SGDK2 {
                 this.columndx = this.Columns["dx"];
                 this.columndy = this.Columns["dy"];
                 this.columnName = this.Columns["Name"];
+                this.columncolor = this.Columns["color"];
             }
             
             private void InitClass() {
@@ -2210,6 +2220,8 @@ namespace SGDK2 {
                 this.Columns.Add(this.columndy);
                 this.columnName = new DataColumn("Name", typeof(string), null, System.Data.MappingType.Hidden);
                 this.Columns.Add(this.columnName);
+                this.columncolor = new DataColumn("color", typeof(int), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columncolor);
                 this.Constraints.Add(new UniqueConstraint("FrameKey", new DataColumn[] {
                                 this.columnName,
                                 this.columnFrameValue}, true));
@@ -2233,6 +2245,8 @@ namespace SGDK2 {
                 this.columndy.DefaultValue = 0F;
                 this.columnName.AllowDBNull = false;
                 this.columnName.Namespace = "";
+                this.columncolor.Namespace = "";
+                this.columncolor.DefaultValue = -1;
             }
             
             public FrameRow NewFrameRow() {
@@ -2401,6 +2415,20 @@ namespace SGDK2 {
                 }
             }
             
+            public int color {
+                get {
+                    if (this.IscolorNull()) {
+                        return -1;
+                    }
+                    else {
+                        return ((int)(this[this.tableFrame.colorColumn]));
+                    }
+                }
+                set {
+                    this[this.tableFrame.colorColumn] = value;
+                }
+            }
+            
             public FramesetRow FramesetRow {
                 get {
                     return ((FramesetRow)(this.GetParentRow(this.Table.ParentRelations["FramesetFrame"])));
@@ -2456,6 +2484,14 @@ namespace SGDK2 {
             
             public void SetdyNull() {
                 this[this.tableFrame.dyColumn] = System.Convert.DBNull;
+            }
+            
+            public bool IscolorNull() {
+                return this.IsNull(this.tableFrame.colorColumn);
+            }
+            
+            public void SetcolorNull() {
+                this[this.tableFrame.colorColumn] = System.Convert.DBNull;
             }
         }
         

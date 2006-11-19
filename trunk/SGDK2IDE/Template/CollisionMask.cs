@@ -36,7 +36,7 @@ public class CollisionMask
       {
          int lastColMask = 0;
          lastColMask |= (-1) << (32 - (size.Width % 32));
-         int lastColIdx = (int)Math.Ceiling(size.Width / 32f);
+         int lastColIdx = (int)Math.Ceiling(size.Width / 32f)-1;
          for (int y = 0; y < size.Height; y++)
          {
             m_Mask[y, lastColIdx] = lastColMask;

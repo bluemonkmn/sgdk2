@@ -980,7 +980,29 @@ namespace SGDK2
                            nX + AutoScrollPosition.X - m_LargestCell.X,
                            nY + AutoScrollPosition.Y - m_LargestCell.Y,
                            System.Drawing.Drawing2D.MatrixOrder.Append);
-                        gfxOut.DrawImage(bmpImage, 0, 0, rcCell, GraphicsUnit.Pixel);
+                        if (Frames[nFrameToDisplay].color != -1)
+                        {
+                           byte[] clr = BitConverter.GetBytes(Frames[nFrameToDisplay].color);
+                           System.Drawing.Imaging.ColorMatrix cm = new System.Drawing.Imaging.ColorMatrix(
+                              new float[][]
+                              {
+                                 new float[] {(float)clr[2]/255.0f, 0, 0, 0, 0},
+                                 new float[] {0, (float)clr[1]/255.0f, 0, 0, 0},
+                                 new float[] {0, 0, (float)clr[0]/255.0f, 0, 0},
+                                 new float[] {0, 0, 0, (float)clr[3]/255.0f, 0},
+                                 new float[] {0, 0, 0, 0, 1}
+                              });
+                           using (System.Drawing.Imaging.ImageAttributes attr = new System.Drawing.Imaging.ImageAttributes())
+                           {
+                              attr.SetColorMatrices(cm, cm);
+                              gfxOut.DrawImage(bmpImage,
+                                 new Rectangle(0,0,rcCell.Width,rcCell.Height),
+                                 rcCell.Left,rcCell.Top,rcCell.Width,rcCell.Height,
+                                 System.Drawing.GraphicsUnit.Pixel, attr);
+                           }
+                        }
+                        else
+                           gfxOut.DrawImage(bmpImage, 0, 0, rcCell, GraphicsUnit.Pixel);
                         gfxOut.ResetTransform();
                      }
                   }

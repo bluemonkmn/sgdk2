@@ -28,6 +28,7 @@ namespace SGDK2
          public Rectangle SourceRect;
          public ProjectDataset.GraphicSheetRow GraphicSheet;
          private System.Drawing.Rectangle bounds;
+         public int Color;
 
          /// <summary>
          /// Determine the bounding rectangle of the graphics in this frame
@@ -150,6 +151,7 @@ namespace SGDK2
             m_arFrames[nIdx].Transform.M42 = arfr[nIdx].dy;
             m_arFrames[nIdx].Transform.M43 = 0;
             m_arFrames[nIdx].Transform.M44 = 1;
+            m_arFrames[nIdx].Color = arfr[nIdx].color;
 
             m_arFrames[nIdx].SourceRect = new Rectangle(
                (arfr[nIdx].CellIndex % g.Columns) * g.CellWidth,

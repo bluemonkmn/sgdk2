@@ -542,6 +542,54 @@ public abstract class SpriteBase : GeneralRules
       Debug.Assert(this.isActive, "Attempted to execute IsInState on an inactive sprite");
       return (state <= FirstState) && (state >= LastState);
    }
+
+   public int ModulateAlpha
+   {
+      get
+      {
+         return color >> 24;
+      }
+      set
+      {
+         color = color & 0x00FFFFFF | (byte)(value%256) << 24;
+      }
+   }
+
+   public int ModulateRed
+   {
+      get
+      {
+         return (color & 0x00FF0000) >> 16;
+      }
+      set
+      {
+         color = (int)(color & 0xFF00FFFF) | (byte)(value%256) << 16;
+      }
+   }
+
+   public int ModulateGreen
+   {
+      get
+      {
+         return (color & 0x0000FF00) >> 8;
+      }
+      set
+      {
+         color = (int)(color & 0xFFFF00FF) | (byte)(value%256) << 8;
+      }
+   }
+
+   public int ModulateBlue
+   {
+      get
+      {
+         return color & 0xFF;
+      }
+      set
+      {
+         color = (int)(color & 0xFFFFFF00) | (byte)(value%256);
+      }
+   }
    #endregion
 
    #region Input Processing

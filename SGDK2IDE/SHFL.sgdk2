@@ -1204,6 +1204,7 @@
         <PlanRule Name="IfGrapes1" Sequence="1" Type="If" Function="IsSpriteActive" Parameter1="m_ParentLayer.m_Grapes_1" EndIf="false" Suspended="false" />
         <PlanRule Name="EndGrapes1" Sequence="7" Type="End" Function="End" EndIf="true" Suspended="false" />
         <PlanRule Name="IfGrapes3" Sequence="8" Type="If" Function="IsSpriteActive" Parameter1="m_ParentLayer.m_Grapes_3" EndIf="false" Suspended="false" />
+        <PlanRule Name="GrapeColors" Sequence="14" Type="Do" Function="ModulateColor" Parameter1="m_ParentLayer.m_Grapes_1" Parameter2="PlanBase.ColorChannel.Blue" Parameter3="Counter.Animator.CurrentValue" EndIf="false" Suspended="false" />
       </SpritePlan>
       <SpritePlan Name="Grape2Plan" Priority="1">
         <Coordinate Sequence="1" X="285" Y="282" Weight="0" />
@@ -1341,6 +1342,9 @@
     <SpriteRule Name="CheckSound" Sequence="51" Type="If" Function="&gt;" Parameter1="TempNum" Parameter2="0" EndIf="false" Suspended="false" />
     <SpriteRule Name="PlayMusic" Sequence="43" Type="Do" Function="CustomObjects.FMODBase.PlaySound" Parameter1="CustomObjects.Music1.Value" Parameter2="CustomObjects.SoundReplay.Continue" EndIf="false" Suspended="false" />
     <SpriteRule Name="ScrollIntoView" Sequence="42" Type="Do" Function="ScrollSpriteIntoView" EndIf="false" Suspended="false" />
+    <SpriteRule Name="If Cherries are even" Sequence="55" Type="If" Function="==" Parameter1="Counter.Cherries.CurrentValue%2" Parameter2="0" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Turn red" Sequence="56" Type="Do" Function="=" Parameter1="0" ResultParameter="ModulateGreen" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Turn Unred" Sequence="57" Type="Else" Function="=" Parameter1="255" ResultParameter="ModulateGreen" EndIf="false" Suspended="false" />
     <SpriteParameter Name="Life" />
     <SpriteParameter Name="TouchIndex" />
     <SpriteParameter Name="TempNum" />
@@ -3289,6 +3293,54 @@ public abstract class SpriteBase : GeneralRules
       Debug.Assert(this.isActive, "Attempted to execute IsInState on an inactive sprite");
       return (state &lt;= FirstState) &amp;&amp; (state &gt;= LastState);
    }
+
+   public int ModulateAlpha
+   {
+      get
+      {
+         return color &gt;&gt; 24;
+      }
+      set
+      {
+         color = color &amp; 0x00FFFFFF | (byte)(value%256) &lt;&lt; 24;
+      }
+   }
+
+   public int ModulateRed
+   {
+      get
+      {
+         return (color &amp; 0x00FF0000) &gt;&gt; 16;
+      }
+      set
+      {
+         color = (int)(color &amp; 0xFF00FFFF) | (byte)(value%256) &lt;&lt; 16;
+      }
+   }
+
+   public int ModulateGreen
+   {
+      get
+      {
+         return (color &amp; 0x0000FF00) &gt;&gt; 8;
+      }
+      set
+      {
+         color = (int)(color &amp; 0xFFFF00FF) | (byte)(value%256) &lt;&lt; 8;
+      }
+   }
+
+   public int ModulateBlue
+   {
+      get
+      {
+         return color &amp; 0xFF;
+      }
+      set
+      {
+         color = (int)(color &amp; 0xFFFFFF00) | (byte)(value%256);
+      }
+   }
    #endregion
 
    #region Input Processing
@@ -4486,6 +4538,34 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    public bool IsSpriteActive(SpriteBase Sprite)
    {
       return Sprite.isActive;
+   }
+
+   public enum ColorChannel
+   {
+      Blue,
+      Green,
+      Red,
+      Alpha
+   }
+
+   [Description("Modulate/scale the specified color channel of the specified sprite to the specified level (0-255)")]
+   public void ModulateColor(SpriteBase Sprite, ColorChannel Channel, int Level)
+   {
+      switch(Channel)
+      {
+         case ColorChannel.Blue:
+            Sprite.ModulateBlue = Level;
+            break;
+         case ColorChannel.Green:
+            Sprite.ModulateGreen = Level;
+            break;
+         case ColorChannel.Red:
+            Sprite.ModulateRed = Level;
+            break;
+         case ColorChannel.Alpha:
+            Sprite.ModulateAlpha = Level;
+            break;
+      }
    }
 
    #region Inventory / Overlay

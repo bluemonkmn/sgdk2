@@ -258,6 +258,34 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
       return Sprite.isActive;
    }
 
+   public enum ColorChannel
+   {
+      Blue,
+      Green,
+      Red,
+      Alpha
+   }
+
+   [Description("Modulate/scale the specified color channel of the specified sprite to the specified level (0-255)")]
+   public void ModulateColor(SpriteBase Sprite, ColorChannel Channel, int Level)
+   {
+      switch(Channel)
+      {
+         case ColorChannel.Blue:
+            Sprite.ModulateBlue = Level;
+            break;
+         case ColorChannel.Green:
+            Sprite.ModulateGreen = Level;
+            break;
+         case ColorChannel.Red:
+            Sprite.ModulateRed = Level;
+            break;
+         case ColorChannel.Alpha:
+            Sprite.ModulateAlpha = Level;
+            break;
+      }
+   }
+
    #region Inventory / Overlay
    public enum DrawStyle
    {

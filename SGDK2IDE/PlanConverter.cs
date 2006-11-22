@@ -221,6 +221,14 @@ namespace SGDK2
          {
             return true;
          }
+
+         InitCustomProperties();
+         if ((context.Instance is PlanProvider[]) && (context.PropertyDescriptor != null) &&
+            (m_PlanProperties.ContainsKey(context.PropertyDescriptor.Name)) &&
+            (sourceType == typeof(string)))
+         {
+            return true;
+         }
          return base.CanConvertFrom (context, sourceType);
       }
 
@@ -228,6 +236,13 @@ namespace SGDK2
       {
          if ((context.Instance is PlanProvider) && (context.PropertyDescriptor != null) &&
             (context.PropertyDescriptor is PlanParamDescriptor) &&
+            (value is string) || (value == null))
+         {
+            return value.ToString();
+         }
+         InitCustomProperties();
+         if ((context.Instance is PlanProvider[]) && (context.PropertyDescriptor != null) &&
+            (m_PlanProperties.ContainsKey(context.PropertyDescriptor.Name)) &&
             (value is string) || (value == null))
          {
             return value.ToString();
@@ -361,6 +376,7 @@ namespace SGDK2
          }
       }
 
+      [Description("Determines the order in which plans with rules are executed (lowest first)")]
       public int Priority
       {
          get
@@ -580,6 +596,7 @@ namespace SGDK2
          }
       }
 
+      [Description("Can be used to specify how long a sprite will wait at this coordinate, or for other custom uses")]
       public int Weight
       {
          get

@@ -787,6 +787,18 @@ namespace SGDK2
       {
          return true;
       }
+
+      public override string Description
+      {
+         get
+         {
+            DescriptionAttribute[] attr = m_PropertyInfo.GetCustomAttributes(typeof(DescriptionAttribute), true) as DescriptionAttribute[];
+            if ((attr != null) && (attr.Length > 0))
+               return attr[0].Description;
+            return string.Empty;
+         }
+      }
+
    }
 
    class SpriteParamDescriptor : System.ComponentModel.PropertyDescriptor

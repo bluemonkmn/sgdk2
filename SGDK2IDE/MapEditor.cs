@@ -90,6 +90,11 @@ namespace SGDK2
       private System.Windows.Forms.RadioButton rdoToolPaste;
       private System.Windows.Forms.RadioButton rdoToolPasteTransparent;
       private System.Windows.Forms.ToolBarButton tbbPlanProperties;
+      private System.Windows.Forms.ToolBarButton tbbSort;
+      private System.Windows.Forms.ToolBarButton tbbGotoCoord;
+      private System.Windows.Forms.MenuItem mnuEditDetails;
+      private System.Windows.Forms.MenuItem mnuLocateCoordinate;
+      private System.Windows.Forms.MenuItem mnuSortPlans;
       private System.Windows.Forms.Splitter SpriteSplitter;
       #endregion
 
@@ -197,6 +202,7 @@ namespace SGDK2
          this.tbbNewPlan = new System.Windows.Forms.ToolBarButton();
          this.tbbDeletePlan = new System.Windows.Forms.ToolBarButton();
          this.tbbPlanProperties = new System.Windows.Forms.ToolBarButton();
+         this.tbbSort = new System.Windows.Forms.ToolBarButton();
          this.imlToolbar = new System.Windows.Forms.ImageList(this.components);
          this.CoordSplitter = new System.Windows.Forms.Splitter();
          this.grpPlanCoords = new System.Windows.Forms.GroupBox();
@@ -216,6 +222,10 @@ namespace SGDK2
          this.sbpPixelCoord = new System.Windows.Forms.StatusBarPanel();
          this.sbpTileAtCursor = new System.Windows.Forms.StatusBarPanel();
          this.sbpSelTile = new System.Windows.Forms.StatusBarPanel();
+         this.tbbGotoCoord = new System.Windows.Forms.ToolBarButton();
+         this.mnuEditDetails = new System.Windows.Forms.MenuItem();
+         this.mnuLocateCoordinate = new System.Windows.Forms.MenuItem();
+         this.mnuSortPlans = new System.Windows.Forms.MenuItem();
          this.tabSelector.SuspendLayout();
          this.tabTiles.SuspendLayout();
          this.pnlTiles.SuspendLayout();
@@ -236,7 +246,7 @@ namespace SGDK2
          // 
          this.MapSplitter.Location = new System.Drawing.Point(176, 0);
          this.MapSplitter.Name = "MapSplitter";
-         this.MapSplitter.Size = new System.Drawing.Size(5, 473);
+         this.MapSplitter.Size = new System.Drawing.Size(5, 505);
          this.MapSplitter.TabIndex = 8;
          this.MapSplitter.TabStop = false;
          // 
@@ -248,7 +258,7 @@ namespace SGDK2
          this.MapDisplay.GameDisplayMode = SGDK2.GameDisplayMode.m640x480x24;
          this.MapDisplay.Location = new System.Drawing.Point(181, 0);
          this.MapDisplay.Name = "MapDisplay";
-         this.MapDisplay.Size = new System.Drawing.Size(411, 473);
+         this.MapDisplay.Size = new System.Drawing.Size(483, 505);
          this.MapDisplay.TabIndex = 10;
          this.MapDisplay.Windowed = true;
          this.MapDisplay.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MapDisplay_MouseUp);
@@ -268,7 +278,10 @@ namespace SGDK2
          this.mnuEdit.Index = 0;
          this.mnuEdit.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
                                                                                 this.mnuEditDelete,
-                                                                                this.mnuSnapToTiles});
+                                                                                this.mnuSnapToTiles,
+                                                                                this.mnuEditDetails,
+                                                                                this.mnuLocateCoordinate,
+                                                                                this.mnuSortPlans});
          this.mnuEdit.Text = "&Edit";
          // 
          // mnuEditDelete
@@ -281,6 +294,7 @@ namespace SGDK2
          // mnuSnapToTiles
          // 
          this.mnuSnapToTiles.Index = 1;
+         this.mnuSnapToTiles.Shortcut = System.Windows.Forms.Shortcut.CtrlT;
          this.mnuSnapToTiles.Text = "&Snap to Tiles";
          this.mnuSnapToTiles.Click += new System.EventHandler(this.mnuSnapToTiles_Click);
          // 
@@ -318,7 +332,7 @@ namespace SGDK2
          this.tabSelector.Location = new System.Drawing.Point(0, 0);
          this.tabSelector.Name = "tabSelector";
          this.tabSelector.SelectedIndex = 0;
-         this.tabSelector.Size = new System.Drawing.Size(176, 473);
+         this.tabSelector.Size = new System.Drawing.Size(176, 505);
          this.tabSelector.TabIndex = 13;
          this.tabSelector.SelectedIndexChanged += new System.EventHandler(this.tabSelector_SelectedIndexChanged);
          // 
@@ -483,7 +497,7 @@ namespace SGDK2
          this.tabPlans.Controls.Add(this.grdPlan);
          this.tabPlans.Location = new System.Drawing.Point(4, 22);
          this.tabPlans.Name = "tabPlans";
-         this.tabPlans.Size = new System.Drawing.Size(168, 447);
+         this.tabPlans.Size = new System.Drawing.Size(168, 479);
          this.tabPlans.TabIndex = 2;
          this.tabPlans.Text = "Plans";
          // 
@@ -542,7 +556,9 @@ namespace SGDK2
          this.tbPlans.Buttons.AddRange(new System.Windows.Forms.ToolBarButton[] {
                                                                                    this.tbbNewPlan,
                                                                                    this.tbbDeletePlan,
-                                                                                   this.tbbPlanProperties});
+                                                                                   this.tbbPlanProperties,
+                                                                                   this.tbbSort,
+                                                                                   this.tbbGotoCoord});
          this.tbPlans.Divider = false;
          this.tbPlans.DropDownArrows = true;
          this.tbPlans.ImageList = this.imlToolbar;
@@ -567,6 +583,11 @@ namespace SGDK2
          // 
          this.tbbPlanProperties.ImageIndex = 2;
          this.tbbPlanProperties.ToolTipText = "Edit Selected Plan";
+         // 
+         // tbbSort
+         // 
+         this.tbbSort.ImageIndex = 3;
+         this.tbbSort.ToolTipText = "Sort plans alphabetically";
          // 
          // imlToolbar
          // 
@@ -593,7 +614,7 @@ namespace SGDK2
          this.grpPlanCoords.Dock = System.Windows.Forms.DockStyle.Bottom;
          this.grpPlanCoords.Location = new System.Drawing.Point(0, 202);
          this.grpPlanCoords.Name = "grpPlanCoords";
-         this.grpPlanCoords.Size = new System.Drawing.Size(168, 104);
+         this.grpPlanCoords.Size = new System.Drawing.Size(168, 120);
          this.grpPlanCoords.TabIndex = 21;
          this.grpPlanCoords.TabStop = false;
          this.grpPlanCoords.Text = "Plan Coordinates";
@@ -605,7 +626,7 @@ namespace SGDK2
          this.lstPlanCoords.Location = new System.Drawing.Point(3, 16);
          this.lstPlanCoords.Name = "lstPlanCoords";
          this.lstPlanCoords.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-         this.lstPlanCoords.Size = new System.Drawing.Size(162, 53);
+         this.lstPlanCoords.Size = new System.Drawing.Size(162, 69);
          this.lstPlanCoords.TabIndex = 17;
          this.lstPlanCoords.Leave += new System.EventHandler(this.lstPlanCoords_Leave);
          this.lstPlanCoords.Enter += new System.EventHandler(this.lstPlanCoords_Enter);
@@ -615,7 +636,7 @@ namespace SGDK2
          // 
          this.rdoAppendCoord.Checked = true;
          this.rdoAppendCoord.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.rdoAppendCoord.Location = new System.Drawing.Point(3, 69);
+         this.rdoAppendCoord.Location = new System.Drawing.Point(3, 85);
          this.rdoAppendCoord.Name = "rdoAppendCoord";
          this.rdoAppendCoord.Size = new System.Drawing.Size(162, 16);
          this.rdoAppendCoord.TabIndex = 7;
@@ -625,7 +646,7 @@ namespace SGDK2
          // rdoSelectCoord
          // 
          this.rdoSelectCoord.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.rdoSelectCoord.Location = new System.Drawing.Point(3, 85);
+         this.rdoSelectCoord.Location = new System.Drawing.Point(3, 101);
          this.rdoSelectCoord.Name = "rdoSelectCoord";
          this.rdoSelectCoord.Size = new System.Drawing.Size(162, 16);
          this.rdoSelectCoord.TabIndex = 8;
@@ -634,7 +655,7 @@ namespace SGDK2
          // PlanSplitter
          // 
          this.PlanSplitter.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.PlanSplitter.Location = new System.Drawing.Point(0, 306);
+         this.PlanSplitter.Location = new System.Drawing.Point(0, 322);
          this.PlanSplitter.Name = "PlanSplitter";
          this.PlanSplitter.Size = new System.Drawing.Size(168, 5);
          this.PlanSplitter.TabIndex = 1;
@@ -644,13 +665,12 @@ namespace SGDK2
          // 
          this.grdPlan.CommandsVisibleIfAvailable = true;
          this.grdPlan.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.grdPlan.HelpVisible = false;
          this.grdPlan.LargeButtons = false;
          this.grdPlan.LineColor = System.Drawing.SystemColors.ScrollBar;
-         this.grdPlan.Location = new System.Drawing.Point(0, 311);
+         this.grdPlan.Location = new System.Drawing.Point(0, 327);
          this.grdPlan.Name = "grdPlan";
          this.grdPlan.PropertySort = System.Windows.Forms.PropertySort.Alphabetical;
-         this.grdPlan.Size = new System.Drawing.Size(168, 136);
+         this.grdPlan.Size = new System.Drawing.Size(168, 152);
          this.grdPlan.TabIndex = 6;
          this.grdPlan.Text = "PropertyGrid";
          this.grdPlan.ToolbarVisible = false;
@@ -705,7 +725,7 @@ namespace SGDK2
          // 
          // StatusBar
          // 
-         this.StatusBar.Location = new System.Drawing.Point(0, 473);
+         this.StatusBar.Location = new System.Drawing.Point(0, 505);
          this.StatusBar.Name = "StatusBar";
          this.StatusBar.Panels.AddRange(new System.Windows.Forms.StatusBarPanel[] {
                                                                                      this.sbpStatus,
@@ -715,7 +735,7 @@ namespace SGDK2
                                                                                      this.sbpTileAtCursor,
                                                                                      this.sbpSelTile});
          this.StatusBar.ShowPanels = true;
-         this.StatusBar.Size = new System.Drawing.Size(592, 16);
+         this.StatusBar.Size = new System.Drawing.Size(664, 16);
          this.StatusBar.TabIndex = 14;
          this.StatusBar.DrawItem += new System.Windows.Forms.StatusBarDrawItemEventHandler(this.StatusBar_DrawItem);
          // 
@@ -723,7 +743,7 @@ namespace SGDK2
          // 
          this.sbpStatus.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Spring;
          this.sbpStatus.BorderStyle = System.Windows.Forms.StatusBarPanelBorderStyle.None;
-         this.sbpStatus.Width = 492;
+         this.sbpStatus.Width = 564;
          // 
          // sbpCtrl
          // 
@@ -753,10 +773,34 @@ namespace SGDK2
          this.sbpSelTile.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
          this.sbpSelTile.Width = 10;
          // 
+         // tbbGotoCoord
+         // 
+         this.tbbGotoCoord.ImageIndex = 4;
+         this.tbbGotoCoord.ToolTipText = "Locate the selected plan coordinate on the map";
+         // 
+         // mnuEditDetails
+         // 
+         this.mnuEditDetails.Index = 2;
+         this.mnuEditDetails.Text = "Selected &Plan Details";
+         this.mnuEditDetails.Click += new System.EventHandler(this.mnuEditDetails_Click);
+         // 
+         // mnuLocateCoordinate
+         // 
+         this.mnuLocateCoordinate.Index = 3;
+         this.mnuLocateCoordinate.Shortcut = System.Windows.Forms.Shortcut.CtrlG;
+         this.mnuLocateCoordinate.Text = "&Locate Coordinate";
+         this.mnuLocateCoordinate.Click += new System.EventHandler(this.mnuLocateCoordinate_Click);
+         // 
+         // mnuSortPlans
+         // 
+         this.mnuSortPlans.Index = 4;
+         this.mnuSortPlans.Text = "So&rt Plans";
+         this.mnuSortPlans.Click += new System.EventHandler(this.mnuSortPlans_Click);
+         // 
          // frmMapEditor
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-         this.ClientSize = new System.Drawing.Size(592, 489);
+         this.ClientSize = new System.Drawing.Size(664, 521);
          this.Controls.Add(this.MapDisplay);
          this.Controls.Add(this.MapSplitter);
          this.Controls.Add(this.tabSelector);
@@ -765,6 +809,7 @@ namespace SGDK2
          this.KeyPreview = true;
          this.Menu = this.mnuMapEditor;
          this.Name = "frmMapEditor";
+         this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
          this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmMapEditor_KeyDown);
          this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.frmMapEditor_KeyUp);
          this.tabSelector.ResumeLayout(false);
@@ -1335,6 +1380,40 @@ namespace SGDK2
          }
 
          frmPlanEdit.Edit(this.MdiParent, (ProjectDataset.SpritePlanRow)lstPlans.SelectedItem);
+      }
+
+      private void LocateSelectedPlan()
+      {
+         string msg = null;
+         if (lstPlans.SelectedIndices.Count > 1)
+         {
+            msg = "Please select just a single plan first.";
+         }
+         else if (lstPlans.SelectedIndices.Count == 0)
+         {
+            msg = "Please select a plan first.";
+         }
+         else if (lstPlanCoords.Items.Count == 0)
+         {
+            msg = "No coordinate to locate.";
+         }
+         if (msg != null)
+         {
+            MessageBox.Show(this, msg, "Locate Plan Coordinate", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
+         
+         CoordProvider coord;
+
+         if (lstPlanCoords.SelectedIndex > 0)
+            coord = (CoordProvider)lstPlanCoords.SelectedItem;
+         else
+            coord = (CoordProvider)lstPlanCoords.Items[0];
+
+         int posX, posY;
+         posX = coord.X - MapDisplay.ClientSize.Width/2;
+         posY = coord.Y - MapDisplay.ClientSize.Height/2;
+         MapDisplay.AutoScrollPosition = new Point(posX, posY);
       }
       #endregion
 
@@ -1989,6 +2068,15 @@ namespace SGDK2
          {
             EditSelectedPlan();
          }
+         else if (e.Button == tbbSort)
+         {
+            lstPlans.Sorted = true;
+            lstPlans.Sorted = false;
+         }
+         else if (e.Button == tbbGotoCoord)
+         {
+            LocateSelectedPlan();
+         }
       }
 
       private void lstPlans_SelectedIndexChanged(object sender, System.EventArgs e)
@@ -2143,6 +2231,22 @@ namespace SGDK2
       private void lstAvailableSprites_Enter(object sender, System.EventArgs e)
       {
          DeleteSpriteMode();
+      }
+
+      private void mnuEditDetails_Click(object sender, System.EventArgs e)
+      {
+         EditSelectedPlan();
+      }
+
+      private void mnuLocateCoordinate_Click(object sender, System.EventArgs e)
+      {
+         LocateSelectedPlan();
+      }
+
+      private void mnuSortPlans_Click(object sender, System.EventArgs e)
+      {
+         lstPlans.Sorted = true;
+         lstPlans.Sorted = false;
       }
    }
    #endregion

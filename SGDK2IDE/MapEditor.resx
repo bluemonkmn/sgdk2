@@ -247,6 +247,9 @@
   <data name="cboCategory.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>Private</value>
   </data>
+  <data name="tabSprites.Locked" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>False</value>
+  </data>
   <data name="tabSprites.SnapToGrid" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </data>
@@ -258,9 +261,6 @@
   </data>
   <data name="tabSprites.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>Private</value>
-  </data>
-  <data name="tabSprites.Locked" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>False</value>
   </data>
   <data name="tabSprites.GridSize" type="System.Drawing.Size, System.Drawing, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>8, 8</value>
@@ -427,6 +427,12 @@
   <data name="tbbPlanProperties.DefaultModifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>Private</value>
   </data>
+  <data name="tbbSort.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="tbbSort.DefaultModifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
   <data name="imlToolbar.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>Private</value>
   </data>
@@ -441,8 +447,8 @@
         AAEAAAD/////AQAAAAAAAAAMAgAAAFpTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj0xLjAuNTAw
         MC4wLCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZT
         eXN0ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMA
-        AABeCAAAAk1TRnQBSQFMAgEBAwEAAQQBAAEEAQABDwEAAQ8BAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQC
-        AAEoAwABPAMAAQ8DAAEBAQABCAUAAYQBAxgAAYACAAGAAwACgAEAAYADAAGAAQABgAEAAoACAAPAAQAB
+        AAB4CQAAAk1TRnQBSQFMAgEBBQEAAQkBAAEEAQABDwEAAQ8BAAT/AQkBAAj/AUIBTQE2AQQGAAE2AQQC
+        AAEoAwABPAMAAS0DAAEBAQABCAUAAYwBChgAAYACAAGAAwACgAEAAYADAAGAAQABgAEAAoACAAPAAQAB
         wAHcAcABAAHwAcoBpgEAATMFAAEzAQABMwEAATMBAAIzAgADFgEAAxwBAAMiAQADKQEAA1UBAANNAQAD
         QgEAAzkBAAGAAXwB/wEAAlAB/wEAAZMBAAHWAQAB/wHsAcwBAAHGAdYB7wEAAdYC5wEAAZABqQGtAgAB
         /wEzAwABZgMAAZkDAAHMAgABMwMAAjMCAAEzAWYCAAEzAZkCAAEzAcwCAAEzAf8CAAFmAwABZgEzAgAC
@@ -469,14 +475,19 @@
         AAH/AZkBzAEAAf8BmQH/AQAB/wHMAgAB/wHMATMBAAH/AcwBZgEAAf8BzAGZAQAB/wLMAQAB/wHMAf8B
         AAL/ATMBAAHMAf8BZgEAAv8BmQEAAv8BzAEAAmYB/wEAAWYB/wFmAQABZgL/AQAB/wJmAQAB/wFmAf8B
         AAL/AWYBAAEhAQABpQEAA18BAAN3AQADhgEAA5YBAAPLAQADsgEAA9cBAAPdAQAD4wEAA+oBAAPxAQAD
-        +AEAAfAB+wH/AQABpAKgAQADgAMAAf8CAAH/AwAC/wEAAf8DAAH/AQAB/wEAAv8CAAP/fAAJ/xMACv8W
-        AAn/EwAB/wIAAf8FAAH/FgAJ/xMACv8WAAn/EwAB/wIAAf8FAAH/FgAJ/xMACv8WAAn/EwAH/wEAAv8W
-        AAn/EwAB/wIAA/8BAAEHAQAB/xYACf8TAAH/AQABBwEAAf8BAAEHAQABBwQAAQQSAAb/FgAC/wEAAQcB
-        AAEHAQABBwEAAwcBAAEEEgAG/wEAAf8YAAEHAQABBwEABQcBBBIABv8bAAEHAQAGBwEENAAGBwEAAQQ7
-        AAEEDwABQgFNAT4HAAE+AwABKAMAATwDAAEPAwABAQEAAQEFAAF4FwAD/wEABf8B+AIAAcABBwG/AfQB
-        AAE4AgABwAEHAR8B/AEAATgCAAHAAQcBDwHsAQABOAIAAcABBwGPAdwBAAE4AgABwAEHAccBnAEAATgC
-        AAHAAQcB4wE8AQABOAIAAcABBwHwAXwBAAE4AgABwAEHAfgB/AEAATgCAAHAAQcB8AF8AQABEAIAAcAB
-        BwHjATwEAAHAAQ8BhwGcBAABwAEfAQ8BzwHgAwABwAE/AR8B9wHwAwAE/wH4ARACAAs=
+        +AEAAfAB+wH/AQABpAKgAQADgAMAAf8CAAH/AwAC/wEAAf8DAAH/AQAB/wEAAv8CAAP//wD/AP8A/wD/
+        AP8A/wBEAAcBMQAB7AQAAQEEAAEBBAAJ/xMACv8IAAHsBAABAQgACf8TAAH/AgAB/wUAAf8JAAHsBAAB
+        AQcACf8TAAr/BwAB7AcAAQEGAAn/EwAB/wIAAf8FAAH/BwAB7AMAAQEEAAEBBQAJ/xMACv8HAAHsAwAH
+        AQQACf8TAAf/AQAC/wcAAewOAAn/EwAB/wIAA/8BAAEHAQAB/wcAAewCAAMEBAACBAMACf8TAAH/AQAB
+        BwEAAf8BAAEHAQABBwQAAQQDAAHsAwABBAUAAQQEAAb/FgAC/wEAAQcBAAEHAQABBwEAAwcBAAEEAwAB
+        7AQABQQFAAb/AQAB/xgAAQcBAAEHAQAFBwEEAwAB7AQAAQQDAAEEBQAG/xsAAQcBAAYHAQQDAAHsBQAB
+        BAEAAQQoAAYHAQABBAMAAewFAAEEAQABBC8AAQQKAAEEBAABQgFNAT4HAAE+AwABKAMAATwDAAEtAwAB
+        AQEAAQEFAAFoAQEWAAP/eQAB/wH+BgAB/wH+BgAB/wH+BgAB/wH+BgAB/wH+BgAB9wF2BgAB8wGuBgAB
+        gQHeBgABswGuBgABtwF2BgABvwH+BgABvwH+BgABvwH+BgAB/wH+BgAB/wH+BgAG/wHwARABwAEHAb8B
+        9AEAAT4BewHQAcABBwEfAfwBAAE8AT0B8AHAAQcBDwHsAQABOAEeAfABwAEHAY8B3AEAAT4BfwFwAcAB
+        BwHHAZwBAAE+AXcBsAHAAQcB4wE8AQABPgFwARABwAEHAfABfAEAAT4BfwHwAcABBwH4AfwBAAE+AWMB
+        gAHAAQcB8AF8AQABFgF3AdABwAEHAeMBPAEAAQYBeAEwAcABDwGHAZwBAAEGAXsBsAHAAR8BDwHPAeAB
+        BgF9AXABwAE/AR8B9wHwAQYBfQFwBP8B+AEXAf4B8As=
 </value>
   </data>
   <data name="CoordSplitter.Locked" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
@@ -545,10 +556,10 @@
   <data name="grdPlan.Locked" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
   </data>
-  <data name="grdPlan.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <data name="grdPlan.DefaultModifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>Private</value>
   </data>
-  <data name="grdPlan.DefaultModifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <data name="grdPlan.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>Private</value>
   </data>
   <data name="tabTools.Locked" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
@@ -599,10 +610,10 @@
   <data name="StatusBar.Locked" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
   </data>
-  <data name="StatusBar.DefaultModifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <data name="StatusBar.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>Private</value>
   </data>
-  <data name="StatusBar.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <data name="StatusBar.DefaultModifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>Private</value>
   </data>
   <data name="sbpStatus.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
@@ -641,8 +652,29 @@
   <data name="sbpSelTile.DefaultModifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>Private</value>
   </data>
-  <data name="$this.Name">
-    <value>frmMapEditor</value>
+  <data name="tbbGotoCoord.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="tbbGotoCoord.DefaultModifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="mnuEditDetails.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="mnuEditDetails.DefaultModifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="mnuLocateCoordinate.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="mnuLocateCoordinate.DefaultModifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="mnuSortPlans.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="mnuSortPlans.DefaultModifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
   </data>
   <data name="$this.Locked" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
@@ -655,6 +687,9 @@
   </data>
   <data name="$this.Localizable" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
+  </data>
+  <data name="$this.Name">
+    <value>frmMapEditor</value>
   </data>
   <data name="$this.GridSize" type="System.Drawing.Size, System.Drawing, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>8, 8</value>

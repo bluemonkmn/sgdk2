@@ -94,6 +94,8 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuMoveRuleDown;
       private System.Windows.Forms.MenuItem mnuNewRule;
       private System.Windows.Forms.MenuItem mnuDeleteRule;
+      private System.Windows.Forms.TextBox txtPriority;
+      private System.Windows.Forms.Label lblPriority;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -113,6 +115,7 @@ namespace SGDK2
 
          m_Plan = ProjectData.AddSpritePlan(parent, sName, 1);
          txtName.Text = sName;
+         txtPriority.Text = m_Plan.Priority.ToString();
       }
 
       public frmPlanEdit(ProjectDataset.SpritePlanRow plan)
@@ -121,6 +124,7 @@ namespace SGDK2
 
          m_Plan = plan;
          txtName.Text = plan.Name;
+         txtPriority.Text = plan.Priority.ToString();
          
          PopulateRules();
       }
@@ -188,6 +192,8 @@ namespace SGDK2
          this.mnuMoveRuleDown = new System.Windows.Forms.MenuItem();
          this.mnuNewRule = new System.Windows.Forms.MenuItem();
          this.mnuDeleteRule = new System.Windows.Forms.MenuItem();
+         this.txtPriority = new System.Windows.Forms.TextBox();
+         this.lblPriority = new System.Windows.Forms.Label();
          this.grpRules.SuspendLayout();
          this.pnlRule.SuspendLayout();
          this.pnlName.SuspendLayout();
@@ -208,7 +214,7 @@ namespace SGDK2
          this.txtName.Dock = System.Windows.Forms.DockStyle.Fill;
          this.txtName.Location = new System.Drawing.Point(74, 2);
          this.txtName.Name = "txtName";
-         this.txtName.Size = new System.Drawing.Size(468, 20);
+         this.txtName.Size = new System.Drawing.Size(332, 20);
          this.txtName.TabIndex = 1;
          this.txtName.Text = "";
          this.txtName.Validating += new System.ComponentModel.CancelEventHandler(this.txtName_Validating);
@@ -223,7 +229,7 @@ namespace SGDK2
          this.grpRules.Dock = System.Windows.Forms.DockStyle.Fill;
          this.grpRules.Location = new System.Drawing.Point(0, 24);
          this.grpRules.Name = "grpRules";
-         this.grpRules.Size = new System.Drawing.Size(544, 389);
+         this.grpRules.Size = new System.Drawing.Size(544, 385);
          this.grpRules.TabIndex = 2;
          this.grpRules.TabStop = false;
          this.grpRules.Text = "Rules";
@@ -236,7 +242,7 @@ namespace SGDK2
          this.tvwRules.Location = new System.Drawing.Point(3, 41);
          this.tvwRules.Name = "tvwRules";
          this.tvwRules.SelectedImageIndex = -1;
-         this.tvwRules.Size = new System.Drawing.Size(165, 345);
+         this.tvwRules.Size = new System.Drawing.Size(165, 341);
          this.tvwRules.TabIndex = 0;
          this.tvwRules.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvwRules_AfterSelect);
          // 
@@ -293,7 +299,7 @@ namespace SGDK2
          this.splitterRules.Dock = System.Windows.Forms.DockStyle.Right;
          this.splitterRules.Location = new System.Drawing.Point(168, 16);
          this.splitterRules.Name = "splitterRules";
-         this.splitterRules.Size = new System.Drawing.Size(5, 370);
+         this.splitterRules.Size = new System.Drawing.Size(5, 366);
          this.splitterRules.TabIndex = 1;
          this.splitterRules.TabStop = false;
          // 
@@ -320,14 +326,14 @@ namespace SGDK2
          this.pnlRule.Dock = System.Windows.Forms.DockStyle.Right;
          this.pnlRule.Location = new System.Drawing.Point(173, 16);
          this.pnlRule.Name = "pnlRule";
-         this.pnlRule.Size = new System.Drawing.Size(368, 370);
+         this.pnlRule.Size = new System.Drawing.Size(368, 366);
          this.pnlRule.TabIndex = 2;
          // 
          // chkSuspended
          // 
          this.chkSuspended.Location = new System.Drawing.Point(8, 32);
          this.chkSuspended.Name = "chkSuspended";
-         this.chkSuspended.Size = new System.Drawing.Size(320, 16);
+         this.chkSuspended.Size = new System.Drawing.Size(344, 16);
          this.chkSuspended.TabIndex = 38;
          this.chkSuspended.Text = "Suspend this rule";
          this.chkSuspended.CheckedChanged += new System.EventHandler(this.chkSuspended_CheckedChanged);
@@ -357,7 +363,7 @@ namespace SGDK2
          this.txtErrors.Name = "txtErrors";
          this.txtErrors.ReadOnly = true;
          this.txtErrors.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-         this.txtErrors.Size = new System.Drawing.Size(344, 112);
+         this.txtErrors.Size = new System.Drawing.Size(344, 108);
          this.txtErrors.TabIndex = 36;
          this.txtErrors.Text = "";
          this.txtErrors.Visible = false;
@@ -527,7 +533,9 @@ namespace SGDK2
          // pnlName
          // 
          this.pnlName.Controls.Add(this.txtName);
+         this.pnlName.Controls.Add(this.lblPriority);
          this.pnlName.Controls.Add(this.lblName);
+         this.pnlName.Controls.Add(this.txtPriority);
          this.pnlName.Dock = System.Windows.Forms.DockStyle.Top;
          this.pnlName.DockPadding.All = 2;
          this.pnlName.Location = new System.Drawing.Point(0, 0);
@@ -583,10 +591,31 @@ namespace SGDK2
          this.mnuDeleteRule.Text = "Dele&te Rule";
          this.mnuDeleteRule.Click += new System.EventHandler(this.OnDeleteRule);
          // 
+         // txtPriority
+         // 
+         this.txtPriority.Dock = System.Windows.Forms.DockStyle.Right;
+         this.txtPriority.Location = new System.Drawing.Point(470, 2);
+         this.txtPriority.Name = "txtPriority";
+         this.txtPriority.Size = new System.Drawing.Size(72, 20);
+         this.txtPriority.TabIndex = 42;
+         this.txtPriority.Text = "";
+         this.txtPriority.Validating += new System.ComponentModel.CancelEventHandler(this.txtPriority_Validating);
+         this.txtPriority.Validated += new System.EventHandler(this.txtPriority_Validated);
+         // 
+         // lblPriority
+         // 
+         this.lblPriority.Dock = System.Windows.Forms.DockStyle.Right;
+         this.lblPriority.Location = new System.Drawing.Point(406, 2);
+         this.lblPriority.Name = "lblPriority";
+         this.lblPriority.Size = new System.Drawing.Size(64, 20);
+         this.lblPriority.TabIndex = 41;
+         this.lblPriority.Text = "Priority:";
+         this.lblPriority.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+         // 
          // frmPlanEdit
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-         this.ClientSize = new System.Drawing.Size(544, 413);
+         this.ClientSize = new System.Drawing.Size(544, 409);
          this.Controls.Add(this.grpRules);
          this.Controls.Add(this.pnlName);
          this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -1506,6 +1535,25 @@ namespace SGDK2
             }
             else
                source.SelectedIndex = -1;
+         }
+      }
+
+      private void txtPriority_Validated(object sender, System.EventArgs e)
+      {
+         if (m_Loading)
+            return;
+         m_Plan.Priority = int.Parse(txtPriority.Text);
+      }
+
+      private void txtPriority_Validating(object sender, System.ComponentModel.CancelEventArgs e)
+      {
+         if (m_Loading)
+            return;
+         double priority;
+         if (!Double.TryParse(txtPriority.Text, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.CurrentUICulture, out priority))
+         {
+            MessageBox.Show(this, "Priority must be an integer", "Invalid Entry", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            e.Cancel = true;
          }
       }
       #endregion

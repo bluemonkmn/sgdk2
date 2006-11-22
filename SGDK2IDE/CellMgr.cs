@@ -177,6 +177,14 @@ namespace SGDK2
                m_DataSource.CellHeight * ((m_nEndSelectCell / m_DataSource.Columns) + 1));
          }
       }
+
+      private void StoreImageToProject()
+      {
+         System.IO.MemoryStream stm = new System.IO.MemoryStream();
+         ((Bitmap)picSheet.Image).Save(stm, System.Drawing.Imaging.ImageFormat.Png);
+         stm.Close();
+         m_DataSource.Image = stm.GetBuffer();
+      }
       #endregion
 
       #region Public Properties
@@ -198,6 +206,31 @@ namespace SGDK2
       public void InvalidateSheet()
       {
          picSheet.Invalidate();
+      }
+      public void ReplaceSheet(Bitmap newImage)
+      {
+         if ((newImage.Width != picSheet.Image.Width) ||
+            (newImage.Height != picSheet.Image.Height))
+         {
+            newImage.Dispose();
+            throw new ApplicationException("Replacement image must be " + picSheet.Image.Width.ToString() +
+               "x" + picSheet.Image.Height.ToString() + " pixels");
+         }
+         if (newImage.PixelFormat != picSheet.Image.PixelFormat)
+         {
+            Bitmap clonedImage = new Bitmap(picSheet.Image.Width, picSheet.Image.Height, picSheet.Image.PixelFormat);
+            using (Graphics gfx = Graphics.FromImage(clonedImage))
+               gfx.DrawImageUnscaled(newImage, 0, 0);
+            newImage.Dispose();
+            picSheet.Image.Dispose();
+            picSheet.Image = clonedImage;
+         }
+         else
+         {
+            picSheet.Image.Dispose();
+            picSheet.Image = newImage;
+         }
+         StoreImageToProject();
       }
       #endregion
 
@@ -227,10 +260,7 @@ namespace SGDK2
             }
          }
          picSheet.Invalidate();
-         System.IO.MemoryStream stm = new System.IO.MemoryStream();
-         ((Bitmap)picSheet.Image).Save(stm, System.Drawing.Imaging.ImageFormat.Png);
-         stm.Close();
-         m_DataSource.Image = stm.GetBuffer();
+         StoreImageToProject();
       }
 
       private void picSheet_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)

@@ -310,6 +310,7 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuPenDecrease;
       private System.Windows.Forms.MenuItem mnuPenSep1;
       private System.Windows.Forms.MenuItem mnuExportSheet;
+      private System.Windows.Forms.MenuItem mnuImportSheet;
       private System.Windows.Forms.MenuItem mnuHugePen;
       #endregion
 
@@ -490,6 +491,7 @@ namespace SGDK2
          this.mnuExportGraphic = new System.Windows.Forms.MenuItem();
          this.mnuImportGraphic = new System.Windows.Forms.MenuItem();
          this.mnuExportSheet = new System.Windows.Forms.MenuItem();
+         this.mnuImportSheet = new System.Windows.Forms.MenuItem();
          this.mnuView = new System.Windows.Forms.MenuItem();
          this.mnuZoom = new System.Windows.Forms.MenuItem();
          this.mnuZoom1x1 = new System.Windows.Forms.MenuItem();
@@ -876,7 +878,8 @@ namespace SGDK2
                                                                                 this.mnuFileSep,
                                                                                 this.mnuExportGraphic,
                                                                                 this.mnuImportGraphic,
-                                                                                this.mnuExportSheet});
+                                                                                this.mnuExportSheet,
+                                                                                this.mnuImportSheet});
          this.mnuFile.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
          this.mnuFile.Text = "&File";
          // 
@@ -890,22 +893,29 @@ namespace SGDK2
          // 
          this.mnuExportGraphic.Index = 1;
          this.mnuExportGraphic.MergeOrder = 2;
-         this.mnuExportGraphic.Text = "&Export Graphic";
+         this.mnuExportGraphic.Text = "Export Grap&hic";
          this.mnuExportGraphic.Click += new System.EventHandler(this.mnuExportGraphic_Click);
          // 
          // mnuImportGraphic
          // 
          this.mnuImportGraphic.Index = 2;
          this.mnuImportGraphic.MergeOrder = 2;
-         this.mnuImportGraphic.Text = "&Import Graphic";
+         this.mnuImportGraphic.Text = "Import Graphi&c";
          this.mnuImportGraphic.Click += new System.EventHandler(this.mnuImportGraphic_Click);
          // 
          // mnuExportSheet
          // 
          this.mnuExportSheet.Index = 3;
          this.mnuExportSheet.MergeOrder = 2;
-         this.mnuExportSheet.Text = "Ex&port Sheet as Image";
+         this.mnuExportSheet.Text = "Export Sheet as Image";
          this.mnuExportSheet.Click += new System.EventHandler(this.mnuExportSheet_Click);
+         // 
+         // mnuImportSheet
+         // 
+         this.mnuImportSheet.Index = 4;
+         this.mnuImportSheet.MergeOrder = 2;
+         this.mnuImportSheet.Text = "Import Image as Sheet";
+         this.mnuImportSheet.Click += new System.EventHandler(this.mnuImportSheet_Click);
          // 
          // mnuView
          // 
@@ -1704,8 +1714,7 @@ namespace SGDK2
          // 
          this.tbbDisjointedColors.ImageIndex = 46;
          this.tbbDisjointedColors.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-         this.tbbDisjointedColors.ToolTipText = "Fill and Color Wand affect all similar colors instead of joined similar color reg" +
-            "ions";
+         this.tbbDisjointedColors.ToolTipText = "Fill and Color Wand affect all similar colors instead of joined regions";
          // 
          // tbsOptSep1
          // 
@@ -3071,7 +3080,31 @@ namespace SGDK2
             }
             catch(System.Exception ex)
             {
-               MessageBox.Show(this, ex.Message, "Export Graphics Sheet as Image", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+               MessageBox.Show(this, ex.Message, "Export Graphic Sheet as Image", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+         }
+      }
+
+      private void mnuImportSheet_Click(object sender, System.EventArgs e)
+      {
+         using (System.Windows.Forms.OpenFileDialog dlgImport = new OpenFileDialog())
+         {
+            try
+            {
+               dlgImport.CheckFileExists=true;
+               dlgImport.Filter = "*.PNG|*.PNG|All Files (*.*)|*.*";
+               dlgImport.FilterIndex = 1;
+               dlgImport.Multiselect = false;
+               dlgImport.Title = "Import Graphic Sheet from Image";
+               if (dlgImport.ShowDialog(this) == DialogResult.OK)
+               {
+                  Bitmap bmpImport = (Bitmap)Bitmap.FromFile(dlgImport.FileName);
+                  m_frmCells.ReplaceSheet(bmpImport);
+               }
+            }
+            catch(System.Exception ex)
+            {
+               MessageBox.Show(this, ex.Message, "Import Graphic Sheet from Image", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
          }
       }

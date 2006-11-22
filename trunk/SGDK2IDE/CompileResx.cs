@@ -120,6 +120,9 @@ class CompileResx
          rd = new System.Resources.ResXResourceReader("TilesetImport.resx");
          WriteResources(rd,"SGDK2.frmTilesetImport.resources");
          rd.Close();
+         rd = new System.Resources.ResXResourceReader("FramesetImport.resx");
+         WriteResources(rd,"SGDK2.frmFramesetImport.resources");
+         rd.Close();
       }
       public static void WriteResources(System.Resources.ResXResourceReader rd, string sFile)
       {

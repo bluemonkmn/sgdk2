@@ -281,6 +281,16 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "FramesetImport.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "FramesetImport.resx"
+                    DependentUpon = "FramesetImport.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "GfxEdit.cs"
                     SubType = "Form"
                     BuildAction = "Compile"

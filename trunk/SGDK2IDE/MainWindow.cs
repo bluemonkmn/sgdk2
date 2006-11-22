@@ -1194,31 +1194,27 @@ namespace SGDK2
          switch(Key.Substring(0,2))
          {
             case "SD":
-            {
                using (frmSpriteImportWizard frm = new frmSpriteImportWizard())
                   frm.ShowDialog(this);
                break;
-            }
             case "CD":
-            {
                using (frmCodeImport frm = new frmCodeImport())
                   frm.ShowDialog(this);
                break;
-            }
             case "GS":
-            {
                using (frmGfxSheetImport frm = new frmGfxSheetImport())
                   frm.ShowDialog(this);
                break;
-            }
             case "TS":
-            {
                using (frmTilesetImportWizard frm = new frmTilesetImportWizard())
                   frm.ShowDialog(this);
                break;
-            }
+            case "FS":
+               using (frmFramesetImport frm = new frmFramesetImport())
+                  frm.ShowDialog(this);
+               break;
             default:
-               MessageBox.Show(this, "Only Sprite Definitions can be imported.", "Import From...", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+               MessageBox.Show(this, "Only Sprite Definitions, Source Code, Graphic Sheets, Tilesets and Framesets can be imported.", "Import From...", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                break;
          }
       }

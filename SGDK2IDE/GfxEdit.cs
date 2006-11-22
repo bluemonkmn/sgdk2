@@ -655,7 +655,7 @@ namespace SGDK2
          this.tbrGraphicsEditor.Location = new System.Drawing.Point(0, 0);
          this.tbrGraphicsEditor.Name = "tbrGraphicsEditor";
          this.tbrGraphicsEditor.ShowToolTips = true;
-         this.tbrGraphicsEditor.Size = new System.Drawing.Size(48, 433);
+         this.tbrGraphicsEditor.Size = new System.Drawing.Size(48, 465);
          this.tbrGraphicsEditor.TabIndex = 0;
          this.tbrGraphicsEditor.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tbrGraphicsEditor_ButtonClick);
          // 
@@ -1800,7 +1800,7 @@ namespace SGDK2
          // 
          this.ToolSplitter.Location = new System.Drawing.Point(48, 0);
          this.ToolSplitter.Name = "ToolSplitter";
-         this.ToolSplitter.Size = new System.Drawing.Size(6, 433);
+         this.ToolSplitter.Size = new System.Drawing.Size(6, 465);
          this.ToolSplitter.TabIndex = 2;
          this.ToolSplitter.TabStop = false;
          // 
@@ -1823,7 +1823,7 @@ namespace SGDK2
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
          this.AutoScroll = true;
-         this.ClientSize = new System.Drawing.Size(624, 433);
+         this.ClientSize = new System.Drawing.Size(624, 465);
          this.Controls.Add(this.ctlColorSel);
          this.Controls.Add(this.tbrOptions);
          this.Controls.Add(this.ToolSplitter);
@@ -1833,6 +1833,7 @@ namespace SGDK2
          this.Menu = this.mnuGraphicsEditor;
          this.Name = "frmGraphicsEditor";
          this.Text = "Graphics Editor";
+         this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
          this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.frmGraphicsEditor_KeyPress);
          this.ResumeLayout(false);
 

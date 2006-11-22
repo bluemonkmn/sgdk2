@@ -137,6 +137,9 @@ namespace SGDK2
       private System.Windows.Forms.Label lblAlpha;
       private System.Windows.Forms.TextBox txtBlue;
       private System.Windows.Forms.Label lblBlue;
+      private System.Windows.Forms.StatusBar sbFrame;
+      private System.Windows.Forms.StatusBarPanel sbpCellIndex;
+      private System.Windows.Forms.StatusBarPanel sbpFrameIndex;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -210,6 +213,8 @@ namespace SGDK2
          this.btnLoadFrame = new System.Windows.Forms.Button();
          this.txtFramesetName = new System.Windows.Forms.TextBox();
          this.lblFramesetName = new System.Windows.Forms.Label();
+         this.sbFrame = new System.Windows.Forms.StatusBar();
+         this.sbpCellIndex = new System.Windows.Forms.StatusBarPanel();
          this.pnlTransform = new System.Windows.Forms.Panel();
          this.mnuContext = new System.Windows.Forms.ContextMenu();
          this.mnuHFlip = new System.Windows.Forms.MenuItem();
@@ -272,9 +277,11 @@ namespace SGDK2
          this.splitterGraphicSheet = new System.Windows.Forms.Splitter();
          this.ttFrameset = new System.Windows.Forms.ToolTip(this.components);
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
+         this.sbpFrameIndex = new System.Windows.Forms.StatusBarPanel();
          this.pnlFrameSet.SuspendLayout();
          this.pnlFrames.SuspendLayout();
          this.pnlFrameAction.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpCellIndex)).BeginInit();
          this.pnlTransform.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.nudYScale)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.nudXScale)).BeginInit();
@@ -282,6 +289,7 @@ namespace SGDK2
          ((System.ComponentModel.ISupportInitialize)(this.nudYOffset)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.trbRotate)).BeginInit();
          this.pnlGraphicSheet.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpFrameIndex)).BeginInit();
          this.SuspendLayout();
          // 
          // pnlFrameSet
@@ -298,6 +306,7 @@ namespace SGDK2
          // 
          this.pnlFrames.Controls.Add(this.FrameBrowser);
          this.pnlFrames.Controls.Add(this.pnlFrameAction);
+         this.pnlFrames.Controls.Add(this.sbFrame);
          this.pnlFrames.Dock = System.Windows.Forms.DockStyle.Fill;
          this.pnlFrames.Location = new System.Drawing.Point(272, 0);
          this.pnlFrames.Name = "pnlFrames";
@@ -319,8 +328,9 @@ namespace SGDK2
          this.FrameBrowser.Location = new System.Drawing.Point(0, 80);
          this.FrameBrowser.Name = "FrameBrowser";
          this.FrameBrowser.SheetImage = null;
-         this.FrameBrowser.Size = new System.Drawing.Size(192, 343);
+         this.FrameBrowser.Size = new System.Drawing.Size(192, 321);
          this.FrameBrowser.TabIndex = 6;
+         this.FrameBrowser.CurrentCellChanged += new System.EventHandler(this.FrameBrowser_CurrentCellChanged);
          this.FrameBrowser.DragDrop += new System.Windows.Forms.DragEventHandler(this.FrameBrowser_DragDrop);
          this.FrameBrowser.DragOver += new System.Windows.Forms.DragEventHandler(this.FrameBrowser_DragOver);
          // 
@@ -398,6 +408,26 @@ namespace SGDK2
          this.lblFramesetName.TabIndex = 0;
          this.lblFramesetName.Text = "Frameset Name:";
          this.lblFramesetName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+         // 
+         // sbFrame
+         // 
+         this.sbFrame.Location = new System.Drawing.Point(0, 401);
+         this.sbFrame.Name = "sbFrame";
+         this.sbFrame.Panels.AddRange(new System.Windows.Forms.StatusBarPanel[] {
+                                                                                   this.sbpFrameIndex,
+                                                                                   this.sbpCellIndex});
+         this.sbFrame.ShowPanels = true;
+         this.sbFrame.Size = new System.Drawing.Size(192, 22);
+         this.sbFrame.SizingGrip = false;
+         this.sbFrame.TabIndex = 7;
+         this.sbFrame.Visible = false;
+         // 
+         // sbpCellIndex
+         // 
+         this.sbpCellIndex.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Spring;
+         this.sbpCellIndex.Icon = ((System.Drawing.Icon)(resources.GetObject("sbpCellIndex.Icon")));
+         this.sbpCellIndex.ToolTipText = "Graphic Sheet and Cell Index";
+         this.sbpCellIndex.Width = 117;
          // 
          // pnlTransform
          // 
@@ -1062,6 +1092,11 @@ namespace SGDK2
          this.dataMonitor.FramesetRowDeleted += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.Frameset_FramesetRowDeleted);
          this.dataMonitor.Clearing += new System.EventHandler(this.ProjectData_Clearing);
          // 
+         // sbpFrameIndex
+         // 
+         this.sbpFrameIndex.Icon = ((System.Drawing.Icon)(resources.GetObject("sbpFrameIndex.Icon")));
+         this.sbpFrameIndex.Width = 75;
+         // 
          // frmFrameEdit
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -1075,6 +1110,7 @@ namespace SGDK2
          this.pnlFrameSet.ResumeLayout(false);
          this.pnlFrames.ResumeLayout(false);
          this.pnlFrameAction.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.sbpCellIndex)).EndInit();
          this.pnlTransform.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.nudYScale)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.nudXScale)).EndInit();
@@ -1082,6 +1118,7 @@ namespace SGDK2
          ((System.ComponentModel.ISupportInitialize)(this.nudYOffset)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.trbRotate)).EndInit();
          this.pnlGraphicSheet.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.sbpFrameIndex)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -1964,6 +2001,20 @@ namespace SGDK2
          FrameBrowser.Frameset.Name = txtFramesetName.Text;
       }
 
+      private void FrameBrowser_CurrentCellChanged(object sender, System.EventArgs e)
+      {
+         if (sbFrame.Visible = (FrameBrowser.GetSelectedCellCount() == 1))
+         {
+            ProjectDataset.FrameRow row = ProjectData.GetFrame(FrameBrowser.Frameset.Name, FrameBrowser.GetFirstSelectedCell());
+            if (row == null)
+            {
+               sbFrame.Visible = false;
+               return;
+            }
+            sbpFrameIndex.Text = "#" + row.FrameValue.ToString();
+            sbpCellIndex.Text = "#" + row.CellIndex.ToString() + " (" + row.GraphicSheet + ")";
+         }
+      }
       #endregion
    }
 }

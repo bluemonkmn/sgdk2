@@ -36,6 +36,7 @@ namespace SGDK2
       public static ResourceManager g_Resources = null;
       public static CommandLineArgs g_CommandLine = new CommandLineArgs();
       private static frmMain mainWindow = null;
+      private static System.Collections.Stack statusStack = null;
       #endregion
 
       private SGDK2IDE()
@@ -230,6 +231,27 @@ namespace SGDK2
          {
             return mainWindow.ProjectFile;
          }
+      }
+      public static void PushStatus(string status, bool waitCursor)
+      {
+         if (statusStack == null)
+         {
+            statusStack = new System.Collections.Stack();
+         }
+         mainWindow.sbMain.Text = status;
+         statusStack.Push(status);
+         if (waitCursor)
+            mainWindow.Cursor = Cursors.WaitCursor;
+      }
+
+      public static void PopStatus()
+      {
+         if (statusStack.Count > 0)
+            statusStack.Pop();
+         if (statusStack.Count > 0)
+            mainWindow.sbMain.Text = (string)statusStack.Peek();
+         if (statusStack.Count <= 1)
+            mainWindow.Cursor = Cursors.Default;
       }
       #endregion
    }

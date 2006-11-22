@@ -33,7 +33,12 @@ namespace SGDK2
       private System.Windows.Forms.Button btnLoadCell;
       private System.Windows.Forms.Button btnStoreCell;
       private System.Windows.Forms.PictureBox picSheet;
+      private System.Windows.Forms.StatusBar sbCellIndex;
+      private System.Windows.Forms.StatusBarPanel sbpSize;
+      private System.Windows.Forms.StatusBarPanel sbpIndex;
+      private System.Windows.Forms.StatusBarPanel sbpMain;
       #endregion
+      private System.Windows.Forms.Panel pnlButtons;
 
       #region Initialization and Clean-up
 		/// <summary>
@@ -47,6 +52,8 @@ namespace SGDK2
 			// Required for Windows Form Designer support
 			//
 			InitializeComponent();
+         sbpIndex.Text = "#" + m_nStartSelectCell.ToString();
+         sbpSize.Text = "1x1 cells";
       }
 
       public frmCellMgr(frmGraphicsEditor frmParent, ProjectDataset.GraphicSheetRow drDataSource) : this()
@@ -89,23 +96,31 @@ namespace SGDK2
 		/// </summary>
 		private void InitializeComponent()
 		{
+         System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(frmCellMgr));
          this.pnlSheet = new System.Windows.Forms.Panel();
          this.picSheet = new System.Windows.Forms.PictureBox();
          this.btnLoadCell = new System.Windows.Forms.Button();
          this.btnStoreCell = new System.Windows.Forms.Button();
+         this.sbCellIndex = new System.Windows.Forms.StatusBar();
+         this.sbpMain = new System.Windows.Forms.StatusBarPanel();
+         this.sbpIndex = new System.Windows.Forms.StatusBarPanel();
+         this.sbpSize = new System.Windows.Forms.StatusBarPanel();
+         this.pnlButtons = new System.Windows.Forms.Panel();
          this.pnlSheet.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpMain)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpIndex)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpSize)).BeginInit();
+         this.pnlButtons.SuspendLayout();
          this.SuspendLayout();
          // 
          // pnlSheet
          // 
-         this.pnlSheet.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
          this.pnlSheet.AutoScroll = true;
          this.pnlSheet.Controls.Add(this.picSheet);
+         this.pnlSheet.Dock = System.Windows.Forms.DockStyle.Fill;
          this.pnlSheet.Location = new System.Drawing.Point(0, 24);
          this.pnlSheet.Name = "pnlSheet";
-         this.pnlSheet.Size = new System.Drawing.Size(272, 88);
+         this.pnlSheet.Size = new System.Drawing.Size(320, 92);
          this.pnlSheet.TabIndex = 0;
          // 
          // picSheet
@@ -121,6 +136,7 @@ namespace SGDK2
          // 
          // btnLoadCell
          // 
+         this.btnLoadCell.Dock = System.Windows.Forms.DockStyle.Left;
          this.btnLoadCell.Location = new System.Drawing.Point(0, 0);
          this.btnLoadCell.Name = "btnLoadCell";
          this.btnLoadCell.Size = new System.Drawing.Size(136, 24);
@@ -130,6 +146,7 @@ namespace SGDK2
          // 
          // btnStoreCell
          // 
+         this.btnStoreCell.Dock = System.Windows.Forms.DockStyle.Left;
          this.btnStoreCell.Location = new System.Drawing.Point(136, 0);
          this.btnStoreCell.Name = "btnStoreCell";
          this.btnStoreCell.Size = new System.Drawing.Size(136, 24);
@@ -137,14 +154,50 @@ namespace SGDK2
          this.btnStoreCell.Text = "Store to Selected Cell(s)";
          this.btnStoreCell.Click += new System.EventHandler(this.btnStoreCell_Click);
          // 
+         // sbCellIndex
+         // 
+         this.sbCellIndex.Location = new System.Drawing.Point(0, 116);
+         this.sbCellIndex.Name = "sbCellIndex";
+         this.sbCellIndex.Panels.AddRange(new System.Windows.Forms.StatusBarPanel[] {
+                                                                                       this.sbpMain,
+                                                                                       this.sbpIndex,
+                                                                                       this.sbpSize});
+         this.sbCellIndex.ShowPanels = true;
+         this.sbCellIndex.Size = new System.Drawing.Size(320, 20);
+         this.sbCellIndex.TabIndex = 3;
+         // 
+         // sbpMain
+         // 
+         this.sbpMain.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Spring;
+         this.sbpMain.BorderStyle = System.Windows.Forms.StatusBarPanelBorderStyle.None;
+         this.sbpMain.Width = 129;
+         // 
+         // sbpIndex
+         // 
+         this.sbpIndex.Width = 75;
+         // 
+         // sbpSize
+         // 
+         this.sbpSize.Icon = ((System.Drawing.Icon)(resources.GetObject("sbpSize.Icon")));
+         // 
+         // pnlButtons
+         // 
+         this.pnlButtons.Controls.Add(this.btnStoreCell);
+         this.pnlButtons.Controls.Add(this.btnLoadCell);
+         this.pnlButtons.Dock = System.Windows.Forms.DockStyle.Top;
+         this.pnlButtons.Location = new System.Drawing.Point(0, 0);
+         this.pnlButtons.Name = "pnlButtons";
+         this.pnlButtons.Size = new System.Drawing.Size(320, 24);
+         this.pnlButtons.TabIndex = 4;
+         // 
          // frmCellMgr
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-         this.ClientSize = new System.Drawing.Size(272, 112);
+         this.ClientSize = new System.Drawing.Size(320, 136);
          this.ControlBox = false;
-         this.Controls.Add(this.btnStoreCell);
-         this.Controls.Add(this.btnLoadCell);
          this.Controls.Add(this.pnlSheet);
+         this.Controls.Add(this.pnlButtons);
+         this.Controls.Add(this.sbCellIndex);
          this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
          this.MaximizeBox = false;
          this.MinimizeBox = false;
@@ -152,6 +205,10 @@ namespace SGDK2
          this.ShowInTaskbar = false;
          this.Text = "Cell Manager";
          this.pnlSheet.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.sbpMain)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpIndex)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpSize)).EndInit();
+         this.pnlButtons.ResumeLayout(false);
          this.ResumeLayout(false);
 
       }
@@ -271,6 +328,8 @@ namespace SGDK2
             (nCol >= 0) && (nRow >= 0))
             m_nStartSelectCell = m_nEndSelectCell = nRow * m_DataSource.Columns + nCol;
          picSheet.Invalidate();
+         sbpIndex.Text = "#" + m_nStartSelectCell.ToString();
+         sbpSize.Text = "1x1 cells";
       }
 
       private void picSheet_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
@@ -283,7 +342,10 @@ namespace SGDK2
             int nClickedCell = nRow * m_DataSource.Columns + nCol;
             if ((nCol < m_DataSource.Columns) && (nRow < m_DataSource.Rows) &&
                (nCol >= nStartCol) && (nClickedCell >= m_nStartSelectCell))
+            {
                m_nEndSelectCell = nClickedCell;
+               sbpSize.Text = (nCol - nStartCol + 1).ToString() + "x" + (nRow - (int)(m_nStartSelectCell / m_DataSource.Columns) + 1).ToString() + " cells";
+            }
             picSheet.Invalidate();
          }
       }

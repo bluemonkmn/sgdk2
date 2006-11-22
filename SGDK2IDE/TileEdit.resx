@@ -533,13 +533,13 @@
   <data name="grpAvailableFrames.GridSize" type="System.Drawing.Size, System.Drawing, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>8, 8</value>
   </data>
-  <data name="grpAvailableFrames.SnapToGrid" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </data>
   <data name="grpAvailableFrames.Locked" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
   </data>
   <data name="grpAvailableFrames.DrawGrid" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </data>
+  <data name="grpAvailableFrames.SnapToGrid" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </data>
   <data name="grpAvailableFrames.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
@@ -554,14 +554,111 @@
   <data name="dataMonitor.DefaultModifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>Private</value>
   </data>
-  <data name="StatusBar.Locked" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <data name="sbAvailable.Locked" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
   </data>
-  <data name="StatusBar.DefaultModifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <data name="sbAvailable.DefaultModifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>Private</value>
   </data>
-  <data name="StatusBar.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+  <data name="sbAvailable.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>Private</value>
+  </data>
+  <data name="sbpFrameIndex.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="sbpFrameIndex.DefaultModifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="sbpFrameIndex.Icon" type="System.Drawing.Icon, System.Drawing, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAABAA
+        AAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAgICAAMDAwAAAAP8AAP8AAAD//wD/AAAA/wD/AP//
+        AAD///8AAAAHm7lwAAAAAAcZkXAAAAAAAHEXAAAAAAAAB3AAAAAAAAAAAAAAAAAAAAdwAAAAAAAAe7cA
+        AAAAAAebuXAAAAAABxmRcAAAAAAAcRcAAAAAAAAHcAAAAAAAAAAAAAAAAAAAB3AAAAAAAAB7twAAAAAA
+        B5u5cAAAAAAAAAAAAACIEQAAqBUAAIwxAACmZQAAgAEAAKZlAACMMQAAqBUAAIgRAACsNQAAhmEAAKAF
+        AACGYQAArDUAAIgRAAD//wAA
+</value>
+  </data>
+  <data name="sbpCellIndex.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="sbpCellIndex.DefaultModifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="sbpCellIndex.Icon" type="System.Drawing.Icon, System.Drawing, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAIAEBAQAAAAAAAoAQAAJgAAACAgEAAAAAAA6AIAAE4BAAAoAAAAEAAAACAAAAABAAQAAAAAAIAA
+        AAAAAAAAAAAAABAAAAAQAAAAAAAAAAAAgAAAgAAAAICAAIAAAACAAIAAgIAAAICAgADAwMAAAAD/AAD/
+        AAAA//8A/wAAAP8A/wD//wAA////AAAHAAAAAHAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAHAADh7hHu
+        AAAAAOEiLu4AAAAA7uIu7gAAAADl5V7uAAAAAM5VVc4AAAAA7Ou8XAAAAADMy7zMAAAAAMzMzMwAAHAA
+        AAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAHAAAAAHAA7/cAAO/3AADv9wAAAAAAAOAHAADgBwAA4AcAAOAH
+        AADgBwAA4AcAAOAHAADgBwAAAAAAAO/3AADv9wAA7/cAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAA
+        AAAAAAAAEAAAABAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAgICAAMDAwAAAAP8AAP8AAAD/
+        /wD/AAAA/wD/AP//AAD///8AAAAAcAAAAAAAAAAABwAAAAAAAHAAAAAAAAAAAAcAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAdwAAAAAA
+        AAAAAAAAAAAAdwAAAA7u7u7uERHu7uAAAAAAAAAO7hHu7hER7u7gAAAAAAAADu4R7u4i7u7u4AAAAAAA
+        AA7uESIuIu7u7uAAAAAAAAAO7hEiIiLu7u7gAAAAAAAADu7u7iIi7u7u4AAAAAAAAA7rvu4iIu7u7uAA
+        AAAAAAAOzlXOVVXs7s7gAAAAAAAADu5VXlVV7u7u4AAAAAAAAAzs5VVVVVXs7OAAAAAAAAAOzs5VVVVV
+        Xs7AAAAAAAAADOzs7Lu85VXs4AAAAAAAAA7Ozs67u85VzsAAAAAAAAAMzMzMuzvMy7zAAAAAAAAADMzM
+        zLu7zMzMwAAAAAAAAAzMzMzLvMzMzMAAAAAAAAAMzMzMzMzMzMzAAAAAAAAADMzMzMzMzMzMwAAAAHcA
+        AAAAAAAAAAAAAAAAAHcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAABwAAAAAAAHAAAAAAAAAAAAcAAAD9//+//f//v/3/
+        /7/9//+//f//v/3//78AAAAA/AAAP/wAAD/8AAA//AAAP/wAAD/8AAA//AAAP/wAAD/8AAA//AAAP/wA
+        AD/8AAA//AAAP/wAAD/8AAA//AAAP/wAAD/8AAA/AAAAAP3//7/9//+//f//v/3//7/9//+//f//vw==
+</value>
+  </data>
+  <data name="sbTileFrames.Locked" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>False</value>
+  </data>
+  <data name="sbTileFrames.DefaultModifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="sbTileFrames.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="sbpTileFrame.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="sbpTileFrame.DefaultModifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="sbpTileFrame.Icon" type="System.Drawing.Icon, System.Drawing, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAABAA
+        AAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAgICAAMDAwAAAAP8AAP8AAAD//wD/AAAA/wD/AP//
+        AAD///8AAAAHm7lwAAAAAAcZkXAAAAAAAHEXAAAAAAAAB3AAAAAAAAAAAAAAAAAAAAdwAAAAAAAAe7cA
+        AAAAAAebuXAAAAAABxmRcAAAAAAAcRcAAAAAAAAHcAAAAAAAAAAAAAAAAAAAB3AAAAAAAAB7twAAAAAA
+        B5u5cAAAAAAAAAAAAACIEQAAqBUAAIwxAACmZQAAgAEAAKZlAACMMQAAqBUAAIgRAACsNQAAhmEAAKAF
+        AACGYQAArDUAAIgRAAD//wAA
+</value>
+  </data>
+  <data name="sbpTileCell.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="sbpTileCell.DefaultModifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="sbpTileCell.Icon" type="System.Drawing.Icon, System.Drawing, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAIAEBAQAAAAAAAoAQAAJgAAACAgEAAAAAAA6AIAAE4BAAAoAAAAEAAAACAAAAABAAQAAAAAAIAA
+        AAAAAAAAAAAAABAAAAAQAAAAAAAAAAAAgAAAgAAAAICAAIAAAACAAIAAgIAAAICAgADAwMAAAAD/AAD/
+        AAAA//8A/wAAAP8A/wD//wAA////AAAHAAAAAHAAAAAAAAAAAAAAAAAAAAAAAHAAAAAAAAAHAADh7hHu
+        AAAAAOEiLu4AAAAA7uIu7gAAAADl5V7uAAAAAM5VVc4AAAAA7Ou8XAAAAADMy7zMAAAAAMzMzMwAAHAA
+        AAAAAAAHAAAAAAAAAAAAAAAAAAAAAAAHAAAAAHAA7/cAAO/3AADv9wAAAAAAAOAHAADgBwAA4AcAAOAH
+        AADgBwAA4AcAAOAHAADgBwAAAAAAAO/3AADv9wAA7/cAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAA
+        AAAAAAAAEAAAABAAAAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAgICAAMDAwAAAAP8AAP8AAAD/
+        /wD/AAAA/wD/AP//AAD///8AAAAAcAAAAAAAAAAABwAAAAAAAHAAAAAAAAAAAAcAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAdwAAAAAA
+        AAAAAAAAAAAAdwAAAA7u7u7uERHu7uAAAAAAAAAO7hHu7hER7u7gAAAAAAAADu4R7u4i7u7u4AAAAAAA
+        AA7uESIuIu7u7uAAAAAAAAAO7hEiIiLu7u7gAAAAAAAADu7u7iIi7u7u4AAAAAAAAA7rvu4iIu7u7uAA
+        AAAAAAAOzlXOVVXs7s7gAAAAAAAADu5VXlVV7u7u4AAAAAAAAAzs5VVVVVXs7OAAAAAAAAAOzs5VVVVV
+        Xs7AAAAAAAAADOzs7Lu85VXs4AAAAAAAAA7Ozs67u85VzsAAAAAAAAAMzMzMuzvMy7zAAAAAAAAADMzM
+        zLu7zMzMwAAAAAAAAAzMzMzLvMzMzMAAAAAAAAAMzMzMzMzMzMzAAAAAAAAADMzMzMzMzMzMwAAAAHcA
+        AAAAAAAAAAAAAAAAAHcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAABwAAAAAAAHAAAAAAAAAAAAcAAAD9//+//f//v/3/
+        /7/9//+//f//v/3//78AAAAA/AAAP/wAAD/8AAA//AAAP/wAAD/8AAA//AAAP/wAAD/8AAA//AAAP/wA
+        AD/8AAA//AAAP/wAAD/8AAA//AAAP/wAAD/8AAA/AAAAAP3//7/9//+//f//v/3//7/9//+//f//vw==
+</value>
   </data>
   <data name="$this.Locked" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
@@ -581,16 +678,26 @@
   <data name="$this.DrawGrid" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </data>
+  <data name="$this.Name">
+    <value>frmTileEdit</value>
+  </data>
   <data name="$this.TrayHeight" type="System.Int32, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>80</value>
   </data>
   <data name="$this.SnapToGrid" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </data>
-  <data name="$this.Name">
-    <value>frmTileEdit</value>
-  </data>
   <data name="$this.DefaultModifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>Private</value>
+  </data>
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAABAA
+        AAAAAAAAAACAAACAAAAAgIAAgAAAAIAAgACAgAAAgICAAMDAwAAAAP8AAP8AAAD//wD/AAAA/wD/AP//
+        AAD///8AAAAAAAAAAAALu7uw7u7uAAsAC7Du4O4AC7uwsOAADgALsAuw4ODuAAu7sLDuAO4ACwALsO7g
+        7gALu7uw7u7uAAAAAAAAAAAACqqqoJmZmQAKoACgkAAJAAqqCqCQmZkACqoKoJkAmQAKoAqgkJkJAAqq
+        CqCZAJkACqqqoJmZmQDAAQAAgAEAAIABAACAAQAAgAEAAIABAACAAQAAgAEAAIABAACAAQAAgAEAAIAB
+        AACAAQAAgAEAAIABAACAAwAA
+</value>
   </data>
 </root>

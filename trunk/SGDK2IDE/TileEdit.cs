@@ -56,7 +56,12 @@ namespace SGDK2
       private System.Windows.Forms.NumericUpDown nudTileWidth;
       private System.Windows.Forms.NumericUpDown nudTileHeight;
       private System.Windows.Forms.Label lblTileHeight;
-      private System.Windows.Forms.StatusBar StatusBar;
+      private System.Windows.Forms.StatusBar sbAvailable;
+      private System.Windows.Forms.StatusBarPanel sbpFrameIndex;
+      private System.Windows.Forms.StatusBarPanel sbpCellIndex;
+      private System.Windows.Forms.StatusBar sbTileFrames;
+      private System.Windows.Forms.StatusBarPanel sbpTileFrame;
+      private System.Windows.Forms.StatusBarPanel sbpTileCell;
       private DataChangeNotifier dataMonitor;
       #endregion
 
@@ -174,7 +179,12 @@ namespace SGDK2
          this.lblFrameCounter = new System.Windows.Forms.Label();
          this.grpAvailableFrames = new System.Windows.Forms.GroupBox();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
-         this.StatusBar = new System.Windows.Forms.StatusBar();
+         this.sbAvailable = new System.Windows.Forms.StatusBar();
+         this.sbpFrameIndex = new System.Windows.Forms.StatusBarPanel();
+         this.sbpCellIndex = new System.Windows.Forms.StatusBarPanel();
+         this.sbTileFrames = new System.Windows.Forms.StatusBar();
+         this.sbpTileFrame = new System.Windows.Forms.StatusBarPanel();
+         this.sbpTileCell = new System.Windows.Forms.StatusBarPanel();
          this.pnlTileHeader.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.nudTileHeight)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.nudTileWidth)).BeginInit();
@@ -186,6 +196,10 @@ namespace SGDK2
          this.pnlAddFrame.SuspendLayout();
          this.pnlTileProperties.SuspendLayout();
          this.grpAvailableFrames.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpFrameIndex)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpCellIndex)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpTileFrame)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpTileCell)).BeginInit();
          this.SuspendLayout();
          // 
          // lblTilesetName
@@ -371,7 +385,7 @@ namespace SGDK2
          // splitter1
          // 
          this.splitter1.Dock = System.Windows.Forms.DockStyle.Top;
-         this.splitter1.Location = new System.Drawing.Point(0, 256);
+         this.splitter1.Location = new System.Drawing.Point(0, 272);
          this.splitter1.Name = "splitter1";
          this.splitter1.Size = new System.Drawing.Size(496, 6);
          this.splitter1.TabIndex = 3;
@@ -459,7 +473,7 @@ namespace SGDK2
          this.AvailableFrames.Location = new System.Drawing.Point(3, 16);
          this.AvailableFrames.Name = "AvailableFrames";
          this.AvailableFrames.SheetImage = null;
-         this.AvailableFrames.Size = new System.Drawing.Size(490, 122);
+         this.AvailableFrames.Size = new System.Drawing.Size(490, 108);
          this.AvailableFrames.TabIndex = 1;
          this.AvailableFrames.CurrentCellChanged += new System.EventHandler(this.AvailableFrames_CurrentCellChanged);
          // 
@@ -470,7 +484,7 @@ namespace SGDK2
          this.grpTileProperties.Dock = System.Windows.Forms.DockStyle.Top;
          this.grpTileProperties.Location = new System.Drawing.Point(0, 72);
          this.grpTileProperties.Name = "grpTileProperties";
-         this.grpTileProperties.Size = new System.Drawing.Size(496, 184);
+         this.grpTileProperties.Size = new System.Drawing.Size(496, 200);
          this.grpTileProperties.TabIndex = 2;
          this.grpTileProperties.TabStop = false;
          this.grpTileProperties.Text = "Tile Properties";
@@ -478,13 +492,14 @@ namespace SGDK2
          // pnlFrames
          // 
          this.pnlFrames.Controls.Add(this.TileFrames);
+         this.pnlFrames.Controls.Add(this.sbTileFrames);
          this.pnlFrames.Controls.Add(this.pnlFrameProperties);
          this.pnlFrames.Dock = System.Windows.Forms.DockStyle.Fill;
          this.pnlFrames.DockPadding.Left = 5;
          this.pnlFrames.DockPadding.Right = 5;
          this.pnlFrames.Location = new System.Drawing.Point(3, 56);
          this.pnlFrames.Name = "pnlFrames";
-         this.pnlFrames.Size = new System.Drawing.Size(490, 125);
+         this.pnlFrames.Size = new System.Drawing.Size(490, 141);
          this.pnlFrames.TabIndex = 2;
          // 
          // TileFrames
@@ -501,7 +516,7 @@ namespace SGDK2
          this.TileFrames.Location = new System.Drawing.Point(5, 0);
          this.TileFrames.Name = "TileFrames";
          this.TileFrames.SheetImage = null;
-         this.TileFrames.Size = new System.Drawing.Size(480, 85);
+         this.TileFrames.Size = new System.Drawing.Size(480, 81);
          this.TileFrames.TabIndex = 1;
          this.TileFrames.CurrentCellChanged += new System.EventHandler(this.TileFrames_CurrentCellChanged);
          this.TileFrames.DragDrop += new System.Windows.Forms.DragEventHandler(this.TileFrames_DragDrop);
@@ -512,7 +527,7 @@ namespace SGDK2
          this.pnlFrameProperties.Controls.Add(this.grpFrameProperties);
          this.pnlFrameProperties.Controls.Add(this.pnlAddFrame);
          this.pnlFrameProperties.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.pnlFrameProperties.Location = new System.Drawing.Point(5, 85);
+         this.pnlFrameProperties.Location = new System.Drawing.Point(5, 101);
          this.pnlFrameProperties.Name = "pnlFrameProperties";
          this.pnlFrameProperties.Size = new System.Drawing.Size(480, 40);
          this.pnlFrameProperties.TabIndex = 2;
@@ -589,10 +604,11 @@ namespace SGDK2
          // grpAvailableFrames
          // 
          this.grpAvailableFrames.Controls.Add(this.AvailableFrames);
+         this.grpAvailableFrames.Controls.Add(this.sbAvailable);
          this.grpAvailableFrames.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.grpAvailableFrames.Location = new System.Drawing.Point(0, 262);
+         this.grpAvailableFrames.Location = new System.Drawing.Point(0, 278);
          this.grpAvailableFrames.Name = "grpAvailableFrames";
-         this.grpAvailableFrames.Size = new System.Drawing.Size(496, 141);
+         this.grpAvailableFrames.Size = new System.Drawing.Size(496, 147);
          this.grpAvailableFrames.TabIndex = 4;
          this.grpAvailableFrames.TabStop = false;
          this.grpAvailableFrames.Text = "Available Frames";
@@ -607,12 +623,49 @@ namespace SGDK2
          this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
          this.dataMonitor.CounterRowChanged += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowChanged);
          // 
-         // StatusBar
+         // sbAvailable
          // 
-         this.StatusBar.Location = new System.Drawing.Point(0, 403);
-         this.StatusBar.Name = "StatusBar";
-         this.StatusBar.Size = new System.Drawing.Size(496, 22);
-         this.StatusBar.TabIndex = 5;
+         this.sbAvailable.Location = new System.Drawing.Point(3, 124);
+         this.sbAvailable.Name = "sbAvailable";
+         this.sbAvailable.Panels.AddRange(new System.Windows.Forms.StatusBarPanel[] {
+                                                                                       this.sbpFrameIndex,
+                                                                                       this.sbpCellIndex});
+         this.sbAvailable.ShowPanels = true;
+         this.sbAvailable.Size = new System.Drawing.Size(490, 20);
+         this.sbAvailable.SizingGrip = false;
+         this.sbAvailable.TabIndex = 2;
+         // 
+         // sbpFrameIndex
+         // 
+         this.sbpFrameIndex.Icon = ((System.Drawing.Icon)(resources.GetObject("sbpFrameIndex.Icon")));
+         // 
+         // sbpCellIndex
+         // 
+         this.sbpCellIndex.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Spring;
+         this.sbpCellIndex.Icon = ((System.Drawing.Icon)(resources.GetObject("sbpCellIndex.Icon")));
+         this.sbpCellIndex.Width = 390;
+         // 
+         // sbTileFrames
+         // 
+         this.sbTileFrames.Location = new System.Drawing.Point(5, 81);
+         this.sbTileFrames.Name = "sbTileFrames";
+         this.sbTileFrames.Panels.AddRange(new System.Windows.Forms.StatusBarPanel[] {
+                                                                                        this.sbpTileFrame,
+                                                                                        this.sbpTileCell});
+         this.sbTileFrames.ShowPanels = true;
+         this.sbTileFrames.Size = new System.Drawing.Size(480, 20);
+         this.sbTileFrames.SizingGrip = false;
+         this.sbTileFrames.TabIndex = 3;
+         // 
+         // sbpTileFrame
+         // 
+         this.sbpTileFrame.Icon = ((System.Drawing.Icon)(resources.GetObject("sbpTileFrame.Icon")));
+         // 
+         // sbpTileCell
+         // 
+         this.sbpTileCell.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Spring;
+         this.sbpTileCell.Icon = ((System.Drawing.Icon)(resources.GetObject("sbpTileCell.Icon")));
+         this.sbpTileCell.Width = 380;
          // 
          // frmTileEdit
          // 
@@ -622,7 +675,7 @@ namespace SGDK2
          this.Controls.Add(this.splitter1);
          this.Controls.Add(this.grpTileProperties);
          this.Controls.Add(this.pnlTileHeader);
-         this.Controls.Add(this.StatusBar);
+         this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
          this.Menu = this.mnuTileset;
          this.MinimumSize = new System.Drawing.Size(432, 0);
          this.Name = "frmTileEdit";
@@ -638,6 +691,10 @@ namespace SGDK2
          this.pnlAddFrame.ResumeLayout(false);
          this.pnlTileProperties.ResumeLayout(false);
          this.grpAvailableFrames.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.sbpFrameIndex)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpCellIndex)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpTileFrame)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpTileCell)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -765,7 +822,7 @@ namespace SGDK2
          ProjectDataset.FramesetRow fr = (ProjectDataset.FramesetRow)cboFrameset.SelectedItem;
          if ((fr != m_Tileset.FramesetRow) && (m_Tileset.GetTileRows().Length > 0))
          {
-            switch (MessageBox.Show(this, "The Frameset has been changed.  Do you want to delete all frames for this tileset?", "Confirm Frameset Change", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3))
+            switch (MessageBox.Show(this, "The Frameset has been changed.  Even if you do not delete all the frames in this tileset, some frame indexes may be changed to remain within the bounds of the new frameset.  Do you want to delete all frames for this tileset?", "Confirm Frameset Change", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question, MessageBoxDefaultButton.Button3))
             {
                case DialogResult.Yes:
                   foreach (ProjectDataset.TileRow tr in ProjectData.GetSortedTileRows(m_Tileset))
@@ -773,18 +830,24 @@ namespace SGDK2
                   cboMappedTiles.Items.Clear();
                   break;
                case DialogResult.Cancel:
-                  cboFrameset.SelectedItem = m_Tileset.FramesetRow;
                   return;
             }
          }
          AvailableFrames.Frameset = TileFrames.Frameset = m_Tileset.FramesetRow = fr;
          cboMappedTiles.Items.Clear();
          TileFrames.FramesToDisplay = new FrameList();
+         int frameCount = fr.GetFrameRows().Length;
          foreach(ProjectDataset.TileRow tr in ProjectData.GetSortedTileRows(m_Tileset))
          {
             cboMappedTiles.Items.Add(tr);
             if (tr == m_Tile)
                cboMappedTiles.SelectedItem = tr;
+            cboFrameset.SelectedItem = m_Tileset.FramesetRow;
+            foreach(ProjectDataset.TileFrameRow tfr in tr.GetTileFrameRows())
+            {
+               if (tfr.FrameValue >= frameCount)
+                  tfr.FrameValue = tfr.FrameValue % frameCount;
+            }
          }
          if (cboMappedTiles.SelectedItem != m_Tile)
             m_Tile = null;
@@ -858,6 +921,7 @@ namespace SGDK2
          }
          TileFrames.Frameset = m_Tileset.FramesetRow;
          TileFrames.FramesToDisplay = new FrameList();
+         sbTileFrames.Visible = false;
          if (m_Tile != null)
          {
             foreach(ProjectDataset.TileFrameRow tfr in ProjectData.GetSortedTileFrames(m_Tile))
@@ -1027,6 +1091,18 @@ namespace SGDK2
          {
             if (TileFrames.CurrentCellIndex >= 0)
                updRepeatCount.Value = ((TileFrame)(TileFrames.FramesToDisplay[TileFrames.CurrentCellIndex])).Row.Duration;
+            if (sbTileFrames.Visible = (TileFrames.GetSelectedCellCount() == 1))
+            {
+               IProvideFrame frame = TileFrames.FramesToDisplay[TileFrames.GetFirstSelectedCell()];
+               ProjectDataset.FrameRow row = ProjectData.GetFrame(TileFrames.Frameset.Name, frame.FrameIndex);
+               if (row == null)
+               {
+                  sbTileFrames.Visible = false;
+                  return;
+               }
+               sbpTileFrame.Text = "#" + row.FrameValue;
+               sbpTileCell.Text = "#" + row.CellIndex + " (" + row.GraphicSheet + ")";
+            }
          }
          catch (System.Exception ex)
          {
@@ -1087,10 +1163,17 @@ namespace SGDK2
 
       private void AvailableFrames_CurrentCellChanged(object sender, System.EventArgs e)
       {
-         if (AvailableFrames.GetSelectedCellCount() == 1)
-            StatusBar.Text = "Selected Frame Index in Available Frames: " + AvailableFrames.GetFirstSelectedCell().ToString();
-         else
-            StatusBar.Text = String.Empty;
+         if (sbAvailable.Visible = (AvailableFrames.GetSelectedCellCount() == 1))
+         {
+            ProjectDataset.FrameRow row = ProjectData.GetFrame(AvailableFrames.Frameset.Name, AvailableFrames.GetFirstSelectedCell());
+            if (row == null)
+            {
+               sbAvailable.Visible = false;
+               return;
+            }
+            sbpFrameIndex.Text = "#" + row.FrameValue.ToString();
+            sbpCellIndex.Text = "#" + row.CellIndex.ToString() + " (" + row.GraphicSheet + ")";
+         }
       }
       #endregion
 

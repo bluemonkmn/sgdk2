@@ -661,9 +661,9 @@ namespace SGDK2
             "SetType", new CodeExpression[]
             {new CodeTypeOfExpression(FramesetRefClassName)}));
          mthGetObjectData.Statements.Add(
-                  new CodeMethodInvokeExpression(
-                  new CodeArgumentReferenceExpression("info"),
-                  "AddValue", new CodeExpression[]
+            new CodeMethodInvokeExpression(
+            new CodeArgumentReferenceExpression("info"),
+            "AddValue", new CodeExpression[]
                {
                   new CodePrimitiveExpression(FramesetSerializeName),
                   new CodeFieldReferenceExpression(
@@ -1200,9 +1200,9 @@ namespace SGDK2
                   prpTileset.Name)),
                   new CodeMethodReturnStatement()
                }));
-      }
+         }
 
-      CodeMemberProperty prpTile = new CodeMemberProperty();
+         CodeMemberProperty prpTile = new CodeMemberProperty();
          prpTile.Name = "Item";
          CodeParameterDeclarationExpression indexParam = new CodeParameterDeclarationExpression(typeof(int), "index");
          prpTile.Parameters.Add(indexParam);
@@ -2600,10 +2600,10 @@ namespace SGDK2
 
          Generator.GenerateCodeFromCompileUnit(attributes, txt, GeneratorOptions);
       }
-   #endregion
+      #endregion
 
-   #region Utility Functions
-   public static string NameToVariable(string name)
+      #region Utility Functions
+      public static string NameToVariable(string name)
       {
          return name.Replace(" ","_");
       }
@@ -2683,28 +2683,7 @@ namespace SGDK2
       }
       #endregion
 
-      #region Compilation
-      private class frmWaitWindow : System.Windows.Forms.Form
-      {
-         public frmWaitWindow()
-         {
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.TopMost = true;
-            this.Size = new System.Drawing.Size(320,80);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.ControlBox = false;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            System.Windows.Forms.Label lblStatus = new System.Windows.Forms.Label();
-            lblStatus.Dock = System.Windows.Forms.DockStyle.Fill;
-            lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            lblStatus.Text = "Compiling temporary project for runtime property inspection";
-            this.Controls.Add(lblStatus);
-            this.Show();
-            this.Update();
-         }
-      }
-      
+      #region Compilation      
       /// <summary>
       /// Compile a the temporary instance of the project to use for reflection
       /// (retrieving function names and parameter info, etc).
@@ -2720,8 +2699,10 @@ namespace SGDK2
             m_TempAssembly.Dispose();
          m_TempAssembly = null;
 
-         using (new frmWaitWindow())
+         try
          {
+            SGDK2IDE.PushStatus("Compiling temporary project for runtime property inspection", true);
+
             string errs;
             string[] code = GenerateCodeStrings(out errs);
             if ((errs != null) && (errs.Length > 0))
@@ -2777,6 +2758,10 @@ namespace SGDK2
             }
             m_TempAssembly = new TempAssembly(compilerParams.OutputAssembly);
          }
+         finally
+         {
+            SGDK2IDE.PopStatus();
+         }
          return null;
       }
 
@@ -2818,98 +2803,106 @@ namespace SGDK2
 
       public string CompileProject(string ProjectName, string FolderName, out string errs)
       {
-         if (!System.IO.Path.IsPathRooted(FolderName))
-            FolderName = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, FolderName);
-
-         string[] fileList = GetCodeFileList(FolderName);
-         string[] resourcesList = GetResourcesFileList(FolderName);
-         System.Collections.ArrayList OldDlls = new System.Collections.ArrayList();
-         GenerateAllCode(FolderName, out errs);
-         if (errs.Length > 0)
-            return null;
-
-         string resourceSwitches = string.Empty;
-         foreach (string resFile in resourcesList)
+         SGDK2IDE.PushStatus("Compiling " + ProjectName + " to " + FolderName, true);
+         try
          {
-            resourceSwitches += " /res:\"" + resFile +"\"";
-         }
+            if (!System.IO.Path.IsPathRooted(FolderName))
+               FolderName = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, FolderName);
 
-         CompileResources(FolderName);
+            string[] fileList = GetCodeFileList(FolderName);
+            string[] resourcesList = GetResourcesFileList(FolderName);
+            System.Collections.ArrayList OldDlls = new System.Collections.ArrayList();
+            GenerateAllCode(FolderName, out errs);
+            if (errs.Length > 0)
+               return null;
 
-         Microsoft.CSharp.CSharpCodeProvider codeProvider = new Microsoft.CSharp.CSharpCodeProvider();
-         System.CodeDom.Compiler.ICodeCompiler compiler = codeProvider.CreateCompiler();
-         System.CodeDom.Compiler.CompilerParameters compilerParams = new System.CodeDom.Compiler.CompilerParameters(new string[] {}, System.IO.Path.Combine(FolderName, ProjectName + ".exe"));
-         System.Reflection.Assembly asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Matrix));
-         System.IO.File.Copy(asmRef.GetFiles()[0].Name, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)), true);
-         compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
-         asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Device));
-         System.IO.File.Copy(asmRef.GetFiles()[0].Name, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)), true);
-         compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
-         asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Sprite));
-         System.IO.File.Copy(asmRef.GetFiles()[0].Name, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)), true);
-         compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
-         asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.DirectInput.KeyboardState));
-         System.IO.File.Copy(asmRef.GetFiles()[0].Name, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)), true);
-         compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
-         compilerParams.ReferencedAssemblies.Add("System.Windows.Forms.dll");
-         compilerParams.ReferencedAssemblies.Add("System.dll");
-         compilerParams.ReferencedAssemblies.Add("System.Drawing.dll");
-         compilerParams.ReferencedAssemblies.Add("System.Design.dll");
-         foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
-         {
-            ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
-            if (drCode.Name.EndsWith(".dll"))
+            string resourceSwitches = string.Empty;
+            foreach (string resFile in resourcesList)
             {
-               if (IsOldDll(FindFullPath(drCode.Name)))
+               resourceSwitches += " /res:\"" + resFile +"\"";
+            }
+
+            CompileResources(FolderName);
+
+            Microsoft.CSharp.CSharpCodeProvider codeProvider = new Microsoft.CSharp.CSharpCodeProvider();
+            System.CodeDom.Compiler.ICodeCompiler compiler = codeProvider.CreateCompiler();
+            System.CodeDom.Compiler.CompilerParameters compilerParams = new System.CodeDom.Compiler.CompilerParameters(new string[] {}, System.IO.Path.Combine(FolderName, ProjectName + ".exe"));
+            System.Reflection.Assembly asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Matrix));
+            System.IO.File.Copy(asmRef.GetFiles()[0].Name, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)), true);
+            compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
+            asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Device));
+            System.IO.File.Copy(asmRef.GetFiles()[0].Name, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)), true);
+            compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
+            asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Sprite));
+            System.IO.File.Copy(asmRef.GetFiles()[0].Name, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)), true);
+            compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
+            asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.DirectInput.KeyboardState));
+            System.IO.File.Copy(asmRef.GetFiles()[0].Name, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)), true);
+            compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
+            compilerParams.ReferencedAssemblies.Add("System.Windows.Forms.dll");
+            compilerParams.ReferencedAssemblies.Add("System.dll");
+            compilerParams.ReferencedAssemblies.Add("System.Drawing.dll");
+            compilerParams.ReferencedAssemblies.Add("System.Design.dll");
+            foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
+            {
+               ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
+               if (drCode.Name.EndsWith(".dll"))
                {
-                  OldDlls.Add(FindFullPath(drCode.Name));
+                  if (IsOldDll(FindFullPath(drCode.Name)))
+                  {
+                     OldDlls.Add(FindFullPath(drCode.Name));
+                  }
+                  else
+                  {
+                     try
+                     {
+                        System.Reflection.Assembly assy = System.Reflection.Assembly.LoadWithPartialName(System.IO.Path.GetFileNameWithoutExtension(drCode.Name));
+                        string assyPath = assy.GetModules(false)[0].FullyQualifiedName;
+                        string targetPath = System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(drCode.Name));
+                        System.IO.File.Copy(assyPath, targetPath, true);
+                        compilerParams.ReferencedAssemblies.Add(targetPath);
+                     }
+                     catch(System.Exception)
+                     {
+                     }
+                  }
                }
-               else
+               else if (drCode.Name.EndsWith(".cs") && !drCode.IsCustomObjectDataNull())
+                  resourceSwitches += " /res:\"" + System.IO.Path.Combine(FolderName, System.IO.Path.GetFileNameWithoutExtension(drCode.Name) + ".bin") + "\"";
+            }
+            compilerParams.GenerateExecutable = true;
+            compilerParams.GenerateInMemory = false;
+            compilerParams.IncludeDebugInformation = Debug;
+            if (Debug)
+               compilerParams.CompilerOptions = "/define:DEBUG /target:winexe" + resourceSwitches;
+            else
+               compilerParams.CompilerOptions = " /target:winexe" + resourceSwitches;
+            System.CodeDom.Compiler.CompilerResults results = compiler.CompileAssemblyFromFileBatch(compilerParams, fileList);
+            if (results.Errors.Count > 0)
+            {
+               System.Text.StringBuilder sb = new System.Text.StringBuilder();
+               for (int i = 0; i < results.Errors.Count; i++)
                {
-                  try
-                  {
-                     System.Reflection.Assembly assy = System.Reflection.Assembly.LoadWithPartialName(System.IO.Path.GetFileNameWithoutExtension(drCode.Name));
-                     string assyPath = assy.GetModules(false)[0].FullyQualifiedName;
-                     string targetPath = System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(drCode.Name));
-                     System.IO.File.Copy(assyPath, targetPath, true);
-                     compilerParams.ReferencedAssemblies.Add(targetPath);
-                  }
-                  catch(System.Exception)
-                  {
-                  }
+                  sb.Append(results.Errors[i].ToString() + Environment.NewLine);
+               }
+               errs = sb.ToString();
+               return null;
+            }
+            else
+            {
+               foreach(string dllFile in OldDlls)
+               {
+                  System.IO.File.Copy(dllFile,
+                     System.IO.Path.Combine(System.IO.Path.GetDirectoryName(results.PathToAssembly),
+                     System.IO.Path.GetFileName(dllFile)), true);
                }
             }
-            else if (drCode.Name.EndsWith(".cs") && !drCode.IsCustomObjectDataNull())
-               resourceSwitches += " /res:\"" + System.IO.Path.Combine(FolderName, System.IO.Path.GetFileNameWithoutExtension(drCode.Name) + ".bin") + "\"";
+            return compilerParams.OutputAssembly;
          }
-         compilerParams.GenerateExecutable = true;
-         compilerParams.GenerateInMemory = false;
-         compilerParams.IncludeDebugInformation = Debug;
-         if (Debug)
-            compilerParams.CompilerOptions = "/define:DEBUG /target:winexe" + resourceSwitches;
-         else
-            compilerParams.CompilerOptions = " /target:winexe" + resourceSwitches;
-         System.CodeDom.Compiler.CompilerResults results = compiler.CompileAssemblyFromFileBatch(compilerParams, fileList);
-         if (results.Errors.Count > 0)
+         finally
          {
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
-            for (int i = 0; i < results.Errors.Count; i++)
-            {
-               sb.Append(results.Errors[i].ToString() + Environment.NewLine);
-            }
-            errs = sb.ToString();
-            return null;
+            SGDK2IDE.PopStatus();
          }
-         else
-         {
-            foreach(string dllFile in OldDlls)
-            {
-               System.IO.File.Copy(dllFile,
-                  System.IO.Path.Combine(System.IO.Path.GetDirectoryName(results.PathToAssembly),
-                  System.IO.Path.GetFileName(dllFile)), true);
-            }
-         }
-         return compilerParams.OutputAssembly;
       }
       #endregion
    }

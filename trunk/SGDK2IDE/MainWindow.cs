@@ -75,6 +75,7 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuTreeDelete;
       private System.Windows.Forms.MenuItem mnuTreeImport;
       private System.Windows.Forms.MenuItem mnuFileImportObj;
+      internal System.Windows.Forms.StatusBar sbMain;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -155,6 +156,7 @@ namespace SGDK2
          this.pnlProjectTree = new System.Windows.Forms.Panel();
          this.lblProjectTree = new System.Windows.Forms.Label();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
+         this.sbMain = new System.Windows.Forms.StatusBar();
          this.pnlProjectTree.SuspendLayout();
          this.SuspendLayout();
          // 
@@ -228,7 +230,7 @@ namespace SGDK2
          this.tvwMain.ItemHeight = 16;
          this.tvwMain.Location = new System.Drawing.Point(0, 16);
          this.tvwMain.Name = "tvwMain";
-         this.tvwMain.Size = new System.Drawing.Size(176, 531);
+         this.tvwMain.Size = new System.Drawing.Size(176, 511);
          this.tvwMain.TabIndex = 3;
          this.tvwMain.MouseUp += new System.Windows.Forms.MouseEventHandler(this.tvwMain_MouseUp);
          this.tvwMain.DoubleClick += new System.EventHandler(this.tvwMain_DoubleClick);
@@ -271,7 +273,7 @@ namespace SGDK2
          this.splitterMDI.Location = new System.Drawing.Point(176, 27);
          this.splitterMDI.MinSize = 20;
          this.splitterMDI.Name = "splitterMDI";
-         this.splitterMDI.Size = new System.Drawing.Size(6, 547);
+         this.splitterMDI.Size = new System.Drawing.Size(6, 527);
          this.splitterMDI.TabIndex = 4;
          this.splitterMDI.TabStop = false;
          // 
@@ -472,7 +474,7 @@ namespace SGDK2
          this.pnlProjectTree.Dock = System.Windows.Forms.DockStyle.Left;
          this.pnlProjectTree.Location = new System.Drawing.Point(0, 27);
          this.pnlProjectTree.Name = "pnlProjectTree";
-         this.pnlProjectTree.Size = new System.Drawing.Size(176, 547);
+         this.pnlProjectTree.Size = new System.Drawing.Size(176, 527);
          this.pnlProjectTree.TabIndex = 6;
          // 
          // lblProjectTree
@@ -507,11 +509,11 @@ namespace SGDK2
          this.dataMonitor.CategorizedTilesetRowChanged += new SGDK2.ProjectDataset.CategorizedTilesetRowChangeEventHandler(this.dataMonitor_CategorizedTilesetRowChanged);
          this.dataMonitor.SourceCodeRowChanging += new SGDK2.ProjectDataset.SourceCodeRowChangeEventHandler(this.dataMonitor_SourceCodeRowChanging);
          this.dataMonitor.MapRowDeleting += new SGDK2.ProjectDataset.MapRowChangeEventHandler(this.dataMonitor_MapRowDeleting);
-         this.dataMonitor.FramesetRowChanging += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.dataMonitor_FramesetRowChanging);
          this.dataMonitor.SpriteDefinitionRowDeleting += new SGDK2.ProjectDataset.SpriteDefinitionRowChangeEventHandler(this.dataMonitor_SpriteDefinitionRowDeleting);
          this.dataMonitor.SourceCodeRowChanged += new SGDK2.ProjectDataset.SourceCodeRowChangeEventHandler(this.dataMonitor_SourceCodeRowChanged);
          this.dataMonitor.GraphicSheetRowChanged += new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(this.dataMonitor_GraphicSheetRowChanged);
          this.dataMonitor.LayerRowDeleting += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowDeleting);
+         this.dataMonitor.FramesetRowChanging += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.dataMonitor_FramesetRowChanging);
          this.dataMonitor.FramesetRowChanged += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.dataMonitor_FramesetRowChanged);
          this.dataMonitor.CounterRowDeleted += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowDeleted);
          this.dataMonitor.SpriteCategoryRowDeleting += new SGDK2.ProjectDataset.SpriteCategoryRowChangeEventHandler(this.dataMonitor_SpriteCategoryRowDeleting);
@@ -529,6 +531,7 @@ namespace SGDK2
          this.dataMonitor.SpriteDefinitionRowDeleted += new SGDK2.ProjectDataset.SpriteDefinitionRowChangeEventHandler(this.dataMonitor_SpriteDefinitionRowDeleted);
          this.dataMonitor.GraphicSheetRowDeleted += new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(this.dataMonitor_GraphicSheetRowDeleted);
          this.dataMonitor.SolidityRowChanging += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.dataMonitor_SolidityRowChanging);
+         this.dataMonitor.MapRowChanging += new SGDK2.ProjectDataset.MapRowChangeEventHandler(this.dataMonitor_MapRowChanging);
          this.dataMonitor.LayerRowChanging += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowChanging);
          this.dataMonitor.GraphicSheetRowChanging += new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(this.dataMonitor_GraphicSheetRowChanging);
          this.dataMonitor.SolidityRowChanged += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.dataMonitor_SolidityRowChanged);
@@ -546,9 +549,15 @@ namespace SGDK2
          this.dataMonitor.TileCategoryRowDeleted += new SGDK2.ProjectDataset.TileCategoryRowChangeEventHandler(this.dataMonitor_TileCategoryRowDeleted);
          this.dataMonitor.GraphicSheetRowDeleting += new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(this.dataMonitor_GraphicSheetRowDeleting);
          this.dataMonitor.SpriteDefinitionRowChanged += new SGDK2.ProjectDataset.SpriteDefinitionRowChangeEventHandler(this.dataMonitor_SpriteDefinitionRowChanged);
-         this.dataMonitor.MapRowChanging += new SGDK2.ProjectDataset.MapRowChangeEventHandler(this.dataMonitor_MapRowChanging);
          this.dataMonitor.CounterRowChanged += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowChanged);
          this.dataMonitor.SpriteCategoryRowDeleted += new SGDK2.ProjectDataset.SpriteCategoryRowChangeEventHandler(this.dataMonitor_SpriteCategoryRowDeleted);
+         // 
+         // sbMain
+         // 
+         this.sbMain.Location = new System.Drawing.Point(0, 554);
+         this.sbMain.Name = "sbMain";
+         this.sbMain.Size = new System.Drawing.Size(800, 20);
+         this.sbMain.TabIndex = 8;
          // 
          // frmMain
          // 
@@ -557,6 +566,7 @@ namespace SGDK2
          this.Controls.Add(this.splitterMDI);
          this.Controls.Add(this.pnlProjectTree);
          this.Controls.Add(this.tbrMain);
+         this.Controls.Add(this.sbMain);
          this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
          this.IsMdiContainer = true;
          this.Menu = this.mnuMain;
@@ -674,16 +684,24 @@ namespace SGDK2
 
       private void DoOpenProject(string projectFile)
       {
-         DataSet dsLoad = new DataSet();
-         dsLoad.ReadXml(projectFile);
-         ProjectData.Clear();
-         InitializeTree();
-         ProjectData.Merge(dsLoad);
-         ProjectData.AcceptChanges();
-         m_strProjectPath = projectFile;
-         tvwMain.CollapseAll();
-         tvwMain.Nodes[0].Expand();
-         mnuFileDeleteOutputFiles.Enabled = true;
+         try
+         {
+            SGDK2IDE.PushStatus("Loading " + projectFile, true);
+            DataSet dsLoad = new DataSet();
+            dsLoad.ReadXml(projectFile);
+            ProjectData.Clear();
+            InitializeTree();
+            ProjectData.Merge(dsLoad);
+            ProjectData.AcceptChanges();
+            m_strProjectPath = projectFile;
+            tvwMain.CollapseAll();
+            tvwMain.Nodes[0].Expand();
+            mnuFileDeleteOutputFiles.Enabled = true;
+         }
+         finally
+         {
+            SGDK2IDE.PopStatus();
+         }
       }
 
       private void NewObject()
@@ -1273,6 +1291,7 @@ namespace SGDK2
 
       protected override void OnLoad(EventArgs e)
       {
+         base.OnLoad (e);
          if (SGDK2IDE.g_CommandLine.ProjectFile == null)
             DoNewProject();
          else
@@ -1285,7 +1304,7 @@ namespace SGDK2
                MessageBox.Show(this, ex.Message, "Open Project", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                DoNewProject();
             }
-         base.OnLoad (e);
+         SGDK2IDE.PushStatus("Ready", false);
       }
 
       #endregion

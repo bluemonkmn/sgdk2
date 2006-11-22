@@ -2350,7 +2350,8 @@ namespace SGDK2
                (CodeExpression[])stateParams.ToArray(typeof(CodeExpression)))));
          }
 
-         ((CodeMemberField)enumStates.Members[0]).InitExpression = new CodePrimitiveExpression(0);
+         if (enumStates.Members.Count > 0)
+            ((CodeMemberField)enumStates.Members[0]).InitExpression = new CodePrimitiveExpression(0);
 
          FrameCache.ClearDisplayCache(null);
 

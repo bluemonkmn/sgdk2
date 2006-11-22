@@ -114,6 +114,12 @@ class CompileResx
          rd = new System.Resources.ResXResourceReader("HueMapParams.resx");
          WriteResources(rd,"SGDK2.frmHueMapParams.resources");
          rd.Close();
+         rd = new System.Resources.ResXResourceReader("GfxSheetImport.resx");
+         WriteResources(rd,"SGDK2.frmGfxSheetImport.resources");
+         rd.Close();
+         rd = new System.Resources.ResXResourceReader("TilesetImport.resx");
+         WriteResources(rd,"SGDK2.frmTilesetImport.resources");
+         rd.Close();
       }
       public static void WriteResources(System.Resources.ResXResourceReader rd, string sFile)
       {

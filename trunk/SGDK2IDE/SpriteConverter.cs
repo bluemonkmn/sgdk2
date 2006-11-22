@@ -32,7 +32,11 @@ namespace SGDK2
                new ReflectionPropertyDescriptor(typ.GetProperty("CurrentFrame")),
                new ReflectionPropertyDescriptor(typ.GetProperty("Active")),
                new ReflectionPropertyDescriptor(typ.GetProperty("DefinitionName")),
-               new ReflectionPropertyDescriptor(typ.GetProperty("Solidity"), this)
+               new ReflectionPropertyDescriptor(typ.GetProperty("Solidity"), this),
+               new ReflectionPropertyDescriptor(typ.GetProperty("ModulateRed")),
+               new ReflectionPropertyDescriptor(typ.GetProperty("ModulateGreen")),
+               new ReflectionPropertyDescriptor(typ.GetProperty("ModulateBlue")),
+               new ReflectionPropertyDescriptor(typ.GetProperty("ModulateAlpha"))
             });
 
             foreach(string paramName in ((SpriteProvider)context.Instance).ParameterNames)
@@ -124,6 +128,7 @@ namespace SGDK2
       private int m_priority;
       private bool m_active;
       private string m_Solidity;
+      private int m_color;
 
       private static SpriteConverter m_converter = new SpriteConverter();
 
@@ -261,6 +266,96 @@ namespace SGDK2
          }
       }
 
+      public int Color
+      {
+         get
+         {
+            if (m_SpriteRow != null)
+               return m_SpriteRow.Color;
+            else
+               return m_color;
+         }
+         set
+         {
+            if (m_SpriteRow != null)
+               m_SpriteRow.Color = value;
+            else
+               m_color = value;
+         }
+      }
+
+      public byte ModulateRed
+      {
+         get
+         {
+            if (m_SpriteRow != null)
+               return BitConverter.GetBytes(m_SpriteRow.Color)[2];
+            else
+               return BitConverter.GetBytes(m_color)[2];
+         }
+         set
+         {
+            if (m_SpriteRow != null)
+               m_SpriteRow.Color = (int)(m_SpriteRow.Color & 0xFF00FFFFU) | value << 16;
+            else
+               m_color = (int)(m_color & 0xFF00FFFFU) | value << 16;
+         }
+      }
+
+      public byte ModulateGreen
+      {
+         get
+         {
+            if (m_SpriteRow != null)
+               return BitConverter.GetBytes(m_SpriteRow.Color)[1];
+            else
+               return BitConverter.GetBytes(m_color)[1];
+         }
+         set
+         {
+            if (m_SpriteRow != null)
+               m_SpriteRow.Color = (int)(m_SpriteRow.Color & 0xFFFF00FFU) | value << 8;
+            else
+               m_color = (int)(m_color & 0xFFFF00FFU) | value << 8;
+         }
+      }
+
+      public byte ModulateBlue
+      {
+         get
+         {
+            if (m_SpriteRow != null)
+               return BitConverter.GetBytes(m_SpriteRow.Color)[0];
+            else
+               return BitConverter.GetBytes(m_color)[0];
+         }
+         set
+         {
+            if (m_SpriteRow != null)
+               m_SpriteRow.Color = (int)(m_SpriteRow.Color & 0xFFFFFF00U) | value;
+            else
+               m_color = (int)(m_color & 0xFFFFFF00U) | value;
+         }
+      }
+      
+      public byte ModulateAlpha
+      {
+         get
+         {
+            if (m_SpriteRow != null)
+               return BitConverter.GetBytes(m_SpriteRow.Color)[3];
+            else
+               return BitConverter.GetBytes(m_color)[3];
+         }
+         set
+         {
+            if (m_SpriteRow != null)
+               m_SpriteRow.Color = (int)(m_SpriteRow.Color & 0x00FFFFFFU) | value << 24;
+            else
+               m_color = (int)(m_color & 0x00FFFFFFU) | value << 24;
+         }
+      }
+      
       public bool Active
       {
          get

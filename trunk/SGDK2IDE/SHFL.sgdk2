@@ -31,6 +31,7 @@
                     <xs:attribute name="dx" type="xs:float" default="0" />
                     <xs:attribute name="dy" type="xs:float" default="0" />
                     <xs:attribute name="Name" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="color" type="xs:int" default="-1" />
                   </xs:complexType>
                 </xs:element>
               </xs:sequence>
@@ -106,6 +107,7 @@
                           <xs:attribute name="Priority" type="xs:int" />
                           <xs:attribute name="Active" type="xs:boolean" default="true" />
                           <xs:attribute name="Solidity" type="xs:string" />
+                          <xs:attribute name="Color" type="xs:int" default="-1" />
                         </xs:complexType>
                       </xs:element>
                       <xs:element name="SpritePlan" minOccurs="0" maxOccurs="unbounded">
@@ -646,376 +648,376 @@
     <Image>iVBORw0KGgoAAAANSUhEUgAAAIAAAABACAYAAADS1n9/AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAABSdJREFUeF7tm29olVUcx8/z5+rM0vXfynIZiZSV/XtRMVlFKUExBEGkwDdFBIEZluSL2d3cNJiBUCNBjP4NFmGEtkXI1CHDYi1f1GSFMmJGUmnZdLGe3+n7O/fc3bvuaNKrPU/fB757nns503M+v+8553fOeWYMLxIgARJICQFZbYzshnqNsbYgOQHtgdbh87yUNITVvHACtgrBbYHOmVB+Mxch6HOtXXDnmL39wVFrLsXn2VAsoygzAnXCCIsv/N9nyWlMwNYgoEMml5w3VyDI11n75Prf7bffDdmRke+dTv503L71wSm7aNmf1lzpzWBgFGM3TuOGsWpTE3A9f9BcgqBeDy229uP9J8cDXzRA+f3Frb9aU4OyaoTAmWDt1P8PS0xTAgheLGdd8G+zdu7Dyb8GX43Q1TtszVKUvxm6zOUHp6dp41itqQkg2bsYQbwVuh9aYe2m936xXf3Dtutr6GiZ9Lu+YVv78jlrHkJZNYEax8BARqcRXikkIG3OAHcVgm9WQ09Dz0ProY1eG3BfBz0LPQU97g1zEw2QwqCXVxlTQA49WA1Q74Ovwd4MtUCvQa3+Oe/N8Jw3Sh3uNzgD/IgRALkErxQScCuAszr/m5W+l2ugd0A7oV3Qbv/8hjeCjgo6CtRCc5wB2lPYcFa5RAAbPFchkI95A2iPfwf6CPrES5/fh9QEr0BrIB01Ak0AZQVpppqArTeRPeOSQJ3jX/fB34/7Ya9ubwQdFXSKULNc63p/f6qbzsoXCSCQOp/rNKDzfwf0BTQADUL9UKc3hyaJ90IhTGNgHl5ZIFA2CmiSpz29FzoF/Qx9A7X74V97/9Wu9+OsgFeGCGAUmO9HAU0E90AnvAl0OtCpYS3k5n7X+5dmqPFsCgJah4Og0y4X0FGgzY8C2vs1AdS5X/cKql3vHyocHvFkMAPOcecBOP51gf3BrQiKuYCuAjQB1JWBLv1wVoAyUjomTvZlAMD/vQnF4GtwXYD/MnfjrisC3QPQhFB7/yNQTpJS8IvlmQim2EF6pj8eSG8AfK6CVkG6E6hrf537lzhznK8sr+8G8EopAT3PH+/5peAGMmZ0q1d3/XRZqJn/7GQMBoD+aRjpTmnjWW0Ec3OZAbCrN26GMTMLz9dAeEHEvS+gU8Nko4WRQySZWgLlBphkKpg04BXl3k5t81lxXcv/58AXk8Y3yTHVBPREEHsAFUp63JJwoRokwZGvPKplltUceOKBBT3v5sJR/e4Y9wJSHfxC5e0zJmfzUb1siV+QLTNuKXyL18Nn4p2/apf8YdMHP5vie2xL3CHb4048N+jvZaD5bII0RctlZ9iTfBgekO0hghsthy2qEfJRE+mRr62zDWaebIv3Jt3BQekLjsiOuEuaZywivQwQsE3RquTzcFCOBwPJZ8Fh7d1+FMBxr1v7V2lv1++TL4Oj9g9zRlrjT6XR3JiB5rMJGPprpSPsSwaDY24a2GrmewPgbZ/Smb80m8slH29KvgoGpDncKw1mDullgIAO5cmu6Ig0xi+Vgu9mff1roQk7fdJqZrlyjVFbBprOJhSTO9kWHiwlgEUuuk+gZwUTL5cPtETtE81ClqklIK/G90k+XFPZALdPAFVeks/doaNBahvNipMACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZBAGYG/AVEn1pM74ziqAAAAAElFTkSuQmCC</Image>
   </GraphicSheet>
   <Frameset Name="Main">
-    <Frame FrameValue="0" GraphicSheet="SHFL32x32" CellIndex="0" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="1" GraphicSheet="SHFL32x32" CellIndex="1" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="2" GraphicSheet="SHFL32x32" CellIndex="2" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="3" GraphicSheet="SHFL32x32" CellIndex="3" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="4" GraphicSheet="SHFL32x32" CellIndex="4" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="22" GraphicSheet="SHFL32x32" CellIndex="5" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="16" GraphicSheet="SHFL32x32" CellIndex="6" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="17" GraphicSheet="SHFL32x32" CellIndex="7" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="42" GraphicSheet="SHFL32x32" CellIndex="8" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="44" GraphicSheet="SHFL32x32" CellIndex="9" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="46" GraphicSheet="SHFL32x32" CellIndex="10" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="23" GraphicSheet="SHFL32x32" CellIndex="11" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="27" GraphicSheet="SHFL32x32" CellIndex="12" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="31" GraphicSheet="SHFL32x32" CellIndex="13" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="34" GraphicSheet="SHFL32x32" CellIndex="14" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="38" GraphicSheet="SHFL32x32" CellIndex="15" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="129" GraphicSheet="SHFL32x32" CellIndex="16" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="48" GraphicSheet="SHFL32x32" CellIndex="17" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="49" GraphicSheet="SHFL32x32" CellIndex="18" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="50" GraphicSheet="SHFL32x32" CellIndex="19" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="51" GraphicSheet="SHFL32x32" CellIndex="20" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="5" GraphicSheet="SHFL32x32" CellIndex="21" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="52" GraphicSheet="SHFL32x32" CellIndex="22" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="53" GraphicSheet="SHFL32x32" CellIndex="23" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="58" GraphicSheet="SHFL32x32" CellIndex="24" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="59" GraphicSheet="SHFL32x32" CellIndex="25" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="60" GraphicSheet="SHFL32x32" CellIndex="26" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="24" GraphicSheet="SHFL32x32" CellIndex="27" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="28" GraphicSheet="SHFL32x32" CellIndex="28" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="32" GraphicSheet="SHFL32x32" CellIndex="29" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="35" GraphicSheet="SHFL32x32" CellIndex="30" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="39" GraphicSheet="SHFL32x32" CellIndex="31" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="130" GraphicSheet="SHFL32x32" CellIndex="32" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="6" GraphicSheet="SHFL32x32" CellIndex="33" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="7" GraphicSheet="SHFL32x32" CellIndex="34" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="8" GraphicSheet="SHFL32x32" CellIndex="35" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="9" GraphicSheet="SHFL32x32" CellIndex="36" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="30" GraphicSheet="SHFL32x32" CellIndex="37" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="18" GraphicSheet="SHFL32x32" CellIndex="38" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="19" GraphicSheet="SHFL32x32" CellIndex="39" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="43" GraphicSheet="SHFL32x32" CellIndex="40" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="45" GraphicSheet="SHFL32x32" CellIndex="41" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="47" GraphicSheet="SHFL32x32" CellIndex="42" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="25" GraphicSheet="SHFL32x32" CellIndex="43" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="29" GraphicSheet="SHFL32x32" CellIndex="44" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="33" GraphicSheet="SHFL32x32" CellIndex="45" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="36" GraphicSheet="SHFL32x32" CellIndex="46" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="40" GraphicSheet="SHFL32x32" CellIndex="47" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="77" GraphicSheet="SHFL32x32" CellIndex="48" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="61" GraphicSheet="SHFL32x32" CellIndex="49" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="62" GraphicSheet="SHFL32x32" CellIndex="50" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="63" GraphicSheet="SHFL32x32" CellIndex="51" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="64" GraphicSheet="SHFL32x32" CellIndex="52" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="10" GraphicSheet="SHFL32x32" CellIndex="53" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="54" GraphicSheet="SHFL32x32" CellIndex="54" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="55" GraphicSheet="SHFL32x32" CellIndex="55" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="71" GraphicSheet="SHFL32x32" CellIndex="56" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="72" GraphicSheet="SHFL32x32" CellIndex="57" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="73" GraphicSheet="SHFL32x32" CellIndex="58" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="74" GraphicSheet="SHFL32x32" CellIndex="59" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="75" GraphicSheet="SHFL32x32" CellIndex="60" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="76" GraphicSheet="SHFL32x32" CellIndex="61" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="37" GraphicSheet="SHFL32x32" CellIndex="62" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="41" GraphicSheet="SHFL32x32" CellIndex="63" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="79" GraphicSheet="SHFL32x32" CellIndex="64" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="11" GraphicSheet="SHFL32x32" CellIndex="65" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="12" GraphicSheet="SHFL32x32" CellIndex="66" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="13" GraphicSheet="SHFL32x32" CellIndex="67" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="14" GraphicSheet="SHFL32x32" CellIndex="68" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="26" GraphicSheet="SHFL32x32" CellIndex="69" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="20" GraphicSheet="SHFL32x32" CellIndex="70" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="21" GraphicSheet="SHFL32x32" CellIndex="71" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="69" GraphicSheet="SHFL32x32" CellIndex="72" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="70" GraphicSheet="SHFL32x32" CellIndex="73" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="80" GraphicSheet="SHFL32x32" CellIndex="74" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="81" GraphicSheet="SHFL32x32" CellIndex="75" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="82" GraphicSheet="SHFL32x32" CellIndex="76" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="83" GraphicSheet="SHFL32x32" CellIndex="77" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="90" GraphicSheet="SHFL32x32" CellIndex="78" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="95" GraphicSheet="SHFL32x32" CellIndex="79" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="100" GraphicSheet="SHFL32x32" CellIndex="80" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="65" GraphicSheet="SHFL32x32" CellIndex="81" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="66" GraphicSheet="SHFL32x32" CellIndex="82" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="67" GraphicSheet="SHFL32x32" CellIndex="83" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="68" GraphicSheet="SHFL32x32" CellIndex="84" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="15" GraphicSheet="SHFL32x32" CellIndex="85" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="56" GraphicSheet="SHFL32x32" CellIndex="86" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="57" GraphicSheet="SHFL32x32" CellIndex="87" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="84" GraphicSheet="SHFL32x32" CellIndex="88" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="85" GraphicSheet="SHFL32x32" CellIndex="89" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="86" GraphicSheet="SHFL32x32" CellIndex="90" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="87" GraphicSheet="SHFL32x32" CellIndex="91" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="88" GraphicSheet="SHFL32x32" CellIndex="92" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="89" GraphicSheet="SHFL32x32" CellIndex="93" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="91" GraphicSheet="SHFL32x32" CellIndex="94" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="96" GraphicSheet="SHFL32x32" CellIndex="95" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="101" GraphicSheet="SHFL32x32" CellIndex="96" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="102" GraphicSheet="SHFL32x32" CellIndex="97" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="103" GraphicSheet="SHFL32x32" CellIndex="98" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="104" GraphicSheet="SHFL32x32" CellIndex="99" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="105" GraphicSheet="SHFL32x32" CellIndex="100" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="106" GraphicSheet="SHFL32x32" CellIndex="101" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="107" GraphicSheet="SHFL32x32" CellIndex="102" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="108" GraphicSheet="SHFL32x32" CellIndex="103" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="109" GraphicSheet="SHFL32x32" CellIndex="104" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="110" GraphicSheet="SHFL32x32" CellIndex="105" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="111" GraphicSheet="SHFL32x32" CellIndex="106" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="112" GraphicSheet="SHFL32x32" CellIndex="107" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="115" GraphicSheet="SHFL32x32" CellIndex="108" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="146" GraphicSheet="SHFL32x32" CellIndex="109" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="92" GraphicSheet="SHFL32x32" CellIndex="110" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="97" GraphicSheet="SHFL32x32" CellIndex="111" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="120" GraphicSheet="SHFL32x32" CellIndex="112" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="121" GraphicSheet="SHFL32x32" CellIndex="113" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="122" GraphicSheet="SHFL32x32" CellIndex="114" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="123" GraphicSheet="SHFL32x32" CellIndex="115" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="128" GraphicSheet="SHFL32x32" CellIndex="116" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="132" GraphicSheet="SHFL32x32" CellIndex="117" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="133" GraphicSheet="SHFL32x32" CellIndex="118" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="134" GraphicSheet="SHFL32x32" CellIndex="119" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="135" GraphicSheet="SHFL32x32" CellIndex="120" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="136" GraphicSheet="SHFL32x32" CellIndex="121" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="143" GraphicSheet="SHFL32x32" CellIndex="122" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="113" GraphicSheet="SHFL32x32" CellIndex="123" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="116" GraphicSheet="SHFL32x32" CellIndex="124" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="147" GraphicSheet="SHFL32x32" CellIndex="125" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="93" GraphicSheet="SHFL32x32" CellIndex="126" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="98" GraphicSheet="SHFL32x32" CellIndex="127" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="124" GraphicSheet="SHFL32x32" CellIndex="128" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="125" GraphicSheet="SHFL32x32" CellIndex="129" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="126" GraphicSheet="SHFL32x32" CellIndex="130" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="127" GraphicSheet="SHFL32x32" CellIndex="131" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="150" GraphicSheet="SHFL32x32" CellIndex="132" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="151" GraphicSheet="SHFL32x32" CellIndex="133" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="154" GraphicSheet="SHFL32x32" CellIndex="134" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="137" GraphicSheet="SHFL32x32" CellIndex="135" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="138" GraphicSheet="SHFL32x32" CellIndex="136" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="139" GraphicSheet="SHFL32x32" CellIndex="137" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="144" GraphicSheet="SHFL32x32" CellIndex="138" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="114" GraphicSheet="SHFL32x32" CellIndex="139" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="117" GraphicSheet="SHFL32x32" CellIndex="140" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="148" GraphicSheet="SHFL32x32" CellIndex="141" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="94" GraphicSheet="SHFL32x32" CellIndex="142" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="99" GraphicSheet="SHFL32x32" CellIndex="143" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="155" GraphicSheet="SHFL32x32" CellIndex="144" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="156" GraphicSheet="SHFL32x32" CellIndex="145" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="157" GraphicSheet="SHFL32x32" CellIndex="146" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="131" GraphicSheet="SHFL32x32" CellIndex="147" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="152" GraphicSheet="SHFL32x32" CellIndex="148" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="153" GraphicSheet="SHFL32x32" CellIndex="149" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="159" GraphicSheet="SHFL32x32" CellIndex="150" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="140" GraphicSheet="SHFL32x32" CellIndex="151" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="141" GraphicSheet="SHFL32x32" CellIndex="152" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="142" GraphicSheet="SHFL32x32" CellIndex="153" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="145" GraphicSheet="SHFL32x32" CellIndex="154" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="118" GraphicSheet="SHFL32x32" CellIndex="155" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="119" GraphicSheet="SHFL32x32" CellIndex="156" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="149" GraphicSheet="SHFL32x32" CellIndex="157" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="160" GraphicSheet="SHFL32x32" CellIndex="158" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="162" GraphicSheet="SHFL32x32" CellIndex="159" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="163" GraphicSheet="SHFL32x32" CellIndex="160" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="165" GraphicSheet="SHFL32x32" CellIndex="161" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="164" GraphicSheet="SHFL32x32" CellIndex="162" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="158" GraphicSheet="SHFL32x32" CellIndex="163" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="166" GraphicSheet="SHFL32x32" CellIndex="164" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="167" GraphicSheet="SHFL32x32" CellIndex="165" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="168" GraphicSheet="SHFL32x32" CellIndex="166" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="169" GraphicSheet="SHFL32x32" CellIndex="167" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="170" GraphicSheet="SHFL32x32" CellIndex="168" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="171" GraphicSheet="SHFL32x32" CellIndex="169" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="172" GraphicSheet="SHFL32x32" CellIndex="170" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="173" GraphicSheet="SHFL32x32" CellIndex="171" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="174" GraphicSheet="SHFL32x32" CellIndex="172" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="175" GraphicSheet="SHFL32x32" CellIndex="173" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="176" GraphicSheet="SHFL32x32" CellIndex="174" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="177" GraphicSheet="SHFL32x32" CellIndex="175" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="178" GraphicSheet="SHFL32x32" CellIndex="176" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="179" GraphicSheet="SHFL32x32" CellIndex="177" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="180" GraphicSheet="SHFL32x32" CellIndex="178" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="181" GraphicSheet="SHFL32x32" CellIndex="179" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="182" GraphicSheet="SHFL32x32" CellIndex="180" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="183" GraphicSheet="SHFL32x32" CellIndex="181" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="184" GraphicSheet="SHFL32x32" CellIndex="188" m11="1" m12="0" m21="0" m22="-1" dx="0" dy="32" />
-    <Frame FrameValue="185" GraphicSheet="SHFL32x32" CellIndex="189" m11="1" m12="0" m21="0" m22="-1" dx="0" dy="32" />
-    <Frame FrameValue="186" GraphicSheet="SHFL32x32" CellIndex="184" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="187" GraphicSheet="SHFL32x32" CellIndex="185" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="188" GraphicSheet="SHFL32x32" CellIndex="186" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="189" GraphicSheet="SHFL32x32" CellIndex="187" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="190" GraphicSheet="SHFL32x32" CellIndex="188" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="191" GraphicSheet="SHFL32x32" CellIndex="189" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="192" GraphicSheet="SHFL32x32" CellIndex="190" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="196" GraphicSheet="SHFL32x32" CellIndex="191" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="200" GraphicSheet="SHFL32x32" CellIndex="192" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="201" GraphicSheet="SHFL32x32" CellIndex="193" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="202" GraphicSheet="SHFL32x32" CellIndex="194" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="203" GraphicSheet="SHFL32x32" CellIndex="195" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="204" GraphicSheet="SHFL32x32" CellIndex="196" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="205" GraphicSheet="SHFL32x32" CellIndex="197" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="206" GraphicSheet="SHFL32x32" CellIndex="198" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="207" GraphicSheet="SHFL32x32" CellIndex="199" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="208" GraphicSheet="SHFL32x32" CellIndex="200" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="209" GraphicSheet="SHFL32x32" CellIndex="201" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="210" GraphicSheet="SHFL32x32" CellIndex="202" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="211" GraphicSheet="SHFL32x32" CellIndex="203" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="212" GraphicSheet="SHFL32x32" CellIndex="204" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="213" GraphicSheet="SHFL32x32" CellIndex="205" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="193" GraphicSheet="SHFL32x32" CellIndex="206" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="197" GraphicSheet="SHFL32x32" CellIndex="207" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="214" GraphicSheet="SHFL32x32" CellIndex="208" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="215" GraphicSheet="SHFL32x32" CellIndex="209" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="216" GraphicSheet="SHFL32x32" CellIndex="210" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="217" GraphicSheet="SHFL32x32" CellIndex="211" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="218" GraphicSheet="SHFL32x32" CellIndex="212" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="219" GraphicSheet="SHFL32x32" CellIndex="213" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="220" GraphicSheet="SHFL32x32" CellIndex="214" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="221" GraphicSheet="SHFL32x32" CellIndex="215" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="222" GraphicSheet="SHFL32x32" CellIndex="216" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="223" GraphicSheet="SHFL32x32" CellIndex="217" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="224" GraphicSheet="SHFL32x32" CellIndex="218" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="225" GraphicSheet="SHFL32x32" CellIndex="219" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="226" GraphicSheet="SHFL32x32" CellIndex="220" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="227" GraphicSheet="SHFL32x32" CellIndex="221" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="194" GraphicSheet="SHFL32x32" CellIndex="222" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="198" GraphicSheet="SHFL32x32" CellIndex="223" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="228" GraphicSheet="SHFL32x32" CellIndex="224" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="229" GraphicSheet="SHFL32x32" CellIndex="225" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="230" GraphicSheet="SHFL32x32" CellIndex="226" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="231" GraphicSheet="SHFL32x32" CellIndex="227" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="232" GraphicSheet="SHFL32x32" CellIndex="228" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="233" GraphicSheet="SHFL32x32" CellIndex="229" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="234" GraphicSheet="SHFL32x32" CellIndex="230" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="235" GraphicSheet="SHFL32x32" CellIndex="231" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="236" GraphicSheet="SHFL32x32" CellIndex="232" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="237" GraphicSheet="SHFL32x32" CellIndex="233" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="238" GraphicSheet="SHFL32x32" CellIndex="234" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="239" GraphicSheet="SHFL32x32" CellIndex="235" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="240" GraphicSheet="SHFL32x32" CellIndex="236" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="241" GraphicSheet="SHFL32x32" CellIndex="237" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="195" GraphicSheet="SHFL32x32" CellIndex="238" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="199" GraphicSheet="SHFL32x32" CellIndex="239" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="242" GraphicSheet="SHFL32x32" CellIndex="240" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="243" GraphicSheet="SHFL32x32" CellIndex="241" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="244" GraphicSheet="SHFL32x32" CellIndex="242" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="245" GraphicSheet="SHFL32x32" CellIndex="243" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="246" GraphicSheet="SHFL32x32" CellIndex="244" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="247" GraphicSheet="SHFL32x32" CellIndex="245" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="248" GraphicSheet="SHFL32x32" CellIndex="246" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="249" GraphicSheet="SHFL32x32" CellIndex="247" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="250" GraphicSheet="SHFL32x32" CellIndex="248" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="251" GraphicSheet="SHFL32x32" CellIndex="249" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="252" GraphicSheet="SHFL32x32" CellIndex="250" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="253" GraphicSheet="SHFL32x32" CellIndex="251" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="254" GraphicSheet="SHFL32x32" CellIndex="252" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="255" GraphicSheet="SHFL32x32" CellIndex="253" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="78" GraphicSheet="SHFL32x32" CellIndex="254" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="161" GraphicSheet="SHFL32x32" CellIndex="255" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="256" GraphicSheet="SHFL32x32" CellIndex="6" m11="1" m12="0" m21="0" m22="-1" dx="0" dy="32" />
-    <Frame FrameValue="257" GraphicSheet="SHFL32x32" CellIndex="7" m11="1" m12="0" m21="0" m22="-1" dx="0" dy="32" />
-    <Frame FrameValue="258" GraphicSheet="SHFL32x32" CellIndex="22" m11="1" m12="0" m21="0" m22="-1" dx="0" dy="32" />
-    <Frame FrameValue="259" GraphicSheet="SHFL32x32" CellIndex="23" m11="1" m12="0" m21="0" m22="-1" dx="0" dy="32" />
-    <Frame FrameValue="261" GraphicSheet="SHFL32x32" CellIndex="188" m11="-1" m12="0" m21="0" m22="1" dx="32" dy="0" />
-    <Frame FrameValue="260" GraphicSheet="SHFL32x32" CellIndex="189" m11="-1" m12="0" m21="0" m22="1" dx="32" dy="0" />
-    <Frame FrameValue="262" GraphicSheet="SHFL32x32" CellIndex="189" m11="-1" m12="0" m21="0" m22="-1" dx="32" dy="32" />
-    <Frame FrameValue="263" GraphicSheet="SHFL32x32" CellIndex="188" m11="-1" m12="0" m21="0" m22="-1" dx="32" dy="32" />
-    <Frame FrameValue="264" GraphicSheet="SHFL32x32" CellIndex="48" m11="0.9744" m12="0.225" m21="-0.225" m22="0.9744" dx="4.0093" dy="-3.1891" />
+    <Frame FrameValue="0" GraphicSheet="SHFL32x32" CellIndex="0" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="1" GraphicSheet="SHFL32x32" CellIndex="1" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="2" GraphicSheet="SHFL32x32" CellIndex="2" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="3" GraphicSheet="SHFL32x32" CellIndex="3" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="4" GraphicSheet="SHFL32x32" CellIndex="4" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="22" GraphicSheet="SHFL32x32" CellIndex="5" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="16" GraphicSheet="SHFL32x32" CellIndex="6" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="17" GraphicSheet="SHFL32x32" CellIndex="7" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="42" GraphicSheet="SHFL32x32" CellIndex="8" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="44" GraphicSheet="SHFL32x32" CellIndex="9" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="46" GraphicSheet="SHFL32x32" CellIndex="10" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="23" GraphicSheet="SHFL32x32" CellIndex="11" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="27" GraphicSheet="SHFL32x32" CellIndex="12" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="31" GraphicSheet="SHFL32x32" CellIndex="13" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="34" GraphicSheet="SHFL32x32" CellIndex="14" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="38" GraphicSheet="SHFL32x32" CellIndex="15" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="129" GraphicSheet="SHFL32x32" CellIndex="16" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="48" GraphicSheet="SHFL32x32" CellIndex="17" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="49" GraphicSheet="SHFL32x32" CellIndex="18" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="50" GraphicSheet="SHFL32x32" CellIndex="19" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="51" GraphicSheet="SHFL32x32" CellIndex="20" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="5" GraphicSheet="SHFL32x32" CellIndex="21" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="52" GraphicSheet="SHFL32x32" CellIndex="22" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="53" GraphicSheet="SHFL32x32" CellIndex="23" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="58" GraphicSheet="SHFL32x32" CellIndex="24" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="59" GraphicSheet="SHFL32x32" CellIndex="25" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="60" GraphicSheet="SHFL32x32" CellIndex="26" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="24" GraphicSheet="SHFL32x32" CellIndex="27" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="28" GraphicSheet="SHFL32x32" CellIndex="28" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="32" GraphicSheet="SHFL32x32" CellIndex="29" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="35" GraphicSheet="SHFL32x32" CellIndex="30" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="39" GraphicSheet="SHFL32x32" CellIndex="31" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="130" GraphicSheet="SHFL32x32" CellIndex="32" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="6" GraphicSheet="SHFL32x32" CellIndex="33" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="7" GraphicSheet="SHFL32x32" CellIndex="34" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="8" GraphicSheet="SHFL32x32" CellIndex="35" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="9" GraphicSheet="SHFL32x32" CellIndex="36" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="30" GraphicSheet="SHFL32x32" CellIndex="37" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="18" GraphicSheet="SHFL32x32" CellIndex="38" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="19" GraphicSheet="SHFL32x32" CellIndex="39" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="43" GraphicSheet="SHFL32x32" CellIndex="40" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="45" GraphicSheet="SHFL32x32" CellIndex="41" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="47" GraphicSheet="SHFL32x32" CellIndex="42" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="25" GraphicSheet="SHFL32x32" CellIndex="43" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="29" GraphicSheet="SHFL32x32" CellIndex="44" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="33" GraphicSheet="SHFL32x32" CellIndex="45" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="36" GraphicSheet="SHFL32x32" CellIndex="46" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="40" GraphicSheet="SHFL32x32" CellIndex="47" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="77" GraphicSheet="SHFL32x32" CellIndex="48" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="61" GraphicSheet="SHFL32x32" CellIndex="49" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="62" GraphicSheet="SHFL32x32" CellIndex="50" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="63" GraphicSheet="SHFL32x32" CellIndex="51" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="64" GraphicSheet="SHFL32x32" CellIndex="52" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="10" GraphicSheet="SHFL32x32" CellIndex="53" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="54" GraphicSheet="SHFL32x32" CellIndex="54" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="55" GraphicSheet="SHFL32x32" CellIndex="55" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="71" GraphicSheet="SHFL32x32" CellIndex="56" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="72" GraphicSheet="SHFL32x32" CellIndex="57" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="73" GraphicSheet="SHFL32x32" CellIndex="58" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="74" GraphicSheet="SHFL32x32" CellIndex="59" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="75" GraphicSheet="SHFL32x32" CellIndex="60" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="76" GraphicSheet="SHFL32x32" CellIndex="61" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="37" GraphicSheet="SHFL32x32" CellIndex="62" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="41" GraphicSheet="SHFL32x32" CellIndex="63" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="79" GraphicSheet="SHFL32x32" CellIndex="64" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="11" GraphicSheet="SHFL32x32" CellIndex="65" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="12" GraphicSheet="SHFL32x32" CellIndex="66" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="13" GraphicSheet="SHFL32x32" CellIndex="67" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="14" GraphicSheet="SHFL32x32" CellIndex="68" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="26" GraphicSheet="SHFL32x32" CellIndex="69" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="20" GraphicSheet="SHFL32x32" CellIndex="70" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="21" GraphicSheet="SHFL32x32" CellIndex="71" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="69" GraphicSheet="SHFL32x32" CellIndex="72" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="70" GraphicSheet="SHFL32x32" CellIndex="73" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="80" GraphicSheet="SHFL32x32" CellIndex="74" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="81" GraphicSheet="SHFL32x32" CellIndex="75" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="82" GraphicSheet="SHFL32x32" CellIndex="76" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="83" GraphicSheet="SHFL32x32" CellIndex="77" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="90" GraphicSheet="SHFL32x32" CellIndex="78" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="95" GraphicSheet="SHFL32x32" CellIndex="79" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="100" GraphicSheet="SHFL32x32" CellIndex="80" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="65" GraphicSheet="SHFL32x32" CellIndex="81" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="66" GraphicSheet="SHFL32x32" CellIndex="82" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="67" GraphicSheet="SHFL32x32" CellIndex="83" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="68" GraphicSheet="SHFL32x32" CellIndex="84" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="15" GraphicSheet="SHFL32x32" CellIndex="85" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="56" GraphicSheet="SHFL32x32" CellIndex="86" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="57" GraphicSheet="SHFL32x32" CellIndex="87" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="84" GraphicSheet="SHFL32x32" CellIndex="88" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="85" GraphicSheet="SHFL32x32" CellIndex="89" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="86" GraphicSheet="SHFL32x32" CellIndex="90" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="87" GraphicSheet="SHFL32x32" CellIndex="91" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="88" GraphicSheet="SHFL32x32" CellIndex="92" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="89" GraphicSheet="SHFL32x32" CellIndex="93" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="91" GraphicSheet="SHFL32x32" CellIndex="94" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="96" GraphicSheet="SHFL32x32" CellIndex="95" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="101" GraphicSheet="SHFL32x32" CellIndex="96" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="102" GraphicSheet="SHFL32x32" CellIndex="97" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="103" GraphicSheet="SHFL32x32" CellIndex="98" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="104" GraphicSheet="SHFL32x32" CellIndex="99" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="105" GraphicSheet="SHFL32x32" CellIndex="100" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="106" GraphicSheet="SHFL32x32" CellIndex="101" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="107" GraphicSheet="SHFL32x32" CellIndex="102" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="108" GraphicSheet="SHFL32x32" CellIndex="103" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="109" GraphicSheet="SHFL32x32" CellIndex="104" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="110" GraphicSheet="SHFL32x32" CellIndex="105" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="111" GraphicSheet="SHFL32x32" CellIndex="106" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="112" GraphicSheet="SHFL32x32" CellIndex="107" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="115" GraphicSheet="SHFL32x32" CellIndex="108" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="146" GraphicSheet="SHFL32x32" CellIndex="109" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="92" GraphicSheet="SHFL32x32" CellIndex="110" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="97" GraphicSheet="SHFL32x32" CellIndex="111" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="120" GraphicSheet="SHFL32x32" CellIndex="112" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="121" GraphicSheet="SHFL32x32" CellIndex="113" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="122" GraphicSheet="SHFL32x32" CellIndex="114" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="123" GraphicSheet="SHFL32x32" CellIndex="115" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="128" GraphicSheet="SHFL32x32" CellIndex="116" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="132" GraphicSheet="SHFL32x32" CellIndex="117" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="133" GraphicSheet="SHFL32x32" CellIndex="118" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="134" GraphicSheet="SHFL32x32" CellIndex="119" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="135" GraphicSheet="SHFL32x32" CellIndex="120" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="136" GraphicSheet="SHFL32x32" CellIndex="121" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="143" GraphicSheet="SHFL32x32" CellIndex="122" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="113" GraphicSheet="SHFL32x32" CellIndex="123" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="116" GraphicSheet="SHFL32x32" CellIndex="124" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="147" GraphicSheet="SHFL32x32" CellIndex="125" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="93" GraphicSheet="SHFL32x32" CellIndex="126" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="98" GraphicSheet="SHFL32x32" CellIndex="127" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="124" GraphicSheet="SHFL32x32" CellIndex="128" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="125" GraphicSheet="SHFL32x32" CellIndex="129" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="126" GraphicSheet="SHFL32x32" CellIndex="130" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="127" GraphicSheet="SHFL32x32" CellIndex="131" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="150" GraphicSheet="SHFL32x32" CellIndex="132" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="151" GraphicSheet="SHFL32x32" CellIndex="133" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="154" GraphicSheet="SHFL32x32" CellIndex="134" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="137" GraphicSheet="SHFL32x32" CellIndex="135" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="138" GraphicSheet="SHFL32x32" CellIndex="136" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="139" GraphicSheet="SHFL32x32" CellIndex="137" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="144" GraphicSheet="SHFL32x32" CellIndex="138" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="114" GraphicSheet="SHFL32x32" CellIndex="139" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="117" GraphicSheet="SHFL32x32" CellIndex="140" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="148" GraphicSheet="SHFL32x32" CellIndex="141" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="94" GraphicSheet="SHFL32x32" CellIndex="142" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="99" GraphicSheet="SHFL32x32" CellIndex="143" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="155" GraphicSheet="SHFL32x32" CellIndex="144" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="156" GraphicSheet="SHFL32x32" CellIndex="145" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="157" GraphicSheet="SHFL32x32" CellIndex="146" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="131" GraphicSheet="SHFL32x32" CellIndex="147" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="152" GraphicSheet="SHFL32x32" CellIndex="148" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="153" GraphicSheet="SHFL32x32" CellIndex="149" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="159" GraphicSheet="SHFL32x32" CellIndex="150" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="140" GraphicSheet="SHFL32x32" CellIndex="151" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="141" GraphicSheet="SHFL32x32" CellIndex="152" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="142" GraphicSheet="SHFL32x32" CellIndex="153" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="145" GraphicSheet="SHFL32x32" CellIndex="154" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="118" GraphicSheet="SHFL32x32" CellIndex="155" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="119" GraphicSheet="SHFL32x32" CellIndex="156" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="149" GraphicSheet="SHFL32x32" CellIndex="157" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="160" GraphicSheet="SHFL32x32" CellIndex="158" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="162" GraphicSheet="SHFL32x32" CellIndex="159" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="163" GraphicSheet="SHFL32x32" CellIndex="160" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="165" GraphicSheet="SHFL32x32" CellIndex="161" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="164" GraphicSheet="SHFL32x32" CellIndex="162" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="158" GraphicSheet="SHFL32x32" CellIndex="163" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="166" GraphicSheet="SHFL32x32" CellIndex="164" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="167" GraphicSheet="SHFL32x32" CellIndex="165" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="168" GraphicSheet="SHFL32x32" CellIndex="166" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="169" GraphicSheet="SHFL32x32" CellIndex="167" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="170" GraphicSheet="SHFL32x32" CellIndex="168" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="171" GraphicSheet="SHFL32x32" CellIndex="169" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="172" GraphicSheet="SHFL32x32" CellIndex="170" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="173" GraphicSheet="SHFL32x32" CellIndex="171" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="174" GraphicSheet="SHFL32x32" CellIndex="172" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="175" GraphicSheet="SHFL32x32" CellIndex="173" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="176" GraphicSheet="SHFL32x32" CellIndex="174" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="177" GraphicSheet="SHFL32x32" CellIndex="175" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="178" GraphicSheet="SHFL32x32" CellIndex="176" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="179" GraphicSheet="SHFL32x32" CellIndex="177" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="180" GraphicSheet="SHFL32x32" CellIndex="178" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="181" GraphicSheet="SHFL32x32" CellIndex="179" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="182" GraphicSheet="SHFL32x32" CellIndex="180" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="183" GraphicSheet="SHFL32x32" CellIndex="181" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="184" GraphicSheet="SHFL32x32" CellIndex="188" m11="1" m12="0" m21="0" m22="-1" dx="0" dy="32" color="-1" />
+    <Frame FrameValue="185" GraphicSheet="SHFL32x32" CellIndex="189" m11="1" m12="0" m21="0" m22="-1" dx="0" dy="32" color="-1" />
+    <Frame FrameValue="186" GraphicSheet="SHFL32x32" CellIndex="184" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="187" GraphicSheet="SHFL32x32" CellIndex="185" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="188" GraphicSheet="SHFL32x32" CellIndex="186" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="189" GraphicSheet="SHFL32x32" CellIndex="187" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="190" GraphicSheet="SHFL32x32" CellIndex="188" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="191" GraphicSheet="SHFL32x32" CellIndex="189" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="192" GraphicSheet="SHFL32x32" CellIndex="190" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="196" GraphicSheet="SHFL32x32" CellIndex="191" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="200" GraphicSheet="SHFL32x32" CellIndex="192" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="201" GraphicSheet="SHFL32x32" CellIndex="193" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="202" GraphicSheet="SHFL32x32" CellIndex="194" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="203" GraphicSheet="SHFL32x32" CellIndex="195" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="204" GraphicSheet="SHFL32x32" CellIndex="196" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="205" GraphicSheet="SHFL32x32" CellIndex="197" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="206" GraphicSheet="SHFL32x32" CellIndex="198" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="207" GraphicSheet="SHFL32x32" CellIndex="199" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="208" GraphicSheet="SHFL32x32" CellIndex="200" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="209" GraphicSheet="SHFL32x32" CellIndex="201" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="210" GraphicSheet="SHFL32x32" CellIndex="202" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="211" GraphicSheet="SHFL32x32" CellIndex="203" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="212" GraphicSheet="SHFL32x32" CellIndex="204" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="213" GraphicSheet="SHFL32x32" CellIndex="205" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="193" GraphicSheet="SHFL32x32" CellIndex="206" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="197" GraphicSheet="SHFL32x32" CellIndex="207" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="214" GraphicSheet="SHFL32x32" CellIndex="208" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="215" GraphicSheet="SHFL32x32" CellIndex="209" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="216" GraphicSheet="SHFL32x32" CellIndex="210" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="217" GraphicSheet="SHFL32x32" CellIndex="211" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="218" GraphicSheet="SHFL32x32" CellIndex="212" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="219" GraphicSheet="SHFL32x32" CellIndex="213" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="220" GraphicSheet="SHFL32x32" CellIndex="214" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="221" GraphicSheet="SHFL32x32" CellIndex="215" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="222" GraphicSheet="SHFL32x32" CellIndex="216" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="223" GraphicSheet="SHFL32x32" CellIndex="217" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="224" GraphicSheet="SHFL32x32" CellIndex="218" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="225" GraphicSheet="SHFL32x32" CellIndex="219" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="226" GraphicSheet="SHFL32x32" CellIndex="220" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="227" GraphicSheet="SHFL32x32" CellIndex="221" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="194" GraphicSheet="SHFL32x32" CellIndex="222" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="198" GraphicSheet="SHFL32x32" CellIndex="223" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="228" GraphicSheet="SHFL32x32" CellIndex="224" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="229" GraphicSheet="SHFL32x32" CellIndex="225" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="230" GraphicSheet="SHFL32x32" CellIndex="226" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="231" GraphicSheet="SHFL32x32" CellIndex="227" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="232" GraphicSheet="SHFL32x32" CellIndex="228" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="233" GraphicSheet="SHFL32x32" CellIndex="229" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="234" GraphicSheet="SHFL32x32" CellIndex="230" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="235" GraphicSheet="SHFL32x32" CellIndex="231" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="236" GraphicSheet="SHFL32x32" CellIndex="232" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="237" GraphicSheet="SHFL32x32" CellIndex="233" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="238" GraphicSheet="SHFL32x32" CellIndex="234" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="239" GraphicSheet="SHFL32x32" CellIndex="235" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="240" GraphicSheet="SHFL32x32" CellIndex="236" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="241" GraphicSheet="SHFL32x32" CellIndex="237" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="195" GraphicSheet="SHFL32x32" CellIndex="238" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="199" GraphicSheet="SHFL32x32" CellIndex="239" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="242" GraphicSheet="SHFL32x32" CellIndex="240" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="243" GraphicSheet="SHFL32x32" CellIndex="241" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="244" GraphicSheet="SHFL32x32" CellIndex="242" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="245" GraphicSheet="SHFL32x32" CellIndex="243" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="246" GraphicSheet="SHFL32x32" CellIndex="244" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="247" GraphicSheet="SHFL32x32" CellIndex="245" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="248" GraphicSheet="SHFL32x32" CellIndex="246" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="249" GraphicSheet="SHFL32x32" CellIndex="247" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="250" GraphicSheet="SHFL32x32" CellIndex="248" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="251" GraphicSheet="SHFL32x32" CellIndex="249" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="252" GraphicSheet="SHFL32x32" CellIndex="250" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="253" GraphicSheet="SHFL32x32" CellIndex="251" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="254" GraphicSheet="SHFL32x32" CellIndex="252" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="255" GraphicSheet="SHFL32x32" CellIndex="253" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="78" GraphicSheet="SHFL32x32" CellIndex="254" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="161" GraphicSheet="SHFL32x32" CellIndex="255" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="256" GraphicSheet="SHFL32x32" CellIndex="6" m11="1" m12="0" m21="0" m22="-1" dx="0" dy="32" color="-1" />
+    <Frame FrameValue="257" GraphicSheet="SHFL32x32" CellIndex="7" m11="1" m12="0" m21="0" m22="-1" dx="0" dy="32" color="-1" />
+    <Frame FrameValue="258" GraphicSheet="SHFL32x32" CellIndex="22" m11="1" m12="0" m21="0" m22="-1" dx="0" dy="32" color="-1" />
+    <Frame FrameValue="259" GraphicSheet="SHFL32x32" CellIndex="23" m11="1" m12="0" m21="0" m22="-1" dx="0" dy="32" color="-1" />
+    <Frame FrameValue="261" GraphicSheet="SHFL32x32" CellIndex="188" m11="-1" m12="0" m21="0" m22="1" dx="32" dy="0" color="-1" />
+    <Frame FrameValue="260" GraphicSheet="SHFL32x32" CellIndex="189" m11="-1" m12="0" m21="0" m22="1" dx="32" dy="0" color="-1" />
+    <Frame FrameValue="262" GraphicSheet="SHFL32x32" CellIndex="189" m11="-1" m12="0" m21="0" m22="-1" dx="32" dy="32" color="-1" />
+    <Frame FrameValue="263" GraphicSheet="SHFL32x32" CellIndex="188" m11="-1" m12="0" m21="0" m22="-1" dx="32" dy="32" color="-1" />
+    <Frame FrameValue="264" GraphicSheet="SHFL32x32" CellIndex="48" m11="0.9744" m12="0.225" m21="-0.225" m22="0.9744" dx="4.0093" dy="-3.1891" color="-1" />
   </Frameset>
   <Frameset Name="SpriteFrames">
-    <Frame FrameValue="0" GraphicSheet="SHFLSprites" CellIndex="0" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="1" GraphicSheet="SHFLSprites" CellIndex="1" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="2" GraphicSheet="SHFLSprites" CellIndex="2" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="3" GraphicSheet="SHFLSprites" CellIndex="3" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="4" GraphicSheet="SHFLSprites" CellIndex="4" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="5" GraphicSheet="SHFLSprites" CellIndex="5" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="6" GraphicSheet="SHFLSprites" CellIndex="6" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="7" GraphicSheet="SHFLSprites" CellIndex="7" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="8" GraphicSheet="SHFLSprites" CellIndex="8" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="9" GraphicSheet="SHFLSprites" CellIndex="9" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="10" GraphicSheet="SHFLSprites" CellIndex="10" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="11" GraphicSheet="SHFLSprites" CellIndex="11" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="12" GraphicSheet="SHFLSprites" CellIndex="12" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="13" GraphicSheet="SHFLSprites" CellIndex="13" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="14" GraphicSheet="SHFLSprites" CellIndex="14" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="15" GraphicSheet="SHFLSprites" CellIndex="15" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="16" GraphicSheet="SHFLSprites" CellIndex="16" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="17" GraphicSheet="SHFLSprites" CellIndex="17" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="18" GraphicSheet="SHFLSprites" CellIndex="18" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="19" GraphicSheet="SHFLSprites" CellIndex="19" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="20" GraphicSheet="SHFLSprites" CellIndex="20" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="21" GraphicSheet="SHFLSprites" CellIndex="21" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="22" GraphicSheet="SHFLSprites" CellIndex="22" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="23" GraphicSheet="SHFLSprites" CellIndex="23" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="24" GraphicSheet="SHFLSprites" CellIndex="24" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="25" GraphicSheet="SHFLSprites" CellIndex="25" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="26" GraphicSheet="SHFLSprites" CellIndex="26" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="27" GraphicSheet="SHFLSprites" CellIndex="27" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="28" GraphicSheet="SHFLSprites" CellIndex="28" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="29" GraphicSheet="SHFLSprites" CellIndex="29" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="30" GraphicSheet="SHFLSprites" CellIndex="30" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="31" GraphicSheet="SHFLSprites" CellIndex="31" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="32" GraphicSheet="SHFLSprites" CellIndex="32" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="33" GraphicSheet="SHFLSprites" CellIndex="33" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="34" GraphicSheet="SHFLSprites" CellIndex="34" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="35" GraphicSheet="SHFLSprites" CellIndex="35" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="36" GraphicSheet="SHFLSprites" CellIndex="36" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="37" GraphicSheet="SHFLSprites" CellIndex="37" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="38" GraphicSheet="SHFLSprites" CellIndex="38" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="39" GraphicSheet="SHFLSprites" CellIndex="39" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="40" GraphicSheet="SHFLSprites" CellIndex="40" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="41" GraphicSheet="SHFLSprites" CellIndex="41" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="42" GraphicSheet="SHFLSprites" CellIndex="42" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="43" GraphicSheet="SHFLSprites" CellIndex="43" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="44" GraphicSheet="SHFLSprites" CellIndex="44" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="45" GraphicSheet="SHFLSprites" CellIndex="45" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="46" GraphicSheet="SHFLSprites" CellIndex="46" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="47" GraphicSheet="SHFLSprites" CellIndex="47" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="48" GraphicSheet="SHFLSprites" CellIndex="48" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="49" GraphicSheet="SHFLSprites" CellIndex="49" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="50" GraphicSheet="SHFLSprites" CellIndex="50" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="51" GraphicSheet="SHFLSprites" CellIndex="51" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="52" GraphicSheet="SHFLSprites" CellIndex="52" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="53" GraphicSheet="SHFLSprites" CellIndex="53" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="54" GraphicSheet="SHFLSprites" CellIndex="54" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="55" GraphicSheet="SHFLSprites" CellIndex="55" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="56" GraphicSheet="SHFLSprites" CellIndex="56" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="57" GraphicSheet="SHFLSprites" CellIndex="57" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="58" GraphicSheet="SHFLSprites" CellIndex="58" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="59" GraphicSheet="SHFLSprites" CellIndex="59" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="60" GraphicSheet="SHFLSprites" CellIndex="60" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="61" GraphicSheet="SHFLSprites" CellIndex="61" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="62" GraphicSheet="SHFLSprites" CellIndex="62" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="63" GraphicSheet="SHFLSprites" CellIndex="63" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="64" GraphicSheet="SHFLSprites" CellIndex="64" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="65" GraphicSheet="SHFLSprites" CellIndex="65" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="66" GraphicSheet="SHFLSprites" CellIndex="66" m11="2" m12="0" m21="0" m22="2" dx="0" dy="-16" />
-    <Frame FrameValue="67" GraphicSheet="SHFLSprites" CellIndex="35" m11="0.5" m12="0" m21="0" m22="0.5" dx="0" dy="0" />
-    <Frame FrameValue="68" GraphicSheet="SHFLPlatform" CellIndex="0" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
+    <Frame FrameValue="0" GraphicSheet="SHFLSprites" CellIndex="0" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="1" GraphicSheet="SHFLSprites" CellIndex="1" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="2" GraphicSheet="SHFLSprites" CellIndex="2" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="3" GraphicSheet="SHFLSprites" CellIndex="3" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="4" GraphicSheet="SHFLSprites" CellIndex="4" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="5" GraphicSheet="SHFLSprites" CellIndex="5" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="6" GraphicSheet="SHFLSprites" CellIndex="6" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="7" GraphicSheet="SHFLSprites" CellIndex="7" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="8" GraphicSheet="SHFLSprites" CellIndex="8" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="9" GraphicSheet="SHFLSprites" CellIndex="9" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="10" GraphicSheet="SHFLSprites" CellIndex="10" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="11" GraphicSheet="SHFLSprites" CellIndex="11" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="12" GraphicSheet="SHFLSprites" CellIndex="12" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="13" GraphicSheet="SHFLSprites" CellIndex="13" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="14" GraphicSheet="SHFLSprites" CellIndex="14" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="15" GraphicSheet="SHFLSprites" CellIndex="15" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="16" GraphicSheet="SHFLSprites" CellIndex="16" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="17" GraphicSheet="SHFLSprites" CellIndex="17" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="18" GraphicSheet="SHFLSprites" CellIndex="18" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="19" GraphicSheet="SHFLSprites" CellIndex="19" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="20" GraphicSheet="SHFLSprites" CellIndex="20" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="21" GraphicSheet="SHFLSprites" CellIndex="21" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="22" GraphicSheet="SHFLSprites" CellIndex="22" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="23" GraphicSheet="SHFLSprites" CellIndex="23" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="24" GraphicSheet="SHFLSprites" CellIndex="24" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="25" GraphicSheet="SHFLSprites" CellIndex="25" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="26" GraphicSheet="SHFLSprites" CellIndex="26" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="27" GraphicSheet="SHFLSprites" CellIndex="27" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="28" GraphicSheet="SHFLSprites" CellIndex="28" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="29" GraphicSheet="SHFLSprites" CellIndex="29" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="30" GraphicSheet="SHFLSprites" CellIndex="30" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="31" GraphicSheet="SHFLSprites" CellIndex="31" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="32" GraphicSheet="SHFLSprites" CellIndex="32" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="33" GraphicSheet="SHFLSprites" CellIndex="33" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="34" GraphicSheet="SHFLSprites" CellIndex="34" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="35" GraphicSheet="SHFLSprites" CellIndex="35" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="36" GraphicSheet="SHFLSprites" CellIndex="36" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="37" GraphicSheet="SHFLSprites" CellIndex="37" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="38" GraphicSheet="SHFLSprites" CellIndex="38" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="39" GraphicSheet="SHFLSprites" CellIndex="39" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="40" GraphicSheet="SHFLSprites" CellIndex="40" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="41" GraphicSheet="SHFLSprites" CellIndex="41" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="42" GraphicSheet="SHFLSprites" CellIndex="42" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="43" GraphicSheet="SHFLSprites" CellIndex="43" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="44" GraphicSheet="SHFLSprites" CellIndex="44" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="45" GraphicSheet="SHFLSprites" CellIndex="45" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="46" GraphicSheet="SHFLSprites" CellIndex="46" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="47" GraphicSheet="SHFLSprites" CellIndex="47" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="48" GraphicSheet="SHFLSprites" CellIndex="48" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="49" GraphicSheet="SHFLSprites" CellIndex="49" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="50" GraphicSheet="SHFLSprites" CellIndex="50" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="51" GraphicSheet="SHFLSprites" CellIndex="51" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="52" GraphicSheet="SHFLSprites" CellIndex="52" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="53" GraphicSheet="SHFLSprites" CellIndex="53" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="54" GraphicSheet="SHFLSprites" CellIndex="54" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="55" GraphicSheet="SHFLSprites" CellIndex="55" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="56" GraphicSheet="SHFLSprites" CellIndex="56" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="57" GraphicSheet="SHFLSprites" CellIndex="57" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="58" GraphicSheet="SHFLSprites" CellIndex="58" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="59" GraphicSheet="SHFLSprites" CellIndex="59" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="60" GraphicSheet="SHFLSprites" CellIndex="60" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="61" GraphicSheet="SHFLSprites" CellIndex="61" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="62" GraphicSheet="SHFLSprites" CellIndex="62" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="63" GraphicSheet="SHFLSprites" CellIndex="63" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="64" GraphicSheet="SHFLSprites" CellIndex="64" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="65" GraphicSheet="SHFLSprites" CellIndex="65" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="66" GraphicSheet="SHFLSprites" CellIndex="66" m11="2" m12="0" m21="0" m22="2" dx="0" dy="-16" color="-1" />
+    <Frame FrameValue="67" GraphicSheet="SHFLSprites" CellIndex="35" m11="0.5" m12="0" m21="0" m22="0.5" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="68" GraphicSheet="SHFLPlatform" CellIndex="0" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
   </Frameset>
   <Frameset Name="Awkward">
-    <Frame FrameValue="0" GraphicSheet="New Sheet 1" CellIndex="1" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="1" GraphicSheet="New Sheet 1" CellIndex="2" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="2" GraphicSheet="New Sheet 1" CellIndex="3" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="3" GraphicSheet="New Sheet 1" CellIndex="3" m11="-1.2586" m12="1.5542" m21="-1.5542" m22="-1.2586" dx="86.1382" dy="-23.2274" />
-    <Frame FrameValue="4" GraphicSheet="New Sheet 1" CellIndex="2" m11="0" m12="1.6148" m21="-1.875" m22="0" dx="76" dy="-58.0002" />
-    <Frame FrameValue="5" GraphicSheet="New Sheet 1" CellIndex="1" m11="2.0571" m12="0" m21="0" m22="2.05" dx="-47" dy="-27" />
+    <Frame FrameValue="0" GraphicSheet="New Sheet 1" CellIndex="1" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="1" GraphicSheet="New Sheet 1" CellIndex="2" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="2" GraphicSheet="New Sheet 1" CellIndex="3" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="3" GraphicSheet="New Sheet 1" CellIndex="3" m11="-1.2586" m12="1.5542" m21="-1.5542" m22="-1.2586" dx="86.1382" dy="-23.2274" color="-1" />
+    <Frame FrameValue="4" GraphicSheet="New Sheet 1" CellIndex="2" m11="0" m12="1.6148" m21="-1.875" m22="0" dx="76" dy="-58.0002" color="-1" />
+    <Frame FrameValue="5" GraphicSheet="New Sheet 1" CellIndex="1" m11="2.0571" m12="0" m21="0" m22="2.05" dx="-47" dy="-27" color="-1" />
   </Frameset>
   <Frameset Name="Ship">
-    <Frame FrameValue="0" GraphicSheet="Ship" CellIndex="1" m11="0" m12="1" m21="-1" m22="0" dx="32" dy="0" />
-    <Frame FrameValue="1" GraphicSheet="Ship" CellIndex="1" m11="0.2588" m12="0.9659" m21="-0.9659" m22="0.2588" dx="27.3137" dy="-3.5959" />
-    <Frame FrameValue="2" GraphicSheet="Ship" CellIndex="1" m11="0.5" m12="0.866" m21="-0.866" m22="0.5" dx="21.8564" dy="-5.8564" />
-    <Frame FrameValue="3" GraphicSheet="Ship" CellIndex="1" m11="0.7071" m12="0.7071" m21="-0.7071" m22="0.7071" dx="16" dy="-6.6274" />
-    <Frame FrameValue="4" GraphicSheet="Ship" CellIndex="1" m11="0.866" m12="0.5" m21="-0.5" m22="0.866" dx="10.1436" dy="-5.8564" />
-    <Frame FrameValue="5" GraphicSheet="Ship" CellIndex="1" m11="0.9659" m12="0.2588" m21="-0.2588" m22="0.9659" dx="4.6863" dy="-3.5959" />
-    <Frame FrameValue="6" GraphicSheet="Ship" CellIndex="1" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" />
-    <Frame FrameValue="7" GraphicSheet="Ship" CellIndex="1" m11="0.9659" m12="-0.2588" m21="0.2588" m22="0.9659" dx="-3.5959" dy="4.6863" />
-    <Frame FrameValue="8" GraphicSheet="Ship" CellIndex="1" m11="0.866" m12="-0.5" m21="0.5" m22="0.866" dx="-5.8564" dy="10.1436" />
-    <Frame FrameValue="9" GraphicSheet="Ship" CellIndex="1" m11="0.7071" m12="-0.7071" m21="0.7071" m22="0.7071" dx="-6.6274" dy="16" />
-    <Frame FrameValue="10" GraphicSheet="Ship" CellIndex="1" m11="0.5" m12="-0.866" m21="0.866" m22="0.5" dx="-5.8564" dy="21.8564" />
-    <Frame FrameValue="11" GraphicSheet="Ship" CellIndex="1" m11="0.2588" m12="-0.9659" m21="0.9659" m22="0.2588" dx="-3.5959" dy="27.3137" />
-    <Frame FrameValue="12" GraphicSheet="Ship" CellIndex="1" m11="0" m12="-1" m21="1" m22="0" dx="0" dy="32" />
-    <Frame FrameValue="13" GraphicSheet="Ship" CellIndex="1" m11="-0.2588" m12="-0.9659" m21="0.9659" m22="-0.2588" dx="4.6863" dy="35.5959" />
-    <Frame FrameValue="14" GraphicSheet="Ship" CellIndex="1" m11="-0.5" m12="-0.866" m21="0.866" m22="-0.5" dx="10.1436" dy="37.8564" />
-    <Frame FrameValue="15" GraphicSheet="Ship" CellIndex="1" m11="-0.7071" m12="-0.7071" m21="0.7071" m22="-0.7071" dx="16" dy="38.6274" />
-    <Frame FrameValue="16" GraphicSheet="Ship" CellIndex="1" m11="-0.866" m12="-0.5" m21="0.5" m22="-0.866" dx="21.8564" dy="37.8564" />
-    <Frame FrameValue="17" GraphicSheet="Ship" CellIndex="1" m11="-0.9659" m12="-0.2588" m21="0.2588" m22="-0.9659" dx="27.3137" dy="35.5959" />
-    <Frame FrameValue="18" GraphicSheet="Ship" CellIndex="1" m11="-1" m12="0" m21="0" m22="-1" dx="32" dy="32" />
-    <Frame FrameValue="19" GraphicSheet="Ship" CellIndex="1" m11="-0.9659" m12="0.2588" m21="-0.2588" m22="-0.9659" dx="35.5959" dy="27.3137" />
-    <Frame FrameValue="21" GraphicSheet="Ship" CellIndex="1" m11="-0.7071" m12="0.7071" m21="-0.7071" m22="-0.7071" dx="38.6274" dy="16" />
-    <Frame FrameValue="20" GraphicSheet="Ship" CellIndex="1" m11="-0.866" m12="0.5" m21="-0.5" m22="-0.866" dx="37.8564" dy="21.8564" />
-    <Frame FrameValue="22" GraphicSheet="Ship" CellIndex="1" m11="-0.5" m12="0.866" m21="-0.866" m22="-0.5" dx="37.8564" dy="10.1436" />
-    <Frame FrameValue="23" GraphicSheet="Ship" CellIndex="1" m11="-0.2588" m12="0.9659" m21="-0.9659" m22="-0.2588" dx="35.5959" dy="4.6863" />
+    <Frame FrameValue="0" GraphicSheet="Ship" CellIndex="1" m11="0" m12="1" m21="-1" m22="0" dx="32" dy="0" color="-1" />
+    <Frame FrameValue="1" GraphicSheet="Ship" CellIndex="1" m11="0.2588" m12="0.9659" m21="-0.9659" m22="0.2588" dx="27.3137" dy="-3.5959" color="-1" />
+    <Frame FrameValue="2" GraphicSheet="Ship" CellIndex="1" m11="0.5" m12="0.866" m21="-0.866" m22="0.5" dx="21.8564" dy="-5.8564" color="-1" />
+    <Frame FrameValue="3" GraphicSheet="Ship" CellIndex="1" m11="0.7071" m12="0.7071" m21="-0.7071" m22="0.7071" dx="16" dy="-6.6274" color="-1" />
+    <Frame FrameValue="4" GraphicSheet="Ship" CellIndex="1" m11="0.866" m12="0.5" m21="-0.5" m22="0.866" dx="10.1436" dy="-5.8564" color="-1" />
+    <Frame FrameValue="5" GraphicSheet="Ship" CellIndex="1" m11="0.9659" m12="0.2588" m21="-0.2588" m22="0.9659" dx="4.6863" dy="-3.5959" color="-1" />
+    <Frame FrameValue="6" GraphicSheet="Ship" CellIndex="1" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="7" GraphicSheet="Ship" CellIndex="1" m11="0.9659" m12="-0.2588" m21="0.2588" m22="0.9659" dx="-3.5959" dy="4.6863" color="-1" />
+    <Frame FrameValue="8" GraphicSheet="Ship" CellIndex="1" m11="0.866" m12="-0.5" m21="0.5" m22="0.866" dx="-5.8564" dy="10.1436" color="-1" />
+    <Frame FrameValue="9" GraphicSheet="Ship" CellIndex="1" m11="0.7071" m12="-0.7071" m21="0.7071" m22="0.7071" dx="-6.6274" dy="16" color="-1" />
+    <Frame FrameValue="10" GraphicSheet="Ship" CellIndex="1" m11="0.5" m12="-0.866" m21="0.866" m22="0.5" dx="-5.8564" dy="21.8564" color="-1" />
+    <Frame FrameValue="11" GraphicSheet="Ship" CellIndex="1" m11="0.2588" m12="-0.9659" m21="0.9659" m22="0.2588" dx="-3.5959" dy="27.3137" color="-1" />
+    <Frame FrameValue="12" GraphicSheet="Ship" CellIndex="1" m11="0" m12="-1" m21="1" m22="0" dx="0" dy="32" color="-1" />
+    <Frame FrameValue="13" GraphicSheet="Ship" CellIndex="1" m11="-0.2588" m12="-0.9659" m21="0.9659" m22="-0.2588" dx="4.6863" dy="35.5959" color="-1" />
+    <Frame FrameValue="14" GraphicSheet="Ship" CellIndex="1" m11="-0.5" m12="-0.866" m21="0.866" m22="-0.5" dx="10.1436" dy="37.8564" color="-1" />
+    <Frame FrameValue="15" GraphicSheet="Ship" CellIndex="1" m11="-0.7071" m12="-0.7071" m21="0.7071" m22="-0.7071" dx="16" dy="38.6274" color="-1" />
+    <Frame FrameValue="16" GraphicSheet="Ship" CellIndex="1" m11="-0.866" m12="-0.5" m21="0.5" m22="-0.866" dx="21.8564" dy="37.8564" color="-1" />
+    <Frame FrameValue="17" GraphicSheet="Ship" CellIndex="1" m11="-0.9659" m12="-0.2588" m21="0.2588" m22="-0.9659" dx="27.3137" dy="35.5959" color="-1" />
+    <Frame FrameValue="18" GraphicSheet="Ship" CellIndex="1" m11="-1" m12="0" m21="0" m22="-1" dx="32" dy="32" color="-1" />
+    <Frame FrameValue="19" GraphicSheet="Ship" CellIndex="1" m11="-0.9659" m12="0.2588" m21="-0.2588" m22="-0.9659" dx="35.5959" dy="27.3137" color="-1" />
+    <Frame FrameValue="21" GraphicSheet="Ship" CellIndex="1" m11="-0.7071" m12="0.7071" m21="-0.7071" m22="-0.7071" dx="38.6274" dy="16" color="-1" />
+    <Frame FrameValue="20" GraphicSheet="Ship" CellIndex="1" m11="-0.866" m12="0.5" m21="-0.5" m22="-0.866" dx="37.8564" dy="21.8564" color="-1" />
+    <Frame FrameValue="22" GraphicSheet="Ship" CellIndex="1" m11="-0.5" m12="0.866" m21="-0.866" m22="-0.5" dx="37.8564" dy="10.1436" color="-1" />
+    <Frame FrameValue="23" GraphicSheet="Ship" CellIndex="1" m11="-0.2588" m12="0.9659" m21="-0.9659" m22="-0.2588" dx="35.5959" dy="4.6863" color="-1" />
   </Frameset>
   <Tileset Name="MainTiles" Frameset="Main" TileWidth="32" TileHeight="32">
     <Tile TileValue="23" Counter="Animator">
@@ -1129,54 +1131,54 @@
     </Layer>
     <Layer Name="Main" Width="64" Height="32" Tileset="MainTiles" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="1" ScrollRateY="1" ZIndex="1" Priority="0">
       <Tiles>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgYGBgYGBgYGBgYFHAAAAAAAxMTExMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgQAAAI8AAAAAAI8ARwAAAAAAMDExMTEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgQASBwgHBwgIBwcICAkAAAAAADExMTExAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgQASNj09PT09PT09PT09QkJCQkIxMTExMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgQASNj09PT09Pj09Pj0+PQAAAEJCMDExMTEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgYGBgYGBgQASNj09PT0+PT0+PT09PYEAAAAAADAxMTExAAAAAAAAAAAAAAAAAAAAAAAAAIEAgAAAAIIAAACDAIEAAAAAAAASNj49PT49PT49Pf4AAAA9AAAAAAAAAAAiMQAAAAAAAAAAAAAAAAAAAAAAAAAWABcAAAAbAAAAH2WBAAYHBwcHNj09PT0+PT09Pf4AAAAAAAAAvAAAMDExMTEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABlgQA9PT0+PT0+PT09PT09MP4AAAAQPDwAAAAAvDExMTExAAAAAAAAAAAAAAAAAAAAAAAAAI8AAAAAAAAAAAAAZYEA+z49PT09PT09PS48MP4AAAAQPDw8AAAAAAAxMTExMQAAAAAAAAAAAAAAAAAAAAECAwMCAwQAAAAAAACcAGWBAP37PT0+PT09Ljw8MP4AAAAAAAAAAAAAvLwAMDExMTEAAAAAAAAAAAAAAAAAAAAwMDExMTAwAREAAACbpZ1lgQAA/fsuLi48PDw8MAAAAAAQNDwgIQAAAAAAADExMTExAAAAAAAAAAAAAAAAAAAAMTAwMDAxMDA1EQAAAKMAZYEAAAD9+zw8PIE8AAAAAL6/NDw8gTwgIQAAALwxMTExMQAAAAAAAAAAAAAAAAAAACoqKioqKjAwMDURAACkAGUAAACCg/37PDw8AACAvr8wMDAAMDAASDkgIQC8MDExMTEAAAAAAAAAAAAAAAAAAAA6Ojo6Ojo6MDEwNREApABlAAAAggWBAAAAAIC+vzAwNDAAADAwAEsAAAAAADAxMTExAAAAAAAAAAAAAAAAAAAAOjo6Ojo6OiowMDA1EaSPZQAAAIKBggAAAL6/MDAwMDAAAAAwMAAAvLy8ABA0MTExMQAAAAAAAAAAAAAAAAAAADo6Ojo6Ojo6OjoqMDUDAgICAgMCAwIEMDAwMDAwMDAwAAAAMIEwMDAwMDAwMDExMTEAAAAAAAAAAAAAAAAAAAA6Ojo6Ojo6Ojo6OjAxMDAwMDEwMDEwMDAwMDAwMDAwMAAAADAwMDAwMDAwMDExMTExAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwMDAwMTAxMDExMTExMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMDAwMDExMTExMTExMTEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</Tiles>
-      <Sprite Name="Player 1" DefinitionName="Player" StateName="Right" CurrentFrame="1" X="90" Y="288" DX="0" DY="0" Priority="1" Active="true" Solidity="StandardSolidity">
+      <Sprite Name="Player 1" DefinitionName="Player" StateName="Right" CurrentFrame="1" X="90" Y="288" DX="0" DY="0" Priority="1" Active="true" Solidity="StandardSolidity" Color="-1">
         <ParameterValue ParameterName="Life" Value="0" />
         <ParameterValue ParameterName="TouchIndex" Value="0" />
         <ParameterValue ParameterName="TempNum" Value="0" />
       </Sprite>
-      <Sprite Name="Player 2" DefinitionName="Player" StateName="Left" CurrentFrame="0" X="190" Y="288" DX="0" DY="0" Priority="1" Active="false" Solidity="StandardSolidity">
+      <Sprite Name="Player 2" DefinitionName="Player" StateName="Left" CurrentFrame="0" X="190" Y="288" DX="0" DY="0" Priority="1" Active="false" Solidity="StandardSolidity" Color="-1">
         <ParameterValue ParameterName="Life" Value="0" />
         <ParameterValue ParameterName="TouchIndex" Value="0" />
         <ParameterValue ParameterName="TempNum" Value="0" />
       </Sprite>
-      <Sprite Name="Grapes 1" DefinitionName="Grapes" StateName="All" CurrentFrame="0" X="379" Y="124" DX="0" DY="0" Priority="1" Active="true" Solidity="">
+      <Sprite Name="Grapes 1" DefinitionName="Grapes" StateName="All" CurrentFrame="0" X="379" Y="124" DX="0" DY="0" Priority="1" Active="true" Solidity="" Color="-1">
         <ParameterValue ParameterName="CoordinateIndex" Value="0" />
         <ParameterValue ParameterName="WaitCounter" Value="0" />
       </Sprite>
-      <Sprite Name="Grapes 2" DefinitionName="Grapes" StateName="All" CurrentFrame="0" X="280" Y="248" DX="0" DY="0" Priority="0" Active="true" Solidity="">
+      <Sprite Name="Grapes 2" DefinitionName="Grapes" StateName="All" CurrentFrame="0" X="280" Y="248" DX="0" DY="0" Priority="0" Active="true" Solidity="" Color="-1">
         <ParameterValue ParameterName="CoordinateIndex" Value="2" />
         <ParameterValue ParameterName="WaitCounter" Value="0" />
       </Sprite>
-      <Sprite Name="Grapes 3" DefinitionName="Grapes" StateName="All" CurrentFrame="0" X="171" Y="141" DX="0" DY="0" Priority="0" Active="true" Solidity="">
+      <Sprite Name="Grapes 3" DefinitionName="Grapes" StateName="All" CurrentFrame="0" X="171" Y="141" DX="0" DY="0" Priority="0" Active="true" Solidity="" Color="-1">
         <ParameterValue ParameterName="CoordinateIndex" Value="3" />
         <ParameterValue ParameterName="WaitCounter" Value="0" />
       </Sprite>
-      <Sprite Name="Platform 1" DefinitionName="Platform" StateName="Main" CurrentFrame="0" X="537" Y="482" DX="0" DY="0" Priority="1" Active="true" Solidity="StandardSolidity">
+      <Sprite Name="Platform 1" DefinitionName="Platform" StateName="Main" CurrentFrame="0" X="537" Y="482" DX="0" DY="0" Priority="1" Active="true" Solidity="StandardSolidity" Color="-1">
         <ParameterValue ParameterName="CoordIndex" Value="0" />
         <ParameterValue ParameterName="WaitCounter" Value="1" />
       </Sprite>
-      <Sprite Name="BubbleUp 1" DefinitionName="BubbleUp" StateName="Float" CurrentFrame="0" X="42" Y="28" DX="0" DY="0" Priority="0" Active="false" Solidity="">
+      <Sprite Name="BubbleUp 1" DefinitionName="BubbleUp" StateName="Float" CurrentFrame="0" X="42" Y="28" DX="0" DY="0" Priority="0" Active="false" Solidity="" Color="-1">
         <ParameterValue ParameterName="Lifetime" Value="0" />
       </Sprite>
-      <Sprite Name="BubbleUp 2" DefinitionName="BubbleUp" StateName="Float" CurrentFrame="0" X="51" Y="31" DX="0" DY="0" Priority="0" Active="false" Solidity="">
+      <Sprite Name="BubbleUp 2" DefinitionName="BubbleUp" StateName="Float" CurrentFrame="0" X="51" Y="31" DX="0" DY="0" Priority="0" Active="false" Solidity="" Color="-1">
         <ParameterValue ParameterName="Lifetime" Value="0" />
       </Sprite>
-      <Sprite Name="BubbleUp 3" DefinitionName="BubbleUp" StateName="Float" CurrentFrame="0" X="64" Y="36" DX="0" DY="0" Priority="0" Active="false" Solidity="">
+      <Sprite Name="BubbleUp 3" DefinitionName="BubbleUp" StateName="Float" CurrentFrame="0" X="64" Y="36" DX="0" DY="0" Priority="0" Active="false" Solidity="" Color="-1">
         <ParameterValue ParameterName="Lifetime" Value="0" />
       </Sprite>
-      <Sprite Name="BubbleUp 4" DefinitionName="BubbleUp" StateName="Float" CurrentFrame="0" X="75" Y="40" DX="0" DY="0" Priority="0" Active="false" Solidity="">
+      <Sprite Name="BubbleUp 4" DefinitionName="BubbleUp" StateName="Float" CurrentFrame="0" X="75" Y="40" DX="0" DY="0" Priority="0" Active="false" Solidity="" Color="-1">
         <ParameterValue ParameterName="Lifetime" Value="0" />
       </Sprite>
-      <Sprite Name="BubbleUp 5" DefinitionName="BubbleUp" StateName="Float" CurrentFrame="0" X="87" Y="44" DX="0" DY="0" Priority="0" Active="false" Solidity="">
+      <Sprite Name="BubbleUp 5" DefinitionName="BubbleUp" StateName="Float" CurrentFrame="0" X="87" Y="44" DX="0" DY="0" Priority="0" Active="false" Solidity="" Color="-1">
         <ParameterValue ParameterName="Lifetime" Value="0" />
       </Sprite>
-      <Sprite Name="BubbleUp 6" DefinitionName="BubbleUp" StateName="Float" CurrentFrame="0" X="97" Y="49" DX="0" DY="0" Priority="0" Active="false" Solidity="">
+      <Sprite Name="BubbleUp 6" DefinitionName="BubbleUp" StateName="Float" CurrentFrame="0" X="97" Y="49" DX="0" DY="0" Priority="0" Active="false" Solidity="" Color="-1">
         <ParameterValue ParameterName="Lifetime" Value="0" />
       </Sprite>
-      <Sprite Name="BubbleUp 7" DefinitionName="BubbleUp" StateName="Float" CurrentFrame="0" X="107" Y="55" DX="0" DY="0" Priority="0" Active="false" Solidity="">
+      <Sprite Name="BubbleUp 7" DefinitionName="BubbleUp" StateName="Float" CurrentFrame="0" X="107" Y="55" DX="0" DY="0" Priority="0" Active="false" Solidity="" Color="-1">
         <ParameterValue ParameterName="Lifetime" Value="0" />
       </Sprite>
-      <Sprite Name="Ship 1" DefinitionName="Ship" StateName="Up" CurrentFrame="0" X="84" Y="156" DX="0" DY="0" Priority="1" Active="false" Solidity="StandardSolidity" />
+      <Sprite Name="Ship 1" DefinitionName="Ship" StateName="Up" CurrentFrame="0" X="84" Y="156" DX="0" DY="0" Priority="1" Active="false" Solidity="StandardSolidity" Color="-1" />
       <SpritePlan Name="Animate" Priority="1">
         <PlanRule Name="IncrementAnimator" Sequence="1" Type="Do" Function="+" Parameter1="Counter.Animator.CurrentValue" Parameter2="1" ResultParameter="Counter.Animator.CurrentValue" EndIf="false" Suspended="false" />
         <PlanRule Name="CheckResetAnimator" Sequence="2" Type="If" Function="&gt;=" Parameter1="Counter.Animator.CurrentValue" Parameter2="3600" EndIf="false" Suspended="false" />
@@ -1255,10 +1257,10 @@
   <Map Name="Level 2" ScrollMarginLeft="32" ScrollMarginTop="32" ScrollMarginRight="32" ScrollMarginBottom="32" ScrollWidth="200" ScrollHeight="0">
     <Layer Name="Layer 1" Width="35" Height="15" Tileset="MainTiles" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="1" ScrollRateY="1" Priority="0">
       <Tiles>oqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKiIqKioqKioqKioqKioqKioqKioqKioqKioqKiAQMDAwMDAwMDAwMDAwMDAwMDBKKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKioqKi</Tiles>
-      <Sprite Name="Odd2 1" DefinitionName="Odd2" StateName="Second" CurrentFrame="0" X="602" Y="205" DX="0" DY="0" Priority="1" Active="true" Solidity="" />
-      <Sprite Name="Odd1 1" DefinitionName="Odd1" StateName="Main" CurrentFrame="0" X="472" Y="74" DX="0" DY="0" Priority="1" Active="true" Solidity="" />
-      <Sprite Name="Small 1" DefinitionName="Small" StateName="Main" CurrentFrame="0" X="540" Y="161" DX="0" DY="0" Priority="1" Active="true" Solidity="" />
-      <Sprite Name="Odd3 1" DefinitionName="Odd3" StateName="One" CurrentFrame="0" X="436" Y="273" DX="0" DY="0" Priority="1" Active="true" Solidity="" />
+      <Sprite Name="Odd2 1" DefinitionName="Odd2" StateName="Second" CurrentFrame="0" X="602" Y="205" DX="0" DY="0" Priority="1" Active="true" Solidity="" Color="-1" />
+      <Sprite Name="Odd1 1" DefinitionName="Odd1" StateName="Main" CurrentFrame="0" X="472" Y="74" DX="0" DY="0" Priority="1" Active="true" Solidity="" Color="-1" />
+      <Sprite Name="Small 1" DefinitionName="Small" StateName="Main" CurrentFrame="0" X="540" Y="161" DX="0" DY="0" Priority="1" Active="true" Solidity="" Color="-1" />
+      <Sprite Name="Odd3 1" DefinitionName="Odd3" StateName="One" CurrentFrame="0" X="436" Y="273" DX="0" DY="0" Priority="1" Active="true" Solidity="" Color="-1" />
       <SpritePlan Name="Scroll" Priority="1">
         <PlanRule Name="Scroll" Sequence="1" Type="Do" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Small_1" EndIf="false" Suspended="false" />
       </SpritePlan>
@@ -2766,6 +2768,7 @@ public abstract class SpriteBase : GeneralRules
    public bool isActive;
    private LayerBase layer;
    private Solidity m_solidity;
+   public int color;
 
    /// &lt;summary&gt;
    /// Horizontal velocity relative to the sprite's environment (like a platform)
@@ -2811,7 +2814,7 @@ public abstract class SpriteBase : GeneralRules
       Vertical
    }
 
-   public SpriteBase(LayerBase layer, double x, double y, double dx, double dy, int state, int frame, bool active, Solidity solidity)
+   public SpriteBase(LayerBase layer, double x, double y, double dx, double dy, int state, int frame, bool active, Solidity solidity, int color)
    {
       this.layer = layer;
       this.x = x;
@@ -2822,6 +2825,7 @@ public abstract class SpriteBase : GeneralRules
       this.frame = frame;
       this.isActive = active;
       this.m_solidity = solidity;
+      this.color = color;
       this.LocalDX = double.NaN;
       this.LocalDY = double.NaN;
    }
@@ -3911,7 +3915,7 @@ public class CollisionMask
       {
          int lastColMask = 0;
          lastColMask |= (-1) &lt;&lt; (32 - (size.Width % 32));
-         int lastColIdx = (int)Math.Ceiling(size.Width / 32f);
+         int lastColIdx = (int)Math.Ceiling(size.Width / 32f)-1;
          for (int y = 0; y &lt; size.Height; y++)
          {
             m_Mask[y, lastColIdx] = lastColMask;
@@ -4074,9 +4078,10 @@ public struct Frame
    public Display.TextureRef GraphicSheetTexture;
    public short CellIndex;
    public Matrix Transform;
+   public int Color;
    public Rectangle SourceRect;
 
-   public Frame(Display.TextureRef texture, short cell, float M11, float M12, float M21, float M22, float M41, float M42, Rectangle srcRect)
+   public Frame(Display.TextureRef texture, short cell, float M11, float M12, float M21, float M22, float M41, float M42, Rectangle srcRect, int color)
    {
       GraphicSheetTexture = texture;
       CellIndex = cell;
@@ -4089,14 +4094,26 @@ public struct Frame
       Transform.M42 = M42;
       Transform.M44 = 1;
       SourceRect = srcRect;
+      this.Color = color;
    }
 
-   public Frame(Display.TextureRef texture, short cell, Rectangle srcRect)
+   public Frame(Display.TextureRef texture, short cell, float M11, float M12, float M21, float M22, float M41, float M42, Rectangle srcRect) :
+      this(texture, cell, M11, M12, M21, M22, M41, M42, srcRect, -1)
+   {
+   }
+
+   public Frame(Display.TextureRef texture, short cell, Rectangle srcRect, int color)
    {
       GraphicSheetTexture = texture;
       CellIndex = cell;
       Transform = Matrix.Identity;
       SourceRect = srcRect;
+      this.Color = color;
+   }
+
+   public Frame(Display.TextureRef texture, short cell, Rectangle srcRect) :
+      this(texture, cell, srcRect, -1)
+   {
    }
 }
 </Text>
@@ -5500,12 +5517,27 @@ public abstract class LayerBase : System.Collections.IEnumerable
        */
       public int priority;
       public Frame frame;
-      public InjectedFrame(int x, int y, int priority, Frame frame)
+      public int color;
+      public InjectedFrame(int x, int y, int priority, Frame frame, int color)
       {
          this.x = x;
          this.y = y;
          this.frame = frame;
          this.priority = priority;
+         if (color == -1)
+            this.color = frame.Color;
+         else if (frame.Color == -1)
+            this.color = color;
+         else
+         {
+            byte[] bgraFrame = BitConverter.GetBytes(frame.Color);
+            byte[] bgraOverride = BitConverter.GetBytes(color);
+            bgraOverride[0] = (byte)((bgraFrame[0] * bgraOverride[0]) / 255);
+            bgraOverride[1] = (byte)((bgraFrame[1] * bgraOverride[1]) / 255);
+            bgraOverride[2] = (byte)((bgraFrame[2] * bgraOverride[2]) / 255);
+            bgraOverride[3] = (byte)((bgraFrame[3] * bgraOverride[3]) / 255);
+            this.color = BitConverter.ToInt32(bgraOverride, 0);
+         }
       }
       #region IComparable Members
 
@@ -5740,7 +5772,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
                   CurFrame.x + m_CurrentPosition.X + ViewRect.X,
                   CurFrame.y + m_CurrentPosition.Y + ViewRect.Y, 0));
                spr.Draw(CurFrame.frame.GraphicSheetTexture.Texture, CurFrame.frame.SourceRect,
-                  Vector3.Empty, Vector3.Empty, -1);
+                  Vector3.Empty, Vector3.Empty, CurFrame.color);
                if (!Injected.MoveNext())
                {
                   Injected = null;
@@ -5758,7 +5790,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
                spr.Transform = Matrix.Multiply(f.Transform, Matrix.Translation(
                   x * nTileWidth + m_CurrentPosition.X + ViewRect.X,
                   y * nTileHeight + m_CurrentPosition.Y + ViewRect.Y, 0));
-               spr.Draw(f.GraphicSheetTexture.Texture, f.SourceRect, Vector3.Empty, Vector3.Empty, -1);
+               spr.Draw(f.GraphicSheetTexture.Texture, f.SourceRect, Vector3.Empty, Vector3.Empty, f.Color);
             }
          }
       }
@@ -5770,7 +5802,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
             CurFrame.x + m_CurrentPosition.X + ViewRect.X,
             CurFrame.y + m_CurrentPosition.Y + ViewRect.Y, 0));
          spr.Draw(CurFrame.frame.GraphicSheetTexture.Texture, CurFrame.frame.SourceRect,
-            Vector3.Empty, Vector3.Empty, -1);
+            Vector3.Empty, Vector3.Empty, CurFrame.color);
          if (!Injected.MoveNext())
          {
             Injected = null;
@@ -5796,12 +5828,17 @@ public abstract class LayerBase : System.Collections.IEnumerable
 
    public void InjectFrames(int x, int y, Frame[] frames)
    {
+      InjectFrames(x, y, frames, -1);
+   }
+
+   public void InjectFrames(int x, int y, Frame[] frames, int color)
+   {
       if (frames.Length &lt;= 0)
          return;
 
       InjectedFrame[] additions = new InjectedFrame[frames.Length];
       for (int idx=0; idx&lt;frames.Length; idx++)
-         additions[idx] = new InjectedFrame(x, y, 0, frames[idx]);
+         additions[idx] = new InjectedFrame(x, y, 0, frames[idx], color);
 
       int insIdx;
       if (m_InjectedFrames == null)
@@ -5818,11 +5855,11 @@ public abstract class LayerBase : System.Collections.IEnumerable
       m_InjectedFrames.InsertRange(insIdx, additions);
    }
 
-   public void AppendFrames(int x, int y, Frame[] frames, int priority)
+   public void AppendFrames(int x, int y, Frame[] frames, int color, int priority)
    {
       InjectedFrame[] additions = new InjectedFrame[frames.Length];
       for (int idx=0; idx&lt;frames.Length; idx++)
-         additions[idx] = new InjectedFrame(x, y, priority, frames[idx]);
+         additions[idx] = new InjectedFrame(x, y, priority, frames[idx], color);
       if (m_InjectedFrames == null)
       {
          m_InjectedFrames = new System.Collections.ArrayList(additions);

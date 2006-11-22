@@ -254,73 +254,83 @@ namespace SGDK2
       #region Project Level Code Generation
       public void GenerateAllCode(string FolderName, out string errs)
       {
-         if (!System.IO.Path.IsPathRooted(FolderName))
-         {
-            FolderName = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, FolderName);
-         }
-         if (!System.IO.Directory.Exists(FolderName))
-            System.IO.Directory.CreateDirectory(FolderName);
-
          System.IO.TextWriter err = new System.IO.StringWriter();
+         System.IO.TextWriter txt = null;
 
-         System.IO.TextWriter txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, ProjectClass + ".cs"));
-         GenerateMainCode(txt);
-         txt.Close();
-
-         txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, ProjectClass + ".resx"));
-         GenerateResx(txt);
-         txt.Close();
-
-         txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, CounterClass + ".cs"));
-         GenerateCounters(txt);
-         txt.Close();
-
-         txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, FramesetClass + ".cs"));
-         GenerateFramesets(txt);
-         txt.Close();
-
-         txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, TilesetClass + ".cs"));
-         GenerateTilesets(txt, err);
-         txt.Close();
-
-         foreach (System.Data.DataRowView drv in ProjectData.Map.DefaultView)
+         try
          {
-            ProjectDataset.MapRow drMap = (ProjectDataset.MapRow)drv.Row;
-            txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, NameToVariable(drMap.Name) + "_Map.resx"));
-            GenerateMapResx(drMap, txt);
+            if (!System.IO.Path.IsPathRooted(FolderName))
+            {
+               FolderName = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, FolderName);
+            }
+            if (!System.IO.Directory.Exists(FolderName))
+               System.IO.Directory.CreateDirectory(FolderName);
+
+            txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, ProjectClass + ".cs"));
+            GenerateMainCode(txt, err);
             txt.Close();
 
-            txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, NameToVariable(drMap.Name) + "_Map.cs"));
-            GenerateMap(drMap, txt);
+            txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, ProjectClass + ".resx"));
+            GenerateResx(txt);
             txt.Close();
+
+            txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, CounterClass + ".cs"));
+            GenerateCounters(txt);
+            txt.Close();
+
+            txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, FramesetClass + ".cs"));
+            GenerateFramesets(txt);
+            txt.Close();
+
+            txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, TilesetClass + ".cs"));
+            GenerateTilesets(txt, err);
+            txt.Close();
+
+            foreach (System.Data.DataRowView drv in ProjectData.Map.DefaultView)
+            {
+               ProjectDataset.MapRow drMap = (ProjectDataset.MapRow)drv.Row;
+               txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, NameToVariable(drMap.Name) + "_Map.resx"));
+               GenerateMapResx(drMap, txt);
+               txt.Close();
+
+               txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, NameToVariable(drMap.Name) + "_Map.cs"));
+               GenerateMap(drMap, txt);
+               txt.Close();
+            }
+
+            string SpritesFolder = System.IO.Path.Combine(FolderName, "Sprites");
+            if (!System.IO.Directory.Exists(SpritesFolder))
+               System.IO.Directory.CreateDirectory(SpritesFolder);
+            foreach (System.Data.DataRowView drv in ProjectData.SpriteDefinition.DefaultView)
+            {
+               ProjectDataset.SpriteDefinitionRow drSpriteDef = (ProjectDataset.SpriteDefinitionRow)drv.Row;
+               txt = new System.IO.StreamWriter(System.IO.Path.Combine(SpritesFolder, NameToVariable(drSpriteDef.Name) + ".cs"));
+               GenerateSpriteDef(drSpriteDef, txt);
+               txt.Close();
+            }
+
+            txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, SolidityClassName + ".cs"));
+            GenerateTileCategories(txt);
+            GenerateSolidity(txt);
+            txt.Close();
+
+            txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, LayerSpriteCategoriesBaseClassName + ".cs"));
+            GenerateLayerSpriteCategoriesBase(txt);
+            txt.Close();
+
+            txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, "AssemblyInfo.cs"));
+            GenerateAssemblyInfo(txt);
+            txt.Close();
+
+            GenerateProjectSourceCode(FolderName);
+            GenerateEmbeddedResources(FolderName);
          }
-
-         string SpritesFolder = System.IO.Path.Combine(FolderName, "Sprites");
-         if (!System.IO.Directory.Exists(SpritesFolder))
-            System.IO.Directory.CreateDirectory(SpritesFolder);
-         foreach (System.Data.DataRowView drv in ProjectData.SpriteDefinition.DefaultView)
+         catch(System.Exception ex)
          {
-            ProjectDataset.SpriteDefinitionRow drSpriteDef = (ProjectDataset.SpriteDefinitionRow)drv.Row;
-            txt = new System.IO.StreamWriter(System.IO.Path.Combine(SpritesFolder, NameToVariable(drSpriteDef.Name) + ".cs"));
-            GenerateSpriteDef(drSpriteDef, txt);
-            txt.Close();
+            if (txt != null)
+               txt.Close();
+            System.Windows.Forms.MessageBox.Show(ex.Message, "Error Generating Project", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
          }
-
-         txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, SolidityClassName + ".cs"));
-         GenerateTileCategories(txt);
-         GenerateSolidity(txt);
-         txt.Close();
-
-         txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, LayerSpriteCategoriesBaseClassName + ".cs"));
-         GenerateLayerSpriteCategoriesBase(txt);
-         txt.Close();
-
-         txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, "AssemblyInfo.cs"));
-         GenerateAssemblyInfo(txt);
-         txt.Close();
-
-         GenerateProjectSourceCode(FolderName);
-         GenerateEmbeddedResources(FolderName);
 
          errs = err.ToString();
          err.Close();
@@ -434,7 +444,7 @@ namespace SGDK2
          System.IO.TextWriter err = new System.IO.StringWriter();
          System.IO.StringWriter txt = new System.IO.StringWriter();
 
-         GenerateMainCode(txt);
+         GenerateMainCode(txt, err);
          txt.Close();
          result.Add(txt.ToString());
 
@@ -545,7 +555,7 @@ namespace SGDK2
       #endregion
 
       #region File Level Code Generation
-      public void GenerateMainCode(System.IO.TextWriter txt)
+      public void GenerateMainCode(System.IO.TextWriter txt, System.IO.TextWriter err)
       {
          CodeTypeDeclaration typ = new CodeTypeDeclaration(ProjectClass);
          CodeMemberField resDecl = new CodeMemberField(typeof(System.Resources.ResourceManager), ResourcesField);
@@ -565,6 +575,8 @@ namespace SGDK2
          CodeExpression overlay = new CodePrimitiveExpression(null);
          if ((prj.OverlayMap != null) && !System.Convert.IsDBNull(prj.OverlayMap) && prj.OverlayMap.Length > 0)
             overlay = new CodeTypeOfExpression(NameToMapClass(prj.OverlayMap));
+         if ((prj.StartMap == null) || (prj.StartMap.Length == 0))
+            err.WriteLine("Startup map has not been specified in the project settings");
          main.Statements.Add(new CodeAssignStatement(
             new CodeFieldReferenceExpression(
             new CodeTypeReferenceExpression(typ.Name), declareGame.Name),
@@ -573,7 +585,8 @@ namespace SGDK2
             new CodeTypeReferenceExpression("GameDisplayMode"), prj.DisplayMode),
             new CodePrimitiveExpression(prj.Windowed),
             new CodePrimitiveExpression(prj.TitleText),
-            new CodeTypeOfExpression(NameToMapClass(prj.StartMap)),
+            ((prj.StartMap != null) && (prj.StartMap.Length > 0)) ?
+            (CodeExpression)new CodeTypeOfExpression(NameToMapClass(prj.StartMap)):(CodeExpression)new CodePrimitiveExpression(null),
             overlay)));
          main.Statements.Add(new CodeMethodInvokeExpression(
             new CodeVariableReferenceExpression(declareGame.Name), "Show"));
@@ -813,7 +826,8 @@ namespace SGDK2
             curCondition.TrueStatements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "m_arFrames"), createArray));
          }
          curCondition.FalseStatements.Clear();
-         framesetConstructor.Statements.Add(topCondition);
+         if (topCondition.Condition != null)
+            framesetConstructor.Statements.Add(topCondition);
          framesetConstructor.Statements.Add(new CodeAssignStatement(
             new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "m_Display"),
             new CodeArgumentReferenceExpression("disp")));
@@ -1779,6 +1793,7 @@ namespace SGDK2
                   else
                      SpriteCreateParams.Add(new CodeFieldReferenceExpression(
                         new CodeTypeReferenceExpression("Solidity"), UndefinedSolidityProperty));
+                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.Color));
                   ProjectDataset.SpriteParameterRow[] sprParams = ProjectData.GetSortedSpriteParameters(drDef);
                   if (sprParams.Length > 0)
                   {
@@ -1827,7 +1842,8 @@ namespace SGDK2
                      {
                         new CodePropertyReferenceExpression(fldrefSpr, "PixelX"),
                         new CodePropertyReferenceExpression(fldrefSpr, "PixelY"),
-                        new CodeMethodInvokeExpression(fldrefSpr, "GetCurrentFramesetFrames")
+                        new CodeMethodInvokeExpression(fldrefSpr, "GetCurrentFramesetFrames"),
+                        new CodePropertyReferenceExpression(fldrefSpr, "color")
                      });
                   if (priority != 0)
                      InjectParams.Add(new CodePrimitiveExpression(priority));
@@ -2147,7 +2163,8 @@ namespace SGDK2
                new CodeParameterDeclarationExpression(typeof(int), "frame"),
                new CodeParameterDeclarationExpression(typeof(bool), "active"),
                new CodeParameterDeclarationExpression("Display", "disp"),
-               new CodeParameterDeclarationExpression("Solidity", "solidity")
+               new CodeParameterDeclarationExpression("Solidity", "solidity"),
+               new CodeParameterDeclarationExpression(typeof(int), "color")
             });
          constructor.BaseConstructorArgs.AddRange(new CodeExpression[]
             {
@@ -2160,7 +2177,8 @@ namespace SGDK2
                new CodeArgumentReferenceExpression("state")),
                new CodeArgumentReferenceExpression("frame"),
                new CodeArgumentReferenceExpression("active"),
-               new CodeArgumentReferenceExpression("solidity")
+               new CodeArgumentReferenceExpression("solidity"),
+               new CodeArgumentReferenceExpression("color")
             });
 
          CodeMemberMethod mthClearParams = new CodeMemberMethod();

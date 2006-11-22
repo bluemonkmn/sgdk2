@@ -129,6 +129,7 @@ namespace SGDK2
       private System.Windows.Forms.Button btnOK;
       private System.Windows.Forms.Button btnCancel;
       private System.Windows.Forms.PropertyGrid pgrGfxSheet;
+      private System.Windows.Forms.Button btnExport;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -192,16 +193,17 @@ namespace SGDK2
          this.btnOK = new System.Windows.Forms.Button();
          this.btnCancel = new System.Windows.Forms.Button();
          this.pgrGfxSheet = new System.Windows.Forms.PropertyGrid();
+         this.btnExport = new System.Windows.Forms.Button();
          this.SuspendLayout();
          // 
          // btnOK
          // 
          this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
          this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-         this.btnOK.Location = new System.Drawing.Point(232, 8);
+         this.btnOK.Location = new System.Drawing.Point(232, 40);
          this.btnOK.Name = "btnOK";
          this.btnOK.Size = new System.Drawing.Size(64, 24);
-         this.btnOK.TabIndex = 14;
+         this.btnOK.TabIndex = 3;
          this.btnOK.Text = "Add";
          this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
          // 
@@ -209,10 +211,10 @@ namespace SGDK2
          // 
          this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
          this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-         this.btnCancel.Location = new System.Drawing.Point(232, 40);
+         this.btnCancel.Location = new System.Drawing.Point(232, 72);
          this.btnCancel.Name = "btnCancel";
          this.btnCancel.Size = new System.Drawing.Size(64, 24);
-         this.btnCancel.TabIndex = 15;
+         this.btnCancel.TabIndex = 4;
          this.btnCancel.Text = "Cancel";
          this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
          // 
@@ -227,10 +229,19 @@ namespace SGDK2
          this.pgrGfxSheet.Location = new System.Drawing.Point(0, 0);
          this.pgrGfxSheet.Name = "pgrGfxSheet";
          this.pgrGfxSheet.Size = new System.Drawing.Size(224, 256);
-         this.pgrGfxSheet.TabIndex = 16;
+         this.pgrGfxSheet.TabIndex = 1;
          this.pgrGfxSheet.Text = "PropertyGrid";
          this.pgrGfxSheet.ViewBackColor = System.Drawing.SystemColors.Window;
          this.pgrGfxSheet.ViewForeColor = System.Drawing.SystemColors.WindowText;
+         // 
+         // btnExport
+         // 
+         this.btnExport.Location = new System.Drawing.Point(232, 8);
+         this.btnExport.Name = "btnExport";
+         this.btnExport.Size = new System.Drawing.Size(64, 24);
+         this.btnExport.TabIndex = 2;
+         this.btnExport.Text = "E&xport";
+         this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
          // 
          // frmGfxSheet
          // 
@@ -238,6 +249,7 @@ namespace SGDK2
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
          this.CancelButton = this.btnCancel;
          this.ClientSize = new System.Drawing.Size(304, 261);
+         this.Controls.Add(this.btnExport);
          this.Controls.Add(this.pgrGfxSheet);
          this.Controls.Add(this.btnCancel);
          this.Controls.Add(this.btnOK);
@@ -418,6 +430,37 @@ namespace SGDK2
          {
             DataObject.m_drGfx.CancelEdit();
             this.Close();
+         }
+      }
+
+      private void btnExport_Click(object sender, System.EventArgs e)
+      {
+         if (!Validate())
+            return;
+
+         try
+         {
+            string comment = frmInputBox.GetInput(this, "Export Graphic Sheet", "Enter any comments to save with the template", "Exported graphic sheet \"" + DataObject.Name + "\"");
+            if (comment == null)
+               return;
+
+            ProjectDataset dsExport = new ProjectDataset();
+            dsExport.Merge(new System.Data.DataRow[] { DataObject.m_drGfx });
+            dsExport.Project.AddProjectRow(GameDisplayMode.m640x480x24.ToString(), true, comment, null, null);
+
+            System.Windows.Forms.SaveFileDialog dlgSave = new SaveFileDialog();
+            dlgSave.OverwritePrompt = true;
+            dlgSave.CheckPathExists = true;
+            dlgSave.DefaultExt = "sgdk2";
+            dlgSave.Filter = "SGDK 2 Data File (*.sgdk2)|*.sgdk2|All Files (*.*)|*.*";
+            dlgSave.FilterIndex = 1;
+            dlgSave.Title = "Export Graphic Sheet";
+            if (DialogResult.OK == dlgSave.ShowDialog(this))
+               dsExport.WriteXml(dlgSave.FileName, XmlWriteMode.WriteSchema);
+         }
+         catch (System.Exception ex)
+         {
+            MessageBox.Show(this, ex.Message, "Export Graphic Sheet", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
          }
       }
       #endregion

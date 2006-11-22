@@ -311,6 +311,16 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "GfxSheetImport.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "GfxSheetImport.resx"
+                    DependentUpon = "GfxSheetImport.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "GraphicBrowser.cs"
                     SubType = "Component"
                     BuildAction = "Compile"
@@ -623,6 +633,16 @@
                 <File
                     RelPath = "TileEdit.resx"
                     DependentUpon = "TileEdit.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "TilesetImport.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "TilesetImport.resx"
+                    DependentUpon = "TilesetImport.cs"
                     BuildAction = "EmbeddedResource"
                 />
                 <File

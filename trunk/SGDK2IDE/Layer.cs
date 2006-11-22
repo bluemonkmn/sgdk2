@@ -28,12 +28,28 @@ namespace SGDK2
          public int y;
          public int priority;
          public FrameCache.Frame frame;
-         public InjectedFrame(int x, int y, int priority, FrameCache.Frame frame)
+         public int color;
+
+         public InjectedFrame(int x, int y, int priority, FrameCache.Frame frame, int color)
          {
             this.x = x;
             this.y = y;
             this.frame = frame;
             this.priority = priority;
+            if (color == -1)
+               this.color = frame.Color;
+            else if (frame.Color == -1)
+               this.color = color;
+            else
+            {
+               byte[] bgraFrame = BitConverter.GetBytes(frame.Color);
+               byte[] bgraOverride = BitConverter.GetBytes(color);
+               bgraOverride[0] = (byte)((bgraFrame[0] * bgraOverride[0]) / 255);
+               bgraOverride[1] = (byte)((bgraFrame[1] * bgraOverride[1]) / 255);
+               bgraOverride[2] = (byte)((bgraFrame[2] * bgraOverride[2]) / 255);
+               bgraOverride[3] = (byte)((bgraFrame[3] * bgraOverride[3]) / 255);
+               this.color = BitConverter.ToInt32(bgraOverride, 0);
+            }
          }
          #region IComparable Members
 
@@ -270,7 +286,7 @@ namespace SGDK2
                   spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
                      CurFrame.x + m_CurrentPosition.X, CurFrame.y + m_CurrentPosition.Y, 0));
                   spr.Draw(currentTextureRef.Texture, CurFrame.frame.SourceRect,
-                     Vector3.Empty, Vector3.Empty, CurFrame.frame.Color);
+                     Vector3.Empty, Vector3.Empty, CurFrame.color);
                   if (!Injected.MoveNext())
                   {
                      Injected = null;
@@ -304,7 +320,7 @@ namespace SGDK2
             spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
                CurFrame.x + m_CurrentPosition.X, CurFrame.y + m_CurrentPosition.Y, 0));
             spr.Draw(currentTextureRef.Texture, CurFrame.frame.SourceRect,
-               Vector3.Empty, Vector3.Empty, CurFrame.frame.Color);
+               Vector3.Empty, Vector3.Empty, CurFrame.color);
             if (!Injected.MoveNext())
             {
                Injected = null;
@@ -316,8 +332,13 @@ namespace SGDK2
 
       public void InjectFrame(int x, int y, int priority, FrameCache.Frame frame)
       {
+         InjectFrame(x, y, priority, frame, -1);
+      }
+
+      public void InjectFrame(int x, int y, int priority, FrameCache.Frame frame, int color)
+      {
          int idx;
-         InjectedFrame f = new InjectedFrame(x, y, priority, frame);
+         InjectedFrame f = new InjectedFrame(x, y, priority, frame, color);
          if (m_InjectedFrames == null)
          {
             m_InjectedFrames = new System.Collections.ArrayList();
@@ -356,7 +377,7 @@ namespace SGDK2
             int nCount = sp.GetSubFrameCount();
             for(int i=0; i<nCount; i++)
             {
-               InjectFrame(sp.X, sp.Y, sp.Priority, sp.GetSubFrame(i));
+               InjectFrame(sp.X, sp.Y, sp.Priority, sp.GetSubFrame(i), sp.Color);
             }
          }
       }

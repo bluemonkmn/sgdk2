@@ -64,6 +64,8 @@ echo >>Input.txt /res:SGDK2.frmCustomObjectData.resources
 echo >>Input.txt /res:SGDK2.frmCodeImport.resources
 echo >>Input.txt /res:SGDK2.frmSoundPlayer.resources
 echo >>Input.txt /res:SGDK2.frmHueMapParams.resources
+echo >>Input.txt /res:SGDK2.frmGfxSheetImport.resources
+echo >>Input.txt /res:SGDK2.frmTilesetImport.resources
 echo >>Input.txt /res:Template\Display.cs,SGDK2.Template.Display.cs
 echo >>Input.txt /res:Template\Frame.cs,SGDK2.Template.Frame.cs
 echo >>Input.txt /res:Template\LayerBase.cs,SGDK2.Template.LayerBase.cs
@@ -136,6 +138,8 @@ echo >>Input.txt SoundPlayer.cs
 echo >>Input.txt fmod.cs
 echo >>Input.txt SelectSpriteParameter.cs
 echo >>Input.txt HueMapParams.cs
+echo >>Input.txt GfxSheetImport.cs
+echo >>Input.txt TilesetImport.cs
 csc /noconfig @Input.txt
 del Input.txt
 del *.resources

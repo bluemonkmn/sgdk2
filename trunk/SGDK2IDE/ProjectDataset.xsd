@@ -111,6 +111,7 @@
                                     <xs:attribute name="Priority" type="xs:int" />
                                     <xs:attribute name="Active" type="xs:boolean" default="true" msprop:nullValue="false" />
                                     <xs:attribute name="Solidity" type="xs:string" msprop:nullValue="_empty" />
+                                    <xs:attribute name="Color" type="xs:int" default="-1" msprop:nullValue="-1" />
                                  </xs:complexType>
                               </xs:element>
                               <xs:element name="SpritePlan">

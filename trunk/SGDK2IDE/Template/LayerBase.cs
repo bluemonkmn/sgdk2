@@ -22,12 +22,27 @@ public abstract class LayerBase : System.Collections.IEnumerable
        */
       public int priority;
       public Frame frame;
-      public InjectedFrame(int x, int y, int priority, Frame frame)
+      public int color;
+      public InjectedFrame(int x, int y, int priority, Frame frame, int color)
       {
          this.x = x;
          this.y = y;
          this.frame = frame;
          this.priority = priority;
+         if (color == -1)
+            this.color = frame.Color;
+         else if (frame.Color == -1)
+            this.color = color;
+         else
+         {
+            byte[] bgraFrame = BitConverter.GetBytes(frame.Color);
+            byte[] bgraOverride = BitConverter.GetBytes(color);
+            bgraOverride[0] = (byte)((bgraFrame[0] * bgraOverride[0]) / 255);
+            bgraOverride[1] = (byte)((bgraFrame[1] * bgraOverride[1]) / 255);
+            bgraOverride[2] = (byte)((bgraFrame[2] * bgraOverride[2]) / 255);
+            bgraOverride[3] = (byte)((bgraFrame[3] * bgraOverride[3]) / 255);
+            this.color = BitConverter.ToInt32(bgraOverride, 0);
+         }
       }
       #region IComparable Members
 
@@ -262,7 +277,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
                   CurFrame.x + m_CurrentPosition.X + ViewRect.X,
                   CurFrame.y + m_CurrentPosition.Y + ViewRect.Y, 0));
                spr.Draw(CurFrame.frame.GraphicSheetTexture.Texture, CurFrame.frame.SourceRect,
-                  Vector3.Empty, Vector3.Empty, CurFrame.frame.Color);
+                  Vector3.Empty, Vector3.Empty, CurFrame.color);
                if (!Injected.MoveNext())
                {
                   Injected = null;
@@ -292,7 +307,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
             CurFrame.x + m_CurrentPosition.X + ViewRect.X,
             CurFrame.y + m_CurrentPosition.Y + ViewRect.Y, 0));
          spr.Draw(CurFrame.frame.GraphicSheetTexture.Texture, CurFrame.frame.SourceRect,
-            Vector3.Empty, Vector3.Empty, CurFrame.frame.Color);
+            Vector3.Empty, Vector3.Empty, CurFrame.color);
          if (!Injected.MoveNext())
          {
             Injected = null;
@@ -318,12 +333,17 @@ public abstract class LayerBase : System.Collections.IEnumerable
 
    public void InjectFrames(int x, int y, Frame[] frames)
    {
+      InjectFrames(x, y, frames, -1);
+   }
+
+   public void InjectFrames(int x, int y, Frame[] frames, int color)
+   {
       if (frames.Length <= 0)
          return;
 
       InjectedFrame[] additions = new InjectedFrame[frames.Length];
       for (int idx=0; idx<frames.Length; idx++)
-         additions[idx] = new InjectedFrame(x, y, 0, frames[idx]);
+         additions[idx] = new InjectedFrame(x, y, 0, frames[idx], color);
 
       int insIdx;
       if (m_InjectedFrames == null)
@@ -340,11 +360,11 @@ public abstract class LayerBase : System.Collections.IEnumerable
       m_InjectedFrames.InsertRange(insIdx, additions);
    }
 
-   public void AppendFrames(int x, int y, Frame[] frames, int priority)
+   public void AppendFrames(int x, int y, Frame[] frames, int color, int priority)
    {
       InjectedFrame[] additions = new InjectedFrame[frames.Length];
       for (int idx=0; idx<frames.Length; idx++)
-         additions[idx] = new InjectedFrame(x, y, priority, frames[idx]);
+         additions[idx] = new InjectedFrame(x, y, priority, frames[idx], color);
       if (m_InjectedFrames == null)
       {
          m_InjectedFrames = new System.Collections.ArrayList(additions);

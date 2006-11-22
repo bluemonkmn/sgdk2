@@ -21,6 +21,7 @@ public abstract class SpriteBase : GeneralRules
    public bool isActive;
    private LayerBase layer;
    private Solidity m_solidity;
+   public int color;
 
    /// <summary>
    /// Horizontal velocity relative to the sprite's environment (like a platform)
@@ -66,7 +67,7 @@ public abstract class SpriteBase : GeneralRules
       Vertical
    }
 
-   public SpriteBase(LayerBase layer, double x, double y, double dx, double dy, int state, int frame, bool active, Solidity solidity)
+   public SpriteBase(LayerBase layer, double x, double y, double dx, double dy, int state, int frame, bool active, Solidity solidity, int color)
    {
       this.layer = layer;
       this.x = x;
@@ -77,6 +78,7 @@ public abstract class SpriteBase : GeneralRules
       this.frame = frame;
       this.isActive = active;
       this.m_solidity = solidity;
+      this.color = color;
       this.LocalDX = double.NaN;
       this.LocalDY = double.NaN;
    }

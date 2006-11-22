@@ -89,6 +89,7 @@ namespace SGDK2
       private System.Windows.Forms.RadioButton rdoToolCopy;
       private System.Windows.Forms.RadioButton rdoToolPaste;
       private System.Windows.Forms.RadioButton rdoToolPasteTransparent;
+      private System.Windows.Forms.ToolBarButton tbbPlanProperties;
       private System.Windows.Forms.Splitter SpriteSplitter;
       #endregion
 
@@ -195,6 +196,7 @@ namespace SGDK2
          this.tbPlans = new System.Windows.Forms.ToolBar();
          this.tbbNewPlan = new System.Windows.Forms.ToolBarButton();
          this.tbbDeletePlan = new System.Windows.Forms.ToolBarButton();
+         this.tbbPlanProperties = new System.Windows.Forms.ToolBarButton();
          this.imlToolbar = new System.Windows.Forms.ImageList(this.components);
          this.CoordSplitter = new System.Windows.Forms.Splitter();
          this.grpPlanCoords = new System.Windows.Forms.GroupBox();
@@ -539,7 +541,8 @@ namespace SGDK2
          // 
          this.tbPlans.Buttons.AddRange(new System.Windows.Forms.ToolBarButton[] {
                                                                                    this.tbbNewPlan,
-                                                                                   this.tbbDeletePlan});
+                                                                                   this.tbbDeletePlan,
+                                                                                   this.tbbPlanProperties});
          this.tbPlans.Divider = false;
          this.tbPlans.DropDownArrows = true;
          this.tbPlans.ImageList = this.imlToolbar;
@@ -559,6 +562,11 @@ namespace SGDK2
          // 
          this.tbbDeletePlan.ImageIndex = 1;
          this.tbbDeletePlan.ToolTipText = "Delete Selected Plan";
+         // 
+         // tbbPlanProperties
+         // 
+         this.tbbPlanProperties.ImageIndex = 2;
+         this.tbbPlanProperties.ToolTipText = "Edit Selected Plan";
          // 
          // imlToolbar
          // 
@@ -636,6 +644,7 @@ namespace SGDK2
          // 
          this.grdPlan.CommandsVisibleIfAvailable = true;
          this.grdPlan.Dock = System.Windows.Forms.DockStyle.Bottom;
+         this.grdPlan.HelpVisible = false;
          this.grdPlan.LargeButtons = false;
          this.grdPlan.LineColor = System.Drawing.SystemColors.ScrollBar;
          this.grdPlan.Location = new System.Drawing.Point(0, 311);
@@ -1307,6 +1316,26 @@ namespace SGDK2
             }
          }
       }
+
+      private void EditSelectedPlan()
+      {
+         string msg = null;
+         if (lstPlans.SelectedIndices.Count > 1)
+         {
+            msg = "Please select just a single plan first.";
+         }
+         else if (lstPlans.SelectedIndices.Count == 0)
+         {
+            msg = "Please select a plan first.";
+         }
+         if (msg != null)
+         {
+            MessageBox.Show(this, msg, "Edit Plan", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
+
+         frmPlanEdit.Edit(this.MdiParent, (ProjectDataset.SpritePlanRow)lstPlans.SelectedItem);
+      }
       #endregion
 
       #region Public Static Members
@@ -1391,7 +1420,7 @@ namespace SGDK2
                }
                for(int i = 0; i<nCount; i++)
                {
-                  m_Layers[m_nCurLayer].InjectFrame(sp.X, sp.Y, sp.Priority, sp.GetSubFrame(i));
+                  m_Layers[m_nCurLayer].InjectFrame(sp.X, sp.Y, sp.Priority, sp.GetSubFrame(i), sp.Color);
                }
             }
                break;
@@ -1474,7 +1503,7 @@ namespace SGDK2
                   ProjectDataset.LayerRow drLayer = m_Layers[m_nCurLayer].LayerRow;
                   ProjectData.AddSprite(drLayer.Name, sp.Name, sp.DefinitionName, sp.CurrentStateName,
                      sp.CurrentFrame, sp.X, sp.Y, sp.DX, sp.DY, drLayer.MapRow.Name, sp.Priority,
-                     sp.Active, String.Empty, paramNames, sp.ParameterValues);
+                     sp.Active, String.Empty, -1, paramNames, sp.ParameterValues);
                   string name;
                   int index = 1;
                   do
@@ -1955,6 +1984,10 @@ namespace SGDK2
          else if (e.Button == tbbDeletePlan)
          {
             DeleteSelectedPlans();
+         }
+         else if (e.Button == tbbPlanProperties)
+         {
+            EditSelectedPlan();
          }
       }
 

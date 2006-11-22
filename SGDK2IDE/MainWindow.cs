@@ -653,6 +653,20 @@ namespace SGDK2
          ProjectData.Clear();
          InitializeTree();
          ProjectData.ExtendedProperties["SchemaVersion"] = "1";
+
+         // Initialize source code
+         string[] embeddedCodeFiles = System.Reflection.Assembly.GetAssembly(typeof(SGDK2IDE)).GetManifestResourceNames();
+         foreach (string resourceName in embeddedCodeFiles)
+         {
+            if (resourceName.StartsWith("SGDK2.Template."))
+            {
+               System.IO.TextReader stm = new System.IO.StreamReader(System.Reflection.Assembly.GetAssembly(typeof(SGDK2IDE)).GetManifestResourceStream(resourceName));
+               ProjectData.AddSourceCode(resourceName.Substring(15), stm.ReadToEnd(), null, false, null);
+               stm.Close();
+            }
+         }
+         ProjectData.AcceptChanges();
+
          tvwMain.CollapseAll();
          tvwMain.Nodes[0].Expand();
          m_strProjectPath = null;
@@ -1112,8 +1126,23 @@ namespace SGDK2
                   {
                      if (!row.IsCustomObject)
                      {
-                        MessageBox.Show(this, "Only custom code objects can be deleted.", "Delete Code", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                        return;
+                        DataView dv = new DataView(ProjectData.SourceCode, "IsCustomObject=false", String.Empty, DataViewRowState.CurrentRows);
+                        ArrayList drDelete = new ArrayList();
+
+                        switch(MessageBox.Show(this, "Deleting a built-in code object from the project will likely cause the project to fail.  However, you may wish to delete all built-in code objects if you are creating a project to serve as a template.  Would you like to delete all built-in code objects?", "Delete Code", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+                        {
+                           case DialogResult.Yes:
+                              foreach(DataRowView drv in dv)
+                                 drDelete.Add(drv.Row);
+                              foreach(ProjectDataset.SourceCodeRow dr in drDelete)
+                                 dr.Delete();
+                              return;
+                           case DialogResult.No:
+                              ProjectData.DeleteSourceCode(row);
+                              return;
+                           default:
+                              return;
+                        }
                      }
                      if (DialogResult.Yes == MessageBox.Show(this, "Are you sure you want to delete custom code object \"" + KeyParts[0] + "\"?", "Delete Source Code", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
                      {
@@ -1148,16 +1177,26 @@ namespace SGDK2
          {
             case "SD":
             {
-               frmSpriteImportWizard frm = new frmSpriteImportWizard();
-               frm.ShowDialog(this);
-               frm.Dispose();
+               using (frmSpriteImportWizard frm = new frmSpriteImportWizard())
+                  frm.ShowDialog(this);
                break;
             }
             case "CD":
             {
-               frmCodeImport frm = new frmCodeImport();
-               frm.ShowDialog(this);
-               frm.Dispose();
+               using (frmCodeImport frm = new frmCodeImport())
+                  frm.ShowDialog(this);
+               break;
+            }
+            case "GS":
+            {
+               using (frmGfxSheetImport frm = new frmGfxSheetImport())
+                  frm.ShowDialog(this);
+               break;
+            }
+            case "TS":
+            {
+               using (frmTilesetImportWizard frm = new frmTilesetImportWizard())
+                  frm.ShowDialog(this);
                break;
             }
             default:
@@ -2078,6 +2117,7 @@ namespace SGDK2
             if (DialogResult.OK == fd.ShowDialog(this))
             {
                ProjectData.WriteXml(fd.FileName);
+               ProjectData.AcceptChanges();
                m_strProjectPath = fd.FileName;
                mnuFileDeleteOutputFiles.Enabled = true;
             }

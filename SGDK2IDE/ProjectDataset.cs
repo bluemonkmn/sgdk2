@@ -4737,6 +4737,8 @@ namespace SGDK2 {
             
             private DataColumn columnSolidity;
             
+            private DataColumn columnColor;
+            
             internal SpriteDataTable() : 
                     base("Sprite") {
                 this.InitClass();
@@ -4843,6 +4845,12 @@ namespace SGDK2 {
                 }
             }
             
+            internal DataColumn ColorColumn {
+                get {
+                    return this.columnColor;
+                }
+            }
+            
             public SpriteRow this[int index] {
                 get {
                     return ((SpriteRow)(this.Rows[index]));
@@ -4861,7 +4869,7 @@ namespace SGDK2 {
                 this.Rows.Add(row);
             }
             
-            public SpriteRow AddSpriteRow(string LayerName, string Name, string DefinitionName, string StateName, short CurrentFrame, int X, int Y, System.Single DX, System.Single DY, string MapName, int Priority, bool Active, string Solidity) {
+            public SpriteRow AddSpriteRow(string LayerName, string Name, string DefinitionName, string StateName, short CurrentFrame, int X, int Y, System.Single DX, System.Single DY, string MapName, int Priority, bool Active, string Solidity, int Color) {
                 SpriteRow rowSpriteRow = ((SpriteRow)(this.NewRow()));
                 rowSpriteRow.ItemArray = new object[] {
                         LayerName,
@@ -4876,7 +4884,8 @@ namespace SGDK2 {
                         MapName,
                         Priority,
                         Active,
-                        Solidity};
+                        Solidity,
+                        Color};
                 this.Rows.Add(rowSpriteRow);
                 return rowSpriteRow;
             }
@@ -4916,6 +4925,7 @@ namespace SGDK2 {
                 this.columnPriority = this.Columns["Priority"];
                 this.columnActive = this.Columns["Active"];
                 this.columnSolidity = this.Columns["Solidity"];
+                this.columnColor = this.Columns["Color"];
             }
             
             private void InitClass() {
@@ -4945,6 +4955,8 @@ namespace SGDK2 {
                 this.Columns.Add(this.columnActive);
                 this.columnSolidity = new DataColumn("Solidity", typeof(string), null, System.Data.MappingType.Attribute);
                 this.Columns.Add(this.columnSolidity);
+                this.columnColor = new DataColumn("Color", typeof(int), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnColor);
                 this.Constraints.Add(new UniqueConstraint("SpriteKey", new DataColumn[] {
                                 this.columnLayerName,
                                 this.columnName,
@@ -4972,6 +4984,8 @@ namespace SGDK2 {
                 this.columnActive.Namespace = "";
                 this.columnActive.DefaultValue = true;
                 this.columnSolidity.Namespace = "";
+                this.columnColor.Namespace = "";
+                this.columnColor.DefaultValue = -1;
             }
             
             public SpriteRow NewSpriteRow() {
@@ -5173,6 +5187,20 @@ namespace SGDK2 {
                 }
             }
             
+            public int Color {
+                get {
+                    if (this.IsColorNull()) {
+                        return -1;
+                    }
+                    else {
+                        return ((int)(this[this.tableSprite.ColorColumn]));
+                    }
+                }
+                set {
+                    this[this.tableSprite.ColorColumn] = value;
+                }
+            }
+            
             public LayerRow LayerRowParent {
                 get {
                     return ((LayerRow)(this.GetParentRow(this.Table.ParentRelations["LayerSprite"])));
@@ -5261,6 +5289,14 @@ namespace SGDK2 {
             
             public void SetSolidityNull() {
                 this[this.tableSprite.SolidityColumn] = System.Convert.DBNull;
+            }
+            
+            public bool IsColorNull() {
+                return this.IsNull(this.tableSprite.ColorColumn);
+            }
+            
+            public void SetColorNull() {
+                this[this.tableSprite.ColorColumn] = System.Convert.DBNull;
             }
             
             public ParameterValueRow[] GetParameterValueRows() {

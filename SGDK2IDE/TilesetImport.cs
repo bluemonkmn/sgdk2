@@ -6,12 +6,13 @@ using System.Windows.Forms;
 
 namespace SGDK2
 {
-	public class frmSpriteImportWizard : SGDK2.frmWizardBase
+	public class frmTilesetImportWizard : SGDK2.frmWizardBase
 	{
       #region Non-control Members
       ProjectDataset dsSource = null;
       ProjectDataset.FramesetRow[] m_ImportFramesets = null;
       ProjectDataset.GraphicSheetRow[] m_ImportGfx = null;
+      ProjectDataset.CounterRow[] m_ImportCounters = null;
       #endregion
 
       #region Form Designer Members
@@ -22,12 +23,6 @@ namespace SGDK2
       private System.Windows.Forms.TextBox txtSourceFile;
       private System.Windows.Forms.Button btnBrowse;
       private System.Windows.Forms.OpenFileDialog dlgSourceFile;
-      private System.Windows.Forms.Panel pnlSpecifySprite;
-      private SGDK2.frmWizardBase.StepInfo SpecifySprite;
-      private System.Windows.Forms.Label lblSpecifySprite;
-      private System.Windows.Forms.CheckedListBox chlSelectSprites;
-      private System.Windows.Forms.Button btnSelectAllSprites;
-      private System.Windows.Forms.Button btnDeselectAllSprites;
       private System.Windows.Forms.Label lblFileComment;
       private System.Windows.Forms.TextBox txtComment;
       private System.Windows.Forms.Panel pnlUniqueNames;
@@ -38,10 +33,8 @@ namespace SGDK2
       private System.Windows.Forms.DataGridTextBoxColumn colStyleOldName;
       private System.Windows.Forms.DataGridTextBoxColumn colStyleNewName;
       private System.Data.DataSet dsMapping;
-      private System.Data.DataTable dtSpriteNames;
       private System.Data.DataColumn dcOldName;
       private System.Data.DataColumn dcNewName;
-      private System.Data.DataView dvSpriteNames;
       private System.Windows.Forms.Panel pnlMergeFramesets;
       private SGDK2.frmWizardBase.StepInfo MergeFramesets;
       private System.Windows.Forms.Label lblMergeFramesets;
@@ -61,18 +54,34 @@ namespace SGDK2
       private System.Data.DataColumn dcOldGSName;
       private System.Data.DataColumn dcNewGSName;
       private System.Data.DataView dvGraphicNames;
-      private System.Windows.Forms.DataGridTableStyle graphicNameStyle;
-      private System.Windows.Forms.DataGridTextBoxColumn colOldGSName;
-      private System.Windows.Forms.DataGridTextBoxColumn colNewGSName;
       private System.Windows.Forms.Panel pnlReview;
       private SGDK2.frmWizardBase.StepInfo Review;
       private System.Windows.Forms.Label lblReview;
       private System.Windows.Forms.TextBox txtReview;
+      private System.Windows.Forms.Panel pnlSpecifyTileset;
+      private System.Windows.Forms.Button btnDeselectAllTilesets;
+      private System.Windows.Forms.Button btnSelectAllTilesets;
+      private System.Windows.Forms.Label lblSpecifyTileset;
+      private SGDK2.frmWizardBase.StepInfo SpecifyTileset;
+      private System.Data.DataView dvTilesetNames;
+      private System.Data.DataTable dtTilesetNames;
+      private System.Windows.Forms.CheckedListBox chlSelectTilesets;
+      private SGDK2.frmWizardBase.StepInfo MergeCounters;
+      private System.Windows.Forms.Panel pnlMergeCounters;
+      private System.Data.DataTable dtCounterNames;
+      private System.Data.DataColumn dcOldCtrName;
+      private System.Data.DataColumn dcNewCtrName;
+      private System.Data.DataView dvCounterNames;
+      private System.Windows.Forms.DataGridTableStyle counterGridStyle;
+      private System.Windows.Forms.DataGridTextBoxColumn colCounterSource;
+      private System.Windows.Forms.DataGridTextBoxColumn colCounterTarget;
+      private System.Windows.Forms.DataGrid grdMergeCounters;
+      private System.Windows.Forms.Label lblMergeCounters;
 		private System.ComponentModel.IContainer components = null;
       #endregion
 
       #region Initialization and Clean-up
-		public frmSpriteImportWizard()
+		public frmTilesetImportWizard()
 		{
 			// This call is required by the Windows Form Designer.
 			InitializeComponent();
@@ -112,16 +121,16 @@ namespace SGDK2
          this.lblSpecifyFile = new System.Windows.Forms.Label();
          this.SpecifyFile = new SGDK2.frmWizardBase.StepInfo();
          this.dlgSourceFile = new System.Windows.Forms.OpenFileDialog();
-         this.pnlSpecifySprite = new System.Windows.Forms.Panel();
-         this.btnDeselectAllSprites = new System.Windows.Forms.Button();
-         this.btnSelectAllSprites = new System.Windows.Forms.Button();
-         this.chlSelectSprites = new System.Windows.Forms.CheckedListBox();
-         this.lblSpecifySprite = new System.Windows.Forms.Label();
-         this.SpecifySprite = new SGDK2.frmWizardBase.StepInfo();
+         this.pnlSpecifyTileset = new System.Windows.Forms.Panel();
+         this.btnDeselectAllTilesets = new System.Windows.Forms.Button();
+         this.btnSelectAllTilesets = new System.Windows.Forms.Button();
+         this.chlSelectTilesets = new System.Windows.Forms.CheckedListBox();
+         this.lblSpecifyTileset = new System.Windows.Forms.Label();
+         this.SpecifyTileset = new SGDK2.frmWizardBase.StepInfo();
          this.pnlUniqueNames = new System.Windows.Forms.Panel();
          this.grdNameMap = new System.Windows.Forms.DataGrid();
-         this.dvSpriteNames = new System.Data.DataView();
-         this.dtSpriteNames = new System.Data.DataTable();
+         this.dvTilesetNames = new System.Data.DataView();
+         this.dtTilesetNames = new System.Data.DataTable();
          this.dcOldName = new System.Data.DataColumn();
          this.dcNewName = new System.Data.DataColumn();
          this.gridStyle = new System.Windows.Forms.DataGridTableStyle();
@@ -147,21 +156,29 @@ namespace SGDK2
          this.pnlMergeGraphics = new System.Windows.Forms.Panel();
          this.grdGraphicNames = new System.Windows.Forms.DataGrid();
          this.dvGraphicNames = new System.Data.DataView();
-         this.graphicNameStyle = new System.Windows.Forms.DataGridTableStyle();
-         this.colOldGSName = new System.Windows.Forms.DataGridTextBoxColumn();
-         this.colNewGSName = new System.Windows.Forms.DataGridTextBoxColumn();
          this.lblMergeGraphics = new System.Windows.Forms.Label();
          this.MergeGraphics = new SGDK2.frmWizardBase.StepInfo();
          this.pnlReview = new System.Windows.Forms.Panel();
          this.txtReview = new System.Windows.Forms.TextBox();
          this.lblReview = new System.Windows.Forms.Label();
          this.Review = new SGDK2.frmWizardBase.StepInfo();
+         this.MergeCounters = new SGDK2.frmWizardBase.StepInfo();
+         this.pnlMergeCounters = new System.Windows.Forms.Panel();
+         this.dtCounterNames = new System.Data.DataTable();
+         this.dcOldCtrName = new System.Data.DataColumn();
+         this.dcNewCtrName = new System.Data.DataColumn();
+         this.dvCounterNames = new System.Data.DataView();
+         this.counterGridStyle = new System.Windows.Forms.DataGridTableStyle();
+         this.colCounterSource = new System.Windows.Forms.DataGridTextBoxColumn();
+         this.colCounterTarget = new System.Windows.Forms.DataGridTextBoxColumn();
+         this.grdMergeCounters = new System.Windows.Forms.DataGrid();
+         this.lblMergeCounters = new System.Windows.Forms.Label();
          this.pnlSpecifyFile.SuspendLayout();
-         this.pnlSpecifySprite.SuspendLayout();
+         this.pnlSpecifyTileset.SuspendLayout();
          this.pnlUniqueNames.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.grdNameMap)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.dvSpriteNames)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.dtSpriteNames)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.dvTilesetNames)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.dtTilesetNames)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.dsMapping)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.dtFramesetNames)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.dtGraphicNames)).BeginInit();
@@ -172,6 +189,10 @@ namespace SGDK2
          ((System.ComponentModel.ISupportInitialize)(this.grdGraphicNames)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.dvGraphicNames)).BeginInit();
          this.pnlReview.SuspendLayout();
+         this.pnlMergeCounters.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.dtCounterNames)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.dvCounterNames)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.grdMergeCounters)).BeginInit();
          this.SuspendLayout();
          // 
          // pnlSpecifyFile
@@ -184,7 +205,7 @@ namespace SGDK2
          this.pnlSpecifyFile.Controls.Add(this.lblSpecifyFile);
          this.pnlSpecifyFile.Location = new System.Drawing.Point(168, 42);
          this.pnlSpecifyFile.Name = "pnlSpecifyFile";
-         this.pnlSpecifyFile.Size = new System.Drawing.Size(282, 231);
+         this.pnlSpecifyFile.Size = new System.Drawing.Size(284, 231);
          this.pnlSpecifyFile.TabIndex = 6;
          // 
          // txtComment
@@ -238,11 +259,11 @@ namespace SGDK2
          this.lblSpecifyFile.Dock = System.Windows.Forms.DockStyle.Top;
          this.lblSpecifyFile.Location = new System.Drawing.Point(0, 0);
          this.lblSpecifyFile.Name = "lblSpecifyFile";
-         this.lblSpecifyFile.Size = new System.Drawing.Size(282, 64);
+         this.lblSpecifyFile.Size = new System.Drawing.Size(284, 64);
          this.lblSpecifyFile.TabIndex = 0;
-         this.lblSpecifyFile.Text = "Sprites can be imported from pre-packaged template files, exported sprite definit" +
-            "ion files, or SGDK2 project files.  All these files are actually in the same for" +
-            "mat as a standard SGDK2 project file.";
+         this.lblSpecifyFile.Text = "Tilesets can be imported from pre-packaged template files, exported tileset files" +
+            ", or SGDK2 project files.  All these files are actually in the same format as a " +
+            "standard SGDK2 project file.";
          // 
          // SpecifyFile
          // 
@@ -256,60 +277,58 @@ namespace SGDK2
          this.dlgSourceFile.Filter = "SGDK2 Project (*.sgdk2)|*.SGDK2|All Files (*.*)|*.*";
          this.dlgSourceFile.Title = "Specify Import Source";
          // 
-         // pnlSpecifySprite
+         // pnlSpecifyTileset
          // 
-         this.pnlSpecifySprite.Controls.Add(this.btnDeselectAllSprites);
-         this.pnlSpecifySprite.Controls.Add(this.btnSelectAllSprites);
-         this.pnlSpecifySprite.Controls.Add(this.chlSelectSprites);
-         this.pnlSpecifySprite.Controls.Add(this.lblSpecifySprite);
-         this.pnlSpecifySprite.Location = new System.Drawing.Point(-10168, 42);
-         this.pnlSpecifySprite.Name = "pnlSpecifySprite";
-         this.pnlSpecifySprite.Size = new System.Drawing.Size(288, 231);
-         this.pnlSpecifySprite.TabIndex = 7;
+         this.pnlSpecifyTileset.Controls.Add(this.btnDeselectAllTilesets);
+         this.pnlSpecifyTileset.Controls.Add(this.btnSelectAllTilesets);
+         this.pnlSpecifyTileset.Controls.Add(this.chlSelectTilesets);
+         this.pnlSpecifyTileset.Controls.Add(this.lblSpecifyTileset);
+         this.pnlSpecifyTileset.Location = new System.Drawing.Point(-10168, 42);
+         this.pnlSpecifyTileset.Name = "pnlSpecifyTileset";
+         this.pnlSpecifyTileset.Size = new System.Drawing.Size(289, 231);
+         this.pnlSpecifyTileset.TabIndex = 7;
          // 
-         // btnDeselectAllSprites
+         // btnDeselectAllTilesets
          // 
-         this.btnDeselectAllSprites.Location = new System.Drawing.Point(184, 96);
-         this.btnDeselectAllSprites.Name = "btnDeselectAllSprites";
-         this.btnDeselectAllSprites.Size = new System.Drawing.Size(88, 24);
-         this.btnDeselectAllSprites.TabIndex = 3;
-         this.btnDeselectAllSprites.Text = "Select N&one";
-         this.btnDeselectAllSprites.Click += new System.EventHandler(this.btnDeselectAllSprites_Click);
+         this.btnDeselectAllTilesets.Location = new System.Drawing.Point(184, 96);
+         this.btnDeselectAllTilesets.Name = "btnDeselectAllTilesets";
+         this.btnDeselectAllTilesets.Size = new System.Drawing.Size(88, 24);
+         this.btnDeselectAllTilesets.TabIndex = 3;
+         this.btnDeselectAllTilesets.Text = "Select N&one";
          // 
-         // btnSelectAllSprites
+         // btnSelectAllTilesets
          // 
-         this.btnSelectAllSprites.Location = new System.Drawing.Point(184, 64);
-         this.btnSelectAllSprites.Name = "btnSelectAllSprites";
-         this.btnSelectAllSprites.Size = new System.Drawing.Size(88, 24);
-         this.btnSelectAllSprites.TabIndex = 2;
-         this.btnSelectAllSprites.Text = "Select &All";
-         this.btnSelectAllSprites.Click += new System.EventHandler(this.btnSelectAllSprites_Click);
+         this.btnSelectAllTilesets.Location = new System.Drawing.Point(184, 64);
+         this.btnSelectAllTilesets.Name = "btnSelectAllTilesets";
+         this.btnSelectAllTilesets.Size = new System.Drawing.Size(88, 24);
+         this.btnSelectAllTilesets.TabIndex = 2;
+         this.btnSelectAllTilesets.Text = "Select &All";
          // 
-         // chlSelectSprites
+         // chlSelectTilesets
          // 
-         this.chlSelectSprites.CheckOnClick = true;
-         this.chlSelectSprites.Location = new System.Drawing.Point(8, 64);
-         this.chlSelectSprites.Name = "chlSelectSprites";
-         this.chlSelectSprites.Size = new System.Drawing.Size(168, 154);
-         this.chlSelectSprites.TabIndex = 1;
+         this.chlSelectTilesets.CheckOnClick = true;
+         this.chlSelectTilesets.Location = new System.Drawing.Point(8, 64);
+         this.chlSelectTilesets.Name = "chlSelectTilesets";
+         this.chlSelectTilesets.Size = new System.Drawing.Size(168, 154);
+         this.chlSelectTilesets.TabIndex = 1;
          // 
-         // lblSpecifySprite
+         // lblSpecifyTileset
          // 
-         this.lblSpecifySprite.Dock = System.Windows.Forms.DockStyle.Top;
-         this.lblSpecifySprite.Location = new System.Drawing.Point(0, 0);
-         this.lblSpecifySprite.Name = "lblSpecifySprite";
-         this.lblSpecifySprite.Size = new System.Drawing.Size(288, 48);
-         this.lblSpecifySprite.TabIndex = 0;
-         this.lblSpecifySprite.Text = "The specified import source contains multiple sprites.  Select one or more sprite" +
-            "s that you want to import.";
+         this.lblSpecifyTileset.Dock = System.Windows.Forms.DockStyle.Top;
+         this.lblSpecifyTileset.Location = new System.Drawing.Point(0, 0);
+         this.lblSpecifyTileset.Name = "lblSpecifyTileset";
+         this.lblSpecifyTileset.Size = new System.Drawing.Size(289, 48);
+         this.lblSpecifyTileset.TabIndex = 0;
+         this.lblSpecifyTileset.Text = "The specified import source contains multiple tilesets.  Select one or more tiles" +
+            "ets that you want to import.";
          // 
-         // SpecifySprite
+         // SpecifyTileset
          // 
-         this.SpecifySprite.StepControl = this.pnlSpecifySprite;
-         this.SpecifySprite.TitleText = "Specify Sprite";
-         this.SpecifySprite.InitFunction += new System.EventHandler(this.SpecifySprite_InitFunction);
-         this.SpecifySprite.IsApplicableFunction += new SGDK2.frmWizardBase.ValidateFunctionEvent(this.SpecifySprite_IsApplicableFunction);
-         this.SpecifySprite.ValidateFunction += new SGDK2.frmWizardBase.ValidateFunctionEvent(this.SpecifySprite_ValidateFunction);
+         this.SpecifyTileset.StepControl = this.pnlSpecifyTileset;
+         this.SpecifyTileset.TitleText = "Specify Tileset";
+         this.SpecifyTileset.InitFunction += new System.EventHandler(this.SpecifyTileset_InitFunction);
+         this.SpecifyTileset.IsApplicableFunction += new SGDK2.frmWizardBase.ValidateFunctionEvent(this.SpecifyTileset_IsApplicableFunction);
+         this.SpecifyTileset.ValidateFunction += new SGDK2.frmWizardBase.ValidateFunctionEvent(this.SpecifyTileset_ValidateFunction);
          // 
          // pnlUniqueNames
          // 
@@ -317,41 +336,41 @@ namespace SGDK2
          this.pnlUniqueNames.Controls.Add(this.lblUniqueNames);
          this.pnlUniqueNames.Location = new System.Drawing.Point(-10168, 42);
          this.pnlUniqueNames.Name = "pnlUniqueNames";
-         this.pnlUniqueNames.Size = new System.Drawing.Size(285, 231);
+         this.pnlUniqueNames.Size = new System.Drawing.Size(286, 231);
          this.pnlUniqueNames.TabIndex = 8;
          // 
          // grdNameMap
          // 
          this.grdNameMap.CaptionVisible = false;
          this.grdNameMap.DataMember = "";
-         this.grdNameMap.DataSource = this.dvSpriteNames;
+         this.grdNameMap.DataSource = this.dvTilesetNames;
          this.grdNameMap.Dock = System.Windows.Forms.DockStyle.Fill;
          this.grdNameMap.HeaderForeColor = System.Drawing.SystemColors.ControlText;
          this.grdNameMap.Location = new System.Drawing.Point(0, 56);
          this.grdNameMap.Name = "grdNameMap";
          this.grdNameMap.RowHeadersVisible = false;
-         this.grdNameMap.Size = new System.Drawing.Size(285, 175);
+         this.grdNameMap.Size = new System.Drawing.Size(286, 175);
          this.grdNameMap.TabIndex = 1;
          this.grdNameMap.TableStyles.AddRange(new System.Windows.Forms.DataGridTableStyle[] {
                                                                                                this.gridStyle});
          // 
-         // dvSpriteNames
+         // dvTilesetNames
          // 
-         this.dvSpriteNames.AllowDelete = false;
-         this.dvSpriteNames.AllowNew = false;
-         this.dvSpriteNames.Table = this.dtSpriteNames;
+         this.dvTilesetNames.AllowDelete = false;
+         this.dvTilesetNames.AllowNew = false;
+         this.dvTilesetNames.Table = this.dtTilesetNames;
          // 
-         // dtSpriteNames
+         // dtTilesetNames
          // 
-         this.dtSpriteNames.Columns.AddRange(new System.Data.DataColumn[] {
-                                                                             this.dcOldName,
-                                                                             this.dcNewName});
-         this.dtSpriteNames.Constraints.AddRange(new System.Data.Constraint[] {
-                                                                                 new System.Data.UniqueConstraint("Constraint1", new string[] {
-                                                                                                                                                 "Old Name"}, true)});
-         this.dtSpriteNames.PrimaryKey = new System.Data.DataColumn[] {
-                                                                         this.dcOldName};
-         this.dtSpriteNames.TableName = "SpriteNames";
+         this.dtTilesetNames.Columns.AddRange(new System.Data.DataColumn[] {
+                                                                              this.dcOldName,
+                                                                              this.dcNewName});
+         this.dtTilesetNames.Constraints.AddRange(new System.Data.Constraint[] {
+                                                                                  new System.Data.UniqueConstraint("Constraint1", new string[] {
+                                                                                                                                                  "Old Name"}, true)});
+         this.dtTilesetNames.PrimaryKey = new System.Data.DataColumn[] {
+                                                                          this.dcOldName};
+         this.dtTilesetNames.TableName = "TilesetNames";
          // 
          // dcOldName
          // 
@@ -370,7 +389,7 @@ namespace SGDK2
                                                                                                     this.colStyleOldName,
                                                                                                     this.colStyleNewName});
          this.gridStyle.HeaderForeColor = System.Drawing.SystemColors.ControlText;
-         this.gridStyle.MappingName = "SpriteNames";
+         this.gridStyle.MappingName = "TilesetNames";
          this.gridStyle.RowHeadersVisible = false;
          // 
          // colStyleOldName
@@ -397,11 +416,10 @@ namespace SGDK2
          this.lblUniqueNames.Dock = System.Windows.Forms.DockStyle.Top;
          this.lblUniqueNames.Location = new System.Drawing.Point(0, 0);
          this.lblUniqueNames.Name = "lblUniqueNames";
-         this.lblUniqueNames.Size = new System.Drawing.Size(285, 56);
+         this.lblUniqueNames.Size = new System.Drawing.Size(286, 56);
          this.lblUniqueNames.TabIndex = 0;
-         this.lblUniqueNames.Text = "Imported sprite definition names are duplicates of sprite definition names that a" +
-            "lready exist in the project.  Specify unique names for the imported sprite defin" +
-            "itions.";
+         this.lblUniqueNames.Text = "Imported tileset names are duplicates of tileset names that already exist in the " +
+            "project.  Specify unique names for the imported tilesets.";
          // 
          // UniqueNames
          // 
@@ -416,9 +434,10 @@ namespace SGDK2
          this.dsMapping.DataSetName = "Name Mapping";
          this.dsMapping.Locale = new System.Globalization.CultureInfo("en-US");
          this.dsMapping.Tables.AddRange(new System.Data.DataTable[] {
-                                                                       this.dtSpriteNames,
+                                                                       this.dtTilesetNames,
                                                                        this.dtFramesetNames,
-                                                                       this.dtGraphicNames});
+                                                                       this.dtGraphicNames,
+                                                                       this.dtCounterNames});
          // 
          // dtFramesetNames
          // 
@@ -470,7 +489,7 @@ namespace SGDK2
          this.pnlMergeFramesets.Controls.Add(this.lblMergeFramesets);
          this.pnlMergeFramesets.Location = new System.Drawing.Point(-10168, 42);
          this.pnlMergeFramesets.Name = "pnlMergeFramesets";
-         this.pnlMergeFramesets.Size = new System.Drawing.Size(281, 231);
+         this.pnlMergeFramesets.Size = new System.Drawing.Size(283, 231);
          this.pnlMergeFramesets.TabIndex = 9;
          // 
          // grdFramesets
@@ -483,7 +502,7 @@ namespace SGDK2
          this.grdFramesets.Location = new System.Drawing.Point(0, 104);
          this.grdFramesets.Name = "grdFramesets";
          this.grdFramesets.RowHeadersVisible = false;
-         this.grdFramesets.Size = new System.Drawing.Size(281, 127);
+         this.grdFramesets.Size = new System.Drawing.Size(283, 127);
          this.grdFramesets.TabIndex = 1;
          this.grdFramesets.TableStyles.AddRange(new System.Windows.Forms.DataGridTableStyle[] {
                                                                                                  this.framesetTableStyle});
@@ -528,9 +547,9 @@ namespace SGDK2
          this.lblMergeFramesets.Dock = System.Windows.Forms.DockStyle.Top;
          this.lblMergeFramesets.Location = new System.Drawing.Point(0, 0);
          this.lblMergeFramesets.Name = "lblMergeFramesets";
-         this.lblMergeFramesets.Size = new System.Drawing.Size(281, 104);
+         this.lblMergeFramesets.Size = new System.Drawing.Size(283, 104);
          this.lblMergeFramesets.TabIndex = 0;
-         this.lblMergeFramesets.Text = @"Some imported frameset names match those of existing framesets in the project.  When this occurs, and an adequate number of frames exist in the existing frameset, you can choose whether to use the existing frameset or import the sprite definition's frameset as a new object.  To use the existing frameset, leave the new name the same as the original.";
+         this.lblMergeFramesets.Text = @"Some imported frameset names match those of existing framesets in the project.  When this occurs, and an adequate number of frames exist in the existing frameset, you can choose whether to use the existing frameset or import the tileset's frameset as a new object.  To use the existing frameset, leave the new name the same as the original.";
          // 
          // MergeFramesets
          // 
@@ -546,7 +565,7 @@ namespace SGDK2
          this.pnlMergeGraphics.Controls.Add(this.lblMergeGraphics);
          this.pnlMergeGraphics.Location = new System.Drawing.Point(-10168, 42);
          this.pnlMergeGraphics.Name = "pnlMergeGraphics";
-         this.pnlMergeGraphics.Size = new System.Drawing.Size(281, 231);
+         this.pnlMergeGraphics.Size = new System.Drawing.Size(283, 231);
          this.pnlMergeGraphics.TabIndex = 10;
          // 
          // grdGraphicNames
@@ -558,10 +577,10 @@ namespace SGDK2
          this.grdGraphicNames.HeaderForeColor = System.Drawing.SystemColors.ControlText;
          this.grdGraphicNames.Location = new System.Drawing.Point(0, 88);
          this.grdGraphicNames.Name = "grdGraphicNames";
-         this.grdGraphicNames.Size = new System.Drawing.Size(281, 143);
+         this.grdGraphicNames.Size = new System.Drawing.Size(283, 143);
          this.grdGraphicNames.TabIndex = 1;
          this.grdGraphicNames.TableStyles.AddRange(new System.Windows.Forms.DataGridTableStyle[] {
-                                                                                                    this.graphicNameStyle});
+                                                                                                    this.counterGridStyle});
          // 
          // dvGraphicNames
          // 
@@ -569,41 +588,12 @@ namespace SGDK2
          this.dvGraphicNames.AllowNew = false;
          this.dvGraphicNames.Table = this.dtGraphicNames;
          // 
-         // graphicNameStyle
-         // 
-         this.graphicNameStyle.DataGrid = this.grdGraphicNames;
-         this.graphicNameStyle.GridColumnStyles.AddRange(new System.Windows.Forms.DataGridColumnStyle[] {
-                                                                                                           this.colOldGSName,
-                                                                                                           this.colNewGSName});
-         this.graphicNameStyle.HeaderForeColor = System.Drawing.SystemColors.ControlText;
-         this.graphicNameStyle.MappingName = "GraphicNames";
-         this.graphicNameStyle.RowHeadersVisible = false;
-         // 
-         // colOldGSName
-         // 
-         this.colOldGSName.Format = "";
-         this.colOldGSName.FormatInfo = null;
-         this.colOldGSName.HeaderText = "Old (Source) Name";
-         this.colOldGSName.MappingName = "Old Name";
-         this.colOldGSName.NullText = "";
-         this.colOldGSName.ReadOnly = true;
-         this.colOldGSName.Width = 136;
-         // 
-         // colNewGSName
-         // 
-         this.colNewGSName.Format = "";
-         this.colNewGSName.FormatInfo = null;
-         this.colNewGSName.HeaderText = "New (Target) Name";
-         this.colNewGSName.MappingName = "New Name";
-         this.colNewGSName.NullText = "";
-         this.colNewGSName.Width = 136;
-         // 
          // lblMergeGraphics
          // 
          this.lblMergeGraphics.Dock = System.Windows.Forms.DockStyle.Top;
          this.lblMergeGraphics.Location = new System.Drawing.Point(0, 0);
          this.lblMergeGraphics.Name = "lblMergeGraphics";
-         this.lblMergeGraphics.Size = new System.Drawing.Size(281, 88);
+         this.lblMergeGraphics.Size = new System.Drawing.Size(283, 88);
          this.lblMergeGraphics.TabIndex = 0;
          this.lblMergeGraphics.Text = @"Some Graphic Sheets in the source file use the same name as existing Graphic Sheets in the project.  You may choose to import the graphics from the source file under a new name, or, if the existing Graphic Sheet has enough cells, use the existing sheet by leaving the name identical.";
          // 
@@ -621,7 +611,7 @@ namespace SGDK2
          this.pnlReview.Controls.Add(this.lblReview);
          this.pnlReview.Location = new System.Drawing.Point(-10168, 42);
          this.pnlReview.Name = "pnlReview";
-         this.pnlReview.Size = new System.Drawing.Size(281, 231);
+         this.pnlReview.Size = new System.Drawing.Size(283, 231);
          this.pnlReview.TabIndex = 11;
          // 
          // txtReview
@@ -632,7 +622,7 @@ namespace SGDK2
          this.txtReview.Name = "txtReview";
          this.txtReview.ReadOnly = true;
          this.txtReview.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-         this.txtReview.Size = new System.Drawing.Size(281, 175);
+         this.txtReview.Size = new System.Drawing.Size(283, 175);
          this.txtReview.TabIndex = 1;
          this.txtReview.Text = "";
          // 
@@ -641,10 +631,10 @@ namespace SGDK2
          this.lblReview.Dock = System.Windows.Forms.DockStyle.Top;
          this.lblReview.Location = new System.Drawing.Point(0, 0);
          this.lblReview.Name = "lblReview";
-         this.lblReview.Size = new System.Drawing.Size(281, 56);
+         this.lblReview.Size = new System.Drawing.Size(283, 56);
          this.lblReview.TabIndex = 0;
-         this.lblReview.Text = "The Sprite Import Wizard has all the information needed to import the requested s" +
-            "prites.  The following actions will occur when you click Finish...";
+         this.lblReview.Text = "The Tileset Import Wizard has all the information needed to import the requested " +
+            "Tilesets.  The following actions will occur when you click Finish...";
          // 
          // Review
          // 
@@ -653,36 +643,138 @@ namespace SGDK2
          this.Review.InitFunction += new System.EventHandler(this.Review_InitFunction);
          this.Review.ValidateFunction += new SGDK2.frmWizardBase.ValidateFunctionEvent(this.Review_ValidateFunction);
          // 
-         // frmSpriteImportWizard
+         // MergeCounters
+         // 
+         this.MergeCounters.StepControl = this.pnlMergeCounters;
+         this.MergeCounters.TitleText = "Merge Counters";
+         this.MergeCounters.InitFunction += new System.EventHandler(this.MergeCounters_InitFunction);
+         this.MergeCounters.IsApplicableFunction += new SGDK2.frmWizardBase.ValidateFunctionEvent(this.MergeCounters_IsApplicableFunction);
+         this.MergeCounters.ValidateFunction += new SGDK2.frmWizardBase.ValidateFunctionEvent(this.MergeCounters_ValidateFunction);
+         // 
+         // pnlMergeCounters
+         // 
+         this.pnlMergeCounters.Controls.Add(this.grdMergeCounters);
+         this.pnlMergeCounters.Controls.Add(this.lblMergeCounters);
+         this.pnlMergeCounters.Location = new System.Drawing.Point(-10168, 42);
+         this.pnlMergeCounters.Name = "pnlMergeCounters";
+         this.pnlMergeCounters.Size = new System.Drawing.Size(280, 231);
+         this.pnlMergeCounters.TabIndex = 12;
+         // 
+         // dtCounterNames
+         // 
+         this.dtCounterNames.Columns.AddRange(new System.Data.DataColumn[] {
+                                                                              this.dcOldCtrName,
+                                                                              this.dcNewCtrName});
+         this.dtCounterNames.Constraints.AddRange(new System.Data.Constraint[] {
+                                                                                  new System.Data.UniqueConstraint("Constraint1", new string[] {
+                                                                                                                                                  "Old Name"}, true)});
+         this.dtCounterNames.PrimaryKey = new System.Data.DataColumn[] {
+                                                                          this.dcOldCtrName};
+         this.dtCounterNames.TableName = "CounterNames";
+         // 
+         // dcOldCtrName
+         // 
+         this.dcOldCtrName.AllowDBNull = false;
+         this.dcOldCtrName.ColumnName = "Old Name";
+         this.dcOldCtrName.ReadOnly = true;
+         // 
+         // dcNewCtrName
+         // 
+         this.dcNewCtrName.ColumnName = "New Name";
+         // 
+         // dvCounterNames
+         // 
+         this.dvCounterNames.AllowDelete = false;
+         this.dvCounterNames.AllowNew = false;
+         this.dvCounterNames.Table = this.dtCounterNames;
+         // 
+         // counterGridStyle
+         // 
+         this.counterGridStyle.DataGrid = this.grdMergeCounters;
+         this.counterGridStyle.GridColumnStyles.AddRange(new System.Windows.Forms.DataGridColumnStyle[] {
+                                                                                                           this.colCounterSource,
+                                                                                                           this.colCounterTarget});
+         this.counterGridStyle.HeaderForeColor = System.Drawing.SystemColors.ControlText;
+         this.counterGridStyle.MappingName = "CounterNames";
+         this.counterGridStyle.RowHeadersVisible = false;
+         // 
+         // colCounterSource
+         // 
+         this.colCounterSource.Format = "";
+         this.colCounterSource.FormatInfo = null;
+         this.colCounterSource.HeaderText = "Old (Source) Name";
+         this.colCounterSource.MappingName = "Old Name";
+         this.colCounterSource.NullText = "";
+         this.colCounterSource.ReadOnly = true;
+         this.colCounterSource.Width = 136;
+         // 
+         // colCounterTarget
+         // 
+         this.colCounterTarget.Format = "";
+         this.colCounterTarget.FormatInfo = null;
+         this.colCounterTarget.HeaderText = "New (Target) Name";
+         this.colCounterTarget.MappingName = "New Name";
+         this.colCounterTarget.NullText = "";
+         this.colCounterTarget.Width = 136;
+         // 
+         // grdMergeCounters
+         // 
+         this.grdMergeCounters.CaptionVisible = false;
+         this.grdMergeCounters.DataMember = "";
+         this.grdMergeCounters.DataSource = this.dvCounterNames;
+         this.grdMergeCounters.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.grdMergeCounters.HeaderForeColor = System.Drawing.SystemColors.ControlText;
+         this.grdMergeCounters.Location = new System.Drawing.Point(0, 64);
+         this.grdMergeCounters.Name = "grdMergeCounters";
+         this.grdMergeCounters.Size = new System.Drawing.Size(280, 167);
+         this.grdMergeCounters.TabIndex = 3;
+         this.grdMergeCounters.TableStyles.AddRange(new System.Windows.Forms.DataGridTableStyle[] {
+                                                                                                     this.counterGridStyle});
+         // 
+         // lblMergeCounters
+         // 
+         this.lblMergeCounters.Dock = System.Windows.Forms.DockStyle.Top;
+         this.lblMergeCounters.Location = new System.Drawing.Point(0, 0);
+         this.lblMergeCounters.Name = "lblMergeCounters";
+         this.lblMergeCounters.Size = new System.Drawing.Size(280, 64);
+         this.lblMergeCounters.TabIndex = 2;
+         this.lblMergeCounters.Text = "Some imported tilesets refer to counters.  You may choose to import the counters " +
+            "from the source file under a new name, or use an existing counter by specifying " +
+            "the name of an existing counter.";
+         // 
+         // frmTilesetImportWizard
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
          this.ClientSize = new System.Drawing.Size(450, 313);
+         this.Controls.Add(this.pnlMergeCounters);
          this.Controls.Add(this.pnlReview);
          this.Controls.Add(this.pnlMergeGraphics);
          this.Controls.Add(this.pnlMergeFramesets);
          this.Controls.Add(this.pnlUniqueNames);
-         this.Controls.Add(this.pnlSpecifySprite);
+         this.Controls.Add(this.pnlSpecifyTileset);
          this.Controls.Add(this.pnlSpecifyFile);
-         this.Name = "frmSpriteImportWizard";
+         this.Name = "frmTilesetImportWizard";
          this.Steps.Add(this.SpecifyFile);
-         this.Steps.Add(this.SpecifySprite);
+         this.Steps.Add(this.SpecifyTileset);
          this.Steps.Add(this.UniqueNames);
          this.Steps.Add(this.MergeFramesets);
          this.Steps.Add(this.MergeGraphics);
+         this.Steps.Add(this.MergeCounters);
          this.Steps.Add(this.Review);
-         this.Text = "Sprite Import Wizard";
+         this.Text = "Tileset Import Wizard";
          this.Controls.SetChildIndex(this.pnlSpecifyFile, 0);
-         this.Controls.SetChildIndex(this.pnlSpecifySprite, 0);
+         this.Controls.SetChildIndex(this.pnlSpecifyTileset, 0);
          this.Controls.SetChildIndex(this.pnlUniqueNames, 0);
          this.Controls.SetChildIndex(this.pnlMergeFramesets, 0);
          this.Controls.SetChildIndex(this.pnlMergeGraphics, 0);
          this.Controls.SetChildIndex(this.pnlReview, 0);
+         this.Controls.SetChildIndex(this.pnlMergeCounters, 0);
          this.pnlSpecifyFile.ResumeLayout(false);
-         this.pnlSpecifySprite.ResumeLayout(false);
+         this.pnlSpecifyTileset.ResumeLayout(false);
          this.pnlUniqueNames.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.grdNameMap)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.dvSpriteNames)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.dtSpriteNames)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.dvTilesetNames)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.dtTilesetNames)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.dsMapping)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.dtFramesetNames)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.dtGraphicNames)).EndInit();
@@ -693,6 +785,10 @@ namespace SGDK2
          ((System.ComponentModel.ISupportInitialize)(this.grdGraphicNames)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.dvGraphicNames)).EndInit();
          this.pnlReview.ResumeLayout(false);
+         this.pnlMergeCounters.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.dtCounterNames)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.dvCounterNames)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.grdMergeCounters)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -703,21 +799,9 @@ namespace SGDK2
       {
          System.Collections.ArrayList result = new ArrayList();
          string inClause = String.Empty;
-         foreach (string defName in GetImportSpriteList())
+         foreach (string defName in GetImportTilesetList())
          {
-            if (inClause.Length == 0)
-               inClause = "('";
-            else
-               inClause += ",'";
-            inClause += defName + "'";
-         }
-         inClause += ")";
-
-         foreach(ProjectDataset.FramesetRow frameset in dsSource.Frameset)
-         {
-            if (dsSource.SpriteState.Select(dsSource.SpriteState.FramesetNameColumn.ColumnName + " = '" + frameset.Name +
-               "' AND " + dsSource.SpriteState.DefinitionNameColumn.ColumnName + " IN " + inClause).Length > 0)
-               result.Add(frameset);
+            result.Add(dsSource.Tileset.FindByName(defName).FramesetRow);
          }
 
          return (ProjectDataset.FramesetRow[])result.ToArray(typeof(ProjectDataset.FramesetRow));
@@ -756,15 +840,42 @@ namespace SGDK2
          return (ProjectDataset.GraphicSheetRow[])result.ToArray(typeof(ProjectDataset.GraphicSheetRow));
       }
 
-      private string[] GetImportSpriteList()
+      private ProjectDataset.CounterRow[] GetImportCounters()
       {
-         if (dsSource.SpriteDefinition.Count != 1)
+         System.Collections.ArrayList result = new ArrayList();
+         string inClause = String.Empty;
+         foreach(string tileset in GetImportTilesetList())
          {
-            string[] result = new string[chlSelectSprites.CheckedItems.Count];
-            chlSelectSprites.CheckedItems.CopyTo(result, 0);
+            if (inClause.Length == 0)
+               inClause = "('";
+            else
+               inClause += ",'";
+            inClause += tileset + "'";
+         }
+         inClause += ")";
+
+         if (inClause.Length > 1)
+         {
+            foreach(ProjectDataset.CounterRow counter in dsSource.Counter)
+            {
+               if (dsSource.Tile.Select(dsSource.Tile.CounterColumn.ColumnName + " = '" + counter.Name +
+                  "' AND " + dsSource.Tile.NameColumn.ColumnName + " IN " + inClause).Length > 0)
+                  result.Add(counter);
+            }
+         }
+
+         return (ProjectDataset.CounterRow[])result.ToArray(typeof(ProjectDataset.CounterRow));
+      }
+
+      private string[] GetImportTilesetList()
+      {
+         if (dsSource.Tileset.Count != 1)
+         {
+            string[] result = new string[chlSelectTilesets.CheckedItems.Count];
+            chlSelectTilesets.CheckedItems.CopyTo(result, 0);
             return result;
          }
-         return new string[] {dsSource.SpriteDefinition[0].Name};
+         return new string[] {dsSource.Tileset[0].Name};
       }
       #endregion
 
@@ -799,46 +910,46 @@ namespace SGDK2
          }
 
          dsMapping.Clear();
-         chlSelectSprites.Items.Clear();
+         chlSelectTilesets.Items.Clear();
 
          return true;
       }
 
-      private void SpecifySprite_InitFunction(object sender, System.EventArgs e)
+      private void SpecifyTileset_InitFunction(object sender, System.EventArgs e)
       {
-         if (chlSelectSprites.Items.Count == 0)
+         if (chlSelectTilesets.Items.Count == 0)
          {
-            foreach(ProjectDataset.SpriteDefinitionRow sprite in dsSource.SpriteDefinition)
-               chlSelectSprites.Items.Add(sprite.Name, true);
+            foreach(ProjectDataset.TilesetRow tileset in dsSource.Tileset)
+               chlSelectTilesets.Items.Add(tileset.Name, true);
          }
       }
 
-      private void btnSelectAllSprites_Click(object sender, System.EventArgs e)
+      private void btnSelectAllTilesets_Click(object sender, System.EventArgs e)
       {
-         for (int i=0; i<chlSelectSprites.Items.Count; i++)
-            chlSelectSprites.SetItemChecked(i, true);
+         for (int i=0; i<chlSelectTilesets.Items.Count; i++)
+            chlSelectTilesets.SetItemChecked(i, true);
       }
 
-      private void btnDeselectAllSprites_Click(object sender, System.EventArgs e)
+      private void btnDeselectAllTilesets_Click(object sender, System.EventArgs e)
       {
-         foreach(int i in chlSelectSprites.CheckedIndices)
-            chlSelectSprites.SetItemChecked(i, false);
+         foreach(int i in chlSelectTilesets.CheckedIndices)
+            chlSelectTilesets.SetItemChecked(i, false);
       }
 
-      private bool SpecifySprite_ValidateFunction(SGDK2.frmWizardBase.StepInfo sender)
+      private bool SpecifyTileset_ValidateFunction(SGDK2.frmWizardBase.StepInfo sender)
       {
-         if (chlSelectSprites.CheckedIndices.Count <= 0)
+         if (chlSelectTilesets.CheckedIndices.Count <= 0)
          {
-            MessageBox.Show(this, "At least one item must be checked", "Specify Sprites", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            MessageBox.Show(this, "At least one item must be checked", "Specify Tilesets", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             return false;
          }
          dsMapping.Clear();
          return true;
       }
 
-      private bool SpecifySprite_IsApplicableFunction(SGDK2.frmWizardBase.StepInfo sender)
+      private bool SpecifyTileset_IsApplicableFunction(SGDK2.frmWizardBase.StepInfo sender)
       {
-         return (dsSource.SpriteDefinition.Count != 1);
+         return (dsSource.Tileset.Count != 1);
       }
 
       private void txtSourceFile_TextChanged(object sender, System.EventArgs e)
@@ -885,9 +996,9 @@ namespace SGDK2
 
       private bool UniqueNames_IsApplicableFunction(SGDK2.frmWizardBase.StepInfo sender)
       {
-         foreach(string name in GetImportSpriteList())
+         foreach(string name in GetImportTilesetList())
          {
-            if(ProjectData.GetSpriteDefinition(name) != null)
+            if(ProjectData.GetTileSet(name) != null)
                return true;
          }
          return false;
@@ -895,20 +1006,20 @@ namespace SGDK2
 
       private void UniqueNames_InitFunction(object sender, System.EventArgs e)
       {
-         if (dtSpriteNames.Rows.Count > 0)
+         if (dtTilesetNames.Rows.Count > 0)
             return;
-         foreach(string name in GetImportSpriteList())
+         foreach(string name in GetImportTilesetList())
          {
-            if(ProjectData.GetSpriteDefinition(name) == null)
-               dtSpriteNames.Rows.Add(new object[] {name, name});
+            if(ProjectData.GetTileSet(name) == null)
+               dtTilesetNames.Rows.Add(new object[] {name, name});
             else
-               dtSpriteNames.Rows.Add(new object[] {name, null});
+               dtTilesetNames.Rows.Add(new object[] {name, null});
          }
       }
 
       private bool UniqueNames_ValidateFunction(SGDK2.frmWizardBase.StepInfo sender)
       {
-         foreach(System.Data.DataRow dr in dtSpriteNames.Rows)
+         foreach(System.Data.DataRow dr in dtTilesetNames.Rows)
          {
             if(!(dr[dcNewName] is string))
             {
@@ -921,9 +1032,9 @@ namespace SGDK2
                MessageBox.Show(this, "\"" + dr[dcNewName].ToString() + "\" is invalid.  " + msg, "Specify Unique Names", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                return false;
             }
-            if (ProjectData.GetSpriteDefinition(dr[dcNewName].ToString()) != null)
+            if (ProjectData.GetTileSet(dr[dcNewName].ToString()) != null)
             {
-               MessageBox.Show(this, "Sprite Definition \"" + dr[dcNewName].ToString() + "\" already exists in the loaded project.  Please specify a different name.", "Specify Unique Names", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+               MessageBox.Show(this, "Tileset \"" + dr[dcNewName].ToString() + "\" already exists in the loaded project.  Please specify a different name.", "Specify Unique Names", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                return false;
             }
          }
@@ -1047,17 +1158,51 @@ namespace SGDK2
          return true;
       }
 
+      private bool MergeCounters_IsApplicableFunction(SGDK2.frmWizardBase.StepInfo sender)
+      {
+         m_ImportCounters = GetImportCounters();
+         return m_ImportCounters.Length > 0;
+      }
+
+      private void MergeCounters_InitFunction(object sender, System.EventArgs e)
+      {
+         if (dtCounterNames.Rows.Count > 0)
+            return;
+
+         foreach(ProjectDataset.CounterRow counter in m_ImportCounters)
+            dtCounterNames.Rows.Add(new object[] {counter.Name, counter.Name});
+      }
+
+      private bool MergeCounters_ValidateFunction(SGDK2.frmWizardBase.StepInfo sender)
+      {
+         foreach(System.Data.DataRow dr in dtCounterNames.Rows)
+         {
+            if (!(dr[dcNewCtrName] is string))
+            {
+               MessageBox.Show(this, "Please enter a new name for \"" + dr[dcOldCtrName].ToString() + "\".", "Counter Names", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+               return false;
+            }
+            string msg = ProjectData.ValidateName(dr[dcNewCtrName].ToString());
+            if (msg != null)
+            {
+               MessageBox.Show(this, "Invalid new name entered for \"" + dr[dcNewCtrName].ToString() + "\".  " + msg, "Counter Names", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+               return false;
+            }
+         }
+         return true;
+      }
+
       private void Review_InitFunction(object sender, System.EventArgs e)
       {
          System.Text.StringBuilder sb = new System.Text.StringBuilder();
          sb.Append("Use source data from " + txtSourceFile.Text + ".\r\n");
-         foreach(string sprite in GetImportSpriteList())
+         foreach(string tileset in GetImportTilesetList())
          {
-            System.Data.DataRow dr = dtSpriteNames.Rows.Find(sprite);
+            System.Data.DataRow dr = dtTilesetNames.Rows.Find(tileset);
             if (dr != null)
-               sb.Append("Import Sprite Definition \"" + sprite + "\" as \"" + dr[dcNewName].ToString() + "\".\r\n");
+               sb.Append("Import Tileset \"" + tileset + "\" as \"" + dr[dcNewName].ToString() + "\".\r\n");
             else
-               sb.Append("Import Sprite Definition \"" + sprite + "\"\r\n");
+               sb.Append("Import Tileset \"" + tileset + "\"\r\n");
          }
          foreach(ProjectDataset.FramesetRow frameset in m_ImportFramesets)
          {
@@ -1080,6 +1225,29 @@ namespace SGDK2
                   sb.Append("Import Graphic Sheet \"" + gfx.Name + "\" as \"" + dr[dcNewGSName].ToString() + "\".\r\n");
             else
                sb.Append("Import Graphic Sheet \"" + gfx.Name + "\".\r\n");
+         }
+         foreach(ProjectDataset.CounterRow counter in m_ImportCounters)
+         {
+            System.Data.DataRow dr = dtCounterNames.Rows.Find(counter.Name);
+            if (dr == null)
+               sb.Append("Blow up because an unexpected error happened importing counter \"" + counter.Name + "\".\r\n");
+            else
+            {
+               if (ProjectData.GetCounter(dr[dcNewCtrName].ToString()) != null)
+               {
+                  if (string.Compare(dr[dcOldCtrName].ToString(), dr[dcNewCtrName].ToString(), false) != 0)
+                     sb.Append("Link all imported tiles that refer to counter \"" + counter.Name + "\" to counter \"" + dr[dcNewCtrName].ToString() + "\" instead.\r\n");
+                  else
+                     sb.Append("Link all imported tiles that refer to counter \"" + counter.Name + "\" to the already existing counter by the same name.\r\n");
+               }
+               else
+               {
+                  if (string.Compare(dr[dcOldCtrName].ToString(), dr[dcNewCtrName].ToString(), false) != 0)
+                     sb.Append("Import counter \"" + counter.Name + "\" as \"" + dr[dcNewCtrName] + "\".\r\n");
+                  else
+                     sb.Append("Import counter \"" + counter.Name + "\".\r\n");
+               }
+            }
          }
          txtReview.Text = sb.ToString();
       }
@@ -1132,29 +1300,46 @@ namespace SGDK2
                      ProjectData.Frame.Rows.Add(frame.ItemArray);
                }
             }
-            foreach(string sprite in GetImportSpriteList())
+            foreach(string tileset in GetImportTilesetList())
             {
-               ProjectDataset.SpriteDefinitionRow src = dsSource.SpriteDefinition.FindByName(sprite);
-               System.Data.DataRow dr = dtSpriteNames.Rows.Find(sprite);
+               ProjectDataset.TilesetRow src = dsSource.Tileset.FindByName(tileset);
+               System.Data.DataRow drTileset = dtTilesetNames.Rows.Find(tileset);
 
-               if (dr != null)
+               if (drTileset != null)
                {
                   dsSource.EnforceConstraints = false;
-                  src.Name = dr[dcNewName].ToString();
+                  src.Name = drTileset[dcNewName].ToString();
                   dsSource.AcceptChanges();
                   dsSource.EnforceConstraints = true;
                }
-               ProjectData.SpriteDefinition.Rows.Add(src.ItemArray);
-               foreach(ProjectDataset.SpriteStateRow state in src.GetSpriteStateRows())
+               ProjectData.Tileset.Rows.Add(src.ItemArray);
+               foreach(ProjectDataset.TileRow tile in src.GetTileRows())
                {
-                  ProjectData.SpriteState.Rows.Add(state.ItemArray);
-                  foreach(ProjectDataset.SpriteFrameRow frame in state.GetSpriteFrameRows())
-                     ProjectData.SpriteFrame.Rows.Add(frame.ItemArray);
+                  if ((!tile.IsCounterNull()) && (tile.Counter.Length > 0))
+                  {
+                     System.Data.DataRow drCounterName = dtCounterNames.Rows.Find(tile.Counter);
+                     if (string.Compare(drCounterName[dcOldCtrName].ToString(), drCounterName[dcNewCtrName].ToString(), false) != 0)
+                     {
+                        ProjectDataset.TileRow newTile = ProjectData.Tile.NewTileRow();
+                        newTile.TileValue = tile.TileValue;
+                        newTile[ProjectData.Tile.NameColumn] = tile[dsSource.Tile.NameColumn];
+                        newTile.Counter = drCounterName[dcNewCtrName].ToString();
+                        ProjectData.Tile.AddTileRow(newTile);
+                     }
+                     else
+                        ProjectData.Tile.Rows.Add(tile.ItemArray);
+                  }
+                  else
+                     ProjectData.Tile.Rows.Add(tile.ItemArray);
+                  foreach(ProjectDataset.TileFrameRow frame in tile.GetTileFrameRows())
+                     ProjectData.TileFrame.Rows.Add(frame.ItemArray);
                }
-               foreach(ProjectDataset.SpriteParameterRow param in src.GetSpriteParameterRows())
-                  ProjectData.SpriteParameter.Rows.Add(param.ItemArray);
-               foreach(ProjectDataset.SpriteRuleRow rule in src.GetSpriteRuleRows())
-                  ProjectData.SpriteRule.Rows.Add(rule.ItemArray);
+            }
+            foreach(ProjectDataset.CounterRow counter in m_ImportCounters)
+            {
+               System.Data.DataRow dr = dtCounterNames.Rows.Find(counter.Name);
+               if (ProjectData.GetCounter(dr[dcNewCtrName].ToString()) == null)
+                  ProjectData.AddCounter(dr[dcNewCtrName].ToString(), counter.Value, counter.Max);
             }
 
             ProjectData.EnforceConstraints = true;
@@ -1163,7 +1348,7 @@ namespace SGDK2
          }
          catch(System.Exception ex)
          {
-            MessageBox.Show(this, ex.Message, "Import Sprite Definition", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            MessageBox.Show(this, ex.Message, "Import Tileset", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             return false;
          }
       }

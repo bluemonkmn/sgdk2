@@ -309,6 +309,7 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuPenIncrease;
       private System.Windows.Forms.MenuItem mnuPenDecrease;
       private System.Windows.Forms.MenuItem mnuPenSep1;
+      private System.Windows.Forms.MenuItem mnuExportSheet;
       private System.Windows.Forms.MenuItem mnuHugePen;
       #endregion
 
@@ -488,6 +489,7 @@ namespace SGDK2
          this.mnuFileSep = new System.Windows.Forms.MenuItem();
          this.mnuExportGraphic = new System.Windows.Forms.MenuItem();
          this.mnuImportGraphic = new System.Windows.Forms.MenuItem();
+         this.mnuExportSheet = new System.Windows.Forms.MenuItem();
          this.mnuView = new System.Windows.Forms.MenuItem();
          this.mnuZoom = new System.Windows.Forms.MenuItem();
          this.mnuZoom1x1 = new System.Windows.Forms.MenuItem();
@@ -579,8 +581,8 @@ namespace SGDK2
          this.mnuHugePen = new System.Windows.Forms.MenuItem();
          this.mnu64Pen = new System.Windows.Forms.MenuItem();
          this.mnuPenSep1 = new System.Windows.Forms.MenuItem();
-         this.mnuPenIncrease = new System.Windows.Forms.MenuItem();
          this.mnuPenDecrease = new System.Windows.Forms.MenuItem();
+         this.mnuPenIncrease = new System.Windows.Forms.MenuItem();
          this.mnuPenSep2 = new System.Windows.Forms.MenuItem();
          this.mnuRoundPen = new System.Windows.Forms.MenuItem();
          this.mnuSquarePen = new System.Windows.Forms.MenuItem();
@@ -873,7 +875,8 @@ namespace SGDK2
          this.mnuFile.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
                                                                                 this.mnuFileSep,
                                                                                 this.mnuExportGraphic,
-                                                                                this.mnuImportGraphic});
+                                                                                this.mnuImportGraphic,
+                                                                                this.mnuExportSheet});
          this.mnuFile.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
          this.mnuFile.Text = "&File";
          // 
@@ -896,6 +899,13 @@ namespace SGDK2
          this.mnuImportGraphic.MergeOrder = 2;
          this.mnuImportGraphic.Text = "&Import Graphic";
          this.mnuImportGraphic.Click += new System.EventHandler(this.mnuImportGraphic_Click);
+         // 
+         // mnuExportSheet
+         // 
+         this.mnuExportSheet.Index = 3;
+         this.mnuExportSheet.MergeOrder = 2;
+         this.mnuExportSheet.Text = "Ex&port Sheet as Image";
+         this.mnuExportSheet.Click += new System.EventHandler(this.mnuExportSheet_Click);
          // 
          // mnuView
          // 
@@ -1589,17 +1599,17 @@ namespace SGDK2
          this.mnuPenSep1.Index = 7;
          this.mnuPenSep1.Text = "-";
          // 
-         // mnuPenIncrease
-         // 
-         this.mnuPenIncrease.Index = 9;
-         this.mnuPenIncrease.Text = "&Increase Size\t]";
-         this.mnuPenIncrease.Click += new System.EventHandler(this.mnuPenIncrease_Click);
-         // 
          // mnuPenDecrease
          // 
          this.mnuPenDecrease.Index = 8;
          this.mnuPenDecrease.Text = "&Decrease Size\t[";
          this.mnuPenDecrease.Click += new System.EventHandler(this.mnuPenDecrease_Click);
+         // 
+         // mnuPenIncrease
+         // 
+         this.mnuPenIncrease.Index = 9;
+         this.mnuPenIncrease.Text = "&Increase Size\t]";
+         this.mnuPenIncrease.Click += new System.EventHandler(this.mnuPenIncrease_Click);
          // 
          // mnuPenSep2
          // 
@@ -3041,6 +3051,29 @@ namespace SGDK2
          SelectTool(newSel.Menu);
          m_frmActual.DrawCurrentToolState();
          m_frmMagnify.DrawCurrentToolState();
+      }
+
+      private void mnuExportSheet_Click(object sender, System.EventArgs e)
+      {
+         using (System.Windows.Forms.SaveFileDialog dlgSave = new SaveFileDialog())
+         {
+            try
+            {
+               dlgSave.AddExtension = true;
+               dlgSave.DefaultExt = "png";
+               dlgSave.Filter = "*.PNG|*.PNG|All Files (*.*)|*.*";
+               dlgSave.FilterIndex = 1;
+               dlgSave.OverwritePrompt = true;
+               dlgSave.ValidateNames = true;
+               dlgSave.Title = "Export Graphic Sheet as Image";
+               if (dlgSave.ShowDialog(this) == DialogResult.OK)
+                  ProjectData.GetGraphicSheetImage(m_DataSource.Name, true).Save(dlgSave.FileName);
+            }
+            catch(System.Exception ex)
+            {
+               MessageBox.Show(this, ex.Message, "Export Graphics Sheet as Image", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+         }
       }
       #endregion
    }

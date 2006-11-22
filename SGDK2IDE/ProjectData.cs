@@ -789,6 +789,14 @@ namespace SGDK2
             throw;
          }
       }
+
+      public static ProjectDataset.TileFrameDataTable TileFrame
+      {
+         get
+         {
+            return m_dsPrj.TileFrame;
+         }
+      }
       #endregion
 
       #region Counter
@@ -1921,11 +1929,11 @@ namespace SGDK2
       }
       public static ProjectDataset.SpriteRow AddSprite(string LayerName, string SpriteName,
          string DefinitionName, string StateName, short CurrentFrame, int X, int Y,
-         float DX, float DY, string MapName, int Priority, bool Active, string Solidity, string[] ParamNames, int[] ParamValues)
+         float DX, float DY, string MapName, int Priority, bool Active, string Solidity, int Color, string[] ParamNames, int[] ParamValues)
       {
          ProjectDataset.SpriteRow drSprite = m_dsPrj.Sprite.AddSpriteRow(
             LayerName, SpriteName, DefinitionName, StateName, CurrentFrame,
-            X, Y, DX, DY, MapName, Priority, Active, Solidity);
+            X, Y, DX, DY, MapName, Priority, Active, Solidity, Color);
          for (int i=0; i<ParamNames.Length; i++)
             m_dsPrj.ParameterValue.AddParameterValueRow(LayerName, SpriteName, ParamNames[i], 
                ParamValues[i], DefinitionName, MapName);

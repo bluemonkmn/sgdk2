@@ -43,8 +43,6 @@ namespace SGDK2
 		{
 			// This call is required by the Windows Form Designer.
 			InitializeComponent();
-
-			// TODO: Add any initialization after the InitializeComponent call
 		}
 
 		/// <summary>
@@ -84,14 +82,14 @@ namespace SGDK2
          this.lblSelectObjectInfo = new System.Windows.Forms.Label();
          this.SelectObject = new SGDK2.frmWizardBase.StepInfo();
          this.pnlConfirmOverwrites = new System.Windows.Forms.Panel();
-         this.ConfirmOverwrites = new SGDK2.frmWizardBase.StepInfo();
-         this.lblOverwriteInfo = new System.Windows.Forms.Label();
-         this.lblOverwrite = new System.Windows.Forms.Label();
          this.chlOverwrite = new System.Windows.Forms.CheckedListBox();
+         this.lblOverwrite = new System.Windows.Forms.Label();
+         this.lblOverwriteInfo = new System.Windows.Forms.Label();
+         this.ConfirmOverwrites = new SGDK2.frmWizardBase.StepInfo();
          this.pnlReview = new System.Windows.Forms.Panel();
-         this.Review = new SGDK2.frmWizardBase.StepInfo();
-         this.lblReview = new System.Windows.Forms.Label();
          this.txtReview = new System.Windows.Forms.TextBox();
+         this.lblReview = new System.Windows.Forms.Label();
+         this.Review = new SGDK2.frmWizardBase.StepInfo();
          this.pnlSpecifySource.SuspendLayout();
          this.pnlSelectObject.SuspendLayout();
          this.pnlConfirmOverwrites.SuspendLayout();
@@ -186,7 +184,7 @@ namespace SGDK2
          this.pnlSelectObject.Controls.Add(this.lblSelectObjectInfo);
          this.pnlSelectObject.Location = new System.Drawing.Point(-10168, 42);
          this.pnlSelectObject.Name = "pnlSelectObject";
-         this.pnlSelectObject.Size = new System.Drawing.Size(283, 231);
+         this.pnlSelectObject.Size = new System.Drawing.Size(284, 231);
          this.pnlSelectObject.TabIndex = 7;
          // 
          // chlImportList
@@ -229,15 +227,24 @@ namespace SGDK2
          this.pnlConfirmOverwrites.Controls.Add(this.lblOverwriteInfo);
          this.pnlConfirmOverwrites.Location = new System.Drawing.Point(-10168, 42);
          this.pnlConfirmOverwrites.Name = "pnlConfirmOverwrites";
-         this.pnlConfirmOverwrites.Size = new System.Drawing.Size(280, 231);
+         this.pnlConfirmOverwrites.Size = new System.Drawing.Size(281, 231);
          this.pnlConfirmOverwrites.TabIndex = 8;
          // 
-         // ConfirmOverwrites
+         // chlOverwrite
          // 
-         this.ConfirmOverwrites.StepControl = this.pnlConfirmOverwrites;
-         this.ConfirmOverwrites.TitleText = "Confirm Overwrites";
-         this.ConfirmOverwrites.InitFunction += new System.EventHandler(this.ConfirmOverwrites_InitFunction);
-         this.ConfirmOverwrites.IsApplicableFunction += new SGDK2.frmWizardBase.ValidateFunctionEvent(this.ConfirmOverwrites_IsApplicableFunction);
+         this.chlOverwrite.CheckOnClick = true;
+         this.chlOverwrite.Location = new System.Drawing.Point(16, 88);
+         this.chlOverwrite.Name = "chlOverwrite";
+         this.chlOverwrite.Size = new System.Drawing.Size(248, 139);
+         this.chlOverwrite.TabIndex = 2;
+         // 
+         // lblOverwrite
+         // 
+         this.lblOverwrite.Location = new System.Drawing.Point(16, 72);
+         this.lblOverwrite.Name = "lblOverwrite";
+         this.lblOverwrite.Size = new System.Drawing.Size(248, 16);
+         this.lblOverwrite.TabIndex = 1;
+         this.lblOverwrite.Text = "Overwrite:";
          // 
          // lblOverwriteInfo
          // 
@@ -248,21 +255,12 @@ namespace SGDK2
          this.lblOverwriteInfo.Text = "Objects with the names listed below already exist in the project.  Select which o" +
             "bjects you want to overwrite.  Unchecked items will be left untouched.";
          // 
-         // lblOverwrite
+         // ConfirmOverwrites
          // 
-         this.lblOverwrite.Location = new System.Drawing.Point(16, 72);
-         this.lblOverwrite.Name = "lblOverwrite";
-         this.lblOverwrite.Size = new System.Drawing.Size(248, 16);
-         this.lblOverwrite.TabIndex = 1;
-         this.lblOverwrite.Text = "Overwrite:";
-         // 
-         // chlOverwrite
-         // 
-         this.chlOverwrite.CheckOnClick = true;
-         this.chlOverwrite.Location = new System.Drawing.Point(16, 88);
-         this.chlOverwrite.Name = "chlOverwrite";
-         this.chlOverwrite.Size = new System.Drawing.Size(248, 139);
-         this.chlOverwrite.TabIndex = 2;
+         this.ConfirmOverwrites.StepControl = this.pnlConfirmOverwrites;
+         this.ConfirmOverwrites.TitleText = "Confirm Overwrites";
+         this.ConfirmOverwrites.InitFunction += new System.EventHandler(this.ConfirmOverwrites_InitFunction);
+         this.ConfirmOverwrites.IsApplicableFunction += new SGDK2.frmWizardBase.ValidateFunctionEvent(this.ConfirmOverwrites_IsApplicableFunction);
          // 
          // pnlReview
          // 
@@ -270,23 +268,8 @@ namespace SGDK2
          this.pnlReview.Controls.Add(this.lblReview);
          this.pnlReview.Location = new System.Drawing.Point(-10168, 42);
          this.pnlReview.Name = "pnlReview";
-         this.pnlReview.Size = new System.Drawing.Size(280, 231);
+         this.pnlReview.Size = new System.Drawing.Size(281, 231);
          this.pnlReview.TabIndex = 9;
-         // 
-         // Review
-         // 
-         this.Review.StepControl = this.pnlReview;
-         this.Review.TitleText = "Review";
-         this.Review.InitFunction += new System.EventHandler(this.Review_InitFunction);
-         this.Review.ValidateFunction += new SGDK2.frmWizardBase.ValidateFunctionEvent(this.Review_ValidateFunction);
-         // 
-         // lblReview
-         // 
-         this.lblReview.Location = new System.Drawing.Point(8, 8);
-         this.lblReview.Name = "lblReview";
-         this.lblReview.Size = new System.Drawing.Size(264, 40);
-         this.lblReview.TabIndex = 0;
-         this.lblReview.Text = "The following actions will be taken when you click finish:";
          // 
          // txtReview
          // 
@@ -298,6 +281,21 @@ namespace SGDK2
          this.txtReview.Size = new System.Drawing.Size(264, 176);
          this.txtReview.TabIndex = 1;
          this.txtReview.Text = "";
+         // 
+         // lblReview
+         // 
+         this.lblReview.Location = new System.Drawing.Point(8, 8);
+         this.lblReview.Name = "lblReview";
+         this.lblReview.Size = new System.Drawing.Size(264, 40);
+         this.lblReview.TabIndex = 0;
+         this.lblReview.Text = "The following actions will be taken when you click finish:";
+         // 
+         // Review
+         // 
+         this.Review.StepControl = this.pnlReview;
+         this.Review.TitleText = "Review";
+         this.Review.InitFunction += new System.EventHandler(this.Review_InitFunction);
+         this.Review.ValidateFunction += new SGDK2.frmWizardBase.ValidateFunctionEvent(this.Review_ValidateFunction);
          // 
          // frmCodeImport
          // 

@@ -612,6 +612,16 @@ namespace SGDK2
             new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typ.Name), "game")));
          typ.Members.Add(prpGame);
 
+         CodeMemberField constMaxPlayers = new CodeMemberField(typeof(byte), "MaxPlayers");
+         constMaxPlayers.Attributes = MemberAttributes.Const | MemberAttributes.Public;
+         constMaxPlayers.InitExpression = new CodePrimitiveExpression(ProjectData.ProjectRow.MaxPlayers);
+         typ.Members.Add(constMaxPlayers);
+
+         CodeMemberField constMaxViews = new CodeMemberField(typeof(byte), "MaxViews");
+         constMaxViews.Attributes = MemberAttributes.Const | MemberAttributes.Public;
+         constMaxViews.InitExpression = new CodePrimitiveExpression(ProjectData.ProjectRow.MaxViews);
+         typ.Members.Add(constMaxViews);
+
          Generator.GenerateCodeFromType(typ, txt, GeneratorOptions);
       }
 
@@ -2684,7 +2694,7 @@ namespace SGDK2
       }
       #endregion
 
-      #region Compilation      
+      #region Compilation
       /// <summary>
       /// Compile a the temporary instance of the project to use for reflection
       /// (retrieving function names and parameter info, etc).

@@ -218,6 +218,18 @@ public abstract class GeneralRules
          System.IO.File.Delete(System.IO.Path.Combine(
             System.Windows.Forms.Application.UserAppDataPath, Slot.ToString() + ".sav"));
    }
+
+   public int CurrentPlayers
+   {
+      get
+      {
+         return Project.GameWindow.CurrentPlayers;
+      }
+      set
+      {
+         Project.GameWindow.CurrentPlayers = (byte)value;
+      }
+   }
 }
 
 public enum SaveUnitInclusion

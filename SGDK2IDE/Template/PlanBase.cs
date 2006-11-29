@@ -286,6 +286,39 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
       }
    }
 
+   [Description("Associate the state of the input device for the specified player (1-4) with the inputs on the specified sprite.")]
+   public void MapPlayerToInputs(int PlayerNumber, SpriteBase target)
+   {
+      System.Diagnostics.Debug.Assert(target.isActive, "Attempted to execute MapPlayerToInput on an inactive sprite");
+      if (PlayerNumber > Project.GameWindow.CurrentPlayers)
+      {
+         System.Diagnostics.Debug.Fail("Attempted to map inactive player input");
+         return;
+      }
+      IPlayer player = Project.GameWindow.Players[PlayerNumber-1];
+      target.inputs = 0;
+      if (player.Up) target.inputs |= SpriteBase.InputBits.Up;
+      if (player.Left) target.inputs |= SpriteBase.InputBits.Left;
+      if (player.Right) target.inputs |= SpriteBase.InputBits.Right;
+      if (player.Down) target.inputs |= SpriteBase.InputBits.Down;
+      if (player.Button1) target.inputs |= SpriteBase.InputBits.Button1;
+      if (player.Button2) target.inputs |= SpriteBase.InputBits.Button2;
+      if (player.Button3) target.inputs |= SpriteBase.InputBits.Button3;
+      if (player.Button4) target.inputs |= SpriteBase.InputBits.Button4;
+   }
+
+   [Description("Make the specified sprite active.")]
+   public void ActivateSprite(SpriteBase target)
+   {
+      target.isActive = true;
+   }
+
+   [Description("Make the specified sprite inactive.")]
+   public void DeactivateSprite(SpriteBase target)
+   {
+      target.isActive = false;
+   }
+
    #region Inventory / Overlay
    public enum DrawStyle
    {

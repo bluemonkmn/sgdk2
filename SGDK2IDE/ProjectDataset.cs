@@ -9858,6 +9858,10 @@ namespace SGDK2 {
             
             private DataColumn columnOverlayMap;
             
+            private DataColumn columnMaxPlayers;
+            
+            private DataColumn columnMaxViews;
+            
             internal ProjectDataTable() : 
                     base("Project") {
                 this.InitClass();
@@ -9916,6 +9920,18 @@ namespace SGDK2 {
                 }
             }
             
+            internal DataColumn MaxPlayersColumn {
+                get {
+                    return this.columnMaxPlayers;
+                }
+            }
+            
+            internal DataColumn MaxViewsColumn {
+                get {
+                    return this.columnMaxViews;
+                }
+            }
+            
             public ProjectRow this[int index] {
                 get {
                     return ((ProjectRow)(this.Rows[index]));
@@ -9934,14 +9950,16 @@ namespace SGDK2 {
                 this.Rows.Add(row);
             }
             
-            public ProjectRow AddProjectRow(string DisplayMode, bool Windowed, string TitleText, string StartMap, string OverlayMap) {
+            public ProjectRow AddProjectRow(string DisplayMode, bool Windowed, string TitleText, string StartMap, string OverlayMap, System.Byte MaxPlayers, System.Byte MaxViews) {
                 ProjectRow rowProjectRow = ((ProjectRow)(this.NewRow()));
                 rowProjectRow.ItemArray = new object[] {
                         DisplayMode,
                         Windowed,
                         TitleText,
                         StartMap,
-                        OverlayMap};
+                        OverlayMap,
+                        MaxPlayers,
+                        MaxViews};
                 this.Rows.Add(rowProjectRow);
                 return rowProjectRow;
             }
@@ -9966,6 +9984,8 @@ namespace SGDK2 {
                 this.columnTitleText = this.Columns["TitleText"];
                 this.columnStartMap = this.Columns["StartMap"];
                 this.columnOverlayMap = this.Columns["OverlayMap"];
+                this.columnMaxPlayers = this.Columns["MaxPlayers"];
+                this.columnMaxViews = this.Columns["MaxViews"];
             }
             
             private void InitClass() {
@@ -9979,6 +9999,10 @@ namespace SGDK2 {
                 this.Columns.Add(this.columnStartMap);
                 this.columnOverlayMap = new DataColumn("OverlayMap", typeof(string), null, System.Data.MappingType.Attribute);
                 this.Columns.Add(this.columnOverlayMap);
+                this.columnMaxPlayers = new DataColumn("MaxPlayers", typeof(System.Byte), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnMaxPlayers);
+                this.columnMaxViews = new DataColumn("MaxViews", typeof(System.Byte), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnMaxViews);
                 this.columnDisplayMode.AllowDBNull = false;
                 this.columnDisplayMode.Namespace = "";
                 this.columnWindowed.AllowDBNull = false;
@@ -9986,6 +10010,10 @@ namespace SGDK2 {
                 this.columnTitleText.Namespace = "";
                 this.columnStartMap.Namespace = "";
                 this.columnOverlayMap.Namespace = "";
+                this.columnMaxPlayers.Namespace = "";
+                this.columnMaxPlayers.DefaultValue = 1;
+                this.columnMaxViews.Namespace = "";
+                this.columnMaxViews.DefaultValue = 1;
             }
             
             public ProjectRow NewProjectRow() {
@@ -10103,6 +10131,34 @@ namespace SGDK2 {
                 }
             }
             
+            public System.Byte MaxPlayers {
+                get {
+                    if (this.IsMaxPlayersNull()) {
+                        return 1;
+                    }
+                    else {
+                        return ((System.Byte)(this[this.tableProject.MaxPlayersColumn]));
+                    }
+                }
+                set {
+                    this[this.tableProject.MaxPlayersColumn] = value;
+                }
+            }
+            
+            public System.Byte MaxViews {
+                get {
+                    if (this.IsMaxViewsNull()) {
+                        return 1;
+                    }
+                    else {
+                        return ((System.Byte)(this[this.tableProject.MaxViewsColumn]));
+                    }
+                }
+                set {
+                    this[this.tableProject.MaxViewsColumn] = value;
+                }
+            }
+            
             public bool IsTitleTextNull() {
                 return this.IsNull(this.tableProject.TitleTextColumn);
             }
@@ -10125,6 +10181,22 @@ namespace SGDK2 {
             
             public void SetOverlayMapNull() {
                 this[this.tableProject.OverlayMapColumn] = System.Convert.DBNull;
+            }
+            
+            public bool IsMaxPlayersNull() {
+                return this.IsNull(this.tableProject.MaxPlayersColumn);
+            }
+            
+            public void SetMaxPlayersNull() {
+                this[this.tableProject.MaxPlayersColumn] = System.Convert.DBNull;
+            }
+            
+            public bool IsMaxViewsNull() {
+                return this.IsNull(this.tableProject.MaxViewsColumn);
+            }
+            
+            public void SetMaxViewsNull() {
+                this[this.tableProject.MaxViewsColumn] = System.Convert.DBNull;
             }
         }
         

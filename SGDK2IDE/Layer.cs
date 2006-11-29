@@ -41,15 +41,7 @@ namespace SGDK2
             else if (frame.Color == -1)
                this.color = color;
             else
-            {
-               byte[] bgraFrame = BitConverter.GetBytes(frame.Color);
-               byte[] bgraOverride = BitConverter.GetBytes(color);
-               bgraOverride[0] = (byte)((bgraFrame[0] * bgraOverride[0]) / 255);
-               bgraOverride[1] = (byte)((bgraFrame[1] * bgraOverride[1]) / 255);
-               bgraOverride[2] = (byte)((bgraFrame[2] * bgraOverride[2]) / 255);
-               bgraOverride[3] = (byte)((bgraFrame[3] * bgraOverride[3]) / 255);
-               this.color = BitConverter.ToInt32(bgraOverride, 0);
-            }
+               this.color = Microsoft.DirectX.Direct3D.ColorOperator.Modulate(frame.Color, color);
          }
          #region IComparable Members
 

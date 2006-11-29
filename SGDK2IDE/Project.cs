@@ -111,6 +111,38 @@ namespace SGDK2
                project.OverlayMap = value;
             }
          }
+
+         [Description("A value 1-4 indicating how many players the user can choose to activate")]
+         public byte MaxPlayers
+         {
+            get
+            {
+               return project.MaxPlayers;
+            }
+            set
+            {
+               if ((value >= 1) && (value <= 4))
+                  project.MaxPlayers = value;
+               else
+                  throw new ApplicationException("MaxPlayers must be 1 through 4");
+            }
+         }
+
+         [Description("A value 1-4 indicating how many separate scrolling sections the display can split into")]
+         public byte MaxViews
+         {
+            get
+            {
+               return project.MaxViews;
+            }
+            set
+            {
+               if ((value >= 1) && (value <= 4))
+                  project.MaxViews = value;
+               else
+                  throw new ApplicationException("MaxViews must be 1 through 4");
+            }
+         }
       }
       #endregion
 

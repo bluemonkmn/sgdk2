@@ -33,7 +33,7 @@ public abstract class SpriteBase : GeneralRules
    public double LocalDY;
 
    [FlagsAttribute()]
-      public enum InputBits
+   public enum InputBits
    {
       Up=1,
       Right=2,
@@ -630,6 +630,27 @@ public abstract class SpriteBase : GeneralRules
    {
       Debug.Assert(this.isActive, "Attempted to execute MapKeyToInput on an inactive sprite");
       SetInputState(Input, Project.GameWindow.KeyboardState[key]);
+   }
+
+   [Description("Associate the state of the input device for the specified player (1-4) with the inputs on this sprite.")]
+   public void MapPlayerToInputs(int PlayerNumber)
+   {
+      Debug.Assert(this.isActive, "Attempted to execute MapPlayerToInput on an inactive sprite");
+      if (PlayerNumber > Project.GameWindow.CurrentPlayers)
+      {
+         Debug.Fail("Attempted to map inactive player input");
+         return;
+      }
+      IPlayer player = Project.GameWindow.Players[PlayerNumber-1];
+      inputs = 0;
+      if (player.Up) inputs |= InputBits.Up;
+      if (player.Left) inputs |= InputBits.Left;
+      if (player.Right) inputs |= InputBits.Right;
+      if (player.Down) inputs |= InputBits.Down;
+      if (player.Button1) inputs |= InputBits.Button1;
+      if (player.Button2) inputs |= InputBits.Button2;
+      if (player.Button3) inputs |= InputBits.Button3;
+      if (player.Button4) inputs |= InputBits.Button4;
    }
 
    [Description("Accelerate this sprite according to which directional inputs are on.  Acceleration is in tenths of a pixel per second squared.  Max is in pixels per second.")]

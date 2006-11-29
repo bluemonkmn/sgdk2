@@ -681,6 +681,11 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "Template\Controls.cs"
+                    SubType = "Form"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "Template\Display.cs"
                     SubType = "Component"
                     BuildAction = "EmbeddedResource"
@@ -712,6 +717,11 @@
                 />
                 <File
                     RelPath = "Template\PlanBase.cs"
+                    SubType = "Code"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "Template\Player.cs"
                     SubType = "Code"
                     BuildAction = "EmbeddedResource"
                 />

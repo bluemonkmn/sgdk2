@@ -277,13 +277,15 @@
           <xs:element name="Project">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="Comments" type="xs:string" default="" msdata:Ordinal="5" />
+                <xs:element name="Comments" type="xs:string" default="" msdata:Ordinal="7" />
               </xs:sequence>
               <xs:attribute name="DisplayMode" type="xs:string" use="required" />
               <xs:attribute name="Windowed" type="xs:boolean" use="required" />
               <xs:attribute name="TitleText" type="xs:string" />
               <xs:attribute name="StartMap" type="xs:string" />
               <xs:attribute name="OverlayMap" type="xs:string" />
+              <xs:attribute name="MaxPlayers" type="xs:unsignedByte" default="1" />
+              <xs:attribute name="MaxViews" type="xs:unsignedByte" default="1" />
             </xs:complexType>
           </xs:element>
           <xs:element name="TileCategory">
@@ -1253,6 +1255,15 @@
         <PlanRule Name="IncludeCurrentMap" Sequence="4" Type="Do" Function="IncludeInSaveUnit" Parameter1="SaveUnitInclusion.WhichMapIsCurrent" EndIf="false" Suspended="false" />
         <PlanRule Name="ExcludeCounter" Sequence="5" Type="Do" Function="ExcludeCounterFromSaveUnit" Parameter1="Counter.Animator" EndIf="false" Suspended="false" />
       </SpritePlan>
+      <SpritePlan Name="Player Inputs" Priority="1">
+        <PlanRule Name="MapPlayer1" Sequence="1" Type="Do" Function="MapPlayerToInputs" Parameter1="1" Parameter2="m_ParentLayer.m_Player_1" EndIf="false" Suspended="false" />
+        <PlanRule Name="MapPlayer2" Sequence="5" Type="Do" Function="MapPlayerToInputs" Parameter1="2" Parameter2="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
+        <PlanRule Name="IfPlayer2" Sequence="4" Type="If" Function="&gt;=" Parameter1="CurrentPlayers" Parameter2="2" EndIf="false" Suspended="false" />
+        <PlanRule Name="CheckActive" Sequence="2" Type="If" Function="!IsSpriteActive" Parameter1="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
+        <PlanRule Name="ActivatePlayer2" Sequence="3" Type="Do" Function="ActivateSprite" Parameter1="m_ParentLayer.m_Player_2" EndIf="true" Suspended="false" />
+        <PlanRule Name="CheckDeactivate" Sequence="6" Type="ElseIf" Function="IsSpriteActive" Parameter1="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
+        <PlanRule Name="DeactivatePlayer2" Sequence="7" Type="Do" Function="DeactivateSprite" Parameter1="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
+      </SpritePlan>
     </Layer>
   </Map>
   <Map Name="Level 2" ScrollMarginLeft="32" ScrollMarginTop="32" ScrollMarginRight="32" ScrollMarginBottom="32" ScrollWidth="200" ScrollHeight="0">
@@ -1288,63 +1299,58 @@
     </Layer>
   </Map>
   <SpriteDefinition Name="Player">
-    <SpriteRule Name="LeftKey" Sequence="1" Type="Do" Function="MapKeyToInput" Parameter1="Microsoft.DirectX.DirectInput.Key.LeftArrow" Parameter2="SpriteBase.InputBits.Left" EndIf="false" Suspended="false" />
-    <SpriteRule Name="RightKey" Sequence="2" Type="Do" Function="MapKeyToInput" Parameter1="Microsoft.DirectX.DirectInput.Key.RightArrow" Parameter2="SpriteBase.InputBits.Right" EndIf="false" Suspended="false" />
-    <SpriteRule Name="UpKey" Sequence="3" Type="Do" Function="MapKeyToInput" Parameter1="Microsoft.DirectX.DirectInput.Key.UpArrow" Parameter2="SpriteBase.InputBits.Up" EndIf="false" Suspended="false" />
-    <SpriteRule Name="DownKey" Sequence="4" Type="Do" Function="MapKeyToInput" Parameter1="Microsoft.DirectX.DirectInput.Key.DownArrow" Parameter2="SpriteBase.InputBits.Down" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Accellerate" Sequence="24" Type="Do" Function="AccelerateByInputs" Parameter1="10" Parameter2="5" Parameter3="true" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Move" Sequence="40" Type="Do" Function="MoveByVelocity" EndIf="false" Suspended="false" />
-    <SpriteRule Name="ReactToSolid" Sequence="38" Type="Do" Function="ReactToSolid" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Gravity" Sequence="25" Type="Do" Function="AlterYVelocity" Parameter1=".4" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Snap" Sequence="39" Type="Do" Function="SnapToGround" Parameter1="2" EndIf="false" Suspended="false" />
-    <SpriteRule Name="IfBlockedDown" Sequence="17" Type="ElseIf" Function="Blocked" Parameter1="SpriteBase.Direction.Down" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Jump" Sequence="22" Type="Do" Function="=" Parameter1="-10" ResultParameter="dy" EndIf="true" Suspended="false" />
-    <SpriteRule Name="AndUp" Sequence="19" Type="And" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Button1" Parameter2="false" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Animate" Sequence="27" Type="Do" Function="Animate" Parameter1="SpriteBase.SpriteAnimationType.ByHorizontalVelocity" EndIf="false" Suspended="false" />
-    <SpriteRule Name="LandOnPlatform" Sequence="36" Type="Else" Function="LandDownOnPlatform" Parameter1="ParentLayer.m_SpriteCategories.Platforms" EndIf="true" Suspended="false" />
-    <SpriteRule Name="ReactToPlatform" Sequence="35" Type="Do" Function="ReactToPlatform" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Inertia" Sequence="26" Type="Do" Function="ReactToInertia" Parameter1="100" Parameter2="80" EndIf="false" Suspended="false" />
-    <SpriteRule Name="OrRiding" Sequence="18" Type="Or" Function="IsRidingPlatform" EndIf="false" Suspended="false" />
-    <SpriteRule Name="StopRiding" Sequence="20" Type="Do" Function="StopRiding" EndIf="false" Suspended="false" />
-    <SpriteRule Name="IfRiding" Sequence="34" Type="If" Function="IsRidingPlatform" EndIf="false" Suspended="false" />
-    <SpriteRule Name="TouchTiles" Sequence="44" Type="If" Function="TouchTiles" Parameter1="TileCategoryName.Touchable" EndIf="false" Suspended="false" />
-    <SpriteRule Name="GetCherries" Sequence="50" Type="Do" Function="TileTake" Parameter1="129" Parameter2="Counter.Cherries" ResultParameter="TempNum" EndIf="false" Suspended="false" />
-    <SpriteRule Name="GetIceCream" Sequence="49" Type="Do" Function="TileTake" Parameter1="128" Parameter2="Counter.IceCreams" EndIf="false" Suspended="false" />
-    <SpriteRule Name="ChangeGrapes" Sequence="53" Type="Do" Function="TileChange" Parameter1="130" Parameter2="131" Parameter3="true" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Clear1up" Sequence="54" Type="Do" Function="TileChange" Parameter1="131" Parameter2="0" Parameter3="true" EndIf="true" Suspended="false" />
-    <SpriteRule Name="CheckMakeBubble" Sequence="45" Type="Do" Function="TileTouchingIndex" Parameter1="188" Parameter2="true" Parameter3="true" ResultParameter="TouchIndex" EndIf="false" Suspended="false" />
-    <SpriteRule Name="IfMakeBubble" Sequence="46" Type="While" Function="&gt;=" Parameter1="TouchIndex" Parameter2="0" EndIf="false" Suspended="false" />
-    <SpriteRule Name="MakeBubble" Sequence="47" Type="Do" Function="TileActivateSprite" Parameter1="TouchIndex" Parameter2="ParentLayer.m_SpriteCategories.Bubbles" Parameter3="true" EndIf="false" Suspended="false" />
-    <SpriteRule Name="LadderCheck" Sequence="14" Type="ElseIf" Function="IsOnTile" Parameter1="TileCategoryName.Ladder" Parameter2="SpriteBase.RelativePosition.BottomCenter" EndIf="false" Suspended="false" />
-    <SpriteRule Name="ClimbCheck" Sequence="15" Type="And" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Up" Parameter2="true" EndIf="false" Suspended="false" />
-    <SpriteRule Name="DoClimb" Sequence="16" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Climbing" EndIf="false" Suspended="false" />
-    <SpriteRule Name="IfClimbing" Sequence="8" Type="If" Function="IsInState" Parameter1="(int)Sprites.Player.State.Climbing" Parameter2="(int)Sprites.Player.State.Climbing" EndIf="false" Suspended="false" />
-    <SpriteRule Name="LeaveLadderCheck" Sequence="9" Type="If" Function="!IsOnTile" Parameter1="TileCategoryName.Ladder" Parameter2="SpriteBase.RelativePosition.BottomCenter" EndIf="true" Suspended="false" />
-    <SpriteRule Name="LeaveLadder" Sequence="10" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Right" EndIf="true" Suspended="false" />
-    <SpriteRule Name="EndClimbing" Sequence="37" Type="End" Function="End" EndIf="true" Suspended="false" />
-    <SpriteRule Name="LadderAccellerate" Sequence="12" Type="Do" Function="AccelerateByInputs" Parameter1="20" Parameter2="2" Parameter3="false" EndIf="false" Suspended="false" />
-    <SpriteRule Name="LadderAnimate" Sequence="13" Type="Do" Function="Animate" Parameter1="SpriteBase.SpriteAnimationType.ByVerticalVelocity" EndIf="false" Suspended="false" />
-    <SpriteRule Name="LadderInertia" Sequence="11" Type="Do" Function="ReactToInertia" Parameter1="0" Parameter2="0" EndIf="false" Suspended="false" />
-    <SpriteRule Name="EndLadderCheck" Sequence="23" Type="End" Function="End" EndIf="true" Suspended="false" />
-    <SpriteRule Name="ShiftInputs" Sequence="41" Type="Do" Function="CopyInputsToOld" EndIf="false" Suspended="false" />
-    <SpriteRule Name="DebugInputs" Sequence="6" Type="Do" Function="LogDebugValue" Parameter1="(int)inputs" EndIf="false" Suspended="false" />
-    <SpriteRule Name="DebugOldInputs" Sequence="7" Type="Do" Function="LogDebugValue" Parameter1="(int)oldinputs" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Button1" Sequence="5" Type="Do" Function="MapKeyToInput" Parameter1="Microsoft.DirectX.DirectInput.Key.Space" Parameter2="SpriteBase.InputBits.Button1" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Check for more bubbles" Sequence="48" Type="Do" Function="TileTouchingIndex" Parameter1="188" Parameter2="true" Parameter3="true" ResultParameter="TouchIndex" EndIf="true" Suspended="false" />
-    <SpriteRule Name="If moving left" Sequence="28" Type="If" Function="IsMoving" Parameter1="SpriteBase.Direction.Left" EndIf="false" Suspended="false" />
-    <SpriteRule Name="and facing right" Sequence="29" Type="And" Function="IsInState" Parameter1="(int)Sprites.Player.State.Right" Parameter2="(int)Sprites.Player.State.Right" EndIf="false" Suspended="false" />
-    <SpriteRule Name="then face left" Sequence="30" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Left" EndIf="true" Suspended="false" />
-    <SpriteRule Name="If moving right" Sequence="31" Type="If" Function="IsMoving" Parameter1="SpriteBase.Direction.Right" EndIf="false" Suspended="false" />
-    <SpriteRule Name="and facing left" Sequence="32" Type="And" Function="IsInState" Parameter1="(int)Sprites.Player.State.Left" Parameter2="(int)Sprites.Player.State.Left" EndIf="false" Suspended="false" />
-    <SpriteRule Name="then face right" Sequence="33" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Right" EndIf="true" Suspended="false" />
-    <SpriteRule Name="JumpSfx" Sequence="21" Type="Do" Function="CustomObjects.Sfx.PlaySound" Parameter1="CustomObjects.Drum.Value" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Sound" Sequence="52" Type="Do" Function="CustomObjects.FMODBase.PlaySound" Parameter1="CustomObjects.OggSound1.Value" Parameter2="CustomObjects.SoundReplay.Restart" EndIf="true" Suspended="false" />
-    <SpriteRule Name="CheckSound" Sequence="51" Type="If" Function="&gt;" Parameter1="TempNum" Parameter2="0" EndIf="false" Suspended="false" />
-    <SpriteRule Name="PlayMusic" Sequence="43" Type="Do" Function="CustomObjects.FMODBase.PlaySound" Parameter1="CustomObjects.Music1.Value" Parameter2="CustomObjects.SoundReplay.Continue" EndIf="false" Suspended="false" />
-    <SpriteRule Name="ScrollIntoView" Sequence="42" Type="Do" Function="ScrollSpriteIntoView" EndIf="false" Suspended="false" />
-    <SpriteRule Name="If Cherries are even" Sequence="55" Type="If" Function="==" Parameter1="Counter.Cherries.CurrentValue%2" Parameter2="0" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Turn red" Sequence="56" Type="Do" Function="=" Parameter1="0" ResultParameter="ModulateGreen" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Turn Unred" Sequence="57" Type="Else" Function="=" Parameter1="255" ResultParameter="ModulateGreen" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Accellerate" Sequence="19" Type="Do" Function="AccelerateByInputs" Parameter1="10" Parameter2="5" Parameter3="true" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Move" Sequence="35" Type="Do" Function="MoveByVelocity" EndIf="false" Suspended="false" />
+    <SpriteRule Name="ReactToSolid" Sequence="33" Type="Do" Function="ReactToSolid" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Gravity" Sequence="20" Type="Do" Function="AlterYVelocity" Parameter1=".4" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Snap" Sequence="34" Type="Do" Function="SnapToGround" Parameter1="2" EndIf="false" Suspended="false" />
+    <SpriteRule Name="IfBlockedDown" Sequence="12" Type="ElseIf" Function="Blocked" Parameter1="SpriteBase.Direction.Down" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Jump" Sequence="17" Type="Do" Function="=" Parameter1="-10" ResultParameter="dy" EndIf="true" Suspended="false" />
+    <SpriteRule Name="AndUp" Sequence="14" Type="And" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Button1" Parameter2="false" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Animate" Sequence="22" Type="Do" Function="Animate" Parameter1="SpriteBase.SpriteAnimationType.ByHorizontalVelocity" EndIf="false" Suspended="false" />
+    <SpriteRule Name="LandOnPlatform" Sequence="31" Type="Else" Function="LandDownOnPlatform" Parameter1="ParentLayer.m_SpriteCategories.Platforms" EndIf="true" Suspended="false" />
+    <SpriteRule Name="ReactToPlatform" Sequence="30" Type="Do" Function="ReactToPlatform" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Inertia" Sequence="21" Type="Do" Function="ReactToInertia" Parameter1="100" Parameter2="80" EndIf="false" Suspended="false" />
+    <SpriteRule Name="OrRiding" Sequence="13" Type="Or" Function="IsRidingPlatform" EndIf="false" Suspended="false" />
+    <SpriteRule Name="StopRiding" Sequence="15" Type="Do" Function="StopRiding" EndIf="false" Suspended="false" />
+    <SpriteRule Name="IfRiding" Sequence="29" Type="If" Function="IsRidingPlatform" EndIf="false" Suspended="false" />
+    <SpriteRule Name="TouchTiles" Sequence="39" Type="If" Function="TouchTiles" Parameter1="TileCategoryName.Touchable" EndIf="false" Suspended="false" />
+    <SpriteRule Name="GetCherries" Sequence="45" Type="Do" Function="TileTake" Parameter1="129" Parameter2="Counter.Cherries" ResultParameter="TempNum" EndIf="false" Suspended="false" />
+    <SpriteRule Name="GetIceCream" Sequence="44" Type="Do" Function="TileTake" Parameter1="128" Parameter2="Counter.IceCreams" EndIf="false" Suspended="false" />
+    <SpriteRule Name="ChangeGrapes" Sequence="48" Type="Do" Function="TileChange" Parameter1="130" Parameter2="131" Parameter3="true" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Clear1up" Sequence="49" Type="Do" Function="TileChange" Parameter1="131" Parameter2="0" Parameter3="true" EndIf="true" Suspended="false" />
+    <SpriteRule Name="CheckMakeBubble" Sequence="40" Type="Do" Function="TileTouchingIndex" Parameter1="188" Parameter2="true" Parameter3="true" ResultParameter="TouchIndex" EndIf="false" Suspended="false" />
+    <SpriteRule Name="IfMakeBubble" Sequence="41" Type="While" Function="&gt;=" Parameter1="TouchIndex" Parameter2="0" EndIf="false" Suspended="false" />
+    <SpriteRule Name="MakeBubble" Sequence="42" Type="Do" Function="TileActivateSprite" Parameter1="TouchIndex" Parameter2="ParentLayer.m_SpriteCategories.Bubbles" Parameter3="true" EndIf="false" Suspended="false" />
+    <SpriteRule Name="LadderCheck" Sequence="9" Type="ElseIf" Function="IsOnTile" Parameter1="TileCategoryName.Ladder" Parameter2="SpriteBase.RelativePosition.BottomCenter" EndIf="false" Suspended="false" />
+    <SpriteRule Name="ClimbCheck" Sequence="10" Type="And" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Up" Parameter2="true" EndIf="false" Suspended="false" />
+    <SpriteRule Name="DoClimb" Sequence="11" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Climbing" EndIf="false" Suspended="false" />
+    <SpriteRule Name="IfClimbing" Sequence="3" Type="If" Function="IsInState" Parameter1="(int)Sprites.Player.State.Climbing" Parameter2="(int)Sprites.Player.State.Climbing" EndIf="false" Suspended="false" />
+    <SpriteRule Name="LeaveLadderCheck" Sequence="4" Type="If" Function="!IsOnTile" Parameter1="TileCategoryName.Ladder" Parameter2="SpriteBase.RelativePosition.BottomCenter" EndIf="true" Suspended="false" />
+    <SpriteRule Name="LeaveLadder" Sequence="5" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Right" EndIf="true" Suspended="false" />
+    <SpriteRule Name="EndClimbing" Sequence="32" Type="End" Function="End" EndIf="true" Suspended="false" />
+    <SpriteRule Name="LadderAccellerate" Sequence="7" Type="Do" Function="AccelerateByInputs" Parameter1="20" Parameter2="2" Parameter3="false" EndIf="false" Suspended="false" />
+    <SpriteRule Name="LadderAnimate" Sequence="8" Type="Do" Function="Animate" Parameter1="SpriteBase.SpriteAnimationType.ByVerticalVelocity" EndIf="false" Suspended="false" />
+    <SpriteRule Name="LadderInertia" Sequence="6" Type="Do" Function="ReactToInertia" Parameter1="0" Parameter2="0" EndIf="false" Suspended="false" />
+    <SpriteRule Name="EndLadderCheck" Sequence="18" Type="End" Function="End" EndIf="true" Suspended="false" />
+    <SpriteRule Name="ShiftInputs" Sequence="36" Type="Do" Function="CopyInputsToOld" EndIf="false" Suspended="false" />
+    <SpriteRule Name="DebugInputs" Sequence="1" Type="Do" Function="LogDebugValue" Parameter1="(int)inputs" EndIf="false" Suspended="false" />
+    <SpriteRule Name="DebugOldInputs" Sequence="2" Type="Do" Function="LogDebugValue" Parameter1="(int)oldinputs" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Check for more bubbles" Sequence="43" Type="Do" Function="TileTouchingIndex" Parameter1="188" Parameter2="true" Parameter3="true" ResultParameter="TouchIndex" EndIf="true" Suspended="false" />
+    <SpriteRule Name="If moving left" Sequence="23" Type="If" Function="IsMoving" Parameter1="SpriteBase.Direction.Left" EndIf="false" Suspended="false" />
+    <SpriteRule Name="and facing right" Sequence="24" Type="And" Function="IsInState" Parameter1="(int)Sprites.Player.State.Right" Parameter2="(int)Sprites.Player.State.Right" EndIf="false" Suspended="false" />
+    <SpriteRule Name="then face left" Sequence="25" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Left" EndIf="true" Suspended="false" />
+    <SpriteRule Name="If moving right" Sequence="26" Type="If" Function="IsMoving" Parameter1="SpriteBase.Direction.Right" EndIf="false" Suspended="false" />
+    <SpriteRule Name="and facing left" Sequence="27" Type="And" Function="IsInState" Parameter1="(int)Sprites.Player.State.Left" Parameter2="(int)Sprites.Player.State.Left" EndIf="false" Suspended="false" />
+    <SpriteRule Name="then face right" Sequence="28" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Right" EndIf="true" Suspended="false" />
+    <SpriteRule Name="JumpSfx" Sequence="16" Type="Do" Function="CustomObjects.Sfx.PlaySound" Parameter1="CustomObjects.Drum.Value" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Sound" Sequence="47" Type="Do" Function="CustomObjects.FMODBase.PlaySound" Parameter1="CustomObjects.OggSound1.Value" Parameter2="CustomObjects.SoundReplay.Restart" EndIf="true" Suspended="false" />
+    <SpriteRule Name="CheckSound" Sequence="46" Type="If" Function="&gt;" Parameter1="TempNum" Parameter2="0" EndIf="false" Suspended="false" />
+    <SpriteRule Name="PlayMusic" Sequence="38" Type="Do" Function="CustomObjects.FMODBase.PlaySound" Parameter1="CustomObjects.Music1.Value" Parameter2="CustomObjects.SoundReplay.Continue" EndIf="false" Suspended="false" />
+    <SpriteRule Name="ScrollIntoView" Sequence="37" Type="Do" Function="ScrollSpriteIntoView" EndIf="false" Suspended="false" />
+    <SpriteRule Name="If Cherries are even" Sequence="50" Type="If" Function="==" Parameter1="Counter.Cherries.CurrentValue%2" Parameter2="0" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Turn red" Sequence="51" Type="Do" Function="=" Parameter1="0" ResultParameter="ModulateGreen" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Turn Unred" Sequence="52" Type="Else" Function="=" Parameter1="255" ResultParameter="ModulateGreen" EndIf="false" Suspended="false" />
     <SpriteParameter Name="Life" />
     <SpriteParameter Name="TouchIndex" />
     <SpriteParameter Name="TempNum" />
@@ -2297,18 +2303,30 @@ using System.Windows.Forms;
 public class GameForm : Form
 {
    public Display GameDisplay = null;
-   private Microsoft.DirectX.DirectInput.Device keyboard;
+   private Microsoft.DirectX.DirectInput.Device keyboard = null;
    private Microsoft.DirectX.DirectInput.KeyboardState m_keyboardState;
+   private Microsoft.DirectX.DirectInput.Device[] controllers = null;
+   private Microsoft.DirectX.DirectInput.JoystickState[] m_controllerState;
+   private System.Collections.BitArray controllerEnabled;
+   private System.Collections.BitArray controllerAcquired;
    public MapBase CurrentMap;
    public MapBase OverlayMap;
    public System.Collections.Hashtable LoadedMaps = new System.Collections.Hashtable();
    private int m_fps = 0;
    private int m_frameCount = 0;
    private DateTime m_frameStart;
+   private System.Windows.Forms.MainMenu mnuGame;
+   private System.Windows.Forms.MenuItem mnuFile;
+   private System.Windows.Forms.MenuItem mnuFileExit;
+   private System.Windows.Forms.MenuItem mnuTools;
+   private System.Windows.Forms.MenuItem mnuToolsOptions;
+   public IPlayer[] Players = new IPlayer[Project.MaxPlayers];
+   private byte currentPlayers = 1;
    public System.IO.StringWriter debugText = new System.IO.StringWriter();
 
    public GameForm(GameDisplayMode mode, bool windowed, string title, System.Type initMapType, System.Type overlayMapType)
    {
+      InitializeComponent();
 #if DEBUG
       MessageBox.Show("You are running in debug mode.  Unexpected runtime conditions may cause the game to halt, and if an error occurs you will have the opportunity to debug into it if you have a debugger installed and the project's source code handy", "Debug Mode Active");
 #endif
@@ -2351,17 +2369,97 @@ public class GameForm : Form
    {
       int coopCode;
 
-      Microsoft.DirectX.DirectInput.DeviceList kbdList = Microsoft.DirectX.DirectInput.Manager.GetDevices(Microsoft.DirectX.DirectInput.DeviceType.Keyboard, Microsoft.DirectX.DirectInput.EnumDevicesFlags.AttachedOnly);
-      if (kbdList.MoveNext())
+      System.Collections.ArrayList controllersBuilder = new System.Collections.ArrayList();
+      foreach(Microsoft.DirectX.DirectInput.DeviceInstance dev in Microsoft.DirectX.DirectInput.Manager.Devices)
       {
-         keyboard = new Microsoft.DirectX.DirectInput.Device(((Microsoft.DirectX.DirectInput.DeviceInstance)kbdList.Current).InstanceGuid);
-         keyboard.SetCooperativeLevel(this, Microsoft.DirectX.DirectInput.CooperativeLevelFlags.Background |
-            Microsoft.DirectX.DirectInput.CooperativeLevelFlags.NonExclusive); 
-         keyboard.SetDataFormat(Microsoft.DirectX.DirectInput.DeviceDataFormat.Keyboard);
-         keyboard.Acquire();
+         switch (dev.DeviceType)
+         {
+            case Microsoft.DirectX.DirectInput.DeviceType.Keyboard:
+               if (keyboard == null)
+               {
+                  keyboard = new Microsoft.DirectX.DirectInput.Device(dev.InstanceGuid);
+                  keyboard.SetCooperativeLevel(this, Microsoft.DirectX.DirectInput.CooperativeLevelFlags.Background |
+                     Microsoft.DirectX.DirectInput.CooperativeLevelFlags.NonExclusive); 
+                  keyboard.SetDataFormat(Microsoft.DirectX.DirectInput.DeviceDataFormat.Keyboard);
+                  keyboard.Acquire();
+               }
+               break;
+            case Microsoft.DirectX.DirectInput.DeviceType.Gamepad:
+            case Microsoft.DirectX.DirectInput.DeviceType.Joystick:
+            {
+               Microsoft.DirectX.DirectInput.Device controller =
+                  new Microsoft.DirectX.DirectInput.Device(dev.InstanceGuid);
+               controller.SetCooperativeLevel(this, Microsoft.DirectX.DirectInput.CooperativeLevelFlags.Background |
+                  Microsoft.DirectX.DirectInput.CooperativeLevelFlags.NonExclusive);
+               controller.SetDataFormat(Microsoft.DirectX.DirectInput.DeviceDataFormat.Joystick);
+               controllersBuilder.Add(controller);
+               break;
+            }
+         }
+      }
+      if (controllersBuilder.Count &gt; 0)
+      {
+         controllers = (Microsoft.DirectX.DirectInput.Device[])controllersBuilder.ToArray(typeof(Microsoft.DirectX.DirectInput.Device));
+         controllerEnabled = new System.Collections.BitArray(controllers.Length, false);
+         controllerAcquired = new System.Collections.BitArray(controllers.Length, false);
+         m_controllerState = new Microsoft.DirectX.DirectInput.JoystickState[controllers.Length];
       }
       else
-         keyboard = null;
+      {
+         controllers = null;
+         controllerEnabled = controllerAcquired = null;
+      }
+
+      Players[0] = new KeyboardPlayer(
+         Microsoft.DirectX.DirectInput.Key.UpArrow,
+         Microsoft.DirectX.DirectInput.Key.LeftArrow,
+         Microsoft.DirectX.DirectInput.Key.RightArrow,
+         Microsoft.DirectX.DirectInput.Key.DownArrow,
+         Microsoft.DirectX.DirectInput.Key.RightControl,
+         Microsoft.DirectX.DirectInput.Key.Space,
+         Microsoft.DirectX.DirectInput.Key.Return,
+         Microsoft.DirectX.DirectInput.Key.RightShift);
+
+      if (controllers.Length &gt; 0)
+      {
+         for (int playerIdx = 1; playerIdx&lt;Project.MaxPlayers; playerIdx++)
+         {
+            Players[playerIdx] = new ControllerPlayer((playerIdx-1) % controllers.Length);
+         }
+      }
+      else
+      {
+         if (Project.MaxPlayers &gt; 1)
+            Players[1] = new KeyboardPlayer(
+               Microsoft.DirectX.DirectInput.Key.W,
+               Microsoft.DirectX.DirectInput.Key.A,
+               Microsoft.DirectX.DirectInput.Key.D,
+               Microsoft.DirectX.DirectInput.Key.S,
+               Microsoft.DirectX.DirectInput.Key.LeftAlt,
+               Microsoft.DirectX.DirectInput.Key.LeftShift,
+               Microsoft.DirectX.DirectInput.Key.LeftControl,
+               Microsoft.DirectX.DirectInput.Key.E);
+         if (Project.MaxPlayers &gt; 2)
+            Players[2] = new KeyboardPlayer(
+               Microsoft.DirectX.DirectInput.Key.NumPad8,
+               Microsoft.DirectX.DirectInput.Key.NumPad4,
+               Microsoft.DirectX.DirectInput.Key.NumPad6,
+               Microsoft.DirectX.DirectInput.Key.NumPad2,
+               Microsoft.DirectX.DirectInput.Key.NumPad5,
+               Microsoft.DirectX.DirectInput.Key.NumPad0,
+               Microsoft.DirectX.DirectInput.Key.NumPadEnter,
+               Microsoft.DirectX.DirectInput.Key.NumPad7);
+         if (Project.MaxPlayers &gt; 3)
+            Players[3] = new KeyboardPlayer(
+               Microsoft.DirectX.DirectInput.Key.I,
+               Microsoft.DirectX.DirectInput.Key.J,
+               Microsoft.DirectX.DirectInput.Key.L,
+               Microsoft.DirectX.DirectInput.Key.K,
+               Microsoft.DirectX.DirectInput.Key.U,
+               Microsoft.DirectX.DirectInput.Key.O,
+               Microsoft.DirectX.DirectInput.Key.M,
+               Microsoft.DirectX.DirectInput.Key.Comma);
+      }
 
       while(true)
       {
@@ -2392,6 +2490,7 @@ public class GameForm : Form
             CurrentMap.Draw();
             if (keyboard != null)
                m_keyboardState = keyboard.GetCurrentKeyboardState();
+            ReadControllers();
             CurrentMap.ExecuteRules();
             if (OverlayMap != null)
             {
@@ -2450,6 +2549,55 @@ public class GameForm : Form
       LoadedMaps.Remove(mapType);
    }
 
+   private void InitializeComponent()
+   {
+      this.mnuGame = new System.Windows.Forms.MainMenu();
+      this.mnuFile = new System.Windows.Forms.MenuItem();
+      this.mnuFileExit = new System.Windows.Forms.MenuItem();
+      this.mnuTools = new System.Windows.Forms.MenuItem();
+      this.mnuToolsOptions = new System.Windows.Forms.MenuItem();
+      // 
+      // mnuGame
+      // 
+      this.mnuGame.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                             this.mnuFile,
+                                                                             this.mnuTools});
+      // 
+      // mnuFile
+      // 
+      this.mnuFile.Index = 0;
+      this.mnuFile.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                             this.mnuFileExit});
+      this.mnuFile.Text = "&amp;File";
+      // 
+      // mnuFileExit
+      // 
+      this.mnuFileExit.Index = 0;
+      this.mnuFileExit.Shortcut = System.Windows.Forms.Shortcut.AltF4;
+      this.mnuFileExit.Text = "E&amp;xit";
+      // 
+      // mnuTools
+      // 
+      this.mnuTools.Index = 1;
+      this.mnuTools.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                              this.mnuToolsOptions});
+      this.mnuTools.Text = "&amp;Tools";
+      // 
+      // mnuToolsOptions
+      // 
+      this.mnuToolsOptions.Index = 0;
+      this.mnuToolsOptions.Text = "&amp;Options";
+      this.mnuToolsOptions.Click += new System.EventHandler(this.mnuToolsOptions_Click);
+      // 
+      // GameForm
+      // 
+      this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+      this.ClientSize = new System.Drawing.Size(292, 273);
+      this.Menu = this.mnuGame;
+      this.Name = "GameForm";
+
+   }
+
    public Microsoft.DirectX.DirectInput.KeyboardState KeyboardState
    {
       get
@@ -2458,10 +2606,101 @@ public class GameForm : Form
       }
    }
 
+   public Microsoft.DirectX.DirectInput.Key[] GetPressedKeys()
+   {
+      return keyboard.GetPressedKeys();
+   }
+
+   public void ReadControllers()
+   {
+      if (controllerEnabled == null)
+         return;
+
+      for (int i=0; i&lt;controllerEnabled.Count; i++)
+      {
+         if (controllerEnabled[i])
+         {
+            if (!controllerAcquired[i])
+            {
+               controllers[i].Acquire();
+               controllerAcquired[i] = true;
+            }
+            m_controllerState[i] = controllers[i].CurrentJoystickState;
+         }
+         else if (controllerAcquired[i])
+         {
+            controllers[i].Unacquire();
+            controllerAcquired[i] = false;
+         }
+      }
+   }
+
+   public int ControllerCount
+   {
+      get
+      {
+         if (controllers == null)
+            return 0;
+         return controllers.Length;
+      }
+   }
+
+   public string GetControllerName(int deviceNumber)
+   {
+      return controllers[deviceNumber].DeviceInformation.InstanceName;
+   }
+
+   public Microsoft.DirectX.DirectInput.JoystickState GetControllerState(int deviceNumber)
+   {
+      return m_controllerState[deviceNumber];
+   }
+
+   public System.Collections.BitArray ControllerEnabled
+   {
+      get
+      {
+         return controllerEnabled;
+      }
+   }
+
+   public byte CurrentPlayers
+   {
+      get
+      {
+         return currentPlayers;
+      }
+      set
+      {
+         if ((value &gt;= 1) &amp;&amp; (value &lt;= 4))
+         {
+            currentPlayers = value;
+            ReadControllers();
+         }
+         else
+            System.Diagnostics.Debug.Fail("Bad CurrentPlayers value ignored");
+      }
+   }
+
+   public void RefreshControllers()
+   {
+      foreach(IPlayer plr in Players)
+      {
+         if (plr is ControllerPlayer)
+            controllerEnabled[((ControllerPlayer)plr).deviceNumber] = true;
+         ReadControllers();
+      }
+   }
+
    private void GameDisplay_WindowedChanged(object sender, EventArgs e)
    {
       if (GameDisplay.Windowed)
          ClientSize = Display.GetScreenSize(GameDisplay.GameDisplayMode);
+   }
+
+   private void mnuToolsOptions_Click(object sender, System.EventArgs e)
+   {
+      frmControls frm = new frmControls();
+      frm.ShowDialog();
    }
 }</Text>
   </SourceCode>
@@ -2686,6 +2925,18 @@ public abstract class GeneralRules
          System.IO.File.Delete(System.IO.Path.Combine(
             System.Windows.Forms.Application.UserAppDataPath, Slot.ToString() + ".sav"));
    }
+
+   public int CurrentPlayers
+   {
+      get
+      {
+         return Project.GameWindow.CurrentPlayers;
+      }
+      set
+      {
+         Project.GameWindow.CurrentPlayers = (byte)value;
+      }
+   }
 }
 
 public enum SaveUnitInclusion
@@ -2784,7 +3035,7 @@ public abstract class SpriteBase : GeneralRules
    public double LocalDY;
 
    [FlagsAttribute()]
-      public enum InputBits
+   public enum InputBits
    {
       Up=1,
       Right=2,
@@ -3381,6 +3632,27 @@ public abstract class SpriteBase : GeneralRules
    {
       Debug.Assert(this.isActive, "Attempted to execute MapKeyToInput on an inactive sprite");
       SetInputState(Input, Project.GameWindow.KeyboardState[key]);
+   }
+
+   [Description("Associate the state of the input device for the specified player (1-4) with the inputs on this sprite.")]
+   public void MapPlayerToInputs(int PlayerNumber)
+   {
+      Debug.Assert(this.isActive, "Attempted to execute MapPlayerToInput on an inactive sprite");
+      if (PlayerNumber &gt; Project.GameWindow.CurrentPlayers)
+      {
+         Debug.Fail("Attempted to map inactive player input");
+         return;
+      }
+      IPlayer player = Project.GameWindow.Players[PlayerNumber-1];
+      inputs = 0;
+      if (player.Up) inputs |= InputBits.Up;
+      if (player.Left) inputs |= InputBits.Left;
+      if (player.Right) inputs |= InputBits.Right;
+      if (player.Down) inputs |= InputBits.Down;
+      if (player.Button1) inputs |= InputBits.Button1;
+      if (player.Button2) inputs |= InputBits.Button2;
+      if (player.Button3) inputs |= InputBits.Button3;
+      if (player.Button4) inputs |= InputBits.Button4;
    }
 
    [Description("Accelerate this sprite according to which directional inputs are on.  Acceleration is in tenths of a pixel per second squared.  Max is in pixels per second.")]
@@ -4568,6 +4840,39 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
       }
    }
 
+   [Description("Associate the state of the input device for the specified player (1-4) with the inputs on the specified sprite.")]
+   public void MapPlayerToInputs(int PlayerNumber, SpriteBase target)
+   {
+      System.Diagnostics.Debug.Assert(target.isActive, "Attempted to execute MapPlayerToInput on an inactive sprite");
+      if (PlayerNumber &gt; Project.GameWindow.CurrentPlayers)
+      {
+         System.Diagnostics.Debug.Fail("Attempted to map inactive player input");
+         return;
+      }
+      IPlayer player = Project.GameWindow.Players[PlayerNumber-1];
+      target.inputs = 0;
+      if (player.Up) target.inputs |= SpriteBase.InputBits.Up;
+      if (player.Left) target.inputs |= SpriteBase.InputBits.Left;
+      if (player.Right) target.inputs |= SpriteBase.InputBits.Right;
+      if (player.Down) target.inputs |= SpriteBase.InputBits.Down;
+      if (player.Button1) target.inputs |= SpriteBase.InputBits.Button1;
+      if (player.Button2) target.inputs |= SpriteBase.InputBits.Button2;
+      if (player.Button3) target.inputs |= SpriteBase.InputBits.Button3;
+      if (player.Button4) target.inputs |= SpriteBase.InputBits.Button4;
+   }
+
+   [Description("Make the specified sprite active.")]
+   public void ActivateSprite(SpriteBase target)
+   {
+      target.isActive = true;
+   }
+
+   [Description("Make the specified sprite inactive.")]
+   public void DeactivateSprite(SpriteBase target)
+   {
+      target.isActive = false;
+   }
+
    #region Inventory / Overlay
    public enum DrawStyle
    {
@@ -5609,15 +5914,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
          else if (frame.Color == -1)
             this.color = color;
          else
-         {
-            byte[] bgraFrame = BitConverter.GetBytes(frame.Color);
-            byte[] bgraOverride = BitConverter.GetBytes(color);
-            bgraOverride[0] = (byte)((bgraFrame[0] * bgraOverride[0]) / 255);
-            bgraOverride[1] = (byte)((bgraFrame[1] * bgraOverride[1]) / 255);
-            bgraOverride[2] = (byte)((bgraFrame[2] * bgraOverride[2]) / 255);
-            bgraOverride[3] = (byte)((bgraFrame[3] * bgraOverride[3]) / 255);
-            this.color = BitConverter.ToInt32(bgraOverride, 0);
-         }
+            this.color = Microsoft.DirectX.Direct3D.ColorOperator.Modulate(frame.Color, color);
       }
       #region IComparable Members
 
@@ -11189,7 +11486,819 @@ namespace CustomObjects
 </Text>
     <CustomObjectData>QmVuM3BDLk1PRAAAAAAAAAAAAABNb25vQmFzcwAAAAAAAAAAAAAAAAAADOQAQAAAAAFzaGFrdWhhY2hpAAAAAAAAAAAAAAAAE1YAQAAAAAFTaGFrZXIAAAAAAAAAAAAAAAAAAAAABH4AQAAAAAFDbG9zZUhpSGF0LnUyMAAAAAAAAAAAAZMAQAAAAAFXaW5kQmVsbAAAAAAAAAAAAAAAAAAAEOgAQAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEIeAAAAQIDBAUDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATS5LLgGsIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGsIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABrCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABrCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAawgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAawgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIaIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIaIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB4CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAB4CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACOiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIaIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAgAAI6EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACOhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjoQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAgAAI6EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAIAABHRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjoQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI6EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKAIAACOhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACgCAAAjoQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI6EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACOhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACgCAAAjoQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAgAAEdEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACOhAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjoQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI6EAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKAIAACOhAAAAAAAAFAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACgBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjoQAAAAAAABQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI6EAAAAAAAAUBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKAIAACOhAAAAAAAAFAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQDAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQCAAAR0QAAAAAAABQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI6EAAAAAAAAUBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACOhAAAAAAAAFAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACgCAAAjoQAAAAAAABQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAgAAI6EAAAAAAAAUBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACOhAAAAAAAAFAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjoQAAAAAAABQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAgAAI6EAAAAAAAAUBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAIAABHRAAAAAAAAFAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjoQAAAAAAABQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI6EAAAAAAAAUBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACOhAAAAAAAAFAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8FAAAjoQAAAAAAABQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI6EAAAAAAAAUBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+UAACOhAAAAAAAAFAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACgBAAAAAAAAAAAAAAAAAAAAAAAAAAAAABHVAAAjoQAAAAAAABQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAX1QAAEdEAAAAAAAAUBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACOhAAAAAAAAFAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjoQAAAAAAABQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI6EAAAAAAAAUBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAADwUAACOhAAAAAAAAFAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACgBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjoQAAAAAAABQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP5QAAI6EAAAAAAAAUBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEdUAACOhAAAAAAAAFAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQDAAAAAAAAAAAAAAAAAAAAAAAAAAAAABaFAAAR0QAAAAAAABQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI6EAAAAAAAAUBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACOhAAAAAAAAFAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjoQAAAAAAABQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAANZQAAI6EAAAAAAAAUBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACOhAAAAAAAAFAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA8FAAAjoQAAAAAAABQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP5QAAI6EAAAAAAAAUBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEuUAABHRAAAAAAAAFAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjoQAAAAAAABQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAR1QAAI6EAAAAAAAAUBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD+UAACOhAAAAAAAAFAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQDAAAAAAAAAAAAAAAAAAAAAAAAAAAAABHVAAAjoQAAAAAAABQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI6EAAAAAAAAUBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAF9UAACOhAAAAAAAAFAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACgBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAjoQAAAAAAABQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAeBQAAEdEAAAAAAAAUBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACOhAAAAAAAAFAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQDAAAAAAAAAAAAAAAAAAAAAAAAAAAAACOlAAAjoQAAAAAAABQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI6EAAAAAAAAUBAAAAAAAAAAAAAAAAAAAAAAAAAAAAA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BAUHCAoKCw0NDg8QEBESEhITExQUFBUVFRYVFhYWFxcYGBgYGBkYGRkZGhoaGhsbGxscHBwcHBwcGxsbGRkYFxYVFBIRDwwLCAYDAf77+PXy7+zp5uPg3tzZ19XU0tHQ0M/Pz9DQ0dLT1NbX2dvd3+Hj5ujq7O/x8/b4+v3/AAIDBQYHCQoLDAwNDg8PEBARERITExMUFBUWFhYXFxgYGBgZGRkZGhoaGxsbGxwcHBwcHRwcHBwcHBsaGhkZGBYWFBMRDw4MCQcEAv/9+vf08u/s6ebk4d/d29nX1dTT0tLR0NHR0dLS09XW19na3N7h4+Xn6evt7/Hz9ff5+/z+AAEDBQYHCQoKDA0ODw8QERISExQUFRUWFxcXFxgZGRkaGhsbGxscHR0dHh4eHh4eHh4eHh4eHR0cHBsaGRgWFRQSEA8NCwgGBAAAAAAnEP////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////8A/wD+//7+AQP+/v/++PsA//v8//z8//z8/PwBAv8BAwP//wP///8A/wD+//z8/vv7//z5+wADAwEDAwkH/wEDAP4AAf///fb5+/D/+fX2+P3//wMDCQwMCQwHB/8AAwH++Pbw+fP08O/t6fP09/wDBw8YGRwYFg8HCgb4+PTz8PHo5unl5uDg6e77BA8YHx8fIyceEwcJ/wD49/b46Ozx5+Dh4OPw9wAHDyEnKyQkHh8P/gT/+fDw8+744ODk59nZ6ez5BxMfJywhISQcE//+8fz48/L48+zj5tjY1dzl8P0fLDApJyUhFwwDB/Tp+P4A/Ojq7+DRztPY1fETHDUmKSseHxQL/gP8A/wDA/zx5dzWxdHL39n3DyM1KyUfHxEPAw/+BQwHDPzw+NjWycfLz+PjCxgVJRwjJRkTBwkcGBgWBQP48+PPz8vPz9rl+P8LDxwWFiYbHAwPHS4kHAP289fYzdrZ0dfe7PD7CQcPEw8fIB0jLEEjHgYA8OzT0drj4dnZ4eHz9/gF/gkZIyMnRzRAJBkI8uHJ4dng5+Dc4ODg4/PvA/AOFDgwO09HJhYMAfHg1N7n7ODu3NvPz9zs5O0DFh5AREdGNysYAfDr5+rw5efn3OPYz8vL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Af/+/Pj4+Pf29vj4+fv8/wABAwMGBwcHBwcGBAEA/vz5+Pj29vb3+Pj7/P8AAAMDBQcHBwcHBwUDAP78+fj29/b2+Pj5+/z/AAABAgMGBwcHBwcGAwH+/Pn4+Pf49/j4+Pr8/v7/AQMDBQcHBwcHBgMA//z7+Pj4+Pj4+Pj5/Pz+/wABAwQGBwcHBwYDAf/+/Pn4+Pj4+Pj4+fv8/v8AAQMDBgcHBwcGAwH//vz7+fj4+Pj4+Pj5/P7//wEBAwMGBwcHBAMBAf/9/Pv5+fn4+Pj4+fz+//8AAQMDBQYHBwcFAwEA//78+/n4+Pj4+Pn8/v7//wABAwUFBgYGBgMDAP/+/Pv5+fj4+Pj5+/z+////AQMDBAQGBgYDAwH//vz5+fn5+Pj4+Pn8/v7//wABAwMFBgYGAwMB//79/Pv7+Pj4+Pj5/P7+//8AAAEDBAQFBgMDAQD//vz8+/n4+Pj4+fz+/v///wABAwMEBQUEAwMB///8/Pz5+fj4+Pn7/P7/////AAEDBQYGBgQDAQD//vz8+/n4+Pj7/P7+/////wABAwMEBgYGAwMAAP79/Pv7+fj4+fz8/P7+/v//AAEDAwYGBgMDAf///Pz7+/r5+fn7+/3+/v7///8BAwUGBgYEAwIA//z8/Pv7+fj5+fv8/Pz8/v//AQMDBgYGBgMDAf/+/Pz8/Pr5+Pn5+fv8/Pz+/wADAwQGBgUFAwMA///+/Pz7+fj5+fn5+/z8/v//AQMDBQYFBQMDAQD//v38/Pn4+Pj4+fv7/P7//wADAwYGBgcEAwMBAP/+/Pz5+Pj4+Pn7/Pz+/v7/AAMEBgYHBwYDAwD//vz7+fj4+Pj5+/z9/v7+/gADAwYHBwYGBAMB//78/Pn4+Pj4+fz8/Pz8/P7/AQMGBwcHBgUDAf/+/Pv5+Pj4+Pn6+/v8/Pz+/wEDBgcHBwcFAwEA//z8+/n4+Pj5+fv7/Pz8/f8BAwUHBwcHBgMB///+/Pz5+Pj4+Pj5+/v8/P7/AQMGBwcHBwUDAQD///77+Pj4+Pj4+fn8/Pz+/wADBQcHBwYGBAMBAP/+/Pn4+Pj4+Pn7/Pz+/wAAAwMGBwcHBgQDAwD//vv4+Pj39/j5+/z8/v//AAIDBQcHBwcGAwMB//76+Pj39/f4+fv8/P3+//8BAwQHBwcHBwYDAP/9+/n49/f3+Pn7/Pz8/P//AQMEBwcHBwcFAwH//fz5+Pj4+Pj4+fv8/Pz+/wEDAwcHCAcGBAMB//78+fj4+Pj4+Pn7+/v9/v8AAQMGBwcHBwMDAQD+/Pv5+Pj3+Pj4+fv8/f7/AAMDBgcHBwcFAwMA//78+fj4+Pj4+Pn8/P7+/wABAwQGBwcHBgQDAf///Pr4+Pj4+Pj5+vr8/v7/AAEDBgcHBwcEAwEA//z7+Pj4+Pj4+fr8/P3+/wABAwMGBwcHBQUDAf/8/Pn4+Pj4+Pn5+/z8/f7/AAEDBwcHBwYEAwH//vz5+Pj4+Pj5+/z8/Pz+/wABAwYHBwcHBQMB//78+/n4+fj5+fv7+vv8/v7/AAMFBwcHBwUDAQD//Pz5+fj4+Pn6+vn5+/z+/wADBAYHBwcGAwMA//78/Pn5+fn5+fv6+fv8/v8AAQMGBwcHBwUDAQD//vz7+fn5+fn5+fn7/Pz//wADBAYGBgYGAwMB///8/Pv7+fn5+fn5+/z8/v8AAQMEBgYGBgMDAf/+/vz8+fn4+fn5+vv7/Pz+/wABAwYGBwYEAwEA//78/Pv5+fr5+/n7/Pz8/P8AAQMFBgYGBgMDAP/+/Pz7+vn6+/v7+fn7+/z+/wACAwYHBwYFAgD//vz8+/v7+/v7+fv5+/v8/v8AAwQHBwcHBgMB//79/fz8/Pz7+/v5+fn7/Pz/AAEEBgcHBwUDAf/+/v79/Pz8/Pz5+fn6+fv8/gABAwUGBwYEAwD///7+/v78/Pv7+/n5+fr7/P7/AQMEBgYGBQMBAP///v7+/vz8+/r5+fn6+/z+/wADAwQGBQQDAQD//////v78/Pv5+fn5+fv8/P//AQMDBgYFAwEBAP////7+/Pz8+/n5+fn5/Pz+/wADAwQEBAMDAP///////vz8+/v7+fn5+vz8/v8AAwMEBQQDAwEAAP/////+/Pz8+/v6+vv8/Pz/AAEDAwMFAwMBAQD///////z8/Pn7+/v5+/z8/v8BAwMDAwMDAQEA/wD///7+/Pz7+/r6+vv7/P7/AAIDAwMDAwMBAP///////vz7+/v7+fn6+/z8/wABAwMDAwMBAQEAAP8A//79/Pv7+/n5+/v8/P7/AAMDAwMDAwEBAAAA/////vz8+/r6+vr6/Pz+/wABAwMDAwMBAAAA//////7+/Pv7+vn7+/z7/f8AAQMDAwMDAgEAAQAAAP///vz8+fv5+/v7/P3//wACAwMDAwEBAAEBAP8A//78/Pv7+fv6+/z8/v8AAwMDAwMDAQEBAAAA///+/Pz7+/r7+/v7/P7/AAEDAwMDAwEBAAAAAP///v38+/n5+fn5/Pz8/v8BAwMDAwMBAQAAAAD////+/Pz7+/n5+/v8/P7/AAEDAwMDAQEBAAAA/wD//vz7+/n5+vn5+/z+/wABAwMDAwEBAAAAAAD///78+/v6+/r5+vz8/v8AAQMDAwMDAQEAAAAA///+/fz7+vv5+/v8/P3+/wADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAF/PUQAOgVBesADvX8/QQD7wD/EPzqDPv7ABjk8Cfq8yXQF+8W+M8rAOoQ/eA/0BcE2Q/49xLp8Sfc/BPw9hXvAusBI+jvCCLi6g8Y3xj0AfzrCyi/MOrtKNv/KNMc7R7UByPk9O8gBssTHMYLSJ8j2E/Qz0fo/Si7MdUwB9cwr/tS4O/p9D/o3yDjAAMz6qJ/68grzjYGyyD/GtUu5/0g5Oc0ulYAj38I1xvoHQDfCDeg+2i/2DXxAv/nMrkLHvsgoi9CxwrGF3CvYejfHRXw/zC4/zgbsL9g2P/oM6cYW8gP8P8A0UvY9wwvtH/g/9cY1yfAJxva1B8I8NUvQN9wkD9Yh071EJ9/gifg91fAyycslD8xzNwMT8DoLyDs7wnIHyjT9/kYFwDq7zDf8xMYv1DNCyD/j3+w31TC6xD3CL9wuvcgxy7i+f8AL81Ij0/44xQXAOAn5vgRs3eu+FPgs2CvcN/ANwAX6Mt1oB8PGPK3MBv13/Jng2A3oBj/3hsGAc8g5etYvwsA+woA9+Av6BeoPyivRBe0P+gfAOMl1BPUN8gXBSDPwVTUzyAYB9MI/9jgPxis/0jYuy8kDJJn2PD3fpDrAlmoHxTlF8Q3ANsz6dE/CrBP/QiXf8DWOyDI9yAfwBjXYK33MOfbIOBbqC/SEjPg6N84yD8A3foIEL9WxBcwmxQoCdAfCrxX4P8I3xBCqi0YrUfw3zD77Szj6h/o7xD7zzTfDADFNBedf5jvMvYA5fUPIO/0FuUT8NlHAAbbK+D/EPXiCx4A5+BDzRzy7xz59gfnIs8aEN8d2yfgH9gXABMYx/NQ3dgnIMcRIuEE9yD98O0DPsn6H/XvFv8I3yrGPOsM4znX/B8A+QMAFd8LEPbnMdv/F/D9BvbtJQbu6CnqCP0IBfMA/hL4+xDvEP3+DegLBfcFBPb/DukdCtkPFegF/gz4AAX/EOIVCPUO6wgBDvD/BuwT9wAFCOUGFOUn3wb/AAcABe//IPLoCQcA+PsHAO8T9PkL7Az3CvMDAwD++xDx9xLzAAj8/PcQ+QQD7xH59/wFBvICCPQK+QvsDQ3wB/gV6RAL6f8JB/ML+P0QAOkg7fcYAQHoD/kD+gcAB+gTDN4NDfEDB/UO9hDnDfgFAvQPCOQHDeYWAPcI9xPs/wUE/P4P6A36/A0A7RAD7xz16hIDAfYF/wjyDwD2CQ/y+/0X6gcP9vMb6hD1+xjtBwbeEAL3EO8Q9wD9APcNAADtG/X+/fUY9P4F9v4I+w3uCP8I7xX89xD9/PwCCfr7CAH3B/cU5wkKAOcVAPcG9Rfy/gb3Eu0N9QzxF+gJ+gMADfEE/gT6BgT3Agr4+wEOAPMICekQ/gn5+wUB/Ab9BwD1FugJDukHDPv3AQr2+QYG9P0J/P38DvIF9w4A8gMK9AMABfcECO8NA/cI+wfxCQn2AAEC/wAP9P/6Ef0AAQD4CfsACgDrDgfuCwAB/vYN+gb6/QjyBAr/+v8CDP35/AT/CvUDAfwK+P4D+P8R7QEGAP77Cf37AAf3BAbwDwTvDfsD+Qv48hP89g73Cff9Bwj6/gAE8RL8+PsO9gfzBAzy9w0C7AoB/vcP+PsA+wz0BQAD8w4B9A71+QQC/QL9AAfwAgn4/wrtCQAC+An0Cv38Bv0B+wkB8g77/AAL+QcA+BH4+wv1AQUAAQTnDw3sBAf7+QT8BvMLAP76Df/0CP39BwAE9/8I8RD0/w31/AsA+PYRAfv0Df389wwA7hME8AP+Bvr+APkK9QcA9gb5Bv/6Awzz/wn/A/r/CfT/AwD5C/QS+/37DQDvEPkE/hD39wkFBOwTAAEA+gP5CQf2/wAK9wEGAPMJDucP+fsN/vsJ8A37APsQ9gMG7AcKAPoCAgvvAAn8/wMD+fsK8wn6CvIGBvAFBAH8/gEC9wYC+AkA+wD9BQX89g35Bvz4Bgv2CfUFAwADAP8A/wb9+QQE/wTzBQr4AfwDAPkO+P0F+wf8Bfr7DPsG9P0LAvQO9AcF+foQ+PkL+vsP+P4EAfsI9gAK/AL7A/sJAvcIAP/+EfD7CAb99g30AwkH7Qj5DvQH/gT2BwL+/AX9AgD9AgX2/gYB/QIG+e0OCPX5C/n7BgD6/wEE9/0H+foM+/UJAP/4DPX5CAD+A/799Qv6Bfj/BvET9P0I/wMBAPII/QgA9AYL7AMGAvMHAPwB/QUA9gMM7QYD+gr9BO4Q9AQJ8Qz8AvkFAAX58xjwBQD9+wIEAO8GEPTyEQD7AAQC8RP1AQAE+v8Q9AX9/QT9Dvv6/wgC9QcEAfYDAAXzCwAF9v4FAfkJ/fIFEPb5Bf8G+AH6AAoD+vkN+gP8/AIE+QsA8gUACP78+wvxC/YS6wcG9AMAAQMA9AUAB/cJ+v0G9vsS+gIE9Af7BQD/AwUE7gUK9Qn6/wv4/wT0DvP/CQb0AAf6+wIJAPYM+QD0DwD89hD5+QEF9Qv9/wD3DPALCPsB+gf8+QYC9AkA8wIBCOkHBgT88w31AwruB/v9CAPzBwjrDwL7+QsA+/0BA/37CP0A8xT88wcN7QkEAQDyEAD/BPcM9wQD/PIT+AT4A/oFBAXwB/gFAPj/CQX49Av8+QkQ7AL7BwD8Agb5AAIE+gMB/wED+AAL+QPzDAP6BAAE9gIK/vsBBf7/+wcA+RHyB/cHAP4F/QEABwDwDQT2Awz6//oJ+gEBBwX1/gn6Bf0C/f0JCPf3Df4AAAMF9QP4DQD3B/sE/QAH8wYBAfsO8P8N+AL9BgH5CP/8+w79+/4JAP74CgnrDgT0DPj7Dfz7AwXyEwD1AgP8AAT7B/33BAME+gv1Bf4BAAH7AwH4Dfr5Bw/t+wf3Bwb2Bvr5DfQH/QT2/wXwBwn4AP39/QADAfMBBfr6CAP6+/0L/PUBCPUDBfX3Cgb5/wH//AX0D/r3CAD+Bfr8Bf0DCPf5CPv/CfsH9P8FBfT/DfjzFvrwBgcF9AID+wj3Av75DQjoBwryAAb9BfsI9QUC+/8F+gT7A/sE+wMBAfMLAPcKAPAED/j3AgEI+PwDAvgN/fr7CQEA+v0M/PkI+Qb9AAAAAAECA/T//PUL8Q8I7w8A8/8ACP8AIP/QPt8Q+wA/wP4U/98AH+fwEPT/EBzvAO/AP8gbEP/nEN/XAP/PIFyfQPEv4xT/AB/XAN9A7wD3AP8A/wBfg2CvP8AwMOsfAP+gfL8g/9+FQP/AADfg3+D7/+AQ/+Dv4B/r1SjfAAhawxdA/+Av6Dr/ACn/1wAb9yzFXr/ALxD7wBD/QJ8QG+EIzyD/wBfvBtFA///fNN/3IADvIN8Y8CjnMP/zAP8Q///gPN8I4P8Q/wAf498A/wTRAP/ZGPfXJh/XAP8AxxkwvyDvIO8AQL9A/9A/4xAIAxvoN8Ao//foAufgGOsfzwAK7wAQ3wAfyRAf4yDvAwD//yD/APcfJNsY3yjf5BD/4A//AP/nEPsQ4wAf0ADfAB/f8ADf4QAb4hIBAwb/F/L/DwDjGP8I/Qz/7yjXIP/LMP/gCPv9APcX7O8M7/LoCg/kH+X/4Aj/4CD1/wfpEO8g8+0n6/sPAA//AB/nAP8ICfD/D/MK9xD/5xz3AP/0Ev/68w8GAO8Q//D/BP/gIP/wEPMf4xj79xDvCQD3B/r+DwD//wfwBwXkGO8ADvMA/wD/AAD38BD1///wD+cAC/EIAO8Q9wEG8wAIB/AU/wAH9P8ABO8Q6wsP8BfrCO8I9wD/+QcA+//4/wAI+wAX7wAK8/gM/wD/BQL2B//4B/EK//gL+v/tBAP9AP8A/wD/AAD3DPcE/wb/AAD7CPUG/foHAP8C+wD/9wT/9AcA+wIK+/sL8/4I8wj/+wL/APsI+/kA+/8A//kC/wD/AP8F9Qn7BP//+wb9AAL3AfsAAQf1CvsA/wD/+QD7AP8AA/j/AP/+AP/+/gH9AP4ABfcBAPsA//0CBP4DAP0E/P/8/f8C//8A/wD7AQADAAL+AP0A//sC9wH9/wD9AP8A/wMAAQP7A/8A/QD9Af8A//wI+QT/AP4D/QD/Avv/APsD/QD/AAD+A/sBAP/+AP/4BvcA//8BAP8D/wAD/wD/Av0AAP0A/gEA/wD/AP//Av0C/QP7A///AP7/AP//AQAB/wP9AgD9Avz9Av4AAAAAAAMAAIAArrhNdXNpYyAgIAAAABAAAKe4AACoSgAAAAAABgAAAMYAAADCEGYAAgBAAAROb3QgbmFtZWQgICAgICAgAAAhkgAAAMISNAACAEAABE5vdCBuYW1lZCAgICAgICAAAEX6AAAAwg+eAAIAQAAETm90IG5hbWVkICAgICAgIAAAZTYAAADCCXAAAgBAAABOb3QgbmFtZWQgICAgICAgAAB4FgAAAMICQQACAEAAAE5vdCBuYW1lZCAgICAgICAAAHyYAAAAwhWIAAIAQAAATm90IG5hbWVkICAgICAgIAAAAAAA9QUN9/4BAv4B/gf99/sQ9fEED/oF9gT7AP4V+vgFEu8CAgb+APkK+P79EvT3CQTvBRD/7wr0It0H+TTs7yzuCQEBDAHzAQvc/Q8G3Bj7A/j18RXu5RAI3wwWBgQB+BP9+BQX9/oL6er8+/sO8QgB8OMJ9OD1BegMCBUeFf8lEggaOQkG8+XW5eAPBwT1Cufd7QDd7ur0AwcJLh0IFxwEECUfD/ns69/k/AkI/gT949707evt9fADCSMjEgMhDBMeJhgM7fDU3+T+CAH7F+rn9u/d9Ozz/gsLOR8JJBr7IhsbDP7z5d3P5wby/xb78/X74erj6gf+/TolHzIwDxgLDQL93/PTxs7z4wMSIf0N8+/Z49oN7gMlPxZGLzMPFfka6ffx9sHf8P3mEQYa7vnr6sjS4PLEEic0QlJAQgQVDwrg+gDn0PPyBPIKFPHh6+7huN7t1fMWOT4yTkQYAhQj8e8D9ujZ6ADe9QwJ7uH9A8TQ2+PS8ic/MkhQRw0LJBHm7/j1yOYC/OX1BArW8QLkwNDl3NQYNksuQ1IoBSAlB+T5/d3U7wL21/cL5dkDBd3D2d7V5yFENS1YSxoLIyD25/ru2dsCCODdDPzb7A7yzr/S2dTyREU1RlkzCA4sFvbk9+HS6hz21e0M4N3nCfHNx+fR3R1VOThFSiADFy4L8/P909AAD+Tc5/fl3v0R3sra3MPvKlY+M0lFERQoI/Tk9/HN5AkJ4dzw8NjgCvvH0djZ2v9IWDQ6RysJHzAa9en448bxDwLa1e7e1AQJ7szK3tPaHVNRM0c9HxwjMRbo8+3P2v4X8NTZ2dne/gvl0tfZ0+s9VEA9Li0kDy8r9vT049ftCwzz29LdxOYI/uPT09vRDDlPSjE0Lw4sLCL88urg2vYDDdrZ087T+QEE2d7V3e4ePVI0QCopGTEqIPPy2OXeBwj62Ni91dP6BvfX38zo/C9ESy84HiQgOycY8ubV7OcK+PXXzsbK3gv49t7T3u4RN0lJMSsaGjYuIhXi4uHnAwMC7tfFt9Dq8Qno2tjl+yM6QjY5EyQsLi4rAPzb5d8E/Pvex6zY0fn8/ODp0/ADMjBOMSMRMCFFKCL19s/o6v/tCs7HvtHXBu743ebZDRAxPEMfKQ0nLDokGu7h0vXvAvjwxsex0uH77vjf4+8THjs4MiAXEzItOSYQ8uDa9Or/7uLIwb/f4Prs8+Do9RQiOjI0EhskNjQ6Fwzi3uX18wbt5r+9vtvf8Ofr4v8EJjI6NCcOHiA5OikVAenv5fPx9erPubzE5eb27Or9AxUoHTAsGRoiNEVCLAn05uLu7PTy4dO+ws3b7eno8fQTKy42MSMcGR8sQDEnC/Hp9u747OfP0L3Fyt/d9ez6BCAlOSAlDB0SMTlCLCTx9eDv7Pnm683St9PE49vw6ggKMCQ4GSYMIRs2MUIeIPP05fDm8dvgxsu/zNbj3/LuERo2LSgcFQ4dHUA4NikG8u7m8e/s39LQwMnHwtrf7wwYMC0wIxIVDxs3NzcxFwT56e3l7OHm1MrKysLP0eX2ECg2Mi0fEw0MJzQ6PSgUBfb17+nk4NrPz9DDzM7X7/0bNTA1HBcKBx8vNzgtKAkG8vHw5evpz9TFzMa9ztjsECVFOCsjCwkHIzUtMywbFPoC9u7j49HOytjDxbbQ5PsZQjg9HR4CBRQxMUIkNgsI9QDv7dzrxdzJ1MG8tdjeDyFOOjYcEfoRETkqNyckCQr9CuTs1dvKz8rSucC74OodOkw6MREJ9xEhPjMzIR0BCP8A6ebZ083Uz9Cyub7c/ixITzUkAQD8GTI3LTIXEwIMBf/o5NHUxNfQxrW9xOkGPEJLLRsB/fsqLD0rKxMT/xT+Ad/hyNDJ38bLp73D+RlQS1AcGvH9CzMvRCAmAA4EEPz31+PA083dyLysw8kHLFVSPiAN7gYXPTg6IBMDDAcU+O/c0MPMz9XBvbjF6BJCWks3F//5CCc7OjIcCwQDEwf/6djGy83bysOzt8rvJU9VUCoM8/wULjw6KRwECA0JB/nm1sLN0tLKu7S7zgYuT1dCJQb1Ax86QjcmB/8IEQ4G8+DIzMzc1MS6srXbD0FSUzkaAPsMJzc+LhgDARAUDgLp1MPB1NbRxrmxwe4tQ1tJMQr8+xosPjEpCAL7Eg4S++3GxsHUzM+9wbLc9jZEWj4t+gP6Lyg+LSL+A/gXBxPz5sTHx97J0rfAt98HP0tTMiP4CwwrMTQrHfoGARYTBvPWwcbM18rDvbvJ7hxHT1AsD/sBHSovMR0T/PwPEBf96dO9x9PKzrvEx9YAJkZMOC0IAAkfNTEqHAT7Aw0ZCQHlzcTC0NG8w7/O5g0zR0I6FAv/EyozLCsSD/sJCw7/99nQvsvKz8PLxt3vHjRFNS4XEQolKTUlHAQA9wwND/3329HCzcfIwc3S7P0oOz00JhYJDB4pLicaDQIGCg0H+evbxsbEzsvNz97qDR82LCsdFxMhJDcnJgsD+PwFDgL96d/MxsHIwczR7PgXJDAtLSYfFyAiJx4VDgECCgsKAvPn0sS5vMXM2ebxDRclIh8hJiInJSghJxMJ/f77B/j35ujVzb/AvtXX7vMLGiQlKiEsJCkgGhwSCgf6BQIEA/bw3MjEr8TK3PD3ChQOGxMfKCs5KSMeFxcG/AX6Bfz9+uvo0b69utjg8AAEEhURJSItNy8oGRQSCwr/Awj8Af3w6tjLtrDE0/H9BhMPCxcSKC4/PCoXEAsQ+gf9/wQE+vPY28G8tszm+wAUBQsDExcrMUI2LREVBgb9A/gE+AX58NbPu7e71e0EDBcIAv4SJDA4PysnDg39/f8AAf38CPfs1sS9s8bg8wsMDgT3BhEjNz1DNBkRAv75AAb//f//+d3OwbK4ze0HDBgH/vkBHSw2SUAyFwYB9vf7/AH4/gHu3cu9tLzZ/AoUEAv29gMfLEZIQyUR/f/19vgB+wMD++TXwsGzy+IHFRgLA+v7BiE6SlJCHhL9+fDu+fn7Av375dHIuL/V8AsTFRH9+vgQKz5NTC8b+/3v7/b5+wcACO/hzMG8xtsIEiQOA+/s9hkmT0hNLxUA+OTz6wL7Bv4B7uHFybnS5gkPGAQD6fv9IzlUUUofDO/t6fLxAP4I/fvj2cXAv93xGRoZBfru+gUlN1VOQR4E7u7q9e7//AH67tzXycrN4/sTGxX27uYBFzhHWkw+EPne5uTz9gD8B/js0My/z9Ps+xoVGPbw5AMZPUVYPjkJ+djm4/v2APgE7+/Sy8XX3fwCGREL7+ruCxxMTlw/J/rk0uXl/PYF/fns48zVz9/t/wwXEf7s7/IPKkBVTzgf+ebf5vLu+f369OXX1s/i4vD9CxgO9/XqBBc1UVVJNwzx1dnl8/oA9vvr5tvX0+fw/f8MCwP47/ELHEZTVEksBenP1+Dx/vz/7OTj1tzf6/v6Cw8GBPD2+AcqPFdVNyP74tjU7O4ACPLu4Nnl3e3x9wQAB//3+vT/DCxQVFE1EvXZ0tvn+v8B+eLj2+Dk9Pf8+wMHB/38/AoaNElORioF68zR4PH/BPjt2+Hd6vD5AAX6BwIF/Pv9Cx07SFI5KP7cy83g8/wD8ezY2+bs+AP9APT9AwAGBAIUHz5MRjUT9NnI1+L2Avfw29Tf5/cCBg38Af37AwEGDA8tOEtCKBLoy9LP7/QA/O3Z3d36+A0JA/X39QsBCgUOGCw7RTMn/+TNz9/19QDs5dba6PsEEAQD8vb/BAgJBxMhNEBANBf53cHQ4/n99+nh1+XxBA4QDPfu9/4NDgoQFCMxPTwoEPHVytfo+vnx5dfa6PgKDhEH9/P2BA8OEQ4QIDBCOCEL5dLK1uz09/Lf3dryBA8TC/738P8FCxAPFRokNzMnDfPk0djh7vnv6NnU4/YLFxEQ/vb2/Q0QEBERGysxMCIM89zO0+Lu7+Xd2+P2CRIXEAv88fP+DRMRERMgLjMwGAHw1tPZ6PPu5dvZ6PkLGBEVBffx9AoVGBgQGSAmMBwQ/OTd1Nzu7e7g29/nAxYYHAUD+fQAChEZFB0YISokGAXs6Nfg4unp593m3vkGHh0VCAD4//0QDRgYGhkhGykPAuPn3ebj7N7n1+fmBA4gFwv6A/gEAxAUHBkfFxwVGQLz5Ofr7OXr3uDa5/D/Eh8VEfwDAwcNEBoVFBgTGRYNAe7r7url3uDf1d/p/g8aIRYKAP4DAA0WHx4aGhUQDgD45uzy7eXh2t7T5O8BEhwcGQYHAgYGDBUYGB8VEwcE/vPt7+zq2trU1d3u/xETHRsRAgUFBwcXGB8aGBcL/Pfv7u/49+7g2NLQ2O8FEhkdGg8HCQUGBhAZGxwcEwf69e/y9fz149fQztbl/BMcHhkQCAIICwwSGSYjGxkG+ezk6+z4//jp2s3V1en/ExwaGRULFQsMCgsdIRscCgLx5+jr+AT999bOys/f+A8mIiMWDwwLDQwDFhwmJBsN9uLf2vD3BgPs39LL3uUHExobEhUTDRkNDg4RIR4hGf/v2dbr8wwG+erMx8bU9wwlIxwZERMTCg0IERslKSQS/trVy+X4Cwj33tDD1uQDFSEeFgoPEhsXEQgPGyclIADt0MvR5/0UBfnTys3a8QQWIxkbDg8XFhcOBxUbLCQP9trKytPyBRUI6tDCzuP8ExkeFxIWGRscFA0JFCIrJA7pz7nH3vsNEAHnzMjQ7gUYHBQPERggGhoPDRAVJSgeDN/FssTkCBcP9t/Iy9/2CxoZFA4WHSUhGA4NDRkkJBT10bWzzPENFAf11srO5f8VGRgPExgnKyAWCwUTGyglDebErbrT/RIR/+bQ09T2BRYbEA4UFjAoKRQIDBggLRUA1LyxvuAHFBfx4MrO5/0RHxMVChkmLjIfDAwGHiMkF+nIrKXG4w8YCffd0uDrBxEUEQgSGyo3LyYRAxEYJB8B4bmqtM/5ERQC5dTU4PwMGhEKBxQkNjUxFw4GFB0mGfvOtaq62v0ODvXn2uPu/wsQCwsNHCs6NiwZCQ0aHx8I5MGmqcDjBhIJ9t7f5f0JDAsGBxkhODw8KxEMDBAjFf7YtqavyPABD/zx4ePvBBAZAAQCGC4+PzodGAQOExoN88Gtn8DU+AYKAPbh7/APDxH+AQooLUU1NiAXDhMSG/3puKuqwd4BAAr19erz/hALCPcFDC46Rz8wGxUIExEQ8tCxqa7K4/4DAfjz8PwDDwL79gkbOkJNNywZEw0NCwXeyKiot9fs/vn/+v/5AQkQAf/3CyU8SUcxKBMWCwgG9Nq+o7C83vL3+vT6A/0NCAf++QAVK0hJRi4dGAwOCPfpxrKusMbb8f/2//0HDw0G/PL7Ah0yRlJEMB4TEAr+8NPEs7W+zd/w9fr7BQ4QDQT39PsOJjlJRzksGRUTCPviy7ust7vO4ur5AAoXFxcK+PPl+RIsSE5MQCUlEQoA5NrCt7u4ztTf9PECDQ8fCwb36PcHID9CU0ExKRYUB/Xqy8O0tMHI1uDl+wYaIBsT/vDx9RMoPFFKQjUkHgr56M/FvLnCws/W3vD/EiQhIAr17esDGTNGSUo7MCsWB/fgz7y4u8LLz9Ph7gkgJSMYA/Lp9QglPUhLRTo0KBMD6dTFvMDGycrJy9fxDiMqJREG8u36ESpCSks+PDUqFfrfzry5uL3DyMjV4wAcMS0fBPTj8vocNEVPTD46KyMG8dfHv8K/yLzHxNXpCCA2KCX87+PwBSQ0SENJODYlFQPu1s23w7vBvb/J3/ciKz4mFPnk5PQKKDZLSEc9MyMQ9+bMyMLLx8G7u8jlACY2OyYI69/n/BIqOUtMQzoqHwnv5M/LzcrEt6+8yO8QMT82If/e3O8LHzBCRkY8LykYAOzZzcvS0L22r7/X+iE+QjIS8tvf9A4gMkFJRj0xJQz559nR1dTOuK2ovd0FLEE7Kwzx4OL5ESI2PEZCPzIaAe/f4dTZ08i9rbHG5Bs1QzUQAufg8/UaIzRBOj44Kh327uHd4tvXx6qssNL2Hz8+Kxf06+HyBRInMzpFOz0kCvTg3d7b49LCr6292wosOjgeBPLj6vcKGSY2Oz9ALxwC6uPg6ero0ruvr8TlDSo1MRb98ef2AQ4dIjE7PTsnFP7s6OXo6+DTtaywzvMVLzUkHPzz8vUGDhcnK0A7NSYI9Ore7+ru4828sr7h9yMpKx4G+/PxAwUVFyIxOTkvEQjv7+rv8e3by7W7xeYDHSMlFQv7/fcDBRARICs3MSsQBfLv6fHv7NfKucPQ7wUaHCESDfv8+AYIERMnLTovHQj98fLt8+rn1cvDzd36AxMSGRENAgT/BgUSFSEsMCMVBAD1+fPz6uDRz8ja5/sFDhAUEQ8LBwIBBhAVJCckGA0DAPX38PPo3dfV2OXt+/oECxITEQ4LAQX/DBMeJCAPC/8H+/v07OLf2uHg8PD19vwLExITCgn+AQcOFyIdFwYLBQj/9vHo3eLd7ery9e/t+wYZFh4RCwUECA0OHRQTAwINBgX85uXb7fLt8u/r6+P8CB0kHBEE+wsHEQoUEAsHCwkNAPrl3uHw+/3z8d7g5P0NHyMnDgX5BgQQCg4DBQYUDQv59OLj6Pz/BvXy2dnj/REiJCUKBvsICAYGBv0GAhgLC/7v4ebvEAQG8uLS0+UEFy8tJQ3//wAAAfwD+wQTFBMG+O3Y7fkOEQf03cnW6AwcJyoYB//8AwH+/vz/BQ8WCgH25+vzDhgU/ufOxtDwCyUxLxsI+f78+vb39wQLFxMM//Pm7vsYHBX83sbE1vwTLTAqEwH2/fb+9fj4AgwbDwz28en2DR8dFezbu8Pa/BkyLi4LAvP59Pbx+fUJDBkMBfbw7gQRKBwK58y5yNoJHjgzKg4A8fPq8+v1/AgRFwsH8ff5DR0lFwHaxLnQ6BEqNC4gB/ru8enw8fgBDg4WBQDu8wMVJygS+9PFvcfuESs7LCAF/fHp5+fs/f4ODhIMAfz/ByAkJgvpz73B2fQfMTssFQHv6ejk7e4CBQoLBwQD/AsSJisfBOHHwcXg+B4xOCsX/e7k5uDs8P8ICgsLAwgFEhslIxf43cXEyOcBJDM0JhT57Nzf3u34BgIJBQkFCgwbJSggEPDXx8fM6QQnMTcjEfLl2OHe7PYFBQgECwUTFSAfIBoH69nDzNPwDSgwNCAU69/U29/u9wcBDAUNDRYcJRwfCgDk0czP2PkOLS8yHwXp29Lc3/X9AwAECRASHh8mGxUK9+LXz9bc/RMsMy0cBeLY0dvj9gMGAQUKEhggJCMXDwH15NrW1d/8FS4tKRf44dTU3uj4//4CBBAXHiclHRMHAu7n3Nbc4v0dKDUoEvfX0tXd8vYE/gAJEx4oJSoVDwT88+fc3dXp/hssMiQP59bJ1Nzw+gD9BgoiJTArIQwG+fvt6+Dc2esBHykuHQTg1s3Y4PT7//0FECMnMiYaBwP//O/t3dva7wQgKy0V+9zQzNfk8/b+/w4aKjEyIRP//fn69e/k4OHzByArJQ3x18/Q3+33+fsAFB8uMSsbDf/79wH88+PZ3PQJISYfCfHe09Lh6PX1/AYWKjo1LRII+/v7/vr24+Lf9gwhJBb869bX1eLq8/oGDCQoOzMjDf76Af0I+PDh4Ob5CSMaF/fs2tjc5ejx7wkSKzY9MRwD/vQBAAj98eXi5f0HIBYN9ejb29no4/T4EBouODknFvz9+AUKC/7v3uXh+woaDwLy69rg2ujl8v0SIDQ4PSEQ+vj5AwgM9/Hi4+P4CRcNBvLs3dzc4uP0AhslOTk0Fwj4+PwJDQ358OLj5fYFDgcF9ezd3d7h5fcKIi4+OSgPAff3/AwPC/vt5OHl9gMJBQD47OHf3uDo/BEkMTs3Iwr+9vwCDxQJ+e3g3eP0BAUFAfjq4dvd3ewBFyo4PTQaB/z6+QMQEQr36+PZ5vL/BQcF+uji1t/h8QsbLzw5LxAD+vb/CRQYBvzm3tvj8v4CCgL96N7c2eT5CicvOzUlEgH6/f0PFBMH9ujb1uDs/AIIBPTn3Nng6AEWKjQ2MR8KAfj9AQ0YEgX149rT4O78CAoG9uTc1+HxBx8rMTQoHAgB/fwHDxMSAfbg1dPd7wAGDwH25dvc5PcPHTAuMSQWCAP5AQISEBEE9N3SzN7tBAkM//Te3Nju/hojLiosHBkHBP0HBxIOEf/w1svG3esGCg7+89/f3PgDICQqIyYeHQkK/AUHDgwN/PHTzcXd8QkMDPTv2eLp/hAkJCocIhcbDgj+AgQSDhD45tHHx9/1EQ8P9ufa4+0JEiQgIxsdGhwQC/8AARAPEPnly8bK5foRDQTv4tvo+A8YJRsdFRweHBQLAAMBERIK99zGwcbq/hIOAu7i3PP+GB0eGhMVHSEgDgf9/AcNEgbt3MPCz+4JEgz+6eTj9wwVHhoTDxIiJSAVA/v6AxARBezTw7/V9AoSCPjl4e8EFBsbGAoMFSEoIBMF+fkDDw//6M6/xNj6Cg8D9ubj8gkVHhYSCAoaJykhEAb1+QUODfvjy7rG3/wKCQHz6ev8EBkdFQsFCx0tKB8NAPX3Bw8F9tvLwMzn/goJ/PTn8QQUGxYNBwAPIisqGw788vwHDwTw2sXC0OoDBQX87u74CRYUEgsBBhMpMCkbCPz1+wkH/u7YxsLU8AAFAPjy9QISFhYMB/8FEicuKhgJ9/j9CAP55dfFytn0/wUB/fP8BBcSEgcGAgwcLyspEwbz9vsF/fni2sjP3fH4Af0B+QcMFxEOBAT+EhosKCMRBvb+/Qb68d7Tx9Ld9PkDAAICCQ4RCAsCAgIUIzAuJQ4D9Pf4+/bv4dfM19/v+QACBAcPDhEJCAMECBUiLScgCwD29/r48u/e183U3+/5BAYNChMMDAYDAQcLHCIrJh4M/vPy7/bu7uLa1dff7vUHBxEQEQwLAwX/CQwdIiciGgkB8vPw9PHu39vR193t+QsPGBIPBQUABAILEh8iJyAYCwDy7+nw7u3i2tPX3fH+DhYaFw0HA/8DBQ4TGyYnIxcI/e/s6+7x6+bd0dPb7gMPHhwXDQQB/QAJDhUZJCgjGgz88Obs7/Hu59zQzNnrARQgIBcKA/v/AgwQFBojJSUVEP3v5+jv8+3r18zL1ewDFiYhGQj/+/oDDBEXGyUmIhsM/eni5+308+ncyszW7QUbKSUTCPr8/QgOEhUbICYeHAv45+Lp8fP559vIx9PrByUrKQ8E+fn8CA0TEx0fJCEeDvvl4uXz9/rq1sTI0u8MJCwlEQX3+f8LERASGB0kIB4M9ufg5vP5/urRw8PV8g8qLCQSA/r3AQsPEhAZHiMlGwjx4uHm9P767M/CwdP0FSotIBEB+PsCDhAPDxQdJCUcBfLi4ur3//vo0L7D1fYWLC0hDAD2/AMODQ0NFR0nJB0F8uLj6vf+/eXQvsPW+hgpKSEMAvj9BA0ODwsVHCgkGQPw4uXs+v745s/Bw9r+GConHQ0A/v4GCg0LDBIeJCQUA+7m6PP7/vPkzMPE4P4bJygYD/8CAAYHCQkPECAgJRIB7eTn9fkC7+bOxMrg/hsiKxUMAwACBAUKBBASHiMeFAHs6en4+fvx3s7HzOb+GyEiGQ0HAv8EBAoHDBUcJBwOAO7s7/X89/Hh0cvQ5PwUIyAbDwsHAQECAwwNGRoeGhD/8en09f317N7Sz9fnAA8hHhgOCgUDAQUDCg0ZGhsVD//58Pf3+/Xu3NHN2+kAEh4dGQ8MBAP/BAIIDRcaGxUO/vj0+fj49ezd1dPd6v0PGhsXEgwEAgADBAUNExcYFA//+fn4+/X06t7W1d3q+w8WGxYTDQMCAQEEBA8SFBcTDQT6+/f59vLr3tnb4Oz7DhYXFRAKBAADAAIEDBITExIMBf79+ff38ujf2t/j7vsLFBcVEQoEAwIBAAQLEBEUEw8IAf359/fw6N/a3eLv/QsTFRMPBwYEBgIBBgkMERIUDQcB/Pr39PHm497e5PD9Cw8UDwwGBQUFAgMBCQwQFBQPCwL/9/r38ejh3uLj8/0KDhEPCwYJBAb//wEGCxMTFQ8NBP/6+ffz5uLf4+n2AAcKDgoJCAkJBQH/AAYLExQTDgkD/vv99/Dp4uHk7ff+AwcJDAoMCwoE/vv+Ag0SFxQQCQP+//r47Ojj4+jw+QEBBwYLCg4MBwD9+P8EDxEUEQ0HBP8D/Pjt5+Pn6/b5//4AAQULEg8LAfv2+wQOExURDQYFAwP89Orm5evv+Pv8+/0CBxASDwb/9/j9CA0WExEKBwYGAf7x7ePl6vX6/Pf5+AMIERMPB//09/oKDxYQDQcIBwwC/vHr5unu+fr+8/T0AQsWFBAB/PL3/AsRFhEPBgsJCwT77+nl7/H9+/v28PL/CRgUEAH39Pf/DA4TDQsICQ0LBPzt6uXv9/v99/Hw8wELFhULAvPy+AEMDxEPCgsMDQsD+ezn6fP8AP337uzx/QwTFAwA9/X6AgoMDgoKCg4QDAP67uzt9/3++vXr7fECCxMRCf728/z/CAoMCgoNEQ8NAfnu7fP5/v/59ent8gELEA8K/vr2/gAFCQoLDQ8UDQoA9/Ht9Pz9//Ty6+z3/gkPDQr++/j8AQMHCgoQERIPBwH49Pb3/fz59ezs7vcBBQwMBwP8/Pv7AQMIDRAVEQ4FAPn29/r7/Pj28O3x9/8FCAoGAwD7+fr+BQoPExUQCAT++/z8/vz49vHv7PH3/AIHBwkEBP339/sDCw4WFBEJBP/+/wH7+vP18fPx9Pb6+wQFCgUG/vf1+wMOERkSDgYD/wIBBv768fLx8vP28/n5BAYKCQX99/H7AQ8TFxIKBQYDCAUG/fXx8PH29fjy9fgABgoLB/z18fkCDxYVEQoGBgUJCgb98u7u8vf39vLz+P0HCwsF+/Pz+AcPFxUNCQcICwwNBPzw6+70+fr08u/2AAgODQX78fT4BhEVEwwFBwkSERAE+PDs7PT3+/Xw7fT8CQ0MAvry8/oIERYRCwUIChQSEAT37evt9vn78+/s8/0HDQwC+vD0+ggQEw8KAwkLFhYQBPbt6+33+fnz7e3y/AgMCwL58/X+CQ4SDAkECRAXGRIC+Orq7vX5+PPv6vL6BwwMA/vz+P0ICw8LCAULExwbEwT16uns9fj69O/r8fsGCQsB+/T3/wgMEQsJBQoSGhoVA/jp6ez0+Pny7+nx+AUKDAb+9vn9CAoNCwkIDhYeHBQE8wgIBAAA/fz/AQMIBAD++Pb19vj5/QEFBAgH</CustomObjectData>
   </SourceCode>
-  <Project DisplayMode="m640x480x24" Windowed="true" TitleText="Powered by Scrolling Game Development Kit 2 (http://sgdk2.sf.net)" StartMap="Level 1" OverlayMap="Inventory">
+  <SourceCode Name="Controls.cs" IsCustomObject="false">
+    <Text>using System;
+using System.Drawing;
+using System.Collections;
+using System.ComponentModel;
+using System.Windows.Forms;
+
+/// &lt;summary&gt;
+/// Summary description for frmControls.
+/// &lt;/summary&gt;
+public class frmControls : System.Windows.Forms.Form
+{
+   #region Windows Form Designer Members
+   private System.Windows.Forms.Label lblController;
+   private System.Windows.Forms.ComboBox cboController;
+   private System.Windows.Forms.RadioButton rdoController;
+   private System.Windows.Forms.RadioButton rdoKeyboard;
+   private System.Windows.Forms.TextBox txtButton4;
+   private System.Windows.Forms.Label lblButton4;
+   private System.Windows.Forms.TextBox txtButton3;
+   private System.Windows.Forms.Label lblButton3;
+   private System.Windows.Forms.TextBox txtButton2;
+   private System.Windows.Forms.Label lblButton2;
+   private System.Windows.Forms.TextBox txtButton1;
+   private System.Windows.Forms.Label lblButton1;
+   private System.Windows.Forms.TextBox txtDown;
+   private System.Windows.Forms.Label lblDown;
+   private System.Windows.Forms.TextBox txtRight;
+   private System.Windows.Forms.Label lblRight;
+   private System.Windows.Forms.TextBox txtLeft;
+   private System.Windows.Forms.Label lblLeft;
+   private System.Windows.Forms.TextBox txtUp;
+   private System.Windows.Forms.Label lblUp;
+   private System.Windows.Forms.ComboBox cboPlayer;
+   private System.Windows.Forms.Label lblPlayer;
+   private System.Windows.Forms.GroupBox grpPlayers;
+   private System.Windows.Forms.RadioButton[] rdoPlayers;
+
+   /// &lt;summary&gt;
+   /// Required designer variable.
+   /// &lt;/summary&gt;
+   private System.ComponentModel.Container components = null;
+   #endregion
+   
+   public frmControls()
+   {
+      //
+      // Required for Windows Form Designer support
+      //
+      InitializeComponent();
+
+      if (Project.MaxPlayers &lt;= 1)
+      {
+         grpPlayers.Hide();
+         this.ClientSize = new System.Drawing.Size(298, 185);
+         lblPlayer.Hide();
+         cboPlayer.Hide();
+      }
+
+      for(int i = 0; i &lt; Project.GameWindow.ControllerCount; i++)
+         cboController.Items.Add(Project.GameWindow.GetControllerName(i));
+      rdoController.Enabled = (cboController.Items.Count &gt; 0);
+      for (int i = Project.MaxPlayers; i &lt; rdoPlayers.Length; i++)
+         rdoPlayers[i].Visible = false;
+      rdoPlayers[0].Checked = true;
+   }
+
+   /// &lt;summary&gt;
+   /// Clean up any resources being used.
+   /// &lt;/summary&gt;
+   protected override void Dispose( bool disposing )
+   {
+      if( disposing )
+      {
+         if(components != null)
+         {
+            components.Dispose();
+         }
+      }
+      base.Dispose( disposing );
+   }
+
+   #region Windows Form Designer generated code
+   private void InitializeComponent()
+   {
+      this.lblController = new System.Windows.Forms.Label();
+      this.cboController = new System.Windows.Forms.ComboBox();
+      this.rdoController = new System.Windows.Forms.RadioButton();
+      this.rdoKeyboard = new System.Windows.Forms.RadioButton();
+      this.txtButton4 = new System.Windows.Forms.TextBox();
+      this.lblButton4 = new System.Windows.Forms.Label();
+      this.txtButton3 = new System.Windows.Forms.TextBox();
+      this.lblButton3 = new System.Windows.Forms.Label();
+      this.txtButton2 = new System.Windows.Forms.TextBox();
+      this.lblButton2 = new System.Windows.Forms.Label();
+      this.txtButton1 = new System.Windows.Forms.TextBox();
+      this.lblButton1 = new System.Windows.Forms.Label();
+      this.txtDown = new System.Windows.Forms.TextBox();
+      this.lblDown = new System.Windows.Forms.Label();
+      this.txtRight = new System.Windows.Forms.TextBox();
+      this.lblRight = new System.Windows.Forms.Label();
+      this.txtLeft = new System.Windows.Forms.TextBox();
+      this.lblLeft = new System.Windows.Forms.Label();
+      this.txtUp = new System.Windows.Forms.TextBox();
+      this.lblUp = new System.Windows.Forms.Label();
+      this.cboPlayer = new System.Windows.Forms.ComboBox();
+      this.lblPlayer = new System.Windows.Forms.Label();
+      this.grpPlayers = new System.Windows.Forms.GroupBox();
+      this.rdoPlayers = new System.Windows.Forms.RadioButton[4]
+      {
+         new System.Windows.Forms.RadioButton(),
+         new System.Windows.Forms.RadioButton(),
+         new System.Windows.Forms.RadioButton(),
+         new System.Windows.Forms.RadioButton()
+      };
+      this.grpPlayers.SuspendLayout();
+      this.SuspendLayout();
+      // 
+      // lblController
+      // 
+      this.lblController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.lblController.Location = new System.Drawing.Point(24, 224);
+      this.lblController.Name = "lblController";
+      this.lblController.Size = new System.Drawing.Size(64, 16);
+      this.lblController.TabIndex = 43;
+      this.lblController.Enabled = false;
+      this.lblController.Text = "Controller:";
+      // 
+      // cboController
+      // 
+      this.cboController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.cboController.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cboController.Location = new System.Drawing.Point(88, 224);
+      this.cboController.Name = "cboController";
+      this.cboController.Size = new System.Drawing.Size(200, 21);
+      this.cboController.Enabled = false;
+      this.cboController.TabIndex = 42;
+      this.cboController.SelectedIndexChanged += new System.EventHandler(this.cboController_SelectedIndexChanged);
+      // 
+      // rdoController
+      // 
+      this.rdoController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.rdoController.Location = new System.Drawing.Point(8, 200);
+      this.rdoController.Name = "rdoController";
+      this.rdoController.Size = new System.Drawing.Size(272, 16);
+      this.rdoController.TabIndex = 41;
+      this.rdoController.Text = "Game Controller";
+      this.rdoController.CheckedChanged += new System.EventHandler(this.InputType_Changed);
+      // 
+      // rdoKeyboard
+      // 
+      this.rdoKeyboard.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.rdoKeyboard.Location = new System.Drawing.Point(8, 80);
+      this.rdoKeyboard.Name = "rdoKeyboard";
+      this.rdoKeyboard.Size = new System.Drawing.Size(272, 16);
+      this.rdoKeyboard.TabIndex = 40;
+      this.rdoKeyboard.Text = "Keyboard";
+      this.rdoKeyboard.CheckedChanged += new System.EventHandler(this.InputType_Changed);
+      // 
+      // txtButton4
+      // 
+      this.txtButton4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.txtButton4.Location = new System.Drawing.Point(224, 168);
+      this.txtButton4.Name = "txtButton4";
+      this.txtButton4.Size = new System.Drawing.Size(64, 20);
+      this.txtButton4.TabIndex = 39;
+      this.txtButton4.Text = "";
+      this.txtButton4.Enabled = false;
+      this.txtButton4.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
+      // 
+      // lblButton4
+      // 
+      this.lblButton4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.lblButton4.Location = new System.Drawing.Point(160, 168);
+      this.lblButton4.Name = "lblButton4";
+      this.lblButton4.Size = new System.Drawing.Size(64, 20);
+      this.lblButton4.TabIndex = 38;
+      this.lblButton4.Text = "Button 4:";
+      this.lblButton4.Enabled = false;
+      this.txtButton4.ReadOnly = true;
+      this.lblButton4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // txtButton3
+      // 
+      this.txtButton3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.txtButton3.Location = new System.Drawing.Point(224, 144);
+      this.txtButton3.Name = "txtButton3";
+      this.txtButton3.Size = new System.Drawing.Size(64, 20);
+      this.txtButton3.TabIndex = 37;
+      this.txtButton3.Text = "";
+      this.txtButton3.Enabled = false;
+      this.txtButton3.ReadOnly = true;
+      this.txtButton3.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
+      // 
+      // lblButton3
+      // 
+      this.lblButton3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.lblButton3.Location = new System.Drawing.Point(160, 144);
+      this.lblButton3.Name = "lblButton3";
+      this.lblButton3.Size = new System.Drawing.Size(64, 20);
+      this.lblButton3.TabIndex = 36;
+      this.lblButton3.Text = "Button 3:";
+      this.lblButton3.Enabled = false;
+      this.lblButton3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // txtButton2
+      // 
+      this.txtButton2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.txtButton2.Location = new System.Drawing.Point(224, 120);
+      this.txtButton2.Name = "txtButton2";
+      this.txtButton2.Size = new System.Drawing.Size(64, 20);
+      this.txtButton2.TabIndex = 35;
+      this.txtButton2.Text = "";
+      this.txtButton2.Enabled = false;
+      this.txtButton2.ReadOnly = true;
+      this.txtButton2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
+      // 
+      // lblButton2
+      // 
+      this.lblButton2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.lblButton2.Location = new System.Drawing.Point(160, 120);
+      this.lblButton2.Name = "lblButton2";
+      this.lblButton2.Size = new System.Drawing.Size(64, 20);
+      this.lblButton2.TabIndex = 34;
+      this.lblButton2.Text = "Button 2:";
+      this.lblButton2.Enabled = false;
+      this.lblButton2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // txtButton1
+      // 
+      this.txtButton1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.txtButton1.Location = new System.Drawing.Point(224, 96);
+      this.txtButton1.Name = "txtButton1";
+      this.txtButton1.Size = new System.Drawing.Size(64, 20);
+      this.txtButton1.TabIndex = 33;
+      this.txtButton1.Text = "";
+      this.txtButton1.Enabled = false;
+      this.txtButton1.ReadOnly = true;
+      this.txtButton1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
+      // 
+      // lblButton1
+      // 
+      this.lblButton1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.lblButton1.Location = new System.Drawing.Point(160, 96);
+      this.lblButton1.Name = "lblButton1";
+      this.lblButton1.Size = new System.Drawing.Size(64, 20);
+      this.lblButton1.TabIndex = 32;
+      this.lblButton1.Text = "Button 1:";
+      this.lblButton1.Enabled = false;
+      this.lblButton1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // txtDown
+      // 
+      this.txtDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.txtDown.Location = new System.Drawing.Point(88, 168);
+      this.txtDown.Name = "txtDown";
+      this.txtDown.Size = new System.Drawing.Size(64, 20);
+      this.txtDown.TabIndex = 31;
+      this.txtDown.Text = "";
+      this.txtDown.Enabled = false;
+      this.txtDown.ReadOnly = true;
+      this.txtDown.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
+      // 
+      // lblDown
+      // 
+      this.lblDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.lblDown.Location = new System.Drawing.Point(24, 168);
+      this.lblDown.Name = "lblDown";
+      this.lblDown.Size = new System.Drawing.Size(64, 20);
+      this.lblDown.TabIndex = 30;
+      this.lblDown.Text = "Down:";
+      this.lblDown.Enabled = false;
+      this.lblDown.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // txtRight
+      // 
+      this.txtRight.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.txtRight.Location = new System.Drawing.Point(88, 144);
+      this.txtRight.Name = "txtRight";
+      this.txtRight.Size = new System.Drawing.Size(64, 20);
+      this.txtRight.TabIndex = 29;
+      this.txtRight.Text = "";
+      this.txtRight.Enabled = false;
+      this.txtRight.ReadOnly = true;
+      this.txtRight.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
+      // 
+      // lblRight
+      // 
+      this.lblRight.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.lblRight.Location = new System.Drawing.Point(24, 144);
+      this.lblRight.Name = "lblRight";
+      this.lblRight.Size = new System.Drawing.Size(64, 20);
+      this.lblRight.TabIndex = 28;
+      this.lblRight.Text = "Right:";
+      this.lblRight.Enabled = false;
+      this.lblRight.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // txtLeft
+      // 
+      this.txtLeft.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.txtLeft.Location = new System.Drawing.Point(88, 120);
+      this.txtLeft.Name = "txtLeft";
+      this.txtLeft.Size = new System.Drawing.Size(64, 20);
+      this.txtLeft.TabIndex = 27;
+      this.txtLeft.Text = "";
+      this.txtLeft.Enabled = false;
+      this.txtLeft.ReadOnly = true;
+      this.txtLeft.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
+      // 
+      // lblLeft
+      // 
+      this.lblLeft.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.lblLeft.Location = new System.Drawing.Point(24, 120);
+      this.lblLeft.Name = "lblLeft";
+      this.lblLeft.Size = new System.Drawing.Size(64, 20);
+      this.lblLeft.TabIndex = 26;
+      this.lblLeft.Text = "Left:";
+      this.lblLeft.Enabled = false;
+      this.lblLeft.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // txtUp
+      // 
+      this.txtUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.txtUp.Location = new System.Drawing.Point(88, 96);
+      this.txtUp.Name = "txtUp";
+      this.txtUp.Size = new System.Drawing.Size(64, 20);
+      this.txtUp.TabIndex = 25;
+      this.txtUp.Text = "";
+      this.txtUp.Enabled = false;
+      this.txtUp.ReadOnly = true;
+      this.txtUp.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
+      // 
+      // lblUp
+      // 
+      this.lblUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.lblUp.Location = new System.Drawing.Point(24, 96);
+      this.lblUp.Name = "lblUp";
+      this.lblUp.Size = new System.Drawing.Size(64, 20);
+      this.lblUp.TabIndex = 24;
+      this.lblUp.Text = "Up:";
+      this.lblUp.Enabled = false;
+      this.lblUp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // cboPlayer
+      // 
+      this.cboPlayer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.cboPlayer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.cboPlayer.Location = new System.Drawing.Point(88, 48);
+      this.cboPlayer.Name = "cboPlayer";
+      this.cboPlayer.Size = new System.Drawing.Size(200, 21);
+      this.cboPlayer.TabIndex = 23;
+      this.cboPlayer.SelectedIndexChanged += new System.EventHandler(this.cboPlayer_SelectedIndexChanged);
+      // 
+      // lblPlayer
+      // 
+      this.lblPlayer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.lblPlayer.Location = new System.Drawing.Point(8, 48);
+      this.lblPlayer.Name = "lblPlayer";
+      this.lblPlayer.Size = new System.Drawing.Size(80, 21);
+      this.lblPlayer.TabIndex = 22;
+      this.lblPlayer.Text = "Player:";
+      this.lblPlayer.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // grpPlayers
+      // 
+      this.grpPlayers.Controls.Add(this.rdoPlayers[3]);
+      this.grpPlayers.Controls.Add(this.rdoPlayers[2]);
+      this.grpPlayers.Controls.Add(this.rdoPlayers[1]);
+      this.grpPlayers.Controls.Add(this.rdoPlayers[0]);
+      this.grpPlayers.Location = new System.Drawing.Point(8, 0);
+      this.grpPlayers.Name = "grpPlayers";
+      this.grpPlayers.Size = new System.Drawing.Size(280, 40);
+      this.grpPlayers.TabIndex = 44;
+      this.grpPlayers.TabStop = false;
+      this.grpPlayers.Text = "Players";
+      // 
+      // rdoOnePlayer
+      // 
+      this.rdoPlayers[0].Location = new System.Drawing.Point(8, 16);
+      this.rdoPlayers[0].Name = "rdoOnePlayer";
+      this.rdoPlayers[0].Size = new System.Drawing.Size(64, 16);
+      this.rdoPlayers[0].TabIndex = 0;
+      this.rdoPlayers[0].Text = "&amp;One";
+      this.rdoPlayers[0].CheckedChanged += new System.EventHandler(this.PlayerCount_Changed);
+      // 
+      // rdoTwoPlayers
+      // 
+      this.rdoPlayers[1].Location = new System.Drawing.Point(72, 16);
+      this.rdoPlayers[1].Name = "rdoTwoPlayers";
+      this.rdoPlayers[1].Size = new System.Drawing.Size(64, 16);
+      this.rdoPlayers[1].TabIndex = 1;
+      this.rdoPlayers[1].Text = "&amp;Two";
+      this.rdoPlayers[1].CheckedChanged += new System.EventHandler(this.PlayerCount_Changed);
+      // 
+      // rdoThreePlayers
+      // 
+      this.rdoPlayers[2].Location = new System.Drawing.Point(136, 16);
+      this.rdoPlayers[2].Name = "rdoThreePlayers";
+      this.rdoPlayers[2].Size = new System.Drawing.Size(64, 16);
+      this.rdoPlayers[2].TabIndex = 2;
+      this.rdoPlayers[2].Text = "T&amp;hree";
+      this.rdoPlayers[2].CheckedChanged += new System.EventHandler(this.PlayerCount_Changed);
+      // 
+      // rdoFourPlayers
+      // 
+      this.rdoPlayers[3].Location = new System.Drawing.Point(200, 16);
+      this.rdoPlayers[3].Name = "rdoFourPlayers";
+      this.rdoPlayers[3].Size = new System.Drawing.Size(64, 16);
+      this.rdoPlayers[3].TabIndex = 3;
+      this.rdoPlayers[3].Text = "&amp;Four";
+      this.rdoPlayers[3].CheckedChanged += new System.EventHandler(this.PlayerCount_Changed);
+      // 
+      // frmControls
+      // 
+      this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+      this.ClientSize = new System.Drawing.Size(298, 255);
+      this.Controls.Add(this.grpPlayers);
+      this.Controls.Add(this.lblController);
+      this.Controls.Add(this.cboController);
+      this.Controls.Add(this.rdoController);
+      this.Controls.Add(this.rdoKeyboard);
+      this.Controls.Add(this.txtButton4);
+      this.Controls.Add(this.txtButton3);
+      this.Controls.Add(this.txtButton2);
+      this.Controls.Add(this.txtButton1);
+      this.Controls.Add(this.txtDown);
+      this.Controls.Add(this.txtRight);
+      this.Controls.Add(this.txtLeft);
+      this.Controls.Add(this.txtUp);
+      this.Controls.Add(this.lblButton4);
+      this.Controls.Add(this.lblButton3);
+      this.Controls.Add(this.lblButton2);
+      this.Controls.Add(this.lblButton1);
+      this.Controls.Add(this.lblDown);
+      this.Controls.Add(this.lblRight);
+      this.Controls.Add(this.lblLeft);
+      this.Controls.Add(this.lblUp);
+      this.Controls.Add(this.cboPlayer);
+      this.Controls.Add(this.lblPlayer);
+      this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+      this.MaximizeBox = false;
+      this.Name = "frmControls";
+      this.Text = "Customize Controls";
+      this.grpPlayers.ResumeLayout(false);
+      this.ResumeLayout(false);
+
+   }
+   #endregion
+
+   private void InputType_Changed(object sender, System.EventArgs e)
+   {
+      if (((RadioButton)sender).Checked)
+      {
+         lblUp.Enabled = txtUp.Enabled =
+            lblLeft.Enabled = txtLeft.Enabled =
+            lblRight.Enabled = txtRight.Enabled =
+            lblDown.Enabled = txtDown.Enabled =
+            lblButton1.Enabled = txtButton1.Enabled = 
+            lblButton2.Enabled = txtButton2.Enabled = 
+            lblButton3.Enabled = txtButton3.Enabled = 
+            lblButton4.Enabled = txtButton4.Enabled =
+            sender == rdoKeyboard;
+
+         lblController.Enabled = cboController.Enabled = 
+            (sender != rdoKeyboard);
+
+         if (sender == rdoKeyboard)
+            Project.GameWindow.Players[SelectedPlayer] = new KeyboardPlayer(
+               Microsoft.DirectX.DirectInput.Key.UpArrow,
+               Microsoft.DirectX.DirectInput.Key.LeftArrow,
+               Microsoft.DirectX.DirectInput.Key.RightArrow,
+               Microsoft.DirectX.DirectInput.Key.DownArrow,
+               Microsoft.DirectX.DirectInput.Key.RightControl,
+               Microsoft.DirectX.DirectInput.Key.Space,
+               Microsoft.DirectX.DirectInput.Key.Return,
+               Microsoft.DirectX.DirectInput.Key.RightShift);
+         else
+            Project.GameWindow.Players[SelectedPlayer] = new ControllerPlayer(SelectedPlayer % cboController.Items.Count);
+
+         LoadCurrentControls();
+      }
+   }
+
+   private void PlayerCount_Changed(object sender, System.EventArgs e)
+   {
+      if (((RadioButton)sender).Checked)
+      {
+         for (int playerIndex=0; playerIndex&lt;4; playerIndex++)
+         {
+            if (rdoPlayers[playerIndex] == sender)
+            {
+               cboPlayer.Items.Clear();
+               for (int i = 0; i&lt;=playerIndex; i++)
+               {
+                  cboPlayer.Items.Add("Player " + (i+1).ToString());
+               }
+
+               Project.GameWindow.CurrentPlayers = (byte)(playerIndex + 1);
+            }
+         }
+         cboPlayer.SelectedIndex = 0;
+      }
+   }
+
+   private int SelectedPlayer
+   {
+      get
+      {
+         return cboPlayer.SelectedIndex;
+      }
+   }
+
+   private void KeyBox_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+   {
+      Microsoft.DirectX.DirectInput.Key[] pressed;
+      do
+      {
+         pressed = Project.GameWindow.GetPressedKeys();
+      } while(pressed.Length == 0);
+
+      ((TextBox)sender).Text = System.Enum.Format(typeof(
+         Microsoft.DirectX.DirectInput.Key), pressed[0], "g");
+
+      KeyboardPlayer player = (KeyboardPlayer)Project.GameWindow.Players[SelectedPlayer];
+      if (sender == txtUp)
+         player.key_up = pressed[0];
+      else if (sender == txtLeft)
+         player.key_left = pressed[0];
+      else if (sender == txtRight)
+         player.key_right = pressed[0];
+      else if (sender == txtDown)
+         player.key_down = pressed[0];
+      else if (sender == txtButton1)
+         player.key_button1 = pressed[0];
+      else if (sender == txtButton2)
+         player.key_button2 = pressed[0];
+      else if (sender == txtButton3)
+         player.key_button3 = pressed[0];
+      else if (sender == txtButton4)
+         player.key_button4 = pressed[0];
+   }
+
+   private void cboController_SelectedIndexChanged(object sender, System.EventArgs e)
+   {
+      if (cboController.SelectedIndex &gt;= 0)
+         ((ControllerPlayer)Project.GameWindow.Players[SelectedPlayer]).deviceNumber = cboController.SelectedIndex;
+   }
+
+   private void cboPlayer_SelectedIndexChanged(object sender, System.EventArgs e)
+   {
+      LoadCurrentControls();
+   }
+
+   private void LoadCurrentControls()
+   {
+      if (Project.GameWindow.Players[SelectedPlayer] is KeyboardPlayer)
+      {
+         KeyboardPlayer player = (KeyboardPlayer)Project.GameWindow.Players[SelectedPlayer];
+         rdoKeyboard.Checked = true;
+         txtUp.Text = System.Enum.Format(typeof(Microsoft.DirectX.DirectInput.Key), player.key_up, "g");
+         txtLeft.Text = System.Enum.Format(typeof(Microsoft.DirectX.DirectInput.Key), player.key_left, "g");
+         txtRight.Text = System.Enum.Format(typeof(Microsoft.DirectX.DirectInput.Key), player.key_right, "g");
+         txtDown.Text = System.Enum.Format(typeof(Microsoft.DirectX.DirectInput.Key), player.key_down, "g");
+         txtButton1.Text = System.Enum.Format(typeof(Microsoft.DirectX.DirectInput.Key), player.key_button1, "g");
+         txtButton2.Text = System.Enum.Format(typeof(Microsoft.DirectX.DirectInput.Key), player.key_button2, "g");
+         txtButton3.Text = System.Enum.Format(typeof(Microsoft.DirectX.DirectInput.Key), player.key_button3, "g");
+         txtButton4.Text = System.Enum.Format(typeof(Microsoft.DirectX.DirectInput.Key), player.key_button4, "g");
+      }
+      else
+      {
+         rdoController.Checked = true;
+         int devNum = ((ControllerPlayer)Project.GameWindow.Players[SelectedPlayer]).deviceNumber;
+         if (cboController.Items.Count &gt; devNum)
+            cboController.SelectedIndex = devNum;
+         else
+            cboController.SelectedIndex = -1;
+      }
+   }
+
+   protected override void OnClosed(EventArgs e)
+   {
+      base.OnClosed (e);
+      Project.GameWindow.RefreshControllers();
+   }
+}
+
+</Text>
+  </SourceCode>
+  <SourceCode Name="Player.cs" IsCustomObject="false">
+    <Text>using System;
+using Microsoft.DirectX.DirectInput;
+
+public interface IPlayer
+{
+   bool Up
+   {
+      get;
+   }
+
+   bool Left
+   {
+      get;
+   }
+
+   bool Right
+   {
+      get;
+   }
+
+   bool Down
+   {
+      get;
+   }
+
+   bool Button1
+   {
+      get;
+   }
+
+   bool Button2
+   {
+      get;
+   }
+
+   bool Button3
+   {
+      get;
+   }
+
+   bool Button4
+   {
+      get;
+   }
+}
+
+/// &lt;summary&gt;
+/// Represents interactions between the game and a player via the keyboard
+/// &lt;/summary&gt;
+public class KeyboardPlayer : IPlayer
+{
+   public Key key_left;
+   public Key key_up;
+   public Key key_right;
+   public Key key_down;
+   public Key key_button1;
+   public Key key_button2;
+   public Key key_button3;
+   public Key key_button4;      
+
+   public KeyboardPlayer(Key up, Key left, Key right, Key down,
+      Key button1, Key button2, Key button3, Key button4)
+   {
+      key_up = up;
+      key_left = left;
+      key_right = right;
+      key_down = down;
+      key_button1 = button1;
+      key_button2 = button2;
+      key_button3 = button3;
+      key_button4 = button4;
+   }
+   #region IPlayer Members
+
+   public bool Up
+   {
+      get
+      {
+         return Project.GameWindow.KeyboardState[key_up];
+      }
+   }
+
+   public bool Left
+   {
+      get
+      {
+         return Project.GameWindow.KeyboardState[key_left];
+      }
+   }
+
+   public bool Right
+   {
+      get
+      {
+         return Project.GameWindow.KeyboardState[key_right];
+      }
+   }
+
+   public bool Down
+   {
+      get
+      {
+         return Project.GameWindow.KeyboardState[key_down];
+      }
+   }
+
+   public bool Button1
+   {
+      get
+      {
+         return Project.GameWindow.KeyboardState[key_button1];
+      }
+   }
+
+   public bool Button2
+   {
+      get
+      {
+         return Project.GameWindow.KeyboardState[key_button2];
+      }
+   }
+
+   public bool Button3
+   {
+      get
+      {
+         return Project.GameWindow.KeyboardState[key_button3];
+      }
+   }
+
+   public bool Button4
+   {
+      get
+      {
+         return Project.GameWindow.KeyboardState[key_button4];
+      }
+   }
+
+   #endregion
+}
+
+/// &lt;summary&gt;
+/// Represents interactions between the game and a player via a joystick/gamepad
+/// &lt;/summary&gt;
+public class ControllerPlayer : IPlayer
+{
+   public int deviceNumber;
+
+   public ControllerPlayer(int deviceNumber)
+   {
+      this.deviceNumber = deviceNumber;
+   }
+
+   #region IPlayer Members
+
+   public bool Up
+   {
+      get
+      {
+         return Project.GameWindow.GetControllerState(deviceNumber).Y &lt; 0x4000;
+      }
+   }
+
+   public bool Left
+   {
+      get
+      {
+         return Project.GameWindow.GetControllerState(deviceNumber).X &lt; 0x4000;
+      }
+   }
+
+   public bool Right
+   {
+      get
+      {
+         return Project.GameWindow.GetControllerState(deviceNumber).X &gt; 0xC000;
+      }
+   }
+
+   public bool Down
+   {
+      get
+      {
+         return Project.GameWindow.GetControllerState(deviceNumber).Y &gt; 0xC000;
+      }
+   }
+
+   public bool Button1
+   {
+      get
+      {
+         return Project.GameWindow.GetControllerState(deviceNumber).GetButtons()[0] != 0;
+      }
+   }
+
+   public bool Button2
+   {
+      get
+      {
+         return Project.GameWindow.GetControllerState(deviceNumber).GetButtons()[1] != 0;
+      }
+   }
+
+   public bool Button3
+   {
+      get
+      {
+         return Project.GameWindow.GetControllerState(deviceNumber).GetButtons()[2] != 0;
+      }
+   }
+
+   public bool Button4
+   {
+      get
+      {
+         return Project.GameWindow.GetControllerState(deviceNumber).GetButtons()[3] != 0;
+      }
+   }
+
+   #endregion
+}
+</Text>
+  </SourceCode>
+  <Project DisplayMode="m640x480x24" Windowed="true" TitleText="Powered by Scrolling Game Development Kit 2 (http://sgdk2.sf.net)" StartMap="Level 1" OverlayMap="Inventory" MaxPlayers="2" MaxViews="1">
     <Comments />
   </Project>
   <TileCategory Name="StandardSolid">

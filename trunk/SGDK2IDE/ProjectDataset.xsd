@@ -297,6 +297,8 @@
                   <xs:attribute name="TitleText" type="xs:string" />
                   <xs:attribute name="StartMap" type="xs:Name" msprop:nullValue="_empty" use="optional" />
                   <xs:attribute name="OverlayMap" type="xs:Name" use="optional" msprop:nullValue="_null" />
+                  <xs:attribute name="MaxPlayers" type="xs:unsignedByte" default="1" msprop:nullValue="1" />
+                  <xs:attribute name="MaxViews" type="xs:unsignedByte" default="1" msprop:nullValue="1" />
                </xs:complexType>
             </xs:element>
             <xs:element name="TileCategory">

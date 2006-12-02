@@ -676,6 +676,11 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "Template\About.cs"
+                    SubType = "Form"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "Template\CollisionMask.cs"
                     SubType = "Code"
                     BuildAction = "EmbeddedResource"

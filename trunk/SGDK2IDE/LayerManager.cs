@@ -381,6 +381,7 @@ namespace SGDK2
          // 
          // btnLayerWizard
          // 
+         this.btnLayerWizard.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
          this.btnLayerWizard.Location = new System.Drawing.Point(264, 88);
          this.btnLayerWizard.Name = "btnLayerWizard";
          this.btnLayerWizard.Size = new System.Drawing.Size(72, 24);

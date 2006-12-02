@@ -81,6 +81,9 @@ echo >>Input.txt /res:Template\TileCategoryMembership.cs,SGDK2.Template.TileCate
 echo >>Input.txt /res:Template\TileShapes.cs,SGDK2.Template.TileShapes.cs
 echo >>Input.txt /res:Template\GeneralRules.cs,SGDK2.Template.GeneralRules.cs
 echo >>Input.txt /res:Template\CollisionMask.cs,SGDK2.Template.CollisionMask.cs
+echo >>Input.txt /res:Template\About.cs,SGDK2.Template.About.cs
+echo >>Input.txt /res:Template\Controls.cs,SGDK2.Template.Controls.cs
+echo >>Input.txt /res:Template\Player.cs,SGDK2.Template.Player.cs
 echo >>Input.txt /res:RemoteReflector.cs,SGDK2.RemoteReflector.cs
 echo >>Input.txt AssemblyInfo.cs
 echo >>Input.txt GfxEdit.cs

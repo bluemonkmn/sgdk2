@@ -247,6 +247,7 @@ namespace SGDK2
          // 
          // btnScrollWizard
          // 
+         this.btnScrollWizard.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
          this.btnScrollWizard.Location = new System.Drawing.Point(264, 80);
          this.btnScrollWizard.Name = "btnScrollWizard";
          this.btnScrollWizard.Size = new System.Drawing.Size(72, 24);

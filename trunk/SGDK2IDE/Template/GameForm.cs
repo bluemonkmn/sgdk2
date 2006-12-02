@@ -26,7 +26,8 @@ public class GameForm : Form
    private System.Windows.Forms.MenuItem mnuTools;
    private System.Windows.Forms.MenuItem mnuToolsOptions;
    public IPlayer[] Players = new IPlayer[Project.MaxPlayers];
-   private byte currentPlayers = 1;
+   private System.Windows.Forms.MenuItem mnuHelp;
+   private System.Windows.Forms.MenuItem mnuHelpAbout;
    public System.IO.StringWriter debugText = new System.IO.StringWriter();
 
    public GameForm(GameDisplayMode mode, bool windowed, string title, System.Type initMapType, System.Type overlayMapType)
@@ -192,14 +193,14 @@ public class GameForm : Form
          {
             GameDisplay.Device.BeginScene();
             GameDisplay.Sprite.Begin(Microsoft.DirectX.Direct3D.SpriteFlags.AlphaBlend);
-            CurrentMap.Draw();
+            CurrentMap.DrawAllViews();
             if (keyboard != null)
                m_keyboardState = keyboard.GetCurrentKeyboardState();
             ReadControllers();
             CurrentMap.ExecuteRules();
             if (OverlayMap != null)
             {
-               OverlayMap.Draw();
+               OverlayMap.DrawAllViews();
                OverlayMap.ExecuteRules();
             }
             OutputDebugInfo();
@@ -261,12 +262,15 @@ public class GameForm : Form
       this.mnuFileExit = new System.Windows.Forms.MenuItem();
       this.mnuTools = new System.Windows.Forms.MenuItem();
       this.mnuToolsOptions = new System.Windows.Forms.MenuItem();
+      this.mnuHelp = new System.Windows.Forms.MenuItem();
+      this.mnuHelpAbout = new System.Windows.Forms.MenuItem();
       // 
       // mnuGame
       // 
       this.mnuGame.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
                                                                              this.mnuFile,
-                                                                             this.mnuTools});
+                                                                             this.mnuTools,
+                                                                             this.mnuHelp});
       // 
       // mnuFile
       // 
@@ -294,6 +298,19 @@ public class GameForm : Form
       this.mnuToolsOptions.Text = "&Options";
       this.mnuToolsOptions.Click += new System.EventHandler(this.mnuToolsOptions_Click);
       // 
+      // mnuHelp
+      // 
+      this.mnuHelp.Index = 2;
+      this.mnuHelp.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                               this.mnuHelpAbout});
+      this.mnuHelp.Text = "&Help";
+      // 
+      // mnuHelpAbout
+      // 
+      this.mnuHelpAbout.Index = 0;
+      this.mnuHelpAbout.Text = "&About...";
+      this.mnuHelpAbout.Click += new System.EventHandler(this.mnuHelpAbout_Click);
+      // 
       // GameForm
       // 
       this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -320,6 +337,12 @@ public class GameForm : Form
    {
       if (controllerEnabled == null)
          return;
+
+      foreach(IPlayer plr in Players)
+      {
+         if (plr is ControllerPlayer)
+            controllerEnabled[((ControllerPlayer)plr).deviceNumber] = true;
+      }
 
       for (int i=0; i<controllerEnabled.Count; i++)
       {
@@ -368,34 +391,6 @@ public class GameForm : Form
       }
    }
 
-   public byte CurrentPlayers
-   {
-      get
-      {
-         return currentPlayers;
-      }
-      set
-      {
-         if ((value >= 1) && (value <= 4))
-         {
-            currentPlayers = value;
-            ReadControllers();
-         }
-         else
-            System.Diagnostics.Debug.Fail("Bad CurrentPlayers value ignored");
-      }
-   }
-
-   public void RefreshControllers()
-   {
-      foreach(IPlayer plr in Players)
-      {
-         if (plr is ControllerPlayer)
-            controllerEnabled[((ControllerPlayer)plr).deviceNumber] = true;
-         ReadControllers();
-      }
-   }
-
    private void GameDisplay_WindowedChanged(object sender, EventArgs e)
    {
       if (GameDisplay.Windowed)
@@ -406,5 +401,11 @@ public class GameForm : Form
    {
       frmControls frm = new frmControls();
       frm.ShowDialog();
+   }
+
+   private void mnuHelpAbout_Click(object sender, System.EventArgs e)
+   {
+      using (frmAbout frm = new frmAbout())
+         frm.ShowDialog();
    }
 }

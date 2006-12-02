@@ -68,7 +68,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
    private System.Drawing.Point m_AbsolutePosition;
    protected SpriteCollection m_Sprites;
    private readonly System.Drawing.SizeF m_ScrollRate;
-   private System.Drawing.Point m_CurrentPosition;
+   private System.Drawing.Point[] m_CurrentPosition = new System.Drawing.Point[Project.MaxViews];
    private MapBase m_ParentMap;
    public LayerSpriteCategoriesBase m_SpriteCategories;
    #endregion
@@ -167,11 +167,11 @@ public abstract class LayerBase : System.Collections.IEnumerable
    {
       get
       {
-         return m_CurrentPosition;
+         return m_CurrentPosition[ParentMap.CurrentViewIndex];
       }
       set
       {
-         m_CurrentPosition = value;
+         m_CurrentPosition[ParentMap.CurrentViewIndex] = value;
       }
    }
 
@@ -210,11 +210,11 @@ public abstract class LayerBase : System.Collections.IEnumerable
    {
       if (MapPosition.X != int.MinValue)
          if (MapPosition.Y != int.MinValue)
-            m_CurrentPosition = new Point(m_AbsolutePosition.X + (int)(MapPosition.X * m_ScrollRate.Width), m_AbsolutePosition.Y + (int)(MapPosition.Y * m_ScrollRate.Height));
+            CurrentPosition = new Point(m_AbsolutePosition.X + (int)(MapPosition.X * m_ScrollRate.Width), m_AbsolutePosition.Y + (int)(MapPosition.Y * m_ScrollRate.Height));
          else
-            m_CurrentPosition = new Point(m_AbsolutePosition.X + (int)(MapPosition.X * m_ScrollRate.Width), m_CurrentPosition.Y);
+            CurrentPosition = new Point(m_AbsolutePosition.X + (int)(MapPosition.X * m_ScrollRate.Width), CurrentPosition.Y);
       else if (MapPosition.Y != int.MinValue)
-         m_CurrentPosition = new Point(m_CurrentPosition.X, m_AbsolutePosition.Y + (int)(MapPosition.Y * m_ScrollRate.Height));
+         CurrentPosition = new Point(CurrentPosition.X, m_AbsolutePosition.Y + (int)(MapPosition.Y * m_ScrollRate.Height));
    }
 
    public void Draw()
@@ -222,28 +222,21 @@ public abstract class LayerBase : System.Collections.IEnumerable
       int nTileWidth = m_Tileset.TileWidth;
       int nTileHeight = m_Tileset.TileHeight;
 
-      int nStartCol = (-m_nLeftBuffer - m_CurrentPosition.X) / nTileWidth;
+      int nStartCol = (-m_nLeftBuffer - CurrentPosition.X) / nTileWidth;
       if (nStartCol < 0)
          nStartCol = 0;
-      int nStartRow = (-m_nTopBuffer - m_CurrentPosition.Y) / nTileHeight;
+      int nStartRow = (-m_nTopBuffer - CurrentPosition.Y) / nTileHeight;
       if (nStartRow < 0)
          nStartRow = 0;
 
-      Rectangle ViewRect = m_ParentMap.View;
-      if ((ViewRect.Width > 0) || (ViewRect.Height > 0))
-      {
-         m_ParentMap.Display.Device.RenderState.ScissorTestEnable = true;
-         m_ParentMap.Display.Device.ScissorRectangle = ViewRect;
-      }
-      else if (m_ParentMap.Display.Device.RenderState.ScissorTestEnable)
-      {
-         m_ParentMap.Display.Device.RenderState.ScissorTestEnable = false;
-      }
+      Rectangle ViewRect = m_ParentMap.CurrentView;
+      m_ParentMap.Display.Device.RenderState.ScissorTestEnable = true;
+      m_ParentMap.Display.Device.ScissorRectangle = ViewRect;
 
-      int EndCol = (ViewRect.Width - 1 + m_nRightBuffer - m_CurrentPosition.X) / nTileWidth;
+      int EndCol = (ViewRect.Width - 1 + m_nRightBuffer - CurrentPosition.X) / nTileWidth;
       if (EndCol >= Columns)
          EndCol = Columns - 1;
-      int EndRow = (ViewRect.Height - 1 + m_nBottomBuffer - m_CurrentPosition.Y) / nTileHeight;
+      int EndRow = (ViewRect.Height - 1 + m_nBottomBuffer - CurrentPosition.Y) / nTileHeight;
       if (EndRow >= Rows)
          EndRow = Rows - 1;
 
@@ -266,8 +259,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
                    (CurFrame.priority < 0))
             {
                spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
-                  CurFrame.x + m_CurrentPosition.X + ViewRect.X,
-                  CurFrame.y + m_CurrentPosition.Y + ViewRect.Y, 0));
+                  CurFrame.x + CurrentPosition.X + ViewRect.X,
+                  CurFrame.y + CurrentPosition.Y + ViewRect.Y, 0));
                spr.Draw(CurFrame.frame.GraphicSheetTexture.Texture, CurFrame.frame.SourceRect,
                   Vector3.Empty, Vector3.Empty, CurFrame.color);
                if (!Injected.MoveNext())
@@ -285,8 +278,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
             {
                Frame f = m_Frameset[SubFrames[nFrame]];
                spr.Transform = Matrix.Multiply(f.Transform, Matrix.Translation(
-                  x * nTileWidth + m_CurrentPosition.X + ViewRect.X,
-                  y * nTileHeight + m_CurrentPosition.Y + ViewRect.Y, 0));
+                  x * nTileWidth + CurrentPosition.X + ViewRect.X,
+                  y * nTileHeight + CurrentPosition.Y + ViewRect.Y, 0));
                spr.Draw(f.GraphicSheetTexture.Texture, f.SourceRect, Vector3.Empty, Vector3.Empty, f.Color);
             }
          }
@@ -296,8 +289,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
       {
          CurFrame = (InjectedFrame)Injected.Current;
          spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
-            CurFrame.x + m_CurrentPosition.X + ViewRect.X,
-            CurFrame.y + m_CurrentPosition.Y + ViewRect.Y, 0));
+            CurFrame.x + CurrentPosition.X + ViewRect.X,
+            CurFrame.y + CurrentPosition.Y + ViewRect.Y, 0));
          spr.Draw(CurFrame.frame.GraphicSheetTexture.Texture, CurFrame.frame.SourceRect,
             Vector3.Empty, Vector3.Empty, CurFrame.color);
          if (!Injected.MoveNext())
@@ -312,9 +305,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
    {
       get
       {
-         Rectangle result = new Rectangle(new System.Drawing.Point(0), m_ParentMap.View.Size);
-         result.Offset(-m_CurrentPosition.X, -m_CurrentPosition.Y);
-         return result;
+         return new Rectangle(new System.Drawing.Point(-CurrentPosition.X, -CurrentPosition.Y), m_ParentMap.CurrentView.Size);
       }
    }
 
@@ -378,43 +369,61 @@ public abstract class LayerBase : System.Collections.IEnumerable
          dispPos = m_ParentMap.Display.PointToClient(System.Windows.Forms.Control.MousePosition);
       else
          dispPos = System.Windows.Forms.Control.MousePosition;
-      dispPos.Offset(-m_CurrentPosition.X, -m_CurrentPosition.Y);
+      dispPos.Offset(-CurrentPosition.X, -CurrentPosition.Y);
       return dispPos;
    }
 
-   public void ScrollSpriteIntoView(SpriteBase sprite)
+   public void ScrollSpriteIntoView(SpriteBase sprite, bool useScrollMargins)
    {
       Rectangle spriteBounds = sprite.GetBounds();
       int newX = int.MinValue;
       int newY = int.MinValue;
-      if (spriteBounds.Left + CurrentPosition.X < ParentMap.ScrollMarginLeft)
+      int marginLeft;
+      int marginTop;
+      int marginRight;
+      int marginBottom;
+      if (useScrollMargins)
       {
-         if (ScrollRate.Width > 0)
-            newX = (int)((-spriteBounds.Left + ParentMap.ScrollMarginLeft - AbsolutePosition.X) / ScrollRate.Width);
-         else
-            CurrentPosition = new Point(-spriteBounds.Left + ParentMap.ScrollMarginLeft, CurrentPosition.Y);
+         marginLeft = ParentMap.ScrollMarginLeft;
+         marginTop = ParentMap.ScrollMarginTop;
+         marginRight = ParentMap.ScrollMarginRight;
+         marginBottom = ParentMap.ScrollMarginBottom;
       }
-      else if (spriteBounds.Right + CurrentPosition.X > VisibleArea.Width - ParentMap.ScrollMarginRight)
+      else
+      {
+         marginLeft = 0;
+         marginTop = 0;
+         marginRight = 0;
+         marginBottom = 0;
+      }
+      if (spriteBounds.Left + CurrentPosition.X < marginLeft)
       {
          if (ScrollRate.Width > 0)
-            newX = (int)((-spriteBounds.Right + VisibleArea.Width - ParentMap.ScrollMarginRight - AbsolutePosition.X) / ScrollRate.Width);
+            newX = (int)((-spriteBounds.Left + marginLeft - AbsolutePosition.X) / ScrollRate.Width);
          else
-            CurrentPosition = new Point(-spriteBounds.Right + VisibleArea.Width - ParentMap.ScrollMarginRight, CurrentPosition.Y);
+            CurrentPosition = new Point(-spriteBounds.Left + marginLeft, CurrentPosition.Y);
+      }
+      else if (spriteBounds.Right + CurrentPosition.X > VisibleArea.Width - marginRight)
+      {
+         if (ScrollRate.Width > 0)
+            newX = (int)((-spriteBounds.Right + VisibleArea.Width - marginRight - AbsolutePosition.X) / ScrollRate.Width);
+         else
+            CurrentPosition = new Point(-spriteBounds.Right + VisibleArea.Width - marginRight, CurrentPosition.Y);
       }
 
-      if (spriteBounds.Top + CurrentPosition.Y < ParentMap.ScrollMarginTop)
+      if (spriteBounds.Top + CurrentPosition.Y < marginTop)
       {
          if (ScrollRate.Height > 0)
-            newY = (int)((-spriteBounds.Top + ParentMap.ScrollMarginTop - AbsolutePosition.Y) / ScrollRate.Height);
+            newY = (int)((-spriteBounds.Top + marginTop - AbsolutePosition.Y) / ScrollRate.Height);
          else
-            CurrentPosition = new Point(CurrentPosition.X, -spriteBounds.Top + ParentMap.ScrollMarginTop);
+            CurrentPosition = new Point(CurrentPosition.X, -spriteBounds.Top + marginTop);
       }
-      else if (spriteBounds.Bottom + CurrentPosition.Y > VisibleArea.Height - ParentMap.ScrollMarginBottom)
+      else if (spriteBounds.Bottom + CurrentPosition.Y > VisibleArea.Height - marginBottom)
       {
          if (ScrollRate.Height > 0)
-            newY = (int)((-spriteBounds.Bottom + VisibleArea.Height - ParentMap.ScrollMarginBottom - AbsolutePosition.Y) / ScrollRate.Height);
+            newY = (int)((-spriteBounds.Bottom + VisibleArea.Height - marginBottom - AbsolutePosition.Y) / ScrollRate.Height);
          else
-            CurrentPosition = new Point(CurrentPosition.X, -spriteBounds.Bottom + VisibleArea.Height - ParentMap.ScrollMarginBottom);
+            CurrentPosition = new Point(CurrentPosition.X, -spriteBounds.Bottom + VisibleArea.Height - marginBottom);
       }
       ParentMap.Scroll(new Point(newX, newY));
    }

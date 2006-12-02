@@ -1127,18 +1127,19 @@
   <Counter Name="Animator" Value="120" Max="3600" />
   <Counter Name="Cherries" Value="0" Max="20" />
   <Counter Name="IceCreams" Value="0" Max="2" />
-  <Map Name="Level 1" ScrollMarginLeft="128" ScrollMarginTop="128" ScrollMarginRight="128" ScrollMarginBottom="128" ScrollWidth="1000" ScrollHeight="192" ViewLeft="32" ViewTop="32" ViewWidth="576" ViewHeight="416">
-    <Layer Name="Background" Width="32" Height="16" Tileset="MainTiles" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="0.5" ScrollRateY="0.5" Priority="0">
-      <Tiles>2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tro6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Le3t7e3t7e3t7e3t7e3t7e3t7e3t7e3t7e3t7e3t7e3zc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3b29vb29vb29vb29vb29vb29vb29vb29vb29vb29vb2+np6enp6enp6enp6enp6enp6enp6enp6enp6enp6enpzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMw=</Tiles>
+  <Counter Name="PlayerCount" Value="1" Max="3" />
+  <Map Name="Level 1" ScrollMarginLeft="128" ScrollMarginTop="96" ScrollMarginRight="128" ScrollMarginBottom="96" ScrollWidth="1696" ScrollHeight="768" ViewLeft="32" ViewTop="32" ViewWidth="736" ViewHeight="512">
+    <Layer Name="Background" Width="38" Height="20" Tileset="MainTiles" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="0.5" ScrollRateY="0.5" Priority="0">
+      <Tiles>2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tro6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Le3t7e3t7e3t7e3t7e3t7e3t7e3t7e3t7e3t7e3t7e3t7e3t7e3zc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3b29vb29vb29vb29vb29vb29vb29vb29vb29vb29vb29vb29vb2+np6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enpzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzA==</Tiles>
     </Layer>
     <Layer Name="Main" Width="64" Height="32" Tileset="MainTiles" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="1" ScrollRateY="1" ZIndex="1" Priority="0">
-      <Tiles>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgYGBgYGBgYGBgYFHAAAAAAAxMTExMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgQAAAI8AAAAAAI8ARwAAAAAAMDExMTEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgQASBwgHBwgIBwcICAkAAAAAADExMTExAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgQASNj09PT09PT09PT09QkJCQkIxMTExMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgQASNj09PT09Pj09Pj0+PQAAAEJCMDExMTEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgYGBgYGBgQASNj09PT0+PT0+PT09PYEAAAAAADAxMTExAAAAAAAAAAAAAAAAAAAAAAAAAIEAgAAAAIIAAACDAIEAAAAAAAASNj49PT49PT49Pf4AAAA9AAAAAAAAAAAiMQAAAAAAAAAAAAAAAAAAAAAAAAAWABcAAAAbAAAAH2WBAAYHBwcHNj09PT0+PT09Pf4AAAAAAAAAvAAAMDExMTEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABlgQA9PT0+PT0+PT09PT09MP4AAAAQPDwAAAAAvDExMTExAAAAAAAAAAAAAAAAAAAAAAAAAI8AAAAAAAAAAAAAZYEA+z49PT09PT09PS48MP4AAAAQPDw8AAAAAAAxMTExMQAAAAAAAAAAAAAAAAAAAAECAwMCAwQAAAAAAACcAGWBAP37PT0+PT09Ljw8MP4AAAAAAAAAAAAAvLwAMDExMTEAAAAAAAAAAAAAAAAAAAAwMDExMTAwAREAAACbpZ1lgQAA/fsuLi48PDw8MAAAAAAQNDwgIQAAAAAAADExMTExAAAAAAAAAAAAAAAAAAAAMTAwMDAxMDA1EQAAAKMAZYEAAAD9+zw8PIE8AAAAAL6/NDw8gTwgIQAAALwxMTExMQAAAAAAAAAAAAAAAAAAACoqKioqKjAwMDURAACkAGUAAACCg/37PDw8AACAvr8wMDAAMDAASDkgIQC8MDExMTEAAAAAAAAAAAAAAAAAAAA6Ojo6Ojo6MDEwNREApABlAAAAggWBAAAAAIC+vzAwNDAAADAwAEsAAAAAADAxMTExAAAAAAAAAAAAAAAAAAAAOjo6Ojo6OiowMDA1EaSPZQAAAIKBggAAAL6/MDAwMDAAAAAwMAAAvLy8ABA0MTExMQAAAAAAAAAAAAAAAAAAADo6Ojo6Ojo6OjoqMDUDAgICAgMCAwIEMDAwMDAwMDAwAAAAMIEwMDAwMDAwMDExMTEAAAAAAAAAAAAAAAAAAAA6Ojo6Ojo6Ojo6OjAxMDAwMDEwMDEwMDAwMDAwMDAwMAAAADAwMDAwMDAwMDExMTExAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwMDAwMTAxMDExMTExMQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMDAwMDExMTExMTExMTEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</Tiles>
+      <Tiles>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</Tiles>
       <Sprite Name="Player 1" DefinitionName="Player" StateName="Right" CurrentFrame="1" X="90" Y="288" DX="0" DY="0" Priority="1" Active="true" Solidity="StandardSolidity" Color="-1">
         <ParameterValue ParameterName="Life" Value="0" />
         <ParameterValue ParameterName="TouchIndex" Value="0" />
         <ParameterValue ParameterName="TempNum" Value="0" />
       </Sprite>
-      <Sprite Name="Player 2" DefinitionName="Player" StateName="Left" CurrentFrame="0" X="190" Y="288" DX="0" DY="0" Priority="1" Active="false" Solidity="StandardSolidity" Color="-1">
+      <Sprite Name="Player 2" DefinitionName="Player" StateName="Left" CurrentFrame="0" X="190" Y="288" DX="0" DY="0" Priority="1" Active="false" Solidity="StandardSolidity" Color="-12517377">
         <ParameterValue ParameterName="Life" Value="0" />
         <ParameterValue ParameterName="TouchIndex" Value="0" />
         <ParameterValue ParameterName="TempNum" Value="0" />
@@ -1255,14 +1256,48 @@
         <PlanRule Name="IncludeCurrentMap" Sequence="4" Type="Do" Function="IncludeInSaveUnit" Parameter1="SaveUnitInclusion.WhichMapIsCurrent" EndIf="false" Suspended="false" />
         <PlanRule Name="ExcludeCounter" Sequence="5" Type="Do" Function="ExcludeCounterFromSaveUnit" Parameter1="Counter.Animator" EndIf="false" Suspended="false" />
       </SpritePlan>
-      <SpritePlan Name="Player Inputs" Priority="1">
+      <SpritePlan Name="MultiPlayerManagement" Priority="1">
+        <Coordinate Sequence="1" X="1879" Y="15" Weight="0" />
         <PlanRule Name="MapPlayer1" Sequence="1" Type="Do" Function="MapPlayerToInputs" Parameter1="1" Parameter2="m_ParentLayer.m_Player_1" EndIf="false" Suspended="false" />
-        <PlanRule Name="MapPlayer2" Sequence="5" Type="Do" Function="MapPlayerToInputs" Parameter1="2" Parameter2="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
-        <PlanRule Name="IfPlayer2" Sequence="4" Type="If" Function="&gt;=" Parameter1="CurrentPlayers" Parameter2="2" EndIf="false" Suspended="false" />
-        <PlanRule Name="CheckActive" Sequence="2" Type="If" Function="!IsSpriteActive" Parameter1="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
-        <PlanRule Name="ActivatePlayer2" Sequence="3" Type="Do" Function="ActivateSprite" Parameter1="m_ParentLayer.m_Player_2" EndIf="true" Suspended="false" />
-        <PlanRule Name="CheckDeactivate" Sequence="6" Type="ElseIf" Function="IsSpriteActive" Parameter1="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
-        <PlanRule Name="DeactivatePlayer2" Sequence="7" Type="Do" Function="DeactivateSprite" Parameter1="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
+        <PlanRule Name="MapPlayer2" Sequence="35" Type="Do" Function="MapPlayerToInputs" Parameter1="2" Parameter2="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
+        <PlanRule Name="IfPlayer2" Sequence="26" Type="If" Function="&gt;=" Parameter1="Counter.PlayerCount.CurrentValue" Parameter2="2" EndIf="false" Suspended="false" />
+        <PlanRule Name="Check Active" Sequence="9" Type="If" Function="!IsSpriteActive" Parameter1="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
+        <PlanRule Name="Activate Player 2" Sequence="10" Type="Do" Function="ActivateSprite" Parameter1="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
+        <PlanRule Name="If 1 Player Requested" Sequence="2" Type="If" Function="IsKeyPressed" Parameter1="Microsoft.DirectX.DirectInput.Key.D1" EndIf="false" Suspended="false" />
+        <PlanRule Name="Set 1 player" Sequence="3" Type="Do" Function="=" Parameter1="1" ResultParameter="Counter.PlayerCount.CurrentValue" EndIf="true" Suspended="false" />
+        <PlanRule Name="If 2 Players Requested" Sequence="4" Type="If" Function="IsKeyPressed" Parameter1="Microsoft.DirectX.DirectInput.Key.D2" EndIf="false" Suspended="false" />
+        <PlanRule Name="Set 2 Players" Sequence="5" Type="Do" Function="=" Parameter1="2" ResultParameter="Counter.PlayerCount.CurrentValue" EndIf="true" Suspended="false" />
+        <PlanRule Name="Move Player 2" Sequence="11" Type="Do" Function="MatchSpritePosition" Parameter1="m_ParentLayer.m_Player_2" Parameter2="m_ParentLayer.m_Player_1" EndIf="false" Suspended="false" />
+        <PlanRule Name="Sprout from player 1" Sequence="12" Type="Do" Function="PushSpriteTowardPoint" Parameter1="m_ParentLayer.m_Player_2" Parameter2="m_ParentLayer.m_MultiPlayerManagement[0]" Parameter3="50" EndIf="false" Suspended="false" />
+        <PlanRule Name="Color Player 1" Sequence="13" Type="Do" Function="ModulateColor" Parameter1="m_ParentLayer.m_Player_1" Parameter2="PlanBase.ColorChannel.Green" Parameter3="64" EndIf="true" Suspended="false" />
+        <PlanRule Name="Reset player 1 color" Sequence="16" Type="Do" Function="ModulateColor" Parameter1="m_ParentLayer.m_Player_1" Parameter2="PlanBase.ColorChannel.Green" Parameter3="255" EndIf="true" Suspended="false" />
+        <PlanRule Name="ScrollTo1" Sequence="30" Type="Do" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Player_1" Parameter2="false" EndIf="false" Suspended="false" />
+        <PlanRule Name="Push2IntoView" Sequence="31" Type="Do" Function="PushSpriteIntoView" Parameter1="m_ParentLayer.m_Player_2" Parameter2="false" EndIf="false" Suspended="false" />
+        <PlanRule Name="ScrollTo2" Sequence="28" Type="Do" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Player_2" Parameter2="false" EndIf="false" Suspended="false" />
+        <PlanRule Name="Push1IntoView" Sequence="29" Type="Do" Function="PushSpriteIntoView" Parameter1="m_ParentLayer.m_Player_1" Parameter2="false" EndIf="false" Suspended="false" />
+        <PlanRule Name="ScrollToMargin1" Sequence="33" Type="Do" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Player_1" Parameter2="true" EndIf="false" Suspended="false" />
+        <PlanRule Name="Scroll2IntoView" Sequence="34" Type="Do" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Player_2" Parameter2="false" EndIf="false" Suspended="false" />
+        <PlanRule Name="ScrollToMargin2" Sequence="32" Type="Do" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Player_2" Parameter2="true" EndIf="false" Suspended="false" />
+        <PlanRule Name="Else ScrollTo1" Sequence="36" Type="Else" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Player_1" Parameter2="true" EndIf="true" Suspended="false" />
+        <PlanRule Name="SplitView" Sequence="20" Type="Do" Function="SetViewLayout" Parameter1="ViewLayout.TopBottom" EndIf="false" Suspended="false" />
+        <PlanRule Name="If 3 Players Requested" Sequence="6" Type="If" Function="IsKeyPressed" Parameter1="Microsoft.DirectX.DirectInput.Key.D3" EndIf="false" Suspended="false" />
+        <PlanRule Name="If 3 Player Init Required" Sequence="18" Type="If" Function="&gt;=" Parameter1="Counter.PlayerCount.CurrentValue" Parameter2="3" EndIf="false" Suspended="false" />
+        <PlanRule Name="ActivateShip" Sequence="21" Type="Do" Function="ActivateSprite" Parameter1="m_ParentLayer.m_Ship_1" EndIf="true" Suspended="false" />
+        <PlanRule Name="Set Player Count=3" Sequence="7" Type="Do" Function="=" Parameter1="3" ResultParameter="Counter.PlayerCount.CurrentValue" EndIf="true" Suspended="false" />
+        <PlanRule Name="If 2 Player Init Required" Sequence="8" Type="If" Function="&gt;=" Parameter1="Counter.PlayerCount.CurrentValue" Parameter2="2" EndIf="false" Suspended="false" />
+        <PlanRule Name="If 3 active" Sequence="19" Type="If" Function="!IsSpriteActive" Parameter1="m_ParentLayer.m_Ship_1" EndIf="false" Suspended="false" />
+        <PlanRule Name="Else1Player" Sequence="14" Type="ElseIf" Function="IsSpriteActive" Parameter1="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
+        <PlanRule Name="Deactivate 2" Sequence="15" Type="Do" Function="DeactivateSprite" Parameter1="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
+        <PlanRule Name="End Init 2" Sequence="17" Type="End" Function="End" EndIf="true" Suspended="false" />
+        <PlanRule Name="ElseNot3Player" Sequence="22" Type="ElseIf" Function="IsSpriteActive" Parameter1="m_ParentLayer.m_Ship_1" EndIf="false" Suspended="false" />
+        <PlanRule Name="Deactivate 3" Sequence="23" Type="Do" Function="DeactivateSprite" Parameter1="m_ParentLayer.m_Ship_1" EndIf="false" Suspended="false" />
+        <PlanRule Name="Unsplit" Sequence="24" Type="Do" Function="SetViewLayout" Parameter1="ViewLayout.Single" EndIf="true" Suspended="false" />
+        <PlanRule Name="End Init 3" Sequence="25" Type="End" Function="End" EndIf="true" Suspended="false" />
+        <PlanRule Name="IfPlayer3" Sequence="37" Type="If" Function="&gt;=" Parameter1="Counter.PlayerCount.CurrentValue" Parameter2="3" EndIf="false" Suspended="false" />
+        <PlanRule Name="Use view 1" Sequence="39" Type="Do" Function="=" Parameter1="1" ResultParameter="CurrentView" EndIf="false" Suspended="false" />
+        <PlanRule Name="Use View 0" Sequence="27" Type="Do" Function="=" Parameter1="0" ResultParameter="CurrentView" EndIf="false" Suspended="false" />
+        <PlanRule Name="Scroll ship into view" Sequence="40" Type="Do" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Ship_1" Parameter2="true" ResultParameter="" EndIf="true" Suspended="false" />
+        <PlanRule Name="Map player 3 inputs" Sequence="38" Type="Do" Function="MapPlayerToInputs" Parameter1="3" Parameter2="m_ParentLayer.m_Ship_1" EndIf="false" Suspended="false" />
       </SpritePlan>
     </Layer>
   </Map>
@@ -1274,7 +1309,7 @@
       <Sprite Name="Small 1" DefinitionName="Small" StateName="Main" CurrentFrame="0" X="540" Y="161" DX="0" DY="0" Priority="1" Active="true" Solidity="" Color="-1" />
       <Sprite Name="Odd3 1" DefinitionName="Odd3" StateName="One" CurrentFrame="0" X="436" Y="273" DX="0" DY="0" Priority="1" Active="true" Solidity="" Color="-1" />
       <SpritePlan Name="Scroll" Priority="1">
-        <PlanRule Name="Scroll" Sequence="1" Type="Do" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Small_1" EndIf="false" Suspended="false" />
+        <PlanRule Name="Scroll" Sequence="1" Type="Do" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Small_1" Parameter2="true" EndIf="false" Suspended="false" />
       </SpritePlan>
       <SpritePlan Name="collide" Priority="1">
         <PlanRule Name="dotest" Sequence="1" Type="Do" Function="TestCollisionMask" Parameter1="m_ParentLayer.m_Small_1" Parameter2="ParentLayer.m_SpriteCategories.odd" ResultParameter="SharedTemp1" EndIf="false" Suspended="false" />
@@ -1289,68 +1324,62 @@
     </Layer>
   </Map>
   <Map Name="Inventory" ScrollMarginLeft="32" ScrollMarginTop="32" ScrollMarginRight="32" ScrollMarginBottom="32">
-    <Layer Name="Items" Width="20" Height="15" Tileset="MainTiles" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="1" ScrollRateY="1" Priority="0">
-      <Tiles>tbW1tbW1tbW1tbW1tbW1tbW1tbW1AAAAAAAAAAAAAAAAAAAAAAAAtbUAAAAAAAAAAAAAAAAAAAAAAAC1tQAAAAAAAAAAAAAAAAAAAAAAALW1AAAAAAAAAAAAAAAAAAAAAAAAtbUAAAAAAAAAAAAAAAAAAAAAAAC1tQAAAAAAAAAAAAAAAAAAAAAAALW1AAAAAAAAAAAAAAAAAAAAAAAAtbUAAAAAAAAAAAAAAAAAAAAAAAC1tQAAAAAAAAAAAAAAAAAAAAAAALW1AAAAAAAAAAAAAAAAAAAAAAAAtbUAAAAAAAAAAAAAAAAAAAAAAAC1tQAAAAAAAAAAAAAAAAAAAAAAALW1AAAAAAAAAAAAAAAAAAAAAAAAtbW1tbW1tbW1tbW1tbW1tbW1tbW1</Tiles>
+    <Layer Name="Items" Width="25" Height="19" Tileset="MainTiles" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="1" ScrollRateY="1" Priority="0">
+      <Tiles>tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALW1AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC1tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAtbUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALW1AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC1tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAtbUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALW1AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC1tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAtbUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALW1AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC1tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAtbUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALW1AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC1tQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAtbUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAALW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1tbW1y8vLy8vLy8vLy8vLy8vLy8vLy8vLy8vLyw==</Tiles>
       <SpritePlan Name="CherryDisplay" Priority="1">
-        <Coordinate Sequence="1" X="544" Y="64" Weight="0" />
-        <Coordinate Sequence="2" X="576" Y="384" Weight="0" />
+        <Coordinate Sequence="1" X="704" Y="64" Weight="0" />
+        <Coordinate Sequence="2" X="736" Y="512" Weight="0" />
         <PlanRule Name="DrawCherryItem" Sequence="1" Type="Do" Function="DrawCounterAsTile" Parameter1="87" Parameter2="Counter.Cherries" Parameter3="PlanBase.DrawStyle.RepeatUpToCounter" EndIf="false" Suspended="false" />
       </SpritePlan>
     </Layer>
   </Map>
   <SpriteDefinition Name="Player">
-    <SpriteRule Name="Accellerate" Sequence="19" Type="Do" Function="AccelerateByInputs" Parameter1="10" Parameter2="5" Parameter3="true" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Move" Sequence="35" Type="Do" Function="MoveByVelocity" EndIf="false" Suspended="false" />
-    <SpriteRule Name="ReactToSolid" Sequence="33" Type="Do" Function="ReactToSolid" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Gravity" Sequence="20" Type="Do" Function="AlterYVelocity" Parameter1=".4" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Snap" Sequence="34" Type="Do" Function="SnapToGround" Parameter1="2" EndIf="false" Suspended="false" />
-    <SpriteRule Name="IfBlockedDown" Sequence="12" Type="ElseIf" Function="Blocked" Parameter1="SpriteBase.Direction.Down" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Jump" Sequence="17" Type="Do" Function="=" Parameter1="-10" ResultParameter="dy" EndIf="true" Suspended="false" />
-    <SpriteRule Name="AndUp" Sequence="14" Type="And" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Button1" Parameter2="false" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Animate" Sequence="22" Type="Do" Function="Animate" Parameter1="SpriteBase.SpriteAnimationType.ByHorizontalVelocity" EndIf="false" Suspended="false" />
-    <SpriteRule Name="LandOnPlatform" Sequence="31" Type="Else" Function="LandDownOnPlatform" Parameter1="ParentLayer.m_SpriteCategories.Platforms" EndIf="true" Suspended="false" />
-    <SpriteRule Name="ReactToPlatform" Sequence="30" Type="Do" Function="ReactToPlatform" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Inertia" Sequence="21" Type="Do" Function="ReactToInertia" Parameter1="100" Parameter2="80" EndIf="false" Suspended="false" />
-    <SpriteRule Name="OrRiding" Sequence="13" Type="Or" Function="IsRidingPlatform" EndIf="false" Suspended="false" />
-    <SpriteRule Name="StopRiding" Sequence="15" Type="Do" Function="StopRiding" EndIf="false" Suspended="false" />
-    <SpriteRule Name="IfRiding" Sequence="29" Type="If" Function="IsRidingPlatform" EndIf="false" Suspended="false" />
-    <SpriteRule Name="TouchTiles" Sequence="39" Type="If" Function="TouchTiles" Parameter1="TileCategoryName.Touchable" EndIf="false" Suspended="false" />
-    <SpriteRule Name="GetCherries" Sequence="45" Type="Do" Function="TileTake" Parameter1="129" Parameter2="Counter.Cherries" ResultParameter="TempNum" EndIf="false" Suspended="false" />
-    <SpriteRule Name="GetIceCream" Sequence="44" Type="Do" Function="TileTake" Parameter1="128" Parameter2="Counter.IceCreams" EndIf="false" Suspended="false" />
-    <SpriteRule Name="ChangeGrapes" Sequence="48" Type="Do" Function="TileChange" Parameter1="130" Parameter2="131" Parameter3="true" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Clear1up" Sequence="49" Type="Do" Function="TileChange" Parameter1="131" Parameter2="0" Parameter3="true" EndIf="true" Suspended="false" />
-    <SpriteRule Name="CheckMakeBubble" Sequence="40" Type="Do" Function="TileTouchingIndex" Parameter1="188" Parameter2="true" Parameter3="true" ResultParameter="TouchIndex" EndIf="false" Suspended="false" />
-    <SpriteRule Name="IfMakeBubble" Sequence="41" Type="While" Function="&gt;=" Parameter1="TouchIndex" Parameter2="0" EndIf="false" Suspended="false" />
-    <SpriteRule Name="MakeBubble" Sequence="42" Type="Do" Function="TileActivateSprite" Parameter1="TouchIndex" Parameter2="ParentLayer.m_SpriteCategories.Bubbles" Parameter3="true" EndIf="false" Suspended="false" />
-    <SpriteRule Name="LadderCheck" Sequence="9" Type="ElseIf" Function="IsOnTile" Parameter1="TileCategoryName.Ladder" Parameter2="SpriteBase.RelativePosition.BottomCenter" EndIf="false" Suspended="false" />
-    <SpriteRule Name="ClimbCheck" Sequence="10" Type="And" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Up" Parameter2="true" EndIf="false" Suspended="false" />
-    <SpriteRule Name="DoClimb" Sequence="11" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Climbing" EndIf="false" Suspended="false" />
-    <SpriteRule Name="IfClimbing" Sequence="3" Type="If" Function="IsInState" Parameter1="(int)Sprites.Player.State.Climbing" Parameter2="(int)Sprites.Player.State.Climbing" EndIf="false" Suspended="false" />
-    <SpriteRule Name="LeaveLadderCheck" Sequence="4" Type="If" Function="!IsOnTile" Parameter1="TileCategoryName.Ladder" Parameter2="SpriteBase.RelativePosition.BottomCenter" EndIf="true" Suspended="false" />
-    <SpriteRule Name="LeaveLadder" Sequence="5" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Right" EndIf="true" Suspended="false" />
-    <SpriteRule Name="EndClimbing" Sequence="32" Type="End" Function="End" EndIf="true" Suspended="false" />
-    <SpriteRule Name="LadderAccellerate" Sequence="7" Type="Do" Function="AccelerateByInputs" Parameter1="20" Parameter2="2" Parameter3="false" EndIf="false" Suspended="false" />
-    <SpriteRule Name="LadderAnimate" Sequence="8" Type="Do" Function="Animate" Parameter1="SpriteBase.SpriteAnimationType.ByVerticalVelocity" EndIf="false" Suspended="false" />
-    <SpriteRule Name="LadderInertia" Sequence="6" Type="Do" Function="ReactToInertia" Parameter1="0" Parameter2="0" EndIf="false" Suspended="false" />
-    <SpriteRule Name="EndLadderCheck" Sequence="18" Type="End" Function="End" EndIf="true" Suspended="false" />
-    <SpriteRule Name="ShiftInputs" Sequence="36" Type="Do" Function="CopyInputsToOld" EndIf="false" Suspended="false" />
-    <SpriteRule Name="DebugInputs" Sequence="1" Type="Do" Function="LogDebugValue" Parameter1="(int)inputs" EndIf="false" Suspended="false" />
-    <SpriteRule Name="DebugOldInputs" Sequence="2" Type="Do" Function="LogDebugValue" Parameter1="(int)oldinputs" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Check for more bubbles" Sequence="43" Type="Do" Function="TileTouchingIndex" Parameter1="188" Parameter2="true" Parameter3="true" ResultParameter="TouchIndex" EndIf="true" Suspended="false" />
-    <SpriteRule Name="If moving left" Sequence="23" Type="If" Function="IsMoving" Parameter1="SpriteBase.Direction.Left" EndIf="false" Suspended="false" />
-    <SpriteRule Name="and facing right" Sequence="24" Type="And" Function="IsInState" Parameter1="(int)Sprites.Player.State.Right" Parameter2="(int)Sprites.Player.State.Right" EndIf="false" Suspended="false" />
-    <SpriteRule Name="then face left" Sequence="25" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Left" EndIf="true" Suspended="false" />
-    <SpriteRule Name="If moving right" Sequence="26" Type="If" Function="IsMoving" Parameter1="SpriteBase.Direction.Right" EndIf="false" Suspended="false" />
-    <SpriteRule Name="and facing left" Sequence="27" Type="And" Function="IsInState" Parameter1="(int)Sprites.Player.State.Left" Parameter2="(int)Sprites.Player.State.Left" EndIf="false" Suspended="false" />
-    <SpriteRule Name="then face right" Sequence="28" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Right" EndIf="true" Suspended="false" />
-    <SpriteRule Name="JumpSfx" Sequence="16" Type="Do" Function="CustomObjects.Sfx.PlaySound" Parameter1="CustomObjects.Drum.Value" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Sound" Sequence="47" Type="Do" Function="CustomObjects.FMODBase.PlaySound" Parameter1="CustomObjects.OggSound1.Value" Parameter2="CustomObjects.SoundReplay.Restart" EndIf="true" Suspended="false" />
-    <SpriteRule Name="CheckSound" Sequence="46" Type="If" Function="&gt;" Parameter1="TempNum" Parameter2="0" EndIf="false" Suspended="false" />
-    <SpriteRule Name="PlayMusic" Sequence="38" Type="Do" Function="CustomObjects.FMODBase.PlaySound" Parameter1="CustomObjects.Music1.Value" Parameter2="CustomObjects.SoundReplay.Continue" EndIf="false" Suspended="false" />
-    <SpriteRule Name="ScrollIntoView" Sequence="37" Type="Do" Function="ScrollSpriteIntoView" EndIf="false" Suspended="false" />
-    <SpriteRule Name="If Cherries are even" Sequence="50" Type="If" Function="==" Parameter1="Counter.Cherries.CurrentValue%2" Parameter2="0" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Turn red" Sequence="51" Type="Do" Function="=" Parameter1="0" ResultParameter="ModulateGreen" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Turn Unred" Sequence="52" Type="Else" Function="=" Parameter1="255" ResultParameter="ModulateGreen" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Accellerate" Sequence="17" Type="Do" Function="AccelerateByInputs" Parameter1="10" Parameter2="5" Parameter3="true" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Move" Sequence="33" Type="Do" Function="MoveByVelocity" EndIf="false" Suspended="false" />
+    <SpriteRule Name="ReactToSolid" Sequence="31" Type="Do" Function="ReactToSolid" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Gravity" Sequence="18" Type="Do" Function="AlterYVelocity" Parameter1=".4" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Snap" Sequence="32" Type="Do" Function="SnapToGround" Parameter1="2" EndIf="false" Suspended="false" />
+    <SpriteRule Name="IfBlockedDown" Sequence="10" Type="ElseIf" Function="Blocked" Parameter1="SpriteBase.Direction.Down" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Jump" Sequence="15" Type="Do" Function="=" Parameter1="-10" ResultParameter="dy" EndIf="true" Suspended="false" />
+    <SpriteRule Name="AndUp" Sequence="12" Type="And" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Button1" Parameter2="false" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Animate" Sequence="20" Type="Do" Function="Animate" Parameter1="SpriteBase.SpriteAnimationType.ByHorizontalVelocity" EndIf="false" Suspended="false" />
+    <SpriteRule Name="LandOnPlatform" Sequence="29" Type="Else" Function="LandDownOnPlatform" Parameter1="ParentLayer.m_SpriteCategories.Platforms" EndIf="true" Suspended="false" />
+    <SpriteRule Name="ReactToPlatform" Sequence="28" Type="Do" Function="ReactToPlatform" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Inertia" Sequence="19" Type="Do" Function="ReactToInertia" Parameter1="100" Parameter2="80" EndIf="false" Suspended="false" />
+    <SpriteRule Name="OrRiding" Sequence="11" Type="Or" Function="IsRidingPlatform" EndIf="false" Suspended="false" />
+    <SpriteRule Name="StopRiding" Sequence="13" Type="Do" Function="StopRiding" EndIf="false" Suspended="false" />
+    <SpriteRule Name="IfRiding" Sequence="27" Type="If" Function="IsRidingPlatform" EndIf="false" Suspended="false" />
+    <SpriteRule Name="TouchTiles" Sequence="36" Type="If" Function="TouchTiles" Parameter1="TileCategoryName.Touchable" EndIf="false" Suspended="false" />
+    <SpriteRule Name="GetCherries" Sequence="42" Type="Do" Function="TileTake" Parameter1="129" Parameter2="Counter.Cherries" ResultParameter="TempNum" EndIf="false" Suspended="false" />
+    <SpriteRule Name="GetIceCream" Sequence="41" Type="Do" Function="TileTake" Parameter1="128" Parameter2="Counter.IceCreams" EndIf="false" Suspended="false" />
+    <SpriteRule Name="ChangeGrapes" Sequence="45" Type="Do" Function="TileChange" Parameter1="130" Parameter2="131" Parameter3="true" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Clear1up" Sequence="46" Type="Do" Function="TileChange" Parameter1="131" Parameter2="0" Parameter3="true" EndIf="true" Suspended="false" />
+    <SpriteRule Name="CheckMakeBubble" Sequence="37" Type="Do" Function="TileTouchingIndex" Parameter1="188" Parameter2="true" Parameter3="true" ResultParameter="TouchIndex" EndIf="false" Suspended="false" />
+    <SpriteRule Name="IfMakeBubble" Sequence="38" Type="While" Function="&gt;=" Parameter1="TouchIndex" Parameter2="0" EndIf="false" Suspended="false" />
+    <SpriteRule Name="MakeBubble" Sequence="39" Type="Do" Function="TileActivateSprite" Parameter1="TouchIndex" Parameter2="ParentLayer.m_SpriteCategories.Bubbles" Parameter3="true" EndIf="false" Suspended="false" />
+    <SpriteRule Name="LadderCheck" Sequence="7" Type="ElseIf" Function="IsOnTile" Parameter1="TileCategoryName.Ladder" Parameter2="SpriteBase.RelativePosition.BottomCenter" EndIf="false" Suspended="false" />
+    <SpriteRule Name="ClimbCheck" Sequence="8" Type="And" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Up" Parameter2="true" EndIf="false" Suspended="false" />
+    <SpriteRule Name="DoClimb" Sequence="9" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Climbing" EndIf="false" Suspended="false" />
+    <SpriteRule Name="IfClimbing" Sequence="1" Type="If" Function="IsInState" Parameter1="(int)Sprites.Player.State.Climbing" Parameter2="(int)Sprites.Player.State.Climbing" EndIf="false" Suspended="false" />
+    <SpriteRule Name="LeaveLadderCheck" Sequence="2" Type="If" Function="!IsOnTile" Parameter1="TileCategoryName.Ladder" Parameter2="SpriteBase.RelativePosition.BottomCenter" EndIf="true" Suspended="false" />
+    <SpriteRule Name="LeaveLadder" Sequence="3" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Right" EndIf="true" Suspended="false" />
+    <SpriteRule Name="EndClimbing" Sequence="30" Type="End" Function="End" EndIf="true" Suspended="false" />
+    <SpriteRule Name="LadderAccellerate" Sequence="5" Type="Do" Function="AccelerateByInputs" Parameter1="20" Parameter2="2" Parameter3="false" EndIf="false" Suspended="false" />
+    <SpriteRule Name="LadderAnimate" Sequence="6" Type="Do" Function="Animate" Parameter1="SpriteBase.SpriteAnimationType.ByVerticalVelocity" EndIf="false" Suspended="false" />
+    <SpriteRule Name="LadderInertia" Sequence="4" Type="Do" Function="ReactToInertia" Parameter1="0" Parameter2="0" EndIf="false" Suspended="false" />
+    <SpriteRule Name="EndLadderCheck" Sequence="16" Type="End" Function="End" EndIf="true" Suspended="false" />
+    <SpriteRule Name="ShiftInputs" Sequence="34" Type="Do" Function="CopyInputsToOld" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Check for more bubbles" Sequence="40" Type="Do" Function="TileTouchingIndex" Parameter1="188" Parameter2="true" Parameter3="true" ResultParameter="TouchIndex" EndIf="true" Suspended="false" />
+    <SpriteRule Name="If moving left" Sequence="21" Type="If" Function="IsMoving" Parameter1="SpriteBase.Direction.Left" EndIf="false" Suspended="false" />
+    <SpriteRule Name="and facing right" Sequence="22" Type="And" Function="IsInState" Parameter1="(int)Sprites.Player.State.Right" Parameter2="(int)Sprites.Player.State.Right" EndIf="false" Suspended="false" />
+    <SpriteRule Name="then face left" Sequence="23" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Left" EndIf="true" Suspended="false" />
+    <SpriteRule Name="If moving right" Sequence="24" Type="If" Function="IsMoving" Parameter1="SpriteBase.Direction.Right" EndIf="false" Suspended="false" />
+    <SpriteRule Name="and facing left" Sequence="25" Type="And" Function="IsInState" Parameter1="(int)Sprites.Player.State.Left" Parameter2="(int)Sprites.Player.State.Left" EndIf="false" Suspended="false" />
+    <SpriteRule Name="then face right" Sequence="26" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Right" EndIf="true" Suspended="false" />
+    <SpriteRule Name="JumpSfx" Sequence="14" Type="Do" Function="CustomObjects.Sfx.PlaySound" Parameter1="CustomObjects.Drum.Value" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Sound" Sequence="44" Type="Do" Function="CustomObjects.FMODBase.PlaySound" Parameter1="CustomObjects.OggSound1.Value" Parameter2="CustomObjects.SoundReplay.Restart" EndIf="true" Suspended="false" />
+    <SpriteRule Name="CheckSound" Sequence="43" Type="If" Function="&gt;" Parameter1="TempNum" Parameter2="0" EndIf="false" Suspended="false" />
+    <SpriteRule Name="PlayMusic" Sequence="35" Type="Do" Function="CustomObjects.FMODBase.PlaySound" Parameter1="CustomObjects.Music1.Value" Parameter2="CustomObjects.SoundReplay.Continue" EndIf="false" Suspended="false" />
     <SpriteParameter Name="Life" />
     <SpriteParameter Name="TouchIndex" />
     <SpriteParameter Name="TempNum" />
@@ -1480,19 +1509,15 @@
     </SpriteState>
   </SpriteDefinition>
   <SpriteDefinition Name="Ship">
-    <SpriteRule Name="Up" Sequence="1" Type="Do" Function="MapKeyToInput" Parameter1="Microsoft.DirectX.DirectInput.Key.UpArrow" Parameter2="SpriteBase.InputBits.Up" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Left" Sequence="2" Type="Do" Function="MapKeyToInput" Parameter1="Microsoft.DirectX.DirectInput.Key.LeftArrow" Parameter2="SpriteBase.InputBits.Left" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Right" Sequence="3" Type="Do" Function="MapKeyToInput" Parameter1="Microsoft.DirectX.DirectInput.Key.RightArrow" Parameter2="SpriteBase.InputBits.Right" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Down" Sequence="4" Type="Do" Function="MapKeyToInput" Parameter1="Microsoft.DirectX.DirectInput.Key.DownArrow" Parameter2="SpriteBase.InputBits.Down" EndIf="false" Suspended="false" />
-    <SpriteRule Name="OnLeft" Sequence="5" Type="If" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Left" Parameter2="false" EndIf="false" Suspended="false" />
-    <SpriteRule Name="TurnLeft" Sequence="6" Type="Do" Function="SwitchToState" Parameter1="(state + 1) % 24" EndIf="true" Suspended="false" />
-    <SpriteRule Name="OnRight" Sequence="7" Type="If" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Right" Parameter2="false" EndIf="false" Suspended="false" />
-    <SpriteRule Name="TurnRight" Sequence="8" Type="Do" Function="SwitchToState" Parameter1="(24 + (state - 1)) % 24" EndIf="true" Suspended="false" />
-    <SpriteRule Name="OnUp" Sequence="9" Type="If" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Up" Parameter2="false" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Accel" Sequence="10" Type="Do" Function="PolarAccelerate" Parameter1="5" Parameter2="(int)Sprites.Ship.State.Right" Parameter3="24" EndIf="true" Suspended="false" />
-    <SpriteRule Name="Inertia" Sequence="11" Type="Do" Function="ReactToInertia" Parameter1="90" Parameter2="90" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Solid" Sequence="12" Type="Do" Function="ReactToSolid" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Move" Sequence="13" Type="Do" Function="MoveByVelocity" EndIf="false" Suspended="false" />
+    <SpriteRule Name="OnLeft" Sequence="1" Type="If" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Left" Parameter2="false" EndIf="false" Suspended="false" />
+    <SpriteRule Name="TurnLeft" Sequence="2" Type="Do" Function="SwitchToState" Parameter1="(state + 1) % 24" EndIf="true" Suspended="false" />
+    <SpriteRule Name="OnRight" Sequence="3" Type="If" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Right" Parameter2="false" EndIf="false" Suspended="false" />
+    <SpriteRule Name="TurnRight" Sequence="4" Type="Do" Function="SwitchToState" Parameter1="(24 + (state - 1)) % 24" EndIf="true" Suspended="false" />
+    <SpriteRule Name="OnUp" Sequence="5" Type="If" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Up" Parameter2="false" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Accel" Sequence="6" Type="Do" Function="PolarAccelerate" Parameter1="5" Parameter2="(int)Sprites.Ship.State.Right" Parameter3="24" EndIf="true" Suspended="false" />
+    <SpriteRule Name="Inertia" Sequence="7" Type="Do" Function="ReactToInertia" Parameter1="90" Parameter2="90" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Solid" Sequence="8" Type="Do" Function="ReactToSolid" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Move" Sequence="9" Type="Do" Function="MoveByVelocity" EndIf="false" Suspended="false" />
     <SpriteState Name="Right" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="1">
       <SpriteFrame Sequence="0" FrameValue="0" Duration="1" MaskAlphaLevel="0" />
     </SpriteState>
@@ -2321,7 +2346,8 @@ public class GameForm : Form
    private System.Windows.Forms.MenuItem mnuTools;
    private System.Windows.Forms.MenuItem mnuToolsOptions;
    public IPlayer[] Players = new IPlayer[Project.MaxPlayers];
-   private byte currentPlayers = 1;
+   private System.Windows.Forms.MenuItem menuItem1;
+   private System.Windows.Forms.MenuItem menuItem2;
    public System.IO.StringWriter debugText = new System.IO.StringWriter();
 
    public GameForm(GameDisplayMode mode, bool windowed, string title, System.Type initMapType, System.Type overlayMapType)
@@ -2487,14 +2513,14 @@ public class GameForm : Form
          {
             GameDisplay.Device.BeginScene();
             GameDisplay.Sprite.Begin(Microsoft.DirectX.Direct3D.SpriteFlags.AlphaBlend);
-            CurrentMap.Draw();
+            CurrentMap.DrawAllViews();
             if (keyboard != null)
                m_keyboardState = keyboard.GetCurrentKeyboardState();
             ReadControllers();
             CurrentMap.ExecuteRules();
             if (OverlayMap != null)
             {
-               OverlayMap.Draw();
+               OverlayMap.DrawAllViews();
                OverlayMap.ExecuteRules();
             }
             OutputDebugInfo();
@@ -2556,12 +2582,15 @@ public class GameForm : Form
       this.mnuFileExit = new System.Windows.Forms.MenuItem();
       this.mnuTools = new System.Windows.Forms.MenuItem();
       this.mnuToolsOptions = new System.Windows.Forms.MenuItem();
+      this.menuItem1 = new System.Windows.Forms.MenuItem();
+      this.menuItem2 = new System.Windows.Forms.MenuItem();
       // 
       // mnuGame
       // 
       this.mnuGame.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
                                                                              this.mnuFile,
-                                                                             this.mnuTools});
+                                                                             this.mnuTools,
+                                                                             this.menuItem1});
       // 
       // mnuFile
       // 
@@ -2589,6 +2618,19 @@ public class GameForm : Form
       this.mnuToolsOptions.Text = "&amp;Options";
       this.mnuToolsOptions.Click += new System.EventHandler(this.mnuToolsOptions_Click);
       // 
+      // menuItem1
+      // 
+      this.menuItem1.Index = 2;
+      this.menuItem1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                               this.menuItem2});
+      this.menuItem1.Text = "&amp;Help";
+      // 
+      // menuItem2
+      // 
+      this.menuItem2.Index = 0;
+      this.menuItem2.Text = "&amp;About...";
+      this.menuItem2.Click += new System.EventHandler(this.menuItem2_Click);
+      // 
       // GameForm
       // 
       this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -2615,6 +2657,12 @@ public class GameForm : Form
    {
       if (controllerEnabled == null)
          return;
+
+      foreach(IPlayer plr in Players)
+      {
+         if (plr is ControllerPlayer)
+            controllerEnabled[((ControllerPlayer)plr).deviceNumber] = true;
+      }
 
       for (int i=0; i&lt;controllerEnabled.Count; i++)
       {
@@ -2663,34 +2711,6 @@ public class GameForm : Form
       }
    }
 
-   public byte CurrentPlayers
-   {
-      get
-      {
-         return currentPlayers;
-      }
-      set
-      {
-         if ((value &gt;= 1) &amp;&amp; (value &lt;= 4))
-         {
-            currentPlayers = value;
-            ReadControllers();
-         }
-         else
-            System.Diagnostics.Debug.Fail("Bad CurrentPlayers value ignored");
-      }
-   }
-
-   public void RefreshControllers()
-   {
-      foreach(IPlayer plr in Players)
-      {
-         if (plr is ControllerPlayer)
-            controllerEnabled[((ControllerPlayer)plr).deviceNumber] = true;
-         ReadControllers();
-      }
-   }
-
    private void GameDisplay_WindowedChanged(object sender, EventArgs e)
    {
       if (GameDisplay.Windowed)
@@ -2701,6 +2721,12 @@ public class GameForm : Form
    {
       frmControls frm = new frmControls();
       frm.ShowDialog();
+   }
+
+   private void menuItem2_Click(object sender, System.EventArgs e)
+   {
+      using (frmAbout frm = new frmAbout())
+         frm.ShowDialog();
    }
 }</Text>
   </SourceCode>
@@ -2926,16 +2952,22 @@ public abstract class GeneralRules
             System.Windows.Forms.Application.UserAppDataPath, Slot.ToString() + ".sav"));
    }
 
-   public int CurrentPlayers
+   public int CurrentView
    {
       get
       {
-         return Project.GameWindow.CurrentPlayers;
+         return ParentLayer.ParentMap.CurrentViewIndex;
       }
       set
       {
-         Project.GameWindow.CurrentPlayers = (byte)value;
+         ParentLayer.ParentMap.CurrentViewIndex = (byte)value;
       }
+   }
+
+   [Description("Sets the layout of multiple views for the current map.")]
+   public void SetViewLayout(ViewLayout Layout)
+   {
+      ParentLayer.ParentMap.ViewLayout = Layout;
    }
 }
 
@@ -2944,6 +2976,14 @@ public enum SaveUnitInclusion
    AllMaps,
    AllCounters,
    WhichMapIsCurrent
+}
+
+public enum ViewLayout
+{
+   Single,
+   LeftRight,
+   TopBottom,
+   FourCorners
 }
 
 [Serializable()]
@@ -3470,10 +3510,10 @@ public abstract class SpriteBase : GeneralRules
          LocalDX += ddx;
    }
    
-   [Description("Scroll all layers on this sprite's layer's map so that the sprite is within the scroll margins of the map")]
-   public void ScrollSpriteIntoView()
+   [Description("Scroll all layers on this sprite's layer's map so that the sprite is within visible area of the map.  If UseScrollMargins is true, scroll the sprite into the scroll margins of the map.")]
+   public void ScrollSpriteIntoView(bool UseScrollMargins)
    {
-      ParentLayer.ScrollSpriteIntoView(this);
+      ParentLayer.ScrollSpriteIntoView(this, UseScrollMargins);
    }
 
    [Description("Alter this sprite's velocity so that it remains within the map's visible area or within the scroll margins, according to this sprite's layer's position within the map.")]
@@ -3638,7 +3678,7 @@ public abstract class SpriteBase : GeneralRules
    public void MapPlayerToInputs(int PlayerNumber)
    {
       Debug.Assert(this.isActive, "Attempted to execute MapPlayerToInput on an inactive sprite");
-      if (PlayerNumber &gt; Project.GameWindow.CurrentPlayers)
+      if (PlayerNumber &gt; Project.MaxPlayers)
       {
          Debug.Fail("Attempted to map inactive player input");
          return;
@@ -4682,10 +4722,10 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
       throw new NotImplementedException("Attempted to execute rules on plan " + this.GetType().Name + " without any rules");
    }
 
-   [Description("Scroll all layers on this plan's layer's map so that the specified sprite is within the scroll margins of the map")]
-   public void ScrollSpriteIntoView(SpriteBase Sprite)
+   [Description("Scroll all layers on this plan's layer's map so that the specified sprite is within the visible area of the map.  If UseScrollMargins is true, the layer will scroll the sprite into the scroll margins of the map.")]
+   public void ScrollSpriteIntoView(SpriteBase Sprite, bool UseScrollMargins)
    {
-      ParentLayer.ScrollSpriteIntoView(Sprite);
+      ParentLayer.ScrollSpriteIntoView(Sprite, UseScrollMargins);
    }
 
    [Description("Alter a sprite's velocity so that it remains within the map's visible area or within the scroll margins, according to this plan's layer's position within the map.")]
@@ -4841,36 +4881,43 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    }
 
    [Description("Associate the state of the input device for the specified player (1-4) with the inputs on the specified sprite.")]
-   public void MapPlayerToInputs(int PlayerNumber, SpriteBase target)
+   public void MapPlayerToInputs(int PlayerNumber, SpriteBase Target)
    {
-      System.Diagnostics.Debug.Assert(target.isActive, "Attempted to execute MapPlayerToInput on an inactive sprite");
-      if (PlayerNumber &gt; Project.GameWindow.CurrentPlayers)
+      System.Diagnostics.Debug.Assert(Target.isActive, "Attempted to execute MapPlayerToInput on an inactive sprite");
+      if (PlayerNumber &gt; Project.MaxPlayers)
       {
          System.Diagnostics.Debug.Fail("Attempted to map inactive player input");
          return;
       }
       IPlayer player = Project.GameWindow.Players[PlayerNumber-1];
-      target.inputs = 0;
-      if (player.Up) target.inputs |= SpriteBase.InputBits.Up;
-      if (player.Left) target.inputs |= SpriteBase.InputBits.Left;
-      if (player.Right) target.inputs |= SpriteBase.InputBits.Right;
-      if (player.Down) target.inputs |= SpriteBase.InputBits.Down;
-      if (player.Button1) target.inputs |= SpriteBase.InputBits.Button1;
-      if (player.Button2) target.inputs |= SpriteBase.InputBits.Button2;
-      if (player.Button3) target.inputs |= SpriteBase.InputBits.Button3;
-      if (player.Button4) target.inputs |= SpriteBase.InputBits.Button4;
+      Target.inputs = 0;
+      if (player.Up) Target.inputs |= SpriteBase.InputBits.Up;
+      if (player.Left) Target.inputs |= SpriteBase.InputBits.Left;
+      if (player.Right) Target.inputs |= SpriteBase.InputBits.Right;
+      if (player.Down) Target.inputs |= SpriteBase.InputBits.Down;
+      if (player.Button1) Target.inputs |= SpriteBase.InputBits.Button1;
+      if (player.Button2) Target.inputs |= SpriteBase.InputBits.Button2;
+      if (player.Button3) Target.inputs |= SpriteBase.InputBits.Button3;
+      if (player.Button4) Target.inputs |= SpriteBase.InputBits.Button4;
    }
 
    [Description("Make the specified sprite active.")]
-   public void ActivateSprite(SpriteBase target)
+   public void ActivateSprite(SpriteBase Target)
    {
-      target.isActive = true;
+      Target.isActive = true;
    }
 
    [Description("Make the specified sprite inactive.")]
-   public void DeactivateSprite(SpriteBase target)
+   public void DeactivateSprite(SpriteBase Target)
    {
-      target.isActive = false;
+      Target.isActive = false;
+   }
+
+   [Description("Set the position of the source sprite to match that of the target sprite.")]
+   public void MatchSpritePosition(SpriteBase Source, SpriteBase Target)
+   {
+      Source.x = Target.x;
+      Source.y = Target.y;
    }
 
    #region Inventory / Overlay
@@ -4897,13 +4944,15 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
       Tileset ts = ParentLayer.Tileset;
       Frameset fr = ts.GetFrameset(ParentLayer.ParentMap.Display);
 
+      Rectangle CurrentView = ParentLayer.ParentMap.CurrentView;
+
       switch(style)
       {
          case DrawStyle.ClipRightToCounter:
             disp.Device.RenderState.ScissorTestEnable = true;
             disp.Device.ScissorRectangle = new Rectangle(
-               PlanRectangle.X + ParentLayer.CurrentPosition.X + ParentLayer.ParentMap.View.X,
-               PlanRectangle.Y + ParentLayer.CurrentPosition.Y + ParentLayer.ParentMap.View.Y,
+               PlanRectangle.X + ParentLayer.CurrentPosition.X + CurrentView.X,
+               PlanRectangle.Y + ParentLayer.CurrentPosition.Y + CurrentView.Y,
                PlanRectangle.Width * counter.CurrentValue / counter.MaxValue,
                PlanRectangle.Height);
             foreach(int frameIndex in ts[TileIndex].CurrentFrame)
@@ -4912,8 +4961,8 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
                   fr[frameIndex].Transform,
                   Matrix.Scaling(PlanRectangle.Width / (float)ts.TileWidth, 1, 1)),
                   Matrix.Translation(
-                  PlanRectangle.X + ParentLayer.CurrentPosition.X + ParentLayer.ParentMap.View.X,
-                  PlanRectangle.Y + ParentLayer.CurrentPosition.Y + ParentLayer.ParentMap.View.Y,
+                  PlanRectangle.X + ParentLayer.CurrentPosition.X + CurrentView.X,
+                  PlanRectangle.Y + ParentLayer.CurrentPosition.Y + CurrentView.Y,
                   0));
                disp.Sprite.Draw(fr[frameIndex].GraphicSheetTexture.Texture, fr[frameIndex].SourceRect,
                   Vector3.Empty, Vector3.Empty, -1);
@@ -4927,8 +4976,8 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
                   fr[frameIndex].Transform,
                   Matrix.Scaling(PlanRectangle.Width * counter.CurrentValue / (float)counter.MaxValue / (float)ts.TileWidth, 1, 1)),
                   Matrix.Translation(
-                  PlanRectangle.X + ParentLayer.CurrentPosition.X + ParentLayer.ParentMap.View.X,
-                  PlanRectangle.Y + ParentLayer.CurrentPosition.Y + ParentLayer.ParentMap.View.Y,
+                  PlanRectangle.X + ParentLayer.CurrentPosition.X + CurrentView.X,
+                  PlanRectangle.Y + ParentLayer.CurrentPosition.Y + CurrentView.Y,
                   0));
                disp.Sprite.Draw(fr[frameIndex].GraphicSheetTexture.Texture, fr[frameIndex].SourceRect,
                   Vector3.Empty, Vector3.Empty, -1);
@@ -4940,16 +4989,16 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
                int FillWidth = PlanRectangle.Width * counter.CurrentValue / counter.MaxValue;
                disp.Device.RenderState.ScissorTestEnable = true;
                disp.Device.ScissorRectangle = new Rectangle(
-                  PlanRectangle.X + ParentLayer.CurrentPosition.X + ParentLayer.ParentMap.View.X,
-                  PlanRectangle.Y + ParentLayer.CurrentPosition.Y + ParentLayer.ParentMap.View.Y,
+                  PlanRectangle.X + ParentLayer.CurrentPosition.X + CurrentView.X,
+                  PlanRectangle.Y + ParentLayer.CurrentPosition.Y + CurrentView.Y,
                   FillWidth, PlanRectangle.Height);
                for (int repeat=0; repeat &lt; (int)Math.Ceiling(FillWidth / (float)ts.TileWidth); repeat++)
                {
                   disp.Sprite.Transform = Matrix.Multiply(
                      fr[frameIndex].Transform,
                      Matrix.Translation(
-                     PlanRectangle.X + ParentLayer.CurrentPosition.X + ParentLayer.ParentMap.View.X + repeat * ts.TileWidth,
-                     PlanRectangle.Y + ParentLayer.CurrentPosition.Y + ParentLayer.ParentMap.View.Y,
+                     PlanRectangle.X + ParentLayer.CurrentPosition.X + CurrentView.X + repeat * ts.TileWidth,
+                     PlanRectangle.Y + ParentLayer.CurrentPosition.Y + CurrentView.Y,
                      0));
                   disp.Sprite.Draw(fr[frameIndex].GraphicSheetTexture.Texture, fr[frameIndex].SourceRect,
                      Vector3.Empty, Vector3.Empty, -1);
@@ -4961,8 +5010,8 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
             disp.Device.RenderState.ScissorTestEnable = true;
             int FillHeight = PlanRectangle.Height * counter.CurrentValue / counter.MaxValue;
             disp.Device.ScissorRectangle = new Rectangle(
-               PlanRectangle.X + ParentLayer.CurrentPosition.X + ParentLayer.ParentMap.View.X,
-               PlanRectangle.Y + ParentLayer.CurrentPosition.Y + ParentLayer.ParentMap.View.Y +
+               PlanRectangle.X + ParentLayer.CurrentPosition.X + CurrentView.X,
+               PlanRectangle.Y + ParentLayer.CurrentPosition.Y + CurrentView.Y +
                PlanRectangle.Height - FillHeight, PlanRectangle.Width, FillHeight);
             foreach(int frameIndex in ts[TileIndex].CurrentFrame)
             {
@@ -4970,8 +5019,8 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
                   fr[frameIndex].Transform,
                   Matrix.Scaling(1, PlanRectangle.Height / (float)ts.TileHeight, 1)),
                   Matrix.Translation(
-                  PlanRectangle.X + ParentLayer.CurrentPosition.X + ParentLayer.ParentMap.View.X,
-                  PlanRectangle.Y + ParentLayer.CurrentPosition.Y + ParentLayer.ParentMap.View.Y,
+                  PlanRectangle.X + ParentLayer.CurrentPosition.X + CurrentView.X,
+                  PlanRectangle.Y + ParentLayer.CurrentPosition.Y + CurrentView.Y,
                   0));
                disp.Sprite.Draw(fr[frameIndex].GraphicSheetTexture.Texture, fr[frameIndex].SourceRect,
                   Vector3.Empty, Vector3.Empty, -1);
@@ -4988,8 +5037,8 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
                   fr[frameIndex].Transform,
                   Matrix.Scaling(1, FillHeight / (float)ts.TileHeight, 1)),
                   Matrix.Translation(
-                  PlanRectangle.X + ParentLayer.CurrentPosition.X + ParentLayer.ParentMap.View.X,
-                  PlanRectangle.Y + ParentLayer.CurrentPosition.Y + ParentLayer.ParentMap.View.Y + PlanRectangle.Height - FillHeight,
+                  PlanRectangle.X + ParentLayer.CurrentPosition.X + CurrentView.X,
+                  PlanRectangle.Y + ParentLayer.CurrentPosition.Y + CurrentView.Y + PlanRectangle.Height - FillHeight,
                   0));
                disp.Sprite.Draw(fr[frameIndex].GraphicSheetTexture.Texture, fr[frameIndex].SourceRect,
                   Vector3.Empty, Vector3.Empty, -1);
@@ -5002,16 +5051,16 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
                int FillHeight = PlanRectangle.Height * counter.CurrentValue / counter.MaxValue;
                disp.Device.RenderState.ScissorTestEnable = true;
                disp.Device.ScissorRectangle = new Rectangle(
-                  PlanRectangle.X + ParentLayer.CurrentPosition.X + ParentLayer.ParentMap.View.X,
-                  PlanRectangle.Y + ParentLayer.CurrentPosition.Y + ParentLayer.ParentMap.View.Y +
+                  PlanRectangle.X + ParentLayer.CurrentPosition.X + CurrentView.X,
+                  PlanRectangle.Y + ParentLayer.CurrentPosition.Y + CurrentView.Y +
                   PlanRectangle.Height - FillHeight, PlanRectangle.Width, FillHeight);
                for (int repeat=0; repeat &lt; (int)Math.Ceiling(FillHeight / (float)ts.TileHeight); repeat++)
                {
                   disp.Sprite.Transform = Matrix.Multiply(
                      fr[frameIndex].Transform,
                      Matrix.Translation(
-                     PlanRectangle.X + ParentLayer.CurrentPosition.X + ParentLayer.ParentMap.View.X,
-                     PlanRectangle.Y + ParentLayer.CurrentPosition.Y + ParentLayer.ParentMap.View.Y + PlanRectangle.Height - repeat * ts.TileHeight - ts.TileHeight,
+                     PlanRectangle.X + ParentLayer.CurrentPosition.X + CurrentView.X,
+                     PlanRectangle.Y + ParentLayer.CurrentPosition.Y + CurrentView.Y + PlanRectangle.Height - repeat * ts.TileHeight - ts.TileHeight,
                      0));
                   disp.Sprite.Draw(fr[frameIndex].GraphicSheetTexture.Texture, fr[frameIndex].SourceRect,
                      Vector3.Empty, Vector3.Empty, -1);
@@ -5614,13 +5663,15 @@ public abstract class MapBase
 {
    protected Display m_Display;
    public Type m_CameFromMapType = null;
-    
+   private ViewLayout viewLayout = ViewLayout.Single;
+   private static byte currentViewIndex = 0;
+
    public MapBase(Display Disp)
    {
       m_Display = Disp;
    }
 
-   public abstract void Draw();
+   protected abstract void Draw();
 
    public abstract void ExecuteRules();
 
@@ -5647,7 +5698,136 @@ public abstract class MapBase
       get;
    }
 
-   public virtual Rectangle View
+   public ViewLayout ViewLayout
+   {
+      get
+      {
+         return viewLayout;
+      }
+      set
+      {
+         if (value == ViewLayout.FourCorners)
+            if (Project.MaxViews &lt; 4)
+            {
+               System.Diagnostics.Debug.Fail("Attempted to use 4-corner view with max views less than 4");
+               return;
+            }
+         if ((value == ViewLayout.TopBottom) || (value == ViewLayout.LeftRight))
+            if (Project.MaxViews &lt; 2)
+            {
+               System.Diagnostics.Debug.Fail("Attempted to use double view with max views less than 2");
+               return;
+            }
+         viewLayout = value;
+      }
+   }
+
+   public Rectangle GetView(int viewNumber)
+   {
+      Rectangle result = TotalView;
+      switch (viewLayout)
+      {
+         case ViewLayout.Single:
+            return result;
+         case ViewLayout.TopBottom:
+            result.Height /= 2;
+         switch (viewNumber)
+         {
+            case 0:
+               return result;
+            default:
+               result.Y += TotalView.Height / 2;
+               return result;
+         }
+         case ViewLayout.LeftRight:
+            result.Width /= 2;
+         switch(viewNumber)
+         {
+            case 0:
+               return result;
+            default:
+               result.X += TotalView.Width / 2;
+               return result;
+         }
+         default:
+            result.Width /= 2;
+            result.Height /= 2;
+         switch(viewNumber)
+         {
+            case 0:
+               return result;
+            case 1:
+               result.X += TotalView.Width / 2;
+               return result;
+            case 2:
+               result.Y += TotalView.Height / 2;
+               return result;
+            default:
+               result.X += TotalView.Width / 2;
+               result.Y += TotalView.Height / 2;
+               return result;
+         }
+      }
+   }
+
+   /// &lt;summary&gt;
+   /// Returns the rectangle for the currently active view within the map's total view area
+   /// &lt;/summary&gt;
+   public Rectangle CurrentView
+   {
+      get
+      {
+         return GetView(CurrentViewIndex);
+      }
+   }
+
+   /// &lt;summary&gt;
+   /// Which view is currently being processed (0 to Project.MaxViews - 1)
+   /// &lt;/summary&gt;
+   public byte CurrentViewIndex
+   {
+      get
+      {
+         return currentViewIndex;
+      }
+      set
+      {
+         if ((value &gt;= 0) &amp;&amp; (value &lt; Project.MaxViews))
+            currentViewIndex = value;
+         else
+            System.Diagnostics.Debug.Fail("Bad CurrentViewIndex value ignored");
+      }
+   }
+
+   /// &lt;summary&gt;
+   /// Draws all the views according to the map's current ViewLayout
+   /// &lt;/summary&gt;
+   public void DrawAllViews()
+   {
+      switch(viewLayout)
+      {
+         case ViewLayout.Single:
+            currentViewIndex = 0;
+            Draw();
+            break;
+         case ViewLayout.TopBottom:
+         case ViewLayout.LeftRight:
+            for (currentViewIndex = 0; currentViewIndex &lt; 2; currentViewIndex++)
+               Draw();
+            currentViewIndex = 0;
+            break;
+         case ViewLayout.FourCorners:
+            for (currentViewIndex = 0; currentViewIndex &lt; 4; currentViewIndex++)
+               Draw();
+            currentViewIndex = 0;
+            break;
+      }
+   }
+
+   /// &lt;summary&gt;
+   /// Returns the entire view area for this map (including all sub-views if multiple views exist)
+   /// &lt;/summary&gt;
+   public virtual Rectangle TotalView
    {
       get
       {
@@ -5948,7 +6128,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
    private System.Drawing.Point m_AbsolutePosition;
    protected SpriteCollection m_Sprites;
    private readonly System.Drawing.SizeF m_ScrollRate;
-   private System.Drawing.Point m_CurrentPosition;
+   private System.Drawing.Point[] m_CurrentPosition = new System.Drawing.Point[Project.MaxViews];
    private MapBase m_ParentMap;
    public LayerSpriteCategoriesBase m_SpriteCategories;
    #endregion
@@ -6047,11 +6227,11 @@ public abstract class LayerBase : System.Collections.IEnumerable
    {
       get
       {
-         return m_CurrentPosition;
+         return m_CurrentPosition[ParentMap.CurrentViewIndex];
       }
       set
       {
-         m_CurrentPosition = value;
+         m_CurrentPosition[ParentMap.CurrentViewIndex] = value;
       }
    }
 
@@ -6090,11 +6270,11 @@ public abstract class LayerBase : System.Collections.IEnumerable
    {
       if (MapPosition.X != int.MinValue)
          if (MapPosition.Y != int.MinValue)
-            m_CurrentPosition = new Point(m_AbsolutePosition.X + (int)(MapPosition.X * m_ScrollRate.Width), m_AbsolutePosition.Y + (int)(MapPosition.Y * m_ScrollRate.Height));
+            CurrentPosition = new Point(m_AbsolutePosition.X + (int)(MapPosition.X * m_ScrollRate.Width), m_AbsolutePosition.Y + (int)(MapPosition.Y * m_ScrollRate.Height));
          else
-            m_CurrentPosition = new Point(m_AbsolutePosition.X + (int)(MapPosition.X * m_ScrollRate.Width), m_CurrentPosition.Y);
+            CurrentPosition = new Point(m_AbsolutePosition.X + (int)(MapPosition.X * m_ScrollRate.Width), CurrentPosition.Y);
       else if (MapPosition.Y != int.MinValue)
-         m_CurrentPosition = new Point(m_CurrentPosition.X, m_AbsolutePosition.Y + (int)(MapPosition.Y * m_ScrollRate.Height));
+         CurrentPosition = new Point(CurrentPosition.X, m_AbsolutePosition.Y + (int)(MapPosition.Y * m_ScrollRate.Height));
    }
 
    public void Draw()
@@ -6102,28 +6282,21 @@ public abstract class LayerBase : System.Collections.IEnumerable
       int nTileWidth = m_Tileset.TileWidth;
       int nTileHeight = m_Tileset.TileHeight;
 
-      int nStartCol = (-m_nLeftBuffer - m_CurrentPosition.X) / nTileWidth;
+      int nStartCol = (-m_nLeftBuffer - CurrentPosition.X) / nTileWidth;
       if (nStartCol &lt; 0)
          nStartCol = 0;
-      int nStartRow = (-m_nTopBuffer - m_CurrentPosition.Y) / nTileHeight;
+      int nStartRow = (-m_nTopBuffer - CurrentPosition.Y) / nTileHeight;
       if (nStartRow &lt; 0)
          nStartRow = 0;
 
-      Rectangle ViewRect = m_ParentMap.View;
-      if ((ViewRect.Width &gt; 0) || (ViewRect.Height &gt; 0))
-      {
-         m_ParentMap.Display.Device.RenderState.ScissorTestEnable = true;
-         m_ParentMap.Display.Device.ScissorRectangle = ViewRect;
-      }
-      else if (m_ParentMap.Display.Device.RenderState.ScissorTestEnable)
-      {
-         m_ParentMap.Display.Device.RenderState.ScissorTestEnable = false;
-      }
+      Rectangle ViewRect = m_ParentMap.CurrentView;
+      m_ParentMap.Display.Device.RenderState.ScissorTestEnable = true;
+      m_ParentMap.Display.Device.ScissorRectangle = ViewRect;
 
-      int EndCol = (ViewRect.Width - 1 + m_nRightBuffer - m_CurrentPosition.X) / nTileWidth;
+      int EndCol = (ViewRect.Width - 1 + m_nRightBuffer - CurrentPosition.X) / nTileWidth;
       if (EndCol &gt;= Columns)
          EndCol = Columns - 1;
-      int EndRow = (ViewRect.Height - 1 + m_nBottomBuffer - m_CurrentPosition.Y) / nTileHeight;
+      int EndRow = (ViewRect.Height - 1 + m_nBottomBuffer - CurrentPosition.Y) / nTileHeight;
       if (EndRow &gt;= Rows)
          EndRow = Rows - 1;
 
@@ -6146,8 +6319,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
                    (CurFrame.priority &lt; 0))
             {
                spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
-                  CurFrame.x + m_CurrentPosition.X + ViewRect.X,
-                  CurFrame.y + m_CurrentPosition.Y + ViewRect.Y, 0));
+                  CurFrame.x + CurrentPosition.X + ViewRect.X,
+                  CurFrame.y + CurrentPosition.Y + ViewRect.Y, 0));
                spr.Draw(CurFrame.frame.GraphicSheetTexture.Texture, CurFrame.frame.SourceRect,
                   Vector3.Empty, Vector3.Empty, CurFrame.color);
                if (!Injected.MoveNext())
@@ -6165,8 +6338,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
             {
                Frame f = m_Frameset[SubFrames[nFrame]];
                spr.Transform = Matrix.Multiply(f.Transform, Matrix.Translation(
-                  x * nTileWidth + m_CurrentPosition.X + ViewRect.X,
-                  y * nTileHeight + m_CurrentPosition.Y + ViewRect.Y, 0));
+                  x * nTileWidth + CurrentPosition.X + ViewRect.X,
+                  y * nTileHeight + CurrentPosition.Y + ViewRect.Y, 0));
                spr.Draw(f.GraphicSheetTexture.Texture, f.SourceRect, Vector3.Empty, Vector3.Empty, f.Color);
             }
          }
@@ -6176,8 +6349,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
       {
          CurFrame = (InjectedFrame)Injected.Current;
          spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
-            CurFrame.x + m_CurrentPosition.X + ViewRect.X,
-            CurFrame.y + m_CurrentPosition.Y + ViewRect.Y, 0));
+            CurFrame.x + CurrentPosition.X + ViewRect.X,
+            CurFrame.y + CurrentPosition.Y + ViewRect.Y, 0));
          spr.Draw(CurFrame.frame.GraphicSheetTexture.Texture, CurFrame.frame.SourceRect,
             Vector3.Empty, Vector3.Empty, CurFrame.color);
          if (!Injected.MoveNext())
@@ -6192,9 +6365,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
    {
       get
       {
-         Rectangle result = new Rectangle(new System.Drawing.Point(0), m_ParentMap.View.Size);
-         result.Offset(-m_CurrentPosition.X, -m_CurrentPosition.Y);
-         return result;
+         return new Rectangle(new System.Drawing.Point(-CurrentPosition.X, -CurrentPosition.Y), m_ParentMap.CurrentView.Size);
       }
    }
 
@@ -6258,43 +6429,61 @@ public abstract class LayerBase : System.Collections.IEnumerable
          dispPos = m_ParentMap.Display.PointToClient(System.Windows.Forms.Control.MousePosition);
       else
          dispPos = System.Windows.Forms.Control.MousePosition;
-      dispPos.Offset(-m_CurrentPosition.X, -m_CurrentPosition.Y);
+      dispPos.Offset(-CurrentPosition.X, -CurrentPosition.Y);
       return dispPos;
    }
 
-   public void ScrollSpriteIntoView(SpriteBase sprite)
+   public void ScrollSpriteIntoView(SpriteBase sprite, bool useScrollMargins)
    {
       Rectangle spriteBounds = sprite.GetBounds();
       int newX = int.MinValue;
       int newY = int.MinValue;
-      if (spriteBounds.Left + CurrentPosition.X &lt; ParentMap.ScrollMarginLeft)
+      int marginLeft;
+      int marginTop;
+      int marginRight;
+      int marginBottom;
+      if (useScrollMargins)
       {
-         if (ScrollRate.Width &gt; 0)
-            newX = (int)((-spriteBounds.Left + ParentMap.ScrollMarginLeft - AbsolutePosition.X) / ScrollRate.Width);
-         else
-            CurrentPosition = new Point(-spriteBounds.Left + ParentMap.ScrollMarginLeft, CurrentPosition.Y);
+         marginLeft = ParentMap.ScrollMarginLeft;
+         marginTop = ParentMap.ScrollMarginTop;
+         marginRight = ParentMap.ScrollMarginRight;
+         marginBottom = ParentMap.ScrollMarginBottom;
       }
-      else if (spriteBounds.Right + CurrentPosition.X &gt; VisibleArea.Width - ParentMap.ScrollMarginRight)
+      else
+      {
+         marginLeft = 0;
+         marginTop = 0;
+         marginRight = 0;
+         marginBottom = 0;
+      }
+      if (spriteBounds.Left + CurrentPosition.X &lt; marginLeft)
       {
          if (ScrollRate.Width &gt; 0)
-            newX = (int)((-spriteBounds.Right + VisibleArea.Width - ParentMap.ScrollMarginRight - AbsolutePosition.X) / ScrollRate.Width);
+            newX = (int)((-spriteBounds.Left + marginLeft - AbsolutePosition.X) / ScrollRate.Width);
          else
-            CurrentPosition = new Point(-spriteBounds.Right + VisibleArea.Width - ParentMap.ScrollMarginRight, CurrentPosition.Y);
+            CurrentPosition = new Point(-spriteBounds.Left + marginLeft, CurrentPosition.Y);
+      }
+      else if (spriteBounds.Right + CurrentPosition.X &gt; VisibleArea.Width - marginRight)
+      {
+         if (ScrollRate.Width &gt; 0)
+            newX = (int)((-spriteBounds.Right + VisibleArea.Width - marginRight - AbsolutePosition.X) / ScrollRate.Width);
+         else
+            CurrentPosition = new Point(-spriteBounds.Right + VisibleArea.Width - marginRight, CurrentPosition.Y);
       }
 
-      if (spriteBounds.Top + CurrentPosition.Y &lt; ParentMap.ScrollMarginTop)
+      if (spriteBounds.Top + CurrentPosition.Y &lt; marginTop)
       {
          if (ScrollRate.Height &gt; 0)
-            newY = (int)((-spriteBounds.Top + ParentMap.ScrollMarginTop - AbsolutePosition.Y) / ScrollRate.Height);
+            newY = (int)((-spriteBounds.Top + marginTop - AbsolutePosition.Y) / ScrollRate.Height);
          else
-            CurrentPosition = new Point(CurrentPosition.X, -spriteBounds.Top + ParentMap.ScrollMarginTop);
+            CurrentPosition = new Point(CurrentPosition.X, -spriteBounds.Top + marginTop);
       }
-      else if (spriteBounds.Bottom + CurrentPosition.Y &gt; VisibleArea.Height - ParentMap.ScrollMarginBottom)
+      else if (spriteBounds.Bottom + CurrentPosition.Y &gt; VisibleArea.Height - marginBottom)
       {
          if (ScrollRate.Height &gt; 0)
-            newY = (int)((-spriteBounds.Bottom + VisibleArea.Height - ParentMap.ScrollMarginBottom - AbsolutePosition.Y) / ScrollRate.Height);
+            newY = (int)((-spriteBounds.Bottom + VisibleArea.Height - marginBottom - AbsolutePosition.Y) / ScrollRate.Height);
          else
-            CurrentPosition = new Point(CurrentPosition.X, -spriteBounds.Bottom + VisibleArea.Height - ParentMap.ScrollMarginBottom);
+            CurrentPosition = new Point(CurrentPosition.X, -spriteBounds.Bottom + VisibleArea.Height - marginBottom);
       }
       ParentMap.Scroll(new Point(newX, newY));
    }
@@ -11521,8 +11710,6 @@ public class frmControls : System.Windows.Forms.Form
    private System.Windows.Forms.Label lblUp;
    private System.Windows.Forms.ComboBox cboPlayer;
    private System.Windows.Forms.Label lblPlayer;
-   private System.Windows.Forms.GroupBox grpPlayers;
-   private System.Windows.Forms.RadioButton[] rdoPlayers;
 
    /// &lt;summary&gt;
    /// Required designer variable.
@@ -11539,18 +11726,18 @@ public class frmControls : System.Windows.Forms.Form
 
       if (Project.MaxPlayers &lt;= 1)
       {
-         grpPlayers.Hide();
-         this.ClientSize = new System.Drawing.Size(298, 185);
          lblPlayer.Hide();
          cboPlayer.Hide();
+         this.ClientSize = new System.Drawing.Size(298, 185);
       }
 
       for(int i = 0; i &lt; Project.GameWindow.ControllerCount; i++)
          cboController.Items.Add(Project.GameWindow.GetControllerName(i));
       rdoController.Enabled = (cboController.Items.Count &gt; 0);
-      for (int i = Project.MaxPlayers; i &lt; rdoPlayers.Length; i++)
-         rdoPlayers[i].Visible = false;
-      rdoPlayers[0].Checked = true;
+
+      for (int i = 0; i&lt;Project.MaxPlayers; i++)
+         cboPlayer.Items.Add("Player " + (i+1).ToString());
+      cboPlayer.SelectedIndex = 0;
    }
 
    /// &lt;summary&gt;
@@ -11593,42 +11780,33 @@ public class frmControls : System.Windows.Forms.Form
       this.lblUp = new System.Windows.Forms.Label();
       this.cboPlayer = new System.Windows.Forms.ComboBox();
       this.lblPlayer = new System.Windows.Forms.Label();
-      this.grpPlayers = new System.Windows.Forms.GroupBox();
-      this.rdoPlayers = new System.Windows.Forms.RadioButton[4]
-      {
-         new System.Windows.Forms.RadioButton(),
-         new System.Windows.Forms.RadioButton(),
-         new System.Windows.Forms.RadioButton(),
-         new System.Windows.Forms.RadioButton()
-      };
-      this.grpPlayers.SuspendLayout();
       this.SuspendLayout();
       // 
       // lblController
       // 
       this.lblController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.lblController.Location = new System.Drawing.Point(24, 224);
+      this.lblController.Enabled = false;
+      this.lblController.Location = new System.Drawing.Point(24, 184);
       this.lblController.Name = "lblController";
       this.lblController.Size = new System.Drawing.Size(64, 16);
       this.lblController.TabIndex = 43;
-      this.lblController.Enabled = false;
       this.lblController.Text = "Controller:";
       // 
       // cboController
       // 
       this.cboController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.cboController.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cboController.Location = new System.Drawing.Point(88, 224);
+      this.cboController.Enabled = false;
+      this.cboController.Location = new System.Drawing.Point(88, 184);
       this.cboController.Name = "cboController";
       this.cboController.Size = new System.Drawing.Size(200, 21);
-      this.cboController.Enabled = false;
       this.cboController.TabIndex = 42;
       this.cboController.SelectedIndexChanged += new System.EventHandler(this.cboController_SelectedIndexChanged);
       // 
       // rdoController
       // 
       this.rdoController.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.rdoController.Location = new System.Drawing.Point(8, 200);
+      this.rdoController.Location = new System.Drawing.Point(8, 160);
       this.rdoController.Name = "rdoController";
       this.rdoController.Size = new System.Drawing.Size(272, 16);
       this.rdoController.TabIndex = 41;
@@ -11638,7 +11816,7 @@ public class frmControls : System.Windows.Forms.Form
       // rdoKeyboard
       // 
       this.rdoKeyboard.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.rdoKeyboard.Location = new System.Drawing.Point(8, 80);
+      this.rdoKeyboard.Location = new System.Drawing.Point(8, 40);
       this.rdoKeyboard.Name = "rdoKeyboard";
       this.rdoKeyboard.Size = new System.Drawing.Size(272, 16);
       this.rdoKeyboard.TabIndex = 40;
@@ -11648,192 +11826,192 @@ public class frmControls : System.Windows.Forms.Form
       // txtButton4
       // 
       this.txtButton4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.txtButton4.Location = new System.Drawing.Point(224, 168);
+      this.txtButton4.Enabled = false;
+      this.txtButton4.Location = new System.Drawing.Point(224, 128);
       this.txtButton4.Name = "txtButton4";
+      this.txtButton4.ReadOnly = true;
       this.txtButton4.Size = new System.Drawing.Size(64, 20);
       this.txtButton4.TabIndex = 39;
       this.txtButton4.Text = "";
-      this.txtButton4.Enabled = false;
       this.txtButton4.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
       // 
       // lblButton4
       // 
       this.lblButton4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.lblButton4.Location = new System.Drawing.Point(160, 168);
+      this.lblButton4.Enabled = false;
+      this.lblButton4.Location = new System.Drawing.Point(160, 128);
       this.lblButton4.Name = "lblButton4";
       this.lblButton4.Size = new System.Drawing.Size(64, 20);
       this.lblButton4.TabIndex = 38;
       this.lblButton4.Text = "Button 4:";
-      this.lblButton4.Enabled = false;
-      this.txtButton4.ReadOnly = true;
       this.lblButton4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // txtButton3
       // 
       this.txtButton3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.txtButton3.Location = new System.Drawing.Point(224, 144);
+      this.txtButton3.Enabled = false;
+      this.txtButton3.Location = new System.Drawing.Point(224, 104);
       this.txtButton3.Name = "txtButton3";
+      this.txtButton3.ReadOnly = true;
       this.txtButton3.Size = new System.Drawing.Size(64, 20);
       this.txtButton3.TabIndex = 37;
       this.txtButton3.Text = "";
-      this.txtButton3.Enabled = false;
-      this.txtButton3.ReadOnly = true;
       this.txtButton3.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
       // 
       // lblButton3
       // 
       this.lblButton3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.lblButton3.Location = new System.Drawing.Point(160, 144);
+      this.lblButton3.Enabled = false;
+      this.lblButton3.Location = new System.Drawing.Point(160, 104);
       this.lblButton3.Name = "lblButton3";
       this.lblButton3.Size = new System.Drawing.Size(64, 20);
       this.lblButton3.TabIndex = 36;
       this.lblButton3.Text = "Button 3:";
-      this.lblButton3.Enabled = false;
       this.lblButton3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // txtButton2
       // 
       this.txtButton2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.txtButton2.Location = new System.Drawing.Point(224, 120);
+      this.txtButton2.Enabled = false;
+      this.txtButton2.Location = new System.Drawing.Point(224, 80);
       this.txtButton2.Name = "txtButton2";
+      this.txtButton2.ReadOnly = true;
       this.txtButton2.Size = new System.Drawing.Size(64, 20);
       this.txtButton2.TabIndex = 35;
       this.txtButton2.Text = "";
-      this.txtButton2.Enabled = false;
-      this.txtButton2.ReadOnly = true;
       this.txtButton2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
       // 
       // lblButton2
       // 
       this.lblButton2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.lblButton2.Location = new System.Drawing.Point(160, 120);
+      this.lblButton2.Enabled = false;
+      this.lblButton2.Location = new System.Drawing.Point(160, 80);
       this.lblButton2.Name = "lblButton2";
       this.lblButton2.Size = new System.Drawing.Size(64, 20);
       this.lblButton2.TabIndex = 34;
       this.lblButton2.Text = "Button 2:";
-      this.lblButton2.Enabled = false;
       this.lblButton2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // txtButton1
       // 
       this.txtButton1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.txtButton1.Location = new System.Drawing.Point(224, 96);
+      this.txtButton1.Enabled = false;
+      this.txtButton1.Location = new System.Drawing.Point(224, 56);
       this.txtButton1.Name = "txtButton1";
+      this.txtButton1.ReadOnly = true;
       this.txtButton1.Size = new System.Drawing.Size(64, 20);
       this.txtButton1.TabIndex = 33;
       this.txtButton1.Text = "";
-      this.txtButton1.Enabled = false;
-      this.txtButton1.ReadOnly = true;
       this.txtButton1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
       // 
       // lblButton1
       // 
       this.lblButton1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.lblButton1.Location = new System.Drawing.Point(160, 96);
+      this.lblButton1.Enabled = false;
+      this.lblButton1.Location = new System.Drawing.Point(160, 56);
       this.lblButton1.Name = "lblButton1";
       this.lblButton1.Size = new System.Drawing.Size(64, 20);
       this.lblButton1.TabIndex = 32;
       this.lblButton1.Text = "Button 1:";
-      this.lblButton1.Enabled = false;
       this.lblButton1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // txtDown
       // 
       this.txtDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.txtDown.Location = new System.Drawing.Point(88, 168);
+      this.txtDown.Enabled = false;
+      this.txtDown.Location = new System.Drawing.Point(88, 128);
       this.txtDown.Name = "txtDown";
+      this.txtDown.ReadOnly = true;
       this.txtDown.Size = new System.Drawing.Size(64, 20);
       this.txtDown.TabIndex = 31;
       this.txtDown.Text = "";
-      this.txtDown.Enabled = false;
-      this.txtDown.ReadOnly = true;
       this.txtDown.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
       // 
       // lblDown
       // 
       this.lblDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.lblDown.Location = new System.Drawing.Point(24, 168);
+      this.lblDown.Enabled = false;
+      this.lblDown.Location = new System.Drawing.Point(24, 128);
       this.lblDown.Name = "lblDown";
       this.lblDown.Size = new System.Drawing.Size(64, 20);
       this.lblDown.TabIndex = 30;
       this.lblDown.Text = "Down:";
-      this.lblDown.Enabled = false;
       this.lblDown.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // txtRight
       // 
       this.txtRight.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.txtRight.Location = new System.Drawing.Point(88, 144);
+      this.txtRight.Enabled = false;
+      this.txtRight.Location = new System.Drawing.Point(88, 104);
       this.txtRight.Name = "txtRight";
+      this.txtRight.ReadOnly = true;
       this.txtRight.Size = new System.Drawing.Size(64, 20);
       this.txtRight.TabIndex = 29;
       this.txtRight.Text = "";
-      this.txtRight.Enabled = false;
-      this.txtRight.ReadOnly = true;
       this.txtRight.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
       // 
       // lblRight
       // 
       this.lblRight.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.lblRight.Location = new System.Drawing.Point(24, 144);
+      this.lblRight.Enabled = false;
+      this.lblRight.Location = new System.Drawing.Point(24, 104);
       this.lblRight.Name = "lblRight";
       this.lblRight.Size = new System.Drawing.Size(64, 20);
       this.lblRight.TabIndex = 28;
       this.lblRight.Text = "Right:";
-      this.lblRight.Enabled = false;
       this.lblRight.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // txtLeft
       // 
       this.txtLeft.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.txtLeft.Location = new System.Drawing.Point(88, 120);
+      this.txtLeft.Enabled = false;
+      this.txtLeft.Location = new System.Drawing.Point(88, 80);
       this.txtLeft.Name = "txtLeft";
+      this.txtLeft.ReadOnly = true;
       this.txtLeft.Size = new System.Drawing.Size(64, 20);
       this.txtLeft.TabIndex = 27;
       this.txtLeft.Text = "";
-      this.txtLeft.Enabled = false;
-      this.txtLeft.ReadOnly = true;
       this.txtLeft.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
       // 
       // lblLeft
       // 
       this.lblLeft.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.lblLeft.Location = new System.Drawing.Point(24, 120);
+      this.lblLeft.Enabled = false;
+      this.lblLeft.Location = new System.Drawing.Point(24, 80);
       this.lblLeft.Name = "lblLeft";
       this.lblLeft.Size = new System.Drawing.Size(64, 20);
       this.lblLeft.TabIndex = 26;
       this.lblLeft.Text = "Left:";
-      this.lblLeft.Enabled = false;
       this.lblLeft.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // txtUp
       // 
       this.txtUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.txtUp.Location = new System.Drawing.Point(88, 96);
+      this.txtUp.Enabled = false;
+      this.txtUp.Location = new System.Drawing.Point(88, 56);
       this.txtUp.Name = "txtUp";
+      this.txtUp.ReadOnly = true;
       this.txtUp.Size = new System.Drawing.Size(64, 20);
       this.txtUp.TabIndex = 25;
       this.txtUp.Text = "";
-      this.txtUp.Enabled = false;
-      this.txtUp.ReadOnly = true;
       this.txtUp.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
       // 
       // lblUp
       // 
       this.lblUp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.lblUp.Location = new System.Drawing.Point(24, 96);
+      this.lblUp.Enabled = false;
+      this.lblUp.Location = new System.Drawing.Point(24, 56);
       this.lblUp.Name = "lblUp";
       this.lblUp.Size = new System.Drawing.Size(64, 20);
       this.lblUp.TabIndex = 24;
       this.lblUp.Text = "Up:";
-      this.lblUp.Enabled = false;
       this.lblUp.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // cboPlayer
       // 
       this.cboPlayer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
       this.cboPlayer.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-      this.cboPlayer.Location = new System.Drawing.Point(88, 48);
+      this.cboPlayer.Location = new System.Drawing.Point(88, 8);
       this.cboPlayer.Name = "cboPlayer";
       this.cboPlayer.Size = new System.Drawing.Size(200, 21);
       this.cboPlayer.TabIndex = 23;
@@ -11842,67 +12020,17 @@ public class frmControls : System.Windows.Forms.Form
       // lblPlayer
       // 
       this.lblPlayer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-      this.lblPlayer.Location = new System.Drawing.Point(8, 48);
+      this.lblPlayer.Location = new System.Drawing.Point(8, 8);
       this.lblPlayer.Name = "lblPlayer";
       this.lblPlayer.Size = new System.Drawing.Size(80, 21);
       this.lblPlayer.TabIndex = 22;
       this.lblPlayer.Text = "Player:";
       this.lblPlayer.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
-      // grpPlayers
-      // 
-      this.grpPlayers.Controls.Add(this.rdoPlayers[3]);
-      this.grpPlayers.Controls.Add(this.rdoPlayers[2]);
-      this.grpPlayers.Controls.Add(this.rdoPlayers[1]);
-      this.grpPlayers.Controls.Add(this.rdoPlayers[0]);
-      this.grpPlayers.Location = new System.Drawing.Point(8, 0);
-      this.grpPlayers.Name = "grpPlayers";
-      this.grpPlayers.Size = new System.Drawing.Size(280, 40);
-      this.grpPlayers.TabIndex = 44;
-      this.grpPlayers.TabStop = false;
-      this.grpPlayers.Text = "Players";
-      // 
-      // rdoOnePlayer
-      // 
-      this.rdoPlayers[0].Location = new System.Drawing.Point(8, 16);
-      this.rdoPlayers[0].Name = "rdoOnePlayer";
-      this.rdoPlayers[0].Size = new System.Drawing.Size(64, 16);
-      this.rdoPlayers[0].TabIndex = 0;
-      this.rdoPlayers[0].Text = "&amp;One";
-      this.rdoPlayers[0].CheckedChanged += new System.EventHandler(this.PlayerCount_Changed);
-      // 
-      // rdoTwoPlayers
-      // 
-      this.rdoPlayers[1].Location = new System.Drawing.Point(72, 16);
-      this.rdoPlayers[1].Name = "rdoTwoPlayers";
-      this.rdoPlayers[1].Size = new System.Drawing.Size(64, 16);
-      this.rdoPlayers[1].TabIndex = 1;
-      this.rdoPlayers[1].Text = "&amp;Two";
-      this.rdoPlayers[1].CheckedChanged += new System.EventHandler(this.PlayerCount_Changed);
-      // 
-      // rdoThreePlayers
-      // 
-      this.rdoPlayers[2].Location = new System.Drawing.Point(136, 16);
-      this.rdoPlayers[2].Name = "rdoThreePlayers";
-      this.rdoPlayers[2].Size = new System.Drawing.Size(64, 16);
-      this.rdoPlayers[2].TabIndex = 2;
-      this.rdoPlayers[2].Text = "T&amp;hree";
-      this.rdoPlayers[2].CheckedChanged += new System.EventHandler(this.PlayerCount_Changed);
-      // 
-      // rdoFourPlayers
-      // 
-      this.rdoPlayers[3].Location = new System.Drawing.Point(200, 16);
-      this.rdoPlayers[3].Name = "rdoFourPlayers";
-      this.rdoPlayers[3].Size = new System.Drawing.Size(64, 16);
-      this.rdoPlayers[3].TabIndex = 3;
-      this.rdoPlayers[3].Text = "&amp;Four";
-      this.rdoPlayers[3].CheckedChanged += new System.EventHandler(this.PlayerCount_Changed);
-      // 
       // frmControls
       // 
       this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-      this.ClientSize = new System.Drawing.Size(298, 255);
-      this.Controls.Add(this.grpPlayers);
+      this.ClientSize = new System.Drawing.Size(298, 215);
       this.Controls.Add(this.lblController);
       this.Controls.Add(this.cboController);
       this.Controls.Add(this.rdoController);
@@ -11929,7 +12057,6 @@ public class frmControls : System.Windows.Forms.Form
       this.MaximizeBox = false;
       this.Name = "frmControls";
       this.Text = "Customize Controls";
-      this.grpPlayers.ResumeLayout(false);
       this.ResumeLayout(false);
 
    }
@@ -11966,27 +12093,6 @@ public class frmControls : System.Windows.Forms.Form
             Project.GameWindow.Players[SelectedPlayer] = new ControllerPlayer(SelectedPlayer % cboController.Items.Count);
 
          LoadCurrentControls();
-      }
-   }
-
-   private void PlayerCount_Changed(object sender, System.EventArgs e)
-   {
-      if (((RadioButton)sender).Checked)
-      {
-         for (int playerIndex=0; playerIndex&lt;4; playerIndex++)
-         {
-            if (rdoPlayers[playerIndex] == sender)
-            {
-               cboPlayer.Items.Clear();
-               for (int i = 0; i&lt;=playerIndex; i++)
-               {
-                  cboPlayer.Items.Add("Player " + (i+1).ToString());
-               }
-
-               Project.GameWindow.CurrentPlayers = (byte)(playerIndex + 1);
-            }
-         }
-         cboPlayer.SelectedIndex = 0;
       }
    }
 
@@ -12063,12 +12169,6 @@ public class frmControls : System.Windows.Forms.Form
          else
             cboController.SelectedIndex = -1;
       }
-   }
-
-   protected override void OnClosed(EventArgs e)
-   {
-      base.OnClosed (e);
-      Project.GameWindow.RefreshControllers();
    }
 }
 
@@ -12298,7 +12398,129 @@ public class ControllerPlayer : IPlayer
 }
 </Text>
   </SourceCode>
-  <Project DisplayMode="m640x480x24" Windowed="true" TitleText="Powered by Scrolling Game Development Kit 2 (http://sgdk2.sf.net)" StartMap="Level 1" OverlayMap="Inventory" MaxPlayers="2" MaxViews="1">
+  <SourceCode Name="About.cs" IsCustomObject="false">
+    <Text>using System;
+using System.Drawing;
+using System.Collections;
+using System.ComponentModel;
+using System.Windows.Forms;
+
+/// &lt;summary&gt;
+/// Summary description for About.
+/// &lt;/summary&gt;
+public class frmAbout : System.Windows.Forms.Form
+{
+   private System.Windows.Forms.Button btnOK;
+   private System.Windows.Forms.Label lblHeader;
+   private System.Windows.Forms.Label lblSGDK2;
+   private System.Windows.Forms.LinkLabel llbURL;
+	/// &lt;summary&gt;
+	/// Required designer variable.
+	/// &lt;/summary&gt;
+	private System.ComponentModel.Container components = null;
+
+	public frmAbout()
+	{
+		//
+		// Required for Windows Form Designer support
+		//
+		InitializeComponent();
+
+		//
+		// TODO: Add any constructor code after InitializeComponent call
+		//
+	}
+
+	/// &lt;summary&gt;
+	/// Clean up any resources being used.
+	/// &lt;/summary&gt;
+	protected override void Dispose( bool disposing )
+	{
+		if( disposing )
+		{
+			if(components != null)
+			{
+				components.Dispose();
+			}
+		}
+		base.Dispose( disposing );
+	}
+
+	#region Windows Form Designer generated code
+	/// &lt;summary&gt;
+	/// Required method for Designer support - do not modify
+	/// the contents of this method with the code editor.
+	/// &lt;/summary&gt;
+	private void InitializeComponent()
+	{
+      this.btnOK = new System.Windows.Forms.Button();
+      this.lblHeader = new System.Windows.Forms.Label();
+      this.lblSGDK2 = new System.Windows.Forms.Label();
+      this.llbURL = new System.Windows.Forms.LinkLabel();
+      this.SuspendLayout();
+      // 
+      // btnOK
+      // 
+      this.btnOK.Location = new System.Drawing.Point(208, 72);
+      this.btnOK.Name = "btnOK";
+      this.btnOK.Size = new System.Drawing.Size(72, 24);
+      this.btnOK.TabIndex = 0;
+      this.btnOK.Text = "OK";
+      this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
+      // 
+      // lblHeader
+      // 
+      this.lblHeader.Location = new System.Drawing.Point(8, 8);
+      this.lblHeader.Name = "lblHeader";
+      this.lblHeader.Size = new System.Drawing.Size(272, 16);
+      this.lblHeader.TabIndex = 1;
+      this.lblHeader.Text = "This game was created with:";
+      // 
+      // lblSGDK2
+      // 
+      this.lblSGDK2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+      this.lblSGDK2.Location = new System.Drawing.Point(8, 24);
+      this.lblSGDK2.Name = "lblSGDK2";
+      this.lblSGDK2.Size = new System.Drawing.Size(272, 16);
+      this.lblSGDK2.TabIndex = 2;
+      this.lblSGDK2.Text = "Scrolling Game Development Kit 2";
+      this.lblSGDK2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      // 
+      // llbURL
+      // 
+      this.llbURL.Location = new System.Drawing.Point(8, 56);
+      this.llbURL.Name = "llbURL";
+      this.llbURL.Size = new System.Drawing.Size(272, 16);
+      this.llbURL.TabIndex = 3;
+      this.llbURL.TabStop = true;
+      this.llbURL.Text = "http://sgdk2.sf.net/";
+      this.llbURL.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.Link_Clicked);
+      // 
+      // frmAbout
+      // 
+      this.AcceptButton = this.btnOK;
+      this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+      this.ClientSize = new System.Drawing.Size(292, 111);
+      this.Controls.Add(this.llbURL);
+      this.Controls.Add(this.lblSGDK2);
+      this.Controls.Add(this.lblHeader);
+      this.Controls.Add(this.btnOK);
+      this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+      this.Name = "frmAbout";
+      this.Text = "About " + System.Windows.Forms.Application.ProductName;
+      this.ResumeLayout(false);
+
+   }
+	#endregion
+
+   private void Link_Clicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
+   {
+      System.Diagnostics.Process.Start(((LinkLabel)sender).Text);
+   }
+}
+</Text>
+  </SourceCode>
+  <Project DisplayMode="m800x600x24" Windowed="true" TitleText="Powered by Scrolling Game Development Kit 2 (http://sgdk2.sf.net)" StartMap="Level 1" OverlayMap="Inventory" MaxPlayers="3" MaxViews="2">
     <Comments />
   </Project>
   <TileCategory Name="StandardSolid">

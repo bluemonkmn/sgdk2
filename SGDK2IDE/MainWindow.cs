@@ -1678,17 +1678,20 @@ namespace SGDK2
          if (e.Action == DataRowAction.Change)
          {
             String sOldKey = e.Row[ProjectData.Layer.MapNameColumn, DataRowVersion.Current].ToString() + "~" + e.Row[ProjectData.Layer.NameColumn, DataRowVersion.Current].ToString();
-            TreeNode ndOld = (TreeNode)m_TreeNodes["LR" + sOldKey];
-            TreeNode ndOldChild = (TreeNode)m_TreeNodes["LE" + sOldKey];
-            m_TreeNodes.Remove("LR" + sOldKey);
-            m_TreeNodes.Remove("LE" + sOldKey);
-            ndOld.Tag = "LR" + e.Row[ProjectData.Layer.MapNameColumn,DataRowVersion.Proposed].ToString() +
-               "~" + e.Row.Name;
-            ndOld.Text = e.Row.Name;
-            ndOldChild.Tag = "LE" + e.Row[ProjectData.Layer.MapNameColumn,DataRowVersion.Proposed].ToString() +
-               "~" + e.Row.Name;
-            m_TreeNodes.Add(ndOld.Tag, ndOld);
-            m_TreeNodes.Add(ndOldChild.Tag, ndOldChild);
+            String sNewKey = e.Row[ProjectData.Layer.MapNameColumn,DataRowVersion.Proposed].ToString() + "~" + e.Row.Name;
+            if (string.Compare(sOldKey, sNewKey) != 0)
+            {
+               TreeNode ndOld = (TreeNode)m_TreeNodes["LR" + sOldKey];
+               TreeNode ndOldChild = (TreeNode)m_TreeNodes["LE" + sOldKey];
+               m_TreeNodes.Remove("LR" + sOldKey);
+               m_TreeNodes.Remove("LE" + sOldKey);
+               ndOld.Tag = "LR" + sNewKey;
+               ndOld.Text = e.Row.Name;
+               ndOldChild.Tag = "LE" + e.Row[ProjectData.Layer.MapNameColumn,DataRowVersion.Proposed].ToString() +
+                  "~" + e.Row.Name;
+               m_TreeNodes.Add(ndOld.Tag, ndOld);
+               m_TreeNodes.Add(ndOldChild.Tag, ndOldChild);
+            }
          }
       }
 
@@ -2264,6 +2267,9 @@ namespace SGDK2
 
       private void mnuFileGenerate_Click(object sender, System.EventArgs e)
       {
+         if (!Validate())
+            return;
+
          if (m_strProjectPath == null)
          {
             mnuFileSavePrj_Click(sender, e);

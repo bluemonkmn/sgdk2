@@ -133,7 +133,8 @@ namespace SGDK2
       {
          private int mode; // 0 = If, 1 = Else, 2 = While
          private CodeStatement statement;
-         public ConditionStackElement(CodeStatement statement)
+         private RuleContent rule;
+         public ConditionStackElement(CodeStatement statement, RuleContent rule)
          {
             if (statement is CodeConditionStatement)
                this.mode = 0;
@@ -143,6 +144,7 @@ namespace SGDK2
                throw new ApplicationException("Unexpected condition type");
 
             this.statement = statement;
+            this.rule = rule;
          }
          public CodeExpression Condition
          {
@@ -204,6 +206,13 @@ namespace SGDK2
                   default:
                      throw new ApplicationException("Unexpected mode in ChildStatements");
                }
+            }
+         }
+         public string RuleName
+         {
+            get
+            {
+               return rule.Name;
             }
          }
       }
@@ -1348,7 +1357,7 @@ namespace SGDK2
             new CodeThisReferenceExpression(), MapDisplayField);
 
          CodeMemberMethod mthDraw = new CodeMemberMethod();
-         mthDraw.Attributes = MemberAttributes.Public | MemberAttributes.Override ;
+         mthDraw.Attributes = MemberAttributes.Family | MemberAttributes.Override ;
          mthDraw.Name = "Draw";
          clsMap.Members.Add(mthDraw);
 
@@ -1365,34 +1374,44 @@ namespace SGDK2
          mthOnScroll.Parameters.Add(parmPosition);
          CodeArgumentReferenceExpression refPosition =
             new CodeArgumentReferenceExpression(parmPosition.Name);
-         mthOnScroll.Statements.Add(new CodeConditionStatement(
-            new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(
-            refPosition, "X"), CodeBinaryOperatorType.GreaterThan, new CodePrimitiveExpression(0)),
-            new CodeAssignStatement(new CodePropertyReferenceExpression(
-            refPosition, "X"), new CodePrimitiveExpression(0))));
+         CodeExpression maxScroll = new CodeBinaryOperatorExpression(
+            new CodePropertyReferenceExpression(
+            new CodePropertyReferenceExpression(new CodeThisReferenceExpression(),
+            "CurrentView"),"Width"), CodeBinaryOperatorType.Subtract,
+            new CodePrimitiveExpression(drMap.ScrollWidth));
          mthOnScroll.Statements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(
             new CodeBinaryOperatorExpression(
             new CodePropertyReferenceExpression(refPosition, "X"), CodeBinaryOperatorType.IdentityInequality,
             new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(int)), "MinValue")),
             CodeBinaryOperatorType.BooleanAnd,
             new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(
-            refPosition, "X"), CodeBinaryOperatorType.LessThan, new CodePrimitiveExpression(-drMap.ScrollWidth))),
+            refPosition, "X"), CodeBinaryOperatorType.LessThan, maxScroll)),
             new CodeAssignStatement(new CodePropertyReferenceExpression(
-            refPosition, "X"), new CodePrimitiveExpression(-drMap.ScrollWidth))));
+            refPosition, "X"), maxScroll)));
          mthOnScroll.Statements.Add(new CodeConditionStatement(
             new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(
-            refPosition, "Y"), CodeBinaryOperatorType.GreaterThan, new CodePrimitiveExpression(0)),
+            refPosition, "X"), CodeBinaryOperatorType.GreaterThan, new CodePrimitiveExpression(0)),
             new CodeAssignStatement(new CodePropertyReferenceExpression(
-            refPosition, "Y"), new CodePrimitiveExpression(0))));
+            refPosition, "X"), new CodePrimitiveExpression(0))));
+         maxScroll = new CodeBinaryOperatorExpression(
+            new CodePropertyReferenceExpression(
+            new CodePropertyReferenceExpression(new CodeThisReferenceExpression(),
+            "CurrentView"),"Height"), CodeBinaryOperatorType.Subtract,
+            new CodePrimitiveExpression(drMap.ScrollHeight));
          mthOnScroll.Statements.Add(new CodeConditionStatement(new CodeBinaryOperatorExpression(
             new CodeBinaryOperatorExpression(
             new CodePropertyReferenceExpression(refPosition, "Y"), CodeBinaryOperatorType.IdentityInequality,
             new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(int)), "MinValue")),
             CodeBinaryOperatorType.BooleanAnd,
             new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(
-            refPosition, "Y"), CodeBinaryOperatorType.LessThan, new CodePrimitiveExpression(-drMap.ScrollHeight))),
+            refPosition, "Y"), CodeBinaryOperatorType.LessThan, maxScroll)),
             new CodeAssignStatement(new CodePropertyReferenceExpression(
-            refPosition, "Y"), new CodePrimitiveExpression(-drMap.ScrollHeight))));
+            refPosition, "Y"), maxScroll)));
+         mthOnScroll.Statements.Add(new CodeConditionStatement(
+            new CodeBinaryOperatorExpression(new CodePropertyReferenceExpression(
+            refPosition, "Y"), CodeBinaryOperatorType.GreaterThan, new CodePrimitiveExpression(0)),
+            new CodeAssignStatement(new CodePropertyReferenceExpression(
+            refPosition, "Y"), new CodePrimitiveExpression(0))));
          clsMap.Members.Add(mthOnScroll);
 
          CodeMemberField fldScrollMarginLeft = new CodeMemberField(typeof(short), "m_ScrollMarginLeft");
@@ -1462,7 +1481,7 @@ namespace SGDK2
                new CodePrimitiveExpression(drMap.ViewHeight));
             clsMap.Members.Add(fldView);
             CodeMemberProperty prpView = new CodeMemberProperty();
-            prpView.Name = "View";
+            prpView.Name = "TotalView";
             prpView.Type = new CodeTypeReference(typeof(System.Drawing.Rectangle));
             prpView.Attributes = MemberAttributes.Public | MemberAttributes.Override;
             prpView.HasGet = true;
@@ -2060,7 +2079,7 @@ namespace SGDK2
                {
                   CodeConditionStatement cond = new CodeConditionStatement();
                   cond.Condition = invokeResult;
-                  stkNestedConditions.Push(new ConditionStackElement(cond));
+                  stkNestedConditions.Push(new ConditionStackElement(cond, rule));
                }
                else if (String.Compare(rule.Type,"and",true) == 0)
                {
@@ -2090,14 +2109,14 @@ namespace SGDK2
                         elem.NextPhase();
                         CodeConditionStatement cond = new CodeConditionStatement();
                         cond.Condition = invokeResult;
-                        stkNestedConditions.Push(new ConditionStackElement(cond));
+                        stkNestedConditions.Push(new ConditionStackElement(cond, rule));
                      }
                   }
                }
                else if (String.Compare(rule.Type, "while", true) == 0)
                {
                   CodeIterationStatement cond = new CodeIterationStatement(new CodeSnippetStatement(""), invokeResult, new CodeSnippetStatement(""));
-                  stkNestedConditions.Push(new ConditionStackElement(cond));
+                  stkNestedConditions.Push(new ConditionStackElement(cond, rule));
                }
                else
                {
@@ -2117,37 +2136,59 @@ namespace SGDK2
                      ConditionStackElement prev = (ConditionStackElement)stkNestedConditions.Peek();
                      if ((String.Compare(rule.Type, "Else", true) == 0) && (prev.Statement is CodeConditionStatement))
                         prev.NextPhase();
+                     prev.ChildStatements.Add(new CodeCommentStatement(rule.Name));
                      prev.ChildStatements.Add(stmtRule);
 
                      if (rule.EndIf)
                      {
                         ConditionStackElement popVal = ((ConditionStackElement)stkNestedConditions.Pop());
                         if (stkNestedConditions.Count > 0)
+                        {
+                           ((ConditionStackElement)stkNestedConditions.Peek()).ChildStatements.Add(new CodeCommentStatement(popVal.RuleName));
                            ((ConditionStackElement)stkNestedConditions.Peek()).ChildStatements.Add(popVal.Statement);
+                        }
                         else
+                        {
+                           mthExecuteRules.Statements.Add(new CodeCommentStatement(popVal.RuleName));
                            mthExecuteRules.Statements.Add(popVal.Statement);
+                        }
                      }
                   }
                   else
+                  {
+                     mthExecuteRules.Statements.Add(new CodeCommentStatement(rule.Name));
                      mthExecuteRules.Statements.Add(stmtRule);
+                  }
                }
             }
             else
             {
                ConditionStackElement popVal = ((ConditionStackElement)stkNestedConditions.Pop());
                if (stkNestedConditions.Count > 0)
+               {
+                  ((ConditionStackElement)stkNestedConditions.Peek()).ChildStatements.Add(new CodeCommentStatement(popVal.RuleName));
                   ((ConditionStackElement)stkNestedConditions.Peek()).ChildStatements.Add(popVal.Statement);
+               }
                else
+               {
+                  mthExecuteRules.Statements.Add(new CodeCommentStatement(popVal.RuleName));
                   mthExecuteRules.Statements.Add(popVal.Statement);
+               }
             }
          }
          while(stkNestedConditions.Count > 0)
          {
             ConditionStackElement popVal = ((ConditionStackElement)stkNestedConditions.Pop());
             if (stkNestedConditions.Count > 0)
+            {
+               ((ConditionStackElement)stkNestedConditions.Peek()).ChildStatements.Add(new CodeCommentStatement(popVal.RuleName));
                ((ConditionStackElement)stkNestedConditions.Peek()).ChildStatements.Add(popVal.Statement);
+            }
             else
+            {
+               mthExecuteRules.Statements.Add(new CodeCommentStatement(popVal.RuleName));
                mthExecuteRules.Statements.Add(popVal.Statement);
+            }
          }
       }
 

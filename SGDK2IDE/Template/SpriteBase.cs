@@ -468,10 +468,10 @@ public abstract class SpriteBase : GeneralRules
          LocalDX += ddx;
    }
    
-   [Description("Scroll all layers on this sprite's layer's map so that the sprite is within the scroll margins of the map")]
-   public void ScrollSpriteIntoView()
+   [Description("Scroll all layers on this sprite's layer's map so that the sprite is within visible area of the map.  If UseScrollMargins is true, scroll the sprite into the scroll margins of the map.")]
+   public void ScrollSpriteIntoView(bool UseScrollMargins)
    {
-      ParentLayer.ScrollSpriteIntoView(this);
+      ParentLayer.ScrollSpriteIntoView(this, UseScrollMargins);
    }
 
    [Description("Alter this sprite's velocity so that it remains within the map's visible area or within the scroll margins, according to this sprite's layer's position within the map.")]
@@ -636,7 +636,7 @@ public abstract class SpriteBase : GeneralRules
    public void MapPlayerToInputs(int PlayerNumber)
    {
       Debug.Assert(this.isActive, "Attempted to execute MapPlayerToInput on an inactive sprite");
-      if (PlayerNumber > Project.GameWindow.CurrentPlayers)
+      if (PlayerNumber > Project.MaxPlayers)
       {
          Debug.Fail("Attempted to map inactive player input");
          return;

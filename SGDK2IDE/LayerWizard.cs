@@ -17,7 +17,7 @@ namespace SGDK2
       private Layer[] m_Layers = null;
       private int m_nCurLayer;
       private Point m_ProposedOffset;
-      private Point m_RememberedOffset;
+      private Point m_RememberedOffset = Point.Empty;
       private Size m_ViewSize = Size.Empty;
       private Size m_PropsedSize = Size.Empty;
       private frmLayerManager.LayerProperties m_LayerProperties;
@@ -184,9 +184,9 @@ namespace SGDK2
          this.pnlTileset.Controls.Add(this.lblTileset);
          this.pnlTileset.Controls.Add(this.cboTileset);
          this.pnlTileset.Controls.Add(this.lblTilesetInfo);
-         this.pnlTileset.Location = new System.Drawing.Point(-10168, 42);
+         this.pnlTileset.Location = new System.Drawing.Point(168, 42);
          this.pnlTileset.Name = "pnlTileset";
-         this.pnlTileset.Size = new System.Drawing.Size(286, 231);
+         this.pnlTileset.Size = new System.Drawing.Size(287, 231);
          this.pnlTileset.TabIndex = 6;
          this.pnlTileset.Visible = false;
          // 
@@ -256,7 +256,7 @@ namespace SGDK2
          this.pnlBytesPerTile.Controls.Add(this.lblBytesPerTileInfo);
          this.pnlBytesPerTile.Location = new System.Drawing.Point(-10168, 42);
          this.pnlBytesPerTile.Name = "pnlBytesPerTile";
-         this.pnlBytesPerTile.Size = new System.Drawing.Size(288, 231);
+         this.pnlBytesPerTile.Size = new System.Drawing.Size(290, 231);
          this.pnlBytesPerTile.TabIndex = 7;
          this.pnlBytesPerTile.Visible = false;
          // 
@@ -302,7 +302,7 @@ namespace SGDK2
          this.pnlBackgroundTile.Controls.Add(this.lblBackgroundTileInfo);
          this.pnlBackgroundTile.Location = new System.Drawing.Point(-10168, 42);
          this.pnlBackgroundTile.Name = "pnlBackgroundTile";
-         this.pnlBackgroundTile.Size = new System.Drawing.Size(288, 231);
+         this.pnlBackgroundTile.Size = new System.Drawing.Size(290, 231);
          this.pnlBackgroundTile.TabIndex = 8;
          this.pnlBackgroundTile.Visible = false;
          // 
@@ -355,7 +355,7 @@ namespace SGDK2
          this.pnlOffset.Controls.Add(this.lblOffset);
          this.pnlOffset.Location = new System.Drawing.Point(-10168, 42);
          this.pnlOffset.Name = "pnlOffset";
-         this.pnlOffset.Size = new System.Drawing.Size(282, 231);
+         this.pnlOffset.Size = new System.Drawing.Size(284, 231);
          this.pnlOffset.TabIndex = 9;
          this.pnlOffset.Visible = false;
          // 
@@ -386,7 +386,7 @@ namespace SGDK2
          this.lblOffset.Dock = System.Windows.Forms.DockStyle.Bottom;
          this.lblOffset.Location = new System.Drawing.Point(0, 207);
          this.lblOffset.Name = "lblOffset";
-         this.lblOffset.Size = new System.Drawing.Size(282, 24);
+         this.lblOffset.Size = new System.Drawing.Size(284, 24);
          this.lblOffset.TabIndex = 2;
          this.lblOffset.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
          // 
@@ -405,7 +405,7 @@ namespace SGDK2
          this.pnlScrollRate.Controls.Add(this.lblScrollRateInfo);
          this.pnlScrollRate.Location = new System.Drawing.Point(-10168, 42);
          this.pnlScrollRate.Name = "pnlScrollRate";
-         this.pnlScrollRate.Size = new System.Drawing.Size(288, 231);
+         this.pnlScrollRate.Size = new System.Drawing.Size(290, 231);
          this.pnlScrollRate.TabIndex = 10;
          this.pnlScrollRate.Visible = false;
          // 
@@ -468,7 +468,7 @@ namespace SGDK2
          this.pnlPriority.Controls.Add(this.lblPriorityInfo);
          this.pnlPriority.Location = new System.Drawing.Point(-10168, 42);
          this.pnlPriority.Name = "pnlPriority";
-         this.pnlPriority.Size = new System.Drawing.Size(286, 231);
+         this.pnlPriority.Size = new System.Drawing.Size(288, 231);
          this.pnlPriority.TabIndex = 11;
          this.pnlPriority.Visible = false;
          // 
@@ -546,9 +546,9 @@ namespace SGDK2
          this.pnlSize.Controls.Add(this.lblTileRows);
          this.pnlSize.Controls.Add(this.chkFitToMap);
          this.pnlSize.Controls.Add(this.lblSizeInfo);
-         this.pnlSize.Location = new System.Drawing.Point(168, 42);
+         this.pnlSize.Location = new System.Drawing.Point(-10168, 42);
          this.pnlSize.Name = "pnlSize";
-         this.pnlSize.Size = new System.Drawing.Size(286, 231);
+         this.pnlSize.Size = new System.Drawing.Size(287, 231);
          this.pnlSize.TabIndex = 12;
          this.pnlSize.Visible = false;
          // 
@@ -598,18 +598,20 @@ namespace SGDK2
          // 
          // chkFitToMap
          // 
-         this.chkFitToMap.Location = new System.Drawing.Point(8, 112);
+         this.chkFitToMap.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+         this.chkFitToMap.Location = new System.Drawing.Point(8, 104);
          this.chkFitToMap.Name = "chkFitToMap";
-         this.chkFitToMap.Size = new System.Drawing.Size(264, 16);
+         this.chkFitToMap.Size = new System.Drawing.Size(264, 32);
          this.chkFitToMap.TabIndex = 1;
-         this.chkFitToMap.Text = "Size the layer to fill the map\'s scrollable area.";
+         this.chkFitToMap.Text = "Size the layer to fill the map\'s scrollable area. (Assumes single-view mode or sc" +
+            "roll rate=1.)";
          this.chkFitToMap.CheckedChanged += new System.EventHandler(this.chkFitToMap_CheckedChanged);
          // 
          // lblSizeInfo
          // 
          this.lblSizeInfo.Location = new System.Drawing.Point(8, 8);
          this.lblSizeInfo.Name = "lblSizeInfo";
-         this.lblSizeInfo.Size = new System.Drawing.Size(264, 104);
+         this.lblSizeInfo.Size = new System.Drawing.Size(264, 96);
          this.lblSizeInfo.TabIndex = 0;
          this.lblSizeInfo.Text = @"The size of the layer relates to a number of other factors: Higher scroll rates need larger layers to provide more tiles since the layer scrolls through more area; An offset means that the layer doesn't need tiles for the area left or above the offset distance; Large tiles don't require as many columns or rows of tiles to fill the same amount of space.";
          // 
@@ -626,7 +628,7 @@ namespace SGDK2
          this.pnlReview.Controls.Add(this.lblReview);
          this.pnlReview.Location = new System.Drawing.Point(-10168, 42);
          this.pnlReview.Name = "pnlReview";
-         this.pnlReview.Size = new System.Drawing.Size(281, 231);
+         this.pnlReview.Size = new System.Drawing.Size(283, 231);
          this.pnlReview.TabIndex = 13;
          // 
          // txtReview
@@ -902,15 +904,15 @@ namespace SGDK2
             if (lrs[i] == m_Layer)
                m_nCurLayer = i;
          }
-         m_RememberedOffset = m_ProposedOffset = new Point(m_Layer.OffsetX, m_Layer.OffsetY);
+         if (m_RememberedOffset == Point.Empty)
+            m_RememberedOffset = m_ProposedOffset = new Point(m_Layer.OffsetX, m_Layer.OffsetY);
       }
 
       private void offsetDisplay_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
       {
          if (m_Layers == null)
             return;
-         Size ScrollBounds = new Size(m_ViewSize.Width + m_Layer.MapRow.ScrollWidth,
-            m_ViewSize.Height + m_Layer.MapRow.ScrollHeight);
+         Size ScrollBounds = new Size(m_Layer.MapRow.ScrollWidth, m_Layer.MapRow.ScrollHeight);
          if (ScrollBounds != offsetDisplay.AutoScrollMinSize)
             offsetDisplay.AutoScrollMinSize = ScrollBounds;
          offsetDisplay.Device.Clear(Microsoft.DirectX.Direct3D.ClearFlags.Target, 0, 1.0f, 0);
@@ -976,8 +978,17 @@ namespace SGDK2
       {
          if (chkFitToMap.Checked)
          {
-            txtTileCols.Text = ((int)Math.Ceiling((m_ViewSize.Width + m_Layer.MapRow.ScrollWidth * m_nScrollRateX - m_ProposedOffset.X) / m_Layer.TilesetRow.TileWidth)).ToString();
-            txtTileRows.Text = ((int)Math.Ceiling((m_ViewSize.Height + m_Layer.MapRow.ScrollHeight * m_nScrollRateY - m_ProposedOffset.Y) / m_Layer.TilesetRow.TileHeight)).ToString();
+            int scrollDist;
+            if (m_ViewSize.Width > m_Layer.MapRow.ScrollWidth)
+               scrollDist = 0;
+            else
+               scrollDist = m_Layer.MapRow.ScrollWidth - m_ViewSize.Width;
+            txtTileCols.Text = ((int)Math.Ceiling((scrollDist * m_nScrollRateX + m_ViewSize.Width - m_ProposedOffset.X) / m_Layer.TilesetRow.TileWidth)).ToString();
+            if (m_ViewSize.Height > m_Layer.MapRow.ScrollHeight)
+               scrollDist = 0;
+            else
+               scrollDist = m_Layer.MapRow.ScrollHeight - m_ViewSize.Height;
+            txtTileRows.Text = ((int)Math.Ceiling((scrollDist * m_nScrollRateY + m_ViewSize.Height - m_ProposedOffset.Y) / m_Layer.TilesetRow.TileHeight)).ToString();
          }
          else
          {

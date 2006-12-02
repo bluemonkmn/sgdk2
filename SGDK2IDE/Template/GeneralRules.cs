@@ -219,16 +219,22 @@ public abstract class GeneralRules
             System.Windows.Forms.Application.UserAppDataPath, Slot.ToString() + ".sav"));
    }
 
-   public int CurrentPlayers
+   public int CurrentView
    {
       get
       {
-         return Project.GameWindow.CurrentPlayers;
+         return ParentLayer.ParentMap.CurrentViewIndex;
       }
       set
       {
-         Project.GameWindow.CurrentPlayers = (byte)value;
+         ParentLayer.ParentMap.CurrentViewIndex = (byte)value;
       }
+   }
+
+   [Description("Sets the layout of multiple views for the current map.")]
+   public void SetViewLayout(ViewLayout Layout)
+   {
+      ParentLayer.ParentMap.ViewLayout = Layout;
    }
 }
 
@@ -237,6 +243,14 @@ public enum SaveUnitInclusion
    AllMaps,
    AllCounters,
    WhichMapIsCurrent
+}
+
+public enum ViewLayout
+{
+   Single,
+   LeftRight,
+   TopBottom,
+   FourCorners
 }
 
 [Serializable()]

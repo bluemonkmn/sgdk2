@@ -24,6 +24,7 @@ namespace SGDK2
       private System.Windows.Forms.Panel panel1;
       private System.Windows.Forms.RadioButton rdoConstDepth;
       private System.Windows.Forms.RadioButton rdoMaxView;
+      private System.Windows.Forms.Label lblNote;
       private int m_nScrollHeight = 0;
 
 		public frmMapScrollWizard(ProjectDataset.MapRow mapRow)  
@@ -62,16 +63,17 @@ namespace SGDK2
          this.ChooseLayer = new SGDK2.frmWizardBase.StepInfo();
          this.lblInfo = new System.Windows.Forms.Label();
          this.Intro = new SGDK2.frmWizardBase.StepInfo();
+         this.panel1 = new System.Windows.Forms.Panel();
+         this.lblNote = new System.Windows.Forms.Label();
+         this.rdoMaxView = new System.Windows.Forms.RadioButton();
+         this.rdoConstDepth = new System.Windows.Forms.RadioButton();
          this.pnlResults = new System.Windows.Forms.Panel();
          this.txtResults = new System.Windows.Forms.TextBox();
          this.lblResults = new System.Windows.Forms.Label();
          this.Results = new SGDK2.frmWizardBase.StepInfo();
-         this.panel1 = new System.Windows.Forms.Panel();
-         this.rdoConstDepth = new System.Windows.Forms.RadioButton();
-         this.rdoMaxView = new System.Windows.Forms.RadioButton();
          this.pnlChooseLayers.SuspendLayout();
-         this.pnlResults.SuspendLayout();
          this.panel1.SuspendLayout();
+         this.pnlResults.SuspendLayout();
          this.SuspendLayout();
          // 
          // pnlChooseLayers
@@ -80,7 +82,7 @@ namespace SGDK2
          this.pnlChooseLayers.Controls.Add(this.chlLayers);
          this.pnlChooseLayers.Location = new System.Drawing.Point(-10168, 42);
          this.pnlChooseLayers.Name = "pnlChooseLayers";
-         this.pnlChooseLayers.Size = new System.Drawing.Size(280, 231);
+         this.pnlChooseLayers.Size = new System.Drawing.Size(282, 231);
          this.pnlChooseLayers.TabIndex = 4;
          // 
          // lblLayerInstructions
@@ -109,7 +111,7 @@ namespace SGDK2
          // 
          this.lblInfo.Location = new System.Drawing.Point(8, 8);
          this.lblInfo.Name = "lblInfo";
-         this.lblInfo.Size = new System.Drawing.Size(264, 56);
+         this.lblInfo.Size = new System.Drawing.Size(264, 48);
          this.lblInfo.TabIndex = 0;
          this.lblInfo.Text = "This wizard will help determine an appropriate ScrollSize for a map based on the " +
             "map\'s layers and view size.  Multiple modes are available:";
@@ -119,13 +121,59 @@ namespace SGDK2
          this.Intro.StepControl = this.panel1;
          this.Intro.TitleText = "Introduction";
          // 
+         // panel1
+         // 
+         this.panel1.Controls.Add(this.lblNote);
+         this.panel1.Controls.Add(this.rdoMaxView);
+         this.panel1.Controls.Add(this.rdoConstDepth);
+         this.panel1.Controls.Add(this.lblInfo);
+         this.panel1.Location = new System.Drawing.Point(168, 42);
+         this.panel1.Name = "panel1";
+         this.panel1.Size = new System.Drawing.Size(280, 231);
+         this.panel1.TabIndex = 6;
+         // 
+         // lblNote
+         // 
+         this.lblNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+         this.lblNote.Location = new System.Drawing.Point(8, 160);
+         this.lblNote.Name = "lblNote";
+         this.lblNote.Size = new System.Drawing.Size(264, 64);
+         this.lblNote.TabIndex = 3;
+         this.lblNote.Text = "Note: This wizard may yield unexpected results for layers with a scroll rate othe" +
+            "r than 1 when multiple views are active (more than 1 sub-view displayed in the m" +
+            "ap\'s view).";
+         // 
+         // rdoMaxView
+         // 
+         this.rdoMaxView.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+         this.rdoMaxView.Location = new System.Drawing.Point(8, 104);
+         this.rdoMaxView.Name = "rdoMaxView";
+         this.rdoMaxView.Size = new System.Drawing.Size(264, 48);
+         this.rdoMaxView.TabIndex = 2;
+         this.rdoMaxView.Text = "Maximum View - Ensure that all areas of all layers can be scrolled into the map\'s" +
+            " view.";
+         this.rdoMaxView.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+         // 
+         // rdoConstDepth
+         // 
+         this.rdoConstDepth.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+         this.rdoConstDepth.Checked = true;
+         this.rdoConstDepth.Location = new System.Drawing.Point(8, 56);
+         this.rdoConstDepth.Name = "rdoConstDepth";
+         this.rdoConstDepth.Size = new System.Drawing.Size(264, 48);
+         this.rdoConstDepth.TabIndex = 1;
+         this.rdoConstDepth.TabStop = true;
+         this.rdoConstDepth.Text = "Constant Depth - Ensure that all selected layers always fill the map view area an" +
+            "d cannot be scrolled out of view.";
+         this.rdoConstDepth.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+         // 
          // pnlResults
          // 
          this.pnlResults.Controls.Add(this.txtResults);
          this.pnlResults.Controls.Add(this.lblResults);
          this.pnlResults.Location = new System.Drawing.Point(-10168, 42);
          this.pnlResults.Name = "pnlResults";
-         this.pnlResults.Size = new System.Drawing.Size(280, 231);
+         this.pnlResults.Size = new System.Drawing.Size(282, 231);
          this.pnlResults.TabIndex = 5;
          // 
          // txtResults
@@ -155,40 +203,6 @@ namespace SGDK2
          this.Results.InitFunction += new System.EventHandler(this.Results_InitFunction);
          this.Results.ValidateFunction += new SGDK2.frmWizardBase.ValidateFunctionEvent(this.Results_ValidateFunction);
          // 
-         // panel1
-         // 
-         this.panel1.Controls.Add(this.rdoMaxView);
-         this.panel1.Controls.Add(this.rdoConstDepth);
-         this.panel1.Controls.Add(this.lblInfo);
-         this.panel1.Location = new System.Drawing.Point(168, 42);
-         this.panel1.Name = "panel1";
-         this.panel1.Size = new System.Drawing.Size(280, 231);
-         this.panel1.TabIndex = 6;
-         // 
-         // rdoConstDepth
-         // 
-         this.rdoConstDepth.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-         this.rdoConstDepth.Checked = true;
-         this.rdoConstDepth.Location = new System.Drawing.Point(8, 72);
-         this.rdoConstDepth.Name = "rdoConstDepth";
-         this.rdoConstDepth.Size = new System.Drawing.Size(264, 48);
-         this.rdoConstDepth.TabIndex = 1;
-         this.rdoConstDepth.TabStop = true;
-         this.rdoConstDepth.Text = "Constant Depth - Ensure that all selected layers always fill the map view area an" +
-            "d cannot be scrolled out of view.";
-         this.rdoConstDepth.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-         // 
-         // rdoMaxView
-         // 
-         this.rdoMaxView.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-         this.rdoMaxView.Location = new System.Drawing.Point(8, 120);
-         this.rdoMaxView.Name = "rdoMaxView";
-         this.rdoMaxView.Size = new System.Drawing.Size(264, 48);
-         this.rdoMaxView.TabIndex = 2;
-         this.rdoMaxView.Text = "Maximum View - Ensure that all areas of all layers can be scrolled into the map\'s" +
-            " view.";
-         this.rdoMaxView.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-         // 
          // frmMapScrollWizard
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -205,8 +219,8 @@ namespace SGDK2
          this.Controls.SetChildIndex(this.pnlResults, 0);
          this.Controls.SetChildIndex(this.panel1, 0);
          this.pnlChooseLayers.ResumeLayout(false);
-         this.pnlResults.ResumeLayout(false);
          this.panel1.ResumeLayout(false);
+         this.pnlResults.ResumeLayout(false);
          this.ResumeLayout(false);
 
       }
@@ -239,9 +253,9 @@ namespace SGDK2
             int layerMaxX = 0;
             int layerMaxY = 0;
             if (layer.ScrollRateX > 0)
-               layerMaxX = (int)((layer.OffsetX + layer.Width * layer.TilesetRow.TileWidth - m_Map.ViewWidth) / layer.ScrollRateX);
+               layerMaxX = (int)((layer.OffsetX + layer.Width * layer.TilesetRow.TileWidth - m_Map.ViewWidth) / layer.ScrollRateX) + m_Map.ViewWidth;
             if (layer.ScrollRateY > 0)
-               layerMaxY = (int)((layer.OffsetY + layer.Height * layer.TilesetRow.TileHeight - m_Map.ViewHeight) / layer.ScrollRateY);
+               layerMaxY = (int)((layer.OffsetY + layer.Height * layer.TilesetRow.TileHeight - m_Map.ViewHeight) / layer.ScrollRateY) + m_Map.ViewHeight;
             if (rdoConstDepth.Checked)
             {
                if ((m_nScrollWidth < 0) || (layerMaxX < m_nScrollWidth))

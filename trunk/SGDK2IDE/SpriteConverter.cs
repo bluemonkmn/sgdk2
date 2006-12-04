@@ -132,12 +132,13 @@ namespace SGDK2
 
       private static SpriteConverter m_converter = new SpriteConverter();
 
-      public SpriteProvider(CachedSpriteDef sprite, string state, short frame)
+      public SpriteProvider(CachedSpriteDef sprite, string state, short frame, int color)
       {
          m_Sprite = sprite;
          m_State = state;
          m_Frame = frame;
          m_ParameterValues = new int[m_Sprite.ParamNames.Count];
+         m_color = color;
       }
 
       public SpriteProvider(CachedSpriteDef sprite, ProjectDataset.SpriteRow row)
@@ -170,7 +171,11 @@ namespace SGDK2
          set
          {
             if (m_SpriteRow != null)
+            {
+               if (ProjectData.GetSpritePlan(m_SpriteRow.LayerRowParent, value) != null)
+                  throw new ApplicationException("Sprite name \"" + value + "\" conflicts with the name of an existing plan.  Choose a name that does not conflict with that of a plan or another sprite.");
                m_SpriteRow.Name = value;
+            }
             else
                m_name = value;
          }

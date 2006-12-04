@@ -47,6 +47,7 @@ public interface IPlayer
 /// <summary>
 /// Represents interactions between the game and a player via the keyboard
 /// </summary>
+[Serializable()]
 public class KeyboardPlayer : IPlayer
 {
    public Key key_left;
@@ -58,7 +59,7 @@ public class KeyboardPlayer : IPlayer
    public Key key_button3;
    public Key key_button4;      
 
-   public KeyboardPlayer(Key up, Key left, Key right, Key down,
+   private void InitializeKeys(Key up, Key left, Key right, Key down,
       Key button1, Key button2, Key button3, Key button4)
    {
       key_up = up;
@@ -70,6 +71,58 @@ public class KeyboardPlayer : IPlayer
       key_button3 = button3;
       key_button4 = button4;
    }
+
+   public KeyboardPlayer(int defaultSet)
+   {
+      switch(defaultSet)
+      {
+         case 0:
+            InitializeKeys(
+               Microsoft.DirectX.DirectInput.Key.UpArrow,
+               Microsoft.DirectX.DirectInput.Key.LeftArrow,
+               Microsoft.DirectX.DirectInput.Key.RightArrow,
+               Microsoft.DirectX.DirectInput.Key.DownArrow,
+               Microsoft.DirectX.DirectInput.Key.RightControl,
+               Microsoft.DirectX.DirectInput.Key.Space,
+               Microsoft.DirectX.DirectInput.Key.Return,
+               Microsoft.DirectX.DirectInput.Key.RightShift);
+            break;
+         case 1:
+            InitializeKeys(
+               Microsoft.DirectX.DirectInput.Key.W,
+               Microsoft.DirectX.DirectInput.Key.A,
+               Microsoft.DirectX.DirectInput.Key.D,
+               Microsoft.DirectX.DirectInput.Key.S,
+               Microsoft.DirectX.DirectInput.Key.LeftShift,
+               Microsoft.DirectX.DirectInput.Key.LeftControl,
+               Microsoft.DirectX.DirectInput.Key.Q,
+               Microsoft.DirectX.DirectInput.Key.E);
+            break;
+         case 2:
+            InitializeKeys(
+               Microsoft.DirectX.DirectInput.Key.NumPad8,
+               Microsoft.DirectX.DirectInput.Key.NumPad4,
+               Microsoft.DirectX.DirectInput.Key.NumPad6,
+               Microsoft.DirectX.DirectInput.Key.NumPad2,
+               Microsoft.DirectX.DirectInput.Key.NumPad5,
+               Microsoft.DirectX.DirectInput.Key.NumPad0,
+               Microsoft.DirectX.DirectInput.Key.NumPadEnter,
+               Microsoft.DirectX.DirectInput.Key.NumPad7);
+            break;
+         default:
+            InitializeKeys(
+               Microsoft.DirectX.DirectInput.Key.I,
+               Microsoft.DirectX.DirectInput.Key.J,
+               Microsoft.DirectX.DirectInput.Key.L,
+               Microsoft.DirectX.DirectInput.Key.K,
+               Microsoft.DirectX.DirectInput.Key.U,
+               Microsoft.DirectX.DirectInput.Key.O,
+               Microsoft.DirectX.DirectInput.Key.M,
+               Microsoft.DirectX.DirectInput.Key.Comma);
+            break;
+      }
+   }
+
    #region IPlayer Members
 
    public bool Up
@@ -142,6 +195,7 @@ public class KeyboardPlayer : IPlayer
 /// <summary>
 /// Represents interactions between the game and a player via a joystick/gamepad
 /// </summary>
+[Serializable()]
 public class ControllerPlayer : IPlayer
 {
    public int deviceNumber;

@@ -116,55 +116,17 @@ public class GameForm : Form
          controllerEnabled = controllerAcquired = null;
       }
 
-      Players[0] = new KeyboardPlayer(
-         Microsoft.DirectX.DirectInput.Key.UpArrow,
-         Microsoft.DirectX.DirectInput.Key.LeftArrow,
-         Microsoft.DirectX.DirectInput.Key.RightArrow,
-         Microsoft.DirectX.DirectInput.Key.DownArrow,
-         Microsoft.DirectX.DirectInput.Key.RightControl,
-         Microsoft.DirectX.DirectInput.Key.Space,
-         Microsoft.DirectX.DirectInput.Key.Return,
-         Microsoft.DirectX.DirectInput.Key.RightShift);
+      // Player 0 always uses keyboard by default
+      Players[0] = new KeyboardPlayer(0);
 
-      if (controllers.Length > 0)
+      // Players 1 through (M-N) use keyboard while players (M-N+1) through M use controllers
+      // where M is max player number and N is number of controllers.
+      for (int playerIdx = 1; playerIdx<Project.MaxPlayers; playerIdx++)
       {
-         for (int playerIdx = 1; playerIdx<Project.MaxPlayers; playerIdx++)
-         {
-            Players[playerIdx] = new ControllerPlayer((playerIdx-1) % controllers.Length);
-         }
-      }
-      else
-      {
-         if (Project.MaxPlayers > 1)
-            Players[1] = new KeyboardPlayer(
-               Microsoft.DirectX.DirectInput.Key.W,
-               Microsoft.DirectX.DirectInput.Key.A,
-               Microsoft.DirectX.DirectInput.Key.D,
-               Microsoft.DirectX.DirectInput.Key.S,
-               Microsoft.DirectX.DirectInput.Key.LeftAlt,
-               Microsoft.DirectX.DirectInput.Key.LeftShift,
-               Microsoft.DirectX.DirectInput.Key.LeftControl,
-               Microsoft.DirectX.DirectInput.Key.E);
-         if (Project.MaxPlayers > 2)
-            Players[2] = new KeyboardPlayer(
-               Microsoft.DirectX.DirectInput.Key.NumPad8,
-               Microsoft.DirectX.DirectInput.Key.NumPad4,
-               Microsoft.DirectX.DirectInput.Key.NumPad6,
-               Microsoft.DirectX.DirectInput.Key.NumPad2,
-               Microsoft.DirectX.DirectInput.Key.NumPad5,
-               Microsoft.DirectX.DirectInput.Key.NumPad0,
-               Microsoft.DirectX.DirectInput.Key.NumPadEnter,
-               Microsoft.DirectX.DirectInput.Key.NumPad7);
-         if (Project.MaxPlayers > 3)
-            Players[3] = new KeyboardPlayer(
-               Microsoft.DirectX.DirectInput.Key.I,
-               Microsoft.DirectX.DirectInput.Key.J,
-               Microsoft.DirectX.DirectInput.Key.L,
-               Microsoft.DirectX.DirectInput.Key.K,
-               Microsoft.DirectX.DirectInput.Key.U,
-               Microsoft.DirectX.DirectInput.Key.O,
-               Microsoft.DirectX.DirectInput.Key.M,
-               Microsoft.DirectX.DirectInput.Key.Comma);
+         if (Project.MaxPlayers - playerIdx <= controllers.Length)
+            Players[playerIdx] = new ControllerPlayer(playerIdx - (Project.MaxPlayers - controllers.Length));
+         else
+            Players[playerIdx] = new KeyboardPlayer(playerIdx);
       }
 
       while(true)

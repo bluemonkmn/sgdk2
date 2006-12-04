@@ -28,6 +28,7 @@ namespace SGDK2
       private string m_PreparedFunction = string.Empty;
       private const string SelectSpriteParameterItem = "<Select sprite parameter...>";
       private const string SelectWritableSpriteParameterItem = "<Select writable sprite parameter...>";
+      private ProjectDataset.PlanRuleRow m_SelectAfterInsert = null;
       #endregion
 
       #region Embedded Classes
@@ -96,6 +97,7 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuDeleteRule;
       private System.Windows.Forms.TextBox txtPriority;
       private System.Windows.Forms.Label lblPriority;
+      private System.Windows.Forms.Timer tmrPopulate;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -126,7 +128,7 @@ namespace SGDK2
          txtName.Text = plan.Name;
          txtPriority.Text = plan.Priority.ToString();
          
-         PopulateRules();
+         QueuePopulateRules();
       }
 
       /// <summary>
@@ -185,6 +187,8 @@ namespace SGDK2
          this.chkNot = new System.Windows.Forms.CheckBox();
          this.cboFunction = new System.Windows.Forms.ComboBox();
          this.pnlName = new System.Windows.Forms.Panel();
+         this.lblPriority = new System.Windows.Forms.Label();
+         this.txtPriority = new System.Windows.Forms.TextBox();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.mnuMain = new System.Windows.Forms.MainMenu();
          this.mnuPlan = new System.Windows.Forms.MenuItem();
@@ -192,8 +196,7 @@ namespace SGDK2
          this.mnuMoveRuleDown = new System.Windows.Forms.MenuItem();
          this.mnuNewRule = new System.Windows.Forms.MenuItem();
          this.mnuDeleteRule = new System.Windows.Forms.MenuItem();
-         this.txtPriority = new System.Windows.Forms.TextBox();
-         this.lblPriority = new System.Windows.Forms.Label();
+         this.tmrPopulate = new System.Windows.Forms.Timer(this.components);
          this.grpRules.SuspendLayout();
          this.pnlRule.SuspendLayout();
          this.pnlName.SuspendLayout();
@@ -543,6 +546,27 @@ namespace SGDK2
          this.pnlName.Size = new System.Drawing.Size(544, 24);
          this.pnlName.TabIndex = 3;
          // 
+         // lblPriority
+         // 
+         this.lblPriority.Dock = System.Windows.Forms.DockStyle.Right;
+         this.lblPriority.Location = new System.Drawing.Point(406, 2);
+         this.lblPriority.Name = "lblPriority";
+         this.lblPriority.Size = new System.Drawing.Size(64, 20);
+         this.lblPriority.TabIndex = 41;
+         this.lblPriority.Text = "Priority:";
+         this.lblPriority.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+         // 
+         // txtPriority
+         // 
+         this.txtPriority.Dock = System.Windows.Forms.DockStyle.Right;
+         this.txtPriority.Location = new System.Drawing.Point(470, 2);
+         this.txtPriority.Name = "txtPriority";
+         this.txtPriority.Size = new System.Drawing.Size(72, 20);
+         this.txtPriority.TabIndex = 42;
+         this.txtPriority.Text = "";
+         this.txtPriority.Validating += new System.ComponentModel.CancelEventHandler(this.txtPriority_Validating);
+         this.txtPriority.Validated += new System.EventHandler(this.txtPriority_Validated);
+         // 
          // dataMonitor
          // 
          this.dataMonitor.SpritePlanRowDeleted += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowDeleted);
@@ -591,26 +615,9 @@ namespace SGDK2
          this.mnuDeleteRule.Text = "Dele&te Rule";
          this.mnuDeleteRule.Click += new System.EventHandler(this.OnDeleteRule);
          // 
-         // txtPriority
+         // tmrPopulate
          // 
-         this.txtPriority.Dock = System.Windows.Forms.DockStyle.Right;
-         this.txtPriority.Location = new System.Drawing.Point(470, 2);
-         this.txtPriority.Name = "txtPriority";
-         this.txtPriority.Size = new System.Drawing.Size(72, 20);
-         this.txtPriority.TabIndex = 42;
-         this.txtPriority.Text = "";
-         this.txtPriority.Validating += new System.ComponentModel.CancelEventHandler(this.txtPriority_Validating);
-         this.txtPriority.Validated += new System.EventHandler(this.txtPriority_Validated);
-         // 
-         // lblPriority
-         // 
-         this.lblPriority.Dock = System.Windows.Forms.DockStyle.Right;
-         this.lblPriority.Location = new System.Drawing.Point(406, 2);
-         this.lblPriority.Name = "lblPriority";
-         this.lblPriority.Size = new System.Drawing.Size(64, 20);
-         this.lblPriority.TabIndex = 41;
-         this.lblPriority.Text = "Priority:";
-         this.lblPriority.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+         this.tmrPopulate.Tick += new System.EventHandler(this.tmrPopulate_Tick);
          // 
          // frmPlanEdit
          // 
@@ -1085,6 +1092,12 @@ namespace SGDK2
          }
       }
       
+      private void QueuePopulateRules()
+      {
+         tmrPopulate.Stop();
+         tmrPopulate.Start();
+      }
+
       private void PopulateRules()
       {
          ProjectDataset.PlanRuleRow cur = CurrentRule;
@@ -1111,7 +1124,13 @@ namespace SGDK2
             if (drRule.EndIf)
                parentNode = parentNode.Parent;
          }
-         if (cur != null)
+
+         if (m_SelectAfterInsert != null)
+         {
+            tvwRules.SelectedNode = GetNodeFromRow(m_SelectAfterInsert);
+            m_SelectAfterInsert = null;
+         }
+         else if (cur != null)
             tvwRules.SelectedNode = GetNodeFromRow(cur);
       }
 
@@ -1257,13 +1276,21 @@ namespace SGDK2
                txtName.Text = m_Plan.Name;
             e.Cancel = true;
          }
-         ProjectDataset.SpritePlanRow dr = ProjectData.GetSpritePlan(m_Plan.LayerRowParent, txtName.Text);
-         if ((null != dr) && (m_Plan != dr))
+         ProjectDataset.SpritePlanRow drPlan = ProjectData.GetSpritePlan(m_Plan.LayerRowParent, txtName.Text);
+         if ((null != drPlan) && (m_Plan != drPlan))
          {
             if (DialogResult.Cancel == MessageBox.Show(this, txtName.Text + " already exists", "Plan Name", MessageBoxButtons.RetryCancel, MessageBoxIcon.Exclamation))
                txtName.Text = m_Plan.Name;
             e.Cancel = true;
-         }      
+         }
+
+         ProjectDataset.SpriteRow drSprite = ProjectData.GetSprite(m_Plan.LayerRowParent, txtName.Text);
+         if (null != drSprite)
+         {
+            if (DialogResult.Cancel == MessageBox.Show(this, txtName.Text + " conflicts with a sprite by the same name", "Plan Name", MessageBoxButtons.RetryCancel, MessageBoxIcon.Exclamation))
+               txtName.Text = m_Plan.Name;
+            e.Cancel = true;
+         }
       }
 
       private void dataMonitor_SpritePlanRowDeleted(object sender, SGDK2.ProjectDataset.SpritePlanRowChangeEvent e)
@@ -1352,7 +1379,7 @@ namespace SGDK2
          {
             case DataRowAction.Add:
                if (e.Row.SpritePlanRowParent == m_Plan)
-                  PopulateRules();
+                  QueuePopulateRules();
                break;
             case DataRowAction.Change:
                if ((e.Row.SpritePlanRowParent == m_Plan) && (m_OldRuleName != null))
@@ -1362,12 +1389,12 @@ namespace SGDK2
                   else if ((m_OldSequence != e.Row.Sequence) ||
                      (String.Compare(m_OldType,e.Row.Type) != 0) ||
                      (m_OldEndIf != e.Row.EndIf))
-                     PopulateRules();
+                     QueuePopulateRules();
                }
                break;
             case DataRowAction.Delete:
                if (m_OldRuleName != null)
-                  PopulateRules();
+                  QueuePopulateRules();
                EnableFields();
                break;
          }
@@ -1498,8 +1525,7 @@ namespace SGDK2
          int newSeq = -1;
          if (CurrentRule != null)
             newSeq = CurrentRule.Sequence + 1;
-         ProjectDataset.PlanRuleRow drRule = ProjectData.InsertPlanRule(m_Plan, newPlanName, "Do", newSeq, cboFunction.Text, null, null, null, null, false, false);
-         tvwRules.SelectedNode = GetNodeFromRow(drRule);
+         m_SelectAfterInsert = ProjectData.InsertPlanRule(m_Plan, newPlanName, "Do", newSeq, cboFunction.Text, null, null, null, null, false, false);
       }
 
       private void OnDeleteRule(object sender, System.EventArgs e)
@@ -1555,6 +1581,12 @@ namespace SGDK2
             MessageBox.Show(this, "Priority must be an integer", "Invalid Entry", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             e.Cancel = true;
          }
+      }
+
+      private void tmrPopulate_Tick(object sender, System.EventArgs e)
+      {
+         tmrPopulate.Stop();
+         PopulateRules();
       }
       #endregion
    }

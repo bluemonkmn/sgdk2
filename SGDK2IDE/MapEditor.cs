@@ -907,7 +907,7 @@ namespace SGDK2
                   if (drState[validState].GetSpriteFrameRows().Length > 0)
                   {
                      SpriteProvider sp = new SpriteProvider(
-                        m_SpriteCache[drDef.Name], drState[validState].Name, 0);
+                        m_SpriteCache[drDef.Name], drState[validState].Name, 0, -1);
                      string name;
                      int index = 1;
                      do
@@ -1349,6 +1349,7 @@ namespace SGDK2
             m_UpdatingList = true;
             try
             {
+               lstPlanCoords.Items.Clear();
                for (int i = 0; i < lstPlans.Items.Count;)
                   if (lstPlans.GetSelected(i))
                      ((ProjectDataset.SpritePlanRow)lstPlans.Items[i]).Delete();

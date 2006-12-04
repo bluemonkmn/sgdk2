@@ -1249,12 +1249,13 @@
       <SpritePlan Name="LoadSave" Priority="1">
         <PlanRule Name="IfPressingS" Sequence="1" Type="If" Function="IsKeyPressed" Parameter1="Microsoft.DirectX.DirectInput.Key.S" EndIf="false" Suspended="false" />
         <PlanRule Name="IncludeAllMaps" Sequence="2" Type="Do" Function="IncludeInSaveUnit" Parameter1="SaveUnitInclusion.AllMaps" EndIf="false" Suspended="false" />
-        <PlanRule Name="IfPressingL" Sequence="7" Type="If" Function="IsKeyPressed" Parameter1="Microsoft.DirectX.DirectInput.Key.L" EndIf="false" Suspended="false" />
-        <PlanRule Name="LoadMap" Sequence="8" Type="Do" Function="LoadGame" Parameter1="1" Parameter2="false" EndIf="true" Suspended="false" />
-        <PlanRule Name="Save" Sequence="6" Type="Do" Function="SaveGame" Parameter1="1" Parameter2="false" EndIf="true" Suspended="false" />
+        <PlanRule Name="IfPressingL" Sequence="8" Type="If" Function="IsKeyPressed" Parameter1="Microsoft.DirectX.DirectInput.Key.L" EndIf="false" Suspended="false" />
+        <PlanRule Name="LoadMap" Sequence="9" Type="Do" Function="LoadGame" Parameter1="1" Parameter2="false" EndIf="true" Suspended="false" />
+        <PlanRule Name="Save" Sequence="7" Type="Do" Function="SaveGame" Parameter1="1" Parameter2="false" EndIf="true" Suspended="false" />
         <PlanRule Name="IncludeCounters" Sequence="3" Type="Do" Function="IncludeInSaveUnit" Parameter1="SaveUnitInclusion.AllCounters" EndIf="false" Suspended="false" />
         <PlanRule Name="IncludeCurrentMap" Sequence="4" Type="Do" Function="IncludeInSaveUnit" Parameter1="SaveUnitInclusion.WhichMapIsCurrent" EndIf="false" Suspended="false" />
-        <PlanRule Name="ExcludeCounter" Sequence="5" Type="Do" Function="ExcludeCounterFromSaveUnit" Parameter1="Counter.Animator" EndIf="false" Suspended="false" />
+        <PlanRule Name="ExcludeCounter" Sequence="6" Type="Do" Function="ExcludeCounterFromSaveUnit" Parameter1="Counter.Animator" EndIf="false" Suspended="false" />
+        <PlanRule Name="IncludePlayerSettings" Sequence="5" Type="Do" Function="IncludeInSaveUnit" Parameter1="SaveUnitInclusion.PlayerOptions" EndIf="false" Suspended="false" />
       </SpritePlan>
       <SpritePlan Name="MultiPlayerManagement" Priority="1">
         <Coordinate Sequence="1" X="1879" Y="15" Weight="0" />
@@ -2346,8 +2347,8 @@ public class GameForm : Form
    private System.Windows.Forms.MenuItem mnuTools;
    private System.Windows.Forms.MenuItem mnuToolsOptions;
    public IPlayer[] Players = new IPlayer[Project.MaxPlayers];
-   private System.Windows.Forms.MenuItem menuItem1;
-   private System.Windows.Forms.MenuItem menuItem2;
+   private System.Windows.Forms.MenuItem mnuHelp;
+   private System.Windows.Forms.MenuItem mnuHelpAbout;
    public System.IO.StringWriter debugText = new System.IO.StringWriter();
 
    public GameForm(GameDisplayMode mode, bool windowed, string title, System.Type initMapType, System.Type overlayMapType)
@@ -2436,55 +2437,17 @@ public class GameForm : Form
          controllerEnabled = controllerAcquired = null;
       }
 
-      Players[0] = new KeyboardPlayer(
-         Microsoft.DirectX.DirectInput.Key.UpArrow,
-         Microsoft.DirectX.DirectInput.Key.LeftArrow,
-         Microsoft.DirectX.DirectInput.Key.RightArrow,
-         Microsoft.DirectX.DirectInput.Key.DownArrow,
-         Microsoft.DirectX.DirectInput.Key.RightControl,
-         Microsoft.DirectX.DirectInput.Key.Space,
-         Microsoft.DirectX.DirectInput.Key.Return,
-         Microsoft.DirectX.DirectInput.Key.RightShift);
+      // Player 0 always uses keyboard by default
+      Players[0] = new KeyboardPlayer(0);
 
-      if (controllers.Length &gt; 0)
+      // Players 1 through (M-N) use keyboard while players (M-N+1) through M use controllers
+      // where M is max player number and N is number of controllers.
+      for (int playerIdx = 1; playerIdx&lt;Project.MaxPlayers; playerIdx++)
       {
-         for (int playerIdx = 1; playerIdx&lt;Project.MaxPlayers; playerIdx++)
-         {
-            Players[playerIdx] = new ControllerPlayer((playerIdx-1) % controllers.Length);
-         }
-      }
-      else
-      {
-         if (Project.MaxPlayers &gt; 1)
-            Players[1] = new KeyboardPlayer(
-               Microsoft.DirectX.DirectInput.Key.W,
-               Microsoft.DirectX.DirectInput.Key.A,
-               Microsoft.DirectX.DirectInput.Key.D,
-               Microsoft.DirectX.DirectInput.Key.S,
-               Microsoft.DirectX.DirectInput.Key.LeftAlt,
-               Microsoft.DirectX.DirectInput.Key.LeftShift,
-               Microsoft.DirectX.DirectInput.Key.LeftControl,
-               Microsoft.DirectX.DirectInput.Key.E);
-         if (Project.MaxPlayers &gt; 2)
-            Players[2] = new KeyboardPlayer(
-               Microsoft.DirectX.DirectInput.Key.NumPad8,
-               Microsoft.DirectX.DirectInput.Key.NumPad4,
-               Microsoft.DirectX.DirectInput.Key.NumPad6,
-               Microsoft.DirectX.DirectInput.Key.NumPad2,
-               Microsoft.DirectX.DirectInput.Key.NumPad5,
-               Microsoft.DirectX.DirectInput.Key.NumPad0,
-               Microsoft.DirectX.DirectInput.Key.NumPadEnter,
-               Microsoft.DirectX.DirectInput.Key.NumPad7);
-         if (Project.MaxPlayers &gt; 3)
-            Players[3] = new KeyboardPlayer(
-               Microsoft.DirectX.DirectInput.Key.I,
-               Microsoft.DirectX.DirectInput.Key.J,
-               Microsoft.DirectX.DirectInput.Key.L,
-               Microsoft.DirectX.DirectInput.Key.K,
-               Microsoft.DirectX.DirectInput.Key.U,
-               Microsoft.DirectX.DirectInput.Key.O,
-               Microsoft.DirectX.DirectInput.Key.M,
-               Microsoft.DirectX.DirectInput.Key.Comma);
+         if (Project.MaxPlayers - playerIdx &lt;= controllers.Length)
+            Players[playerIdx] = new ControllerPlayer(playerIdx - (Project.MaxPlayers - controllers.Length));
+         else
+            Players[playerIdx] = new KeyboardPlayer(playerIdx);
       }
 
       while(true)
@@ -2582,15 +2545,15 @@ public class GameForm : Form
       this.mnuFileExit = new System.Windows.Forms.MenuItem();
       this.mnuTools = new System.Windows.Forms.MenuItem();
       this.mnuToolsOptions = new System.Windows.Forms.MenuItem();
-      this.menuItem1 = new System.Windows.Forms.MenuItem();
-      this.menuItem2 = new System.Windows.Forms.MenuItem();
+      this.mnuHelp = new System.Windows.Forms.MenuItem();
+      this.mnuHelpAbout = new System.Windows.Forms.MenuItem();
       // 
       // mnuGame
       // 
       this.mnuGame.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
                                                                              this.mnuFile,
                                                                              this.mnuTools,
-                                                                             this.menuItem1});
+                                                                             this.mnuHelp});
       // 
       // mnuFile
       // 
@@ -2618,18 +2581,18 @@ public class GameForm : Form
       this.mnuToolsOptions.Text = "&amp;Options";
       this.mnuToolsOptions.Click += new System.EventHandler(this.mnuToolsOptions_Click);
       // 
-      // menuItem1
+      // mnuHelp
       // 
-      this.menuItem1.Index = 2;
-      this.menuItem1.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                               this.menuItem2});
-      this.menuItem1.Text = "&amp;Help";
+      this.mnuHelp.Index = 2;
+      this.mnuHelp.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                               this.mnuHelpAbout});
+      this.mnuHelp.Text = "&amp;Help";
       // 
-      // menuItem2
+      // mnuHelpAbout
       // 
-      this.menuItem2.Index = 0;
-      this.menuItem2.Text = "&amp;About...";
-      this.menuItem2.Click += new System.EventHandler(this.menuItem2_Click);
+      this.mnuHelpAbout.Index = 0;
+      this.mnuHelpAbout.Text = "&amp;About...";
+      this.mnuHelpAbout.Click += new System.EventHandler(this.mnuHelpAbout_Click);
       // 
       // GameForm
       // 
@@ -2723,7 +2686,7 @@ public class GameForm : Form
       frm.ShowDialog();
    }
 
-   private void menuItem2_Click(object sender, System.EventArgs e)
+   private void mnuHelpAbout_Click(object sender, System.EventArgs e)
    {
       using (frmAbout frm = new frmAbout())
          frm.ShowDialog();
@@ -2813,6 +2776,9 @@ public abstract class GeneralRules
             break;
          case SaveUnitInclusion.WhichMapIsCurrent:
             saveUnit.CurrentMapType = Project.GameWindow.CurrentMap.GetType();
+            break;
+         case SaveUnitInclusion.PlayerOptions:
+            saveUnit.PlayerOptions = Project.GameWindow.Players;
             break;
       }
    }
@@ -2975,7 +2941,8 @@ public enum SaveUnitInclusion
 {
    AllMaps,
    AllCounters,
-   WhichMapIsCurrent
+   WhichMapIsCurrent,
+   PlayerOptions
 }
 
 public enum ViewLayout
@@ -2996,6 +2963,7 @@ public class SaveUnit
    public System.Collections.Hashtable Maps = null;
    public System.Type CurrentMapType = null;
    public System.Collections.ArrayList Counters = null;
+   public IPlayer[] PlayerOptions = null;
 }
 
 [Serializable()]
@@ -12080,15 +12048,7 @@ public class frmControls : System.Windows.Forms.Form
             (sender != rdoKeyboard);
 
          if (sender == rdoKeyboard)
-            Project.GameWindow.Players[SelectedPlayer] = new KeyboardPlayer(
-               Microsoft.DirectX.DirectInput.Key.UpArrow,
-               Microsoft.DirectX.DirectInput.Key.LeftArrow,
-               Microsoft.DirectX.DirectInput.Key.RightArrow,
-               Microsoft.DirectX.DirectInput.Key.DownArrow,
-               Microsoft.DirectX.DirectInput.Key.RightControl,
-               Microsoft.DirectX.DirectInput.Key.Space,
-               Microsoft.DirectX.DirectInput.Key.Return,
-               Microsoft.DirectX.DirectInput.Key.RightShift);
+            Project.GameWindow.Players[SelectedPlayer] = new KeyboardPlayer(SelectedPlayer);
          else
             Project.GameWindow.Players[SelectedPlayer] = new ControllerPlayer(SelectedPlayer % cboController.Items.Count);
 
@@ -12224,6 +12184,7 @@ public interface IPlayer
 /// &lt;summary&gt;
 /// Represents interactions between the game and a player via the keyboard
 /// &lt;/summary&gt;
+[Serializable()]
 public class KeyboardPlayer : IPlayer
 {
    public Key key_left;
@@ -12235,7 +12196,7 @@ public class KeyboardPlayer : IPlayer
    public Key key_button3;
    public Key key_button4;      
 
-   public KeyboardPlayer(Key up, Key left, Key right, Key down,
+   private void InitializeKeys(Key up, Key left, Key right, Key down,
       Key button1, Key button2, Key button3, Key button4)
    {
       key_up = up;
@@ -12247,6 +12208,58 @@ public class KeyboardPlayer : IPlayer
       key_button3 = button3;
       key_button4 = button4;
    }
+
+   public KeyboardPlayer(int defaultSet)
+   {
+      switch(defaultSet)
+      {
+         case 0:
+            InitializeKeys(
+               Microsoft.DirectX.DirectInput.Key.UpArrow,
+               Microsoft.DirectX.DirectInput.Key.LeftArrow,
+               Microsoft.DirectX.DirectInput.Key.RightArrow,
+               Microsoft.DirectX.DirectInput.Key.DownArrow,
+               Microsoft.DirectX.DirectInput.Key.RightControl,
+               Microsoft.DirectX.DirectInput.Key.Space,
+               Microsoft.DirectX.DirectInput.Key.Return,
+               Microsoft.DirectX.DirectInput.Key.RightShift);
+            break;
+         case 1:
+            InitializeKeys(
+               Microsoft.DirectX.DirectInput.Key.W,
+               Microsoft.DirectX.DirectInput.Key.A,
+               Microsoft.DirectX.DirectInput.Key.D,
+               Microsoft.DirectX.DirectInput.Key.S,
+               Microsoft.DirectX.DirectInput.Key.LeftShift,
+               Microsoft.DirectX.DirectInput.Key.LeftControl,
+               Microsoft.DirectX.DirectInput.Key.Q,
+               Microsoft.DirectX.DirectInput.Key.E);
+            break;
+         case 2:
+            InitializeKeys(
+               Microsoft.DirectX.DirectInput.Key.NumPad8,
+               Microsoft.DirectX.DirectInput.Key.NumPad4,
+               Microsoft.DirectX.DirectInput.Key.NumPad6,
+               Microsoft.DirectX.DirectInput.Key.NumPad2,
+               Microsoft.DirectX.DirectInput.Key.NumPad5,
+               Microsoft.DirectX.DirectInput.Key.NumPad0,
+               Microsoft.DirectX.DirectInput.Key.NumPadEnter,
+               Microsoft.DirectX.DirectInput.Key.NumPad7);
+            break;
+         default:
+            InitializeKeys(
+               Microsoft.DirectX.DirectInput.Key.I,
+               Microsoft.DirectX.DirectInput.Key.J,
+               Microsoft.DirectX.DirectInput.Key.L,
+               Microsoft.DirectX.DirectInput.Key.K,
+               Microsoft.DirectX.DirectInput.Key.U,
+               Microsoft.DirectX.DirectInput.Key.O,
+               Microsoft.DirectX.DirectInput.Key.M,
+               Microsoft.DirectX.DirectInput.Key.Comma);
+            break;
+      }
+   }
+
    #region IPlayer Members
 
    public bool Up
@@ -12319,6 +12332,7 @@ public class KeyboardPlayer : IPlayer
 /// &lt;summary&gt;
 /// Represents interactions between the game and a player via a joystick/gamepad
 /// &lt;/summary&gt;
+[Serializable()]
 public class ControllerPlayer : IPlayer
 {
    public int deviceNumber;

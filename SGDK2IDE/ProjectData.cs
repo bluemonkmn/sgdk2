@@ -1931,6 +1931,8 @@ namespace SGDK2
          string DefinitionName, string StateName, short CurrentFrame, int X, int Y,
          float DX, float DY, string MapName, int Priority, bool Active, string Solidity, int Color, string[] ParamNames, int[] ParamValues)
       {
+         if (GetSpritePlan(GetLayer(MapName, LayerName), SpriteName) != null)
+            throw new ApplicationException("Sprite name \"" + SpriteName + "\" conflicts with an existing plan name.  Choose a name that does not conflict with that of a plan or another sprite.");
          ProjectDataset.SpriteRow drSprite = m_dsPrj.Sprite.AddSpriteRow(
             LayerName, SpriteName, DefinitionName, StateName, CurrentFrame,
             X, Y, DX, DY, MapName, Priority, Active, Solidity, Color);
@@ -2053,6 +2055,8 @@ namespace SGDK2
       }
       public static ProjectDataset.SpritePlanRow AddSpritePlan(ProjectDataset.LayerRow ParentLayer, string Name, int Priority)
       {
+         if (ProjectData.GetSprite(ParentLayer, Name) != null)
+            throw new ApplicationException("Plan name \"" + Name + "\" conflicts with that of a sprite.  Choose a name that doesn't conflict with that of a sprite or another plan.");
          return m_dsPrj.SpritePlan.AddSpritePlanRow(ParentLayer.MapRow.Name, ParentLayer.Name, Name, Priority);
       }
       public static ProjectDataset.SpritePlanRow GetSpritePlan(ProjectDataset.LayerRow ParentLayer, string Name)

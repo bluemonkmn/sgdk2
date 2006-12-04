@@ -402,15 +402,7 @@ public class frmControls : System.Windows.Forms.Form
             (sender != rdoKeyboard);
 
          if (sender == rdoKeyboard)
-            Project.GameWindow.Players[SelectedPlayer] = new KeyboardPlayer(
-               Microsoft.DirectX.DirectInput.Key.UpArrow,
-               Microsoft.DirectX.DirectInput.Key.LeftArrow,
-               Microsoft.DirectX.DirectInput.Key.RightArrow,
-               Microsoft.DirectX.DirectInput.Key.DownArrow,
-               Microsoft.DirectX.DirectInput.Key.RightControl,
-               Microsoft.DirectX.DirectInput.Key.Space,
-               Microsoft.DirectX.DirectInput.Key.Return,
-               Microsoft.DirectX.DirectInput.Key.RightShift);
+            Project.GameWindow.Players[SelectedPlayer] = new KeyboardPlayer(SelectedPlayer);
          else
             Project.GameWindow.Players[SelectedPlayer] = new ControllerPlayer(SelectedPlayer % cboController.Items.Count);
 

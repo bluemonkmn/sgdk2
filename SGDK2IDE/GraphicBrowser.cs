@@ -946,6 +946,7 @@ namespace SGDK2
 
                         Rectangle rcCell;
                         Matrix m;
+                        int color;
                         if ((FramesToDisplay != null) && (FramesToDisplay.ProvidesGraphics))
                         {
                            IProvideGraphics p = (IProvideGraphics)FramesToDisplay[nCell];
@@ -958,6 +959,7 @@ namespace SGDK2
                            }
                            rcCell = p.GetRectangle(nCompositeFrameStep);
                            m = p.CreateMatrix(nCompositeFrameStep);
+                           color = p.Color;
                         }
                         else
                         {
@@ -972,6 +974,7 @@ namespace SGDK2
                            m = new System.Drawing.Drawing2D.Matrix(
                               Frames[nFrameToDisplay].m11, Frames[nFrameToDisplay].m12, Frames[nFrameToDisplay].m21,
                               Frames[nFrameToDisplay].m22, Frames[nFrameToDisplay].dx, Frames[nFrameToDisplay].dy);
+                           color = Frames[nFrameToDisplay].color;
                         }
                         gfxOut.Transform = m;
                         m.Dispose();
@@ -980,9 +983,9 @@ namespace SGDK2
                            nX + AutoScrollPosition.X - m_LargestCell.X,
                            nY + AutoScrollPosition.Y - m_LargestCell.Y,
                            System.Drawing.Drawing2D.MatrixOrder.Append);
-                        if (Frames[nFrameToDisplay].color != -1)
+                        if (color != -1)
                         {
-                           byte[] clr = BitConverter.GetBytes(Frames[nFrameToDisplay].color);
+                           byte[] clr = BitConverter.GetBytes(color);
                            System.Drawing.Imaging.ColorMatrix cm = new System.Drawing.Imaging.ColorMatrix(
                               new float[][]
                               {
@@ -1526,5 +1529,9 @@ namespace SGDK2
       ProjectDataset.GraphicSheetRow GetGraphicSheet(int subFrame);
       Rectangle GetRectangle(int subFrame);
       System.Drawing.Drawing2D.Matrix CreateMatrix(int subFrame);
+      int Color
+      {
+         get;
+      }
    }
 }

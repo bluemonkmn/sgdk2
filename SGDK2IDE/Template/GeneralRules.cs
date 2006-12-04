@@ -81,6 +81,9 @@ public abstract class GeneralRules
          case SaveUnitInclusion.WhichMapIsCurrent:
             saveUnit.CurrentMapType = Project.GameWindow.CurrentMap.GetType();
             break;
+         case SaveUnitInclusion.PlayerOptions:
+            saveUnit.PlayerOptions = Project.GameWindow.Players;
+            break;
       }
    }
 
@@ -159,6 +162,7 @@ public abstract class GeneralRules
             IncludeInSaveUnit(SaveUnitInclusion.AllMaps);
             IncludeInSaveUnit(SaveUnitInclusion.AllCounters);
             IncludeInSaveUnit(SaveUnitInclusion.WhichMapIsCurrent);
+            IncludeInSaveUnit(SaveUnitInclusion.PlayerOptions);
          }
          System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
          bf.Serialize(stm, saveUnit);
@@ -196,6 +200,8 @@ public abstract class GeneralRules
             Project.GameWindow.CurrentMap = Project.GameWindow.GetMap(unit.CurrentMapType);
          else
             Project.GameWindow.CurrentMap = Project.GameWindow.GetMap(Project.GameWindow.CurrentMap.GetType());
+         if (unit.PlayerOptions != null)
+            Project.GameWindow.Players = unit.PlayerOptions;
          // Counters auto-magically take care of themselves via CounterRef
       }
    }
@@ -242,7 +248,8 @@ public enum SaveUnitInclusion
 {
    AllMaps,
    AllCounters,
-   WhichMapIsCurrent
+   WhichMapIsCurrent,
+   PlayerOptions
 }
 
 public enum ViewLayout
@@ -263,6 +270,7 @@ public class SaveUnit
    public System.Collections.Hashtable Maps = null;
    public System.Type CurrentMapType = null;
    public System.Collections.ArrayList Counters = null;
+   public IPlayer[] PlayerOptions = null;
 }
 
 [Serializable()]

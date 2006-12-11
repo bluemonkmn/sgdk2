@@ -103,7 +103,7 @@ namespace SGDK2
                {
                   ProjectData.GraphicSheetRowChanged -= m_RowChangeEvent;
                   ProjectData.FrameRowChanging -= m_FrameChangingEvent;
-                  ProjectData.FrameRowDeleted -= m_FrameChangingEvent;
+                  ProjectData.FrameRowDeleting -= m_FrameChangingEvent;
                   m_FrameChangingEvent = null;
                   m_RowChangeEvent = null;
                }
@@ -192,7 +192,7 @@ namespace SGDK2
                if ((m_FrameChangingEvent != null) && (value == null))
                {
                   ProjectData.FrameRowChanging -= m_FrameChangingEvent;
-                  ProjectData.FrameRowDeleted -= m_FrameChangingEvent;
+                  ProjectData.FrameRowDeleting -= m_FrameChangingEvent;
                }
                m_Frameset = value;
                if (value != null)
@@ -337,7 +337,7 @@ namespace SGDK2
             if (m_GraphicSheet != null)
             {
                Bitmap img = ProjectData.GetGraphicSheetImage(m_GraphicSheet.Name, false);
-               return ((img.Width / CellSize.Width) * (img.Height / CellSize.Height));
+               return ((img.Width / m_GraphicSheet.CellWidth) * (img.Height / m_GraphicSheet.CellHeight));
             }
 
             if (m_Frameset != null)
@@ -1371,7 +1371,10 @@ namespace SGDK2
 
       private void Frame_FrameRowChanging(object sender, SGDK2.ProjectDataset.FrameRowChangeEvent e)
       {
-         if (Frameset.RowState == DataRowState.Deleted)
+         if (Frameset == null)
+            return;
+
+         if ((Frameset.RowState == DataRowState.Deleted) || (Frameset.RowState == DataRowState.Detached))
          {
             Frameset = null;
             return;

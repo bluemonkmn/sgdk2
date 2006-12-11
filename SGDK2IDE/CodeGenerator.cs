@@ -1430,7 +1430,7 @@ namespace SGDK2
 
          CodeMemberField fldScrollMarginTop = new CodeMemberField(typeof(short), "m_ScrollMarginTop");
          fldScrollMarginTop.Attributes = MemberAttributes.Private | MemberAttributes.Final;
-         fldScrollMarginTop.InitExpression = new CodePrimitiveExpression(drMap.ScrollMarginRight);
+         fldScrollMarginTop.InitExpression = new CodePrimitiveExpression(drMap.ScrollMarginTop);
          clsMap.Members.Add(fldScrollMarginTop);
          CodeMemberProperty prpScrollMarginTop = new CodeMemberProperty();
          prpScrollMarginTop.Name = "ScrollMarginTop";
@@ -1444,7 +1444,7 @@ namespace SGDK2
 
          CodeMemberField fldScrollMarginRight = new CodeMemberField(typeof(short), "m_ScrollMarginRight");
          fldScrollMarginRight.Attributes = MemberAttributes.Private | MemberAttributes.Final;
-         fldScrollMarginRight.InitExpression = new CodePrimitiveExpression(drMap.ScrollMarginTop);
+         fldScrollMarginRight.InitExpression = new CodePrimitiveExpression(drMap.ScrollMarginRight);
          clsMap.Members.Add(fldScrollMarginRight);
          CodeMemberProperty prpScrollMarginRight = new CodeMemberProperty();
          prpScrollMarginRight.Name = "ScrollMarginRight";
@@ -2210,7 +2210,7 @@ namespace SGDK2
                new CodeParameterDeclarationExpression(typeof(double), "dx"),
                new CodeParameterDeclarationExpression(typeof(double), "dy"),
                new CodeParameterDeclarationExpression(
-               new CodeTypeReference("Sprites." + drSpriteDef.Name + ".State"), "state"),
+               new CodeTypeReference("Sprites." + NameToVariable(drSpriteDef.Name) + ".State"), "state"),
                new CodeParameterDeclarationExpression(typeof(int), "frame"),
                new CodeParameterDeclarationExpression(typeof(bool), "active"),
                new CodeParameterDeclarationExpression("Display", "disp"),

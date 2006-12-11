@@ -281,6 +281,16 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "FrameRemappingWizard.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "FrameRemappingWizard.resx"
+                    DependentUpon = "FrameRemappingWizard.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "FramesetImport.cs"
                     SubType = "Form"
                     BuildAction = "Compile"
@@ -508,6 +518,16 @@
                 <File
                     RelPath = "RemoteReflector.cs"
                     SubType = "Code"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "RotateWizard.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "RotateWizard.resx"
+                    DependentUpon = "RotateWizard.cs"
                     BuildAction = "EmbeddedResource"
                 />
                 <File

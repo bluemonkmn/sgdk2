@@ -165,6 +165,8 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuSpriteDefSeparator2;
       private System.Windows.Forms.MenuItem mnuExport;
       private System.Windows.Forms.CheckBox chkSuspended;
+      private System.Windows.Forms.MenuItem mnuSpriteDefSeparator3;
+      private System.Windows.Forms.MenuItem mnuRotateWizard;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -273,6 +275,7 @@ namespace SGDK2
          this.tbbMoveRuleDown = new System.Windows.Forms.ToolBarButton();
          this.RuleSplitter = new System.Windows.Forms.Splitter();
          this.pnlRules = new System.Windows.Forms.Panel();
+         this.chkSuspended = new System.Windows.Forms.CheckBox();
          this.txtHelpText = new System.Windows.Forms.TextBox();
          this.txtRuleName = new System.Windows.Forms.TextBox();
          this.chkNot = new System.Windows.Forms.CheckBox();
@@ -307,9 +310,10 @@ namespace SGDK2
          this.mnuMoveRuleDown = new System.Windows.Forms.MenuItem();
          this.mnuSpriteDefSeparator2 = new System.Windows.Forms.MenuItem();
          this.mnuExport = new System.Windows.Forms.MenuItem();
+         this.mnuSpriteDefSeparator3 = new System.Windows.Forms.MenuItem();
+         this.mnuRotateWizard = new System.Windows.Forms.MenuItem();
          this.DataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.tmrPopulateRules = new System.Windows.Forms.Timer(this.components);
-         this.chkSuspended = new System.Windows.Forms.CheckBox();
          this.tabSpriteDefinition.SuspendLayout();
          this.tabStates.SuspendLayout();
          this.pnlFrames.SuspendLayout();
@@ -714,10 +718,10 @@ namespace SGDK2
          this.tvwRules.Dock = System.Windows.Forms.DockStyle.Fill;
          this.tvwRules.HideSelection = false;
          this.tvwRules.ImageIndex = -1;
-         this.tvwRules.Location = new System.Drawing.Point(0, 25);
+         this.tvwRules.Location = new System.Drawing.Point(0, 40);
          this.tvwRules.Name = "tvwRules";
          this.tvwRules.SelectedImageIndex = -1;
-         this.tvwRules.Size = new System.Drawing.Size(187, 334);
+         this.tvwRules.Size = new System.Drawing.Size(187, 319);
          this.tvwRules.TabIndex = 0;
          this.tvwRules.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvwRules_AfterSelect);
          // 
@@ -735,7 +739,7 @@ namespace SGDK2
          this.tbrRules.Location = new System.Drawing.Point(0, 0);
          this.tbrRules.Name = "tbrRules";
          this.tbrRules.ShowToolTips = true;
-         this.tbrRules.Size = new System.Drawing.Size(187, 25);
+         this.tbrRules.Size = new System.Drawing.Size(187, 40);
          this.tbrRules.TabIndex = 28;
          this.tbrRules.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tbrRules_ButtonClick);
          // 
@@ -797,6 +801,15 @@ namespace SGDK2
          this.pnlRules.Size = new System.Drawing.Size(368, 359);
          this.pnlRules.TabIndex = 27;
          // 
+         // chkSuspended
+         // 
+         this.chkSuspended.Location = new System.Drawing.Point(8, 32);
+         this.chkSuspended.Name = "chkSuspended";
+         this.chkSuspended.Size = new System.Drawing.Size(344, 16);
+         this.chkSuspended.TabIndex = 28;
+         this.chkSuspended.Text = "Suspend this rule";
+         this.chkSuspended.CheckedChanged += new System.EventHandler(this.chkSuspended_CheckedChanged);
+         // 
          // txtHelpText
          // 
          this.txtHelpText.BackColor = System.Drawing.SystemColors.Info;
@@ -840,7 +853,7 @@ namespace SGDK2
          this.cboParam3.Enabled = false;
          this.cboParam3.Location = new System.Drawing.Point(128, 168);
          this.cboParam3.Name = "cboParam3";
-         this.cboParam3.Size = new System.Drawing.Size(229, 21);
+         this.cboParam3.Size = new System.Drawing.Size(229, 20);
          this.cboParam3.TabIndex = 22;
          this.cboParam3.Validated += new System.EventHandler(this.cboParam_Validated);
          // 
@@ -851,7 +864,7 @@ namespace SGDK2
          this.cboFunction.Enabled = false;
          this.cboFunction.Location = new System.Drawing.Point(128, 56);
          this.cboFunction.Name = "cboFunction";
-         this.cboFunction.Size = new System.Drawing.Size(229, 21);
+         this.cboFunction.Size = new System.Drawing.Size(229, 20);
          this.cboFunction.TabIndex = 16;
          this.cboFunction.Validated += new System.EventHandler(this.cboFunction_Validated);
          this.cboFunction.SelectedIndexChanged += new System.EventHandler(this.cboFunction_SelectedIndexChanged);
@@ -917,7 +930,7 @@ namespace SGDK2
          this.cboOutput.Enabled = false;
          this.cboOutput.Location = new System.Drawing.Point(128, 192);
          this.cboOutput.Name = "cboOutput";
-         this.cboOutput.Size = new System.Drawing.Size(229, 21);
+         this.cboOutput.Size = new System.Drawing.Size(229, 20);
          this.cboOutput.TabIndex = 24;
          this.cboOutput.Validated += new System.EventHandler(this.cboParam_Validated);
          // 
@@ -948,7 +961,7 @@ namespace SGDK2
          this.cboParam2.Enabled = false;
          this.cboParam2.Location = new System.Drawing.Point(128, 144);
          this.cboParam2.Name = "cboParam2";
-         this.cboParam2.Size = new System.Drawing.Size(229, 21);
+         this.cboParam2.Size = new System.Drawing.Size(229, 20);
          this.cboParam2.TabIndex = 20;
          this.cboParam2.Validated += new System.EventHandler(this.cboParam_Validated);
          // 
@@ -959,7 +972,7 @@ namespace SGDK2
          this.cboParam1.Enabled = false;
          this.cboParam1.Location = new System.Drawing.Point(128, 120);
          this.cboParam1.Name = "cboParam1";
-         this.cboParam1.Size = new System.Drawing.Size(229, 21);
+         this.cboParam1.Size = new System.Drawing.Size(229, 20);
          this.cboParam1.TabIndex = 18;
          this.cboParam1.Validated += new System.EventHandler(this.cboParam_Validated);
          // 
@@ -1033,7 +1046,9 @@ namespace SGDK2
                                                                                             this.mnuMoveRuleUp,
                                                                                             this.mnuMoveRuleDown,
                                                                                             this.mnuSpriteDefSeparator2,
-                                                                                            this.mnuExport});
+                                                                                            this.mnuExport,
+                                                                                            this.mnuSpriteDefSeparator3,
+                                                                                            this.mnuRotateWizard});
          this.mnuSpriteDefinition.Text = "&Sprite Definition";
          // 
          // mnuAddState
@@ -1116,6 +1131,17 @@ namespace SGDK2
          this.mnuExport.Text = "E&xport to template...";
          this.mnuExport.Click += new System.EventHandler(this.mnuExport_Click);
          // 
+         // mnuSpriteDefSeparator3
+         // 
+         this.mnuSpriteDefSeparator3.Index = 13;
+         this.mnuSpriteDefSeparator3.Text = "-";
+         // 
+         // mnuRotateWizard
+         // 
+         this.mnuRotateWizard.Index = 14;
+         this.mnuRotateWizard.Text = "Ro&tating Sprite State Wizard";
+         this.mnuRotateWizard.Click += new System.EventHandler(this.mnuRotateWizard_Click);
+         // 
          // DataMonitor
          // 
          this.DataMonitor.SpriteRuleRowDeleted += new SGDK2.ProjectDataset.SpriteRuleRowChangeEventHandler(this.dataMonitor_SpriteRuleRowChanged);
@@ -1135,15 +1161,6 @@ namespace SGDK2
          // tmrPopulateRules
          // 
          this.tmrPopulateRules.Tick += new System.EventHandler(this.tmrPopulateRules_Tick);
-         // 
-         // chkSuspended
-         // 
-         this.chkSuspended.Location = new System.Drawing.Point(8, 32);
-         this.chkSuspended.Name = "chkSuspended";
-         this.chkSuspended.Size = new System.Drawing.Size(344, 16);
-         this.chkSuspended.TabIndex = 28;
-         this.chkSuspended.Text = "Suspend this rule";
-         this.chkSuspended.CheckedChanged += new System.EventHandler(this.chkSuspended_CheckedChanged);
          // 
          // frmSpriteDefinition
          // 
@@ -1783,7 +1800,7 @@ namespace SGDK2
          }
 
          txtRuleName.Enabled = lblRuleName.Enabled =
-            cboRuleType.Enabled = true;
+            cboRuleType.Enabled = chkSuspended.Enabled = true;
          if (String.Compare(cboRuleType.Text, "End", true) == 0)
          {
             cboFunction.Enabled = 
@@ -1791,7 +1808,7 @@ namespace SGDK2
                lblParam2.Enabled = cboParam2.Enabled =
                lblParam3.Enabled = cboParam3.Enabled =
                lblOutput.Enabled = cboOutput.Enabled =
-               chkEndIf.Enabled = chkSuspended.Enabled = false;
+               chkEndIf.Enabled = false;
             return;
          }
          
@@ -1879,11 +1896,6 @@ namespace SGDK2
          if (ProjectData.Frameset.DefaultView.Count <= 0)
          {
             MessageBox.Show(this, "Please create a frameset before creating sprite states", "Add Sprite State", MessageBoxButtons.OK, MessageBoxIcon.Exclamation); 
-            return;
-         }
-         if (ProjectData.Solidity.DefaultView.Count <= 0)
-         {
-            MessageBox.Show(this, "Please define solidity before creating sprite states", "Add Sprite State", MessageBoxButtons.OK, MessageBoxIcon.Exclamation); 
             return;
          }
          String sName;
@@ -2088,7 +2100,11 @@ namespace SGDK2
       private void DataMonitor_SpriteStateRowDeleted(object sender, SGDK2.ProjectDataset.SpriteStateRowChangeEvent e)
       {
          if (lstSpriteStates.Items.Contains(e.Row))
+         {
+            if (lstSpriteStates.SelectedItems.Contains(e.Row))
+               StateFrames.FramesToDisplay.Clear();
             lstSpriteStates.Items.Remove(e.Row);
+         }
       }
 
       private void txtStateName_Validated(object sender, System.EventArgs e)
@@ -2276,7 +2292,14 @@ namespace SGDK2
       private void DataMonitor_FramesetRowDeleted(object sender, SGDK2.ProjectDataset.FramesetRowChangeEvent e)
       {
          if (cboFrameset.Items.Contains(e.Row))
-            cboFrameset.Items.Remove(e.Row);      
+         {
+            if (cboFrameset.SelectedItem == e.Row)
+            {
+               AvailableFrames.Frameset = null;
+               StateFrames.Frameset = null;
+            }
+            cboFrameset.Items.Remove(e.Row);
+         }
       }
 
       private void SpriteParameter_ColumnChanging(object sender, System.Data.DataColumnChangeEventArgs e)
@@ -2621,6 +2644,12 @@ namespace SGDK2
          {
             MessageBox.Show(this, ex.Message, "Export Sprite Definition", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
          }
+      }
+
+      private void mnuRotateWizard_Click(object sender, System.EventArgs e)
+      {
+         using (frmRotateWizard frm = new frmRotateWizard(m_SpriteDef))
+            frm.ShowDialog(this);
       }
       #endregion
    }

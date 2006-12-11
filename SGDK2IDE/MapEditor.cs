@@ -1444,7 +1444,8 @@ namespace SGDK2
       private void MapDisplay_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)
       {
          m_Layers[m_nCurLayer].ClearInjections();
-         m_Layers[m_nCurLayer].InjectCachedSprites();
+         if ((m_RefreshSpriteTimer == null) || (!m_RefreshSpriteTimer.Enabled))
+            m_Layers[m_nCurLayer].InjectCachedSprites();
          Point oldCoord = m_LayerMouseCoord;
          m_LayerMouseCoord = new Point(e.X - m_Layers[m_nCurLayer].CurrentPosition.X, e.Y - m_Layers[m_nCurLayer].CurrentPosition.Y);
          Point TilePos = TileFromLayerPoint(m_LayerMouseCoord);
@@ -1724,7 +1725,11 @@ namespace SGDK2
                if (string.Compare((string)e.Row["Name", DataRowVersion.Current], m_Layers[m_nCurLayer].LayerRow.TilesetRow.Name) == 0)
                {
                   int nTileValue = (int)tr["TileValue", DataRowVersion.Current];
-                  m_TileCache.ResetTile( nTileValue, nTileValue % m_Layers[m_nCurLayer].LayerRow.TilesetRow.FramesetRow.GetFrameRows().Length);
+                  int nFrameCount = m_Layers[m_nCurLayer].LayerRow.TilesetRow.FramesetRow.GetFrameRows().Length;
+                  if (nFrameCount > 0)
+                     m_TileCache.ResetTile(nTileValue, nTileValue % nFrameCount);
+                  else
+                     m_TileCache.EmptyTile(nTileValue);
                   TileSelector.Invalidate();
                }
                break;

@@ -121,6 +121,11 @@ namespace SGDK2
                }, null);
       }
 
+      public void EmptyTile(int nTileIndex)
+      {
+         m_tiles[nTileIndex] = new TileInfo(new TileFrame[] {}, null);
+      }
+
       public int[] this[int nTileValue]
       {
          get
@@ -189,7 +194,6 @@ namespace SGDK2
             return m_tiles.Length;
          }
       }
-
    }
 
    class TileProvider : IProvideFrame

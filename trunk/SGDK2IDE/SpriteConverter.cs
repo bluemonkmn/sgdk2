@@ -723,7 +723,6 @@ namespace SGDK2
 
       public object GetService(Type serviceType)
       {
-         // TODO:  Add SpriteProvider.GetService implementation
          return null;
       }
 

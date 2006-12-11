@@ -15,6 +15,9 @@ class CompileResx
          rd = new System.Resources.ResXResourceReader("GfxPane.resx");
          WriteResources(rd,"SGDK2.frmGraphicPane.resources");
          rd.Close();
+         rd = new System.Resources.ResXResourceReader("CellMgr.resx");
+         WriteResources(rd,"SGDK2.frmCellMgr.resources");
+         rd.Close();
          rd = new System.Resources.ResXResourceReader("MainWindow.resx");
          WriteResources(rd,"SGDK2.frmMainWindow.resources");
          rd.Close();
@@ -122,6 +125,12 @@ class CompileResx
          rd.Close();
          rd = new System.Resources.ResXResourceReader("FramesetImport.resx");
          WriteResources(rd,"SGDK2.frmFramesetImport.resources");
+         rd.Close();
+         rd = new System.Resources.ResXResourceReader("FrameRemappingWizard.resx");
+         WriteResources(rd,"SGDK2.frmFrameRemappingWizard.resources");
+         rd.Close();
+         rd = new System.Resources.ResXResourceReader("RotateWizard.resx");
+         WriteResources(rd,"SGDK2.frmRotateWizard.resources");
          rd.Close();
       }
       public static void WriteResources(System.Resources.ResXResourceReader rd, string sFile)

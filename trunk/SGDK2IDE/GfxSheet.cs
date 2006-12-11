@@ -236,6 +236,7 @@ namespace SGDK2
          // 
          // btnExport
          // 
+         this.btnExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
          this.btnExport.Location = new System.Drawing.Point(232, 8);
          this.btnExport.Name = "btnExport";
          this.btnExport.Size = new System.Drawing.Size(64, 24);

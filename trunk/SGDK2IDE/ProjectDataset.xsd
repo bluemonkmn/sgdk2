@@ -369,7 +369,7 @@
          <xs:selector xpath=".//Map" />
          <xs:field xpath="@Name" />
       </xs:key>
-      <xs:keyref name="TilesetLayer" refer="TilesetKey" msdata:DeleteRule="SetNull" msdata:UpdateRule="Cascade">
+      <xs:keyref name="TilesetLayer" refer="TilesetKey" msdata:DeleteRule="Cascade" msdata:UpdateRule="Cascade">
          <xs:selector xpath=".//Layer" />
          <xs:field xpath="@Tileset" />
       </xs:keyref>

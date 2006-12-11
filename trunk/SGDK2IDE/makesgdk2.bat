@@ -32,6 +32,7 @@ echo >>Input.txt /res:SGDK2.SGDK2IDE.resources
 echo >>Input.txt /res:SGDK2.frmMain.resources
 echo >>Input.txt /res:SGDK2.frmGraphicsEditor.resources
 echo >>Input.txt /res:SGDK2.frmGraphicPane.resources
+echo >>Input.txt /res:SGDK2.frmCellMgr.resources
 echo >>Input.txt /res:SGDK2.frmMainWindow.resources
 echo >>Input.txt /res:SGDK2.frmFrameEdit.resources
 echo >>Input.txt /res:SGDK2.ColorSel.resources
@@ -67,6 +68,8 @@ echo >>Input.txt /res:SGDK2.frmHueMapParams.resources
 echo >>Input.txt /res:SGDK2.frmGfxSheetImport.resources
 echo >>Input.txt /res:SGDK2.frmTilesetImport.resources
 echo >>Input.txt /res:SGDK2.frmFramesetImport.resources
+echo >>Input.txt /res:SGDK2.frmFrameRemappingWizard.resources
+echo >>Input.txt /res:SGDK2.frmRotateWizard.resources
 echo >>Input.txt /res:Template\Display.cs,SGDK2.Template.Display.cs
 echo >>Input.txt /res:Template\Frame.cs,SGDK2.Template.Frame.cs
 echo >>Input.txt /res:Template\LayerBase.cs,SGDK2.Template.LayerBase.cs
@@ -145,6 +148,8 @@ echo >>Input.txt HueMapParams.cs
 echo >>Input.txt GfxSheetImport.cs
 echo >>Input.txt TilesetImport.cs
 echo >>Input.txt FramesetImport.cs
+echo >>Input.txt FrameRemappingWizard.cs
+echo >>Input.txt RotateWizard.cs
 csc /noconfig @Input.txt
 del Input.txt
 del *.resources

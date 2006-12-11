@@ -468,6 +468,38 @@ public abstract class SpriteBase : GeneralRules
          LocalDX += ddx;
    }
    
+   [Description("Redirect this sprite's velocity to be 100% in the direction that it is facing, based on its state, where FirstState points rightward and the number of states rotate counterclockwise.")]
+   public void RotateVelocity([Editor("SpriteState", "UITypeEditor")] int FirstState, int StateCount)
+   {
+      Debug.Assert(this.isActive, "Attepmted to execute RotateVelocity on an inactive sprite");
+      Microsoft.DirectX.Vector2 oldVector;
+      if (double.IsNaN(LocalDX))
+         oldVector.X = (float)dx;
+      else
+         oldVector.X = (float)LocalDX;
+      if (double.IsNaN(LocalDY))
+         oldVector.Y = (float)dy;
+      else
+         oldVector.Y = (float)LocalDY;
+
+      float angle = (float)((state - FirstState) * Math.PI * 2 / (float)StateCount);
+
+      Microsoft.DirectX.Vector2 facingVector;
+      facingVector.X = (float)Math.Cos(angle);
+      facingVector.Y = -(float)Math.Sin(angle);
+      facingVector.Multiply(Microsoft.DirectX.Vector2.Dot(oldVector, facingVector));
+
+      if (double.IsNaN(LocalDX))
+         dx = facingVector.X;
+      else
+         LocalDX = facingVector.X;
+
+      if (double.IsNaN(LocalDY))
+         dy = facingVector.Y;
+      else
+         LocalDY = facingVector.Y;
+   }
+
    [Description("Scroll all layers on this sprite's layer's map so that the sprite is within visible area of the map.  If UseScrollMargins is true, scroll the sprite into the scroll margins of the map.")]
    public void ScrollSpriteIntoView(bool UseScrollMargins)
    {
@@ -529,11 +561,67 @@ public abstract class SpriteBase : GeneralRules
       return FirstState + ((StateCount + (int)Math.Round(System.Math.Atan2(-useDY,useDX) * StateCount / Math.PI / 2f)) % StateCount);
    }
 
-   [Description("Switch the sprite to the the specified state")]
-   public void SwitchToState([Editor("SpriteState", "UITypeEditor")] int State)
+   [Description("Switch the sprite to the the specified state, ensuring that the specified alignment point in the new state lines up with the same point in the current state.  Returns false if the state could not switch due to solidity.")]
+   public bool SwitchToState([Editor("SpriteState", "UITypeEditor")] int State, RelativePosition Alignment)
    {
       Debug.Assert(this.isActive, "Attempted to execute SwitchToState on an inactive sprite");
+      System.Drawing.Rectangle oldRect = new System.Drawing.Rectangle(PixelX, PixelY, SolidWidth, SolidHeight);
+      int newWidth = this[State].SolidWidth;
+      int newHeight = this[State].SolidHeight;
+      double newX, newY;
+      switch(Alignment)
+      {
+         case RelativePosition.TopCenter:
+         case RelativePosition.CenterMiddle:
+         case RelativePosition.BottomCenter:
+            newX = x + (oldRect.Width - newWidth) / 2f;
+            break;
+         case RelativePosition.TopRight:
+         case RelativePosition.RightMiddle:
+         case RelativePosition.BottomRight:
+            newX = x + oldRect.Width - newWidth;
+            break;
+         default:
+            newX = x;
+            break;
+      }
+      switch(Alignment)
+      {
+         case RelativePosition.LeftMiddle:
+         case RelativePosition.CenterMiddle:
+         case RelativePosition.RightMiddle:
+            newY = y + (oldRect.Height - newHeight) / 2f;
+            break;
+         case RelativePosition.BottomLeft:
+         case RelativePosition.BottomCenter:
+         case RelativePosition.BottomRight:
+            newY = y + oldRect.Height - newHeight;
+            break;
+         default:
+            newY = y;
+            break;
+      }
+
+      if (((int)Math.Ceiling(newY + newHeight) > oldRect.Bottom) && (layer.GetTopSolidPixel(new System.Drawing.Rectangle(
+         (int)newX, oldRect.Bottom, newWidth, (int)Math.Ceiling(newY) + newHeight - oldRect.Bottom), m_solidity) != int.MinValue))
+         return false;
+
+      if (((int)newY < oldRect.Top) && (layer.GetBottomSolidPixel(new System.Drawing.Rectangle(
+         (int)newX, (int)newY, newWidth, oldRect.Top - (int)newY), m_solidity) != int.MinValue))
+         return false;
+
+      if (((int)newX < oldRect.Left) && (layer.GetRightSolidPixel(new System.Drawing.Rectangle(
+         (int)newX, (int)newY, oldRect.Left - (int)newX, newHeight), m_solidity) != int.MinValue))
+         return false;
+
+      if (((int)Math.Ceiling(newX + newWidth) > oldRect.Right) && (layer.GetLeftSolidPixel(new System.Drawing.Rectangle(
+         oldRect.Right, (int)newY, (int)Math.Ceiling(newX) + newWidth - oldRect.Right, newHeight), m_solidity) != int.MinValue))
+         return false;
+
+      x = newX;
+      y = newY;
       state = State;
+      return true;
    }
 
    [Description("Determines if the sprite is in the specified range of states")]

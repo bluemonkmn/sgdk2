@@ -897,7 +897,7 @@ namespace SGDK2 {
                         this.tableLayer.TilesetColumn});
             this.tableLayer.Constraints.Add(fkc);
             fkc.AcceptRejectRule = System.Data.AcceptRejectRule.None;
-            fkc.DeleteRule = System.Data.Rule.SetNull;
+            fkc.DeleteRule = System.Data.Rule.Cascade;
             fkc.UpdateRule = System.Data.Rule.Cascade;
             fkc = new ForeignKeyConstraint("LayerSprite", new DataColumn[] {
                         this.tableLayer.MapNameColumn,

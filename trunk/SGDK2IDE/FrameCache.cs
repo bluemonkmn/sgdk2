@@ -53,7 +53,7 @@ namespace SGDK2
                         new Point(0, CellSize.Height)
                      };
                      m.TransformPoints(ptsRect);
-                     bounds = new Rectangle(ptsRect[0], new Size(1,1));
+                     bounds = new Rectangle(ptsRect[0], new Size(0,0));
                      foreach (Point pt in ptsRect)
                      {
                         if(pt.X < bounds.X)

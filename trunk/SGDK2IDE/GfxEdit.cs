@@ -144,7 +144,6 @@ namespace SGDK2
       private BackdropInfo[] m_arBackDropInfo = null;
       public Brush Backdrop = new HatchBrush(HatchStyle.SolidDiamond, Color.Gray, Color.White);
       public int m_CustomTool = 0;
-      private ProjectDataset.GraphicSheetRowChangeEventHandler m_RowChangeEvent = null;
       #endregion
 
       #region Form Designer Members
@@ -376,13 +375,12 @@ namespace SGDK2
                new BackdropInfo(mnuEditBackWhiteCross, Color.LightGray, Color.White, HatchStyle.DiagonalCross, true),
                new BackdropInfo(mnuEditBackBlackCross, Color.DarkGray, Color.Black, HatchStyle.DiagonalCross, true)
             };
-         m_RowChangeEvent = new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(ProjectData_GraphicSheetRowDeleting);
-         ProjectData.GraphicSheetRowDeleted += m_RowChangeEvent;
       }
 
       public frmGraphicsEditor(ProjectDataset.GraphicSheetRow drDataSource) : this()
       {
          m_DataSource = drDataSource;
+         Text = "Graphics Editor - " + drDataSource.Name;
       }
 
       /// <summary>
@@ -392,11 +390,6 @@ namespace SGDK2
       {
          if( disposing )
          {
-            if (m_RowChangeEvent != null)
-            {
-               ProjectData.GraphicSheetRowDeleted -= m_RowChangeEvent;
-               m_RowChangeEvent = null;
-            }
             for (int i = 0; i < m_arimgUndoStates.Length; i++)
             {
                if (m_arimgUndoStates[i] != null)
@@ -1816,6 +1809,7 @@ namespace SGDK2
          // 
          // dataMonitor
          // 
+         this.dataMonitor.GraphicSheetRowChanged += new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(this.dataMonitor_GraphicSheetRowChanged);
          this.dataMonitor.GraphicSheetRowDeleted += new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(this.dataMonitor_GraphicSheetRowDeleted);
          this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
          // 
@@ -2808,12 +2802,6 @@ namespace SGDK2
             e.Bounds.Y);
       }
 
-      private void ProjectData_GraphicSheetRowDeleting(object sender, SGDK2.ProjectDataset.GraphicSheetRowChangeEvent e)
-      {
-         if (e.Row == m_DataSource)
-            this.Close();
-      }
-
       private void mnuImportGraphic_Click(object sender, System.EventArgs e)
       {
          Bitmap importImage = frmImportGraphics.ImportGraphic(this.MdiParent, m_DataSource.CellWidth, m_DataSource.CellHeight);
@@ -3108,6 +3096,12 @@ namespace SGDK2
                MessageBox.Show(this, ex.Message, "Import Graphic Sheet from Image", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
          }
+      }
+
+      private void dataMonitor_GraphicSheetRowChanged(object sender, SGDK2.ProjectDataset.GraphicSheetRowChangeEvent e)
+      {
+         if ((e.Action == System.Data.DataRowAction.Change) && (e.Row == m_DataSource))
+            Text = "Graphics Editor - " + e.Row.Name;
       }
       #endregion
    }

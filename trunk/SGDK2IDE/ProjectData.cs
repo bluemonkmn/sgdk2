@@ -79,6 +79,11 @@ namespace SGDK2
             return m_dsPrj.ExtendedProperties;
          }
       }
+      /// <summary>
+      /// Check the validity of a name for an object
+      /// </summary>
+      /// <param name="Name">Proposed name</param>
+      /// <returns>An error message or null if the name is acceptable.</returns>
       public static string ValidateName(string Name)
       {
          if (Name.Length == 0)

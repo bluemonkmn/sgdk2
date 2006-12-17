@@ -38,6 +38,7 @@ namespace SGDK2
       private Point m_LayerMouseCoord = Point.Empty;
       private Point m_DragStart = Point.Empty;
       private int m_DeletedKey = -1;
+      private bool m_DangerWillRobinson = false;
       #endregion
 
       #region Form Designer Members
@@ -1786,90 +1787,101 @@ namespace SGDK2
 
       private void MapDisplay_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
       {
-         Size ScrollBounds = GetScrollBounds();
-         if (ScrollBounds != MapDisplay.AutoScrollMinSize)
-            MapDisplay.AutoScrollMinSize = ScrollBounds;
-         MapDisplay.Device.Clear(ClearFlags.Target, 0, 1.0f, 0);
-         MapDisplay.Device.BeginScene();
-         for (int i=0; i<m_Layers.Length; i++)
-         {
-            if (i == m_nCurLayer)
-               m_Layers[i].CurrentPosition = MapDisplay.AutoScrollPosition;
-            else
-            {
-               Point ptPos = Point.Empty;
-               Layer CurLayer = m_Layers[m_nCurLayer];
-               Layer DrawLayer = m_Layers[i];
-               // Manually scroll other layers because current layer is always
-               // 1:1 scroll ratio with AutoScrollPosition (not like map).
-               if (CurLayer.ScrollRate.Width > 0)
-                  ptPos.X = (int)((MapDisplay.AutoScrollPosition.X - CurLayer.AbsolutePosition.X) / CurLayer.ScrollRate.Width * DrawLayer.ScrollRate.Width + DrawLayer.AbsolutePosition.X);
-               else
-                  ptPos.X = MapDisplay.AutoScrollPosition.X - CurLayer.AbsolutePosition.X + DrawLayer.AbsolutePosition.X;
-               if (CurLayer.ScrollRate.Height > 0)
-                  ptPos.Y = (int)((MapDisplay.AutoScrollPosition.Y - CurLayer.AbsolutePosition.Y) / CurLayer.ScrollRate.Height * DrawLayer.ScrollRate.Height + DrawLayer.AbsolutePosition.Y);
-               else
-                  ptPos.Y = MapDisplay.AutoScrollPosition.Y - CurLayer.AbsolutePosition.Y + DrawLayer.AbsolutePosition.Y;
-               DrawLayer.CurrentPosition = ptPos;
-            }
-            if (mnuLayers.MenuItems[i].Checked)
-               m_Layers[i].Draw(MapDisplay, MapDisplay.ClientSize);
-         }
-         MapDisplay.Device.EndScene();
-         Surface sfc = MapDisplay.Device.GetRenderTarget(0);
-         Graphics gfxDx = sfc.GetGraphics();
+         if (m_DangerWillRobinson)
+            return;
+
          try
          {
-            switch(GetCurrentMode())
+            Size ScrollBounds = GetScrollBounds();
+            if (ScrollBounds != MapDisplay.AutoScrollMinSize)
+               MapDisplay.AutoScrollMinSize = ScrollBounds;
+            MapDisplay.Device.Clear(ClearFlags.Target, 0, 1.0f, 0);
+            MapDisplay.Device.BeginScene();
+            for (int i=0; i<m_Layers.Length; i++)
             {
-               case CursorMode.SelectSprite:
-                  if (grdSprite.SelectedObjects is SpriteProvider[])
-                  {
-                     foreach(SpriteProvider sp in grdSprite.SelectedObjects)
-                     {
-                        DrawSpriteSelection(gfxDx, sp);
-                     }
-                  } 
-                  else if(grdSprite.SelectedObject is SpriteProvider)
-                  {
-                     SpriteProvider sp = (SpriteProvider)grdSprite.SelectedObject;
-                     if (sp.IsDataRow)
-                     {
-                        DrawSpriteSelection(gfxDx, sp);
-                     }
-                  }
-                  break;
-               case CursorMode.AddCoordinate:
-               case CursorMode.SelectCoordinate:
+               if (i == m_nCurLayer)
+                  m_Layers[i].CurrentPosition = MapDisplay.AutoScrollPosition;
+               else
                {
-                  bool bIncludeMouse = false;
-                  if ((lstPlans.SelectedIndices.Count == 1) && (GetCurrentMode() == CursorMode.AddCoordinate))
-                     bIncludeMouse = true;
-
-                  if (rdoShowAllPlans.Checked)
-                     foreach(ProjectDataset.SpritePlanRow plan in ProjectData.GetSortedSpritePlans(m_Layers[m_nCurLayer].LayerRow))
-                        DrawPath(plan, gfxDx, bIncludeMouse && (plan == lstPlans.SelectedItem));
+                  Point ptPos = Point.Empty;
+                  Layer CurLayer = m_Layers[m_nCurLayer];
+                  Layer DrawLayer = m_Layers[i];
+                  // Manually scroll other layers because current layer is always
+                  // 1:1 scroll ratio with AutoScrollPosition (not like map).
+                  if (CurLayer.ScrollRate.Width > 0)
+                     ptPos.X = (int)((MapDisplay.AutoScrollPosition.X - CurLayer.AbsolutePosition.X) / CurLayer.ScrollRate.Width * DrawLayer.ScrollRate.Width + DrawLayer.AbsolutePosition.X);
                   else
-                     foreach(ProjectDataset.SpritePlanRow plan in lstPlans.SelectedItems)
-                        DrawPath(plan, gfxDx, bIncludeMouse);
-                  if (grdPlan.SelectedObjects is CoordProvider[])
-                     foreach(CoordProvider coord in grdPlan.SelectedObjects)
-                        DrawSelectedCoord(gfxDx, coord);
-                  else if (grdPlan.SelectedObject is CoordProvider)
-                     DrawSelectedCoord(gfxDx, (CoordProvider)grdPlan.SelectedObject);
+                     ptPos.X = MapDisplay.AutoScrollPosition.X - CurLayer.AbsolutePosition.X + DrawLayer.AbsolutePosition.X;
+                  if (CurLayer.ScrollRate.Height > 0)
+                     ptPos.Y = (int)((MapDisplay.AutoScrollPosition.Y - CurLayer.AbsolutePosition.Y) / CurLayer.ScrollRate.Height * DrawLayer.ScrollRate.Height + DrawLayer.AbsolutePosition.Y);
+                  else
+                     ptPos.Y = MapDisplay.AutoScrollPosition.Y - CurLayer.AbsolutePosition.Y + DrawLayer.AbsolutePosition.Y;
+                  DrawLayer.CurrentPosition = ptPos;
                }
-                  break;
-               case CursorMode.Copy:
-                  if (!m_LayerMouseCoord.IsEmpty)
-                     DrawCopyRect(gfxDx);
-                  break;
+               if (mnuLayers.MenuItems[i].Checked)
+                  m_Layers[i].Draw(MapDisplay, MapDisplay.ClientSize);
             }
+            MapDisplay.Device.EndScene();
+            Surface sfc = MapDisplay.Device.GetRenderTarget(0);
+            Graphics gfxDx = sfc.GetGraphics();
+            try
+            {
+               switch(GetCurrentMode())
+               {
+                  case CursorMode.SelectSprite:
+                     if (grdSprite.SelectedObjects is SpriteProvider[])
+                     {
+                        foreach(SpriteProvider sp in grdSprite.SelectedObjects)
+                        {
+                           DrawSpriteSelection(gfxDx, sp);
+                        }
+                     } 
+                     else if(grdSprite.SelectedObject is SpriteProvider)
+                     {
+                        SpriteProvider sp = (SpriteProvider)grdSprite.SelectedObject;
+                        if (sp.IsDataRow)
+                        {
+                           DrawSpriteSelection(gfxDx, sp);
+                        }
+                     }
+                     break;
+                  case CursorMode.AddCoordinate:
+                  case CursorMode.SelectCoordinate:
+                  {
+                     bool bIncludeMouse = false;
+                     if ((lstPlans.SelectedIndices.Count == 1) && (GetCurrentMode() == CursorMode.AddCoordinate))
+                        bIncludeMouse = true;
+
+                     if (rdoShowAllPlans.Checked)
+                        foreach(ProjectDataset.SpritePlanRow plan in ProjectData.GetSortedSpritePlans(m_Layers[m_nCurLayer].LayerRow))
+                           DrawPath(plan, gfxDx, bIncludeMouse && (plan == lstPlans.SelectedItem));
+                     else
+                        foreach(ProjectDataset.SpritePlanRow plan in lstPlans.SelectedItems)
+                           DrawPath(plan, gfxDx, bIncludeMouse);
+                     if (grdPlan.SelectedObjects is CoordProvider[])
+                        foreach(CoordProvider coord in grdPlan.SelectedObjects)
+                           DrawSelectedCoord(gfxDx, coord);
+                     else if (grdPlan.SelectedObject is CoordProvider)
+                        DrawSelectedCoord(gfxDx, (CoordProvider)grdPlan.SelectedObject);
+                  }
+                     break;
+                  case CursorMode.Copy:
+                     if (!m_LayerMouseCoord.IsEmpty)
+                        DrawCopyRect(gfxDx);
+                     break;
+               }
+            }
+            finally
+            {
+               sfc.ReleaseGraphics();
+            }
+            MapDisplay.Device.Present();
          }
-         finally
+         catch(System.Exception ex)
          {
-            sfc.ReleaseGraphics();
+            MessageBox.Show(MdiParent, "An error occurred while drawing the display in the map editor. This might happen if too many displays are active. In order to attempt to avoid fatal errors and data loss, the display handling in this map editor window will be disabled and you should close it yourself. Details:\r\n" + ex.ToString(), "Map Editor Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+            m_DangerWillRobinson = true;
          }
-         MapDisplay.Device.Present();
       }
 
       private void cboCategory_SelectedIndexChanged(object sender, System.EventArgs e)

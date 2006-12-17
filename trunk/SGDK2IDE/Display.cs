@@ -162,31 +162,28 @@ namespace SGDK2
 
       protected override void Dispose(bool disposing)
       {
-         lock(this)
+         if (disposing)
          {
-            if (disposing)
+            DisposeAllTextures();
+            if (m_Sprite != null)
             {
-               DisposeAllTextures();
-               if (m_Sprite != null)
-               {
-                  m_Sprite.Dispose();
-                  m_Sprite = null;
-               }
-               if (m_d3d != null)
-               {
-                  m_d3d.Dispose();
-                  m_d3d = null;
-               }
-               if (m_CoverWindow != null)
-               {
-                  m_CoverWindow.m_LinkedControl = null;
-                  m_CoverWindow.Close();
-                  m_CoverWindow.Dispose();
-                  m_CoverWindow = null;
-               }
+               m_Sprite.Dispose();
+               m_Sprite = null;
             }
-            base.Dispose (disposing);
+            if (m_d3d != null)
+            {
+               m_d3d.Dispose();
+               m_d3d = null;
+            }
+            if (m_CoverWindow != null)
+            {
+               m_CoverWindow.m_LinkedControl = null;
+               m_CoverWindow.Close();
+               m_CoverWindow.Dispose();
+               m_CoverWindow = null;
+            }
          }
+         base.Dispose (disposing);
       }
       #endregion
 
@@ -245,38 +242,35 @@ namespace SGDK2
 
       protected override void OnResize(EventArgs e)
       {
-         lock(this)
+         if (this.Size.IsEmpty)
          {
-            if (this.Size.IsEmpty)
+            DisposeAllTextures();
+            if (m_Sprite != null)
             {
-               DisposeAllTextures();
-               if (m_Sprite != null)
-               {
-                  m_Sprite.Dispose();
-                  m_Sprite = null;
-               }
-               if (m_d3d != null)
-               {
-                  m_d3d.Dispose();
-                  m_d3d = null;
-               }
+               m_Sprite.Dispose();
+               m_Sprite = null;
             }
-            else if ((m_d3d == null) && Created)
+            if (m_d3d != null)
             {
-               Recreate();
+               m_d3d.Dispose();
+               m_d3d = null;
             }
-            else if ((m_d3d != null) && (m_pp != null) && (m_pp.Windowed))
-            {
-               m_pp.BackBufferHeight = m_pp.BackBufferWidth = 0;
-               if (m_Sprite != null)
-               {
-                  m_Sprite.Dispose();
-                  m_Sprite = null;
-               }
-               m_d3d.Reset(m_pp);
-            }
-            base.OnResize (e);
          }
+         else if ((m_d3d == null) && Created)
+         {
+            Recreate();
+         }
+         else if ((m_d3d != null) && (m_pp != null) && (m_pp.Windowed))
+         {
+            m_pp.BackBufferHeight = m_pp.BackBufferWidth = 0;
+            if (m_Sprite != null)
+            {
+               m_Sprite.Dispose();
+               m_Sprite = null;
+            }
+            m_d3d.Reset(m_pp);
+         }
+         base.OnResize (e);
       }
 
       protected override void OnPaint(PaintEventArgs e)
@@ -284,16 +278,13 @@ namespace SGDK2
          if ((m_d3d == null) || (m_d3d.Disposed))
             return;
          int coop;
-         lock(this)
+         if (!m_d3d.CheckCooperativeLevel(out coop))
          {
-            if (!m_d3d.CheckCooperativeLevel(out coop))
-            {
-               Microsoft.DirectX.Direct3D.ResultCode coopStatus = (Microsoft.DirectX.Direct3D.ResultCode)System.Enum.Parse(typeof(Microsoft.DirectX.Direct3D.ResultCode), coop.ToString());
-               if (coopStatus == Microsoft.DirectX.Direct3D.ResultCode.DeviceNotReset)
-                  Recreate();
-               else
-                  return;
-            }
+            Microsoft.DirectX.Direct3D.ResultCode coopStatus = (Microsoft.DirectX.Direct3D.ResultCode)System.Enum.Parse(typeof(Microsoft.DirectX.Direct3D.ResultCode), coop.ToString());
+            if (coopStatus == Microsoft.DirectX.Direct3D.ResultCode.DeviceNotReset)
+               Recreate();
+            else
+               return;
          }
          base.OnPaint (e);
       }
@@ -563,8 +554,7 @@ namespace SGDK2
       #region Event Handlers
       private void d3d_DeviceReset(object sender, EventArgs e)
       {
-         lock(this)
-            DisposeAllTextures();
+         DisposeAllTextures();
       }
       #endregion
    }

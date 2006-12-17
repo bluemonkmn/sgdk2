@@ -132,6 +132,9 @@ class CompileResx
          rd = new System.Resources.ResXResourceReader("RotateWizard.resx");
          WriteResources(rd,"SGDK2.frmRotateWizard.resources");
          rd.Close();
+         rd = new System.Resources.ResXResourceReader("AnimPreview.resx");
+         WriteResources(rd,"SGDK2.frmAnimPreview.resources");
+         rd.Close();
       }
       public static void WriteResources(System.Resources.ResXResourceReader rd, string sFile)
       {

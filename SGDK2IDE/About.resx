@@ -169,6 +169,80 @@
   <data name="llbLicense.Locked" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
   </data>
+  <data name="txtCredits.DefaultModifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="txtCredits.Locked" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>False</value>
+  </data>
+  <data name="txtCredits.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="grpCredits.DefaultModifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="grpCredits.GridSize" type="System.Drawing.Size, System.Drawing, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>8, 8</value>
+  </data>
+  <data name="grpCredits.SnapToGrid" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </data>
+  <data name="grpCredits.Locked" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>False</value>
+  </data>
+  <data name="grpCredits.DrawGrid" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </data>
+  <data name="grpCredits.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="picLogo.Locked" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>False</value>
+  </data>
+  <data name="picLogo.DefaultModifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="picLogo.Modifiers" type="System.CodeDom.MemberAttributes, System, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>Private</value>
+  </data>
+  <data name="picLogo.Image" type="System.Drawing.Bitmap, System.Drawing, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        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
+</value>
+  </data>
   <data name="$this.Locked" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>False</value>
   </data>
@@ -184,11 +258,11 @@
   <data name="$this.GridSize" type="System.Drawing.Size, System.Drawing, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>8, 8</value>
   </data>
-  <data name="$this.Name">
-    <value>frmAbout</value>
-  </data>
   <data name="$this.DrawGrid" type="System.Boolean, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
+  </data>
+  <data name="$this.Name">
+    <value>frmAbout</value>
   </data>
   <data name="$this.TrayHeight" type="System.Int32, mscorlib, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>80</value>

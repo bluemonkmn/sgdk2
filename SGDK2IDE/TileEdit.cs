@@ -62,6 +62,7 @@ namespace SGDK2
       private System.Windows.Forms.StatusBar sbTileFrames;
       private System.Windows.Forms.StatusBarPanel sbpTileFrame;
       private System.Windows.Forms.StatusBarPanel sbpTileCell;
+      private System.Windows.Forms.ToolBarButton tbbPreview;
       private DataChangeNotifier dataMonitor;
       #endregion
 
@@ -169,6 +170,9 @@ namespace SGDK2
          this.grpTileProperties = new System.Windows.Forms.GroupBox();
          this.pnlFrames = new System.Windows.Forms.Panel();
          this.TileFrames = new SGDK2.GraphicBrowser();
+         this.sbTileFrames = new System.Windows.Forms.StatusBar();
+         this.sbpTileFrame = new System.Windows.Forms.StatusBarPanel();
+         this.sbpTileCell = new System.Windows.Forms.StatusBarPanel();
          this.pnlFrameProperties = new System.Windows.Forms.Panel();
          this.grpFrameProperties = new System.Windows.Forms.GroupBox();
          this.lblRepeatCount = new System.Windows.Forms.Label();
@@ -178,19 +182,19 @@ namespace SGDK2
          this.lblFrames = new System.Windows.Forms.Label();
          this.lblFrameCounter = new System.Windows.Forms.Label();
          this.grpAvailableFrames = new System.Windows.Forms.GroupBox();
-         this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.sbAvailable = new System.Windows.Forms.StatusBar();
          this.sbpFrameIndex = new System.Windows.Forms.StatusBarPanel();
          this.sbpCellIndex = new System.Windows.Forms.StatusBarPanel();
-         this.sbTileFrames = new System.Windows.Forms.StatusBar();
-         this.sbpTileFrame = new System.Windows.Forms.StatusBarPanel();
-         this.sbpTileCell = new System.Windows.Forms.StatusBarPanel();
+         this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
+         this.tbbPreview = new System.Windows.Forms.ToolBarButton();
          this.pnlTileHeader.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.nudTileHeight)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.nudTileWidth)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.updRepeatCount)).BeginInit();
          this.grpTileProperties.SuspendLayout();
          this.pnlFrames.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpTileFrame)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpTileCell)).BeginInit();
          this.pnlFrameProperties.SuspendLayout();
          this.grpFrameProperties.SuspendLayout();
          this.pnlAddFrame.SuspendLayout();
@@ -198,8 +202,6 @@ namespace SGDK2
          this.grpAvailableFrames.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.sbpFrameIndex)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpCellIndex)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.sbpTileFrame)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.sbpTileCell)).BeginInit();
          this.SuspendLayout();
          // 
          // lblTilesetName
@@ -215,7 +217,7 @@ namespace SGDK2
          // 
          this.txtTilesetName.Location = new System.Drawing.Point(104, 0);
          this.txtTilesetName.Name = "txtTilesetName";
-         this.txtTilesetName.Size = new System.Drawing.Size(152, 20);
+         this.txtTilesetName.Size = new System.Drawing.Size(168, 20);
          this.txtTilesetName.TabIndex = 2;
          this.txtTilesetName.Text = "";
          this.txtTilesetName.Validating += new System.ComponentModel.CancelEventHandler(this.txtTilesetName_Validating);
@@ -236,7 +238,7 @@ namespace SGDK2
          this.cboFrameset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
          this.cboFrameset.Location = new System.Drawing.Point(104, 24);
          this.cboFrameset.Name = "cboFrameset";
-         this.cboFrameset.Size = new System.Drawing.Size(152, 21);
+         this.cboFrameset.Size = new System.Drawing.Size(168, 21);
          this.cboFrameset.TabIndex = 4;
          this.cboFrameset.ValueMember = "Name";
          this.cboFrameset.SelectedIndexChanged += new System.EventHandler(this.cboFrameset_SelectedIndexChanged);
@@ -262,7 +264,7 @@ namespace SGDK2
          // 
          // lblTileHeight
          // 
-         this.lblTileHeight.Location = new System.Drawing.Point(264, 24);
+         this.lblTileHeight.Location = new System.Drawing.Point(288, 24);
          this.lblTileHeight.Name = "lblTileHeight";
          this.lblTileHeight.Size = new System.Drawing.Size(80, 20);
          this.lblTileHeight.TabIndex = 10;
@@ -271,7 +273,7 @@ namespace SGDK2
          // 
          // nudTileHeight
          // 
-         this.nudTileHeight.Location = new System.Drawing.Point(344, 24);
+         this.nudTileHeight.Location = new System.Drawing.Point(368, 24);
          this.nudTileHeight.Maximum = new System.Decimal(new int[] {
                                                                       999,
                                                                       0,
@@ -295,7 +297,7 @@ namespace SGDK2
          // 
          // nudTileWidth
          // 
-         this.nudTileWidth.Location = new System.Drawing.Point(344, 0);
+         this.nudTileWidth.Location = new System.Drawing.Point(368, 0);
          this.nudTileWidth.Maximum = new System.Decimal(new int[] {
                                                                      999,
                                                                      0,
@@ -319,7 +321,7 @@ namespace SGDK2
          // 
          // lblTilewidth
          // 
-         this.lblTilewidth.Location = new System.Drawing.Point(264, 0);
+         this.lblTilewidth.Location = new System.Drawing.Point(288, 0);
          this.lblTilewidth.Name = "lblTilewidth";
          this.lblTilewidth.Size = new System.Drawing.Size(80, 20);
          this.lblTilewidth.TabIndex = 8;
@@ -332,7 +334,8 @@ namespace SGDK2
          this.tbMappedTiles.AutoSize = false;
          this.tbMappedTiles.Buttons.AddRange(new System.Windows.Forms.ToolBarButton[] {
                                                                                          this.tbbNewTile,
-                                                                                         this.tbbDeleteTile});
+                                                                                         this.tbbDeleteTile,
+                                                                                         this.tbbPreview});
          this.tbMappedTiles.Divider = false;
          this.tbMappedTiles.Dock = System.Windows.Forms.DockStyle.None;
          this.tbMappedTiles.DropDownArrows = true;
@@ -340,7 +343,7 @@ namespace SGDK2
          this.tbMappedTiles.Location = new System.Drawing.Point(208, 48);
          this.tbMappedTiles.Name = "tbMappedTiles";
          this.tbMappedTiles.ShowToolTips = true;
-         this.tbMappedTiles.Size = new System.Drawing.Size(56, 24);
+         this.tbMappedTiles.Size = new System.Drawing.Size(72, 24);
          this.tbMappedTiles.TabIndex = 7;
          this.tbMappedTiles.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tbMappedTiles_ButtonClick);
          // 
@@ -522,6 +525,28 @@ namespace SGDK2
          this.TileFrames.DragDrop += new System.Windows.Forms.DragEventHandler(this.TileFrames_DragDrop);
          this.TileFrames.DragOver += new System.Windows.Forms.DragEventHandler(this.TileFrames_DragOver);
          // 
+         // sbTileFrames
+         // 
+         this.sbTileFrames.Location = new System.Drawing.Point(5, 81);
+         this.sbTileFrames.Name = "sbTileFrames";
+         this.sbTileFrames.Panels.AddRange(new System.Windows.Forms.StatusBarPanel[] {
+                                                                                        this.sbpTileFrame,
+                                                                                        this.sbpTileCell});
+         this.sbTileFrames.ShowPanels = true;
+         this.sbTileFrames.Size = new System.Drawing.Size(480, 20);
+         this.sbTileFrames.SizingGrip = false;
+         this.sbTileFrames.TabIndex = 3;
+         // 
+         // sbpTileFrame
+         // 
+         this.sbpTileFrame.Icon = ((System.Drawing.Icon)(resources.GetObject("sbpTileFrame.Icon")));
+         // 
+         // sbpTileCell
+         // 
+         this.sbpTileCell.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Spring;
+         this.sbpTileCell.Icon = ((System.Drawing.Icon)(resources.GetObject("sbpTileCell.Icon")));
+         this.sbpTileCell.Width = 380;
+         // 
          // pnlFrameProperties
          // 
          this.pnlFrameProperties.Controls.Add(this.grpFrameProperties);
@@ -613,16 +638,6 @@ namespace SGDK2
          this.grpAvailableFrames.TabStop = false;
          this.grpAvailableFrames.Text = "Available Frames";
          // 
-         // dataMonitor
-         // 
-         this.dataMonitor.TileRowDeleted += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowDeleted);
-         this.dataMonitor.FramesetRowChanged += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.dataMonitor_FramesetRowChanged);
-         this.dataMonitor.CounterRowDeleted += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowDeleted);
-         this.dataMonitor.TilesetRowDeleted += new SGDK2.ProjectDataset.TilesetRowChangeEventHandler(this.dataMonitor_TilesetRowDeleted);
-         this.dataMonitor.FramesetRowDeleted += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.dataMonitor_FramesetRowDeleted);
-         this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
-         this.dataMonitor.CounterRowChanged += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowChanged);
-         // 
          // sbAvailable
          // 
          this.sbAvailable.Location = new System.Drawing.Point(3, 124);
@@ -645,27 +660,20 @@ namespace SGDK2
          this.sbpCellIndex.Icon = ((System.Drawing.Icon)(resources.GetObject("sbpCellIndex.Icon")));
          this.sbpCellIndex.Width = 390;
          // 
-         // sbTileFrames
+         // dataMonitor
          // 
-         this.sbTileFrames.Location = new System.Drawing.Point(5, 81);
-         this.sbTileFrames.Name = "sbTileFrames";
-         this.sbTileFrames.Panels.AddRange(new System.Windows.Forms.StatusBarPanel[] {
-                                                                                        this.sbpTileFrame,
-                                                                                        this.sbpTileCell});
-         this.sbTileFrames.ShowPanels = true;
-         this.sbTileFrames.Size = new System.Drawing.Size(480, 20);
-         this.sbTileFrames.SizingGrip = false;
-         this.sbTileFrames.TabIndex = 3;
+         this.dataMonitor.TileRowDeleted += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowDeleted);
+         this.dataMonitor.FramesetRowChanged += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.dataMonitor_FramesetRowChanged);
+         this.dataMonitor.CounterRowDeleted += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowDeleted);
+         this.dataMonitor.TilesetRowDeleted += new SGDK2.ProjectDataset.TilesetRowChangeEventHandler(this.dataMonitor_TilesetRowDeleted);
+         this.dataMonitor.FramesetRowDeleted += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.dataMonitor_FramesetRowDeleted);
+         this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
+         this.dataMonitor.CounterRowChanged += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowChanged);
          // 
-         // sbpTileFrame
+         // tbbPreview
          // 
-         this.sbpTileFrame.Icon = ((System.Drawing.Icon)(resources.GetObject("sbpTileFrame.Icon")));
-         // 
-         // sbpTileCell
-         // 
-         this.sbpTileCell.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Spring;
-         this.sbpTileCell.Icon = ((System.Drawing.Icon)(resources.GetObject("sbpTileCell.Icon")));
-         this.sbpTileCell.Width = 380;
+         this.tbbPreview.ImageIndex = 2;
+         this.tbbPreview.ToolTipText = "Preview animation";
          // 
          // frmTileEdit
          // 
@@ -686,6 +694,8 @@ namespace SGDK2
          ((System.ComponentModel.ISupportInitialize)(this.updRepeatCount)).EndInit();
          this.grpTileProperties.ResumeLayout(false);
          this.pnlFrames.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.sbpTileFrame)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.sbpTileCell)).EndInit();
          this.pnlFrameProperties.ResumeLayout(false);
          this.grpFrameProperties.ResumeLayout(false);
          this.pnlAddFrame.ResumeLayout(false);
@@ -693,8 +703,6 @@ namespace SGDK2
          this.grpAvailableFrames.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.sbpFrameIndex)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpCellIndex)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.sbpTileFrame)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.sbpTileCell)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -857,7 +865,7 @@ namespace SGDK2
       {
          try
          {
-            if (e.Button == tbMappedTiles.Buttons[0])
+            if (e.Button == tbbNewTile)
             {
                int nNewVal = frmNewTileValue.PromptForNewTileValue(this);
                if (nNewVal < 0)
@@ -868,16 +876,22 @@ namespace SGDK2
                cboMappedTiles.Items.Add(trNew);
                cboMappedTiles.SelectedItem = trNew;
             }
-            else if (e.Button == tbMappedTiles.Buttons[1])
+            else if (e.Button == tbbDeleteTile)
             {
-                  ProjectDataset.TileRow tr = GetCurrentTile();
-                  if (MessageBox.Show(this, "Delete tile " + tr.TileValue.ToString() + "?", "Confirm Delete Tile", MessageBoxButtons.YesNo,
-                     MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
-                  {
-                     cboMappedTiles.SelectedIndex = -1;
-                     cboMappedTiles.Items.Remove(tr);
-                     tr.Delete();
-                  }
+               ProjectDataset.TileRow tr = GetCurrentTile();
+               if (MessageBox.Show(this, "Delete tile " + tr.TileValue.ToString() + "?", "Confirm Delete Tile", MessageBoxButtons.YesNo,
+                  MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
+               {
+                  cboMappedTiles.SelectedIndex = -1;
+                  cboMappedTiles.Items.Remove(tr);
+                  tr.Delete();
+               }
+            }
+            else if (e.Button == tbbPreview)
+            {
+               frmAnimPreview frm = new frmAnimPreview(GetCurrentTile());
+               frm.Owner = this;
+               frm.Show();
             }
          }
          catch (System.Exception ex)

@@ -165,22 +165,39 @@ namespace SGDK2
       {
          get
          {
-            if (!this.InnerHashtable.ContainsKey(state))
+            int idx = GetIndexFromSequenceNumber(state, frame);
+            if (idx < 0)
                return new int[] {};
-            StateInfo si = this[state];
-            if (si.frames.Length == 1)
-               return si.frames[0].subFrames;
-            TileFrame[] tf = si.frames;
-            if (tf.Length <= 0) return new int[] {};
-            frame = frame % tf[tf.Length-1].accumulatedDuration;
-            int nFoundIdx = Array.BinarySearch(tf, frame + 1);
-            if ((nFoundIdx < 0) && (~nFoundIdx < tf.Length))
-               return tf[~nFoundIdx].subFrames;
-            else if (nFoundIdx >= 0)
-               return tf[nFoundIdx].subFrames;
             else
-               throw new ApplicationException("Did not expect modded frame value beyond array bounds");
+            {
+               return this[state].frames[idx].subFrames;
+            }
          }
+      }
+
+      /// <summary>
+      /// Retrieve the index of the set of sub-frames to be used
+      /// at a specified frame timer sequence value
+      /// </summary>
+      /// <param name="frameSequence">Timer/counter sequence value</param>
+      /// <returns>Index into the specified state's frames array</returns>
+      public int GetIndexFromSequenceNumber(string state, int frameSequence)
+      {
+         if (!this.InnerHashtable.ContainsKey(state))
+            return -1;
+         StateInfo si = this[state];
+         if (si.frames.Length == 1)
+            return 0;
+         TileFrame[] tf = si.frames;
+         if (tf.Length <= 0) return -1;
+         frameSequence = frameSequence % tf[tf.Length-1].accumulatedDuration;
+         int nFoundIdx = Array.BinarySearch(tf, frameSequence + 1);
+         if ((nFoundIdx < 0) && (~nFoundIdx < tf.Length))
+            return ~nFoundIdx;
+         else if (nFoundIdx >= 0)
+            return nFoundIdx;
+         else
+            throw new ApplicationException("Did not expect modded frame value beyond array bounds");
       }
 
       public System.Drawing.Rectangle Bounds

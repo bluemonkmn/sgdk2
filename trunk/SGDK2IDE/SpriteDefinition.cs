@@ -167,6 +167,9 @@ namespace SGDK2
       private System.Windows.Forms.CheckBox chkSuspended;
       private System.Windows.Forms.MenuItem mnuSpriteDefSeparator3;
       private System.Windows.Forms.MenuItem mnuRotateWizard;
+      private System.Windows.Forms.ToolBarButton tbbPreview;
+      private System.Windows.Forms.ToolBarButton tbbStateSeparator2;
+      private System.Windows.Forms.MenuItem mnuPreviewAnimation;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -314,6 +317,9 @@ namespace SGDK2
          this.mnuRotateWizard = new System.Windows.Forms.MenuItem();
          this.DataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.tmrPopulateRules = new System.Windows.Forms.Timer(this.components);
+         this.tbbPreview = new System.Windows.Forms.ToolBarButton();
+         this.tbbStateSeparator2 = new System.Windows.Forms.ToolBarButton();
+         this.mnuPreviewAnimation = new System.Windows.Forms.MenuItem();
          this.tabSpriteDefinition.SuspendLayout();
          this.tabStates.SuspendLayout();
          this.pnlFrames.SuspendLayout();
@@ -367,18 +373,18 @@ namespace SGDK2
          this.AvailableFrames.Frameset = null;
          this.AvailableFrames.FramesToDisplay = null;
          this.AvailableFrames.GraphicSheet = null;
-         this.AvailableFrames.Location = new System.Drawing.Point(125, 221);
+         this.AvailableFrames.Location = new System.Drawing.Point(133, 221);
          this.AvailableFrames.Name = "AvailableFrames";
          this.AvailableFrames.SheetImage = null;
-         this.AvailableFrames.Size = new System.Drawing.Size(435, 138);
+         this.AvailableFrames.Size = new System.Drawing.Size(427, 138);
          this.AvailableFrames.TabIndex = 10;
          // 
          // lblAvailableFrames
          // 
          this.lblAvailableFrames.Dock = System.Windows.Forms.DockStyle.Top;
-         this.lblAvailableFrames.Location = new System.Drawing.Point(125, 205);
+         this.lblAvailableFrames.Location = new System.Drawing.Point(133, 205);
          this.lblAvailableFrames.Name = "lblAvailableFrames";
-         this.lblAvailableFrames.Size = new System.Drawing.Size(435, 16);
+         this.lblAvailableFrames.Size = new System.Drawing.Size(427, 16);
          this.lblAvailableFrames.TabIndex = 9;
          this.lblAvailableFrames.Text = "Available Frames:";
          // 
@@ -386,9 +392,9 @@ namespace SGDK2
          // 
          this.StateSplitter.BackColor = System.Drawing.SystemColors.ControlDark;
          this.StateSplitter.Dock = System.Windows.Forms.DockStyle.Top;
-         this.StateSplitter.Location = new System.Drawing.Point(125, 200);
+         this.StateSplitter.Location = new System.Drawing.Point(133, 200);
          this.StateSplitter.Name = "StateSplitter";
-         this.StateSplitter.Size = new System.Drawing.Size(435, 5);
+         this.StateSplitter.Size = new System.Drawing.Size(427, 5);
          this.StateSplitter.TabIndex = 8;
          this.StateSplitter.TabStop = false;
          // 
@@ -398,9 +404,9 @@ namespace SGDK2
          this.pnlFrames.Controls.Add(this.pnlFrameDetails);
          this.pnlFrames.Controls.Add(this.lblStateFrames);
          this.pnlFrames.Dock = System.Windows.Forms.DockStyle.Top;
-         this.pnlFrames.Location = new System.Drawing.Point(125, 56);
+         this.pnlFrames.Location = new System.Drawing.Point(133, 56);
          this.pnlFrames.Name = "pnlFrames";
-         this.pnlFrames.Size = new System.Drawing.Size(435, 144);
+         this.pnlFrames.Size = new System.Drawing.Size(427, 144);
          this.pnlFrames.TabIndex = 6;
          // 
          // StateFrames
@@ -417,7 +423,7 @@ namespace SGDK2
          this.StateFrames.Location = new System.Drawing.Point(0, 16);
          this.StateFrames.Name = "StateFrames";
          this.StateFrames.SheetImage = null;
-         this.StateFrames.Size = new System.Drawing.Size(435, 104);
+         this.StateFrames.Size = new System.Drawing.Size(427, 104);
          this.StateFrames.TabIndex = 1;
          this.StateFrames.CurrentCellChanged += new System.EventHandler(this.StateFrames_CurrentCellChanged);
          this.StateFrames.DragDrop += new System.Windows.Forms.DragEventHandler(this.StateFrames_DragDrop);
@@ -437,7 +443,7 @@ namespace SGDK2
          this.pnlFrameDetails.DockPadding.Top = 2;
          this.pnlFrameDetails.Location = new System.Drawing.Point(0, 120);
          this.pnlFrameDetails.Name = "pnlFrameDetails";
-         this.pnlFrameDetails.Size = new System.Drawing.Size(435, 24);
+         this.pnlFrameDetails.Size = new System.Drawing.Size(427, 24);
          this.pnlFrameDetails.TabIndex = 7;
          // 
          // btnMaskAlpha
@@ -505,7 +511,7 @@ namespace SGDK2
          this.lblStateFrames.Dock = System.Windows.Forms.DockStyle.Top;
          this.lblStateFrames.Location = new System.Drawing.Point(0, 0);
          this.lblStateFrames.Name = "lblStateFrames";
-         this.lblStateFrames.Size = new System.Drawing.Size(435, 16);
+         this.lblStateFrames.Size = new System.Drawing.Size(427, 16);
          this.lblStateFrames.TabIndex = 0;
          this.lblStateFrames.Text = "Frames in Current State:";
          // 
@@ -520,9 +526,9 @@ namespace SGDK2
          this.pnlSpriteState.Controls.Add(this.lblComma);
          this.pnlSpriteState.Controls.Add(this.txtHeight);
          this.pnlSpriteState.Dock = System.Windows.Forms.DockStyle.Top;
-         this.pnlSpriteState.Location = new System.Drawing.Point(125, 0);
+         this.pnlSpriteState.Location = new System.Drawing.Point(133, 0);
          this.pnlSpriteState.Name = "pnlSpriteState";
-         this.pnlSpriteState.Size = new System.Drawing.Size(435, 56);
+         this.pnlSpriteState.Size = new System.Drawing.Size(427, 56);
          this.pnlSpriteState.TabIndex = 5;
          // 
          // lblStateName
@@ -561,7 +567,7 @@ namespace SGDK2
          this.cboFrameset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
          this.cboFrameset.Location = new System.Drawing.Point(296, 8);
          this.cboFrameset.Name = "cboFrameset";
-         this.cboFrameset.Size = new System.Drawing.Size(128, 21);
+         this.cboFrameset.Size = new System.Drawing.Size(120, 21);
          this.cboFrameset.TabIndex = 3;
          this.cboFrameset.SelectionChangeCommitted += new System.EventHandler(this.cboFrameset_SelectionChangeCommitted);
          // 
@@ -605,7 +611,7 @@ namespace SGDK2
          // 
          // StateTreeSplitter
          // 
-         this.StateTreeSplitter.Location = new System.Drawing.Point(120, 0);
+         this.StateTreeSplitter.Location = new System.Drawing.Point(128, 0);
          this.StateTreeSplitter.Name = "StateTreeSplitter";
          this.StateTreeSplitter.Size = new System.Drawing.Size(5, 359);
          this.StateTreeSplitter.TabIndex = 11;
@@ -618,7 +624,7 @@ namespace SGDK2
          this.pnlStateList.Dock = System.Windows.Forms.DockStyle.Left;
          this.pnlStateList.Location = new System.Drawing.Point(0, 0);
          this.pnlStateList.Name = "pnlStateList";
-         this.pnlStateList.Size = new System.Drawing.Size(120, 359);
+         this.pnlStateList.Size = new System.Drawing.Size(128, 359);
          this.pnlStateList.TabIndex = 12;
          // 
          // lstSpriteStates
@@ -628,7 +634,7 @@ namespace SGDK2
          this.lstSpriteStates.IntegralHeight = false;
          this.lstSpriteStates.Location = new System.Drawing.Point(0, 25);
          this.lstSpriteStates.Name = "lstSpriteStates";
-         this.lstSpriteStates.Size = new System.Drawing.Size(120, 334);
+         this.lstSpriteStates.Size = new System.Drawing.Size(128, 334);
          this.lstSpriteStates.TabIndex = 4;
          this.lstSpriteStates.SelectedIndexChanged += new System.EventHandler(this.lstSpriteStates_SelectedIndexChanged);
          // 
@@ -639,14 +645,16 @@ namespace SGDK2
                                                                                      this.tbbDeleteState,
                                                                                      this.tbbStateSeparator,
                                                                                      this.tbbMoveStateUp,
-                                                                                     this.tbbMoveStateDown});
+                                                                                     this.tbbMoveStateDown,
+                                                                                     this.tbbStateSeparator2,
+                                                                                     this.tbbPreview});
          this.tbrStates.Divider = false;
          this.tbrStates.DropDownArrows = true;
          this.tbrStates.ImageList = this.imlSpriteDefinition;
          this.tbrStates.Location = new System.Drawing.Point(0, 0);
          this.tbrStates.Name = "tbrStates";
          this.tbrStates.ShowToolTips = true;
-         this.tbrStates.Size = new System.Drawing.Size(120, 25);
+         this.tbrStates.Size = new System.Drawing.Size(128, 25);
          this.tbrStates.TabIndex = 0;
          this.tbrStates.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tbrStates_ButtonClick);
          // 
@@ -1040,6 +1048,7 @@ namespace SGDK2
                                                                                             this.mnuMoveStateDown,
                                                                                             this.mnuAddFrame,
                                                                                             this.mnuRemoveFrame,
+                                                                                            this.mnuPreviewAnimation,
                                                                                             this.mnuSpriteDefSeparator,
                                                                                             this.mnuAddAction,
                                                                                             this.mnuRemoveRule,
@@ -1093,52 +1102,52 @@ namespace SGDK2
          // 
          // mnuSpriteDefSeparator
          // 
-         this.mnuSpriteDefSeparator.Index = 6;
+         this.mnuSpriteDefSeparator.Index = 7;
          this.mnuSpriteDefSeparator.Text = "-";
          // 
          // mnuAddAction
          // 
-         this.mnuAddAction.Index = 7;
+         this.mnuAddAction.Index = 8;
          this.mnuAddAction.Text = "Add Ru&le";
          this.mnuAddAction.Click += new System.EventHandler(this.OnAddRule);
          // 
          // mnuRemoveRule
          // 
-         this.mnuRemoveRule.Index = 8;
+         this.mnuRemoveRule.Index = 9;
          this.mnuRemoveRule.Text = "Remo&ve Rule";
          this.mnuRemoveRule.Click += new System.EventHandler(this.OnDeleteRule);
          // 
          // mnuMoveRuleUp
          // 
-         this.mnuMoveRuleUp.Index = 9;
+         this.mnuMoveRuleUp.Index = 10;
          this.mnuMoveRuleUp.Text = "Move Rule &Up";
          this.mnuMoveRuleUp.Click += new System.EventHandler(this.OnMoveRuleUp);
          // 
          // mnuMoveRuleDown
          // 
-         this.mnuMoveRuleDown.Index = 10;
+         this.mnuMoveRuleDown.Index = 11;
          this.mnuMoveRuleDown.Text = "&Move Rule Down";
          this.mnuMoveRuleDown.Click += new System.EventHandler(this.OnMoveRuleDown);
          // 
          // mnuSpriteDefSeparator2
          // 
-         this.mnuSpriteDefSeparator2.Index = 11;
+         this.mnuSpriteDefSeparator2.Index = 12;
          this.mnuSpriteDefSeparator2.Text = "-";
          // 
          // mnuExport
          // 
-         this.mnuExport.Index = 12;
+         this.mnuExport.Index = 13;
          this.mnuExport.Text = "E&xport to template...";
          this.mnuExport.Click += new System.EventHandler(this.mnuExport_Click);
          // 
          // mnuSpriteDefSeparator3
          // 
-         this.mnuSpriteDefSeparator3.Index = 13;
+         this.mnuSpriteDefSeparator3.Index = 14;
          this.mnuSpriteDefSeparator3.Text = "-";
          // 
          // mnuRotateWizard
          // 
-         this.mnuRotateWizard.Index = 14;
+         this.mnuRotateWizard.Index = 15;
          this.mnuRotateWizard.Text = "Ro&tating Sprite State Wizard";
          this.mnuRotateWizard.Click += new System.EventHandler(this.mnuRotateWizard_Click);
          // 
@@ -1161,6 +1170,21 @@ namespace SGDK2
          // tmrPopulateRules
          // 
          this.tmrPopulateRules.Tick += new System.EventHandler(this.tmrPopulateRules_Tick);
+         // 
+         // tbbPreview
+         // 
+         this.tbbPreview.ImageIndex = 4;
+         this.tbbPreview.ToolTipText = "Preview state animation";
+         // 
+         // tbbStateSeparator2
+         // 
+         this.tbbStateSeparator2.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+         // 
+         // mnuPreviewAnimation
+         // 
+         this.mnuPreviewAnimation.Index = 6;
+         this.mnuPreviewAnimation.Text = "&Preview State Animation";
+         this.mnuPreviewAnimation.Click += new System.EventHandler(this.OnPreviewAnimation);
          // 
          // frmSpriteDefinition
          // 
@@ -1886,9 +1910,16 @@ namespace SGDK2
 
       private void txtName_Validated(object sender, System.EventArgs e)
       {
-         ProjectData.EnforceConstraints = false;
-         m_SpriteDef.Name = txtName.Text;
-         ProjectData.EnforceConstraints = true;
+         if ((m_SpriteDef.RowState != DataRowState.Deleted) && (m_SpriteDef.RowState != DataRowState.Detached) &&
+            (m_SpriteDef.Name != txtName.Text))
+         {
+            ProjectData.EnforceConstraints = false;
+            m_SpriteDef.Name = txtName.Text;
+            ProjectData.EnforceConstraints = true;
+            this.BindingContext = new BindingContext();
+            ((CurrencyManager)this.BindingContext[ProjectData.SpriteDefinition]).Position =
+               ProjectData.SpriteDefinition.DefaultView.Find(m_SpriteDef.Name);
+         }
       }
 
       private void OnAddState(object sender, System.EventArgs e)
@@ -2110,6 +2141,8 @@ namespace SGDK2
       private void txtStateName_Validated(object sender, System.EventArgs e)
       {
          ProjectDataset.SpriteStateRow drState = GetCurrentState();
+         if (drState == null)
+            return;
          if (String.Compare(drState.Name, txtStateName.Text) == 0)
             return;
          drState.Name = txtStateName.Text;
@@ -2426,6 +2459,8 @@ namespace SGDK2
             OnMoveStateUp(tbbMoveStateUp, e);
          if (e.Button == tbbMoveStateDown)
             OnMoveStateDown(tbbMoveStateDown, e);
+         if (e.Button == tbbPreview)
+            OnPreviewAnimation(tbbPreview, e);
       }
 
       private void tbrRules_ButtonClick(object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e)
@@ -2650,6 +2685,20 @@ namespace SGDK2
       {
          using (frmRotateWizard frm = new frmRotateWizard(m_SpriteDef))
             frm.ShowDialog(this);
+      }
+
+      private void OnPreviewAnimation(object sender, System.EventArgs e)
+      {
+         if (lstSpriteStates.SelectedIndex >= 0)
+         {
+            frmAnimPreview frm = new frmAnimPreview(GetCurrentState());
+            frm.Owner = this;
+            frm.Show();
+         }
+         else
+         {
+            MessageBox.Show(this, "Select a sprite state first.", "Preview State Animation", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+         }
       }
       #endregion
    }

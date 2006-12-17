@@ -1144,7 +1144,7 @@ namespace SGDK2
                      CodeArrayCreateExpression createFrameList = new CodeArrayCreateExpression(
                         typeof(int), new CodeExpression[] {});
                      CodeFieldReferenceExpression refCategory = new CodeFieldReferenceExpression(
-                        new CodeTypeReferenceExpression("TileCategoryName"), drCat.CategorizedTilesetRowParent.Name);
+                        new CodeTypeReferenceExpression("TileCategoryName"), NameToVariable(drCat.CategorizedTilesetRowParent.Name));
                      CodeObjectCreateExpression createTileFrameMembership = new CodeObjectCreateExpression(
                         "TileFrameMembership", new CodeExpression[]
                         { refCategory, createFrameList });
@@ -2482,7 +2482,7 @@ namespace SGDK2
          foreach(System.Data.DataRowView drv in ProjectData.TileCategory.DefaultView)
          {
             ProjectDataset.TileCategoryRow drCat = (ProjectDataset.TileCategoryRow)drv.Row;
-            enumCategories.Members.Add(new CodeMemberField(typeof(int), drCat.Name));
+            enumCategories.Members.Add(new CodeMemberField(typeof(int), NameToVariable(drCat.Name)));
          }
          if (enumCategories.Members.Count > 0)
             ((CodeMemberField)enumCategories.Members[0]).InitExpression = new CodePrimitiveExpression(0);

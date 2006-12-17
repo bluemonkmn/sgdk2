@@ -155,24 +155,32 @@ namespace SGDK2
       {
          get
          {
-            if (nTileValue >= m_tiles.Length)
-               nTileValue = nTileValue % m_tiles.Length;
-            if (m_tiles[nTileValue].frames.Length == 1)
-               return m_tiles[nTileValue].frames[0].subFrames;
-            TileFrame[] tf = m_tiles[nTileValue].frames;
-            if (tf.Length <= 0) return new int[] {};
-            if (m_tiles[nTileValue].counterRow != null)
-               nCounterValue = nCounterValue % tf[tf.Length-1].accumulatedDuration;
-            else
-               nCounterValue = 0;
-            int nFoundIdx = Array.BinarySearch(tf, nCounterValue+1);
-            if ((nFoundIdx < 0) && (~nFoundIdx < tf.Length))
-               return tf[~nFoundIdx].subFrames;
-            else if (nFoundIdx >= 0)
-               return tf[nFoundIdx].subFrames;
-            else
-               throw new ApplicationException("Did not expect modded counter value beyond array bounds");
+            int idx = GetIndexFromCounterValue(nTileValue, nCounterValue);
+            if (idx < 0)
+               return new int[] {};
+            return m_tiles[nTileValue].frames[idx].subFrames;
          }
+      }
+
+      public int GetIndexFromCounterValue(int nTileValue, int nCounterValue)
+      {
+         if (nTileValue >= m_tiles.Length)
+            nTileValue = nTileValue % m_tiles.Length;
+         if (m_tiles[nTileValue].frames.Length == 1)
+            return 0;
+         TileFrame[] tf = m_tiles[nTileValue].frames;
+         if (tf.Length <= 0) return -1;
+         if (m_tiles[nTileValue].counterRow != null)
+            nCounterValue = nCounterValue % tf[tf.Length-1].accumulatedDuration;
+         else
+            nCounterValue = 0;
+         int nFoundIdx = Array.BinarySearch(tf, nCounterValue+1);
+         if ((nFoundIdx < 0) && (~nFoundIdx < tf.Length))
+            return ~nFoundIdx;
+         else if (nFoundIdx >= 0)
+            return nFoundIdx;
+         else
+            throw new ApplicationException("Did not expect modded counter value beyond array bounds");
       }
 
       public int[] GetSubFramesByFrameIndex(int nTileValue, int nFrameIndex)

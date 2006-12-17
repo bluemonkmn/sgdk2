@@ -144,14 +144,13 @@ namespace SGDK2
       #region Private Methods
       private void InitializeGrid()
       {
-         CurrencyManager cur = (CurrencyManager)this.BindingContext[ProjectData.Solidity.DefaultView];
-         cur.Position = ProjectData.Solidity.DefaultView.Find(m_Solidity.Name);
          grdMappings.SetDataBinding(ProjectData.Solidity, "SoliditySolidityShape");
+         grdMappings.BindingContext[ProjectData.Solidity].Position = ProjectData.Solidity.DefaultView.Find(m_Solidity.Name);
 
          DataGridTableStyle ts = new DataGridTableStyle();
          ts.MappingName = "SolidityShape";
 
-         PropertyDescriptorCollection pdc = BindingContext[ProjectData.Solidity.DefaultView, "SoliditySolidityShape"].GetItemProperties();
+         PropertyDescriptorCollection pdc = BindingContext[ProjectData.Solidity, "SoliditySolidityShape"].GetItemProperties();
 
          ProjectDataset.TileCategoryRow[] cats = new SGDK2.ProjectDataset.TileCategoryRow[ProjectData.TileCategory.DefaultView.Count];
          for(int i = 0; i < ProjectData.TileCategory.DefaultView.Count; i++)
@@ -247,7 +246,20 @@ namespace SGDK2
 
       private void txtName_Validated(object sender, System.EventArgs e)
       {
-         m_Solidity.Name = txtName.Text;
+         // See Microsoft KB article 841096: 
+         // http://support.microsoft.com/default.aspx?scid=kb;en-us;841096
+         // Without hotfox/SP, textbox will not validate its content if another
+         // MDI child is activated and that this form is activated again, while
+         // the textbox still has focus.
+         if ((m_Solidity.RowState != DataRowState.Deleted) && (m_Solidity.RowState != DataRowState.Detached) &&
+            (m_Solidity.Name != txtName.Text))
+         {
+            m_Solidity.Name = txtName.Text;
+            // Must re-create the binding context as there seems to be no other way to
+            // re-sync the child rows with the new parent name as far as the grid is concerned.
+            grdMappings.BindingContext = new BindingContext();
+            grdMappings.BindingContext[ProjectData.Solidity].Position = ProjectData.Solidity.DefaultView.Find(m_Solidity.Name);
+         }
       }
       #endregion
    }

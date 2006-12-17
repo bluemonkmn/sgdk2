@@ -142,6 +142,16 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "AnimPreview.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "AnimPreview.resx"
+                    DependentUpon = "AnimPreview.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "App.ico"
                     BuildAction = "Content"
                 />
@@ -244,6 +254,11 @@
                     RelPath = "Display.cs"
                     SubType = "Component"
                     BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Display.resx"
+                    DependentUpon = "Display.cs"
+                    BuildAction = "EmbeddedResource"
                 />
                 <File
                     RelPath = "DragPanel.cs"

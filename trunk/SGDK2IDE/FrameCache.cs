@@ -121,7 +121,7 @@ namespace SGDK2
       {
       }
 
-      public FrameCache(ProjectDataset.FramesetRow Frameset, Display display)
+      private FrameCache(ProjectDataset.FramesetRow Frameset, Display display)
       {
          ProjectDataset.FrameRow[] arfr = ProjectData.GetSortedFrameRows(Frameset);
          m_Display = display;

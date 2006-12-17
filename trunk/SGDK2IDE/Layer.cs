@@ -86,7 +86,7 @@ namespace SGDK2
          ProjectData.GetTilesetOverlaps(m_Layer.TilesetRow,
             out m_nRightBuffer, out m_nBottomBuffer, out m_nLeftBuffer, out m_nTopBuffer);
          m_TileCache = new TileCache(layer.TilesetRow);
-         m_FrameCache = new FrameCache(layer.TilesetRow.FramesetRow, display);
+         m_FrameCache = FrameCache.GetFrameCache(layer.TilesetRow.Frameset, display);
       }
 
       #region Public properties

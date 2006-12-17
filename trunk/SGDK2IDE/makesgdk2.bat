@@ -70,6 +70,7 @@ echo >>Input.txt /res:SGDK2.frmTilesetImport.resources
 echo >>Input.txt /res:SGDK2.frmFramesetImport.resources
 echo >>Input.txt /res:SGDK2.frmFrameRemappingWizard.resources
 echo >>Input.txt /res:SGDK2.frmRotateWizard.resources
+echo >>Input.txt /res:SGDK2.frmAnimPreview.resources
 echo >>Input.txt /res:Template\Display.cs,SGDK2.Template.Display.cs
 echo >>Input.txt /res:Template\Frame.cs,SGDK2.Template.Frame.cs
 echo >>Input.txt /res:Template\LayerBase.cs,SGDK2.Template.LayerBase.cs
@@ -150,6 +151,7 @@ echo >>Input.txt TilesetImport.cs
 echo >>Input.txt FramesetImport.cs
 echo >>Input.txt FrameRemappingWizard.cs
 echo >>Input.txt RotateWizard.cs
+echo >>Input.txt AnimPreview.cs
 csc /noconfig @Input.txt
 del Input.txt
 del *.resources

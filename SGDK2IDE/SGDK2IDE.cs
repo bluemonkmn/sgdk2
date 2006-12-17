@@ -55,7 +55,46 @@ namespace SGDK2
          g_Resources = new ResourceManager("SGDK2.SGDK2IDE", Assembly.GetExecutingAssembly());
          CreateFileAssociation();
          new frmSplashForm(GetSplashImage()).Show();
-         Application.Run(mainWindow = new frmMain());
+         try
+         {
+            Application.Run(mainWindow = new frmMain());
+         }
+         catch(System.Exception ex)
+         {
+            if (DialogResult.Yes == MessageBox.Show("An unexpected error occurred and will cause the application to terminate. Details:\r\n" + ex.ToString() + "\r\n\r\nI can, however, attempt to save your project before exiting. If you save the project, you will be prompted for a location to save -- you should probably not overwrite your original project under these circumstances. Would you like to try to save?", "Scrolling Game Development Kit 2 Unexpected Error", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1))
+            {
+               while(true)
+               {
+                  try
+                  {
+                     SaveFileDialog fd = new SaveFileDialog();
+                     fd.CheckPathExists = true;
+                     fd.OverwritePrompt = true;
+                     fd.DefaultExt = "sgdk2";
+                     fd.Filter = "SGDK2 Projects (*.sgdk2)|*.sgdk2|All Files (*.*)|*.*";
+                     fd.FilterIndex = 1;
+                     fd.Title = "Save Project";
+                     fd.ValidateNames = true;
+                     if (DialogResult.OK == fd.ShowDialog())
+                     {
+                        ProjectData.WriteXml(fd.FileName);
+                        MessageBox.Show("Success! Your project was saved to " + fd.FileName + ". You should verify that the project has not been corrupted before working with that project further. You should also consider reporting this error to the Scrolling Game Development Kit support site:\r\n" + ex.ToString(), "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        break;
+                     }
+                     else
+                     {
+                        if (DialogResult.Yes == MessageBox.Show("You cancelled your opportunity to save your project during a fatal error.  If you do not save it now, any changes you made will be lost.  Are you sure you want to exit without saving anything?", "Last Chance", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation))
+                           break;
+                     }
+                  }
+                  catch(System.Exception ex2)
+                  {
+                     if (DialogResult.No == MessageBox.Show("Well, that didn't work:\r\n" + ex2.ToString() + "\r\n\r\nDo you want to try again?", "Double Failure", MessageBoxButtons.YesNo, MessageBoxIcon.Error, MessageBoxDefaultButton.Button1))
+                        break;
+                  }
+               }
+            }
+         }
          CodeGenerator.ResetTempAssembly();
          return 0;
       }

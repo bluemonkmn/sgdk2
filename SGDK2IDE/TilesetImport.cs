@@ -1249,6 +1249,7 @@ namespace SGDK2
                }
             }
          }
+         sb.Append(ProjectData.GetCreditAdditions(dsSource));
          txtReview.Text = sb.ToString();
       }
 
@@ -1344,6 +1345,7 @@ namespace SGDK2
 
             ProjectData.EnforceConstraints = true;
 
+            ProjectData.MergeCredits(dsSource);
             return true;
          }
          catch(System.Exception ex)

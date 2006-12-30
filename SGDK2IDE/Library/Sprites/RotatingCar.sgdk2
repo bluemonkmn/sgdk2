@@ -276,6 +276,9 @@
           </xs:element>
           <xs:element name="Project">
             <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Comments" type="xs:string" default="" msdata:Ordinal="8" />
+              </xs:sequence>
               <xs:attribute name="DisplayMode" type="xs:string" use="required" />
               <xs:attribute name="Windowed" type="xs:boolean" use="required" />
               <xs:attribute name="TitleText" type="xs:string" />
@@ -283,6 +286,7 @@
               <xs:attribute name="OverlayMap" type="xs:string" />
               <xs:attribute name="MaxPlayers" type="xs:unsignedByte" default="1" />
               <xs:attribute name="MaxViews" type="xs:unsignedByte" default="1" />
+              <xs:attribute name="Credits" type="xs:string" />
             </xs:complexType>
           </xs:element>
           <xs:element name="TileCategory">
@@ -2813,5 +2817,7 @@
       <SpriteFrame Sequence="1" FrameValue="719" Duration="2" MaskAlphaLevel="0" />
     </SpriteState>
   </SpriteDefinition>
-  <Project DisplayMode="m640x480x24" Windowed="true" TitleText="Rotating overhead car. Turning is only allowed when moving and when not too near solid.  Direction of movement is constrained to line parallel with sprite angle." MaxPlayers="1" MaxViews="1" />
+  <Project DisplayMode="m640x480x24" Windowed="true" TitleText="Rotating overhead car. Turning is only allowed when moving and when not too near solid.  Direction of movement is constrained to line parallel with sprite angle." MaxPlayers="1" MaxViews="1" Credits="Graphics: Benjamin Marty">
+    <Comments />
+  </Project>
 </ProjectDataset>

@@ -631,6 +631,14 @@ namespace SGDK2
          constMaxViews.InitExpression = new CodePrimitiveExpression(ProjectData.ProjectRow.MaxViews);
          typ.Members.Add(constMaxViews);
 
+         CodeMemberField constCredits = new CodeMemberField(typeof(string), "GameCredits");
+         constCredits.Attributes = MemberAttributes.Const | MemberAttributes.Public;
+         if (!ProjectData.ProjectRow.IsCreditsNull())
+            constCredits.InitExpression = new CodePrimitiveExpression(ProjectData.ProjectRow.Credits);
+         else
+            constCredits.InitExpression = new CodePrimitiveExpression(String.Empty);
+         typ.Members.Add(constCredits);
+
          Generator.GenerateCodeFromType(typ, txt, GeneratorOptions);
       }
 

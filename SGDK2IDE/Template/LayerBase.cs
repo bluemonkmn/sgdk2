@@ -259,8 +259,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
                    (CurFrame.priority < 0))
             {
                spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
-                  CurFrame.x + CurrentPosition.X + ViewRect.X,
-                  CurFrame.y + CurrentPosition.Y + ViewRect.Y, 0));
+                  (float)CurFrame.x + CurrentPosition.X + ViewRect.X,
+                  (float)CurFrame.y + CurrentPosition.Y + ViewRect.Y, 0));
                spr.Draw(CurFrame.frame.GraphicSheetTexture.Texture, CurFrame.frame.SourceRect,
                   Vector3.Empty, Vector3.Empty, CurFrame.color);
                if (!Injected.MoveNext())
@@ -289,8 +289,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
       {
          CurFrame = (InjectedFrame)Injected.Current;
          spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
-            CurFrame.x + CurrentPosition.X + ViewRect.X,
-            CurFrame.y + CurrentPosition.Y + ViewRect.Y, 0));
+            (float)CurFrame.x + CurrentPosition.X + ViewRect.X,
+            (float)CurFrame.y + CurrentPosition.Y + ViewRect.Y, 0));
          spr.Draw(CurFrame.frame.GraphicSheetTexture.Texture, CurFrame.frame.SourceRect,
             Vector3.Empty, Vector3.Empty, CurFrame.color);
          if (!Injected.MoveNext())

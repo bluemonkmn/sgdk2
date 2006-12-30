@@ -94,7 +94,7 @@ namespace SGDK2
          // 
          this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
          this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-         this.btnClose.Location = new System.Drawing.Point(336, 194);
+         this.btnClose.Location = new System.Drawing.Point(336, 200);
          this.btnClose.Name = "btnClose";
          this.btnClose.Size = new System.Drawing.Size(72, 24);
          this.btnClose.TabIndex = 2;
@@ -113,7 +113,7 @@ namespace SGDK2
          // 
          this.llbHomepage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
          this.llbHomepage.BackColor = System.Drawing.Color.Transparent;
-         this.llbHomepage.Location = new System.Drawing.Point(192, 154);
+         this.llbHomepage.Location = new System.Drawing.Point(192, 160);
          this.llbHomepage.Name = "llbHomepage";
          this.llbHomepage.Size = new System.Drawing.Size(224, 16);
          this.llbHomepage.TabIndex = 4;
@@ -125,7 +125,7 @@ namespace SGDK2
          // 
          this.lblHomepage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
          this.lblHomepage.BackColor = System.Drawing.Color.Transparent;
-         this.lblHomepage.Location = new System.Drawing.Point(72, 154);
+         this.lblHomepage.Location = new System.Drawing.Point(72, 160);
          this.lblHomepage.Name = "lblHomepage";
          this.lblHomepage.Size = new System.Drawing.Size(120, 16);
          this.lblHomepage.TabIndex = 5;
@@ -135,7 +135,7 @@ namespace SGDK2
          // 
          this.lblLicense.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
          this.lblLicense.BackColor = System.Drawing.Color.Transparent;
-         this.lblLicense.Location = new System.Drawing.Point(72, 170);
+         this.lblLicense.Location = new System.Drawing.Point(72, 176);
          this.lblLicense.Name = "lblLicense";
          this.lblLicense.Size = new System.Drawing.Size(120, 16);
          this.lblLicense.TabIndex = 6;
@@ -145,9 +145,9 @@ namespace SGDK2
          // 
          this.llbLicense.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
          this.llbLicense.BackColor = System.Drawing.Color.Transparent;
-         this.llbLicense.Location = new System.Drawing.Point(184, 170);
+         this.llbLicense.Location = new System.Drawing.Point(192, 176);
          this.llbLicense.Name = "llbLicense";
-         this.llbLicense.Size = new System.Drawing.Size(232, 16);
+         this.llbLicense.Size = new System.Drawing.Size(224, 16);
          this.llbLicense.TabIndex = 7;
          this.llbLicense.TabStop = true;
          this.llbLicense.Text = "http://www.gnu.org/licenses/gpl.html";
@@ -162,9 +162,9 @@ namespace SGDK2
          this.txtCredits.Multiline = true;
          this.txtCredits.Name = "txtCredits";
          this.txtCredits.ReadOnly = true;
-         this.txtCredits.Size = new System.Drawing.Size(328, 40);
+         this.txtCredits.Size = new System.Drawing.Size(328, 48);
          this.txtCredits.TabIndex = 8;
-         this.txtCredits.Text = "Primary design and development: Benjamin Marty\r\nGraphics: Jeff Cruz";
+         this.txtCredits.Text = "Primary design and development: Benjamin Marty\r\nGraphics: Jeff Cruz\r\nAlpha testing and design input: Seth Marty";
          // 
          // grpCredits
          // 
@@ -173,7 +173,7 @@ namespace SGDK2
          this.grpCredits.Controls.Add(this.txtCredits);
          this.grpCredits.Location = new System.Drawing.Point(72, 80);
          this.grpCredits.Name = "grpCredits";
-         this.grpCredits.Size = new System.Drawing.Size(344, 64);
+         this.grpCredits.Size = new System.Drawing.Size(344, 72);
          this.grpCredits.TabIndex = 9;
          this.grpCredits.TabStop = false;
          this.grpCredits.Text = "Credits";
@@ -217,7 +217,7 @@ namespace SGDK2
 
       protected override void OnLoad(EventArgs e)
       {
-         lblVersion.Text = "Version " + Application.ProductVersion;
+         lblVersion.Text = "Version " + Application.ProductVersion + " alpha (pre-release)";
          base.OnLoad (e);
       }
 

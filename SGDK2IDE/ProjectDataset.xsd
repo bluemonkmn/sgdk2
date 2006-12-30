@@ -299,6 +299,7 @@
                   <xs:attribute name="OverlayMap" type="xs:Name" use="optional" msprop:nullValue="_null" />
                   <xs:attribute name="MaxPlayers" type="xs:unsignedByte" default="1" msprop:nullValue="1" />
                   <xs:attribute name="MaxViews" type="xs:unsignedByte" default="1" msprop:nullValue="1" />
+                  <xs:attribute name="Credits" type="xs:string" />
                </xs:complexType>
             </xs:element>
             <xs:element name="TileCategory">

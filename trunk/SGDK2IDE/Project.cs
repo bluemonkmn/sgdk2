@@ -143,6 +143,22 @@ namespace SGDK2
                   throw new ApplicationException("MaxViews must be 1 through 4");
             }
          }
+
+         [Description("Displayed in the project's about dialog and included in exported files' credits."),
+         RefreshProperties(RefreshProperties.All)]
+         public string[] Credits
+         {
+            get
+            {
+               if (project.IsCreditsNull())
+                  return new string[] {};
+               return project.Credits.Replace("\r\n","\n").Split('\n');
+            }
+            set
+            {
+               project.Credits = string.Join("\r\n", value);
+            }
+         }
       }
       #endregion
 

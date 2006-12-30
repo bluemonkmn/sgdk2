@@ -277,7 +277,7 @@
           <xs:element name="Project">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="Comments" type="xs:string" default="" msdata:Ordinal="7" />
+                <xs:element name="Comments" type="xs:string" default="" msdata:Ordinal="8" />
               </xs:sequence>
               <xs:attribute name="DisplayMode" type="xs:string" use="required" />
               <xs:attribute name="Windowed" type="xs:boolean" use="required" />
@@ -286,6 +286,7 @@
               <xs:attribute name="OverlayMap" type="xs:string" />
               <xs:attribute name="MaxPlayers" type="xs:unsignedByte" default="1" />
               <xs:attribute name="MaxViews" type="xs:unsignedByte" default="1" />
+              <xs:attribute name="Credits" type="xs:string" />
             </xs:complexType>
           </xs:element>
           <xs:element name="TileCategory">
@@ -545,7 +546,7 @@
         <xs:selector xpath=".//SpriteRule" />
         <xs:field xpath="@DefinitionName" />
       </xs:keyref>
-      <xs:keyref name="TilesetLayer" refer="TilesetKey" msdata:DeleteRule="SetNull">
+      <xs:keyref name="TilesetLayer" refer="TilesetKey">
         <xs:selector xpath=".//Layer" />
         <xs:field xpath="@Tileset" />
       </xs:keyref>
@@ -647,7 +648,10 @@
     <Image>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</Image>
   </GraphicSheet>
   <GraphicSheet Name="Ship" Columns="4" Rows="2" CellWidth="32" CellHeight="32">
-    <Image>iVBORw0KGgoAAAANSUhEUgAAAIAAAABACAYAAADS1n9/AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAgY0hSTQAAeiYAAICEAAD6AAAAgOgAAHUwAADqYAAAOpgAABdwnLpRPAAABSdJREFUeF7tm29olVUcx8/z5+rM0vXfynIZiZSV/XtRMVlFKUExBEGkwDdFBIEZluSL2d3cNJiBUCNBjP4NFmGEtkXI1CHDYi1f1GSFMmJGUmnZdLGe3+n7O/fc3bvuaNKrPU/fB757nns503M+v+8553fOeWYMLxIgARJICQFZbYzshnqNsbYgOQHtgdbh87yUNITVvHACtgrBbYHOmVB+Mxch6HOtXXDnmL39wVFrLsXn2VAsoygzAnXCCIsv/N9nyWlMwNYgoEMml5w3VyDI11n75Prf7bffDdmRke+dTv503L71wSm7aNmf1lzpzWBgFGM3TuOGsWpTE3A9f9BcgqBeDy229uP9J8cDXzRA+f3Frb9aU4OyaoTAmWDt1P8PS0xTAgheLGdd8G+zdu7Dyb8GX43Q1TtszVKUvxm6zOUHp6dp41itqQkg2bsYQbwVuh9aYe2m936xXf3Dtutr6GiZ9Lu+YVv78jlrHkJZNYEax8BARqcRXikkIG3OAHcVgm9WQ09Dz0ProY1eG3BfBz0LPQU97g1zEw2QwqCXVxlTQA49WA1Q74Ovwd4MtUCvQa3+Oe/N8Jw3Sh3uNzgD/IgRALkErxQScCuAszr/m5W+l2ugd0A7oV3Qbv/8hjeCjgo6CtRCc5wB2lPYcFa5RAAbPFchkI95A2iPfwf6CPrES5/fh9QEr0BrIB01Ak0AZQVpppqArTeRPeOSQJ3jX/fB34/7Ya9ubwQdFXSKULNc63p/f6qbzsoXCSCQOp/rNKDzfwf0BTQADUL9UKc3hyaJ90IhTGNgHl5ZIFA2CmiSpz29FzoF/Qx9A7X74V97/9Wu9+OsgFeGCGAUmO9HAU0E90AnvAl0OtCpYS3k5n7X+5dmqPFsCgJah4Og0y4X0FGgzY8C2vs1AdS5X/cKql3vHyocHvFkMAPOcecBOP51gf3BrQiKuYCuAjQB1JWBLv1wVoAyUjomTvZlAMD/vQnF4GtwXYD/MnfjrisC3QPQhFB7/yNQTpJS8IvlmQim2EF6pj8eSG8AfK6CVkG6E6hrf537lzhznK8sr+8G8EopAT3PH+/5peAGMmZ0q1d3/XRZqJn/7GQMBoD+aRjpTmnjWW0Ec3OZAbCrN26GMTMLz9dAeEHEvS+gU8Nko4WRQySZWgLlBphkKpg04BXl3k5t81lxXcv/58AXk8Y3yTHVBPREEHsAFUp63JJwoRokwZGvPKplltUceOKBBT3v5sJR/e4Y9wJSHfxC5e0zJmfzUb1siV+QLTNuKXyL18Nn4p2/apf8YdMHP5vie2xL3CHb4048N+jvZaD5bII0RctlZ9iTfBgekO0hghsthy2qEfJRE+mRr62zDWaebIv3Jt3BQekLjsiOuEuaZywivQwQsE3RquTzcFCOBwPJZ8Fh7d1+FMBxr1v7V2lv1++TL4Oj9g9zRlrjT6XR3JiB5rMJGPprpSPsSwaDY24a2GrmewPgbZ/Smb80m8slH29KvgoGpDncKw1mDullgIAO5cmu6Ig0xi+Vgu9mff1roQk7fdJqZrlyjVFbBprOJhSTO9kWHiwlgEUuuk+gZwUTL5cPtETtE81ClqklIK/G90k+XFPZALdPAFVeks/doaNBahvNipMACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZAACZBAGYG/AVEn1pM74ziqAAAAAElFTkSuQmCC</Image>
+    <Image>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</Image>
+  </GraphicSheet>
+  <GraphicSheet Name="Car" Columns="3" Rows="1" CellWidth="64" CellHeight="64">
+    <Image>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</Image>
   </GraphicSheet>
   <Frameset Name="Main">
     <Frame FrameValue="0" GraphicSheet="SHFL32x32" CellIndex="0" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
@@ -1020,6 +1024,128 @@
     <Frame FrameValue="20" GraphicSheet="Ship" CellIndex="1" m11="-0.866" m12="0.5" m21="-0.5" m22="-0.866" dx="37.8564" dy="21.8564" color="-1" />
     <Frame FrameValue="22" GraphicSheet="Ship" CellIndex="1" m11="-0.5" m12="0.866" m21="-0.866" m22="-0.5" dx="37.8564" dy="10.1436" color="-1" />
     <Frame FrameValue="23" GraphicSheet="Ship" CellIndex="1" m11="-0.2588" m12="0.9659" m21="-0.9659" m22="-0.2588" dx="35.5959" dy="4.6863" color="-1" />
+    <Frame FrameValue="24" GraphicSheet="Ship" CellIndex="2" m11="0" m12="1" m21="-1" m22="0" dx="32" dy="0" color="-1" />
+    <Frame FrameValue="25" GraphicSheet="Ship" CellIndex="2" m11="0.2588" m12="0.9659" m21="-0.9659" m22="0.2588" dx="27.3137" dy="-3.5959" color="-1" />
+    <Frame FrameValue="26" GraphicSheet="Ship" CellIndex="2" m11="0.5" m12="0.866" m21="-0.866" m22="0.5" dx="21.8564" dy="-5.8564" color="-1" />
+    <Frame FrameValue="27" GraphicSheet="Ship" CellIndex="2" m11="0.7071" m12="0.7071" m21="-0.7071" m22="0.7071" dx="16" dy="-6.6274" color="-1" />
+    <Frame FrameValue="28" GraphicSheet="Ship" CellIndex="2" m11="0.866" m12="0.5" m21="-0.5" m22="0.866" dx="10.1436" dy="-5.8564" color="-1" />
+    <Frame FrameValue="29" GraphicSheet="Ship" CellIndex="2" m11="0.9659" m12="0.2588" m21="-0.2588" m22="0.9659" dx="4.6863" dy="-3.5959" color="-1" />
+    <Frame FrameValue="30" GraphicSheet="Ship" CellIndex="2" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="31" GraphicSheet="Ship" CellIndex="2" m11="0.9659" m12="-0.2588" m21="0.2588" m22="0.9659" dx="-3.5959" dy="4.6863" color="-1" />
+    <Frame FrameValue="32" GraphicSheet="Ship" CellIndex="2" m11="0.866" m12="-0.5" m21="0.5" m22="0.866" dx="-5.8564" dy="10.1436" color="-1" />
+    <Frame FrameValue="33" GraphicSheet="Ship" CellIndex="2" m11="0.7071" m12="-0.7071" m21="0.7071" m22="0.7071" dx="-6.6274" dy="16" color="-1" />
+    <Frame FrameValue="34" GraphicSheet="Ship" CellIndex="2" m11="0.5" m12="-0.866" m21="0.866" m22="0.5" dx="-5.8564" dy="21.8564" color="-1" />
+    <Frame FrameValue="35" GraphicSheet="Ship" CellIndex="2" m11="0.2588" m12="-0.9659" m21="0.9659" m22="0.2588" dx="-3.5959" dy="27.3137" color="-1" />
+    <Frame FrameValue="36" GraphicSheet="Ship" CellIndex="2" m11="0" m12="-1" m21="1" m22="0" dx="0" dy="32" color="-1" />
+    <Frame FrameValue="37" GraphicSheet="Ship" CellIndex="2" m11="-0.2588" m12="-0.9659" m21="0.9659" m22="-0.2588" dx="4.6863" dy="35.5959" color="-1" />
+    <Frame FrameValue="38" GraphicSheet="Ship" CellIndex="2" m11="-0.5" m12="-0.866" m21="0.866" m22="-0.5" dx="10.1436" dy="37.8564" color="-1" />
+    <Frame FrameValue="39" GraphicSheet="Ship" CellIndex="2" m11="-0.7071" m12="-0.7071" m21="0.7071" m22="-0.7071" dx="16" dy="38.6274" color="-1" />
+    <Frame FrameValue="40" GraphicSheet="Ship" CellIndex="2" m11="-0.866" m12="-0.5" m21="0.5" m22="-0.866" dx="21.8564" dy="37.8564" color="-1" />
+    <Frame FrameValue="41" GraphicSheet="Ship" CellIndex="2" m11="-0.9659" m12="-0.2588" m21="0.2588" m22="-0.9659" dx="27.3137" dy="35.5959" color="-1" />
+    <Frame FrameValue="42" GraphicSheet="Ship" CellIndex="2" m11="-1" m12="0" m21="0" m22="-1" dx="32" dy="32" color="-1" />
+    <Frame FrameValue="43" GraphicSheet="Ship" CellIndex="2" m11="-0.9659" m12="0.2588" m21="-0.2588" m22="-0.9659" dx="35.5959" dy="27.3137" color="-1" />
+    <Frame FrameValue="44" GraphicSheet="Ship" CellIndex="2" m11="-0.866" m12="0.5" m21="-0.5" m22="-0.866" dx="37.8564" dy="21.8564" color="-1" />
+    <Frame FrameValue="45" GraphicSheet="Ship" CellIndex="2" m11="-0.7071" m12="0.7071" m21="-0.7071" m22="-0.7071" dx="38.6274" dy="16" color="-1" />
+    <Frame FrameValue="46" GraphicSheet="Ship" CellIndex="2" m11="-0.5" m12="0.866" m21="-0.866" m22="-0.5" dx="37.8564" dy="10.1436" color="-1" />
+    <Frame FrameValue="47" GraphicSheet="Ship" CellIndex="2" m11="-0.2588" m12="0.9659" m21="-0.9659" m22="-0.2588" dx="35.5959" dy="4.6863" color="-1" />
+    <Frame FrameValue="48" GraphicSheet="Ship" CellIndex="3" m11="0" m12="1" m21="-1" m22="0" dx="32" dy="0" color="-1" />
+    <Frame FrameValue="49" GraphicSheet="Ship" CellIndex="3" m11="0.2588" m12="0.9659" m21="-0.9659" m22="0.2588" dx="27.3137" dy="-3.5959" color="-1" />
+    <Frame FrameValue="50" GraphicSheet="Ship" CellIndex="3" m11="0.5" m12="0.866" m21="-0.866" m22="0.5" dx="21.8564" dy="-5.8564" color="-1" />
+    <Frame FrameValue="51" GraphicSheet="Ship" CellIndex="3" m11="0.7071" m12="0.7071" m21="-0.7071" m22="0.7071" dx="16" dy="-6.6274" color="-1" />
+    <Frame FrameValue="52" GraphicSheet="Ship" CellIndex="3" m11="0.866" m12="0.5" m21="-0.5" m22="0.866" dx="10.1436" dy="-5.8564" color="-1" />
+    <Frame FrameValue="53" GraphicSheet="Ship" CellIndex="3" m11="0.9659" m12="0.2588" m21="-0.2588" m22="0.9659" dx="4.6863" dy="-3.5959" color="-1" />
+    <Frame FrameValue="54" GraphicSheet="Ship" CellIndex="3" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="55" GraphicSheet="Ship" CellIndex="3" m11="0.9659" m12="-0.2588" m21="0.2588" m22="0.9659" dx="-3.5959" dy="4.6863" color="-1" />
+    <Frame FrameValue="56" GraphicSheet="Ship" CellIndex="3" m11="0.866" m12="-0.5" m21="0.5" m22="0.866" dx="-5.8564" dy="10.1436" color="-1" />
+    <Frame FrameValue="57" GraphicSheet="Ship" CellIndex="3" m11="0.7071" m12="-0.7071" m21="0.7071" m22="0.7071" dx="-6.6274" dy="16" color="-1" />
+    <Frame FrameValue="58" GraphicSheet="Ship" CellIndex="3" m11="0.5" m12="-0.866" m21="0.866" m22="0.5" dx="-5.8564" dy="21.8564" color="-1" />
+    <Frame FrameValue="59" GraphicSheet="Ship" CellIndex="3" m11="0.2588" m12="-0.9659" m21="0.9659" m22="0.2588" dx="-3.5959" dy="27.3137" color="-1" />
+    <Frame FrameValue="60" GraphicSheet="Ship" CellIndex="3" m11="0" m12="-1" m21="1" m22="0" dx="0" dy="32" color="-1" />
+    <Frame FrameValue="61" GraphicSheet="Ship" CellIndex="3" m11="-0.2588" m12="-0.9659" m21="0.9659" m22="-0.2588" dx="4.6863" dy="35.5959" color="-1" />
+    <Frame FrameValue="62" GraphicSheet="Ship" CellIndex="3" m11="-0.5" m12="-0.866" m21="0.866" m22="-0.5" dx="10.1436" dy="37.8564" color="-1" />
+    <Frame FrameValue="63" GraphicSheet="Ship" CellIndex="3" m11="-0.7071" m12="-0.7071" m21="0.7071" m22="-0.7071" dx="16" dy="38.6274" color="-1" />
+    <Frame FrameValue="64" GraphicSheet="Ship" CellIndex="3" m11="-0.866" m12="-0.5" m21="0.5" m22="-0.866" dx="21.8564" dy="37.8564" color="-1" />
+    <Frame FrameValue="65" GraphicSheet="Ship" CellIndex="3" m11="-0.9659" m12="-0.2588" m21="0.2588" m22="-0.9659" dx="27.3137" dy="35.5959" color="-1" />
+    <Frame FrameValue="66" GraphicSheet="Ship" CellIndex="3" m11="-1" m12="0" m21="0" m22="-1" dx="32" dy="32" color="-1" />
+    <Frame FrameValue="67" GraphicSheet="Ship" CellIndex="3" m11="-0.9659" m12="0.2588" m21="-0.2588" m22="-0.9659" dx="35.5959" dy="27.3137" color="-1" />
+    <Frame FrameValue="68" GraphicSheet="Ship" CellIndex="3" m11="-0.866" m12="0.5" m21="-0.5" m22="-0.866" dx="37.8564" dy="21.8564" color="-1" />
+    <Frame FrameValue="69" GraphicSheet="Ship" CellIndex="3" m11="-0.7071" m12="0.7071" m21="-0.7071" m22="-0.7071" dx="38.6274" dy="16" color="-1" />
+    <Frame FrameValue="70" GraphicSheet="Ship" CellIndex="3" m11="-0.5" m12="0.866" m21="-0.866" m22="-0.5" dx="37.8564" dy="10.1436" color="-1" />
+    <Frame FrameValue="71" GraphicSheet="Ship" CellIndex="3" m11="-0.2588" m12="0.9659" m21="-0.9659" m22="-0.2588" dx="35.5959" dy="4.6863" color="-1" />
+  </Frameset>
+  <Frameset Name="Car">
+    <Frame FrameValue="0" GraphicSheet="Car" CellIndex="1" m11="0" m12="1" m21="-1" m22="0" dx="64" dy="0" color="-1" />
+    <Frame FrameValue="1" GraphicSheet="Car" CellIndex="1" m11="0.0872" m12="0.9962" m21="-0.9962" m22="0.0872" dx="61.0892" dy="-2.6672" color="-1" />
+    <Frame FrameValue="2" GraphicSheet="Car" CellIndex="1" m11="0.1736" m12="0.9848" m21="-0.9848" m22="0.1736" dx="57.9571" dy="-5.0706" color="-1" />
+    <Frame FrameValue="3" GraphicSheet="Car" CellIndex="1" m11="0.2588" m12="0.9659" m21="-0.9659" m22="0.2588" dx="54.6274" dy="-7.1918" color="-1" />
+    <Frame FrameValue="4" GraphicSheet="Car" CellIndex="1" m11="0.342" m12="0.9397" m21="-0.9397" m22="0.342" dx="51.1255" dy="-9.0148" color="-1" />
+    <Frame FrameValue="5" GraphicSheet="Car" CellIndex="1" m11="0.4226" m12="0.9063" m21="-0.9063" m22="0.4226" dx="47.4781" dy="-10.5256" color="-1" />
+    <Frame FrameValue="6" GraphicSheet="Car" CellIndex="1" m11="0.5" m12="0.866" m21="-0.866" m22="0.5" dx="43.7128" dy="-11.7128" color="-1" />
+    <Frame FrameValue="7" GraphicSheet="Car" CellIndex="1" m11="0.5736" m12="0.8192" m21="-0.8192" m22="0.5736" dx="39.8584" dy="-12.5673" color="-1" />
+    <Frame FrameValue="8" GraphicSheet="Car" CellIndex="1" m11="0.6428" m12="0.766" m21="-0.766" m22="0.6428" dx="35.9442" dy="-13.0826" color="-1" />
+    <Frame FrameValue="9" GraphicSheet="Car" CellIndex="1" m11="0.7071" m12="0.7071" m21="-0.7071" m22="0.7071" dx="32" dy="-13.2548" color="-1" />
+    <Frame FrameValue="10" GraphicSheet="Car" CellIndex="1" m11="0.766" m12="0.6428" m21="-0.6428" m22="0.766" dx="28.0558" dy="-13.0826" color="-1" />
+    <Frame FrameValue="11" GraphicSheet="Car" CellIndex="1" m11="0.8192" m12="0.5736" m21="-0.5736" m22="0.8192" dx="24.1416" dy="-12.5673" color="-1" />
+    <Frame FrameValue="13" GraphicSheet="Car" CellIndex="1" m11="0.9063" m12="0.4226" m21="-0.4226" m22="0.9063" dx="16.5219" dy="-10.5256" color="-1" />
+    <Frame FrameValue="14" GraphicSheet="Car" CellIndex="1" m11="0.9397" m12="0.342" m21="-0.342" m22="0.9397" dx="12.8745" dy="-9.0148" color="-1" />
+    <Frame FrameValue="15" GraphicSheet="Car" CellIndex="1" m11="0.9659" m12="0.2588" m21="-0.2588" m22="0.9659" dx="9.3726" dy="-7.1918" color="-1" />
+    <Frame FrameValue="16" GraphicSheet="Car" CellIndex="1" m11="0.9848" m12="0.1736" m21="-0.1736" m22="0.9848" dx="6.0429" dy="-5.0706" color="-1" />
+    <Frame FrameValue="17" GraphicSheet="Car" CellIndex="1" m11="0.9962" m12="0.0872" m21="-0.0872" m22="0.9962" dx="2.9108" dy="-2.6672" color="-1" />
+    <Frame FrameValue="18" GraphicSheet="Car" CellIndex="1" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="19" GraphicSheet="Car" CellIndex="1" m11="0.9962" m12="-0.0872" m21="0.0872" m22="0.9962" dx="-2.6672" dy="2.9108" color="-1" />
+    <Frame FrameValue="20" GraphicSheet="Car" CellIndex="1" m11="0.9848" m12="-0.1736" m21="0.1736" m22="0.9848" dx="-5.0706" dy="6.0429" color="-1" />
+    <Frame FrameValue="21" GraphicSheet="Car" CellIndex="1" m11="0.9659" m12="-0.2588" m21="0.2588" m22="0.9659" dx="-7.1918" dy="9.3726" color="-1" />
+    <Frame FrameValue="22" GraphicSheet="Car" CellIndex="1" m11="0.9397" m12="-0.342" m21="0.342" m22="0.9397" dx="-9.0148" dy="12.8745" color="-1" />
+    <Frame FrameValue="23" GraphicSheet="Car" CellIndex="1" m11="0.9063" m12="-0.4226" m21="0.4226" m22="0.9063" dx="-10.5256" dy="16.5219" color="-1" />
+    <Frame FrameValue="24" GraphicSheet="Car" CellIndex="1" m11="0.866" m12="-0.5" m21="0.5" m22="0.866" dx="-11.7128" dy="20.2872" color="-1" />
+    <Frame FrameValue="25" GraphicSheet="Car" CellIndex="1" m11="0.8192" m12="-0.5736" m21="0.5736" m22="0.8192" dx="-12.5673" dy="24.1416" color="-1" />
+    <Frame FrameValue="26" GraphicSheet="Car" CellIndex="1" m11="0.766" m12="-0.6428" m21="0.6428" m22="0.766" dx="-13.0826" dy="28.0558" color="-1" />
+    <Frame FrameValue="27" GraphicSheet="Car" CellIndex="1" m11="0.7071" m12="-0.7071" m21="0.7071" m22="0.7071" dx="-13.2548" dy="32" color="-1" />
+    <Frame FrameValue="28" GraphicSheet="Car" CellIndex="1" m11="0.6428" m12="-0.766" m21="0.766" m22="0.6428" dx="-13.0826" dy="35.9442" color="-1" />
+    <Frame FrameValue="29" GraphicSheet="Car" CellIndex="1" m11="0.5736" m12="-0.8192" m21="0.8192" m22="0.5736" dx="-12.5673" dy="39.8584" color="-1" />
+    <Frame FrameValue="30" GraphicSheet="Car" CellIndex="1" m11="0.5" m12="-0.866" m21="0.866" m22="0.5" dx="-11.7128" dy="43.7128" color="-1" />
+    <Frame FrameValue="31" GraphicSheet="Car" CellIndex="1" m11="0.4226" m12="-0.9063" m21="0.9063" m22="0.4226" dx="-10.5256" dy="47.4781" color="-1" />
+    <Frame FrameValue="32" GraphicSheet="Car" CellIndex="1" m11="0.342" m12="-0.9397" m21="0.9397" m22="0.342" dx="-9.0148" dy="51.1255" color="-1" />
+    <Frame FrameValue="33" GraphicSheet="Car" CellIndex="1" m11="0.2588" m12="-0.9659" m21="0.9659" m22="0.2588" dx="-7.1918" dy="54.6274" color="-1" />
+    <Frame FrameValue="34" GraphicSheet="Car" CellIndex="1" m11="0.1736" m12="-0.9848" m21="0.9848" m22="0.1736" dx="-5.0706" dy="57.9571" color="-1" />
+    <Frame FrameValue="35" GraphicSheet="Car" CellIndex="1" m11="0.0872" m12="-0.9962" m21="0.9962" m22="0.0872" dx="-2.6672" dy="61.0892" color="-1" />
+    <Frame FrameValue="36" GraphicSheet="Car" CellIndex="1" m11="0" m12="-1" m21="1" m22="0" dx="0" dy="64" color="-1" />
+    <Frame FrameValue="37" GraphicSheet="Car" CellIndex="1" m11="-0.0872" m12="-0.9962" m21="0.9962" m22="-0.0872" dx="2.9108" dy="66.6672" color="-1" />
+    <Frame FrameValue="38" GraphicSheet="Car" CellIndex="1" m11="-0.1736" m12="-0.9848" m21="0.9848" m22="-0.1736" dx="6.0429" dy="69.0706" color="-1" />
+    <Frame FrameValue="39" GraphicSheet="Car" CellIndex="1" m11="-0.2588" m12="-0.9659" m21="0.9659" m22="-0.2588" dx="9.3726" dy="71.1918" color="-1" />
+    <Frame FrameValue="40" GraphicSheet="Car" CellIndex="1" m11="-0.342" m12="-0.9397" m21="0.9397" m22="-0.342" dx="12.8745" dy="73.0148" color="-1" />
+    <Frame FrameValue="41" GraphicSheet="Car" CellIndex="1" m11="-0.4226" m12="-0.9063" m21="0.9063" m22="-0.4226" dx="16.5219" dy="74.5256" color="-1" />
+    <Frame FrameValue="42" GraphicSheet="Car" CellIndex="1" m11="-0.5" m12="-0.866" m21="0.866" m22="-0.5" dx="20.2872" dy="75.7128" color="-1" />
+    <Frame FrameValue="43" GraphicSheet="Car" CellIndex="1" m11="-0.5736" m12="-0.8192" m21="0.8192" m22="-0.5736" dx="24.1416" dy="76.5673" color="-1" />
+    <Frame FrameValue="44" GraphicSheet="Car" CellIndex="1" m11="-0.6428" m12="-0.766" m21="0.766" m22="-0.6428" dx="28.0558" dy="77.0826" color="-1" />
+    <Frame FrameValue="45" GraphicSheet="Car" CellIndex="1" m11="-0.7071" m12="-0.7071" m21="0.7071" m22="-0.7071" dx="32" dy="77.2548" color="-1" />
+    <Frame FrameValue="46" GraphicSheet="Car" CellIndex="1" m11="-0.766" m12="-0.6428" m21="0.6428" m22="-0.766" dx="35.9442" dy="77.0826" color="-1" />
+    <Frame FrameValue="47" GraphicSheet="Car" CellIndex="1" m11="-0.8192" m12="-0.5736" m21="0.5736" m22="-0.8192" dx="39.8584" dy="76.5673" color="-1" />
+    <Frame FrameValue="48" GraphicSheet="Car" CellIndex="1" m11="-0.866" m12="-0.5" m21="0.5" m22="-0.866" dx="43.7128" dy="75.7128" color="-1" />
+    <Frame FrameValue="49" GraphicSheet="Car" CellIndex="1" m11="-0.9063" m12="-0.4226" m21="0.4226" m22="-0.9063" dx="47.4781" dy="74.5256" color="-1" />
+    <Frame FrameValue="50" GraphicSheet="Car" CellIndex="1" m11="-0.9397" m12="-0.342" m21="0.342" m22="-0.9397" dx="51.1255" dy="73.0148" color="-1" />
+    <Frame FrameValue="51" GraphicSheet="Car" CellIndex="1" m11="-0.9659" m12="-0.2588" m21="0.2588" m22="-0.9659" dx="54.6274" dy="71.1918" color="-1" />
+    <Frame FrameValue="52" GraphicSheet="Car" CellIndex="1" m11="-0.9848" m12="-0.1736" m21="0.1736" m22="-0.9848" dx="57.9571" dy="69.0706" color="-1" />
+    <Frame FrameValue="53" GraphicSheet="Car" CellIndex="1" m11="-0.9962" m12="-0.0872" m21="0.0872" m22="-0.9962" dx="61.0892" dy="66.6672" color="-1" />
+    <Frame FrameValue="54" GraphicSheet="Car" CellIndex="1" m11="-1" m12="0" m21="0" m22="-1" dx="64" dy="64" color="-1" />
+    <Frame FrameValue="55" GraphicSheet="Car" CellIndex="1" m11="-0.9962" m12="0.0872" m21="-0.0872" m22="-0.9962" dx="66.6672" dy="61.0892" color="-1" />
+    <Frame FrameValue="56" GraphicSheet="Car" CellIndex="1" m11="-0.9848" m12="0.1736" m21="-0.1736" m22="-0.9848" dx="69.0706" dy="57.9571" color="-1" />
+    <Frame FrameValue="57" GraphicSheet="Car" CellIndex="1" m11="-0.9659" m12="0.2588" m21="-0.2588" m22="-0.9659" dx="71.1918" dy="54.6274" color="-1" />
+    <Frame FrameValue="58" GraphicSheet="Car" CellIndex="1" m11="-0.9397" m12="0.342" m21="-0.342" m22="-0.9397" dx="73.0148" dy="51.1255" color="-1" />
+    <Frame FrameValue="59" GraphicSheet="Car" CellIndex="1" m11="-0.9063" m12="0.4226" m21="-0.4226" m22="-0.9063" dx="74.5256" dy="47.4781" color="-1" />
+    <Frame FrameValue="60" GraphicSheet="Car" CellIndex="1" m11="-0.866" m12="0.5" m21="-0.5" m22="-0.866" dx="75.7128" dy="43.7128" color="-1" />
+    <Frame FrameValue="61" GraphicSheet="Car" CellIndex="1" m11="-0.8192" m12="0.5736" m21="-0.5736" m22="-0.8192" dx="76.5673" dy="39.8584" color="-1" />
+    <Frame FrameValue="62" GraphicSheet="Car" CellIndex="1" m11="-0.766" m12="0.6428" m21="-0.6428" m22="-0.766" dx="77.0826" dy="35.9442" color="-1" />
+    <Frame FrameValue="63" GraphicSheet="Car" CellIndex="1" m11="-0.7071" m12="0.7071" m21="-0.7071" m22="-0.7071" dx="77.2548" dy="32" color="-1" />
+    <Frame FrameValue="64" GraphicSheet="Car" CellIndex="1" m11="-0.6428" m12="0.766" m21="-0.766" m22="-0.6428" dx="77.0826" dy="28.0558" color="-1" />
+    <Frame FrameValue="65" GraphicSheet="Car" CellIndex="1" m11="-0.5736" m12="0.8192" m21="-0.8192" m22="-0.5736" dx="76.5673" dy="24.1416" color="-1" />
+    <Frame FrameValue="66" GraphicSheet="Car" CellIndex="1" m11="-0.5" m12="0.866" m21="-0.866" m22="-0.5" dx="75.7128" dy="20.2872" color="-1" />
+    <Frame FrameValue="67" GraphicSheet="Car" CellIndex="1" m11="-0.4226" m12="0.9063" m21="-0.9063" m22="-0.4226" dx="74.5256" dy="16.5219" color="-1" />
+    <Frame FrameValue="68" GraphicSheet="Car" CellIndex="1" m11="-0.342" m12="0.9397" m21="-0.9397" m22="-0.342" dx="73.0148" dy="12.8745" color="-1" />
+    <Frame FrameValue="69" GraphicSheet="Car" CellIndex="1" m11="-0.2588" m12="0.9659" m21="-0.9659" m22="-0.2588" dx="71.1918" dy="9.3726" color="-1" />
+    <Frame FrameValue="70" GraphicSheet="Car" CellIndex="1" m11="-0.1736" m12="0.9848" m21="-0.9848" m22="-0.1736" dx="69.0706" dy="6.0429" color="-1" />
+    <Frame FrameValue="71" GraphicSheet="Car" CellIndex="1" m11="-0.0872" m12="0.9962" m21="-0.9962" m22="-0.0872" dx="66.6672" dy="2.9108" color="-1" />
+    <Frame FrameValue="12" GraphicSheet="Car" CellIndex="1" m11="0.866" m12="0.5" m21="-0.5" m22="0.866" dx="20.2872" dy="-11.7128" color="-1" />
   </Frameset>
   <Tileset Name="MainTiles" Frameset="Main" TileWidth="32" TileHeight="32">
     <Tile TileValue="23" Counter="Animator">
@@ -1127,8 +1253,8 @@
   <Counter Name="Animator" Value="120" Max="3600" />
   <Counter Name="Cherries" Value="0" Max="20" />
   <Counter Name="IceCreams" Value="0" Max="2" />
-  <Counter Name="PlayerCount" Value="1" Max="3" />
-  <Map Name="Level 1" ScrollMarginLeft="128" ScrollMarginTop="96" ScrollMarginRight="128" ScrollMarginBottom="96" ScrollWidth="1696" ScrollHeight="768" ViewLeft="32" ViewTop="32" ViewWidth="736" ViewHeight="512">
+  <Counter Name="PlayerCount" Value="1" Max="4" />
+  <Map Name="Level 1" ScrollMarginLeft="64" ScrollMarginTop="64" ScrollMarginRight="64" ScrollMarginBottom="64" ScrollWidth="1696" ScrollHeight="768" ViewLeft="32" ViewTop="32" ViewWidth="736" ViewHeight="512">
     <Layer Name="Background" Width="38" Height="20" Tileset="MainTiles" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="0.5" ScrollRateY="0.5" Priority="0">
       <Tiles>2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tra2tro6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Ojo6Le3t7e3t7e3t7e3t7e3t7e3t7e3t7e3t7e3t7e3t7e3t7e3t7e3zc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3Nzc3b29vb29vb29vb29vb29vb29vb29vb29vb29vb29vb29vb29vb2+np6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enp6enpzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzA==</Tiles>
     </Layer>
@@ -1182,6 +1308,7 @@
         <ParameterValue ParameterName="Lifetime" Value="0" />
       </Sprite>
       <Sprite Name="Ship 1" DefinitionName="Ship" StateName="Up" CurrentFrame="0" X="84" Y="156" DX="0" DY="0" Priority="1" Active="false" Solidity="StandardSolidity" Color="-1" />
+      <Sprite Name="Car 1" DefinitionName="Car" StateName="Up" CurrentFrame="0" X="367" Y="151" DX="0" DY="0" Priority="2" Active="false" Solidity="StandardSolidity" Color="-1" />
       <SpritePlan Name="Animate" Priority="1">
         <PlanRule Name="IncrementAnimator" Sequence="1" Type="Do" Function="+" Parameter1="Counter.Animator.CurrentValue" Parameter2="1" ResultParameter="Counter.Animator.CurrentValue" EndIf="false" Suspended="false" />
         <PlanRule Name="CheckResetAnimator" Sequence="2" Type="If" Function="&gt;=" Parameter1="Counter.Animator.CurrentValue" Parameter2="3600" EndIf="false" Suspended="false" />
@@ -1260,45 +1387,58 @@
       <SpritePlan Name="MultiPlayerManagement" Priority="1">
         <Coordinate Sequence="1" X="1879" Y="15" Weight="0" />
         <PlanRule Name="MapPlayer1" Sequence="1" Type="Do" Function="MapPlayerToInputs" Parameter1="1" Parameter2="m_ParentLayer.m_Player_1" EndIf="false" Suspended="false" />
-        <PlanRule Name="MapPlayer2" Sequence="35" Type="Do" Function="MapPlayerToInputs" Parameter1="2" Parameter2="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
-        <PlanRule Name="IfPlayer2" Sequence="26" Type="If" Function="&gt;=" Parameter1="Counter.PlayerCount.CurrentValue" Parameter2="2" EndIf="false" Suspended="false" />
-        <PlanRule Name="Check Active" Sequence="9" Type="If" Function="!IsSpriteActive" Parameter1="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
-        <PlanRule Name="Activate Player 2" Sequence="10" Type="Do" Function="ActivateSprite" Parameter1="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
+        <PlanRule Name="MapPlayer2" Sequence="44" Type="Do" Function="MapPlayerToInputs" Parameter1="2" Parameter2="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
+        <PlanRule Name="IfPlayer2" Sequence="35" Type="If" Function="&gt;=" Parameter1="Counter.PlayerCount.CurrentValue" Parameter2="2" EndIf="false" Suspended="false" />
+        <PlanRule Name="Check Active" Sequence="11" Type="If" Function="!IsSpriteActive" Parameter1="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
+        <PlanRule Name="Activate Player 2" Sequence="12" Type="Do" Function="ActivateSprite" Parameter1="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
         <PlanRule Name="If 1 Player Requested" Sequence="2" Type="If" Function="IsKeyPressed" Parameter1="Microsoft.DirectX.DirectInput.Key.D1" EndIf="false" Suspended="false" />
         <PlanRule Name="Set 1 player" Sequence="3" Type="Do" Function="=" Parameter1="1" ResultParameter="Counter.PlayerCount.CurrentValue" EndIf="true" Suspended="false" />
         <PlanRule Name="If 2 Players Requested" Sequence="4" Type="If" Function="IsKeyPressed" Parameter1="Microsoft.DirectX.DirectInput.Key.D2" EndIf="false" Suspended="false" />
         <PlanRule Name="Set 2 Players" Sequence="5" Type="Do" Function="=" Parameter1="2" ResultParameter="Counter.PlayerCount.CurrentValue" EndIf="true" Suspended="false" />
-        <PlanRule Name="Move Player 2" Sequence="11" Type="Do" Function="MatchSpritePosition" Parameter1="m_ParentLayer.m_Player_2" Parameter2="m_ParentLayer.m_Player_1" EndIf="false" Suspended="false" />
-        <PlanRule Name="Sprout from player 1" Sequence="12" Type="Do" Function="PushSpriteTowardPoint" Parameter1="m_ParentLayer.m_Player_2" Parameter2="m_ParentLayer.m_MultiPlayerManagement[0]" Parameter3="50" EndIf="false" Suspended="false" />
-        <PlanRule Name="Color Player 1" Sequence="13" Type="Do" Function="ModulateColor" Parameter1="m_ParentLayer.m_Player_1" Parameter2="PlanBase.ColorChannel.Green" Parameter3="64" EndIf="true" Suspended="false" />
-        <PlanRule Name="Reset player 1 color" Sequence="16" Type="Do" Function="ModulateColor" Parameter1="m_ParentLayer.m_Player_1" Parameter2="PlanBase.ColorChannel.Green" Parameter3="255" EndIf="true" Suspended="false" />
-        <PlanRule Name="ScrollTo1" Sequence="30" Type="Do" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Player_1" Parameter2="false" EndIf="false" Suspended="false" />
-        <PlanRule Name="Push2IntoView" Sequence="31" Type="Do" Function="PushSpriteIntoView" Parameter1="m_ParentLayer.m_Player_2" Parameter2="false" EndIf="false" Suspended="false" />
-        <PlanRule Name="ScrollTo2" Sequence="28" Type="Do" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Player_2" Parameter2="false" EndIf="false" Suspended="false" />
-        <PlanRule Name="Push1IntoView" Sequence="29" Type="Do" Function="PushSpriteIntoView" Parameter1="m_ParentLayer.m_Player_1" Parameter2="false" EndIf="false" Suspended="false" />
-        <PlanRule Name="ScrollToMargin1" Sequence="33" Type="Do" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Player_1" Parameter2="true" EndIf="false" Suspended="false" />
-        <PlanRule Name="Scroll2IntoView" Sequence="34" Type="Do" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Player_2" Parameter2="false" EndIf="false" Suspended="false" />
-        <PlanRule Name="ScrollToMargin2" Sequence="32" Type="Do" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Player_2" Parameter2="true" EndIf="false" Suspended="false" />
-        <PlanRule Name="Else ScrollTo1" Sequence="36" Type="Else" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Player_1" Parameter2="true" EndIf="true" Suspended="false" />
-        <PlanRule Name="SplitView" Sequence="20" Type="Do" Function="SetViewLayout" Parameter1="ViewLayout.TopBottom" EndIf="false" Suspended="false" />
+        <PlanRule Name="Move Player 2" Sequence="13" Type="Do" Function="MatchSpritePosition" Parameter1="m_ParentLayer.m_Player_2" Parameter2="m_ParentLayer.m_Player_1" EndIf="false" Suspended="false" />
+        <PlanRule Name="Sprout from player 1" Sequence="14" Type="Do" Function="PushSpriteTowardPoint" Parameter1="m_ParentLayer.m_Player_2" Parameter2="m_ParentLayer.m_MultiPlayerManagement[0]" Parameter3="50" EndIf="false" Suspended="false" />
+        <PlanRule Name="Color Player 1" Sequence="15" Type="Do" Function="ModulateColor" Parameter1="m_ParentLayer.m_Player_1" Parameter2="PlanBase.ColorChannel.Green" Parameter3="64" EndIf="true" Suspended="false" />
+        <PlanRule Name="Reset player 1 color" Sequence="18" Type="Do" Function="ModulateColor" Parameter1="m_ParentLayer.m_Player_1" Parameter2="PlanBase.ColorChannel.Green" Parameter3="255" EndIf="true" Suspended="false" />
+        <PlanRule Name="ScrollTo1" Sequence="39" Type="Do" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Player_1" Parameter2="false" EndIf="false" Suspended="false" />
+        <PlanRule Name="Push2IntoView" Sequence="40" Type="Do" Function="PushSpriteIntoView" Parameter1="m_ParentLayer.m_Player_2" Parameter2="false" EndIf="false" Suspended="false" />
+        <PlanRule Name="ScrollTo2" Sequence="37" Type="Do" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Player_2" Parameter2="false" EndIf="false" Suspended="false" />
+        <PlanRule Name="Push1IntoView" Sequence="38" Type="Do" Function="PushSpriteIntoView" Parameter1="m_ParentLayer.m_Player_1" Parameter2="false" EndIf="false" Suspended="false" />
+        <PlanRule Name="ScrollToMargin1" Sequence="42" Type="Do" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Player_1" Parameter2="true" EndIf="false" Suspended="false" />
+        <PlanRule Name="Scroll2IntoView" Sequence="43" Type="Do" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Player_2" Parameter2="false" EndIf="false" Suspended="false" />
+        <PlanRule Name="ScrollToMargin2" Sequence="41" Type="Do" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Player_2" Parameter2="true" EndIf="false" Suspended="false" />
+        <PlanRule Name="Else ScrollTo1" Sequence="45" Type="Else" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Player_1" Parameter2="true" EndIf="true" Suspended="false" />
+        <PlanRule Name="SplitView" Sequence="22" Type="Do" Function="SetViewLayout" Parameter1="ViewLayout.TopBottom" EndIf="false" Suspended="false" />
         <PlanRule Name="If 3 Players Requested" Sequence="6" Type="If" Function="IsKeyPressed" Parameter1="Microsoft.DirectX.DirectInput.Key.D3" EndIf="false" Suspended="false" />
-        <PlanRule Name="If 3 Player Init Required" Sequence="18" Type="If" Function="&gt;=" Parameter1="Counter.PlayerCount.CurrentValue" Parameter2="3" EndIf="false" Suspended="false" />
-        <PlanRule Name="ActivateShip" Sequence="21" Type="Do" Function="ActivateSprite" Parameter1="m_ParentLayer.m_Ship_1" EndIf="true" Suspended="false" />
+        <PlanRule Name="If 3 Player Init Required" Sequence="20" Type="If" Function="&gt;=" Parameter1="Counter.PlayerCount.CurrentValue" Parameter2="3" EndIf="false" Suspended="false" />
+        <PlanRule Name="ActivateShip" Sequence="23" Type="Do" Function="ActivateSprite" Parameter1="m_ParentLayer.m_Ship_1" EndIf="true" Suspended="false" />
         <PlanRule Name="Set Player Count=3" Sequence="7" Type="Do" Function="=" Parameter1="3" ResultParameter="Counter.PlayerCount.CurrentValue" EndIf="true" Suspended="false" />
-        <PlanRule Name="If 2 Player Init Required" Sequence="8" Type="If" Function="&gt;=" Parameter1="Counter.PlayerCount.CurrentValue" Parameter2="2" EndIf="false" Suspended="false" />
-        <PlanRule Name="If 3 active" Sequence="19" Type="If" Function="!IsSpriteActive" Parameter1="m_ParentLayer.m_Ship_1" EndIf="false" Suspended="false" />
-        <PlanRule Name="Else1Player" Sequence="14" Type="ElseIf" Function="IsSpriteActive" Parameter1="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
-        <PlanRule Name="Deactivate 2" Sequence="15" Type="Do" Function="DeactivateSprite" Parameter1="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
-        <PlanRule Name="End Init 2" Sequence="17" Type="End" Function="End" EndIf="true" Suspended="false" />
-        <PlanRule Name="ElseNot3Player" Sequence="22" Type="ElseIf" Function="IsSpriteActive" Parameter1="m_ParentLayer.m_Ship_1" EndIf="false" Suspended="false" />
-        <PlanRule Name="Deactivate 3" Sequence="23" Type="Do" Function="DeactivateSprite" Parameter1="m_ParentLayer.m_Ship_1" EndIf="false" Suspended="false" />
-        <PlanRule Name="Unsplit" Sequence="24" Type="Do" Function="SetViewLayout" Parameter1="ViewLayout.Single" EndIf="true" Suspended="false" />
-        <PlanRule Name="End Init 3" Sequence="25" Type="End" Function="End" EndIf="true" Suspended="false" />
-        <PlanRule Name="IfPlayer3" Sequence="37" Type="If" Function="&gt;=" Parameter1="Counter.PlayerCount.CurrentValue" Parameter2="3" EndIf="false" Suspended="false" />
-        <PlanRule Name="Use view 1" Sequence="39" Type="Do" Function="=" Parameter1="1" ResultParameter="CurrentView" EndIf="false" Suspended="false" />
-        <PlanRule Name="Use View 0" Sequence="27" Type="Do" Function="=" Parameter1="0" ResultParameter="CurrentView" EndIf="false" Suspended="false" />
-        <PlanRule Name="Scroll ship into view" Sequence="40" Type="Do" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Ship_1" Parameter2="true" ResultParameter="" EndIf="true" Suspended="false" />
-        <PlanRule Name="Map player 3 inputs" Sequence="38" Type="Do" Function="MapPlayerToInputs" Parameter1="3" Parameter2="m_ParentLayer.m_Ship_1" EndIf="false" Suspended="false" />
+        <PlanRule Name="If 2 Player Init Required" Sequence="10" Type="If" Function="&gt;=" Parameter1="Counter.PlayerCount.CurrentValue" Parameter2="2" EndIf="false" Suspended="false" />
+        <PlanRule Name="If 3 not active" Sequence="21" Type="If" Function="!IsSpriteActive" Parameter1="m_ParentLayer.m_Ship_1" EndIf="false" Suspended="false" />
+        <PlanRule Name="Else1Player" Sequence="16" Type="ElseIf" Function="IsSpriteActive" Parameter1="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
+        <PlanRule Name="Deactivate 2" Sequence="17" Type="Do" Function="DeactivateSprite" Parameter1="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
+        <PlanRule Name="End Init 2" Sequence="19" Type="End" Function="End" EndIf="true" Suspended="false" />
+        <PlanRule Name="ElseNot3Player" Sequence="24" Type="ElseIf" Function="IsSpriteActive" Parameter1="m_ParentLayer.m_Ship_1" EndIf="false" Suspended="false" />
+        <PlanRule Name="Deactivate 3" Sequence="25" Type="Do" Function="DeactivateSprite" Parameter1="m_ParentLayer.m_Ship_1" EndIf="false" Suspended="false" />
+        <PlanRule Name="Unsplit" Sequence="26" Type="Do" Function="SetViewLayout" Parameter1="ViewLayout.Single" EndIf="true" Suspended="false" />
+        <PlanRule Name="End Init 3" Sequence="27" Type="End" Function="End" EndIf="true" Suspended="false" />
+        <PlanRule Name="IfPlayer3" Sequence="46" Type="If" Function="&gt;=" Parameter1="Counter.PlayerCount.CurrentValue" Parameter2="3" EndIf="false" Suspended="false" />
+        <PlanRule Name="Use view 1" Sequence="48" Type="Do" Function="=" Parameter1="1" ResultParameter="CurrentView" EndIf="false" Suspended="false" />
+        <PlanRule Name="Use View 0" Sequence="36" Type="Do" Function="=" Parameter1="0" ResultParameter="CurrentView" EndIf="false" Suspended="false" />
+        <PlanRule Name="Scroll ship into view" Sequence="49" Type="Do" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Ship_1" Parameter2="true" EndIf="true" Suspended="false" />
+        <PlanRule Name="Map player 3 inputs" Sequence="47" Type="Do" Function="MapPlayerToInputs" Parameter1="3" Parameter2="m_ParentLayer.m_Ship_1" EndIf="false" Suspended="false" />
+        <PlanRule Name="If 4 Players Requested" Sequence="8" Type="If" Function="IsKeyPressed" Parameter1="Microsoft.DirectX.DirectInput.Key.D4" EndIf="false" Suspended="false" />
+        <PlanRule Name="Set player count=4" Sequence="9" Type="Do" Function="=" Parameter1="4" ResultParameter="Counter.PlayerCount.CurrentValue" EndIf="true" Suspended="false" />
+        <PlanRule Name="If 4 player init required" Sequence="28" Type="If" Function="&gt;=" Parameter1="Counter.PlayerCount.CurrentValue" Parameter2="4" EndIf="false" Suspended="false" />
+        <PlanRule Name="If player 4 is not active" Sequence="29" Type="If" Function="!IsSpriteActive" Parameter1="m_ParentLayer.m_Car_1" EndIf="false" Suspended="false" />
+        <PlanRule Name="Split view for 4 players" Sequence="30" Type="Do" Function="SetViewLayout" Parameter1="ViewLayout.FourCorners" EndIf="false" Suspended="false" />
+        <PlanRule Name="Activate car" Sequence="31" Type="Do" Function="ActivateSprite" Parameter1="m_ParentLayer.m_Car_1" EndIf="true" Suspended="false" />
+        <PlanRule Name="Else if player 4 is not required, but is active" Sequence="32" Type="ElseIf" Function="IsSpriteActive" Parameter1="m_ParentLayer.m_Car_1" EndIf="false" Suspended="false" />
+        <PlanRule Name="Deactivate car" Sequence="33" Type="Do" Function="DeactivateSprite" Parameter1="m_ParentLayer.m_Car_1" EndIf="true" Suspended="false" />
+        <PlanRule Name="End player 4 init" Sequence="34" Type="End" Function="End" EndIf="true" Suspended="false" />
+        <PlanRule Name="IfPlayer4" Sequence="50" Type="If" Function="&gt;=" Parameter1="Counter.PlayerCount.CurrentValue" Parameter2="4" EndIf="false" Suspended="false" />
+        <PlanRule Name="Map player 4 inputs" Sequence="51" Type="Do" Function="MapPlayerToInputs" Parameter1="4" Parameter2="m_ParentLayer.m_Car_1" EndIf="false" Suspended="false" />
+        <PlanRule Name="Use view 2" Sequence="52" Type="Do" Function="=" Parameter1="2" ResultParameter="CurrentView" EndIf="false" Suspended="false" />
+        <PlanRule Name="Scroll car into view" Sequence="53" Type="Do" Function="ScrollSpriteIntoView" Parameter1="m_ParentLayer.m_Car_1" Parameter2="true" EndIf="true" Suspended="false" />
       </SpritePlan>
     </Layer>
   </Map>
@@ -1360,10 +1500,10 @@
     <SpriteRule Name="MakeBubble" Sequence="39" Type="Do" Function="TileActivateSprite" Parameter1="TouchIndex" Parameter2="ParentLayer.m_SpriteCategories.Bubbles" Parameter3="true" EndIf="false" Suspended="false" />
     <SpriteRule Name="LadderCheck" Sequence="7" Type="ElseIf" Function="IsOnTile" Parameter1="TileCategoryName.Ladder" Parameter2="SpriteBase.RelativePosition.BottomCenter" EndIf="false" Suspended="false" />
     <SpriteRule Name="ClimbCheck" Sequence="8" Type="And" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Up" Parameter2="true" EndIf="false" Suspended="false" />
-    <SpriteRule Name="DoClimb" Sequence="9" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Climbing" EndIf="false" Suspended="false" />
+    <SpriteRule Name="DoClimb" Sequence="9" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Climbing" Parameter2="SpriteBase.RelativePosition.TopLeft" EndIf="false" Suspended="false" />
     <SpriteRule Name="IfClimbing" Sequence="1" Type="If" Function="IsInState" Parameter1="(int)Sprites.Player.State.Climbing" Parameter2="(int)Sprites.Player.State.Climbing" EndIf="false" Suspended="false" />
     <SpriteRule Name="LeaveLadderCheck" Sequence="2" Type="If" Function="!IsOnTile" Parameter1="TileCategoryName.Ladder" Parameter2="SpriteBase.RelativePosition.BottomCenter" EndIf="true" Suspended="false" />
-    <SpriteRule Name="LeaveLadder" Sequence="3" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Right" EndIf="true" Suspended="false" />
+    <SpriteRule Name="LeaveLadder" Sequence="3" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Right" Parameter2="SpriteBase.RelativePosition.TopLeft" EndIf="true" Suspended="false" />
     <SpriteRule Name="EndClimbing" Sequence="30" Type="End" Function="End" EndIf="true" Suspended="false" />
     <SpriteRule Name="LadderAccellerate" Sequence="5" Type="Do" Function="AccelerateByInputs" Parameter1="20" Parameter2="2" Parameter3="false" EndIf="false" Suspended="false" />
     <SpriteRule Name="LadderAnimate" Sequence="6" Type="Do" Function="Animate" Parameter1="SpriteBase.SpriteAnimationType.ByVerticalVelocity" EndIf="false" Suspended="false" />
@@ -1373,10 +1513,10 @@
     <SpriteRule Name="Check for more bubbles" Sequence="40" Type="Do" Function="TileTouchingIndex" Parameter1="188" Parameter2="true" Parameter3="true" ResultParameter="TouchIndex" EndIf="true" Suspended="false" />
     <SpriteRule Name="If moving left" Sequence="21" Type="If" Function="IsMoving" Parameter1="SpriteBase.Direction.Left" EndIf="false" Suspended="false" />
     <SpriteRule Name="and facing right" Sequence="22" Type="And" Function="IsInState" Parameter1="(int)Sprites.Player.State.Right" Parameter2="(int)Sprites.Player.State.Right" EndIf="false" Suspended="false" />
-    <SpriteRule Name="then face left" Sequence="23" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Left" EndIf="true" Suspended="false" />
+    <SpriteRule Name="then face left" Sequence="23" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Left" Parameter2="SpriteBase.RelativePosition.TopLeft" EndIf="true" Suspended="false" />
     <SpriteRule Name="If moving right" Sequence="24" Type="If" Function="IsMoving" Parameter1="SpriteBase.Direction.Right" EndIf="false" Suspended="false" />
     <SpriteRule Name="and facing left" Sequence="25" Type="And" Function="IsInState" Parameter1="(int)Sprites.Player.State.Left" Parameter2="(int)Sprites.Player.State.Left" EndIf="false" Suspended="false" />
-    <SpriteRule Name="then face right" Sequence="26" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Right" EndIf="true" Suspended="false" />
+    <SpriteRule Name="then face right" Sequence="26" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Right" Parameter2="SpriteBase.RelativePosition.TopLeft" EndIf="true" Suspended="false" />
     <SpriteRule Name="JumpSfx" Sequence="14" Type="Do" Function="CustomObjects.Sfx.PlaySound" Parameter1="CustomObjects.Drum.Value" EndIf="false" Suspended="false" />
     <SpriteRule Name="Sound" Sequence="44" Type="Do" Function="CustomObjects.FMODBase.PlaySound" Parameter1="CustomObjects.OggSound1.Value" Parameter2="CustomObjects.SoundReplay.Restart" EndIf="true" Suspended="false" />
     <SpriteRule Name="CheckSound" Sequence="43" Type="If" Function="&gt;" Parameter1="TempNum" Parameter2="0" EndIf="false" Suspended="false" />
@@ -1511,14 +1651,17 @@
   </SpriteDefinition>
   <SpriteDefinition Name="Ship">
     <SpriteRule Name="OnLeft" Sequence="1" Type="If" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Left" Parameter2="false" EndIf="false" Suspended="false" />
-    <SpriteRule Name="TurnLeft" Sequence="2" Type="Do" Function="SwitchToState" Parameter1="(state + 1) % 24" EndIf="true" Suspended="false" />
+    <SpriteRule Name="TurnLeft" Sequence="2" Type="Do" Function="SwitchToState" Parameter1="(state + 1) % 24" Parameter2="SpriteBase.RelativePosition.CenterMiddle" EndIf="true" Suspended="false" />
     <SpriteRule Name="OnRight" Sequence="3" Type="If" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Right" Parameter2="false" EndIf="false" Suspended="false" />
-    <SpriteRule Name="TurnRight" Sequence="4" Type="Do" Function="SwitchToState" Parameter1="(24 + (state - 1)) % 24" EndIf="true" Suspended="false" />
+    <SpriteRule Name="TurnRight" Sequence="4" Type="Do" Function="SwitchToState" Parameter1="(24 + (state - 1)) % 24" Parameter2="SpriteBase.RelativePosition.CenterMiddle" EndIf="true" Suspended="false" />
     <SpriteRule Name="OnUp" Sequence="5" Type="If" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Up" Parameter2="false" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Accel" Sequence="6" Type="Do" Function="PolarAccelerate" Parameter1="5" Parameter2="(int)Sprites.Ship.State.Right" Parameter3="24" EndIf="true" Suspended="false" />
-    <SpriteRule Name="Inertia" Sequence="7" Type="Do" Function="ReactToInertia" Parameter1="90" Parameter2="90" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Solid" Sequence="8" Type="Do" Function="ReactToSolid" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Move" Sequence="9" Type="Do" Function="MoveByVelocity" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Accel" Sequence="8" Type="Do" Function="PolarAccelerate" Parameter1="5" Parameter2="(int)Sprites.Ship.State.Right" Parameter3="24" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Inertia" Sequence="10" Type="Do" Function="ReactToInertia" Parameter1="90" Parameter2="90" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Solid" Sequence="11" Type="Do" Function="ReactToSolid" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Move" Sequence="12" Type="Do" Function="MoveByVelocity" EndIf="false" Suspended="false" />
+    <SpriteRule Name="SwitchToAccel" Sequence="6" Type="Do" Function="SwitchToState" Parameter1="24 + (state % 24)" Parameter2="SpriteBase.RelativePosition.CenterMiddle" EndIf="false" Suspended="false" />
+    <SpriteRule Name="ElseNoAccel" Sequence="9" Type="Else" Function="SwitchToState" Parameter1="state % 24" Parameter2="SpriteBase.RelativePosition.CenterMiddle" EndIf="true" Suspended="false" />
+    <SpriteRule Name="Animate" Sequence="7" Type="Do" Function="Animate" Parameter1="SpriteBase.SpriteAnimationType.ByFrame" EndIf="false" Suspended="false" />
     <SpriteState Name="Right" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="1">
       <SpriteFrame Sequence="0" FrameValue="0" Duration="1" MaskAlphaLevel="0" />
     </SpriteState>
@@ -1590,6 +1733,338 @@
     </SpriteState>
     <SpriteState Name="Rot345" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="24">
       <SpriteFrame Sequence="0" FrameValue="23" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel Right" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="25">
+      <SpriteFrame Sequence="0" FrameValue="24" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="48" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel 15" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="26">
+      <SpriteFrame Sequence="0" FrameValue="25" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="49" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel 30" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="27">
+      <SpriteFrame Sequence="1" FrameValue="50" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="0" FrameValue="26" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel 45" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="28">
+      <SpriteFrame Sequence="0" FrameValue="27" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="51" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel 60" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="29">
+      <SpriteFrame Sequence="1" FrameValue="52" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="0" FrameValue="28" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel 75" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="30">
+      <SpriteFrame Sequence="1" FrameValue="53" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="0" FrameValue="29" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel Up" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="31">
+      <SpriteFrame Sequence="1" FrameValue="54" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="0" FrameValue="30" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel 105" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="32">
+      <SpriteFrame Sequence="1" FrameValue="55" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="0" FrameValue="31" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel 120" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="33">
+      <SpriteFrame Sequence="1" FrameValue="56" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="0" FrameValue="32" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel 135" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="34">
+      <SpriteFrame Sequence="1" FrameValue="57" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="0" FrameValue="33" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel 150" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="35">
+      <SpriteFrame Sequence="1" FrameValue="58" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="0" FrameValue="34" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel 165" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="36">
+      <SpriteFrame Sequence="1" FrameValue="59" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="0" FrameValue="35" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel Left" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="37">
+      <SpriteFrame Sequence="1" FrameValue="60" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="0" FrameValue="36" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel 195" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="38">
+      <SpriteFrame Sequence="1" FrameValue="61" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="0" FrameValue="37" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel 210" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="39">
+      <SpriteFrame Sequence="1" FrameValue="62" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="0" FrameValue="38" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel 225" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="40">
+      <SpriteFrame Sequence="1" FrameValue="63" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="0" FrameValue="39" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel 240" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="41">
+      <SpriteFrame Sequence="1" FrameValue="64" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="0" FrameValue="40" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel 255" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="42">
+      <SpriteFrame Sequence="1" FrameValue="65" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="0" FrameValue="41" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel Down" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="43">
+      <SpriteFrame Sequence="1" FrameValue="66" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="0" FrameValue="42" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel 285" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="44">
+      <SpriteFrame Sequence="1" FrameValue="67" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="0" FrameValue="43" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel 300" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="45">
+      <SpriteFrame Sequence="1" FrameValue="68" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="0" FrameValue="44" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel 315" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="46">
+      <SpriteFrame Sequence="1" FrameValue="69" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="0" FrameValue="45" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel 330" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="47">
+      <SpriteFrame Sequence="1" FrameValue="70" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="0" FrameValue="46" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel 345" FramesetName="Ship" SolidWidth="32" SolidHeight="32" Sequence="48">
+      <SpriteFrame Sequence="1" FrameValue="71" Duration="3" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="0" FrameValue="47" Duration="3" MaskAlphaLevel="0" />
+    </SpriteState>
+  </SpriteDefinition>
+  <SpriteDefinition Name="Car">
+    <SpriteRule Name="If pressing left" Sequence="2" Type="If" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Left" Parameter2="false" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Then turn left" Sequence="5" Type="Do" Function="SwitchToState" Parameter1="(state + 1) % 72" Parameter2="SpriteBase.RelativePosition.CenterMiddle" EndIf="true" Suspended="false" />
+    <SpriteRule Name="If pressing right" Sequence="6" Type="If" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Right" Parameter2="false" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Then turn right" Sequence="9" Type="Do" Function="SwitchToState" Parameter1="(72 + state - 1) % 72" Parameter2="SpriteBase.RelativePosition.CenterMiddle" EndIf="true" Suspended="false" />
+    <SpriteRule Name="If pressing up" Sequence="10" Type="If" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Up" Parameter2="false" EndIf="false" Suspended="false" />
+    <SpriteRule Name="And velocity exists for turning left" Sequence="4" Type="And" Function="&gt;=" Parameter1="Counter.Animator.CurrentValue % 6" Parameter2="5 - (int)(System.Math.Sqrt(dx*dx+dy*dy)/2)" EndIf="false" Suspended="false" />
+    <SpriteRule Name="And velocity exists for turning right" Sequence="8" Type="And" Function="&gt;=" Parameter1="Counter.Animator.CurrentValue % 6" Parameter2="5 - (int)(System.Math.Sqrt(dx*dx+dy*dy)/2)" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Accelerate" Sequence="11" Type="Do" Function="PolarAccelerate" Parameter1="1" Parameter2="(int)Sprites.Car.State.Right" Parameter3="72" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Change velocity to match direction" Sequence="1" Type="Do" Function="RotateVelocity" Parameter1="(int)Sprites.Car.State.Right" Parameter2="72" EndIf="false" Suspended="false" />
+    <SpriteRule Name="React to solidity" Sequence="17" Type="Do" Function="ReactToSolid" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Move" Sequence="18" Type="Do" Function="MoveByVelocity" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Else react to inertia" Sequence="14" Type="Else" Function="ReactToInertia" Parameter1="95" Parameter2="95" EndIf="true" Suspended="false" />
+    <SpriteRule Name="Limit velocity" Sequence="16" Type="Do" Function="LimitVelocity" Parameter1="10" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Else if pressing down" Sequence="12" Type="ElseIf" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Down" Parameter2="false" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Decelerate" Sequence="13" Type="Do" Function="PolarAccelerate" Parameter1="-1" Parameter2="(int)Sprites.Car.State.Right" Parameter3="72" EndIf="false" Suspended="false" />
+    <SpriteRule Name="End acceleration" Sequence="15" Type="End" Function="End" EndIf="true" Suspended="false" />
+    <SpriteRule Name="And is moving for turn right" Sequence="7" Type="And" Function="&gt;" Parameter1="dx*dx+dy*dy" Parameter2=".1" EndIf="false" Suspended="false" />
+    <SpriteRule Name="And is moving for turn left" Sequence="3" Type="And" Function="&gt;" Parameter1="dx*dx+dy*dy" Parameter2=".1" EndIf="false" Suspended="false" />
+    <SpriteState Name="Right" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="1">
+      <SpriteFrame Sequence="0" FrameValue="0" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot5" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="2">
+      <SpriteFrame Sequence="0" FrameValue="1" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot10" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="3">
+      <SpriteFrame Sequence="0" FrameValue="2" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot15" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="4">
+      <SpriteFrame Sequence="0" FrameValue="3" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot20" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="5">
+      <SpriteFrame Sequence="0" FrameValue="4" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot25" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="6">
+      <SpriteFrame Sequence="0" FrameValue="5" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot30" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="7">
+      <SpriteFrame Sequence="0" FrameValue="6" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot35" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="8">
+      <SpriteFrame Sequence="0" FrameValue="7" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Ro40" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="9">
+      <SpriteFrame Sequence="0" FrameValue="8" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot45" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="10">
+      <SpriteFrame Sequence="0" FrameValue="9" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot50" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="11">
+      <SpriteFrame Sequence="0" FrameValue="10" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot55" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="12">
+      <SpriteFrame Sequence="0" FrameValue="11" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot60" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="13">
+      <SpriteFrame Sequence="0" FrameValue="12" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot65" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="14">
+      <SpriteFrame Sequence="0" FrameValue="13" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot70" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="15">
+      <SpriteFrame Sequence="0" FrameValue="14" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot75" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="16">
+      <SpriteFrame Sequence="0" FrameValue="15" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot80" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="17">
+      <SpriteFrame Sequence="0" FrameValue="16" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot85" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="18">
+      <SpriteFrame Sequence="0" FrameValue="17" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Up" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="19">
+      <SpriteFrame Sequence="0" FrameValue="18" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot95" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="20">
+      <SpriteFrame Sequence="0" FrameValue="19" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot100" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="21">
+      <SpriteFrame Sequence="0" FrameValue="20" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot105" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="22">
+      <SpriteFrame Sequence="0" FrameValue="21" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot110" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="23">
+      <SpriteFrame Sequence="0" FrameValue="22" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot115" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="24">
+      <SpriteFrame Sequence="0" FrameValue="23" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot120" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="25">
+      <SpriteFrame Sequence="0" FrameValue="24" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot125" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="26">
+      <SpriteFrame Sequence="0" FrameValue="25" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot130" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="27">
+      <SpriteFrame Sequence="0" FrameValue="26" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot135" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="28">
+      <SpriteFrame Sequence="0" FrameValue="27" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot140" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="29">
+      <SpriteFrame Sequence="0" FrameValue="28" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot145" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="30">
+      <SpriteFrame Sequence="0" FrameValue="29" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot150" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="31">
+      <SpriteFrame Sequence="0" FrameValue="30" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot155" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="32">
+      <SpriteFrame Sequence="0" FrameValue="31" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot160" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="33">
+      <SpriteFrame Sequence="0" FrameValue="32" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot165" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="34">
+      <SpriteFrame Sequence="0" FrameValue="33" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot170" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="35">
+      <SpriteFrame Sequence="0" FrameValue="34" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot175" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="36">
+      <SpriteFrame Sequence="0" FrameValue="35" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Left" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="37">
+      <SpriteFrame Sequence="0" FrameValue="36" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot185" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="38">
+      <SpriteFrame Sequence="0" FrameValue="37" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot190" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="39">
+      <SpriteFrame Sequence="0" FrameValue="38" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot195" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="40">
+      <SpriteFrame Sequence="0" FrameValue="39" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot200" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="41">
+      <SpriteFrame Sequence="0" FrameValue="40" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot205" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="42">
+      <SpriteFrame Sequence="0" FrameValue="41" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot210" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="43">
+      <SpriteFrame Sequence="0" FrameValue="42" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot215" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="44">
+      <SpriteFrame Sequence="0" FrameValue="43" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot220" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="45">
+      <SpriteFrame Sequence="0" FrameValue="44" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot225" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="46">
+      <SpriteFrame Sequence="0" FrameValue="45" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot230" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="47">
+      <SpriteFrame Sequence="0" FrameValue="46" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot235" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="48">
+      <SpriteFrame Sequence="0" FrameValue="47" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot240" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="49">
+      <SpriteFrame Sequence="0" FrameValue="48" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot245" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="50">
+      <SpriteFrame Sequence="0" FrameValue="49" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot250" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="51">
+      <SpriteFrame Sequence="0" FrameValue="50" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot255" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="52">
+      <SpriteFrame Sequence="0" FrameValue="51" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot260" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="53">
+      <SpriteFrame Sequence="0" FrameValue="52" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot265" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="54">
+      <SpriteFrame Sequence="0" FrameValue="53" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Down" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="55">
+      <SpriteFrame Sequence="0" FrameValue="54" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot275" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="56">
+      <SpriteFrame Sequence="0" FrameValue="55" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot280" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="57">
+      <SpriteFrame Sequence="0" FrameValue="56" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot285" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="58">
+      <SpriteFrame Sequence="0" FrameValue="57" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot290" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="59">
+      <SpriteFrame Sequence="0" FrameValue="58" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot295" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="60">
+      <SpriteFrame Sequence="0" FrameValue="59" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot300" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="61">
+      <SpriteFrame Sequence="0" FrameValue="60" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot305" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="62">
+      <SpriteFrame Sequence="0" FrameValue="61" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot310" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="63">
+      <SpriteFrame Sequence="0" FrameValue="62" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot315" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="64">
+      <SpriteFrame Sequence="0" FrameValue="63" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot320" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="65">
+      <SpriteFrame Sequence="0" FrameValue="64" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot325" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="66">
+      <SpriteFrame Sequence="0" FrameValue="65" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot330" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="67">
+      <SpriteFrame Sequence="0" FrameValue="66" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot335" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="68">
+      <SpriteFrame Sequence="0" FrameValue="67" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot340" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="69">
+      <SpriteFrame Sequence="0" FrameValue="68" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot345" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="70">
+      <SpriteFrame Sequence="0" FrameValue="69" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot350" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="71">
+      <SpriteFrame Sequence="0" FrameValue="70" Duration="1" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Rot355" FramesetName="Car" SolidWidth="64" SolidHeight="64" Sequence="72">
+      <SpriteFrame Sequence="0" FrameValue="71" Duration="1" MaskAlphaLevel="0" />
     </SpriteState>
   </SpriteDefinition>
   <SpriteCategory Name="Fruit">
@@ -2858,6 +3333,7 @@ public abstract class GeneralRules
             IncludeInSaveUnit(SaveUnitInclusion.AllMaps);
             IncludeInSaveUnit(SaveUnitInclusion.AllCounters);
             IncludeInSaveUnit(SaveUnitInclusion.WhichMapIsCurrent);
+            IncludeInSaveUnit(SaveUnitInclusion.PlayerOptions);
          }
          System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
          bf.Serialize(stm, saveUnit);
@@ -2895,6 +3371,8 @@ public abstract class GeneralRules
             Project.GameWindow.CurrentMap = Project.GameWindow.GetMap(unit.CurrentMapType);
          else
             Project.GameWindow.CurrentMap = Project.GameWindow.GetMap(Project.GameWindow.CurrentMap.GetType());
+         if (unit.PlayerOptions != null)
+            Project.GameWindow.Players = unit.PlayerOptions;
          // Counters auto-magically take care of themselves via CounterRef
       }
    }
@@ -3478,6 +3956,38 @@ public abstract class SpriteBase : GeneralRules
          LocalDX += ddx;
    }
    
+   [Description("Redirect this sprite's velocity to be 100% in the direction that it is facing, based on its state, where FirstState points rightward and the number of states rotate counterclockwise.")]
+   public void RotateVelocity([Editor("SpriteState", "UITypeEditor")] int FirstState, int StateCount)
+   {
+      Debug.Assert(this.isActive, "Attepmted to execute RotateVelocity on an inactive sprite");
+      Microsoft.DirectX.Vector2 oldVector;
+      if (double.IsNaN(LocalDX))
+         oldVector.X = (float)dx;
+      else
+         oldVector.X = (float)LocalDX;
+      if (double.IsNaN(LocalDY))
+         oldVector.Y = (float)dy;
+      else
+         oldVector.Y = (float)LocalDY;
+
+      float angle = (float)((state - FirstState) * Math.PI * 2 / (float)StateCount);
+
+      Microsoft.DirectX.Vector2 facingVector;
+      facingVector.X = (float)Math.Cos(angle);
+      facingVector.Y = -(float)Math.Sin(angle);
+      facingVector.Multiply(Microsoft.DirectX.Vector2.Dot(oldVector, facingVector));
+
+      if (double.IsNaN(LocalDX))
+         dx = facingVector.X;
+      else
+         LocalDX = facingVector.X;
+
+      if (double.IsNaN(LocalDY))
+         dy = facingVector.Y;
+      else
+         LocalDY = facingVector.Y;
+   }
+
    [Description("Scroll all layers on this sprite's layer's map so that the sprite is within visible area of the map.  If UseScrollMargins is true, scroll the sprite into the scroll margins of the map.")]
    public void ScrollSpriteIntoView(bool UseScrollMargins)
    {
@@ -3539,11 +4049,67 @@ public abstract class SpriteBase : GeneralRules
       return FirstState + ((StateCount + (int)Math.Round(System.Math.Atan2(-useDY,useDX) * StateCount / Math.PI / 2f)) % StateCount);
    }
 
-   [Description("Switch the sprite to the the specified state")]
-   public void SwitchToState([Editor("SpriteState", "UITypeEditor")] int State)
+   [Description("Switch the sprite to the the specified state, ensuring that the specified alignment point in the new state lines up with the same point in the current state.  Returns false if the state could not switch due to solidity.")]
+   public bool SwitchToState([Editor("SpriteState", "UITypeEditor")] int State, RelativePosition Alignment)
    {
       Debug.Assert(this.isActive, "Attempted to execute SwitchToState on an inactive sprite");
+      System.Drawing.Rectangle oldRect = new System.Drawing.Rectangle(PixelX, PixelY, SolidWidth, SolidHeight);
+      int newWidth = this[State].SolidWidth;
+      int newHeight = this[State].SolidHeight;
+      double newX, newY;
+      switch(Alignment)
+      {
+         case RelativePosition.TopCenter:
+         case RelativePosition.CenterMiddle:
+         case RelativePosition.BottomCenter:
+            newX = x + (oldRect.Width - newWidth) / 2f;
+            break;
+         case RelativePosition.TopRight:
+         case RelativePosition.RightMiddle:
+         case RelativePosition.BottomRight:
+            newX = x + oldRect.Width - newWidth;
+            break;
+         default:
+            newX = x;
+            break;
+      }
+      switch(Alignment)
+      {
+         case RelativePosition.LeftMiddle:
+         case RelativePosition.CenterMiddle:
+         case RelativePosition.RightMiddle:
+            newY = y + (oldRect.Height - newHeight) / 2f;
+            break;
+         case RelativePosition.BottomLeft:
+         case RelativePosition.BottomCenter:
+         case RelativePosition.BottomRight:
+            newY = y + oldRect.Height - newHeight;
+            break;
+         default:
+            newY = y;
+            break;
+      }
+
+      if (((int)Math.Ceiling(newY + newHeight) &gt; oldRect.Bottom) &amp;&amp; (layer.GetTopSolidPixel(new System.Drawing.Rectangle(
+         (int)newX, oldRect.Bottom, newWidth, (int)Math.Ceiling(newY) + newHeight - oldRect.Bottom), m_solidity) != int.MinValue))
+         return false;
+
+      if (((int)newY &lt; oldRect.Top) &amp;&amp; (layer.GetBottomSolidPixel(new System.Drawing.Rectangle(
+         (int)newX, (int)newY, newWidth, oldRect.Top - (int)newY), m_solidity) != int.MinValue))
+         return false;
+
+      if (((int)newX &lt; oldRect.Left) &amp;&amp; (layer.GetRightSolidPixel(new System.Drawing.Rectangle(
+         (int)newX, (int)newY, oldRect.Left - (int)newX, newHeight), m_solidity) != int.MinValue))
+         return false;
+
+      if (((int)Math.Ceiling(newX + newWidth) &gt; oldRect.Right) &amp;&amp; (layer.GetLeftSolidPixel(new System.Drawing.Rectangle(
+         oldRect.Right, (int)newY, (int)Math.Ceiling(newX) + newWidth - oldRect.Right, newHeight), m_solidity) != int.MinValue))
+         return false;
+
+      x = newX;
+      y = newY;
       state = State;
+      return true;
    }
 
    [Description("Determines if the sprite is in the specified range of states")]
@@ -6287,8 +6853,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
                    (CurFrame.priority &lt; 0))
             {
                spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
-                  CurFrame.x + CurrentPosition.X + ViewRect.X,
-                  CurFrame.y + CurrentPosition.Y + ViewRect.Y, 0));
+                  (float)CurFrame.x + CurrentPosition.X + ViewRect.X,
+                  (float)CurFrame.y + CurrentPosition.Y + ViewRect.Y, 0));
                spr.Draw(CurFrame.frame.GraphicSheetTexture.Texture, CurFrame.frame.SourceRect,
                   Vector3.Empty, Vector3.Empty, CurFrame.color);
                if (!Injected.MoveNext())
@@ -6317,8 +6883,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
       {
          CurFrame = (InjectedFrame)Injected.Current;
          spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
-            CurFrame.x + CurrentPosition.X + ViewRect.X,
-            CurFrame.y + CurrentPosition.Y + ViewRect.Y, 0));
+            (float)CurFrame.x + CurrentPosition.X + ViewRect.X,
+            (float)CurFrame.y + CurrentPosition.Y + ViewRect.Y, 0));
          spr.Draw(CurFrame.frame.GraphicSheetTexture.Texture, CurFrame.frame.SourceRect,
             Vector3.Empty, Vector3.Empty, CurFrame.color);
          if (!Injected.MoveNext())
@@ -12428,6 +12994,8 @@ public class frmAbout : System.Windows.Forms.Form
    private System.Windows.Forms.Label lblHeader;
    private System.Windows.Forms.Label lblSGDK2;
    private System.Windows.Forms.LinkLabel llbURL;
+   private System.Windows.Forms.Label lblCredits;
+   private System.Windows.Forms.TextBox txtCredits;
 	/// &lt;summary&gt;
 	/// Required designer variable.
 	/// &lt;/summary&gt;
@@ -12440,9 +13008,7 @@ public class frmAbout : System.Windows.Forms.Form
 		//
 		InitializeComponent();
 
-		//
-		// TODO: Add any constructor code after InitializeComponent call
-		//
+      txtCredits.Text = Project.GameCredits;
 	}
 
 	/// &lt;summary&gt;
@@ -12471,19 +13037,24 @@ public class frmAbout : System.Windows.Forms.Form
       this.lblHeader = new System.Windows.Forms.Label();
       this.lblSGDK2 = new System.Windows.Forms.Label();
       this.llbURL = new System.Windows.Forms.LinkLabel();
+      this.lblCredits = new System.Windows.Forms.Label();
+      this.txtCredits = new System.Windows.Forms.TextBox();
       this.SuspendLayout();
       // 
       // btnOK
       // 
-      this.btnOK.Location = new System.Drawing.Point(208, 72);
+      this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
+      this.btnOK.Location = new System.Drawing.Point(206, 168);
       this.btnOK.Name = "btnOK";
       this.btnOK.Size = new System.Drawing.Size(72, 24);
       this.btnOK.TabIndex = 0;
       this.btnOK.Text = "OK";
-      this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
       // 
       // lblHeader
       // 
+      this.lblHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+         | System.Windows.Forms.AnchorStyles.Right)));
       this.lblHeader.Location = new System.Drawing.Point(8, 8);
       this.lblHeader.Name = "lblHeader";
       this.lblHeader.Size = new System.Drawing.Size(272, 16);
@@ -12492,17 +13063,21 @@ public class frmAbout : System.Windows.Forms.Form
       // 
       // lblSGDK2
       // 
+      this.lblSGDK2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+         | System.Windows.Forms.AnchorStyles.Right)));
       this.lblSGDK2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
       this.lblSGDK2.Location = new System.Drawing.Point(8, 24);
       this.lblSGDK2.Name = "lblSGDK2";
       this.lblSGDK2.Size = new System.Drawing.Size(272, 16);
       this.lblSGDK2.TabIndex = 2;
       this.lblSGDK2.Text = "Scrolling Game Development Kit 2";
-      this.lblSGDK2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+      this.lblSGDK2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
       // llbURL
       // 
-      this.llbURL.Location = new System.Drawing.Point(8, 56);
+      this.llbURL.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+         | System.Windows.Forms.AnchorStyles.Right)));
+      this.llbURL.Location = new System.Drawing.Point(8, 40);
       this.llbURL.Name = "llbURL";
       this.llbURL.Size = new System.Drawing.Size(272, 16);
       this.llbURL.TabIndex = 3;
@@ -12510,18 +13085,44 @@ public class frmAbout : System.Windows.Forms.Form
       this.llbURL.Text = "http://sgdk2.sf.net/";
       this.llbURL.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.Link_Clicked);
       // 
+      // lblCredits
+      // 
+      this.lblCredits.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+         | System.Windows.Forms.AnchorStyles.Right)));
+      this.lblCredits.Location = new System.Drawing.Point(8, 64);
+      this.lblCredits.Name = "lblCredits";
+      this.lblCredits.Size = new System.Drawing.Size(272, 16);
+      this.lblCredits.TabIndex = 4;
+      this.lblCredits.Text = "Game Credits:";
+      // 
+      // txtCredits
+      // 
+      this.txtCredits.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+         | System.Windows.Forms.AnchorStyles.Left) 
+         | System.Windows.Forms.AnchorStyles.Right)));
+      this.txtCredits.Location = new System.Drawing.Point(8, 80);
+      this.txtCredits.Multiline = true;
+      this.txtCredits.Name = "txtCredits";
+      this.txtCredits.ReadOnly = true;
+      this.txtCredits.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+      this.txtCredits.Size = new System.Drawing.Size(270, 80);
+      this.txtCredits.TabIndex = 5;
+      this.txtCredits.Text = "";
+      // 
       // frmAbout
       // 
       this.AcceptButton = this.btnOK;
       this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-      this.ClientSize = new System.Drawing.Size(292, 111);
+      this.ClientSize = new System.Drawing.Size(290, 199);
+      this.Controls.Add(this.txtCredits);
+      this.Controls.Add(this.lblCredits);
       this.Controls.Add(this.llbURL);
       this.Controls.Add(this.lblSGDK2);
       this.Controls.Add(this.lblHeader);
       this.Controls.Add(this.btnOK);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
       this.Name = "frmAbout";
-      this.Text = "About " + System.Windows.Forms.Application.ProductName;
+      this.Text = "About ";
       this.ResumeLayout(false);
 
    }
@@ -12534,7 +13135,7 @@ public class frmAbout : System.Windows.Forms.Form
 }
 </Text>
   </SourceCode>
-  <Project DisplayMode="m800x600x24" Windowed="true" TitleText="Powered by Scrolling Game Development Kit 2 (http://sgdk2.sf.net)" StartMap="Level 1" OverlayMap="Inventory" MaxPlayers="3" MaxViews="2">
+  <Project DisplayMode="m800x600x24" Windowed="true" TitleText="Powered by Scrolling Game Development Kit 2 (http://sgdk2.sf.net)" StartMap="Level 1" OverlayMap="Inventory" MaxPlayers="4" MaxViews="4">
     <Comments />
   </Project>
   <TileCategory Name="StandardSolid">

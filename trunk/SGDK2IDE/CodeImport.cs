@@ -484,6 +484,7 @@ namespace SGDK2
                   sb.Append("   This will overwrite the already existing object\r\n");
             }
          }
+         sb.Append(ProjectData.GetCreditAdditions(importData));
          txtReview.Text = sb.ToString();
       }
 
@@ -501,8 +502,29 @@ namespace SGDK2
                      existing.ItemArray = drCode.ItemArray;
                   else
                      ProjectData.SourceCode.Rows.Add(drCode.ItemArray);
+                  if (drCode.Name.EndsWith(".dll"))
+                  {
+                     string sourceFile = System.IO.Path.GetFileName(drCode.Name);
+                     string sourcePath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(txtImportSource.Text), sourceFile);
+                     if (System.IO.File.Exists(sourcePath))
+                     {
+                        if (SGDK2IDE.CurrentProjectFile != null)
+                        {
+                           string targetDir = System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile);
+                           string targetPath = System.IO.Path.Combine(targetDir, sourceFile);
+                           if (!System.IO.File.Exists(targetPath))
+                           {
+                              if (DialogResult.Yes == MessageBox.Show(this, "Would you like to copy the external file \"" + sourceFile + "\" into \"" + targetDir + "\"?", "Import Code Objects", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+                                 System.IO.File.Copy(sourcePath, targetPath, false);
+                           }
+                        }
+                        else
+                           MessageBox.Show(this, "Since you have not saved your project yet, there is no place to which the external file dependency \"" + sourceFile + "\" can be copied.  You may have to manually copy this file to your project directory in order for this code object to work", "Import Code Objects", MessageBoxButtons.OK);
+                     }
+                  }
                }
             }
+            ProjectData.MergeCredits(importData);
             return true;
          }
          catch(System.Exception ex)

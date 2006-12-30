@@ -75,7 +75,10 @@ namespace SGDK2
                      fd.FilterIndex = 1;
                      fd.Title = "Save Project";
                      fd.ValidateNames = true;
-                     if (DialogResult.OK == fd.ShowDialog())
+                     fd.ShowDialog();
+                     // ShowDialog returns the incorrect result (Cancel) when trying to
+                     // overwrite a file, so we have to check the filename instead.
+                     if (fd.FileName.Length > 0)
                      {
                         ProjectData.WriteXml(fd.FileName);
                         MessageBox.Show("Success! Your project was saved to " + fd.FileName + ". You should verify that the project has not been corrupted before working with that project further. You should also consider reporting this error to the Scrolling Game Development Kit support site:\r\n" + ex.ToString(), "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);

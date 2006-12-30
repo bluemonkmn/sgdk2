@@ -2588,10 +2588,65 @@ namespace SGDK2
          get
          {
             if (m_dsPrj.Project.Count <= 0)
-               m_dsPrj.Project.AddProjectRow(GameDisplayMode.m640x480x24.ToString(), true, "Powered by Scrolling Game Development Kit 2 (http://sgdk2.sf.net)", null, null, 1, 1);
+               m_dsPrj.Project.AddProjectRow(GameDisplayMode.m640x480x24.ToString(), true, "Powered by Scrolling Game Development Kit 2 (http://sgdk2.sf.net)", null, null, 1, 1, "SGDK2 Engine: Benjamin Marty\r\n");
             return m_dsPrj.Project[0];
          }
       }
+
+      public static string[] GetCreditLines()
+      {
+         if (ProjectRow.IsCreditsNull() || (ProjectRow.Credits.Length <= 0))
+            return new string[] {};
+         return ProjectRow.Credits.Replace("\r\n","\n").Split('\n');
+      }
+
+      public static string GetCreditAdditions(ProjectDataset importData)
+      {
+         StringBuilder sb = new StringBuilder();
+
+         if ((importData.Project.Count > 0) && !importData.Project.Rows[0].IsNull(importData.Project.CreditsColumn))
+         {
+            System.Collections.Specialized.StringCollection existingCredits =
+               new System.Collections.Specialized.StringCollection();
+            existingCredits.AddRange(GetCreditLines());
+
+            foreach(string credit in importData.Project[0].Credits.Replace("\r\n","\n").Split('\n'))
+            {
+               if (!existingCredits.Contains(credit))
+                  sb.Append("Add \"" + credit + "\" to the credits.\r\n");
+            }
+         }
+
+         return sb.ToString();
+      }
+
+      public static void MergeCredits(ProjectDataset importData)
+      {
+         StringBuilder sb = new StringBuilder();
+
+         if ((importData.Project.Count > 0) && !importData.Project.Rows[0].IsNull(importData.Project.CreditsColumn))
+         {
+            System.Collections.Specialized.StringCollection existingCredits =
+               new System.Collections.Specialized.StringCollection();
+            existingCredits.AddRange(GetCreditLines());
+
+            foreach(string credit in importData.Project[0].Credits.Replace("\r\n","\n").Split('\n'))
+            {
+               if (!existingCredits.Contains(credit))
+               {
+                  if (sb.Length > 0)
+                     sb.Append("\r\n");
+                  sb.Append(credit);
+               }
+            }
+         }
+
+         if (ProjectRow.Credits.EndsWith("\r\n"))
+            ProjectRow.Credits += sb.ToString();
+         else
+            ProjectRow.Credits += "\r\n" + sb.ToString();
+      }
+
       #endregion     
 
       #region PlanParameterValue

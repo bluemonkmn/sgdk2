@@ -576,6 +576,7 @@ namespace SGDK2
             else
                sb.Append("Import " + name + "\r\n");
          }
+         sb.Append(ProjectData.GetCreditAdditions(importData));
          txtReview.Text = sb.ToString();
       }
 
@@ -595,6 +596,7 @@ namespace SGDK2
                      drTmp.Columns, drTmp.Rows, drTmp.CellWidth, drTmp.CellHeight, drTmp.Image);
                }
             }
+            ProjectData.MergeCredits(importData);
             return true;
          }
          catch (System.Exception ex)

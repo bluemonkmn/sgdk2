@@ -9862,6 +9862,8 @@ namespace SGDK2 {
             
             private DataColumn columnMaxViews;
             
+            private DataColumn columnCredits;
+            
             internal ProjectDataTable() : 
                     base("Project") {
                 this.InitClass();
@@ -9932,6 +9934,12 @@ namespace SGDK2 {
                 }
             }
             
+            internal DataColumn CreditsColumn {
+                get {
+                    return this.columnCredits;
+                }
+            }
+            
             public ProjectRow this[int index] {
                 get {
                     return ((ProjectRow)(this.Rows[index]));
@@ -9950,7 +9958,7 @@ namespace SGDK2 {
                 this.Rows.Add(row);
             }
             
-            public ProjectRow AddProjectRow(string DisplayMode, bool Windowed, string TitleText, string StartMap, string OverlayMap, System.Byte MaxPlayers, System.Byte MaxViews) {
+            public ProjectRow AddProjectRow(string DisplayMode, bool Windowed, string TitleText, string StartMap, string OverlayMap, System.Byte MaxPlayers, System.Byte MaxViews, string Credits) {
                 ProjectRow rowProjectRow = ((ProjectRow)(this.NewRow()));
                 rowProjectRow.ItemArray = new object[] {
                         DisplayMode,
@@ -9959,7 +9967,8 @@ namespace SGDK2 {
                         StartMap,
                         OverlayMap,
                         MaxPlayers,
-                        MaxViews};
+                        MaxViews,
+                        Credits};
                 this.Rows.Add(rowProjectRow);
                 return rowProjectRow;
             }
@@ -9986,6 +9995,7 @@ namespace SGDK2 {
                 this.columnOverlayMap = this.Columns["OverlayMap"];
                 this.columnMaxPlayers = this.Columns["MaxPlayers"];
                 this.columnMaxViews = this.Columns["MaxViews"];
+                this.columnCredits = this.Columns["Credits"];
             }
             
             private void InitClass() {
@@ -10003,6 +10013,8 @@ namespace SGDK2 {
                 this.Columns.Add(this.columnMaxPlayers);
                 this.columnMaxViews = new DataColumn("MaxViews", typeof(System.Byte), null, System.Data.MappingType.Attribute);
                 this.Columns.Add(this.columnMaxViews);
+                this.columnCredits = new DataColumn("Credits", typeof(string), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnCredits);
                 this.columnDisplayMode.AllowDBNull = false;
                 this.columnDisplayMode.Namespace = "";
                 this.columnWindowed.AllowDBNull = false;
@@ -10014,6 +10026,7 @@ namespace SGDK2 {
                 this.columnMaxPlayers.DefaultValue = 1;
                 this.columnMaxViews.Namespace = "";
                 this.columnMaxViews.DefaultValue = 1;
+                this.columnCredits.Namespace = "";
             }
             
             public ProjectRow NewProjectRow() {
@@ -10159,6 +10172,20 @@ namespace SGDK2 {
                 }
             }
             
+            public string Credits {
+                get {
+                    try {
+                        return ((string)(this[this.tableProject.CreditsColumn]));
+                    }
+                    catch (InvalidCastException e) {
+                        throw new StrongTypingException("Cannot get value because it is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableProject.CreditsColumn] = value;
+                }
+            }
+            
             public bool IsTitleTextNull() {
                 return this.IsNull(this.tableProject.TitleTextColumn);
             }
@@ -10197,6 +10224,14 @@ namespace SGDK2 {
             
             public void SetMaxViewsNull() {
                 this[this.tableProject.MaxViewsColumn] = System.Convert.DBNull;
+            }
+            
+            public bool IsCreditsNull() {
+                return this.IsNull(this.tableProject.CreditsColumn);
+            }
+            
+            public void SetCreditsNull() {
+                this[this.tableProject.CreditsColumn] = System.Convert.DBNull;
             }
         }
         

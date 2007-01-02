@@ -1266,6 +1266,11 @@ namespace SGDK2
 
       private void mnuDataPlay_Click(object sender, System.EventArgs e)
       {
+         if (m_SourceCode.IsCustomObjectDataNull())
+         {
+            MessageBox.Show(this, "You must load data into this object before attempting to play it.", "Play With FMOD", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
          frmSoundPlayer.PlaySound(this, m_SourceCode.CustomObjectData);
       }
       #endregion

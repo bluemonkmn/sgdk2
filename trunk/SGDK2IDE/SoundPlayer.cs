@@ -20,6 +20,8 @@ namespace SGDK2
       private System.Windows.Forms.Button btnClose;
       private System.Windows.Forms.Label lblStatus;
       private System.Windows.Forms.Timer tmrPlayStatus;
+      private System.Windows.Forms.TrackBar trbVolume;
+      private System.Windows.Forms.Label lblVolume;
       private System.ComponentModel.IContainer components;
 
 		private frmSoundPlayer()
@@ -70,11 +72,14 @@ namespace SGDK2
          this.btnClose = new System.Windows.Forms.Button();
          this.lblStatus = new System.Windows.Forms.Label();
          this.tmrPlayStatus = new System.Windows.Forms.Timer(this.components);
+         this.trbVolume = new System.Windows.Forms.TrackBar();
+         this.lblVolume = new System.Windows.Forms.Label();
+         ((System.ComponentModel.ISupportInitialize)(this.trbVolume)).BeginInit();
          this.SuspendLayout();
          // 
          // btnPlay
          // 
-         this.btnPlay.Location = new System.Drawing.Point(8, 48);
+         this.btnPlay.Location = new System.Drawing.Point(8, 88);
          this.btnPlay.Name = "btnPlay";
          this.btnPlay.Size = new System.Drawing.Size(80, 24);
          this.btnPlay.TabIndex = 0;
@@ -90,7 +95,7 @@ namespace SGDK2
          // 
          // btnStop
          // 
-         this.btnStop.Location = new System.Drawing.Point(96, 48);
+         this.btnStop.Location = new System.Drawing.Point(96, 88);
          this.btnStop.Name = "btnStop";
          this.btnStop.Size = new System.Drawing.Size(80, 24);
          this.btnStop.TabIndex = 2;
@@ -100,7 +105,7 @@ namespace SGDK2
          // btnClose
          // 
          this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-         this.btnClose.Location = new System.Drawing.Point(184, 48);
+         this.btnClose.Location = new System.Drawing.Point(184, 88);
          this.btnClose.Name = "btnClose";
          this.btnClose.Size = new System.Drawing.Size(88, 24);
          this.btnClose.TabIndex = 3;
@@ -118,11 +123,34 @@ namespace SGDK2
          // 
          this.tmrPlayStatus.Tick += new System.EventHandler(this.tmrPlayStatus_Tick);
          // 
+         // trbVolume
+         // 
+         this.trbVolume.LargeChange = 10;
+         this.trbVolume.Location = new System.Drawing.Point(112, 48);
+         this.trbVolume.Maximum = 100;
+         this.trbVolume.Name = "trbVolume";
+         this.trbVolume.Size = new System.Drawing.Size(160, 34);
+         this.trbVolume.TabIndex = 5;
+         this.trbVolume.TickFrequency = 5;
+         this.trbVolume.Value = 100;
+         this.trbVolume.Scroll += new System.EventHandler(this.trbVolume_Scroll);
+         // 
+         // lblVolume
+         // 
+         this.lblVolume.Location = new System.Drawing.Point(8, 48);
+         this.lblVolume.Name = "lblVolume";
+         this.lblVolume.Size = new System.Drawing.Size(104, 34);
+         this.lblVolume.TabIndex = 6;
+         this.lblVolume.Text = "Preview Volume:\r\n100%";
+         this.lblVolume.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+         // 
          // frmSoundPlayer
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
          this.CancelButton = this.btnClose;
-         this.ClientSize = new System.Drawing.Size(282, 79);
+         this.ClientSize = new System.Drawing.Size(282, 119);
+         this.Controls.Add(this.lblVolume);
+         this.Controls.Add(this.trbVolume);
          this.Controls.Add(this.lblStatus);
          this.Controls.Add(this.btnClose);
          this.Controls.Add(this.btnStop);
@@ -133,6 +161,7 @@ namespace SGDK2
          this.Name = "frmSoundPlayer";
          this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
          this.Text = "Sound Player";
+         ((System.ComponentModel.ISupportInitialize)(this.trbVolume)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -180,6 +209,7 @@ namespace SGDK2
       private void btnPlay_Click(object sender, System.EventArgs e)
       {
          ERRCHECK(fmodSystem.playSound(0, fmodSound, false, ref fmodChannel));
+         fmodChannel.setVolume(trbVolume.Value / 100f);
          btnPlay.Enabled = false;
          btnStop.Enabled = true;
          tmrPlayStatus.Start();
@@ -239,6 +269,13 @@ namespace SGDK2
             else
                lblStatus.Text = string.Empty;
          }
+      }
+
+      private void trbVolume_Scroll(object sender, System.EventArgs e)
+      {
+         if (fmodChannel != null)
+            fmodChannel.setVolume(trbVolume.Value / 100f);
+         lblVolume.Text = lblVolume.Text.Replace("\r\n","\n").Split('\n')[0] + "\r\n" + trbVolume.Value.ToString() + "%";
       }
    }
 }

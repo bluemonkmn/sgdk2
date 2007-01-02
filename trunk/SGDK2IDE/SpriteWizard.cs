@@ -1094,6 +1094,7 @@ namespace SGDK2
             {
                ProjectDataset.GraphicSheetRow src = dsSource.GraphicSheet.FindByName(gfx.Name);
                System.Data.DataRow dr = dtGraphicNames.Rows.Find(gfx.Name);
+               ProjectData.ReencapsulateGraphicSheet(txtSourceFile.Text, src);
                if (dr != null)
                {
                   dsSource.EnforceConstraints = false;

@@ -498,6 +498,7 @@ namespace SGDK2
                if (chlOverwrite.CheckedItems.Contains(item) || !chlOverwrite.Items.Contains(item))
                {
                   ProjectDataset.SourceCodeRow existing = ProjectData.GetSourceCode(item);
+                  ProjectData.ReencapsulateSourceCode(txtImportSource.Text, drCode);
                   if (existing != null)
                      existing.ItemArray = drCode.ItemArray;
                   else

@@ -886,28 +886,28 @@ namespace SGDK2
          // 
          this.mnuExportGraphic.Index = 1;
          this.mnuExportGraphic.MergeOrder = 2;
-         this.mnuExportGraphic.Text = "Export Grap&hic";
+         this.mnuExportGraphic.Text = "Export Grap&hic...";
          this.mnuExportGraphic.Click += new System.EventHandler(this.mnuExportGraphic_Click);
          // 
          // mnuImportGraphic
          // 
          this.mnuImportGraphic.Index = 2;
          this.mnuImportGraphic.MergeOrder = 2;
-         this.mnuImportGraphic.Text = "Import Graphi&c";
+         this.mnuImportGraphic.Text = "Import Graphi&c...";
          this.mnuImportGraphic.Click += new System.EventHandler(this.mnuImportGraphic_Click);
          // 
          // mnuExportSheet
          // 
          this.mnuExportSheet.Index = 3;
          this.mnuExportSheet.MergeOrder = 2;
-         this.mnuExportSheet.Text = "Export Sheet as Image";
+         this.mnuExportSheet.Text = "Export Sheet as Image...";
          this.mnuExportSheet.Click += new System.EventHandler(this.mnuExportSheet_Click);
          // 
          // mnuImportSheet
          // 
          this.mnuImportSheet.Index = 4;
          this.mnuImportSheet.MergeOrder = 2;
-         this.mnuImportSheet.Text = "Import Image as Sheet";
+         this.mnuImportSheet.Text = "Import Image as Sheet...";
          this.mnuImportSheet.Click += new System.EventHandler(this.mnuImportSheet_Click);
          // 
          // mnuView

@@ -331,7 +331,7 @@ namespace SGDK2
             GenerateAssemblyInfo(txt);
             txt.Close();
 
-            GenerateProjectSourceCode(FolderName);
+            GenerateProjectSourceCode(FolderName, err);
             GenerateEmbeddedResources(FolderName);
          }
          catch(System.Exception ex)
@@ -461,7 +461,14 @@ namespace SGDK2
          {
             ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
             if (!drCode.IsTextNull() && (drCode.Text.Trim().Length > 0) && drCode.Name.EndsWith(".cs"))
-               result.Add(drCode.Text);
+               try
+               {
+                  result.Add(ProjectData.GetSourceCodeText(drCode));
+               }
+               catch(ApplicationException ex)
+               {
+                  err.WriteLine(ex.Message);
+               }
          }
 
          txt = new System.IO.StringWriter();
@@ -528,7 +535,7 @@ namespace SGDK2
          return (string[])result.ToArray(typeof(string));
       }
       
-      public void GenerateProjectSourceCode(string FolderName)
+      public void GenerateProjectSourceCode(string FolderName, System.IO.TextWriter err)
       {
          foreach (System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
          {
@@ -536,7 +543,14 @@ namespace SGDK2
             if (!drCode.IsTextNull() && (drCode.Text.Trim().Length > 0) && drCode.Name.EndsWith(".cs"))
             {
                System.IO.TextWriter txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, drCode.Name));
-               txt.Write(drCode.Text);
+               try
+               {
+                  txt.Write(ProjectData.GetSourceCodeText(drCode));
+               }
+               catch(System.Exception ex)
+               {
+                  err.WriteLine(ex.Message);
+               }
                txt.Close();
             }
          }

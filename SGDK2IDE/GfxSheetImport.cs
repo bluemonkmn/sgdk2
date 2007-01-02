@@ -587,14 +587,13 @@ namespace SGDK2
             foreach(string name in importNames)
             {
                System.Data.DataRow drName = dtGraphicNames.Rows.Find(name);
+               ProjectDataset.GraphicSheetRow drTmp = importData.GraphicSheet.FindByName(name);
+               ProjectData.ReencapsulateGraphicSheet(txtImportSource.Text, drTmp);
                if (drName == null)
-                  ProjectData.GraphicSheet.Rows.Add(importData.GraphicSheet.FindByName(name).ItemArray);
+                  ProjectData.GraphicSheet.Rows.Add(drTmp.ItemArray);
                else
-               {
-                  ProjectDataset.GraphicSheetRow drTmp = importData.GraphicSheet.FindByName(name);
                   ProjectData.GraphicSheet.AddGraphicSheetRow(drName[dcNewGSName].ToString(),
                      drTmp.Columns, drTmp.Rows, drTmp.CellWidth, drTmp.CellHeight, drTmp.Image);
-               }
             }
             ProjectData.MergeCredits(importData);
             return true;

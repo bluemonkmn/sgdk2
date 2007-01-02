@@ -1162,7 +1162,7 @@ namespace SGDK2
                               return;
                         }
                      }
-                     if (DialogResult.Yes == MessageBox.Show(this, "Are you sure you want to delete custom code object \"" + KeyParts[0] + "\"?", "Delete Source Code", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
+                     if (DialogResult.Yes == MessageBox.Show(this, "Are you sure you want to delete custom code object \"" + KeyParts[KeyParts.Length-1] + "\"?", "Delete Source Code", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
                      {
                         ProjectData.DeleteSourceCode(row);
                      }

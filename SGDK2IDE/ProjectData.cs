@@ -217,6 +217,43 @@ namespace SGDK2
       {
          return m_dsPrj.GraphicSheet.FindByName(Name);
       }
+
+      public static bool IsGraphicSheetDecapsulated(ProjectDataset.GraphicSheetRow row)
+      {
+         if (row.IsImageNull())
+            return false;
+         return System.Text.Encoding.UTF8.GetString(row.Image, 0, 7) == "~import";
+      }
+
+      public static string GetGraphicSheetCapsuleName(ProjectDataset.GraphicSheetRow row)
+      {
+         return System.Text.Encoding.UTF8.GetString(row.Image).Substring(7);
+      }
+
+      public static string GetGraphicSheetCapsulePath(string relativeTo, ProjectDataset.GraphicSheetRow row)
+      {
+         return System.IO.Path.Combine(System.IO.Path.GetDirectoryName(relativeTo),
+            GetGraphicSheetCapsuleName(row));
+      }
+
+      public static void ReencapsulateGraphicSheet(string relativeTo, ProjectDataset.GraphicSheetRow row)
+      {
+         if (IsGraphicSheetDecapsulated(row))
+         {
+            string capsulePath = GetGraphicSheetCapsulePath(relativeTo, row);
+            try
+            {
+               using(System.IO.BinaryReader capsuleReader =
+                        new System.IO.BinaryReader(System.IO.File.OpenRead(capsulePath)))
+                  row.Image = capsuleReader.ReadBytes((int)capsuleReader.BaseStream.Length);
+            }
+            catch(System.Exception ex)
+            {
+               throw new ApplicationException("An error occurred trying to load the decapsulated image from \"" + capsulePath + "\": " + ex.Message, ex);
+            }
+         }
+      }
+
       public static ProjectDataset.GraphicSheetDataTable GraphicSheet
       {
          get
@@ -253,14 +290,29 @@ namespace SGDK2
             }
          }
 
-         System.IO.MemoryStream ms = new System.IO.MemoryStream(
-            ProjectData.GetGraphicSheet(Name).Image, false);
-         Bitmap bmpStreamImage = (Bitmap)Bitmap.FromStream(ms);
+         Bitmap bmpStreamImage;
+         ProjectDataset.GraphicSheetRow drGfx = ProjectData.GetGraphicSheet(Name);
+         System.IO.MemoryStream ms = null;
+         if (IsGraphicSheetDecapsulated(drGfx))
+            try
+            {
+               bmpStreamImage = new Bitmap(ProjectData.GetGraphicSheetCapsulePath(SGDK2IDE.CurrentProjectFile, drGfx));
+            }
+            catch(System.Exception ex)
+            {
+               throw new ApplicationException("An error occurred attempting to load a decapsulated graphic sheet from \"" + ProjectData.GetGraphicSheetCapsulePath(SGDK2IDE.CurrentProjectFile, drGfx) + "\": " + ex.ToString(), ex);
+            }
+         else
+         {
+            ms = new System.IO.MemoryStream(ProjectData.GetGraphicSheet(Name).Image, false);
+            bmpStreamImage = (Bitmap)Bitmap.FromStream(ms);
+         }
          Bitmap bmpResult = new Bitmap(bmpStreamImage.Width, bmpStreamImage.Height,
             System.Drawing.Imaging.PixelFormat.Format32bppArgb);
          SGDK2IDE.CopyImage(bmpResult, bmpStreamImage);
          bmpStreamImage.Dispose();
-         ms.Close();
+         if (ms != null)
+            ms.Close();
          m_GraphicSheets[Name] = new WeakReference(bmpResult);
          return bmpResult;
       }
@@ -1617,7 +1669,7 @@ namespace SGDK2
          if (!includeSuspended)
          {
             string filter = m_dsPrj.SpriteRule.DefinitionNameColumn.ColumnName + "='" + parent.Name +
-            "' and Suspended=false";
+               "' and Suspended=false";
             return (ProjectDataset.SpriteRuleRow[])m_dsPrj.SpriteRule.Select(filter, "Sequence");
          }
          ProjectDataset.SpriteRuleRow[] result = parent.GetSpriteRuleRows();
@@ -2561,6 +2613,58 @@ namespace SGDK2
             DeleteSourceCode(dep);
          row.Delete();
       }
+      public static bool IsSourceCodeDecapsulated(ProjectDataset.SourceCodeRow row)
+      {
+         if (row.IsTextNull())
+            return false;
+         return (row.Text.StartsWith("~import"));
+      }
+      public static string GetSourceCodeCapsulePath(string relativeTo, ProjectDataset.SourceCodeRow row)
+      {
+         string fileName = row.Text.Substring(7);
+         fileName = fileName.Trim();
+         fileName = fileName.Trim(new char[] {'\"'});
+         return System.IO.Path.Combine(System.IO.Path.GetDirectoryName(relativeTo), fileName);
+      }
+      public static void ReencapsulateSourceCode(string relativeTo, ProjectDataset.SourceCodeRow row)
+      {
+         if (IsSourceCodeDecapsulated(row))
+            row.Text = GetSourceCodeText(relativeTo, row);
+      }
+      /// <summary>
+      /// Returns the text for the specified source code object, following the decapsulated link
+      /// if necessary.
+      /// </summary>
+      /// <param name="relativeTo">Path of the SGDK file to which the capsule would be relative.</param>
+      /// <param name="row">SourceCode row containing the code or capsule to retrieve.</param>
+      /// <returns>The contents of the capsule file if code is decapsulated, or the
+      /// contents of the Text property of the SourceCodeRow otherwise.</returns>
+      public static string GetSourceCodeText(string relativeTo, ProjectDataset.SourceCodeRow row)
+      {
+         if (IsSourceCodeDecapsulated(row))
+         {
+            string capsulePath = GetSourceCodeCapsulePath(relativeTo, row);
+            try
+            {
+               using(System.IO.StreamReader capsuleReader = new StreamReader(capsulePath))
+                  return capsuleReader.ReadToEnd();
+            }
+            catch(System.Exception ex)
+            {
+               throw new ApplicationException("Failed to read decapsulated source code object \"" + row.Name + "\" from \"" + capsulePath + "\": " + ex.ToString(), ex);
+            }
+         }
+         else
+            return row.Text;
+      }
+
+      public static string GetSourceCodeText(ProjectDataset.SourceCodeRow row)
+      {
+         if (SGDK2IDE.CurrentProjectFile == null)
+            throw new ApplicationException("Source code object \"" + row.Name + "\" attempted to decapsulate code relative to an un-saved project.  This is not supported.  Save the project and try again.");
+         return GetSourceCodeText(SGDK2IDE.CurrentProjectFile, row);
+      }
+
       public static ProjectDataset.SourceCodeRow[] GetDependentSourceCode(ProjectDataset.SourceCodeRow parent)
       {
          DataView dvCurrent = new DataView(SourceCode, SourceCode.DependsOnColumn + "='" + parent[SourceCode.NameColumn, DataRowVersion.Current].ToString() + "'", String.Empty, DataViewRowState.CurrentRows);
@@ -2641,7 +2745,9 @@ namespace SGDK2
             }
          }
 
-         if (ProjectRow.Credits.EndsWith("\r\n"))
+         if (ProjectRow.IsCreditsNull())
+            ProjectRow.Credits = sb.ToString();
+         else if (ProjectRow.Credits.EndsWith("\r\n"))
             ProjectRow.Credits += sb.ToString();
          else
             ProjectRow.Credits += "\r\n" + sb.ToString();

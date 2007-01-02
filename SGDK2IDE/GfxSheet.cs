@@ -130,6 +130,7 @@ namespace SGDK2
       private System.Windows.Forms.Button btnCancel;
       private System.Windows.Forms.PropertyGrid pgrGfxSheet;
       private System.Windows.Forms.Button btnExport;
+      private System.Windows.Forms.Button btnDecapsulate;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -194,15 +195,16 @@ namespace SGDK2
          this.btnCancel = new System.Windows.Forms.Button();
          this.pgrGfxSheet = new System.Windows.Forms.PropertyGrid();
          this.btnExport = new System.Windows.Forms.Button();
+         this.btnDecapsulate = new System.Windows.Forms.Button();
          this.SuspendLayout();
          // 
          // btnOK
          // 
          this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
          this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-         this.btnOK.Location = new System.Drawing.Point(232, 40);
+         this.btnOK.Location = new System.Drawing.Point(208, 8);
          this.btnOK.Name = "btnOK";
-         this.btnOK.Size = new System.Drawing.Size(64, 24);
+         this.btnOK.Size = new System.Drawing.Size(80, 24);
          this.btnOK.TabIndex = 3;
          this.btnOK.Text = "Add";
          this.btnOK.Click += new System.EventHandler(this.btnOK_Click);
@@ -211,9 +213,9 @@ namespace SGDK2
          // 
          this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
          this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-         this.btnCancel.Location = new System.Drawing.Point(232, 72);
+         this.btnCancel.Location = new System.Drawing.Point(208, 104);
          this.btnCancel.Name = "btnCancel";
-         this.btnCancel.Size = new System.Drawing.Size(64, 24);
+         this.btnCancel.Size = new System.Drawing.Size(80, 24);
          this.btnCancel.TabIndex = 4;
          this.btnCancel.Text = "Cancel";
          this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
@@ -228,7 +230,7 @@ namespace SGDK2
          this.pgrGfxSheet.LineColor = System.Drawing.SystemColors.ScrollBar;
          this.pgrGfxSheet.Location = new System.Drawing.Point(0, 0);
          this.pgrGfxSheet.Name = "pgrGfxSheet";
-         this.pgrGfxSheet.Size = new System.Drawing.Size(224, 256);
+         this.pgrGfxSheet.Size = new System.Drawing.Size(200, 256);
          this.pgrGfxSheet.TabIndex = 1;
          this.pgrGfxSheet.Text = "PropertyGrid";
          this.pgrGfxSheet.ViewBackColor = System.Drawing.SystemColors.Window;
@@ -237,19 +239,30 @@ namespace SGDK2
          // btnExport
          // 
          this.btnExport.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-         this.btnExport.Location = new System.Drawing.Point(232, 8);
+         this.btnExport.Location = new System.Drawing.Point(208, 40);
          this.btnExport.Name = "btnExport";
-         this.btnExport.Size = new System.Drawing.Size(64, 24);
+         this.btnExport.Size = new System.Drawing.Size(80, 24);
          this.btnExport.TabIndex = 2;
          this.btnExport.Text = "E&xport";
          this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+         // 
+         // btnDecapsulate
+         // 
+         this.btnDecapsulate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+         this.btnDecapsulate.Location = new System.Drawing.Point(208, 72);
+         this.btnDecapsulate.Name = "btnDecapsulate";
+         this.btnDecapsulate.Size = new System.Drawing.Size(80, 24);
+         this.btnDecapsulate.TabIndex = 5;
+         this.btnDecapsulate.Text = "Decapsulate";
+         this.btnDecapsulate.Click += new System.EventHandler(this.btnDecapsulate_Click);
          // 
          // frmGfxSheet
          // 
          this.AcceptButton = this.btnOK;
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
          this.CancelButton = this.btnCancel;
-         this.ClientSize = new System.Drawing.Size(304, 261);
+         this.ClientSize = new System.Drawing.Size(296, 261);
+         this.Controls.Add(this.btnDecapsulate);
          this.Controls.Add(this.btnExport);
          this.Controls.Add(this.pgrGfxSheet);
          this.Controls.Add(this.btnCancel);
@@ -314,20 +327,26 @@ namespace SGDK2
          }
       }
 
+      private Bitmap GetDecapsulatedImage()
+      {
+         Bitmap bmpResult;
+         if (ProjectData.IsGraphicSheetDecapsulated(DataObject.m_drGfx))
+            bmpResult = new Bitmap(ProjectData.GetGraphicSheetCapsulePath(
+               SGDK2IDE.CurrentProjectFile, DataObject.m_drGfx));
+         else
+         {
+            System.IO.MemoryStream stmBmp = new System.IO.MemoryStream(
+               DataObject.m_drGfx.Image, false);
+            bmpResult = new Bitmap(stmBmp);
+            stmBmp.Close();
+         }
+         return bmpResult;
+      }
+
       private Size GetImageSize()
       {
-         System.IO.MemoryStream stmBmp = new System.IO.MemoryStream(
-            DataObject.m_drGfx.Image, false);
-         Bitmap bmpTmp = new Bitmap(stmBmp);
-         try
-         {
-            stmBmp.Close();
+         using(Bitmap bmpTmp = GetDecapsulatedImage())
             return bmpTmp.Size;
-         }
-         finally
-         {
-            bmpTmp.Dispose();
-         }
       }
 
       private byte[] GetImageForCurrentParams()
@@ -342,16 +361,14 @@ namespace SGDK2
          }
          else
          {
-            System.IO.MemoryStream stmOld = new System.IO.MemoryStream(
-               DataObject.m_drGfx.Image, false);
-            Bitmap bmpOld = new Bitmap(stmOld);
-            stmOld.Close();
-            bmpTemp = new Bitmap(
-               DataObject.m_drGfx.Columns * DataObject.m_drGfx.CellWidth,
-               DataObject.m_drGfx.Rows * DataObject.m_drGfx.CellHeight,
-               System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            CopyImage(bmpTemp, bmpOld, 0, 0, 0, 0, bmpOld.Width, bmpOld.Height);
-            bmpOld.Dispose();
+            using (Bitmap bmpOld = GetDecapsulatedImage())
+            {
+               bmpTemp = new Bitmap(
+                  DataObject.m_drGfx.Columns * DataObject.m_drGfx.CellWidth,
+                  DataObject.m_drGfx.Rows * DataObject.m_drGfx.CellHeight,
+                  System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+               CopyImage(bmpTemp, bmpOld, 0, 0, 0, 0, bmpOld.Width, bmpOld.Height);
+            }
          }
          if (DataObject.BackgroundColor != Color.Empty)
          {
@@ -462,6 +479,63 @@ namespace SGDK2
          catch (System.Exception ex)
          {
             MessageBox.Show(this, ex.Message, "Export Graphic Sheet", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+         }
+      }
+
+      private void btnDecapsulate_Click(object sender, System.EventArgs e)
+      {
+         try
+         {
+            if (SGDK2IDE.CurrentProjectFile == null)
+            {
+               MessageBox.Show(this, "You must save the current project to a file before you may decapsulate the graphic sheet.", "Decapsulate Graphic Sheet", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+               return;
+            }
+            if (DataObject.m_drGfx.RowState == DataRowState.Detached)
+            {
+               MessageBox.Show(this, "The graphic sheet cannot be decapsulated until it has been added to the project", "Decapsulate Graphic Sheet", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+               return;
+            }
+            string capsuleFile;
+            if (ProjectData.IsGraphicSheetDecapsulated(DataObject.m_drGfx))
+               capsuleFile = ProjectData.GetGraphicSheetCapsuleName(DataObject.m_drGfx);
+            else
+               capsuleFile = "?.png";
+            while(true)
+            {
+               string capsulePath = System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile);
+               capsuleFile = frmInputBox.GetInput(this, "Decapsulate Graphic Sheet", "This advanced feature allows you to specify an external filename under which this graphic sheet will temporarily be referenced for the purpose of exporting a graphic sheet that references a file shared by multiple templates.  Specify a relative path to a PNG filename in which to store/reference this graphic sheet:", capsuleFile);
+               if (capsuleFile == null)
+                  return;
+               try
+               {
+                  if (!capsuleFile.ToLower().EndsWith(".png"))
+                     MessageBox.Show(this, "The decapsulated filename must end with .png", "Decapsulate Graphic Sheet", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  else
+                  {
+                     string preMessage = String.Empty;
+                     capsulePath = System.IO.Path.Combine(capsulePath, capsuleFile);
+                     if (!System.IO.File.Exists(capsulePath))
+                     {
+                        Bitmap bmp = ProjectData.GetGraphicSheetImage(DataObject.Name, false);
+                        bmp.Save(capsulePath, System.Drawing.Imaging.ImageFormat.Png);
+                        preMessage = "The contents of this graphic sheet have been exported to \"" + capsulePath + "\".  ";
+                     }
+                     DataObject.m_drGfx.Image = System.Text.Encoding.UTF8.GetBytes("~import" + capsuleFile);
+                     MessageBox.Show(this, preMessage + "This graphic sheet is now temporarily referencing the external file \"" + capsuleFile + "\".  The decapsulation will last until the graphics are modified.", "Decapsulate Graphic Sheet", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                     break;
+                  }
+               }
+               catch(System.Exception ex)
+               {
+                  if (DialogResult.Retry != MessageBox.Show(this, ex.Message, "Decapsulate Graphic Sheet", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error))
+                     break;
+               }
+            }
+         }
+         catch(System.Exception ex)
+         {
+            MessageBox.Show(this, ex.Message, "Decapsulate Graphic Sheet", MessageBoxButtons.OK, MessageBoxIcon.Error);
          }
       }
       #endregion

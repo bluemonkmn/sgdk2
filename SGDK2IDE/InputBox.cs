@@ -62,7 +62,7 @@ namespace SGDK2
          // 
          // txtInput
          // 
-         this.txtInput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+         this.txtInput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
          this.txtInput.Location = new System.Drawing.Point(8, 24);
          this.txtInput.Name = "txtInput";
@@ -92,6 +92,9 @@ namespace SGDK2
          // 
          // lblPrompt
          // 
+         this.lblPrompt.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
          this.lblPrompt.Location = new System.Drawing.Point(8, 0);
          this.lblPrompt.Name = "lblPrompt";
          this.lblPrompt.Size = new System.Drawing.Size(296, 24);
@@ -125,6 +128,10 @@ namespace SGDK2
             frm.Text = Title;
             frm.lblPrompt.Text = Prompt;
             frm.txtInput.Text = Default;
+            SizeF promptSize;
+            using (Graphics gfx = Graphics.FromHwnd(frm.Handle))
+               promptSize = gfx.MeasureString(Prompt, frm.lblPrompt.Font, frm.lblPrompt.ClientSize.Width);
+            frm.Height = (int)(frm.Height - frm.lblPrompt.Height + promptSize.Height);
             if (DialogResult.OK == frm.ShowDialog(parent))
                return frm.txtInput.Text;
             return null;

@@ -15,6 +15,7 @@ namespace SGDK2
       #region Non-control members
       ProjectDataset.TilesetRow m_Tileset = null;
       ProjectDataset.TileRow m_Tile = null;
+      bool m_isLoading = false;
       #endregion
 
       #region Control Members
@@ -1104,7 +1105,11 @@ namespace SGDK2
          try
          {
             if (TileFrames.CurrentCellIndex >= 0)
+            {
+               m_isLoading = true;
                updRepeatCount.Value = ((TileFrame)(TileFrames.FramesToDisplay[TileFrames.CurrentCellIndex])).Row.Duration;
+               m_isLoading = false;
+            }
             if (sbTileFrames.Visible = (TileFrames.GetSelectedCellCount() == 1))
             {
                IProvideFrame frame = TileFrames.FramesToDisplay[TileFrames.GetFirstSelectedCell()];
@@ -1128,10 +1133,10 @@ namespace SGDK2
       {
          try
          {
-            if (TileFrames.CurrentCellIndex >= 0)
+            if (!m_isLoading && (TileFrames.CurrentCellIndex >= 0))
             {
-               TileFrame tf = (TileFrame)(TileFrames.FramesToDisplay[TileFrames.CurrentCellIndex]);
-               if (tf.Row.Duration != (short)updRepeatCount.Value)
+               foreach(TileFrame tf in TileFrames.FramesToDisplay)
+               if (tf.IsSelected && (tf.Row.Duration != (short)updRepeatCount.Value))
                {
                   tf.Row.Duration = (short)updRepeatCount.Value;
                }
@@ -1161,8 +1166,11 @@ namespace SGDK2
 
       private void nudControl_Validated(object sender, System.EventArgs e)
       {
-         // Force control to pick up new value
-         decimal dummy = ((NumericUpDown)sender).Value;
+         if (!m_isLoading)
+         {
+            // Force control to pick up new value
+            decimal dummy = ((NumericUpDown)sender).Value;
+         }
       }
 
       private void nudTileWidth_ValueChanged(object sender, System.EventArgs e)

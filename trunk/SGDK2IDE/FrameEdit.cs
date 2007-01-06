@@ -2001,6 +2001,29 @@ namespace SGDK2
 
       private void btnDeleteFrame_Click(object sender, System.EventArgs e)
       {
+         ProjectDataset.FrameRow[] deleteFrames = FrameBrowser.GetSelectedFrames();
+         int newCount = (FrameBrowser.Frameset.GetFrameRows().Length - deleteFrames.Length);
+
+         System.Data.DataRow[] errors = ProjectData.SpriteFrame.Select(
+            "Parent.FramesetName='" + FrameBrowser.Frameset.Name + "' and FrameValue>="
+            + newCount.ToString(), string.Empty, DataViewRowState.CurrentRows);
+         if (errors.Length > 0)
+         {
+            ProjectDataset.SpriteFrameRow errMsgRow = (ProjectDataset.SpriteFrameRow)errors[0];
+            MessageBox.Show(this, "Deleting the selected frames would cause one or more sprites to reference frame indexes beyond the bounds of this frameset.  Remove frames from state \"" + errMsgRow.SpriteStateRowParent.Name + "\" of sprite definition \"" + errMsgRow.SpriteStateRowParent.SpriteDefinitionRow.Name + "\" and any other sprite states that may be affected before deleting these frames.", "Delete Frameset Frames", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
+
+         errors = ProjectData.Tile.Select(
+            "Parent(TilesetTile).Frameset='" + FrameBrowser.Frameset.Name + "' and Max(Child(TileTileFrame).FrameValue)>="
+            + newCount.ToString(), string.Empty, DataViewRowState.CurrentRows);
+         if (errors.Length > 0)
+         {
+            ProjectDataset.TileRow errMsgRow = (ProjectDataset.TileRow)errors[0];
+            MessageBox.Show(this, "Deleting the selected frames would cause one or more tile mappings to reference frame indexes beyond the bounds of this frameset.  Remove frames from tile number " + errMsgRow.TileValue.ToString() + " of tileset \"" + errMsgRow.TilesetRow.Name + "\" and any other tiles that may be affeted before deleting these frames.", "Delete Frameset Frames", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
+
          foreach (ProjectDataset.FrameRow fr in FrameBrowser.GetSelectedFrames())
             ProjectData.DeleteFrame(fr);
       }

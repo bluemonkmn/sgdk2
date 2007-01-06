@@ -292,7 +292,7 @@ namespace SGDK2
                int[] SubFrames = m_TileCache[this[x,y]];
                for (int nFrame = 0; nFrame < SubFrames.Length; nFrame++)
                {
-                  FrameCache.Frame f = m_FrameCache[SubFrames[nFrame]];
+                  FrameCache.Frame f = m_FrameCache[SubFrames[nFrame]%m_FrameCache.Count];
                   if ((currentTextureRef == null) || (currentTextureRef != f.GraphicSheetTexture))
                      Device.SetTexture(0, (currentTextureRef = f.GraphicSheetTexture).Texture);
 

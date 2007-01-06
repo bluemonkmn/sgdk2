@@ -1061,7 +1061,7 @@ namespace SGDK2
             ProjectDataset.FramesetRow oldFrameset = ProjectData.GetFrameSet(newFrameset.Name);
             if (oldFrameset != null)
             {
-               if (newFrameset.GetFrameRows().Length <= oldFrameset.GetFrameRows().Length)
+               if (newFrameset.GetFrameRows().Length >= oldFrameset.GetFrameRows().Length)
                   dtFramesetNames.Rows.Add(new object[] {newFrameset.Name, newFrameset.Name});
                else
                   dtFramesetNames.Rows.Add(new object[] {newFrameset.Name, null});
@@ -1075,7 +1075,7 @@ namespace SGDK2
          {
             if (!(dr[dcNewFSName] is string))
             {
-               MessageBox.Show(this, "Please enter a new name for \"" + dr[dcOldGSName].ToString() + "\".", "Frameset Names", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+               MessageBox.Show(this, "Please enter a new name for \"" + dr[dcOldFSName].ToString() + "\".", "Frameset Names", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                return false;
             }
             string msg = ProjectData.ValidateName(dr[dcNewFSName].ToString());
@@ -1090,7 +1090,7 @@ namespace SGDK2
                ProjectDataset.FramesetRow newFrameset = dsSource.Frameset.FindByName(dr[dcNewFSName].ToString());
                if(newFrameset.GetFrameRows().Length < oldFrameset.GetFrameRows().Length)
                {
-                  MessageBox.Show(this, "The new Frameset name specified for \"" + dr[dcOldGSName].ToString() + "\" refers to an existing Frameset that has fewer frames.  Please specify a new name or the name of an existing Frameset with at least as many frames as the imported Frameset (" + newFrameset.GetFrameRows().Length.ToString() + " frames).", "Frameset Names", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  MessageBox.Show(this, "The new Frameset name specified for \"" + dr[dcOldFSName].ToString() + "\" refers to an existing Frameset that has fewer frames.  Please specify a new name or the name of an existing Frameset with at least as many frames as the imported Frameset (" + newFrameset.GetFrameRows().Length.ToString() + " frames).", "Frameset Names", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                   return false;
                }
             }

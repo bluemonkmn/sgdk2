@@ -277,7 +277,7 @@
           <xs:element name="Project">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="Comments" type="xs:string" default="" msdata:Ordinal="7" />
+                <xs:element name="Comments" type="xs:string" default="" msdata:Ordinal="8" />
               </xs:sequence>
               <xs:attribute name="DisplayMode" type="xs:string" use="required" />
               <xs:attribute name="Windowed" type="xs:boolean" use="required" />
@@ -286,6 +286,7 @@
               <xs:attribute name="OverlayMap" type="xs:string" />
               <xs:attribute name="MaxPlayers" type="xs:unsignedByte" default="1" />
               <xs:attribute name="MaxViews" type="xs:unsignedByte" default="1" />
+              <xs:attribute name="Credits" type="xs:string" />
             </xs:complexType>
           </xs:element>
           <xs:element name="TileCategory">
@@ -545,7 +546,7 @@
         <xs:selector xpath=".//SpriteRule" />
         <xs:field xpath="@DefinitionName" />
       </xs:keyref>
-      <xs:keyref name="TilesetLayer" refer="TilesetKey" msdata:DeleteRule="SetNull">
+      <xs:keyref name="TilesetLayer" refer="TilesetKey">
         <xs:selector xpath=".//Layer" />
         <xs:field xpath="@Tileset" />
       </xs:keyref>
@@ -695,4 +696,7 @@
       <TileFrame Sequence="1" FrameValue="22" Duration="1" />
     </Tile>
   </Tileset>
+  <Project DisplayMode="m640x480x24" Windowed="true" TitleText="Powered by Scrolling Game Development Kit 2 (http://sgdk2.sf.net)" MaxPlayers="1" MaxViews="1" Credits="Graphics: Benjamin Marty (bluemonkmn@users.sourceforge.net)">
+    <Comments />
+  </Project>
 </ProjectDataset>

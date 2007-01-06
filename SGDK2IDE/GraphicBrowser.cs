@@ -432,7 +432,7 @@ namespace SGDK2
                   else
                   {
                      if (m_FramesToDisplay[nCellIndex].FrameIndexes.Length > 0)
-                        dr = frames[m_FramesToDisplay[nCellIndex].FrameIndexes[nSubFrame]];
+                        dr = frames[m_FramesToDisplay[nCellIndex].FrameIndexes[nSubFrame]%frames.Length];
                      else
                         continue;
                   }

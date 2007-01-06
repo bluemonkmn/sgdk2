@@ -238,7 +238,7 @@ namespace SGDK2
          this.pnlSpecifyFrameset.Controls.Add(this.lblSpecifyFrameset);
          this.pnlSpecifyFrameset.Location = new System.Drawing.Point(-10168, 42);
          this.pnlSpecifyFrameset.Name = "pnlSpecifyFrameset";
-         this.pnlSpecifyFrameset.Size = new System.Drawing.Size(290, 231);
+         this.pnlSpecifyFrameset.Size = new System.Drawing.Size(291, 231);
          this.pnlSpecifyFrameset.TabIndex = 7;
          // 
          // btnDeselectAllFramesets
@@ -272,7 +272,7 @@ namespace SGDK2
          this.lblSpecifyFrameset.Dock = System.Windows.Forms.DockStyle.Top;
          this.lblSpecifyFrameset.Location = new System.Drawing.Point(0, 0);
          this.lblSpecifyFrameset.Name = "lblSpecifyFrameset";
-         this.lblSpecifyFrameset.Size = new System.Drawing.Size(290, 48);
+         this.lblSpecifyFrameset.Size = new System.Drawing.Size(291, 48);
          this.lblSpecifyFrameset.TabIndex = 0;
          this.lblSpecifyFrameset.Text = "The specified import source contains multiple framesets.  Select one or more fram" +
             "esets that you want to import.";
@@ -343,7 +343,7 @@ namespace SGDK2
          this.pnlMergeFramesets.Controls.Add(this.lblMergeFramesets);
          this.pnlMergeFramesets.Location = new System.Drawing.Point(-10168, 42);
          this.pnlMergeFramesets.Name = "pnlMergeFramesets";
-         this.pnlMergeFramesets.Size = new System.Drawing.Size(284, 231);
+         this.pnlMergeFramesets.Size = new System.Drawing.Size(285, 231);
          this.pnlMergeFramesets.TabIndex = 9;
          // 
          // grdFramesets
@@ -353,10 +353,10 @@ namespace SGDK2
          this.grdFramesets.DataSource = this.dvFramesetNames;
          this.grdFramesets.Dock = System.Windows.Forms.DockStyle.Fill;
          this.grdFramesets.HeaderForeColor = System.Drawing.SystemColors.ControlText;
-         this.grdFramesets.Location = new System.Drawing.Point(0, 104);
+         this.grdFramesets.Location = new System.Drawing.Point(0, 80);
          this.grdFramesets.Name = "grdFramesets";
          this.grdFramesets.RowHeadersVisible = false;
-         this.grdFramesets.Size = new System.Drawing.Size(284, 127);
+         this.grdFramesets.Size = new System.Drawing.Size(285, 151);
          this.grdFramesets.TabIndex = 1;
          this.grdFramesets.TableStyles.AddRange(new System.Windows.Forms.DataGridTableStyle[] {
                                                                                                  this.framesetTableStyle});
@@ -401,9 +401,9 @@ namespace SGDK2
          this.lblMergeFramesets.Dock = System.Windows.Forms.DockStyle.Top;
          this.lblMergeFramesets.Location = new System.Drawing.Point(0, 0);
          this.lblMergeFramesets.Name = "lblMergeFramesets";
-         this.lblMergeFramesets.Size = new System.Drawing.Size(284, 104);
+         this.lblMergeFramesets.Size = new System.Drawing.Size(285, 80);
          this.lblMergeFramesets.TabIndex = 0;
-         this.lblMergeFramesets.Text = @"Some imported frameset names match those of existing framesets in the project.  When this occurs, and an adequate number of frames exist in the imported frameset, you can choose whether to overwrite the existing frameset or import the frameset as a new object.  To overwrite the existing frameset, leave the new name the same as the original.";
+         this.lblMergeFramesets.Text = @"Here you may specify alternate names for imported framesets if you don't want to use the imported names.  If you specify the name of an existing frameset, it will be overwritten, but this is only allowed if the new frameset has at least as many frames as the old frameset.";
          // 
          // MergeFramesets
          // 
@@ -418,7 +418,7 @@ namespace SGDK2
          this.pnlMergeGraphics.Controls.Add(this.lblMergeGraphics);
          this.pnlMergeGraphics.Location = new System.Drawing.Point(-10168, 42);
          this.pnlMergeGraphics.Name = "pnlMergeGraphics";
-         this.pnlMergeGraphics.Size = new System.Drawing.Size(284, 231);
+         this.pnlMergeGraphics.Size = new System.Drawing.Size(285, 231);
          this.pnlMergeGraphics.TabIndex = 10;
          // 
          // grdGraphicNames
@@ -430,7 +430,7 @@ namespace SGDK2
          this.grdGraphicNames.HeaderForeColor = System.Drawing.SystemColors.ControlText;
          this.grdGraphicNames.Location = new System.Drawing.Point(0, 88);
          this.grdGraphicNames.Name = "grdGraphicNames";
-         this.grdGraphicNames.Size = new System.Drawing.Size(284, 143);
+         this.grdGraphicNames.Size = new System.Drawing.Size(285, 143);
          this.grdGraphicNames.TabIndex = 1;
          this.grdGraphicNames.TableStyles.AddRange(new System.Windows.Forms.DataGridTableStyle[] {
                                                                                                     this.graphicNameStyle});
@@ -475,7 +475,7 @@ namespace SGDK2
          this.lblMergeGraphics.Dock = System.Windows.Forms.DockStyle.Top;
          this.lblMergeGraphics.Location = new System.Drawing.Point(0, 0);
          this.lblMergeGraphics.Name = "lblMergeGraphics";
-         this.lblMergeGraphics.Size = new System.Drawing.Size(284, 88);
+         this.lblMergeGraphics.Size = new System.Drawing.Size(285, 88);
          this.lblMergeGraphics.TabIndex = 0;
          this.lblMergeGraphics.Text = @"Some Graphic Sheets in the source file use the same name as existing Graphic Sheets in the project.  You may choose to import the graphics from the source file under a new name, or, if the existing Graphic Sheet has enough cells, use the existing sheet by leaving the name identical.";
          // 
@@ -493,7 +493,7 @@ namespace SGDK2
          this.pnlReview.Controls.Add(this.lblReview);
          this.pnlReview.Location = new System.Drawing.Point(-10168, 42);
          this.pnlReview.Name = "pnlReview";
-         this.pnlReview.Size = new System.Drawing.Size(284, 231);
+         this.pnlReview.Size = new System.Drawing.Size(285, 231);
          this.pnlReview.TabIndex = 11;
          // 
          // txtReview
@@ -504,7 +504,7 @@ namespace SGDK2
          this.txtReview.Name = "txtReview";
          this.txtReview.ReadOnly = true;
          this.txtReview.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-         this.txtReview.Size = new System.Drawing.Size(284, 175);
+         this.txtReview.Size = new System.Drawing.Size(285, 175);
          this.txtReview.TabIndex = 1;
          this.txtReview.Text = "";
          // 
@@ -513,7 +513,7 @@ namespace SGDK2
          this.lblReview.Dock = System.Windows.Forms.DockStyle.Top;
          this.lblReview.Location = new System.Drawing.Point(0, 0);
          this.lblReview.Name = "lblReview";
-         this.lblReview.Size = new System.Drawing.Size(284, 56);
+         this.lblReview.Size = new System.Drawing.Size(285, 56);
          this.lblReview.TabIndex = 0;
          this.lblReview.Text = "The Frameset Import Wizard has all the information needed to import the requested" +
             " framesets.  The following actions will occur when you click Finish...";
@@ -746,7 +746,7 @@ namespace SGDK2
          {
             if (!(dr[dcNewFSName] is string))
             {
-               MessageBox.Show(this, "Please enter a new name for \"" + dr[dcOldGSName].ToString() + "\".", "Frameset Names", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+               MessageBox.Show(this, "Please enter a new name for \"" + dr[dcOldFSName].ToString() + "\".", "Frameset Names", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                return false;
             }
             string msg = ProjectData.ValidateName(dr[dcNewFSName].ToString());
@@ -758,10 +758,10 @@ namespace SGDK2
             ProjectDataset.FramesetRow oldFrameset = ProjectData.GetFrameSet(dr[dcNewFSName].ToString());
             if (oldFrameset != null)
             {
-               ProjectDataset.FramesetRow newFrameset = dsSource.Frameset.FindByName(dr[dcNewFSName].ToString());
-               if(newFrameset.GetFrameRows().Length > oldFrameset.GetFrameRows().Length)
+               ProjectDataset.FramesetRow newFrameset = dsSource.Frameset.FindByName(dr[dcOldFSName].ToString());
+               if(newFrameset.GetFrameRows().Length < oldFrameset.GetFrameRows().Length)
                {
-                  MessageBox.Show(this, "The new Frameset name specified for \"" + dr[dcOldGSName].ToString() + "\" refers to an existing Frameset that has more frames.  The frameset being overwritten must have no more frames than the imported frameset (" + newFrameset.GetFrameRows().Length.ToString() + " frames).", "Frameset Names", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  MessageBox.Show(this, "The new Frameset name specified for \"" + dr[dcOldFSName].ToString() + "\" refers to an existing Frameset that has more frames.  The frameset being overwritten must have no more frames than the imported frameset (" + newFrameset.GetFrameRows().Length.ToString() + " frames).", "Frameset Names", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                   return false;
                }
             }

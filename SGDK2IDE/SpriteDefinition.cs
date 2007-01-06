@@ -2663,7 +2663,10 @@ namespace SGDK2
             if (comment == null)
                return;
             
-            dsExport.Project.AddProjectRow(GameDisplayMode.m640x480x24.ToString(), true, comment, null, null, 1, 1, ProjectData.ProjectRow.Credits);
+            if (ProjectData.ProjectRow.IsCreditsNull())
+               dsExport.Project.AddProjectRow(GameDisplayMode.m640x480x24.ToString(), true, comment, null, null, 1, 1, string.Empty);
+            else
+               dsExport.Project.AddProjectRow(GameDisplayMode.m640x480x24.ToString(), true, comment, null, null, 1, 1, ProjectData.ProjectRow.Credits);
 
             System.Windows.Forms.SaveFileDialog dlgSave = new SaveFileDialog();
             dlgSave.OverwritePrompt = true;

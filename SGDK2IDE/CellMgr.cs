@@ -277,7 +277,10 @@ namespace SGDK2
          {
             Bitmap clonedImage = new Bitmap(picSheet.Image.Width, picSheet.Image.Height, picSheet.Image.PixelFormat);
             using (Graphics gfx = Graphics.FromImage(clonedImage))
+            {
+               newImage.SetResolution(gfx.DpiX, gfx.DpiY);
                gfx.DrawImageUnscaled(newImage, 0, 0);
+            }
             newImage.Dispose();
             picSheet.Image.Dispose();
             picSheet.Image = clonedImage;

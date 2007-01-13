@@ -6,8 +6,8 @@ namespace SGDK2
 	/// Defines interfaces for passing type information accross application domains
 	/// without loading the remote assembly into the main domain.
 	/// </summary>
-	public class RemotingServices
-	{
+   public class RemotingServices
+   {
       public class RemoteMethodComparer : System.Collections.IComparer
       {
          #region IComparer Members
@@ -22,7 +22,7 @@ namespace SGDK2
       }
 
       [Serializable()]
-      public struct RemoteParameterInfo
+         public struct RemoteParameterInfo
       {
          public string Name;
          public RemoteTypeName Type;
@@ -48,7 +48,7 @@ namespace SGDK2
       }
 
       [Serializable()]
-      public struct RemoteMethodInfo
+         public struct RemoteMethodInfo
       {
          public string MethodName;
          public RemoteParameterInfo[] Arguments;
@@ -57,7 +57,7 @@ namespace SGDK2
       }
 
       [Serializable()]
-      public struct RemoteGlobalAccessorInfo
+         public struct RemoteGlobalAccessorInfo
       {
          public RemoteTypeName Type;
          public string MemberName;
@@ -69,7 +69,7 @@ namespace SGDK2
       }
 
       [Serializable()]
-      public struct RemoteTypeName
+         public struct RemoteTypeName
       {
          public string Name;
          public string FullName;
@@ -127,10 +127,17 @@ namespace SGDK2
       {
          public string Name;
          public RemoteTypeName Type;
-         public bool CanRead;
-         public bool CanWrite;
          public string Description;
-         public bool Static;
+         public MemberFlags Flags;
+      }
+
+      [FlagsAttribute()]
+      public enum MemberFlags
+      {
+         CanRead=1,
+         CanWrite=2,
+         Static=4,
+         Browsable=8
       }
    }
 

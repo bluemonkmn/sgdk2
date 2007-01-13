@@ -29,6 +29,7 @@ public class GameForm : Form
    private System.Windows.Forms.MenuItem mnuHelp;
    private System.Windows.Forms.MenuItem mnuHelpAbout;
    public System.IO.StringWriter debugText = new System.IO.StringWriter();
+   private bool m_quit = false;
 
    public GameForm(GameDisplayMode mode, bool windowed, string title, System.Type initMapType, System.Type overlayMapType)
    {
@@ -138,7 +139,7 @@ public class GameForm : Form
             System.Threading.Thread.Sleep(0);
             continue;
          }
-         if ((GameDisplay == null) || (GameDisplay.Device.Disposed))
+         if ((GameDisplay == null) || GameDisplay.Device.Disposed || m_quit)
          {
             Close();
             return;
@@ -215,6 +216,20 @@ public class GameForm : Form
    public void UnloadMap(System.Type mapType)
    {
       LoadedMaps.Remove(mapType);
+   }
+
+   public void UnloadBackgroundMaps()
+   {
+      System.Collections.ArrayList toRemove = new System.Collections.ArrayList();
+      foreach(System.Collections.DictionaryEntry de in LoadedMaps)
+      {
+         if ((de.Value != CurrentMap) && (de.Value != OverlayMap))
+            toRemove.Add(de.Key);
+      }
+      foreach(System.Type removeKey in toRemove)
+      {
+         LoadedMaps.Remove(removeKey);
+      }
    }
 
    private void InitializeComponent()
@@ -369,5 +384,10 @@ public class GameForm : Form
    {
       using (frmAbout frm = new frmAbout())
          frm.ShowDialog();
+   }
+
+   public void Quit()
+   {
+      m_quit = true;
    }
 }

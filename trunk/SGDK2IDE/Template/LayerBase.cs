@@ -87,6 +87,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
       this.m_nRows = nRows;
       this.m_AbsolutePosition = Position;
       this.m_ScrollRate = ScrollRate;
+      this.Move(new Point(0,0));
    }
 
    #region Abstract Members

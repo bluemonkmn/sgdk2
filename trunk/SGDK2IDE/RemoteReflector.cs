@@ -19,6 +19,9 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
       reflectType = typeof(Microsoft.DirectX.DirectInput.KeyboardState).Assembly.GetType(typeName, false);
       if (null != reflectType)
          return;
+      reflectType = typeof(System.Drawing.Color).Assembly.GetType(typeName, false);
+      if (null != reflectType)
+         return;
       throw new System.ApplicationException("Failed to load type " + typeName);
    }
    #region IRemoteTypeInfo Members
@@ -143,12 +146,19 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
       System.Reflection.PropertyInfo[] pi = reflectType.GetProperties(binder);
       System.Reflection.FieldInfo[] fi = reflectType.GetFields(binder);
       SGDK2.RemotingServices.RemotePropertyInfo[] result = new SGDK2.RemotingServices.RemotePropertyInfo[pi.Length + fi.Length];
+      bool browsable;
       for (int i = 0; i < pi.Length; i++)
       {
          result[i].Name = pi[i].Name;
          result[i].Type = new SGDK2.RemotingServices.RemoteTypeName(pi[i].PropertyType);
-         result[i].CanRead = pi[i].CanRead;
-         result[i].CanWrite = pi[i].CanWrite;
+         System.ComponentModel.BrowsableAttribute ba = System.Attribute.GetCustomAttribute(pi[i], typeof(System.ComponentModel.BrowsableAttribute)) as System.ComponentModel.BrowsableAttribute;
+         if (ba == null)
+            browsable = true;
+         else
+            browsable = ba.Browsable;
+         result[i].Flags = (pi[i].CanRead ? SGDK2.RemotingServices.MemberFlags.CanRead:0) |
+            (pi[i].CanWrite ? SGDK2.RemotingServices.MemberFlags.CanWrite:0) |
+            (browsable ? SGDK2.RemotingServices.MemberFlags.Browsable:0);
          if (pi[i].IsDefined(typeof(System.ComponentModel.DescriptionAttribute), true))
             result[i].Description = ((System.ComponentModel.DescriptionAttribute)System.Attribute.GetCustomAttribute(pi[i], typeof(System.ComponentModel.DescriptionAttribute))).Description;
          else
@@ -159,13 +169,19 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
          int idx = i+pi.Length;
          result[idx].Name = fi[i].Name;
          result[idx].Type = new SGDK2.RemotingServices.RemoteTypeName(fi[i].FieldType);
-         result[idx].CanRead = true;
-         result[idx].CanWrite = ((fi[i].Attributes & System.Reflection.FieldAttributes.InitOnly) == 0);
+         System.ComponentModel.BrowsableAttribute ba = System.Attribute.GetCustomAttribute(fi[i], typeof(System.ComponentModel.BrowsableAttribute)) as System.ComponentModel.BrowsableAttribute;
+         if (ba == null)
+            browsable = true;
+         else
+            browsable = ba.Browsable;
+         result[idx].Flags = SGDK2.RemotingServices.MemberFlags.CanRead |
+            (((fi[i].Attributes & System.Reflection.FieldAttributes.InitOnly) == 0)?SGDK2.RemotingServices.MemberFlags.CanWrite:0) |
+            ((0 != (int)(fi[i].Attributes & System.Reflection.FieldAttributes.Static))?SGDK2.RemotingServices.MemberFlags.Static:0) |
+            (browsable ? SGDK2.RemotingServices.MemberFlags.Browsable:0);
          if (fi[i].IsDefined(typeof(System.ComponentModel.DescriptionAttribute), true))
             result[idx].Description = ((System.ComponentModel.DescriptionAttribute)System.Attribute.GetCustomAttribute(fi[i], typeof(System.ComponentModel.DescriptionAttribute))).Description;
          else
             result[idx].Description = String.Empty;
-         result[idx].Static = (0 != (int)(fi[i].Attributes & System.Reflection.FieldAttributes.Static));
       }
       return result;
    }

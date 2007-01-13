@@ -43,6 +43,27 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
       }
    }
 
+
+   #region Sprites
+   [Description("Make the specified sprite active.")]
+   public void ActivateSprite(SpriteBase Target)
+   {
+      Target.isActive = true;
+   }
+
+   [Description("Make the specified sprite inactive.")]
+   public void DeactivateSprite(SpriteBase Target)
+   {
+      Target.isActive = false;
+   }
+
+   [Description("Set the position of the source sprite to match that of the target sprite.")]
+   public void MatchSpritePosition(SpriteBase Source, SpriteBase Target)
+   {
+      Source.x = Target.x;
+      Source.y = Target.y;
+   }
+
    [Description("Returns true if the specified sprite is touching this plan's rectangle")]
    public bool IsSpriteTouching(SpriteBase sprite)
    {
@@ -61,7 +82,7 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    }
 
    [Description("Returns true if the specified part of the specified sprite is within the plan's rectangle")]
-   public bool IsSpriteWithin(SpriteBase sprite, SpriteBase.RelativePosition RelativePosition)
+   public bool IsSpriteWithin(SpriteBase sprite, RelativePosition RelativePosition)
    {
       System.Drawing.Point rp = sprite.GetRelativePosition(RelativePosition);
       Rectangle targetRect = PlanRectangle;
@@ -82,51 +103,6 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
          return false;
    }
 
-   [Description("Moves the specified sprite to the specified coordinate")]
-   public void Transport(SpriteBase sprite, Point target)
-   {
-      sprite.oldX = sprite.x;
-      sprite.oldY = sprite.y;
-      sprite.x = target.X;
-      sprite.y = target.Y;
-   }
-
-   [Description("Returns true if the specified key is currently pressed")]
-   public bool IsKeyPressed(Microsoft.DirectX.DirectInput.Key key)
-   {
-      return Project.GameWindow.KeyboardState[key];
-   }
-
-   protected virtual Coordinate[] Coordinates
-   {
-      get
-      {
-         return null;
-      }
-   }
-
-   public Coordinate this[int index]
-   {
-      get
-      {
-         return Coordinates[index];
-      }
-   }
-
-   public int Count
-   {
-      get
-      {
-         if (Coordinates == null)
-            return 0;
-         return Coordinates.Length;
-      }
-   }
-
-   public virtual void ExecuteRules()
-   {
-      throw new NotImplementedException("Attempted to execute rules on plan " + this.GetType().Name + " without any rules");
-   }
 
    [Description("Scroll all layers on this plan's layer's map so that the specified sprite is within the visible area of the map.  If UseScrollMargins is true, the layer will scroll the sprite into the scroll margins of the map.")]
    public void ScrollSpriteIntoView(SpriteBase Sprite, bool UseScrollMargins)
@@ -258,6 +234,70 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
       return Sprite.isActive;
    }
 
+   [Description("Moves the specified sprite to the specified coordinate")]
+   public void Transport(SpriteBase sprite, Point target)
+   {
+      sprite.oldX = sprite.x;
+      sprite.oldY = sprite.y;
+      sprite.x = target.X;
+      sprite.y = target.Y;
+   }
+
+   
+   [Description("Associate the state of the input device for the specified player (1-4) with the inputs on the specified sprite.")]
+   public void MapPlayerToInputs(int PlayerNumber, SpriteBase Target)
+   {
+      System.Diagnostics.Debug.Assert(Target.isActive, "Attempted to execute MapPlayerToInput on an inactive sprite");
+      if (PlayerNumber > Project.MaxPlayers)
+      {
+         System.Diagnostics.Debug.Fail("Attempted to map inactive player input");
+         return;
+      }
+      IPlayer player = Project.GameWindow.Players[PlayerNumber-1];
+      Target.inputs = 0;
+      if (player.Up) Target.inputs |= SpriteBase.InputBits.Up;
+      if (player.Left) Target.inputs |= SpriteBase.InputBits.Left;
+      if (player.Right) Target.inputs |= SpriteBase.InputBits.Right;
+      if (player.Down) Target.inputs |= SpriteBase.InputBits.Down;
+      if (player.Button1) Target.inputs |= SpriteBase.InputBits.Button1;
+      if (player.Button2) Target.inputs |= SpriteBase.InputBits.Button2;
+      if (player.Button3) Target.inputs |= SpriteBase.InputBits.Button3;
+      if (player.Button4) Target.inputs |= SpriteBase.InputBits.Button4;
+   }
+
+   #endregion
+
+   protected virtual Coordinate[] Coordinates
+   {
+      get
+      {
+         return null;
+      }
+   }
+
+   public Coordinate this[int index]
+   {
+      get
+      {
+         return Coordinates[index];
+      }
+   }
+
+   public int Count
+   {
+      get
+      {
+         if (Coordinates == null)
+            return 0;
+         return Coordinates.Length;
+      }
+   }
+
+   public virtual void ExecuteRules()
+   {
+      throw new NotImplementedException("Attempted to execute rules on plan " + this.GetType().Name + " without any rules");
+   }
+
    public enum ColorChannel
    {
       Blue,
@@ -286,46 +326,7 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
       }
    }
 
-   [Description("Associate the state of the input device for the specified player (1-4) with the inputs on the specified sprite.")]
-   public void MapPlayerToInputs(int PlayerNumber, SpriteBase Target)
-   {
-      System.Diagnostics.Debug.Assert(Target.isActive, "Attempted to execute MapPlayerToInput on an inactive sprite");
-      if (PlayerNumber > Project.MaxPlayers)
-      {
-         System.Diagnostics.Debug.Fail("Attempted to map inactive player input");
-         return;
-      }
-      IPlayer player = Project.GameWindow.Players[PlayerNumber-1];
-      Target.inputs = 0;
-      if (player.Up) Target.inputs |= SpriteBase.InputBits.Up;
-      if (player.Left) Target.inputs |= SpriteBase.InputBits.Left;
-      if (player.Right) Target.inputs |= SpriteBase.InputBits.Right;
-      if (player.Down) Target.inputs |= SpriteBase.InputBits.Down;
-      if (player.Button1) Target.inputs |= SpriteBase.InputBits.Button1;
-      if (player.Button2) Target.inputs |= SpriteBase.InputBits.Button2;
-      if (player.Button3) Target.inputs |= SpriteBase.InputBits.Button3;
-      if (player.Button4) Target.inputs |= SpriteBase.InputBits.Button4;
-   }
-
-   [Description("Make the specified sprite active.")]
-   public void ActivateSprite(SpriteBase Target)
-   {
-      Target.isActive = true;
-   }
-
-   [Description("Make the specified sprite inactive.")]
-   public void DeactivateSprite(SpriteBase Target)
-   {
-      Target.isActive = false;
-   }
-
-   [Description("Set the position of the source sprite to match that of the target sprite.")]
-   public void MatchSpritePosition(SpriteBase Source, SpriteBase Target)
-   {
-      Source.x = Target.x;
-      Source.y = Target.y;
-   }
-
+   
    #region Inventory / Overlay
    public enum DrawStyle
    {
@@ -393,7 +394,7 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
             foreach(int frameIndex in ts[TileIndex].CurrentFrame)
             {
                int FillWidth = PlanRectangle.Width * counter.CurrentValue / counter.MaxValue;
-               disp.Device.RenderState.ScissorTestEnable = true;
+               disp.Device.RenderState.ScissorTestEnable = false;
                disp.Device.ScissorRectangle = new Rectangle(
                   PlanRectangle.X + ParentLayer.CurrentPosition.X + CurrentView.X,
                   PlanRectangle.Y + ParentLayer.CurrentPosition.Y + CurrentView.Y,
@@ -455,7 +456,7 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
             foreach(int frameIndex in ts[TileIndex].CurrentFrame)
             {
                int FillHeight = PlanRectangle.Height * counter.CurrentValue / counter.MaxValue;
-               disp.Device.RenderState.ScissorTestEnable = true;
+               disp.Device.RenderState.ScissorTestEnable = false;
                disp.Device.ScissorRectangle = new Rectangle(
                   PlanRectangle.X + ParentLayer.CurrentPosition.X + CurrentView.X,
                   PlanRectangle.Y + ParentLayer.CurrentPosition.Y + CurrentView.Y +
@@ -476,7 +477,86 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
       }
       disp.Sprite.Flush();
    }
+
+   [Description("Display a counter value as a number with a label in the current plan's rectangle")]
+   public void DrawCounterWithLabel(string Label, Counter counter, System.Drawing.KnownColor color)
+   {
+      System.Diagnostics.Debug.Assert(!PlanRectangle.IsEmpty, "DrawCounterAsTile was called on a plan that does not have a rectangle defined");
+      if (PlanRectangle.IsEmpty)
+         return;
+      
+      Display disp = ParentLayer.ParentMap.Display;
+      disp.Device.RenderState.ScissorTestEnable = false;
+      disp.Sprite.Transform = Matrix.Identity;
+      disp.D3DFont.DrawText(disp.Sprite, Label.ToString() + counter.CurrentValue.ToString(), PlanRectangle, Microsoft.DirectX.Direct3D.DrawTextFormat.Left, System.Drawing.Color.FromKnownColor(color));
+      disp.Sprite.Flush();
+   }
    #endregion
+
+   [Description("Copy tiles from this plan's rectangle to another plan's rectangle.")]
+   public void CopyTo(PlanBase Target, RelativePosition RelativePosition)
+   {
+      int src_left = (int)(PlanRectangle.X / ParentLayer.Tileset.TileWidth);
+      int src_top = (int)(PlanRectangle.Y / ParentLayer.Tileset.TileHeight);
+      int src_right = (int)((PlanRectangle.X + PlanRectangle.Width - 1) / ParentLayer.Tileset.TileWidth);
+      int src_bottom = (int)((PlanRectangle.Y + PlanRectangle.Height - 1) / ParentLayer.Tileset.TileHeight);
+
+      int dst_left = (int)(Target.PlanRectangle.X / Target.ParentLayer.Tileset.TileWidth);
+      int dst_top = (int)(Target.PlanRectangle.Y / Target.ParentLayer.Tileset.TileHeight);
+      int dst_right = (int)((Target.PlanRectangle.X + Target.PlanRectangle.Width - 1) / Target.ParentLayer.Tileset.TileWidth);
+      int dst_bottom = (int)((Target.PlanRectangle.Y + Target.PlanRectangle.Height - 1) / Target.ParentLayer.Tileset.TileHeight);
+
+      for (int y = src_top; y <= src_bottom; y++)
+      {
+         int targety;
+         switch(RelativePosition)
+         {
+            case RelativePosition.TopLeft:
+            case RelativePosition.TopCenter:
+            case RelativePosition.TopRight:
+               targety = dst_top + y - src_top;
+               break;
+            case RelativePosition.LeftMiddle:
+            case RelativePosition.CenterMiddle:
+            case RelativePosition.RightMiddle:
+               targety = y + (int)(dst_top + dst_bottom - src_top - src_bottom) / 2;
+               break;
+            default:
+               targety = dst_bottom + y - src_bottom;
+               break;
+         }
+         if (targety < 0)
+            continue;
+         if (targety >= Target.ParentLayer.Rows)
+            break;
+         for (int x = src_left; x <= src_right; x++)
+         {
+            int targetx;
+            switch(RelativePosition)
+            {
+               case RelativePosition.TopLeft:
+               case RelativePosition.LeftMiddle:
+               case RelativePosition.BottomLeft:
+                  targetx = dst_left + x - src_left;
+                  break;
+               case RelativePosition.TopCenter:
+               case RelativePosition.CenterMiddle:
+               case RelativePosition.BottomCenter:
+                  targetx = x + (int)(dst_left + dst_right - src_left - src_right) / 2;
+                  break;
+               default:
+                  targetx = dst_right + x - src_right;
+                  break;
+            }
+            if (targetx < 0)
+               continue;
+            if (targetx >= Target.ParentLayer.Columns)
+               break;
+            
+            Target.ParentLayer[targetx,targety] = ParentLayer[x,y];
+         }
+      }
+   }
 
    #region IEnumerable Members
 

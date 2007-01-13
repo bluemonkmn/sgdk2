@@ -70,8 +70,8 @@ public abstract class SpriteBase : GeneralRules
    public SpriteBase(LayerBase layer, double x, double y, double dx, double dy, int state, int frame, bool active, Solidity solidity, int color)
    {
       this.layer = layer;
-      this.x = x;
-      this.y = y;
+      this.x = this.oldX = x;
+      this.y = this.oldY = y;
       this.dx = dx;
       this.dy = dy;
       this.state = state;
@@ -796,13 +796,10 @@ public abstract class SpriteBase : GeneralRules
    #endregion
 
    #region Solidity
-   public Solidity CurrentSolidity
+   [Description("Set the solidity rules to which the sprite is currently reacting.")]
+   public void SetSolidity(Solidity Solidity)
    {
-      [Description("Set the solidity rules to which the sprite is currently reacting")]
-      set
-      {
-         m_solidity = value;
-      }
+      m_solidity = Solidity;
    }
 
    [Description("Alter the sprite's velocity to react to solid areas on the map.  Returns true if sprite touches solid.")]
@@ -1053,10 +1050,14 @@ public abstract class SpriteBase : GeneralRules
       int th = layer.Tileset.TileHeight;
       int minYEdge = (PixelY / th);
       int maxY = (PixelY + SolidHeight) / th;
+      if (maxY >= layer.Rows)
+         maxY = layer.Rows -1;
       int maxYEdge = (PixelY + SolidHeight - 1) / th;
       int minX = (PixelX - 1)/ tw;
       int minXEdge = PixelX / tw;
       int maxX = (PixelX + SolidHeight) / tw;
+      if (maxX >= layer.Columns)
+         maxX = layer.Columns - 1;
       int maxXEdge = (PixelX + SolidHeight - 1) / tw;
       for (int yidx = (PixelY - 1) / th; yidx <= maxY; yidx++)
       {
@@ -1172,7 +1173,7 @@ public abstract class SpriteBase : GeneralRules
       return -1;
    }
 
-   [Description("Activate the next inactive sprite from a category at the coordinates of a tile being touched by the player.  Use TileTouchingIndex to acquire TouchingIndex.")]
+   [Description("Activate the next inactive sprite from a category at the coordinates of a tile being touched by the player.  Use TileTouchingIndex to acquire TouchingIndex.  Returns the index into the category of the sprite that was activated, or -1 if all sprites in the category were already active.")]
    public int TileActivateSprite(int TouchingIndex, SpriteCollection Category, bool ClearParameters)
    {
       Debug.Assert(this.isActive, "Attempted to execute TileActivateSprite on an inactive sprite");
@@ -1186,9 +1187,13 @@ public abstract class SpriteBase : GeneralRules
             Category[i].x = tt.x * layer.Tileset.TileWidth;
             Category[i].y = tt.y * layer.Tileset.TileHeight;
             if (ClearParameters)
+            {
+               Category[i].frame = 0;
+               Category[i].state = 0;
                Category[i].ClearParameters();
+            }
             Category[i].ProcessRules();
-            break;
+            return i;
          }
       }
       return -1;
@@ -1215,20 +1220,6 @@ public abstract class SpriteBase : GeneralRules
          }
       }
       return result;
-   }
-
- 
-   public enum RelativePosition
-   {
-      TopLeft,
-      TopCenter,
-      TopRight,
-      LeftMiddle,
-      CenterMiddle,
-      RightMiddle,
-      BottomLeft,
-      BottomCenter,
-      BottomRight
    }
 
    public System.Drawing.Point GetRelativePosition(RelativePosition RelativePosition)
@@ -1272,6 +1263,8 @@ public abstract class SpriteBase : GeneralRules
    [Description("Examines the tile on the layer at the sprite's current position and determines if it is a member of the specified category. The RelativePosition parameter determines which part of the sprite to use when identifying a location on the layer. (TouchTiles is not necessary for this function.)")]
    public bool IsOnTile(TileCategoryName Category, RelativePosition RelativePosition)
    {
+      Debug.Assert(this.isActive, "Attempted to execute IsOnTile on an inactive sprite");
+
       System.Drawing.Point rp = GetRelativePosition(RelativePosition);
       return layer.GetTile((int)(rp.X / layer.Tileset.TileWidth), (int)(rp.Y / layer.Tileset.TileHeight)).IsMember(Category);
    }

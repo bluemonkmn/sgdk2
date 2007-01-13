@@ -11,6 +11,7 @@ public abstract class MapBase
    public Type m_CameFromMapType = null;
    private ViewLayout viewLayout = ViewLayout.Single;
    private static byte currentViewIndex = 0;
+   public int MapFlags = 0;
 
    public MapBase(Display Disp)
    {

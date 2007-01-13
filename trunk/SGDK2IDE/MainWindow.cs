@@ -659,6 +659,7 @@ namespace SGDK2
             }
          }
 
+         CodeGenerator.ResetTempAssembly();
          mnuFileDeleteOutputFiles.Enabled = false;
          ProjectData.Clear();
          InitializeTree();
@@ -1683,14 +1684,17 @@ namespace SGDK2
             {
                TreeNode ndOld = (TreeNode)m_TreeNodes["LR" + sOldKey];
                TreeNode ndOldChild = (TreeNode)m_TreeNodes["LE" + sOldKey];
+               TreeNode ndOldPlan = (TreeNode)m_TreeNodes["PL" + sOldKey];
                m_TreeNodes.Remove("LR" + sOldKey);
                m_TreeNodes.Remove("LE" + sOldKey);
+               m_TreeNodes.Remove("PL" + sOldKey);
                ndOld.Tag = "LR" + sNewKey;
                ndOld.Text = e.Row.Name;
-               ndOldChild.Tag = "LE" + e.Row[ProjectData.Layer.MapNameColumn,DataRowVersion.Proposed].ToString() +
-                  "~" + e.Row.Name;
+               ndOldChild.Tag = "LE" + sNewKey;
+               ndOldPlan.Tag = "PL" + sNewKey;
                m_TreeNodes.Add(ndOld.Tag, ndOld);
                m_TreeNodes.Add(ndOldChild.Tag, ndOldChild);
+               m_TreeNodes.Add(ndOldPlan.Tag, ndOldPlan);
             }
          }
       }

@@ -1,0 +1,1680 @@
+<?xml version="1.0" standalone="yes"?>
+<ProjectDataset>
+  <xs:schema id="ProjectDataset" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop">
+    <xs:element name="ProjectDataset" msdata:IsDataSet="true" msprop:SchemaVersion="1">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="GraphicSheet">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Image" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="5" />
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Columns" type="xs:short" default="16" />
+              <xs:attribute name="Rows" type="xs:short" default="8" />
+              <xs:attribute name="CellWidth" msdata:Caption="Cell Width" type="xs:short" default="32" />
+              <xs:attribute name="CellHeight" msdata:Caption="Cell Height" type="xs:short" default="32" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Frameset">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Frame" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:attribute name="FrameValue" type="xs:int" use="required" />
+                    <xs:attribute name="GraphicSheet" type="xs:string" use="required" />
+                    <xs:attribute name="CellIndex" type="xs:short" use="required" />
+                    <xs:attribute name="m11" type="xs:float" default="1" />
+                    <xs:attribute name="m12" type="xs:float" default="0" />
+                    <xs:attribute name="m21" type="xs:float" default="0" />
+                    <xs:attribute name="m22" type="xs:float" default="1" />
+                    <xs:attribute name="dx" type="xs:float" default="0" />
+                    <xs:attribute name="dy" type="xs:float" default="0" />
+                    <xs:attribute name="Name" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="color" type="xs:int" default="-1" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Tileset">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Tile" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="TileFrame" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                          <xs:attribute name="Sequence" type="xs:short" use="required" />
+                          <xs:attribute name="FrameValue" type="xs:int" />
+                          <xs:attribute name="Duration" type="xs:short" />
+                          <xs:attribute name="Name" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="TileValue" type="xs:int" msdata:AllowDBNull="false" use="prohibited" />
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="TileValue" type="xs:int" use="required" />
+                    <xs:attribute name="Counter" type="xs:string" />
+                    <xs:attribute name="Name" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Frameset" type="xs:string" />
+              <xs:attribute name="TileWidth" type="xs:short" use="required" />
+              <xs:attribute name="TileHeight" type="xs:short" use="required" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Counter">
+            <xs:complexType>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Value" type="xs:int" />
+              <xs:attribute name="Max" type="xs:int" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Map">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Layer" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="Tiles" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="12" />
+                      <xs:element name="Sprite" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="ParameterValue" minOccurs="0" maxOccurs="unbounded">
+                              <xs:complexType>
+                                <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="SpriteName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="ParameterName" type="xs:string" use="required" />
+                                <xs:attribute name="Value" type="xs:int" />
+                                <xs:attribute name="DefinitionName" type="xs:string" use="prohibited" />
+                                <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                              </xs:complexType>
+                            </xs:element>
+                          </xs:sequence>
+                          <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="Name" type="xs:string" use="required" />
+                          <xs:attribute name="DefinitionName" type="xs:string" use="required" />
+                          <xs:attribute name="StateName" type="xs:string" />
+                          <xs:attribute name="CurrentFrame" type="xs:short" />
+                          <xs:attribute name="X" type="xs:int" />
+                          <xs:attribute name="Y" type="xs:int" />
+                          <xs:attribute name="DX" type="xs:float" />
+                          <xs:attribute name="DY" type="xs:float" />
+                          <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="Priority" type="xs:int" />
+                          <xs:attribute name="Active" type="xs:boolean" default="true" />
+                          <xs:attribute name="Solidity" type="xs:string" />
+                          <xs:attribute name="Color" type="xs:int" default="-1" />
+                        </xs:complexType>
+                      </xs:element>
+                      <xs:element name="SpritePlan" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="Coordinate" minOccurs="0" maxOccurs="unbounded">
+                              <xs:complexType>
+                                <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="PlanName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="Sequence" type="xs:short" use="required" />
+                                <xs:attribute name="X" type="xs:int" />
+                                <xs:attribute name="Y" type="xs:int" />
+                                <xs:attribute name="Weight" type="xs:int" />
+                              </xs:complexType>
+                            </xs:element>
+                            <xs:element name="PlanRule" minOccurs="0" maxOccurs="unbounded">
+                              <xs:complexType>
+                                <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="PlanName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="Name" type="xs:string" use="required" />
+                                <xs:attribute name="Sequence" type="xs:int" use="required" />
+                                <xs:attribute name="Type" type="xs:string" use="required" />
+                                <xs:attribute name="Function" type="xs:string" use="required" />
+                                <xs:attribute name="Parameter1" type="xs:string" />
+                                <xs:attribute name="Parameter2" type="xs:string" />
+                                <xs:attribute name="Parameter3" type="xs:string" />
+                                <xs:attribute name="ResultParameter" type="xs:string" />
+                                <xs:attribute name="EndIf" type="xs:boolean" default="false" />
+                                <xs:attribute name="Suspended" type="xs:boolean" default="false" />
+                              </xs:complexType>
+                            </xs:element>
+                            <xs:element name="PlanParameterValue" minOccurs="0" maxOccurs="unbounded">
+                              <xs:complexType>
+                                <xs:attribute name="MapName" type="xs:string" use="required" />
+                                <xs:attribute name="LayerName" type="xs:string" use="required" />
+                                <xs:attribute name="PlanName" type="xs:string" use="required" />
+                                <xs:attribute name="Name" type="xs:string" use="required" />
+                                <xs:attribute name="Value" type="xs:string" />
+                              </xs:complexType>
+                            </xs:element>
+                          </xs:sequence>
+                          <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="Name" type="xs:string" use="required" />
+                          <xs:attribute name="Priority" type="xs:int" />
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="Name" type="xs:string" use="required" />
+                    <xs:attribute name="Width" type="xs:int" use="required" />
+                    <xs:attribute name="Height" type="xs:int" use="required" />
+                    <xs:attribute name="Tileset" type="xs:string" />
+                    <xs:attribute name="BytesPerTile" type="xs:unsignedByte" use="required" />
+                    <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="OffsetX" type="xs:int" default="0" />
+                    <xs:attribute name="OffsetY" type="xs:int" default="0" />
+                    <xs:attribute name="ScrollRateX" type="xs:float" default="1" />
+                    <xs:attribute name="ScrollRateY" type="xs:float" default="1" />
+                    <xs:attribute name="ZIndex" type="xs:int" />
+                    <xs:attribute name="Priority" type="xs:int" default="0" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="ScrollMarginLeft" type="xs:short" use="required" />
+              <xs:attribute name="ScrollMarginTop" type="xs:short" use="required" />
+              <xs:attribute name="ScrollMarginRight" type="xs:short" use="required" />
+              <xs:attribute name="ScrollMarginBottom" type="xs:short" use="required" />
+              <xs:attribute name="ScrollWidth" msdata:Caption="Scrollable pixel width of the map independent of its layers" type="xs:int" />
+              <xs:attribute name="ScrollHeight" msdata:Caption="Scrollable pixel height of the map independent of its layers" type="xs:int" />
+              <xs:attribute name="ViewLeft" type="xs:short" />
+              <xs:attribute name="ViewTop" type="xs:short" />
+              <xs:attribute name="ViewWidth" type="xs:short" />
+              <xs:attribute name="ViewHeight" type="xs:short" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="SpriteDefinition">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="SpriteRule" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:attribute name="DefinitionName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="Name" type="xs:string" use="required" />
+                    <xs:attribute name="Sequence" type="xs:int" use="required" />
+                    <xs:attribute name="Type" type="xs:string" use="required" />
+                    <xs:attribute name="Function" type="xs:string" use="required" />
+                    <xs:attribute name="Parameter1" type="xs:string" />
+                    <xs:attribute name="Parameter2" type="xs:string" />
+                    <xs:attribute name="Parameter3" type="xs:string" />
+                    <xs:attribute name="ResultParameter" type="xs:string" />
+                    <xs:attribute name="EndIf" type="xs:boolean" default="false" />
+                    <xs:attribute name="Suspended" type="xs:boolean" default="false" />
+                  </xs:complexType>
+                </xs:element>
+                <xs:element name="SpriteParameter" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:attribute name="DefinitionName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="Name" type="xs:string" use="required" />
+                  </xs:complexType>
+                </xs:element>
+                <xs:element name="SpriteState" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="SpriteFrame" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                          <xs:attribute name="DefinitionName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="StateName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="Sequence" type="xs:short" use="required" />
+                          <xs:attribute name="FrameValue" type="xs:int" />
+                          <xs:attribute name="Duration" type="xs:short" />
+                          <xs:attribute name="MaskAlphaLevel" type="xs:unsignedByte" default="0" />
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="DefinitionName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="Name" type="xs:string" use="required" />
+                    <xs:attribute name="FramesetName" type="xs:string" use="required" />
+                    <xs:attribute name="SolidWidth" type="xs:short" use="required" />
+                    <xs:attribute name="SolidHeight" type="xs:short" use="required" />
+                    <xs:attribute name="Sequence" type="xs:short" use="required" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="SpriteCategory">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="SpriteCategorySprite" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:attribute name="CategoryName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="DefinitionName" type="xs:string" use="required" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Solidity">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="SolidityShape" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:attribute name="SolidityName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="CategoryName" type="xs:string" use="required" />
+                    <xs:attribute name="ShapeName" type="xs:string" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="SourceCode">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Text" type="xs:string" minOccurs="0" msdata:Ordinal="3" />
+                <xs:element name="CustomObjectData" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="4" />
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="IsCustomObject" type="xs:boolean" default="false" />
+              <xs:attribute name="DependsOn" type="xs:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Project">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Comments" type="xs:string" default="" msdata:Ordinal="8" />
+              </xs:sequence>
+              <xs:attribute name="DisplayMode" type="xs:string" use="required" />
+              <xs:attribute name="Windowed" type="xs:boolean" use="required" />
+              <xs:attribute name="TitleText" type="xs:string" />
+              <xs:attribute name="StartMap" type="xs:string" />
+              <xs:attribute name="OverlayMap" type="xs:string" />
+              <xs:attribute name="MaxPlayers" type="xs:unsignedByte" default="1" />
+              <xs:attribute name="MaxViews" type="xs:unsignedByte" default="1" />
+              <xs:attribute name="Credits" type="xs:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="TileCategory">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="CategorizedTileset" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="CategoryTile" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="CategoryFrame" minOccurs="0" maxOccurs="unbounded">
+                              <xs:complexType>
+                                <xs:attribute name="Tileset" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="Category" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="TileValue" type="xs:int" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="Frame" type="xs:short" use="required" />
+                              </xs:complexType>
+                            </xs:element>
+                          </xs:sequence>
+                          <xs:attribute name="Tileset" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="Category" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="TileValue" type="xs:int" use="required" />
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="Tileset" type="xs:string" use="required" />
+                    <xs:attribute name="Name" type="xs:string" use="required" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+      <xs:unique name="GraphicSheetKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//GraphicSheet" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="FrameKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Frame" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@FrameValue" />
+      </xs:unique>
+      <xs:unique name="FramesetKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Frameset" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="TileFrameKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//TileFrame" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@TileValue" />
+        <xs:field xpath="@Sequence" />
+      </xs:unique>
+      <xs:unique name="TileKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Tile" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@TileValue" />
+      </xs:unique>
+      <xs:unique name="TilesetKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Tileset" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="CounterKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Counter" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="ParameterValueKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//ParameterValue" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@SpriteName" />
+        <xs:field xpath="@ParameterName" />
+        <xs:field xpath="@MapName" />
+      </xs:unique>
+      <xs:unique name="SpriteKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Sprite" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@MapName" />
+      </xs:unique>
+      <xs:unique name="SpriteKeyWithDefinition">
+        <xs:selector xpath=".//Sprite" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@MapName" />
+      </xs:unique>
+      <xs:unique name="CoordinateKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Coordinate" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+        <xs:field xpath="@Sequence" />
+      </xs:unique>
+      <xs:unique name="PlanRuleKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//PlanRule" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="PlanParameterValueKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//PlanParameterValue" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpritePlanKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpritePlan" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="LayerKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Layer" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="MapKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Map" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpriteRuleKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteRule" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpriteParameterKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteParameter" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpriteFrameKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteFrame" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@StateName" />
+        <xs:field xpath="@Sequence" />
+      </xs:unique>
+      <xs:unique name="SpriteStateKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteState" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpriteStateFramesetKey">
+        <xs:selector xpath=".//SpriteState" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@FramesetName" />
+      </xs:unique>
+      <xs:unique name="SpriteDefinitionKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteDefinition" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpriteCategorySpriteKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteCategorySprite" />
+        <xs:field xpath="@CategoryName" />
+        <xs:field xpath="@DefinitionName" />
+      </xs:unique>
+      <xs:unique name="SpriteCategoryKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteCategory" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SolidityShapeKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SolidityShape" />
+        <xs:field xpath="@SolidityName" />
+        <xs:field xpath="@CategoryName" />
+      </xs:unique>
+      <xs:unique name="SolidityKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Solidity" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SourceCodeKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SourceCode" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="CategoryFrameKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//CategoryFrame" />
+        <xs:field xpath="@Tileset" />
+        <xs:field xpath="@Category" />
+        <xs:field xpath="@TileValue" />
+        <xs:field xpath="@Frame" />
+      </xs:unique>
+      <xs:unique name="CategoryTileKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//CategoryTile" />
+        <xs:field xpath="@Tileset" />
+        <xs:field xpath="@Category" />
+        <xs:field xpath="@TileValue" />
+      </xs:unique>
+      <xs:unique name="CategorizedTilesetKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//CategorizedTileset" />
+        <xs:field xpath="@Tileset" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="CategoryKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//TileCategory" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:keyref name="TilesetCategory" refer="TilesetKey">
+        <xs:selector xpath=".//CategorizedTileset" />
+        <xs:field xpath="@Tileset" />
+      </xs:keyref>
+      <xs:keyref name="TileCategoryCategorizedTileset" refer="CategoryKey" msdata:IsNested="true">
+        <xs:selector xpath=".//CategorizedTileset" />
+        <xs:field xpath="@Name" />
+      </xs:keyref>
+      <xs:keyref name="CategoryCategoryTile" refer="CategorizedTilesetKey" msdata:IsNested="true">
+        <xs:selector xpath=".//CategoryTile" />
+        <xs:field xpath="@Tileset" />
+        <xs:field xpath="@Category" />
+      </xs:keyref>
+      <xs:keyref name="CategoryTileCategoryFrame" refer="CategoryTileKey" msdata:IsNested="true">
+        <xs:selector xpath=".//CategoryFrame" />
+        <xs:field xpath="@Tileset" />
+        <xs:field xpath="@Category" />
+        <xs:field xpath="@TileValue" />
+      </xs:keyref>
+      <xs:keyref name="MapProject" refer="MapKey" msdata:ConstraintOnly="true" msdata:DeleteRule="SetNull">
+        <xs:selector xpath=".//Project" />
+        <xs:field xpath="@StartMap" />
+      </xs:keyref>
+      <xs:keyref name="CategorySolidityShape" refer="CategoryKey">
+        <xs:selector xpath=".//SolidityShape" />
+        <xs:field xpath="@CategoryName" />
+      </xs:keyref>
+      <xs:keyref name="SoliditySolidityShape" refer="SolidityKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SolidityShape" />
+        <xs:field xpath="@SolidityName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteDefinitionCategory" refer="SpriteDefinitionKey">
+        <xs:selector xpath=".//SpriteCategorySprite" />
+        <xs:field xpath="@DefinitionName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteCategorySpriteCategorySprite" refer="SpriteCategoryKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpriteCategorySprite" />
+        <xs:field xpath="@CategoryName" />
+      </xs:keyref>
+      <xs:keyref name="FramesetSpriteState" refer="FramesetKey">
+        <xs:selector xpath=".//SpriteState" />
+        <xs:field xpath="@FramesetName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteDefinitionState" refer="SpriteDefinitionKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpriteState" />
+        <xs:field xpath="@DefinitionName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteStateFrame" refer="SpriteStateKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpriteFrame" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@StateName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteDefinitionSpriteParameter" refer="SpriteDefinitionKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpriteParameter" />
+        <xs:field xpath="@DefinitionName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteDefinitionSpriteRule" refer="SpriteDefinitionKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpriteRule" />
+        <xs:field xpath="@DefinitionName" />
+      </xs:keyref>
+      <xs:keyref name="TilesetLayer" refer="TilesetKey">
+        <xs:selector xpath=".//Layer" />
+        <xs:field xpath="@Tileset" />
+      </xs:keyref>
+      <xs:keyref name="MapLayer" refer="MapKey" msdata:IsNested="true">
+        <xs:selector xpath=".//Layer" />
+        <xs:field xpath="@MapName" />
+      </xs:keyref>
+      <xs:keyref name="LayerSpritePlan" refer="LayerKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpritePlan" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+      </xs:keyref>
+      <xs:keyref name="SpritePlanPlanParameterValue" refer="SpritePlanKey" msdata:IsNested="true">
+        <xs:selector xpath=".//PlanParameterValue" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+      </xs:keyref>
+      <xs:keyref name="SpritePlanPlanRule" refer="SpritePlanKey" msdata:IsNested="true">
+        <xs:selector xpath=".//PlanRule" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+      </xs:keyref>
+      <xs:keyref name="SpritePlanCoordinate" refer="SpritePlanKey" msdata:IsNested="true">
+        <xs:selector xpath=".//Coordinate" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteDefinitionSprite" refer="SpriteStateKey">
+        <xs:selector xpath=".//Sprite" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@StateName" />
+      </xs:keyref>
+      <xs:keyref name="LayerSprite" refer="LayerKey" msdata:IsNested="true">
+        <xs:selector xpath=".//Sprite" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteParameterParameterValue" refer="SpriteParameterKey">
+        <xs:selector xpath=".//ParameterValue" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@ParameterName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteParameterValue" refer="SpriteKeyWithDefinition" msdata:IsNested="true">
+        <xs:selector xpath=".//ParameterValue" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@SpriteName" />
+        <xs:field xpath="@MapName" />
+      </xs:keyref>
+      <xs:keyref name="FramesetTileset" refer="FramesetKey">
+        <xs:selector xpath=".//Tileset" />
+        <xs:field xpath="@Frameset" />
+      </xs:keyref>
+      <xs:keyref name="CounterTile" refer="CounterKey" msdata:DeleteRule="SetNull">
+        <xs:selector xpath=".//Tile" />
+        <xs:field xpath="@Counter" />
+      </xs:keyref>
+      <xs:keyref name="TilesetTile" refer="TilesetKey" msdata:IsNested="true">
+        <xs:selector xpath=".//Tile" />
+        <xs:field xpath="@Name" />
+      </xs:keyref>
+      <xs:keyref name="TileTileFrame" refer="TileKey" msdata:IsNested="true">
+        <xs:selector xpath=".//TileFrame" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@TileValue" />
+      </xs:keyref>
+      <xs:keyref name="GraphicSheetFrame" refer="GraphicSheetKey" msdata:ConstraintOnly="true" msdata:DeleteRule="None">
+        <xs:selector xpath=".//Frame" />
+        <xs:field xpath="@GraphicSheet" />
+      </xs:keyref>
+      <xs:keyref name="FramesetFrame" refer="FramesetKey" msdata:IsNested="true">
+        <xs:selector xpath=".//Frame" />
+        <xs:field xpath="@Name" />
+      </xs:keyref>
+    </xs:element>
+  </xs:schema>
+  <GraphicSheet Name="Lettering" Columns="13" Rows="16" CellWidth="32" CellHeight="32">
+    <Image>fmltcG9ydC4uXEdyYXBoaWNzXExldHRlcmluZy5wbmc=</Image>
+  </GraphicSheet>
+  <Frameset Name="LetterFrames">
+    <Frame FrameValue="0" GraphicSheet="Lettering" CellIndex="0" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="1" GraphicSheet="Lettering" CellIndex="1" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="2" GraphicSheet="Lettering" CellIndex="2" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="3" GraphicSheet="Lettering" CellIndex="3" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="4" GraphicSheet="Lettering" CellIndex="4" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="5" GraphicSheet="Lettering" CellIndex="5" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="6" GraphicSheet="Lettering" CellIndex="6" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="7" GraphicSheet="Lettering" CellIndex="7" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="8" GraphicSheet="Lettering" CellIndex="8" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="9" GraphicSheet="Lettering" CellIndex="9" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="10" GraphicSheet="Lettering" CellIndex="10" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="11" GraphicSheet="Lettering" CellIndex="11" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="12" GraphicSheet="Lettering" CellIndex="12" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="13" GraphicSheet="Lettering" CellIndex="13" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="14" GraphicSheet="Lettering" CellIndex="14" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="15" GraphicSheet="Lettering" CellIndex="15" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="16" GraphicSheet="Lettering" CellIndex="16" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="17" GraphicSheet="Lettering" CellIndex="17" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="18" GraphicSheet="Lettering" CellIndex="18" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="19" GraphicSheet="Lettering" CellIndex="19" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="20" GraphicSheet="Lettering" CellIndex="20" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="21" GraphicSheet="Lettering" CellIndex="21" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="22" GraphicSheet="Lettering" CellIndex="22" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="23" GraphicSheet="Lettering" CellIndex="23" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="24" GraphicSheet="Lettering" CellIndex="24" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="25" GraphicSheet="Lettering" CellIndex="25" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="26" GraphicSheet="Lettering" CellIndex="26" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="27" GraphicSheet="Lettering" CellIndex="27" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="28" GraphicSheet="Lettering" CellIndex="28" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="29" GraphicSheet="Lettering" CellIndex="29" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="30" GraphicSheet="Lettering" CellIndex="30" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="31" GraphicSheet="Lettering" CellIndex="31" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="32" GraphicSheet="Lettering" CellIndex="32" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="33" GraphicSheet="Lettering" CellIndex="33" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="34" GraphicSheet="Lettering" CellIndex="34" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="35" GraphicSheet="Lettering" CellIndex="35" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="36" GraphicSheet="Lettering" CellIndex="36" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="37" GraphicSheet="Lettering" CellIndex="37" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="38" GraphicSheet="Lettering" CellIndex="38" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="39" GraphicSheet="Lettering" CellIndex="39" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="40" GraphicSheet="Lettering" CellIndex="40" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="41" GraphicSheet="Lettering" CellIndex="41" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="42" GraphicSheet="Lettering" CellIndex="42" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="43" GraphicSheet="Lettering" CellIndex="43" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="44" GraphicSheet="Lettering" CellIndex="44" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="45" GraphicSheet="Lettering" CellIndex="45" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="46" GraphicSheet="Lettering" CellIndex="46" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="47" GraphicSheet="Lettering" CellIndex="47" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="48" GraphicSheet="Lettering" CellIndex="48" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="49" GraphicSheet="Lettering" CellIndex="51" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="50" GraphicSheet="Lettering" CellIndex="53" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="51" GraphicSheet="Lettering" CellIndex="54" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="52" GraphicSheet="Lettering" CellIndex="55" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="53" GraphicSheet="Lettering" CellIndex="56" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="54" GraphicSheet="Lettering" CellIndex="57" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="55" GraphicSheet="Lettering" CellIndex="58" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="56" GraphicSheet="Lettering" CellIndex="59" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="57" GraphicSheet="Lettering" CellIndex="60" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="58" GraphicSheet="Lettering" CellIndex="61" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="59" GraphicSheet="Lettering" CellIndex="62" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="60" GraphicSheet="Lettering" CellIndex="63" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="61" GraphicSheet="Lettering" CellIndex="64" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="62" GraphicSheet="Lettering" CellIndex="65" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="63" GraphicSheet="Lettering" CellIndex="66" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="64" GraphicSheet="Lettering" CellIndex="67" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="65" GraphicSheet="Lettering" CellIndex="68" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="66" GraphicSheet="Lettering" CellIndex="69" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="67" GraphicSheet="Lettering" CellIndex="70" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="68" GraphicSheet="Lettering" CellIndex="71" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="69" GraphicSheet="Lettering" CellIndex="72" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="70" GraphicSheet="Lettering" CellIndex="73" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="71" GraphicSheet="Lettering" CellIndex="74" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="72" GraphicSheet="Lettering" CellIndex="75" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="73" GraphicSheet="Lettering" CellIndex="76" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="74" GraphicSheet="Lettering" CellIndex="77" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="75" GraphicSheet="Lettering" CellIndex="78" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="76" GraphicSheet="Lettering" CellIndex="79" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="77" GraphicSheet="Lettering" CellIndex="80" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="78" GraphicSheet="Lettering" CellIndex="81" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="79" GraphicSheet="Lettering" CellIndex="82" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="80" GraphicSheet="Lettering" CellIndex="83" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="81" GraphicSheet="Lettering" CellIndex="84" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="82" GraphicSheet="Lettering" CellIndex="85" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="83" GraphicSheet="Lettering" CellIndex="86" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="84" GraphicSheet="Lettering" CellIndex="87" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="85" GraphicSheet="Lettering" CellIndex="88" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="86" GraphicSheet="Lettering" CellIndex="89" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="87" GraphicSheet="Lettering" CellIndex="90" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="88" GraphicSheet="Lettering" CellIndex="91" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="89" GraphicSheet="Lettering" CellIndex="92" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="90" GraphicSheet="Lettering" CellIndex="93" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="91" GraphicSheet="Lettering" CellIndex="94" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="92" GraphicSheet="Lettering" CellIndex="95" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="93" GraphicSheet="Lettering" CellIndex="96" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="94" GraphicSheet="Lettering" CellIndex="97" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="95" GraphicSheet="Lettering" CellIndex="98" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="96" GraphicSheet="Lettering" CellIndex="99" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="97" GraphicSheet="Lettering" CellIndex="100" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="98" GraphicSheet="Lettering" CellIndex="103" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="99" GraphicSheet="Lettering" CellIndex="105" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="100" GraphicSheet="Lettering" CellIndex="106" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="101" GraphicSheet="Lettering" CellIndex="107" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="102" GraphicSheet="Lettering" CellIndex="108" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="103" GraphicSheet="Lettering" CellIndex="109" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="104" GraphicSheet="Lettering" CellIndex="110" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="105" GraphicSheet="Lettering" CellIndex="111" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="106" GraphicSheet="Lettering" CellIndex="112" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="107" GraphicSheet="Lettering" CellIndex="113" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="108" GraphicSheet="Lettering" CellIndex="114" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="109" GraphicSheet="Lettering" CellIndex="115" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="110" GraphicSheet="Lettering" CellIndex="116" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="111" GraphicSheet="Lettering" CellIndex="117" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="112" GraphicSheet="Lettering" CellIndex="118" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="113" GraphicSheet="Lettering" CellIndex="119" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="114" GraphicSheet="Lettering" CellIndex="120" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="115" GraphicSheet="Lettering" CellIndex="121" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="116" GraphicSheet="Lettering" CellIndex="122" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="117" GraphicSheet="Lettering" CellIndex="123" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="118" GraphicSheet="Lettering" CellIndex="124" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="119" GraphicSheet="Lettering" CellIndex="125" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="120" GraphicSheet="Lettering" CellIndex="126" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="121" GraphicSheet="Lettering" CellIndex="127" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="122" GraphicSheet="Lettering" CellIndex="128" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="123" GraphicSheet="Lettering" CellIndex="129" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="124" GraphicSheet="Lettering" CellIndex="130" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="125" GraphicSheet="Lettering" CellIndex="131" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="126" GraphicSheet="Lettering" CellIndex="132" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="127" GraphicSheet="Lettering" CellIndex="133" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="128" GraphicSheet="Lettering" CellIndex="134" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="129" GraphicSheet="Lettering" CellIndex="135" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="130" GraphicSheet="Lettering" CellIndex="136" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="131" GraphicSheet="Lettering" CellIndex="137" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="132" GraphicSheet="Lettering" CellIndex="138" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="133" GraphicSheet="Lettering" CellIndex="139" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="134" GraphicSheet="Lettering" CellIndex="140" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="135" GraphicSheet="Lettering" CellIndex="141" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="136" GraphicSheet="Lettering" CellIndex="142" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="137" GraphicSheet="Lettering" CellIndex="143" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="138" GraphicSheet="Lettering" CellIndex="144" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="139" GraphicSheet="Lettering" CellIndex="145" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="140" GraphicSheet="Lettering" CellIndex="146" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="141" GraphicSheet="Lettering" CellIndex="147" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="142" GraphicSheet="Lettering" CellIndex="148" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="143" GraphicSheet="Lettering" CellIndex="149" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="144" GraphicSheet="Lettering" CellIndex="150" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="145" GraphicSheet="Lettering" CellIndex="151" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="146" GraphicSheet="Lettering" CellIndex="152" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="147" GraphicSheet="Lettering" CellIndex="155" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="148" GraphicSheet="Lettering" CellIndex="157" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="149" GraphicSheet="Lettering" CellIndex="158" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="150" GraphicSheet="Lettering" CellIndex="159" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="151" GraphicSheet="Lettering" CellIndex="160" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="152" GraphicSheet="Lettering" CellIndex="161" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="153" GraphicSheet="Lettering" CellIndex="162" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="154" GraphicSheet="Lettering" CellIndex="163" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="155" GraphicSheet="Lettering" CellIndex="164" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="156" GraphicSheet="Lettering" CellIndex="165" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="157" GraphicSheet="Lettering" CellIndex="166" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="158" GraphicSheet="Lettering" CellIndex="167" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="159" GraphicSheet="Lettering" CellIndex="168" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="160" GraphicSheet="Lettering" CellIndex="169" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="161" GraphicSheet="Lettering" CellIndex="170" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="162" GraphicSheet="Lettering" CellIndex="171" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="163" GraphicSheet="Lettering" CellIndex="172" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="164" GraphicSheet="Lettering" CellIndex="173" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="165" GraphicSheet="Lettering" CellIndex="174" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="166" GraphicSheet="Lettering" CellIndex="175" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="167" GraphicSheet="Lettering" CellIndex="176" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="168" GraphicSheet="Lettering" CellIndex="177" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="169" GraphicSheet="Lettering" CellIndex="178" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="170" GraphicSheet="Lettering" CellIndex="179" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="171" GraphicSheet="Lettering" CellIndex="180" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="172" GraphicSheet="Lettering" CellIndex="181" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="173" GraphicSheet="Lettering" CellIndex="182" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="174" GraphicSheet="Lettering" CellIndex="183" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="175" GraphicSheet="Lettering" CellIndex="184" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="176" GraphicSheet="Lettering" CellIndex="185" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="177" GraphicSheet="Lettering" CellIndex="186" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="178" GraphicSheet="Lettering" CellIndex="187" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="179" GraphicSheet="Lettering" CellIndex="188" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="180" GraphicSheet="Lettering" CellIndex="189" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="181" GraphicSheet="Lettering" CellIndex="190" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="182" GraphicSheet="Lettering" CellIndex="191" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="183" GraphicSheet="Lettering" CellIndex="192" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="184" GraphicSheet="Lettering" CellIndex="193" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="185" GraphicSheet="Lettering" CellIndex="194" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="186" GraphicSheet="Lettering" CellIndex="195" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="187" GraphicSheet="Lettering" CellIndex="196" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="188" GraphicSheet="Lettering" CellIndex="197" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="189" GraphicSheet="Lettering" CellIndex="198" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="190" GraphicSheet="Lettering" CellIndex="199" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="191" GraphicSheet="Lettering" CellIndex="200" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="192" GraphicSheet="Lettering" CellIndex="201" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="193" GraphicSheet="Lettering" CellIndex="202" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="194" GraphicSheet="Lettering" CellIndex="203" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="195" GraphicSheet="Lettering" CellIndex="204" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="196" GraphicSheet="Lettering" CellIndex="207" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="197" GraphicSheet="Lettering" CellIndex="49" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="198" GraphicSheet="Lettering" CellIndex="50" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+  </Frameset>
+  <Tileset Name="LetterTiles" Frameset="LetterFrames" TileWidth="32" TileHeight="32">
+    <Tile TileValue="0" />
+    <Tile TileValue="1">
+      <TileFrame Sequence="1" FrameValue="1" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="2">
+      <TileFrame Sequence="1" FrameValue="2" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="3">
+      <TileFrame Sequence="1" FrameValue="3" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="4">
+      <TileFrame Sequence="1" FrameValue="4" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="5">
+      <TileFrame Sequence="1" FrameValue="5" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="6">
+      <TileFrame Sequence="1" FrameValue="6" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="7">
+      <TileFrame Sequence="1" FrameValue="7" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="8">
+      <TileFrame Sequence="1" FrameValue="8" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="9">
+      <TileFrame Sequence="1" FrameValue="9" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="10">
+      <TileFrame Sequence="1" FrameValue="10" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="11">
+      <TileFrame Sequence="1" FrameValue="11" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="12">
+      <TileFrame Sequence="1" FrameValue="12" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="13">
+      <TileFrame Sequence="1" FrameValue="13" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="14">
+      <TileFrame Sequence="1" FrameValue="14" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="15">
+      <TileFrame Sequence="1" FrameValue="15" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="16">
+      <TileFrame Sequence="1" FrameValue="16" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="17">
+      <TileFrame Sequence="1" FrameValue="17" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="18">
+      <TileFrame Sequence="1" FrameValue="18" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="19">
+      <TileFrame Sequence="1" FrameValue="19" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="20">
+      <TileFrame Sequence="1" FrameValue="20" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="21">
+      <TileFrame Sequence="1" FrameValue="21" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="22">
+      <TileFrame Sequence="1" FrameValue="22" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="23">
+      <TileFrame Sequence="1" FrameValue="23" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="24">
+      <TileFrame Sequence="1" FrameValue="24" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="25">
+      <TileFrame Sequence="1" FrameValue="25" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="26">
+      <TileFrame Sequence="1" FrameValue="26" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="27">
+      <TileFrame Sequence="1" FrameValue="27" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="28">
+      <TileFrame Sequence="1" FrameValue="28" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="29">
+      <TileFrame Sequence="1" FrameValue="29" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="30">
+      <TileFrame Sequence="1" FrameValue="30" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="31">
+      <TileFrame Sequence="1" FrameValue="31" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="32">
+      <TileFrame Sequence="1" FrameValue="32" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="33">
+      <TileFrame Sequence="1" FrameValue="33" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="34">
+      <TileFrame Sequence="1" FrameValue="34" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="35">
+      <TileFrame Sequence="1" FrameValue="35" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="36">
+      <TileFrame Sequence="1" FrameValue="36" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="37">
+      <TileFrame Sequence="1" FrameValue="37" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="38">
+      <TileFrame Sequence="1" FrameValue="38" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="39">
+      <TileFrame Sequence="1" FrameValue="39" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="40">
+      <TileFrame Sequence="1" FrameValue="40" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="41">
+      <TileFrame Sequence="1" FrameValue="41" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="42">
+      <TileFrame Sequence="1" FrameValue="42" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="43">
+      <TileFrame Sequence="1" FrameValue="43" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="44">
+      <TileFrame Sequence="1" FrameValue="44" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="45">
+      <TileFrame Sequence="1" FrameValue="45" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="46">
+      <TileFrame Sequence="1" FrameValue="46" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="47">
+      <TileFrame Sequence="1" FrameValue="47" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="48">
+      <TileFrame Sequence="1" FrameValue="48" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="49">
+      <TileFrame Sequence="1" FrameValue="49" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="50">
+      <TileFrame Sequence="1" FrameValue="50" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="51">
+      <TileFrame Sequence="1" FrameValue="51" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="52">
+      <TileFrame Sequence="1" FrameValue="52" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="53">
+      <TileFrame Sequence="1" FrameValue="53" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="54">
+      <TileFrame Sequence="1" FrameValue="54" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="55">
+      <TileFrame Sequence="1" FrameValue="55" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="56">
+      <TileFrame Sequence="1" FrameValue="56" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="57">
+      <TileFrame Sequence="1" FrameValue="57" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="58">
+      <TileFrame Sequence="1" FrameValue="58" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="59">
+      <TileFrame Sequence="1" FrameValue="59" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="60">
+      <TileFrame Sequence="1" FrameValue="60" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="61">
+      <TileFrame Sequence="1" FrameValue="61" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="62">
+      <TileFrame Sequence="1" FrameValue="62" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="63">
+      <TileFrame Sequence="1" FrameValue="63" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="64">
+      <TileFrame Sequence="1" FrameValue="64" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="65">
+      <TileFrame Sequence="1" FrameValue="65" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="66">
+      <TileFrame Sequence="1" FrameValue="66" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="67">
+      <TileFrame Sequence="1" FrameValue="67" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="68">
+      <TileFrame Sequence="1" FrameValue="68" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="69">
+      <TileFrame Sequence="1" FrameValue="69" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="70">
+      <TileFrame Sequence="1" FrameValue="70" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="71">
+      <TileFrame Sequence="1" FrameValue="71" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="72">
+      <TileFrame Sequence="1" FrameValue="72" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="73">
+      <TileFrame Sequence="1" FrameValue="73" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="74">
+      <TileFrame Sequence="1" FrameValue="74" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="75">
+      <TileFrame Sequence="1" FrameValue="75" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="76">
+      <TileFrame Sequence="1" FrameValue="76" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="77">
+      <TileFrame Sequence="1" FrameValue="77" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="78">
+      <TileFrame Sequence="1" FrameValue="78" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="79">
+      <TileFrame Sequence="1" FrameValue="79" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="80">
+      <TileFrame Sequence="1" FrameValue="80" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="81">
+      <TileFrame Sequence="1" FrameValue="81" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="82">
+      <TileFrame Sequence="1" FrameValue="82" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="83">
+      <TileFrame Sequence="1" FrameValue="83" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="84">
+      <TileFrame Sequence="1" FrameValue="84" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="85">
+      <TileFrame Sequence="1" FrameValue="85" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="86">
+      <TileFrame Sequence="1" FrameValue="86" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="87">
+      <TileFrame Sequence="1" FrameValue="87" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="88">
+      <TileFrame Sequence="1" FrameValue="88" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="89">
+      <TileFrame Sequence="1" FrameValue="89" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="90">
+      <TileFrame Sequence="1" FrameValue="90" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="91">
+      <TileFrame Sequence="1" FrameValue="91" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="92">
+      <TileFrame Sequence="1" FrameValue="92" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="93">
+      <TileFrame Sequence="1" FrameValue="93" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="94">
+      <TileFrame Sequence="1" FrameValue="94" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="95">
+      <TileFrame Sequence="1" FrameValue="95" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="96">
+      <TileFrame Sequence="1" FrameValue="96" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="97">
+      <TileFrame Sequence="1" FrameValue="97" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="98">
+      <TileFrame Sequence="1" FrameValue="98" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="99">
+      <TileFrame Sequence="1" FrameValue="99" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="100">
+      <TileFrame Sequence="1" FrameValue="100" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="101">
+      <TileFrame Sequence="1" FrameValue="101" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="102">
+      <TileFrame Sequence="1" FrameValue="102" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="103">
+      <TileFrame Sequence="1" FrameValue="103" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="104">
+      <TileFrame Sequence="1" FrameValue="104" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="105">
+      <TileFrame Sequence="1" FrameValue="105" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="106">
+      <TileFrame Sequence="1" FrameValue="106" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="107">
+      <TileFrame Sequence="1" FrameValue="107" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="108">
+      <TileFrame Sequence="1" FrameValue="108" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="109">
+      <TileFrame Sequence="1" FrameValue="109" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="110">
+      <TileFrame Sequence="1" FrameValue="110" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="111">
+      <TileFrame Sequence="1" FrameValue="111" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="112">
+      <TileFrame Sequence="1" FrameValue="112" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="113">
+      <TileFrame Sequence="1" FrameValue="113" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="114">
+      <TileFrame Sequence="1" FrameValue="114" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="115">
+      <TileFrame Sequence="1" FrameValue="115" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="116">
+      <TileFrame Sequence="1" FrameValue="116" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="117">
+      <TileFrame Sequence="1" FrameValue="117" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="118">
+      <TileFrame Sequence="1" FrameValue="118" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="119">
+      <TileFrame Sequence="1" FrameValue="119" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="120">
+      <TileFrame Sequence="1" FrameValue="120" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="121">
+      <TileFrame Sequence="1" FrameValue="121" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="122">
+      <TileFrame Sequence="1" FrameValue="122" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="123">
+      <TileFrame Sequence="1" FrameValue="123" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="124">
+      <TileFrame Sequence="1" FrameValue="124" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="125">
+      <TileFrame Sequence="1" FrameValue="125" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="126">
+      <TileFrame Sequence="1" FrameValue="126" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="127">
+      <TileFrame Sequence="1" FrameValue="127" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="128">
+      <TileFrame Sequence="1" FrameValue="128" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="129">
+      <TileFrame Sequence="1" FrameValue="129" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="130">
+      <TileFrame Sequence="1" FrameValue="130" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="131">
+      <TileFrame Sequence="1" FrameValue="131" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="132">
+      <TileFrame Sequence="1" FrameValue="132" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="133">
+      <TileFrame Sequence="1" FrameValue="133" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="134">
+      <TileFrame Sequence="1" FrameValue="134" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="135">
+      <TileFrame Sequence="1" FrameValue="135" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="136">
+      <TileFrame Sequence="1" FrameValue="136" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="137">
+      <TileFrame Sequence="1" FrameValue="137" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="138">
+      <TileFrame Sequence="1" FrameValue="138" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="139">
+      <TileFrame Sequence="1" FrameValue="139" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="140">
+      <TileFrame Sequence="1" FrameValue="140" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="141">
+      <TileFrame Sequence="1" FrameValue="141" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="142">
+      <TileFrame Sequence="1" FrameValue="142" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="143">
+      <TileFrame Sequence="1" FrameValue="143" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="144">
+      <TileFrame Sequence="1" FrameValue="144" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="145">
+      <TileFrame Sequence="1" FrameValue="145" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="146">
+      <TileFrame Sequence="1" FrameValue="146" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="147">
+      <TileFrame Sequence="1" FrameValue="147" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="148">
+      <TileFrame Sequence="1" FrameValue="148" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="149">
+      <TileFrame Sequence="1" FrameValue="149" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="150">
+      <TileFrame Sequence="1" FrameValue="150" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="151">
+      <TileFrame Sequence="1" FrameValue="151" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="152">
+      <TileFrame Sequence="1" FrameValue="152" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="153">
+      <TileFrame Sequence="1" FrameValue="153" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="154">
+      <TileFrame Sequence="1" FrameValue="154" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="155">
+      <TileFrame Sequence="1" FrameValue="155" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="156">
+      <TileFrame Sequence="1" FrameValue="156" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="157">
+      <TileFrame Sequence="1" FrameValue="157" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="158">
+      <TileFrame Sequence="1" FrameValue="158" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="159">
+      <TileFrame Sequence="1" FrameValue="159" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="160">
+      <TileFrame Sequence="1" FrameValue="160" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="161">
+      <TileFrame Sequence="1" FrameValue="161" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="162">
+      <TileFrame Sequence="1" FrameValue="162" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="163">
+      <TileFrame Sequence="1" FrameValue="163" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="164">
+      <TileFrame Sequence="1" FrameValue="164" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="165">
+      <TileFrame Sequence="1" FrameValue="165" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="166">
+      <TileFrame Sequence="1" FrameValue="166" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="167">
+      <TileFrame Sequence="1" FrameValue="167" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="168">
+      <TileFrame Sequence="1" FrameValue="168" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="169">
+      <TileFrame Sequence="1" FrameValue="169" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="170">
+      <TileFrame Sequence="1" FrameValue="170" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="171">
+      <TileFrame Sequence="1" FrameValue="171" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="172">
+      <TileFrame Sequence="1" FrameValue="172" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="173">
+      <TileFrame Sequence="1" FrameValue="173" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="174">
+      <TileFrame Sequence="1" FrameValue="174" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="175">
+      <TileFrame Sequence="1" FrameValue="175" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="176">
+      <TileFrame Sequence="1" FrameValue="176" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="177">
+      <TileFrame Sequence="1" FrameValue="177" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="178">
+      <TileFrame Sequence="1" FrameValue="178" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="179">
+      <TileFrame Sequence="1" FrameValue="179" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="180">
+      <TileFrame Sequence="1" FrameValue="180" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="181">
+      <TileFrame Sequence="1" FrameValue="181" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="182">
+      <TileFrame Sequence="1" FrameValue="182" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="183">
+      <TileFrame Sequence="1" FrameValue="183" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="184">
+      <TileFrame Sequence="1" FrameValue="184" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="185">
+      <TileFrame Sequence="1" FrameValue="185" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="186">
+      <TileFrame Sequence="1" FrameValue="186" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="187">
+      <TileFrame Sequence="1" FrameValue="187" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="188">
+      <TileFrame Sequence="1" FrameValue="188" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="189">
+      <TileFrame Sequence="1" FrameValue="189" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="190">
+      <TileFrame Sequence="1" FrameValue="190" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="191">
+      <TileFrame Sequence="1" FrameValue="191" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="192">
+      <TileFrame Sequence="1" FrameValue="192" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="193">
+      <TileFrame Sequence="1" FrameValue="193" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="194">
+      <TileFrame Sequence="1" FrameValue="194" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="195">
+      <TileFrame Sequence="1" FrameValue="195" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="196">
+      <TileFrame Sequence="1" FrameValue="196" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+    </Tile>
+    <Tile TileValue="197" Counter="MenuPointerIndex">
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+      <TileFrame Sequence="1" FrameValue="95" Duration="1" />
+      <TileFrame Sequence="2" FrameValue="197" Duration="4" />
+    </Tile>
+    <Tile TileValue="198" Counter="MenuPointerIndex">
+      <TileFrame Sequence="0" FrameValue="197" Duration="0" />
+      <TileFrame Sequence="1" FrameValue="96" Duration="1" />
+      <TileFrame Sequence="2" FrameValue="197" Duration="4" />
+    </Tile>
+    <Tile TileValue="199" Counter="MenuPointerIndex">
+      <TileFrame Sequence="1" FrameValue="197" Duration="0" />
+      <TileFrame Sequence="2" FrameValue="95" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="1" />
+      <TileFrame Sequence="3" FrameValue="197" Duration="3" />
+    </Tile>
+    <Tile TileValue="200" Counter="MenuPointerIndex">
+      <TileFrame Sequence="1" FrameValue="197" Duration="0" />
+      <TileFrame Sequence="2" FrameValue="96" Duration="1" />
+      <TileFrame Sequence="3" FrameValue="197" Duration="3" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="1" />
+    </Tile>
+    <Tile TileValue="201" Counter="MenuPointerIndex">
+      <TileFrame Sequence="1" FrameValue="197" Duration="0" />
+      <TileFrame Sequence="2" FrameValue="95" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="2" />
+      <TileFrame Sequence="3" FrameValue="197" Duration="2" />
+    </Tile>
+    <Tile TileValue="202" Counter="MenuPointerIndex">
+      <TileFrame Sequence="1" FrameValue="197" Duration="0" />
+      <TileFrame Sequence="2" FrameValue="96" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="2" />
+      <TileFrame Sequence="3" FrameValue="197" Duration="2" />
+    </Tile>
+    <Tile TileValue="203" Counter="MenuPointerIndex">
+      <TileFrame Sequence="1" FrameValue="197" Duration="0" />
+      <TileFrame Sequence="2" FrameValue="95" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="3" />
+      <TileFrame Sequence="3" FrameValue="197" Duration="1" />
+    </Tile>
+    <Tile TileValue="204" Counter="MenuPointerIndex">
+      <TileFrame Sequence="1" FrameValue="197" Duration="0" />
+      <TileFrame Sequence="2" FrameValue="96" Duration="1" />
+      <TileFrame Sequence="3" FrameValue="197" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="3" />
+    </Tile>
+    <Tile TileValue="205" Counter="MenuPointerIndex">
+      <TileFrame Sequence="1" FrameValue="197" Duration="0" />
+      <TileFrame Sequence="2" FrameValue="95" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="4" />
+    </Tile>
+    <Tile TileValue="206" Counter="MenuPointerIndex">
+      <TileFrame Sequence="1" FrameValue="197" Duration="0" />
+      <TileFrame Sequence="2" FrameValue="96" Duration="1" />
+      <TileFrame Sequence="0" FrameValue="197" Duration="4" />
+    </Tile>
+  </Tileset>
+  <Counter Name="MenuPointerIndex" Value="0" Max="4" />
+  <Project DisplayMode="m640x480x24" Windowed="true" TitleText="Letters and numbers on a solid background with pointer graphics that change according to a counter for use on a 5-item menu." MaxPlayers="1" MaxViews="1" Credits="SGDK2 Engine: http://sgdk2.sf.net&#xD;&#xA;Graphics: Jeff Cruz (jeffc@comdel.net)&#xD;&#xA;">
+    <Comments />
+  </Project>
+</ProjectDataset>

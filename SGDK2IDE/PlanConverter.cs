@@ -28,7 +28,7 @@ namespace SGDK2
             foreach(System.Collections.DictionaryEntry de in m_PlanProperties)
             {
                RemotingServices.RemotePropertyInfo pi = (RemotingServices.RemotePropertyInfo)de.Value;
-               if (pi.Static == false)
+               if ((pi.Flags & (RemotingServices.MemberFlags.Static | RemotingServices.MemberFlags.Browsable)) == RemotingServices.MemberFlags.Browsable)
                   properties.Add(new PlanParamDescriptor(pi));
             }
             return new PropertyDescriptorCollection((PropertyDescriptor[])properties.ToArray(typeof(PropertyDescriptor)));
@@ -53,7 +53,7 @@ namespace SGDK2
                "RemoteReflector", CodeGenerator.PlanBaseClassName) as RemotingServices.IRemoteTypeInfo;
 
             foreach(RemotingServices.RemotePropertyInfo pi in reflector.GetProperties())
-               if (pi.CanWrite)
+               if ((pi.Flags & RemotingServices.MemberFlags.CanWrite) != 0)
                   m_PlanProperties[pi.Name] = pi;
          }
       }
@@ -278,7 +278,7 @@ namespace SGDK2
       {
          get
          {
-            return !propertyInfo.CanWrite;
+            return (propertyInfo.Flags & RemotingServices.MemberFlags.CanWrite) == 0;
          }
       }
    

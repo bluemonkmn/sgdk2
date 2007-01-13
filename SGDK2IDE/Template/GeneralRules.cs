@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 
 /// <summary>
 /// Implements rules common to sprites and plans
@@ -45,8 +46,14 @@ public abstract class GeneralRules
       if (source == null)
          return;
       if (UnloadCurrent)
-         Project.GameWindow.UnloadMap(source);
+         Project.GameWindow.UnloadMap(Project.GameWindow.CurrentMap.GetType());
       Project.GameWindow.CurrentMap = Project.GameWindow.GetMap(source);
+   }
+
+   [Description("Determines if there is a previous map to return to.")]
+   public bool CanReturnToPreviousMap()
+   {
+      return Project.GameWindow.CurrentMap.m_CameFromMapType != null;
    }
 
    [Description("Unloads the specified map, which will force it to be recreated/reset next time it is used.")]
@@ -225,6 +232,7 @@ public abstract class GeneralRules
             System.Windows.Forms.Application.UserAppDataPath, Slot.ToString() + ".sav"));
    }
 
+   [Browsable(false)]
    public int CurrentView
    {
       get
@@ -241,6 +249,67 @@ public abstract class GeneralRules
    public void SetViewLayout(ViewLayout Layout)
    {
       ParentLayer.ParentMap.ViewLayout = Layout;
+   }
+
+   [Description("Sets the current state of a sprite based on a category and index into the category.")]
+   public void SetCategorySpriteState(SpriteCollection Category, int SpriteIndex, int State)
+   {
+      Debug.Assert(Category[SpriteIndex].isActive, "SetCategorySpriteState attempted to set the state of an inactive sprite.");
+      Category[SpriteIndex].state = State;
+   }
+
+   [Description("Turn off the overlay map.  This disables all drawing and rules in the overlay map")]
+   public void ClearOverlay()
+   {
+      Project.GameWindow.OverlayMap = null;
+   }
+
+   [Description("Set the overlay map.")]
+   public void SetOverlay([Editor("MapType", "UITypeEditor")] Type MapType)
+   {
+      Project.GameWindow.OverlayMap = Project.GameWindow.GetMap(MapType);
+   }
+
+   [Description("Turn on or off a flag associated with the current map.  FlagIndex must be a value from 0 through 30.")]
+   public void SetMapFlag(int FlagIndex, bool Value)
+   {
+      if (Value)
+         ParentLayer.ParentMap.MapFlags |= 1 << FlagIndex;
+      else
+         ParentLayer.ParentMap.MapFlags &= ~(1 << FlagIndex);
+   }
+
+   [Description("Turn on or off a flag associated with the specified map.  FlagIndex must be a value from 0 through 30.")]
+   public void SetTargetMapFlag([Editor("MapType", "UITypeEditor")] Type MapType, int FlagIndex, bool Value)
+   {
+      if (Value)
+         Project.GameWindow.GetMap(MapType).MapFlags |= 1 << FlagIndex;
+      else
+         Project.GameWindow.GetMap(MapType).MapFlags &= ~(1 << FlagIndex);
+   }
+
+   [Description("Determine if the specified map-specific flag on the current map is on.")]
+   public bool IsMapFlagOn(int FlagIndex)
+   {
+      return ((ParentLayer.ParentMap.MapFlags & (1<<FlagIndex)) != 0);
+   }
+
+   [Description("Unload all maps that aren't currently visible (as the current map or overlay map).")]
+   public void UnloadBackgroundMaps()
+   {
+      Project.GameWindow.UnloadBackgroundMaps();
+   }
+
+   [Description("Quit the game by closing the main window.")]
+   public void QuitGame()
+   {
+      Project.GameWindow.Quit();
+   }
+
+   [Description("Returns true if the specified key is currently pressed")]
+   public bool IsKeyPressed(Microsoft.DirectX.DirectInput.Key key)
+   {
+      return Project.GameWindow.KeyboardState[key];
    }
 }
 
@@ -312,4 +381,17 @@ public class CounterRef : System.Runtime.Serialization.ISerializable
       info.AddValue("CounterName", counterName);
       info.AddValue("CounterValue", instance.CurrentValue);
    }
+}
+
+public enum RelativePosition
+{
+   TopLeft,
+   TopCenter,
+   TopRight,
+   LeftMiddle,
+   CenterMiddle,
+   RightMiddle,
+   BottomLeft,
+   BottomCenter,
+   BottomRight
 }

@@ -1516,6 +1516,15 @@ namespace SGDK2
             cboTarget.Items.Add(CodeGenerator.CounterClass + "." + CodeGenerator.NameToVariable(
                ((ProjectDataset.CounterRow)drv.Row).Name));
       }
+
+      private void FillComboWithSolidity(ComboBox cboTarget)
+      {
+         foreach (DataRowView drv in ProjectData.Solidity.DefaultView)
+         {
+            cboTarget.Items.Add(CodeGenerator.SolidityClassName + "." + CodeGenerator.NameToVariable(
+               ((ProjectDataset.SolidityRow)drv.Row).Name));
+         }
+      }
       
       private void FillComboWithNumberMembers(ComboBox cboTarget, bool forOutput, string targetType)
       {
@@ -1526,14 +1535,14 @@ namespace SGDK2
                (pi.Type.Name == typeof(System.Single).Name) ||
                (pi.Type.Name == typeof(System.Double).Name))
             {
-               if (forOutput && pi.CanWrite)
+               if (forOutput && ((pi.Flags & RemotingServices.MemberFlags.CanWrite) != 0))
                {
                   if ((pi.Type.Name == typeof(System.Single).Name) || 
                      (pi.Type.Name == typeof(System.Double).Name) ||
                      (targetType == pi.Type.FullName))
                   cboTarget.Items.Add(pi.Name);
                }
-               else if (!forOutput && pi.CanRead)
+               else if (!forOutput && ((pi.Flags & RemotingServices.MemberFlags.CanRead) != 0))
                {
                   cboTarget.Items.Add(pi.Name);
                }
@@ -1654,6 +1663,14 @@ namespace SGDK2
          else if(string.Compare(param.Type.Name, "Counter") == 0)
          {
             FillComboWithCounters(cboParameter);
+         }
+         else if(string.Compare(param.Type.Name, "SpriteBase") == 0)
+         {
+            cboParameter.Items.Add("this");
+         }
+         else if(string.Compare(param.Type.Name, "Solidity") == 0)
+         {
+            FillComboWithSolidity(cboParameter);
          }
          else
          {

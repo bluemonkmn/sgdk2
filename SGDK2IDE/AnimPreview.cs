@@ -315,6 +315,7 @@ namespace SGDK2
             Microsoft.DirectX.Direct3D.Sprite sprite = display.Sprite;
             sprite.Begin(Microsoft.DirectX.Direct3D.SpriteFlags.AlphaBlend);
             display.Device.Clear(Microsoft.DirectX.Direct3D.ClearFlags.Target, m_Background, 0, 0);
+            Rectangle bounds = m_FrameCache[m_TileCache[tileValue, 0][0]].Bounds;
             if (m_TileRow != null)
             {
                int[] sf = m_TileCache.GetSubFramesByFrameIndex(tileValue, realIndex);
@@ -322,9 +323,9 @@ namespace SGDK2
                {
                   int fi = sf[i];
                   sprite.Transform = Microsoft.DirectX.Matrix.Multiply(
-                     m_FrameCache[fi].Transform,Microsoft.DirectX.Matrix.Translation(
-                     (display.ClientSize.Width - m_FrameCache[fi].Bounds.Width) / 2,
-                     (display.ClientSize.Height - m_FrameCache[fi].Bounds.Height) / 2, 0));
+                     m_FrameCache[fi].Transform, Microsoft.DirectX.Matrix.Translation(
+                     (display.ClientSize.Width - bounds.Width) / 2,
+                     (display.ClientSize.Height - bounds.Height) / 2, 0));
                   sprite.Draw(m_FrameCache[fi].GraphicSheetTexture.Texture,
                      m_FrameCache[fi].SourceRect, Microsoft.DirectX.Vector3.Empty,
                      Microsoft.DirectX.Vector3.Empty, m_FrameCache[fi].Color);
@@ -339,8 +340,8 @@ namespace SGDK2
                   int fi = sf[i];
                   sprite.Transform = Microsoft.DirectX.Matrix.Multiply(
                      si.frameset[fi].Transform, Microsoft.DirectX.Matrix.Translation(
-                     (display.ClientSize.Width - si.frameset[fi].Bounds.Width) / 2,
-                     (display.ClientSize.Height - si.frameset[fi].Bounds.Height) / 2, 0));
+                     (display.ClientSize.Width - bounds.Width) / 2,
+                     (display.ClientSize.Height - bounds.Height) / 2, 0));
                   sprite.Draw(si.frameset[fi].GraphicSheetTexture.Texture,
                      si.frameset[fi].SourceRect, Microsoft.DirectX.Vector3.Empty,
                      Microsoft.DirectX.Vector3.Empty, si.frameset[fi].Color);

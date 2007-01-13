@@ -860,6 +860,20 @@ namespace SGDK2
          }
       }
 
+      private void FillComboWithPlans(ComboBox cboTarget)
+      {
+         foreach(ProjectDataset.LayerRow drLayer in m_Plan.LayerRowParent.MapRow.GetLayerRows())
+         {
+            foreach(ProjectDataset.SpritePlanRow drPlan in drLayer.GetSpritePlanRows())
+            {
+               if (drLayer == m_Plan.LayerRowParent)
+                  cboTarget.Items.Add("m_ParentLayer.m_" + CodeGenerator.NameToVariable(drPlan.Name));
+               else
+                  cboTarget.Items.Add("m_ParentLayer.m_ParentMap.m_" + CodeGenerator.NameToVariable(drLayer.Name) + ".m_" + CodeGenerator.NameToVariable(drPlan.Name));
+            }
+         }
+      }
+
       private void PopulateParameter(Label lblParameter, ComboBox cboParameter, RemotingServices.RemoteParameterInfo param, bool clearValue)
       {
          cboParameter.Items.Clear();
@@ -930,6 +944,10 @@ namespace SGDK2
          else if (string.Compare(param.Type.Name, CodeGenerator.SpriteCollectionClassName) == 0)
          {
             FillComboWithSpriteCollections(cboParameter);
+         }
+         else if (string.Compare(param.Type.Name, CodeGenerator.PlanBaseClassName) == 0)
+         {
+            FillComboWithPlans(cboParameter);
          }
          else if (param.Editors != null)
          {

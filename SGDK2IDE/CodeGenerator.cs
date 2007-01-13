@@ -41,7 +41,7 @@ namespace SGDK2
       private const string SpriteStateSolidWidth = "SolidWidth";
       private const string SpriteStateSolidHeight = "SolidHeight";
       private const string CategoryCount = "Count";
-      private const string SolidityClassName = "Solidity";
+      public const string SolidityClassName = "Solidity";
       private const string SpriteStateClassName = "SpriteState";
       private const string SpriteStateField = "m_SpriteStates";
       public const string SpriteStateEnumName = "State";
@@ -168,7 +168,7 @@ namespace SGDK2
             if (mode == 0)
                mode = 1;
             else
-               System.Diagnostics.Debug.Fail("Invalid call to NextPhase");
+               throw new System.ApplicationException("Rule \"" + RuleName + "\" has too many else conditions.");
          }
          public CodeStatement Statement
          {
@@ -303,7 +303,7 @@ namespace SGDK2
                txt.Close();
 
                txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, NameToVariable(drMap.Name) + "_Map.cs"));
-               GenerateMap(drMap, txt);
+               GenerateMap(drMap, txt, err);
                txt.Close();
             }
 
@@ -314,7 +314,7 @@ namespace SGDK2
             {
                ProjectDataset.SpriteDefinitionRow drSpriteDef = (ProjectDataset.SpriteDefinitionRow)drv.Row;
                txt = new System.IO.StreamWriter(System.IO.Path.Combine(SpritesFolder, NameToVariable(drSpriteDef.Name) + ".cs"));
-               GenerateSpriteDef(drSpriteDef, txt);
+               GenerateSpriteDef(drSpriteDef, txt, err);
                txt.Close();
             }
 
@@ -489,7 +489,7 @@ namespace SGDK2
                txt.Close();*/
 
             txt = new System.IO.StringWriter();
-            GenerateMap(drMap, txt);
+            GenerateMap(drMap, txt, err);
             txt.Close();
             result.Add(txt.ToString());
          }
@@ -524,7 +524,7 @@ namespace SGDK2
          {
             ProjectDataset.SpriteDefinitionRow drSpriteDef = (ProjectDataset.SpriteDefinitionRow)drv.Row;
             txt = new System.IO.StringWriter();
-            GenerateSpriteDef(drSpriteDef, txt);
+            GenerateSpriteDef(drSpriteDef, txt, err);
             txt.Close();
             result.Add(txt.ToString());
          }
@@ -1364,7 +1364,7 @@ namespace SGDK2
          writer.Close();
       }
 
-      public void GenerateMap(ProjectDataset.MapRow drMap, System.IO.TextWriter txt)
+      public void GenerateMap(ProjectDataset.MapRow drMap, System.IO.TextWriter txt, System.IO.TextWriter err)
       {
          CodeTypeDeclaration clsMap = new CodeTypeDeclaration(NameToVariable(drMap.Name) + "_Map");
          clsMap.BaseTypes.Add("MapBase");
@@ -1584,6 +1584,7 @@ namespace SGDK2
             clsMap.Members.Add(clsLayer);
 
             fldLayer = new CodeMemberField(clsLayer.Name, "m_" + NameToVariable(drLayer.Name));
+            fldLayer.Attributes = MemberAttributes.Public | MemberAttributes.Final;
             clsMap.Members.Add(fldLayer);
 
             constructor.Statements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(
@@ -1640,7 +1641,7 @@ namespace SGDK2
             clsLayer.Members.Add(mthInject);
 
             CodeMemberField fldLayerParent = new CodeMemberField(clsMap.Name, LayerParentField);
-            fldLayerParent.Attributes = MemberAttributes.Private | MemberAttributes.Final;
+            fldLayerParent.Attributes = MemberAttributes.Public | MemberAttributes.Final;
             clsLayer.Members.Add(fldLayerParent);
 
             lyrConstructor.Statements.Add(new CodeAssignStatement(
@@ -1694,7 +1695,7 @@ namespace SGDK2
                clsPlan.Members.Add(prpPlanParent);
 
                CodeMemberField fldPlan = new CodeMemberField(clsPlan.Name, "m_" + NameToVariable(drPlan.Name));
-               fldPlan.Attributes = MemberAttributes.Private | MemberAttributes.Final;
+               fldPlan.Attributes = MemberAttributes.Public | MemberAttributes.Final;
                clsLayer.Members.Add(fldPlan);
                lyrConstructor.Statements.Add(new CodeAssignStatement(
                   new CodeFieldReferenceExpression(
@@ -1787,8 +1788,15 @@ namespace SGDK2
                      CodeMemberMethod mthExecuteRules = new CodeMemberMethod();
                      mthExecuteRules.Name = "ExecuteRules";
                      mthExecuteRules.Attributes = MemberAttributes.Override | MemberAttributes.Public;
-                     GenerateRules(ruleArray, mthExecuteRules);
-                     clsPlan.Members.Add(mthExecuteRules);
+                     try
+                     {
+                        GenerateRules(ruleArray, mthExecuteRules);
+                        clsPlan.Members.Add(mthExecuteRules);
+                     }
+                     catch (System.ApplicationException ex)
+                     {
+                        err.WriteLine("Error generating plan \"" + drPlan.Name +"\" on layer \"" + drLayer.Name + "\" of map \"" + drMap.Name + "\": " +  ex.Message);
+                     }
                   }
                }
             }
@@ -2214,7 +2222,7 @@ namespace SGDK2
          }
       }
 
-      public void GenerateSpriteDef(ProjectDataset.SpriteDefinitionRow drSpriteDef, System.IO.TextWriter txt)
+      public void GenerateSpriteDef(ProjectDataset.SpriteDefinitionRow drSpriteDef, System.IO.TextWriter txt, System.IO.TextWriter err)
       {
          CodeNamespace nsSprites = new CodeNamespace(SpritesNamespace);
          CodeTypeDeclaration clsSpriteDef = new CodeTypeDeclaration(NameToVariable(drSpriteDef.Name));
@@ -2486,13 +2494,20 @@ namespace SGDK2
          CodeMemberMethod mthExecuteRules = new CodeMemberMethod();
          mthExecuteRules.Name = "ExecuteRules";
          mthExecuteRules.Attributes = MemberAttributes.Override | MemberAttributes.Family;
-         if (GenerateLevel > CodeLevel.ExcludeRules)
+         try
          {
-            for (int i = 0; i < rules.Length; i++)
-               ruleArray[i] = new RuleContent(rules[i]);
-            GenerateRules(ruleArray, mthExecuteRules);
+            if (GenerateLevel > CodeLevel.ExcludeRules)
+            {
+               for (int i = 0; i < rules.Length; i++)
+                  ruleArray[i] = new RuleContent(rules[i]);
+               GenerateRules(ruleArray, mthExecuteRules);
+            }
+            clsSpriteDef.Members.Add(mthExecuteRules);
          }
-         clsSpriteDef.Members.Add(mthExecuteRules);
+         catch (System.ApplicationException ex)
+         {
+            err.WriteLine("Error generating sprite definition \"" + drSpriteDef.Name +"\": " +  ex.Message);
+         }
 
          Generator.GenerateCodeFromNamespace(nsSprites, txt, GeneratorOptions);
       }

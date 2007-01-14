@@ -681,19 +681,12 @@ public abstract class SpriteBase : GeneralRules
    #endregion
 
    #region Input Processing
-   [Description("Determine if the specified input is being pressed for this sprite.  InitialOnly causes this to return true only if the input has just been presssed and was not pressed before.")]
+   [Description("Determine if the specified input is being pressed for this sprite.  InitialOnly causes this to return true only if the input has just been pressed and was not pressed before.")]
    public bool IsInputPressed(InputBits Input, bool InitialOnly)
    {
       Debug.Assert(this.isActive, "Attempted to execute IsInputPressed on an inactive sprite");
       return (0 != (inputs & Input)) && 
          (!InitialOnly || (0 == (oldinputs & Input)));
-   }
-
-   [Description("Move the current set of inputs on this sprite to the old set of inputs, making room for a new set.")]
-   public void CopyInputsToOld()
-   {
-      Debug.Assert(this.isActive, "Attempted to execute CopyInputsToOld on an inactive sprite");
-      oldinputs = inputs;
    }
 
    [Description("Turns on or off the specified input on this sprite.")]

@@ -234,8 +234,8 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
       return Sprite.isActive;
    }
 
-   [Description("Moves the specified sprite to the specified coordinate")]
-   public void Transport(SpriteBase sprite, Point target)
+   [Description("Moves the specified sprite to the specified coordinate.")]
+   public void TransportToPoint(SpriteBase sprite, Point target)
    {
       sprite.oldX = sprite.x;
       sprite.oldY = sprite.y;
@@ -243,6 +243,45 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
       sprite.y = target.Y;
    }
 
+   [Description("Moves the specified sprite to the specified plan's rectangle, aligned to the specified corner/edge.")]
+   public void TransportToPlan(SpriteBase Sprite, PlanBase Plan, RelativePosition Alignment)
+   {
+      System.Diagnostics.Debug.Assert(!Plan.PlanRectangle.IsEmpty, "TransportToPlan was called on a plan that does not have a rectangle defined.");
+      if (Plan.PlanRectangle.IsEmpty)
+         return;
+      switch(Alignment)
+      {
+         case RelativePosition.TopLeft:
+         case RelativePosition.TopCenter:
+         case RelativePosition.TopRight:
+            Sprite.y = Plan.PlanRectangle.Y;
+            break;
+         case RelativePosition.LeftMiddle:
+         case RelativePosition.CenterMiddle:
+         case RelativePosition.RightMiddle:
+            Sprite.y = Plan.PlanRectangle.Y + (int)((Plan.PlanRectangle.Height - Sprite.SolidHeight)/2);
+            break;
+         default:
+            Sprite.y = Plan.PlanRectangle.Y + Plan.PlanRectangle.Height - Sprite.SolidHeight;
+            break;
+      }
+      switch(Alignment)
+      {
+         case RelativePosition.TopLeft:
+         case RelativePosition.LeftMiddle:
+         case RelativePosition.BottomLeft:
+            Sprite.x = Plan.PlanRectangle.X;
+            break;
+         case RelativePosition.TopCenter:
+         case RelativePosition.CenterMiddle:
+         case RelativePosition.BottomCenter:
+            Sprite.x = Plan.PlanRectangle.X + (int)((Plan.PlanRectangle.Width - Sprite.SolidWidth)/2);
+            break;
+         default:
+            Sprite.x = Plan.PlanRectangle.Y + Plan.PlanRectangle.Height - Sprite.SolidHeight;
+            break;
+      }
+   }
    
    [Description("Associate the state of the input device for the specified player (1-4) with the inputs on the specified sprite.")]
    public void MapPlayerToInputs(int PlayerNumber, SpriteBase Target)
@@ -253,6 +292,7 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
          System.Diagnostics.Debug.Fail("Attempted to map inactive player input");
          return;
       }
+      Target.oldinputs = Target.inputs;
       IPlayer player = Project.GameWindow.Players[PlayerNumber-1];
       Target.inputs = 0;
       if (player.Up) Target.inputs |= SpriteBase.InputBits.Up;
@@ -558,6 +598,17 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
       }
    }
 
+   [Description("Determine if the specified sprite's specified input is pressed.  InitialOnly causes this to return true only if the input has just been pressed and was not pressed before.")]
+   public bool IsInputPressed(SpriteBase Sprite, SpriteBase.InputBits Input, bool InitialOnly)
+   {
+      return Sprite.IsInputPressed(Input, InitialOnly);
+   }
+
+   [Description("Ensure that all the inputs currently being pressed on the specified sprite are henceforth processed as already pressed.")]
+   public void CopyInputsToOld(SpriteBase Sprite)
+   {
+      Sprite.oldinputs = Sprite.inputs;
+   }
    #region IEnumerable Members
 
    public System.Collections.IEnumerator GetEnumerator()

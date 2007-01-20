@@ -1353,28 +1353,27 @@
   </Frameset>
   <SpriteDefinition Name="Car">
     <SpriteRule Name="Views" Sequence="1" Type="Do" Function="SetViewLayout" Parameter1="ViewLayout.LeftRight" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Shift inputs into old slot" Sequence="2" Type="Do" Function="CopyInputsToOld" EndIf="false" Suspended="false" />
-    <SpriteRule Name="If player number is valid" Sequence="3" Type="If" Function="&gt;=" Parameter1="Player" Parameter2="1" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Use player's view" Sequence="4" Type="Do" Function="=" Parameter1="Player-1" ResultParameter="CurrentView" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Get player input" Sequence="5" Type="Do" Function="MapPlayerToInputs" Parameter1="Player" EndIf="true" Suspended="false" />
-    <SpriteRule Name="Change velocity to match direction" Sequence="6" Type="Do" Function="RotateVelocity" Parameter1="(int)Sprites.Car.State.std0" Parameter2="360" EndIf="false" Suspended="false" />
-    <SpriteRule Name="If pressing left" Sequence="7" Type="If" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Left" Parameter2="false" EndIf="false" Suspended="false" />
-    <SpriteRule Name="And is moving for turn left" Sequence="8" Type="And" Function="&gt;" Parameter1="dx*dx+dy*dy" Parameter2=".1" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Then turn left" Sequence="9" Type="Do" Function="SwitchToState" Parameter1="(state + 1) % 360" Parameter2="SpriteBase.RelativePosition.CenterMiddle" EndIf="true" Suspended="false" />
-    <SpriteRule Name="If pressing right" Sequence="10" Type="If" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Right" Parameter2="false" EndIf="false" Suspended="false" />
-    <SpriteRule Name="And is moving for turn right" Sequence="11" Type="And" Function="&gt;" Parameter1="dx*dx+dy*dy" Parameter2=".1" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Then turn right" Sequence="12" Type="Do" Function="SwitchToState" Parameter1="(360 + state - 1) % 360" Parameter2="SpriteBase.RelativePosition.CenterMiddle" EndIf="true" Suspended="false" />
-    <SpriteRule Name="If pressing up" Sequence="13" Type="If" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Up" Parameter2="false" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Accelerate" Sequence="14" Type="Do" Function="PolarAccelerate" Parameter1="1" Parameter2="(int)Sprites.Car.State.std0" Parameter3="360" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Else if pressing down" Sequence="15" Type="ElseIf" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Down" Parameter2="false" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Decelerate" Sequence="16" Type="Do" Function="PolarAccelerate" Parameter1="-1" Parameter2="(int)Sprites.Car.State.std0" Parameter3="360" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Else react to inertia" Sequence="17" Type="Else" Function="ReactToInertia" Parameter1="98" Parameter2="98" EndIf="true" Suspended="false" />
-    <SpriteRule Name="End acceleration" Sequence="18" Type="End" Function="End" EndIf="true" Suspended="false" />
-    <SpriteRule Name="Limit velocity" Sequence="19" Type="Do" Function="LimitVelocity" Parameter1="8" EndIf="false" Suspended="false" />
-    <SpriteRule Name="React to solidity" Sequence="20" Type="Do" Function="ReactToSolid" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Move" Sequence="21" Type="Do" Function="MoveByVelocity" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Scroll into view" Sequence="22" Type="Do" Function="ScrollSpriteIntoView" Parameter1="true" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Animate" Sequence="23" Type="Do" Function="Animate" Parameter1="SpriteBase.SpriteAnimationType.ByVectorVelocity" EndIf="false" Suspended="false" />
+    <SpriteRule Name="If player number is valid" Sequence="2" Type="If" Function="&gt;=" Parameter1="Player" Parameter2="1" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Use player's view" Sequence="3" Type="Do" Function="=" Parameter1="Player-1" ResultParameter="CurrentView" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Get player input" Sequence="4" Type="Do" Function="MapPlayerToInputs" Parameter1="Player" EndIf="true" Suspended="false" />
+    <SpriteRule Name="Change velocity to match direction" Sequence="5" Type="Do" Function="RotateVelocity" Parameter1="(int)Sprites.Car.State.std0" Parameter2="360" EndIf="false" Suspended="false" />
+    <SpriteRule Name="If pressing left" Sequence="6" Type="If" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Left" Parameter2="false" EndIf="false" Suspended="false" />
+    <SpriteRule Name="And is moving for turn left" Sequence="7" Type="And" Function="&gt;" Parameter1="dx*dx+dy*dy" Parameter2=".1" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Then turn left" Sequence="8" Type="Do" Function="SwitchToState" Parameter1="(state + 1) % 360" Parameter2="RelativePosition.CenterMiddle" Parameter3="" EndIf="true" Suspended="false" />
+    <SpriteRule Name="If pressing right" Sequence="9" Type="If" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Right" Parameter2="false" EndIf="false" Suspended="false" />
+    <SpriteRule Name="And is moving for turn right" Sequence="10" Type="And" Function="&gt;" Parameter1="dx*dx+dy*dy" Parameter2=".1" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Then turn right" Sequence="11" Type="Do" Function="SwitchToState" Parameter1="(360 + state - 1) % 360" Parameter2="RelativePosition.CenterMiddle" Parameter3="" EndIf="true" Suspended="false" />
+    <SpriteRule Name="If pressing up" Sequence="12" Type="If" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Up" Parameter2="false" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Accelerate" Sequence="13" Type="Do" Function="PolarAccelerate" Parameter1="1" Parameter2="(int)Sprites.Car.State.std0" Parameter3="360" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Else if pressing down" Sequence="14" Type="ElseIf" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Down" Parameter2="false" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Decelerate" Sequence="15" Type="Do" Function="PolarAccelerate" Parameter1="-1" Parameter2="(int)Sprites.Car.State.std0" Parameter3="360" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Else react to inertia" Sequence="16" Type="Else" Function="ReactToInertia" Parameter1="98" Parameter2="98" EndIf="true" Suspended="false" />
+    <SpriteRule Name="End acceleration" Sequence="17" Type="End" Function="End" EndIf="true" Suspended="false" />
+    <SpriteRule Name="Limit velocity" Sequence="18" Type="Do" Function="LimitVelocity" Parameter1="8" EndIf="false" Suspended="false" />
+    <SpriteRule Name="React to solidity" Sequence="19" Type="Do" Function="ReactToSolid" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Move" Sequence="20" Type="Do" Function="MoveByVelocity" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Scroll into view" Sequence="21" Type="Do" Function="ScrollSpriteIntoView" Parameter1="true" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Animate" Sequence="22" Type="Do" Function="Animate" Parameter1="SpriteBase.SpriteAnimationType.ByVectorVelocity" EndIf="false" Suspended="false" />
     <SpriteParameter Name="Player" />
     <SpriteState Name="std0" FramesetName="Car" SolidWidth="54" SolidHeight="26" Sequence="1">
       <SpriteFrame Sequence="0" FrameValue="0" Duration="1" MaskAlphaLevel="0" />

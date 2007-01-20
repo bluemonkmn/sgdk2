@@ -699,14 +699,14 @@
   </Frameset>
   <SpriteDefinition Name="Player">
     <SpriteRule Name="If climbing" Sequence="1" Type="If" Function="IsInState" Parameter1="(int)Sprites.Player.State.Climbing" Parameter2="(int)Sprites.Player.State.Climbing" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Check if player left ladder" Sequence="2" Type="If" Function="!IsOnTile" Parameter1="TileCategoryName.Ladder" Parameter2="SpriteBase.RelativePosition.BottomCenter" EndIf="true" Suspended="false" />
-    <SpriteRule Name="Leave ladder" Sequence="3" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Right" Parameter2="SpriteBase.RelativePosition.CenterMiddle" EndIf="true" Suspended="false" />
+    <SpriteRule Name="Check if player left ladder" Sequence="2" Type="If" Function="!IsOnTile" Parameter1="TileCategoryName.Ladder" Parameter2="RelativePosition.BottomCenter" EndIf="true" Suspended="false" />
+    <SpriteRule Name="Leave ladder" Sequence="3" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Right" Parameter2="RelativePosition.CenterMiddle" EndIf="true" Suspended="false" />
     <SpriteRule Name="Ladder inertia" Sequence="4" Type="Do" Function="ReactToInertia" Parameter1="0" Parameter2="0" EndIf="false" Suspended="false" />
     <SpriteRule Name="Ladder accellerate" Sequence="5" Type="Do" Function="AccelerateByInputs" Parameter1="20" Parameter2="2" Parameter3="false" EndIf="false" Suspended="false" />
     <SpriteRule Name="Animate climbing" Sequence="6" Type="Do" Function="Animate" Parameter1="SpriteBase.SpriteAnimationType.ByVerticalVelocity" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Else (not climbing) if standing in front of ladder" Sequence="7" Type="ElseIf" Function="IsOnTile" Parameter1="TileCategoryName.Ladder" Parameter2="SpriteBase.RelativePosition.BottomCenter" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Else (not climbing) if standing in front of ladder" Sequence="7" Type="ElseIf" Function="IsOnTile" Parameter1="TileCategoryName.Ladder" Parameter2="RelativePosition.BottomCenter" EndIf="false" Suspended="false" />
     <SpriteRule Name="And trying to climb" Sequence="8" Type="And" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Up" Parameter2="true" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Start climbing" Sequence="9" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Climbing" Parameter2="SpriteBase.RelativePosition.CenterMiddle" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Start climbing" Sequence="9" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Climbing" Parameter2="RelativePosition.CenterMiddle" EndIf="false" Suspended="false" />
     <SpriteRule Name="Else (not trying to climb) if standing on solid" Sequence="10" Type="ElseIf" Function="Blocked" Parameter1="SpriteBase.Direction.Down" EndIf="false" Suspended="false" />
     <SpriteRule Name="Or riding on platform" Sequence="11" Type="Or" Function="IsRidingPlatform" EndIf="false" Suspended="false" />
     <SpriteRule Name="And pressing button 1" Sequence="12" Type="And" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Button1" Parameter2="false" EndIf="false" Suspended="false" />
@@ -720,10 +720,10 @@
     <SpriteRule Name="Animate" Sequence="20" Type="Do" Function="Animate" Parameter1="SpriteBase.SpriteAnimationType.ByHorizontalVelocity" EndIf="false" Suspended="false" />
     <SpriteRule Name="If moving left" Sequence="21" Type="If" Function="IsMoving" Parameter1="SpriteBase.Direction.Left" EndIf="false" Suspended="false" />
     <SpriteRule Name="and facing right" Sequence="22" Type="And" Function="IsInState" Parameter1="(int)Sprites.Player.State.Right" Parameter2="(int)Sprites.Player.State.Right" EndIf="false" Suspended="false" />
-    <SpriteRule Name="then face left" Sequence="23" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Left" Parameter2="SpriteBase.RelativePosition.CenterMiddle" EndIf="true" Suspended="false" />
+    <SpriteRule Name="then face left" Sequence="23" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Left" Parameter2="RelativePosition.CenterMiddle" EndIf="true" Suspended="false" />
     <SpriteRule Name="If moving right" Sequence="24" Type="If" Function="IsMoving" Parameter1="SpriteBase.Direction.Right" EndIf="false" Suspended="false" />
     <SpriteRule Name="and facing left" Sequence="25" Type="And" Function="IsInState" Parameter1="(int)Sprites.Player.State.Left" Parameter2="(int)Sprites.Player.State.Left" EndIf="false" Suspended="false" />
-    <SpriteRule Name="then face right" Sequence="26" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Right" Parameter2="SpriteBase.RelativePosition.CenterMiddle" EndIf="true" Suspended="false" />
+    <SpriteRule Name="then face right" Sequence="26" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Right" Parameter2="RelativePosition.CenterMiddle" EndIf="true" Suspended="false" />
     <SpriteRule Name="If riding platform" Sequence="27" Type="If" Function="IsRidingPlatform" EndIf="false" Suspended="false" />
     <SpriteRule Name="React to platform" Sequence="28" Type="Do" Function="ReactToPlatform" EndIf="false" Suspended="false" />
     <SpriteRule Name="Else check if landing on platform" Sequence="29" Type="Else" Function="LandDownOnPlatform" Parameter1="ParentLayer.m_SpriteCategories.Platforms" EndIf="true" Suspended="false" />
@@ -731,16 +731,15 @@
     <SpriteRule Name="React to solid" Sequence="31" Type="Do" Function="ReactToSolid" EndIf="false" Suspended="false" />
     <SpriteRule Name="Snap to ground" Sequence="32" Type="Do" Function="SnapToGround" Parameter1="2" EndIf="false" Suspended="false" />
     <SpriteRule Name="Move by velocity" Sequence="33" Type="Do" Function="MoveByVelocity" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Shift current inputs to old inputs" Sequence="34" Type="Do" Function="CopyInputsToOld" EndIf="false" Suspended="false" />
-    <SpriteRule Name="* Example tile interactions..." Sequence="37" Type="If" Function="TouchTiles" Parameter1="TileCategoryName.Touchable" EndIf="false" Suspended="true" />
-    <SpriteRule Name="* Example - check first touched tile" Sequence="38" Type="Do" Function="TileTouchingIndex" Parameter1="188" Parameter2="true" Parameter3="true" ResultParameter="TouchIndex" EndIf="false" Suspended="true" />
-    <SpriteRule Name="* Example - react to tile loop" Sequence="39" Type="While" Function="&gt;=" Parameter1="TouchIndex" Parameter2="0" EndIf="false" Suspended="true" />
-    <SpriteRule Name="* Example - tile reaction" Sequence="40" Type="Do" Function="TileActivateSprite" Parameter1="TouchIndex" Parameter2="ParentLayer.m_SpriteCategories.Fruit" Parameter3="true" EndIf="false" Suspended="true" />
-    <SpriteRule Name="* Example - check next touched tile" Sequence="41" Type="Do" Function="TileTouchingIndex" Parameter1="188" Parameter2="true" Parameter3="true" ResultParameter="TouchIndex" EndIf="true" Suspended="true" />
-    <SpriteRule Name="* Example - simple take tile interaction" Sequence="42" Type="Do" Function="TileTake" Parameter1="128" Parameter2="Counter.IceCreams" EndIf="false" Suspended="true" />
-    <SpriteRule Name="* Example - simple change tile interaction" Sequence="43" Type="Do" Function="TileChange" Parameter1="130" Parameter2="131" Parameter3="true" EndIf="false" Suspended="true" />
-    <SpriteRule Name="Scroll into view" Sequence="36" Type="Do" Function="ScrollSpriteIntoView" Parameter1="true" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Activate sprite's view" Sequence="35" Type="Do" Function="=" Parameter1="ViewIndex" ResultParameter="ParentLayer.ParentMap.CurrentViewIndex" EndIf="false" Suspended="false" />
+    <SpriteRule Name="* Example tile interactions..." Sequence="36" Type="If" Function="TouchTiles" Parameter1="TileCategoryName.Touchable" EndIf="false" Suspended="true" />
+    <SpriteRule Name="* Example - check first touched tile" Sequence="37" Type="Do" Function="TileTouchingIndex" Parameter1="188" Parameter2="true" Parameter3="true" ResultParameter="TouchIndex" EndIf="false" Suspended="true" />
+    <SpriteRule Name="* Example - react to tile loop" Sequence="38" Type="While" Function="&gt;=" Parameter1="TouchIndex" Parameter2="0" EndIf="false" Suspended="true" />
+    <SpriteRule Name="* Example - tile reaction" Sequence="39" Type="Do" Function="TileActivateSprite" Parameter1="TouchIndex" Parameter2="ParentLayer.m_SpriteCategories.Fruit" Parameter3="true" EndIf="false" Suspended="true" />
+    <SpriteRule Name="* Example - check next touched tile" Sequence="40" Type="Do" Function="TileTouchingIndex" Parameter1="188" Parameter2="true" Parameter3="true" ResultParameter="TouchIndex" EndIf="true" Suspended="true" />
+    <SpriteRule Name="* Example - simple take tile interaction" Sequence="41" Type="Do" Function="TileTake" Parameter1="128" Parameter2="Counter.IceCreams" EndIf="false" Suspended="true" />
+    <SpriteRule Name="* Example - simple change tile interaction" Sequence="42" Type="Do" Function="TileChange" Parameter1="130" Parameter2="131" Parameter3="true" EndIf="false" Suspended="true" />
+    <SpriteRule Name="Scroll into view" Sequence="35" Type="Do" Function="ScrollSpriteIntoView" Parameter1="true" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Activate sprite's view" Sequence="34" Type="Do" Function="=" Parameter1="ViewIndex" Parameter2="" ResultParameter="CurrentView" EndIf="false" Suspended="false" />
     <SpriteParameter Name="TempNum" />
     <SpriteParameter Name="TouchIndex" />
     <SpriteParameter Name="ViewIndex" />

@@ -20,6 +20,32 @@ public class GameForm : Form
    private int m_fps = 0;
    private int m_frameCount = 0;
    private DateTime m_frameStart;
+   public System.IO.StringWriter debugText = new System.IO.StringWriter();
+   private bool m_quit = false;
+
+   #region Events
+   public delegate void SimpleNotification();
+   /// <summary>
+   /// Event fires every frame even when the game is not advancing because it is minimized
+   /// </summary>
+   public event SimpleNotification OnFrameStart;
+   /// <summary>
+   /// Event fires every frame that the game is advancing right before the scene is started
+   /// </summary>
+   public event SimpleNotification OnBeforeBeginScene;
+   /// <summary>
+   /// Event fires every frame that the game is advancing while the scene is being
+   /// generated, right before the overlay map is drawn.
+   /// </summary>
+   public event SimpleNotification OnBeforeDrawOverlay;
+   /// <summary>
+   /// Event fires every frame that the game is advancing after the overlay map is drawn.
+   /// </summary>
+   public event SimpleNotification OnAfterDrawOverlay;
+   #endregion
+
+
+   #region Windows Forms Components
    private System.Windows.Forms.MainMenu mnuGame;
    private System.Windows.Forms.MenuItem mnuFile;
    private System.Windows.Forms.MenuItem mnuFileExit;
@@ -28,8 +54,7 @@ public class GameForm : Form
    public IPlayer[] Players = new IPlayer[Project.MaxPlayers];
    private System.Windows.Forms.MenuItem mnuHelp;
    private System.Windows.Forms.MenuItem mnuHelpAbout;
-   public System.IO.StringWriter debugText = new System.IO.StringWriter();
-   private bool m_quit = false;
+   #endregion
 
    public GameForm(GameDisplayMode mode, bool windowed, string title, System.Type initMapType, System.Type overlayMapType)
    {
@@ -124,7 +149,7 @@ public class GameForm : Form
       // where M is max player number and N is number of controllers.
       for (int playerIdx = 1; playerIdx<Project.MaxPlayers; playerIdx++)
       {
-         if (Project.MaxPlayers - playerIdx <= controllers.Length)
+         if ((controllers != null) && (Project.MaxPlayers - playerIdx <= controllers.Length))
             Players[playerIdx] = new ControllerPlayer(playerIdx - (Project.MaxPlayers - controllers.Length));
          else
             Players[playerIdx] = new KeyboardPlayer(playerIdx);
@@ -132,6 +157,8 @@ public class GameForm : Form
 
       while(true)
       {
+         if (OnFrameStart != null)
+            OnFrameStart();
          if ((GameDisplay != null) && (GameDisplay.Device == null))
          {
             // Display is minimized, wait until it is restored
@@ -154,6 +181,8 @@ public class GameForm : Form
          }
          else
          {
+            if (OnBeforeBeginScene != null)
+               OnBeforeBeginScene();
             GameDisplay.Device.BeginScene();
             GameDisplay.Sprite.Begin(Microsoft.DirectX.Direct3D.SpriteFlags.AlphaBlend);
             CurrentMap.DrawAllViews();
@@ -161,12 +190,16 @@ public class GameForm : Form
                m_keyboardState = keyboard.GetCurrentKeyboardState();
             ReadControllers();
             CurrentMap.ExecuteRules();
+            if (OnBeforeDrawOverlay != null)
+               OnBeforeDrawOverlay();
             if (OverlayMap != null)
             {
                OverlayMap.DrawAllViews();
                OverlayMap.ExecuteRules();
             }
             OutputDebugInfo();
+            if (OnAfterDrawOverlay != null)
+               OnAfterDrawOverlay();
             GameDisplay.Sprite.End();
             GameDisplay.Device.EndScene();
             GameDisplay.Device.Present();

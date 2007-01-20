@@ -2660,7 +2660,7 @@ namespace SGDK2
 
       public static string GetSourceCodeText(ProjectDataset.SourceCodeRow row)
       {
-         if (SGDK2IDE.CurrentProjectFile == null)
+         if (IsSourceCodeDecapsulated(row) && (SGDK2IDE.CurrentProjectFile == null))
             throw new ApplicationException("Source code object \"" + row.Name + "\" attempted to decapsulate code relative to an un-saved project.  This is not supported.  Save the project and try again.");
          return GetSourceCodeText(SGDK2IDE.CurrentProjectFile, row);
       }

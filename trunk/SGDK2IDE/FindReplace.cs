@@ -251,6 +251,7 @@ namespace SGDK2
       private void btnReplaceAll_Click(object sender, System.EventArgs e)
       {
          ((frmCodeEditor)Owner).DoReplaceAll();
+         this.Activate();
       }
 
       public RichTextBoxFinds Options

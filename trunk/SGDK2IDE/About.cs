@@ -217,7 +217,7 @@ namespace SGDK2
 
       protected override void OnLoad(EventArgs e)
       {
-         lblVersion.Text = "Version " + Application.ProductVersion + " alpha (pre-release)";
+         lblVersion.Text = "Version " + Application.ProductVersion + " alpha release";
          base.OnLoad (e);
       }
 

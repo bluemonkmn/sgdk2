@@ -1219,22 +1219,6 @@ namespace SGDK2
                break;
          }
       }
-      private string GetSourceCodeKey(ProjectDataset.SourceCodeRow drCode, DataRowVersion version)
-      {
-         string name;
-         if (drCode.HasVersion(version))
-            name = drCode[ProjectData.SourceCode.NameColumn, version].ToString();
-         else
-            name = drCode.Name;
-         string dep;
-         if (Convert.IsDBNull(drCode[ProjectData.SourceCode.DependsOnColumn, DataRowVersion.Current]))
-            dep = null;
-         else
-            dep = drCode[ProjectData.SourceCode.DependsOnColumn, DataRowVersion.Current].ToString();
-         if ((dep == null) || (dep.Length <= 0))
-            return "CD" + name;
-         return GetSourceCodeKey(ProjectData.GetSourceCode(dep), version) + "~" + name;
-      }
       #endregion
 
       #region Public Methods
@@ -1876,19 +1860,10 @@ namespace SGDK2
          if (e.Action == DataRowAction.Add)
          {
             string parent = String.Empty;
-            ProjectDataset.SourceCodeRow treeRow = e.Row;
-            while (!treeRow.IsDependsOnNull() && treeRow.DependsOn.Length > 0)
-            {
-               if (parent.Length > 0)
-                  parent = "~" + parent;
-               parent = treeRow.DependsOn + parent;
-               treeRow = ProjectData.GetSourceCode(treeRow.DependsOn);
-            }
+            if (!e.Row.IsDependsOnNull())
+               parent = e.Row.DependsOn;
             TreeNode ndNew = ((TreeNode)m_TreeNodes["CD" + parent]).Nodes.Add(e.Row.Name);
-            if (parent.Length == 0)
-               ndNew.Tag = "CD" + e.Row.Name;
-            else
-               ndNew.Tag = "CD" + parent + "~" + e.Row.Name;
+            ndNew.Tag = "CD" + e.Row.Name;
             if (e.Row.IsCustomObject)
                ndNew.SelectedImageIndex = ndNew.ImageIndex = 24;
             else
@@ -1904,10 +1879,10 @@ namespace SGDK2
       {
          if (e.Action == DataRowAction.Change)
          {
-            String sOldKey = GetSourceCodeKey(e.Row, DataRowVersion.Current);
+            String sOldKey = "CD" + e.Row[ProjectData.SourceCode.NameColumn, DataRowVersion.Current].ToString();
             TreeNode ndOld = (TreeNode)m_TreeNodes[sOldKey];
             m_TreeNodes.Remove(sOldKey);
-            ndOld.Tag = GetSourceCodeKey(e.Row, DataRowVersion.Proposed);
+            ndOld.Tag = "CD" + e.Row.Name;
             ndOld.Text = e.Row.Name;
             m_TreeNodes.Add(ndOld.Tag, ndOld);
             foreach(ProjectDataset.SourceCodeRow child in ProjectData.GetDependentSourceCode(e.Row))
@@ -1919,7 +1894,7 @@ namespace SGDK2
       private void dataMonitor_SourceCodeRowDeleting(object sender, SGDK2.ProjectDataset.SourceCodeRowChangeEvent e)
       {
          if ((e.Action == DataRowAction.Delete) && (e.Row.HasVersion(DataRowVersion.Current)))
-            m_AffectedNodeKeys["CD"] = GetSourceCodeKey(e.Row, DataRowVersion.Current);
+            m_AffectedNodeKeys["CD"] = "CD" + e.Row.Name;
       }
 
       private void dataMonitor_SourceCodeRowDeleted(object sender, SGDK2.ProjectDataset.SourceCodeRowChangeEvent e)

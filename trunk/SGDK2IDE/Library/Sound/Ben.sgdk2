@@ -637,7 +637,10 @@
     <Text>~import "fmod.cs"</Text>
   </SourceCode>
   <SourceCode Name="fmodbase.cs" IsCustomObject="true" DependsOn="fmod.cs">
-    <Text>using System;
+    <Text>// file version 1 (distributed with initial alpha release)
+// last change: call system.update in the OnFrameStart event handler
+
+using System;
 using System.ComponentModel;
 
 namespace CustomObjects
@@ -654,6 +657,10 @@ namespace CustomObjects
       private static FMOD.System system  = null;
       private FMOD.Channel channel = null;
       private FMOD.Sound sound  = null;
+      private static System.Collections.ArrayList soundList = new System.Collections.ArrayList();
+      // Must keep a reference to the callback to prevent
+      // Garbage collector from causing NullReferenceException
+      private static FMOD.CHANNEL_CALLBACK updateCallback = null;
 
       public FMODBase()
       {
@@ -666,7 +673,14 @@ namespace CustomObjects
          {
             ERRCHECK(FMOD.Factory.System_Create(ref system));
             ERRCHECK(system.init(32, FMOD.INITFLAG.NORMAL, (IntPtr)null));
+            Project.GameWindow.OnFrameStart += new GameForm.SimpleNotification(OnFrameStart);
+            updateCallback = (FMOD.CHANNEL_CALLBACK)Delegate.CreateDelegate(typeof(FMOD.CHANNEL_CALLBACK), typeof(FMODBase), "Channel_Callback");
          }
+      }
+
+      public static void OnFrameStart()
+      {
+         ERRCHECK(system.update());
       }
 
       [Description("Play an FMOD sound effect")]
@@ -687,7 +701,26 @@ namespace CustomObjects
             }
          }
          ERRCHECK(system.playSound(FMOD.CHANNELINDEX.FREE, Sound.sound, false, ref Sound.channel));
-         Sound.channel.setVolume(Sound.Volume);
+         ERRCHECK(Sound.channel.setCallback(FMOD.CHANNEL_CALLBACKTYPE.END, updateCallback, 0));
+         ERRCHECK(Sound.channel.setVolume(Sound.Volume));
+      }
+
+      private static FMOD.RESULT Channel_Callback(IntPtr channelraw, FMOD.CHANNEL_CALLBACKTYPE type, int command, uint commanddata1, uint commanddata2)
+      {
+         try
+         {
+            for(int i=0; i&lt;soundList.Count; i++)
+            {
+               FMODBase snd = (FMODBase)soundList[i];
+               if ((snd.channel != null) &amp;&amp; (snd.channel.getRaw() == channelraw))
+                  snd.channel = null;
+            }
+            return FMOD.RESULT.OK;
+         }
+         catch(System.Exception ex)
+         {
+            return FMOD.RESULT.ERR_UPDATE;
+         }
       }
 
       public bool isPlaying
@@ -748,6 +781,7 @@ namespace CustomObjects
             sndinf.length = (uint)buf.Length;
             sndinf.suggestedsoundtype = SoundType;
             ERRCHECK(system.createSound(buf, FMOD.MODE.OPENMEMORY, ref sndinf, ref sound));
+            soundList.Add(this);
          }
       }
 

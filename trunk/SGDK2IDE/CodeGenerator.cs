@@ -1848,7 +1848,7 @@ namespace SGDK2
                      new CodeArgumentReferenceExpression(LayerParentArg), MapDisplayField));
                   if (ProjectData.GetSolidity(sprite.Solidity) != null)
                      SpriteCreateParams.Add(new CodeFieldReferenceExpression(
-                        new CodeTypeReferenceExpression("Solidity"), sprite.Solidity));
+                        new CodeTypeReferenceExpression("Solidity"), NameToVariable(sprite.Solidity)));
                   else
                      SpriteCreateParams.Add(new CodeFieldReferenceExpression(
                         new CodeTypeReferenceExpression("Solidity"), UndefinedSolidityProperty));

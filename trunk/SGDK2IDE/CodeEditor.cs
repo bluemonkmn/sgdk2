@@ -149,9 +149,9 @@ namespace SGDK2
          this.mnuDataLoad = new System.Windows.Forms.MenuItem();
          this.mnuDataEdit = new System.Windows.Forms.MenuItem();
          this.mnuDataClear = new System.Windows.Forms.MenuItem();
+         this.mnuDataPlay = new System.Windows.Forms.MenuItem();
          this.tmrInvalidateStatus = new System.Windows.Forms.Timer(this.components);
          this.dlgEmbeddedFile = new System.Windows.Forms.OpenFileDialog();
-         this.mnuDataPlay = new System.Windows.Forms.MenuItem();
          ((System.ComponentModel.ISupportInitialize)(this.sbpStatus)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpCAPS)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpInsert)).BeginInit();
@@ -315,7 +315,7 @@ namespace SGDK2
                                                                                         this.mnuDataClear,
                                                                                         this.mnuDataPlay});
          this.mnuEmbeddedData.MergeOrder = 2;
-         this.mnuEmbeddedData.Text = "&Embedded Data";
+         this.mnuEmbeddedData.Text = "Embedded &Data";
          this.mnuEmbeddedData.Visible = false;
          // 
          // mnuDataLoad
@@ -337,6 +337,12 @@ namespace SGDK2
          this.mnuDataClear.Text = "&Clear";
          this.mnuDataClear.Click += new System.EventHandler(this.mnuDataClear_Click);
          // 
+         // mnuDataPlay
+         // 
+         this.mnuDataPlay.Index = 3;
+         this.mnuDataPlay.Text = "&Play with FMOD";
+         this.mnuDataPlay.Click += new System.EventHandler(this.mnuDataPlay_Click);
+         // 
          // tmrInvalidateStatus
          // 
          this.tmrInvalidateStatus.Tick += new System.EventHandler(this.tmrInvalidateStatus_Tick);
@@ -346,12 +352,6 @@ namespace SGDK2
          this.dlgEmbeddedFile.AddExtension = false;
          this.dlgEmbeddedFile.Filter = "All Files (*.*)|*.*";
          this.dlgEmbeddedFile.Title = "Select File To Embed";
-         // 
-         // mnuDataPlay
-         // 
-         this.mnuDataPlay.Index = 3;
-         this.mnuDataPlay.Text = "&Play with FMOD";
-         this.mnuDataPlay.Click += new System.EventHandler(this.mnuDataPlay_Click);
          // 
          // frmCodeEditor
          // 
@@ -944,11 +944,17 @@ namespace SGDK2
          if (0 != (options & RichTextBoxFinds.Reverse))
          {
             start = 0;
-            end = rtfCode.SelectionStart - 1;
+            if (rtfCode.SelectionStart > 0)
+               end = rtfCode.SelectionStart - 1;
+            else
+               end = rtfCode.TextLength;
          }
          else
          {
-            start = rtfCode.SelectionStart + 1;
+            if (rtfCode.SelectionStart < rtfCode.TextLength)
+               start = rtfCode.SelectionStart + 1;
+            else
+               start = 0;
             end = rtfCode.TextLength - 1;
          }
          int result = rtfCode.Find(m_frmFindReplace.FindString, start, end, m_frmFindReplace.Options);

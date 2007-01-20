@@ -249,12 +249,12 @@ namespace SGDK2
             ERRCHECK(fmodChannel.getPosition(ref position, FMOD.TIMEUNIT.MS));
             if (prgSound.Visible)
             {
-               lblStatus.Text = string.Format("{0:#0.000} ms / {1:#0.000} ms", position / 1000.0d, prgSound.Maximum / 1000.0d);
+               lblStatus.Text = string.Format("{0:#0.000} sec / {1:#0.000} sec", position / 1000.0d, prgSound.Maximum / 1000.0d);
                prgSound.Value = (int)position;
             }
             else
             {
-               lblStatus.Text = string.Format("{0:#0.000} ms", position / 1000.0d);
+               lblStatus.Text = string.Format("{0:#0.000} sec", position / 1000.0d);
             }
          }
          else
@@ -269,6 +269,7 @@ namespace SGDK2
             else
                lblStatus.Text = string.Empty;
          }
+         fmodSystem.update();
       }
 
       private void trbVolume_Scroll(object sender, System.EventArgs e)

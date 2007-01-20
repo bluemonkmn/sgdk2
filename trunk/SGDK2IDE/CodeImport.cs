@@ -507,6 +507,8 @@ namespace SGDK2
                   {
                      string sourceFile = System.IO.Path.GetFileName(drCode.Name);
                      string sourcePath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(txtImportSource.Text), sourceFile);
+                     if (!System.IO.File.Exists(sourcePath))
+                        sourcePath = System.IO.Path.Combine(Application.StartupPath, sourceFile);
                      if (System.IO.File.Exists(sourcePath))
                      {
                         if (SGDK2IDE.CurrentProjectFile != null)

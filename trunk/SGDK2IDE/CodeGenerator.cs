@@ -586,10 +586,13 @@ namespace SGDK2
          typ.Members.Add(resDecl);
          CodeEntryPointMethod main = new CodeEntryPointMethod();
          typ.Members.Add(main);
+
+         CodeTryCatchFinallyStatement tryBlock = new CodeTryCatchFinallyStatement();
+
          CodeFieldReferenceExpression resRef = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(ProjectClass), ResourcesField);
          CodeObjectCreateExpression createResources = new CodeObjectCreateExpression(typeof(System.Resources.ResourceManager), new CodeTypeOfExpression(ProjectClass));
          CodeAssignStatement assign = new CodeAssignStatement(resRef, createResources);
-         main.Statements.Add(assign);
+         tryBlock.TryStatements.Add(assign);
 
          ProjectDataset.ProjectRow prj = ProjectData.ProjectRow;
          CodeMemberField declareGame = new CodeMemberField(GameFormType, "game");
@@ -600,7 +603,7 @@ namespace SGDK2
             overlay = new CodeTypeOfExpression(NameToMapClass(prj.OverlayMap));
          if ((prj.StartMap == null) || (prj.StartMap.Length == 0))
             err.WriteLine("Startup map has not been specified in the project settings");
-         main.Statements.Add(new CodeAssignStatement(
+         tryBlock.TryStatements.Add(new CodeAssignStatement(
             new CodeFieldReferenceExpression(
             new CodeTypeReferenceExpression(typ.Name), declareGame.Name),
             new CodeObjectCreateExpression(GameFormType,
@@ -611,10 +614,20 @@ namespace SGDK2
             ((prj.StartMap != null) && (prj.StartMap.Length > 0)) ?
             (CodeExpression)new CodeTypeOfExpression(NameToMapClass(prj.StartMap)):(CodeExpression)new CodePrimitiveExpression(null),
             overlay)));
-         main.Statements.Add(new CodeMethodInvokeExpression(
+         tryBlock.TryStatements.Add(new CodeMethodInvokeExpression(
             new CodeVariableReferenceExpression(declareGame.Name), "Show"));
-         main.Statements.Add(new CodeMethodInvokeExpression(
+         tryBlock.TryStatements.Add(new CodeMethodInvokeExpression(
             new CodeVariableReferenceExpression(declareGame.Name), "Run"));
+
+         tryBlock.CatchClauses.Add(new CodeCatchClause(
+            "ex", new CodeTypeReference(typeof(System.Exception)),
+            new CodeExpressionStatement(
+            new CodeMethodInvokeExpression(
+            new CodeTypeReferenceExpression(GameFormType),
+            "HandleException",
+            new CodeVariableReferenceExpression("ex")))));
+
+         main.Statements.Add(tryBlock);
 
          CodeMemberProperty prpRes = new CodeMemberProperty();
          prpRes.HasSet = false;

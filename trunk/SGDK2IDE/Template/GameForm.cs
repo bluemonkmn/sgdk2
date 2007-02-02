@@ -294,6 +294,7 @@ public class GameForm : Form
       this.mnuFileExit.Index = 0;
       this.mnuFileExit.Shortcut = System.Windows.Forms.Shortcut.AltF4;
       this.mnuFileExit.Text = "E&xit";
+      this.mnuFileExit.Click += new System.EventHandler(this.mnuFileExit_Click);
       // 
       // mnuTools
       // 
@@ -407,6 +408,11 @@ public class GameForm : Form
          ClientSize = Display.GetScreenSize(GameDisplay.GameDisplayMode);
    }
 
+   private void mnuFileExit_Click(object sender, System.EventArgs e)
+   {
+      Quit();
+   }
+   
    private void mnuToolsOptions_Click(object sender, System.EventArgs e)
    {
       frmControls frm = new frmControls();
@@ -422,5 +428,15 @@ public class GameForm : Form
    public void Quit()
    {
       m_quit = true;
+   }
+
+   /// <summary>
+   /// This function is called by the SGDK2 generated code when a top-level
+   /// exception occurs.
+   /// </summary>
+   /// <param name="ex">Refers to the exception that was received at the top level</param>
+   public static void HandleException(System.Exception ex)
+   {
+      MessageBox.Show("A fatal error occurred initializing or running the game:\r\n" + ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
    }
 }

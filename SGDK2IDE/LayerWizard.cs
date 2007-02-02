@@ -1032,7 +1032,7 @@ namespace SGDK2
          System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
          if (cboTileset.Text != m_Layer.Tileset)
-            sb.Append("Change Tileset from \"" + m_Layer.Tileset + "\" to \"" + cboTileset.ToString() + "\".\r\n");
+            sb.Append("Change Tileset from \"" + m_Layer.Tileset + "\" to \"" + cboTileset.Text + "\".\r\n");
 
          if (chkChangeBackground.Checked)
             sb.Append("Clear layer to background of tile number " + BackgroundTileSelector.CurrentCellIndex.ToString() + ".\r\n");

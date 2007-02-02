@@ -40,6 +40,10 @@ namespace SGDK2
       public const int WS_BORDER = unchecked((int)0x00800000);
       #endregion
 
+      #region Events
+      public event EventHandler WindowedChanged;
+      #endregion
+
       #region Embedded Classes
       private class CoverWindow : Form
       {
@@ -121,6 +125,7 @@ namespace SGDK2
       private BorderStyle m_BorderStyle;
       private CoverWindow m_CoverWindow = null;
       private Sprite m_Sprite = null;
+      private Font m_Font = null;
       #endregion
 
       #region Initialization and clean-up
@@ -135,25 +140,14 @@ namespace SGDK2
          this.SetStyle(ControlStyles.UserPaint, true);
          this.SetStyle(ControlStyles.Opaque, true);
 
-         DisplayMode dm = GetActualDisplayMode(mode);
          m_pp = new PresentParameters();
          m_pp.Windowed = windowed;
          m_pp.SwapEffect = SwapEffect.Discard;
          // Allow GetGraphics
          m_pp.PresentFlag = PresentFlag.LockableBackBuffer;
-         if (windowed)
+         MakeValidPresentParameters(mode, m_pp);
+         if (!windowed)
          {
-            m_pp.BackBufferFormat = Format.Unknown;
-            m_pp.BackBufferWidth = m_pp.BackBufferHeight = 0;
-         }
-         else
-         {
-            // This can improve performance in some cases, but I have not
-            // observed much difference in my testing. (See other two instances of this code)
-            //m_pp.BackBufferCount = 2; 
-            m_pp.BackBufferFormat = dm.Format;
-            m_pp.BackBufferWidth = dm.Width;
-            m_pp.BackBufferHeight = dm.Height;
             m_CoverWindow = new CoverWindow(this);
             Recreate();
          }
@@ -169,6 +163,11 @@ namespace SGDK2
             {
                m_Sprite.Dispose();
                m_Sprite = null;
+            }
+            if (m_Font != null)
+            {
+               m_Font.Dispose();
+               m_Font = null;
             }
             if (m_d3d != null)
             {
@@ -202,7 +201,7 @@ namespace SGDK2
          }
          catch(Exception ex)
          {
-            MessageBox.Show(this, "Error while opening the display: " + ex.Message, "Error Creating Device", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show(this, "Error creating display device: " + ex.ToString(), "Error Creating Device", MessageBoxButtons.OK, MessageBoxIcon.Error);
          }
 
          base.OnCreateControl ();
@@ -250,6 +249,11 @@ namespace SGDK2
                m_Sprite.Dispose();
                m_Sprite = null;
             }
+            if (m_Font != null)
+            {
+               m_Font.Dispose();
+               m_Font = null;
+            }
             if (m_d3d != null)
             {
                m_d3d.Dispose();
@@ -267,6 +271,11 @@ namespace SGDK2
             {
                m_Sprite.Dispose();
                m_Sprite = null;
+            }
+            if (m_Font != null)
+            {
+               m_Font.Dispose();
+               m_Font = null;
             }
             m_d3d.Reset(m_pp);
          }
@@ -366,6 +375,11 @@ namespace SGDK2
                   m_Sprite.Dispose();
                   m_Sprite = null;
                }
+               if (m_Font != null)
+               {
+                  m_Font.Dispose();
+                  m_Font = null;
+               }
                if (m_d3d != null)
                {
                   m_d3d.Dispose();
@@ -381,8 +395,7 @@ namespace SGDK2
             if (value)
             {
                m_pp.DeviceWindow = this;
-               m_pp.BackBufferWidth = m_pp.BackBufferHeight = 0;
-               m_pp.BackBufferFormat = Format.Unknown;
+               MakeValidPresentParameters(GameDisplayMode, m_pp);
                if (m_CoverWindow != null)
                {
                   m_CoverWindow.m_LinkedControl = null;
@@ -396,17 +409,11 @@ namespace SGDK2
             {
                m_CoverWindow = new CoverWindow(this);
                m_pp.DeviceWindow = m_CoverWindow;
-               DisplayMode dm = GetActualDisplayMode(m_GameDisplayMode);
-               if (dm.Format == Format.Unknown)
-                  throw new ApplicationException("Current display does not support mode " + m_GameDisplayMode.ToString() +".");
-               // This can improve performance in some cases, but I have not
-               // observed much difference in my testing. (See other two instances of this code)
-               //m_pp.BackBufferCount = 2;
-               m_pp.BackBufferWidth = dm.Width;
-               m_pp.BackBufferHeight = dm.Height;
-               m_pp.BackBufferFormat = dm.Format;
+               MakeValidPresentParameters(GameDisplayMode, m_pp);
                Recreate();
             }
+            if (WindowedChanged != null)
+               WindowedChanged(this, null);
          }
          get
          {
@@ -443,19 +450,30 @@ namespace SGDK2
       }
 
       /// <summary>
-      /// Gets the actual full screen display mode that will be used for the specified
-      /// game display mode when the game is in full screen mode.
+      /// Completes the presentation parameter structure by filling out a back buffer
+      /// width, height, and format.
       /// </summary>
       /// <param name="mode">Game requested display mode</param>
-      /// <returns>Supported DirectX display mode that conforms to the requested resolution and color depth.</returns>
-      public static DisplayMode GetActualDisplayMode(GameDisplayMode mode)
+      /// <param name="pp">Object to finish populating</param>
+      public static void MakeValidPresentParameters(GameDisplayMode mode, PresentParameters pp)
       {
-         foreach(DisplayMode dm in Manager.Adapters.Default.SupportedDisplayModes)
+         if (pp.Windowed)
          {
-            System.Drawing.Size s = GetScreenSize(mode);
+            pp.BackBufferFormat = Format.Unknown;
+            pp.BackBufferWidth = pp.BackBufferHeight = 0;
+            pp.FullScreenRefreshRateInHz = 0;
 
-            if ((dm.Width == s.Width) && (dm.Height == s.Height))
+            if (!Manager.CheckDeviceType(Manager.Adapters.Default.Adapter, DeviceType.Hardware, Manager.Adapters.Default.CurrentDisplayMode.Format, pp.BackBufferFormat, pp.Windowed))
+               throw new ApplicationException("No hardware support for windowed mode on default display adapter");
+         }
+         else
+         {
+            foreach(DisplayMode dm in Manager.Adapters.Default.SupportedDisplayModes)
             {
+               System.Drawing.Size s = GetScreenSize(mode);
+               if ((dm.Width != s.Width) || (dm.Height != s.Height))
+                  continue;
+
                switch (mode)
                {
                   case GameDisplayMode.m320x240x16:
@@ -470,7 +488,11 @@ namespace SGDK2
                      case Format.R5G6B5:
                      case Format.X1R5G5B5:
                      case Format.X4R4G4B4:
-                        return dm;
+                        // These are OK 16-bit formats. Break out of the switch and proceed
+                        break;
+                     default:
+                        // Not a 16-bit format, continue to the next mode
+                        continue;
                   }
                      break;
                   default:
@@ -483,13 +505,34 @@ namespace SGDK2
                      case Format.R8G8B8:
                      case Format.X8B8G8R8:
                      case Format.X8R8G8B8:
-                        return dm;
+                        // These are OK 32-bit formats. Break out of the switch and proceed
+                        break;
+                     default:
+                        // Not a 32-bit format, continue to the next mode
+                        continue;
                   }
                      break;
                }
+
+               if (Manager.CheckDeviceType(Manager.Adapters.Default.Adapter, DeviceType.Hardware, dm.Format, dm.Format, pp.Windowed))
+               {
+                  // This can improve performance in some cases, but I have not
+                  // observed much difference in my testing.
+                  //m_pp.BackBufferCount = 2; 
+                  pp.BackBufferWidth = dm.Width;
+                  pp.BackBufferHeight = dm.Height;
+                  pp.BackBufferFormat = dm.Format;
+                  if (dm.RefreshRate > pp.FullScreenRefreshRateInHz)
+                     pp.FullScreenRefreshRateInHz = dm.RefreshRate;
+               }
             }
+            if (pp.FullScreenRefreshRateInHz == 0)
+               throw new ApplicationException("Current display does not support mode " + mode.ToString() +".");
          }
-         return new DisplayMode();
+
+         string errMsg = ValidateAdapter(Manager.Adapters.Default);
+         if (errMsg != null)
+            throw new ApplicationException("Default display adapter is inadequate: " + errMsg);
       }
 
       public GameDisplayMode GameDisplayMode
@@ -504,19 +547,16 @@ namespace SGDK2
             ClientSize = GetScreenSize(value);
             if (!m_pp.Windowed)
             {
-               DisplayMode dm = GetActualDisplayMode(m_GameDisplayMode);
-               if (dm.Format == Format.Unknown)
-                  throw new ApplicationException("Current display does not support mode " + m_GameDisplayMode.ToString() +".");
-               // This can improve performance in some cases, but I have not
-               // observed much difference in my testing. (See other two instances of this code)
-               //m_pp.BackBufferCount = 2;
-               m_pp.BackBufferWidth = dm.Width;
-               m_pp.BackBufferHeight = dm.Height;
-               m_pp.BackBufferFormat = dm.Format;
+               MakeValidPresentParameters(m_GameDisplayMode, m_pp);
                if (m_Sprite != null)
                {
                   m_Sprite.Dispose();
                   m_Sprite = null;
+               }
+               if (m_Font != null)
+               {
+                  m_Font.Dispose();
+                  m_Font = null;
                }
                m_d3d.Reset(m_pp);
             }
@@ -531,13 +571,32 @@ namespace SGDK2
             m_Sprite.Dispose();
             m_Sprite = null;
          }
+         if (m_Font != null)
+         {
+            m_Font.Dispose();
+            m_Font = null;
+         }
          if (m_d3d != null)
             m_d3d.Dispose();
          if (Windowed || (m_CoverWindow == null))
-            m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, this, CreateFlags.HardwareVertexProcessing, m_pp);
+            m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, this, CreateFlags.SoftwareVertexProcessing, m_pp);
          else
-            m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, m_CoverWindow, CreateFlags.HardwareVertexProcessing, m_pp);
+            m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, m_CoverWindow, CreateFlags.SoftwareVertexProcessing, m_pp);
          m_d3d.DeviceReset += new EventHandler(d3d_DeviceReset);
+      }
+
+      private static string ValidateAdapter(AdapterInformation adapter)
+      {
+         Caps caps = Manager.GetDeviceCaps(adapter.Adapter, DeviceType.Hardware);
+         if (!caps.PrimitiveMiscCaps.SupportsBlendOperation)
+            return "Inadequate hardware support for alpha blending";
+         if (!caps.TextureCaps.SupportsAlpha)
+            return "Hardware does not support textures with alpha";
+         if (!caps.RasterCaps.SupportsScissorTest)
+            return "No hardware support for clipping";
+         if (!caps.TextureOperationCaps.SupportsModulate)
+            return "No hardware support for color modulation";
+         return null;
       }
 
       public Sprite Sprite
@@ -547,6 +606,18 @@ namespace SGDK2
             if ((m_Sprite == null) && (m_d3d != null))
                m_Sprite = new Sprite(m_d3d);
             return m_Sprite;
+         }
+      }
+
+      public Font D3DFont
+      {
+         get
+         {
+            if ((m_Font == null) && (m_d3d != null))
+            {
+               m_Font = new Microsoft.DirectX.Direct3D.Font(m_d3d, Font);
+            }
+            return m_Font;
          }
       }
       #endregion

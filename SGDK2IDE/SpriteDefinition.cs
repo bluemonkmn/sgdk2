@@ -181,6 +181,8 @@ namespace SGDK2
 			//
 			InitializeComponent();
 
+         SGDK2IDE.LoadFormSettings(this);
+
          String sName;
          Int32 nIdx = 1;
          do
@@ -198,6 +200,8 @@ namespace SGDK2
       public frmSpriteDefinition(ProjectDataset.SpriteDefinitionRow drSpriteDef)
       {
          InitializeComponent();
+
+         SGDK2IDE.LoadFormSettings(this);
 
          m_SpriteDef = drSpriteDef;
          txtName.Text = drSpriteDef.Name;
@@ -1891,6 +1895,14 @@ namespace SGDK2
          frmSpriteDefinition frmNew = new frmSpriteDefinition(EditRow);
          frmNew.MdiParent = MdiParent;
          frmNew.Show();
+      }
+      #endregion
+
+      #region Overrides
+      protected override void OnClosing(CancelEventArgs e)
+      {
+         base.OnClosing (e);
+         SGDK2IDE.SaveFormSettings(this);
       }
       #endregion
 

@@ -89,6 +89,11 @@ public abstract class SpriteBase : GeneralRules
       get
       {
          Debug.Assert(this.isActive, "Attempted to access PixelX on an inactive sprite");
+         // If you don't have the left edge of your map protected by a solid boundary,
+         // and the different behavior of the left edge is bugging you, you can use this
+         // return statement to work around the rounding difference of negative numbers,
+         // but it involves just a bit of unnecessary overhead, and looks rather clumsy:
+         // return (int)(x+16)-16;
          return (int)x;
       }
    }
@@ -107,6 +112,11 @@ public abstract class SpriteBase : GeneralRules
       get
       {
          Debug.Assert(this.isActive, "Attempted to access ProposedPixelX on an inactive sprite");
+         // If you don't have the left edge of your map protected by a solid boundary,
+         // and the different behavior of the left edge is bugging you, you can use this
+         // return statement to work around the rounding difference of negative numbers,
+         // but it involves just a bit of unnecessary overhead, and looks rather clumsy:
+         // return (int)(x+dx+16)-16
          return (int)(x+dx);
       }
    }
@@ -253,7 +263,7 @@ public abstract class SpriteBase : GeneralRules
          RidingOn.ProcessRules();
 
       if ((x+SolidWidth < RidingOn.oldX) || (x > RidingOn.oldX+RidingOn.SolidWidth) ||
-         (y+SolidHeight < RidingOn.oldY - 1) || (y+SolidHeight >= RidingOn.oldY+SolidHeight))
+         (y+SolidHeight < RidingOn.oldY - 1) || (y+SolidHeight >= RidingOn.oldY+RidingOn.SolidHeight))
       {
          StopRiding();
          return;
@@ -838,7 +848,7 @@ public abstract class SpriteBase : GeneralRules
             if (slopedFloor != int.MinValue)
             {
                int ceiling = layer.GetBottomSolidPixel(new System.Drawing.Rectangle(ProposedPixelX2, slopedFloor - SolidHeight, SolidWidth, ProposedPixelY + SolidHeight - slopedFloor), m_solidity);
-               if (ceiling == int.MinValue)
+               if ((ceiling == int.MinValue) && (RidingOn == null))
                {
                   int rightwall2 = layer.GetLeftSolidPixel(new System.Drawing.Rectangle(PixelX2 + SolidWidth, slopedFloor - SolidHeight, ProposedPixelX2 - PixelX2, SolidHeight), m_solidity);
                   if (rightwall2 == int.MinValue)
@@ -858,7 +868,7 @@ public abstract class SpriteBase : GeneralRules
                {
                   slopedCeiling++;
                   int floor = layer.GetTopSolidPixel(new System.Drawing.Rectangle(ProposedPixelX2, ProposedPixelY + SolidHeight, SolidWidth, slopedCeiling - ProposedPixelY), m_solidity);
-                  if (floor == int.MinValue)
+                  if ((floor == int.MinValue) && (RidingOn == null))
                   {
                      int rightwall2 = layer.GetLeftSolidPixel(new System.Drawing.Rectangle(PixelX2 + SolidWidth, slopedCeiling, ProposedPixelX2 - PixelX2, SolidHeight), m_solidity);
                      if (rightwall2 == int.MinValue)
@@ -891,7 +901,7 @@ public abstract class SpriteBase : GeneralRules
             if (slopedFloor != int.MinValue)
             {
                int ceiling = layer.GetBottomSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, slopedFloor - SolidHeight, SolidWidth, ProposedPixelY + SolidHeight - slopedFloor), m_solidity);
-               if (ceiling == int.MinValue)
+               if ((ceiling == int.MinValue) && (RidingOn == null))
                {
                   int leftwall2 = layer.GetRightSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, slopedFloor - SolidHeight, PixelX - ProposedPixelX, SolidHeight), m_solidity);
                   if (leftwall2 == int.MinValue)
@@ -911,7 +921,7 @@ public abstract class SpriteBase : GeneralRules
                {
                   slopedCeiling++;
                   int floor = layer.GetTopSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, ProposedPixelY + SolidHeight, SolidWidth, slopedCeiling - ProposedPixelY), m_solidity);
-                  if (floor == int.MinValue)
+                  if ((floor == int.MinValue) && (RidingOn == null))
                   {
                      int leftwall2 = layer.GetRightSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, slopedCeiling, PixelX - ProposedPixelX, SolidHeight), m_solidity);
                      if (leftwall2 == int.MinValue)

@@ -149,6 +149,8 @@ namespace SGDK2
 			//
 			InitializeComponent();
 
+         SGDK2IDE.LoadFormSettings(this);
+
          int iNew;
          for (iNew = 1; ProjectData.GetMap("New Map " + iNew.ToString()) != null; iNew++)
             ;
@@ -165,6 +167,7 @@ namespace SGDK2
       public frmMapManager(ProjectDataset.MapRow EditRow)
       {
          InitializeComponent();
+         SGDK2IDE.LoadFormSettings(this);
          btnOK.Text = "Update";
          EditRow.BeginEdit();
          pgrMap.SelectedObject = DataObject = new MapProperties(EditRow);
@@ -331,6 +334,14 @@ namespace SGDK2
          frmMapManager frmNew = new frmMapManager(EditRow);
          frmNew.MdiParent = MdiParent;
          frmNew.Show();
+      }
+      #endregion
+
+      #region Overrides
+      protected override void OnClosing(CancelEventArgs e)
+      {
+         base.OnClosing (e);
+         SGDK2IDE.SaveFormSettings(this);
       }
       #endregion
 

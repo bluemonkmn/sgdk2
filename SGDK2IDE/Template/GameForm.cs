@@ -159,17 +159,22 @@ public class GameForm : Form
       {
          if (OnFrameStart != null)
             OnFrameStart();
-         if ((GameDisplay != null) && (GameDisplay.Device == null))
-         {
-            // Display is minimized, wait until it is restored
-            Application.DoEvents();
-            System.Threading.Thread.Sleep(0);
-            continue;
-         }
          if ((GameDisplay == null) || GameDisplay.Device.Disposed || m_quit)
          {
             Close();
             return;
+         }
+         bool isActive = true;
+         if (GameDisplay.Windowed)
+            isActive = (System.Windows.Forms.Form.ActiveForm == this);
+         if (!isActive || (GameDisplay != null) && (GameDisplay.Device == null))
+         {
+            // Display is minimized or inactive, wait until it is restored
+            Application.DoEvents();
+            if ((GameDisplay != null) && (GameDisplay.Device != null))
+               GameDisplay.Device.Present();
+            System.Threading.Thread.Sleep(0);
+            continue;
          }
          if (!GameDisplay.Device.CheckCooperativeLevel(out coopCode))
          {

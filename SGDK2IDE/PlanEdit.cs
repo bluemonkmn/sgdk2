@@ -109,6 +109,8 @@ namespace SGDK2
          //
          InitializeComponent();
 
+         SGDK2IDE.LoadFormSettings(this);
+
          String sName;
          Int32 nIdx = 1;
          do
@@ -123,6 +125,8 @@ namespace SGDK2
       public frmPlanEdit(ProjectDataset.SpritePlanRow plan)
       {
          InitializeComponent();
+
+         SGDK2IDE.LoadFormSettings(this);
 
          m_Plan = plan;
          txtName.Text = plan.Name;
@@ -1270,6 +1274,14 @@ namespace SGDK2
          frmPlanEdit frmNew = new frmPlanEdit(EditRow);
          frmNew.MdiParent = MdiParent;
          frmNew.Show();
+      }
+      #endregion
+
+      #region Overrides
+      protected override void OnClosing(CancelEventArgs e)
+      {
+         base.OnClosing (e);
+         SGDK2IDE.SaveFormSettings(this);
       }
       #endregion
 

@@ -170,6 +170,8 @@ namespace SGDK2
 			//
 			InitializeComponent();
 
+         SGDK2IDE.LoadFormSettings(this);
+
          grdProject.SelectedObject = new ProjectProperties(ProjectData.ProjectRow);
 		}
 
@@ -230,7 +232,6 @@ namespace SGDK2
       }
 		#endregion
 
-
       #region Public Static Members
       public static void Edit(Form MdiParent)
       {
@@ -250,9 +251,19 @@ namespace SGDK2
       }
       #endregion
       
+      #region Overrides
+      protected override void OnClosing(CancelEventArgs e)
+      {
+         base.OnClosing (e);
+         SGDK2IDE.SaveFormSettings(this);
+      }
+      #endregion
+
+      #region Event Handlers
       private void DataMonitor_Clearing(object sender, System.EventArgs e)
       {
          this.Close();
       }
-	}
+      #endregion
+   }
 }

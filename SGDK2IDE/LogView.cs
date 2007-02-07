@@ -24,6 +24,8 @@ namespace SGDK2
 			//
 			InitializeComponent();
 
+         SGDK2IDE.LoadFormSettings(this);
+
 			txtLogView.Text = text;
 		}
 
@@ -75,5 +77,14 @@ namespace SGDK2
 
       }
 		#endregion
-	}
+	
+      #region Overrides
+      protected override void OnClosing(CancelEventArgs e)
+      {
+         base.OnClosing (e);
+         SGDK2IDE.SaveFormSettings(this);
+      }
+
+      #endregion
+   }
 }

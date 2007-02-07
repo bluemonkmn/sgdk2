@@ -321,6 +321,8 @@ namespace SGDK2
          //
          InitializeComponent();
 
+         SGDK2IDE.LoadFormSettings(this);
+
          m_arTools = new ToolInfo[]
             {
                new ToolInfo(tbbFreeDraw, mnuToolFreeDraw, DrawingTool.FreeDraw),
@@ -2334,6 +2336,13 @@ namespace SGDK2
          }
          base.OnKeyPress (e);
       }
+
+      protected override void OnClosing(CancelEventArgs e)
+      {
+         base.OnClosing (e);
+         SGDK2IDE.SaveFormSettings(this);
+      }
+
       #endregion
 
       #region Event Handlers

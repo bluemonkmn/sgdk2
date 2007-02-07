@@ -146,6 +146,8 @@ namespace SGDK2
          //
          InitializeComponent();
 
+         SGDK2IDE.LoadFormSettings(this);
+
          m_Category = row;
          txtName.Text = row.Name;
          txtTileset.Text = row.Tileset;
@@ -587,6 +589,14 @@ namespace SGDK2
          frmTileCategory frmNew = new frmTileCategory(EditRow);
          frmNew.MdiParent = MdiParent;
          frmNew.Show();
+      }
+      #endregion
+
+      #region Overrides
+      protected override void OnClosing(CancelEventArgs e)
+      {
+         base.OnClosing (e);
+         SGDK2IDE.SaveFormSettings(this);
       }
       #endregion
 

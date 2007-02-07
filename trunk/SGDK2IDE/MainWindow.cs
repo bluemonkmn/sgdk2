@@ -29,6 +29,7 @@ namespace SGDK2
       TreeNode m_ContextNode = null;
       private string m_strProjectPath;
       private Hashtable m_AffectedNodeKeys = new Hashtable();
+      System.Collections.ArrayList m_mruMenuItems = new ArrayList();
       #endregion
 
       #region Windows Form Designer Memebers
@@ -76,6 +77,7 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuTreeImport;
       private System.Windows.Forms.MenuItem mnuFileImportObj;
       internal System.Windows.Forms.StatusBar sbMain;
+      private System.Windows.Forms.MenuItem mnuFileSep4;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -86,7 +88,8 @@ namespace SGDK2
 			// Required for Windows Form Designer support
 			//
 			InitializeComponent();
-		}
+         SGDK2IDE.LoadFormSettings(this);
+      }
 
 		/// <summary>
 		/// Clean up any resources being used.
@@ -157,6 +160,7 @@ namespace SGDK2
          this.lblProjectTree = new System.Windows.Forms.Label();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.sbMain = new System.Windows.Forms.StatusBar();
+         this.mnuFileSep4 = new System.Windows.Forms.MenuItem();
          this.pnlProjectTree.SuspendLayout();
          this.SuspendLayout();
          // 
@@ -304,6 +308,7 @@ namespace SGDK2
                                                                                 this.mnuFileGenerate,
                                                                                 this.mnuFileDeleteOutputFiles,
                                                                                 this.mnuFileSep3,
+                                                                                this.mnuFileSep4,
                                                                                 this.mnuFileExit});
          this.mnuFile.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
          this.mnuFile.Text = "&File";
@@ -416,7 +421,7 @@ namespace SGDK2
          // 
          // mnuFileExit
          // 
-         this.mnuFileExit.Index = 15;
+         this.mnuFileExit.Index = 16;
          this.mnuFileExit.MergeOrder = 99;
          this.mnuFileExit.Text = "E&xit";
          this.mnuFileExit.Click += new System.EventHandler(this.mnuFileExit_Click);
@@ -559,6 +564,11 @@ namespace SGDK2
          this.sbMain.Size = new System.Drawing.Size(800, 20);
          this.sbMain.TabIndex = 8;
          // 
+         // mnuFileSep4
+         // 
+         this.mnuFileSep4.Index = 15;
+         this.mnuFileSep4.Text = "-";
+         // 
          // frmMain
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -698,6 +708,7 @@ namespace SGDK2
             tvwMain.CollapseAll();
             tvwMain.Nodes[0].Expand();
             mnuFileDeleteOutputFiles.Enabled = true;
+            AddMru(projectFile);
          }
          finally
          {
@@ -1219,6 +1230,46 @@ namespace SGDK2
                break;
          }
       }
+      
+      private void AddMru(string path)
+      {
+         for (int i = 0; i < m_mruMenuItems.Count; i++)
+            if (((MenuItem)m_mruMenuItems[i]).Text == path)
+            {
+               RemoveMru(((MenuItem)m_mruMenuItems[i]).Text);
+               break;
+            }
+         MenuItem mruItem = new MenuItem(path, new System.EventHandler(mnuFileMru_Click));
+         mnuFile.MenuItems.Add(mnuFileSep3.Index+1, mruItem);
+         m_mruMenuItems.Add(mruItem);
+         System.Xml.XmlDocument doc = SGDK2IDE.LoadUserSettings();
+         System.Xml.XmlElement mru = (System.Xml.XmlElement)doc.SelectSingleNode("//MRUList");
+         System.Xml.XmlElement entry = doc.CreateElement("Entry");
+         entry.SetAttribute("Path", path);
+         mru.AppendChild(entry);
+         SGDK2IDE.SaveUserSettings(doc);
+         int maxCount = Int32.Parse(mru.GetAttribute("maxCount"));
+         while (m_mruMenuItems.Count > maxCount)
+            RemoveMru(((MenuItem)m_mruMenuItems[0]).Text);
+      }
+
+      private void RemoveMru(string path)
+      {
+         System.Xml.XmlDocument doc = SGDK2IDE.LoadUserSettings();
+         System.Xml.XmlElement elem = (System.Xml.XmlElement)doc.SelectSingleNode("//MRUList/Entry[@Path='" + path.Replace("'","&apos;") + "']");
+         elem.ParentNode.RemoveChild(elem);
+         SGDK2IDE.SaveUserSettings(doc);
+         for (int i=0; i < m_mruMenuItems.Count; i++)
+         {
+            if (((MenuItem)m_mruMenuItems[i]).Text == path)
+            {
+               mnuFile.MenuItems.Remove((MenuItem)m_mruMenuItems[i]);
+               ((MenuItem)m_mruMenuItems[i]).Dispose();
+               m_mruMenuItems.RemoveAt(i);
+               return;
+            }
+         }
+   }
       #endregion
 
       #region Public Methods
@@ -1268,11 +1319,27 @@ namespace SGDK2
             }
          }
          base.OnClosing (e);
+         SGDK2IDE.SaveFormSettings(this);
       }
 
       protected override void OnLoad(EventArgs e)
       {
          base.OnLoad (e);
+
+         try
+         {
+            foreach(System.Xml.XmlElement mru in SGDK2IDE.LoadUserSettings().SelectNodes("//MRUList/Entry[@Path]"))
+            {
+               System.Windows.Forms.MenuItem mruItem = new MenuItem(mru.GetAttribute("Path"), new System.EventHandler(mnuFileMru_Click));
+               m_mruMenuItems.Add(mruItem);
+               mnuFile.MenuItems.Add(mnuFileSep3.Index+1, mruItem);
+            }
+         }
+         catch(System.Exception ex)
+         {
+            MessageBox.Show(this, "Error loading user preferences: " + ex.ToString(), "Scrolling Game Development Kit", MessageBoxButtons.OK, MessageBoxIcon.Error);
+         }
+         
          if (SGDK2IDE.g_CommandLine.ProjectFile == null)
             DoNewProject();
          else
@@ -2116,6 +2183,7 @@ namespace SGDK2
                ProjectData.WriteXml(fd.FileName);
                ProjectData.AcceptChanges();
                m_strProjectPath = fd.FileName;
+               AddMru(m_strProjectPath);
                mnuFileDeleteOutputFiles.Enabled = true;
             }
          }
@@ -2378,6 +2446,43 @@ namespace SGDK2
          else
             ImportObject();
       }
+
+      private void mnuFileMru_Click(object sender, System.EventArgs e)
+      {
+         string fileName = ((MenuItem)sender).Text;
+         try
+         {
+            if (ProjectData.GetChangedTables().Length > 0)
+            {
+               switch (MessageBox.Show(this, "Changes to the project have not been saved.  Do you want to save them before loading another project?", "Save Changes?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+               {
+                  case DialogResult.Yes:
+                     if (m_strProjectPath == null)
+                        mnuFileSavePrjAs_Click(this, e);
+                     else
+                     {
+                        ProjectData.WriteXml(m_strProjectPath);
+                        ProjectData.AcceptChanges();
+                     }
+                     if (m_strProjectPath == null)
+                        return;
+                     break;
+                  case DialogResult.Cancel:
+                     return;
+               }
+            }
+
+            DoOpenProject(fileName);
+         }
+         catch(Exception ex)
+         {
+            if (DialogResult.Yes == MessageBox.Show(this, "Error loading \"" + fileName + "\":\r\n" + ex.Message + "\r\nDo you want to remove the entry from the recently used file list?", "Open Project", MessageBoxButtons.YesNo, MessageBoxIcon.Error))
+            {
+               RemoveMru(fileName);
+            }
+         }
+      }
+
       #endregion
    }
 }

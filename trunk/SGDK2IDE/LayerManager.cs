@@ -278,6 +278,8 @@ namespace SGDK2
          //
          InitializeComponent();
 
+         SGDK2IDE.LoadFormSettings(this);
+
          int iNew;
          for (iNew = 1; ProjectData.GetLayer(parent.Name, "New Layer " + iNew.ToString()) != null; iNew++)
             ;
@@ -297,6 +299,7 @@ namespace SGDK2
       public frmLayerManager(ProjectDataset.LayerRow EditRow)
       {
          InitializeComponent();
+         SGDK2IDE.LoadFormSettings(this);
          btnOK.Text = "Update";
          EditRow.BeginEdit();
          pgrLayer.SelectedObject = DataObject = new LayerProperties(EditRow);
@@ -586,6 +589,14 @@ namespace SGDK2
          frmLayerManager frmNew = new frmLayerManager(EditRow);
          frmNew.MdiParent = MdiParent;
          frmNew.Show();
+      }
+      #endregion
+
+      #region Overrides
+      protected override void OnClosing(CancelEventArgs e)
+      {
+         base.OnClosing (e);
+         SGDK2IDE.SaveFormSettings(this);
       }
       #endregion
 

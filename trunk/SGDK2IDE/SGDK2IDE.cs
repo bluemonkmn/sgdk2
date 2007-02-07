@@ -295,6 +295,90 @@ namespace SGDK2
          if (statusStack.Count <= 1)
             mainWindow.Cursor = Cursors.Default;
       }
+
+      public static System.Xml.XmlDocument LoadUserSettings()
+      {
+         System.Xml.XmlDocument doc = new System.Xml.XmlDocument();
+         string prefsFile = System.IO.Path.Combine(Application.UserAppDataPath, "Settings.xml");
+         bool success = false;
+         try
+         {
+            doc.Load(prefsFile);
+            Int32.Parse(((System.Xml.XmlElement)doc.SelectSingleNode("/SGDK2Prefs/MRUList")).GetAttribute("maxCount"));
+            if (doc.SelectSingleNode("/SGDK2Prefs/Windows") is System.Xml.XmlElement)
+               success = true;
+            else
+               success = false;
+         }
+         catch (System.Exception)
+         {
+            success = false;
+         }
+         if (!success)
+         {
+            doc = new System.Xml.XmlDocument();
+            System.Xml.XmlElement sgdk2Prefs = doc.CreateElement("SGDK2Prefs");
+            doc.AppendChild(sgdk2Prefs);
+            System.Xml.XmlElement mruList = doc.CreateElement("MRUList");
+            mruList.SetAttribute("maxCount", "5");
+            sgdk2Prefs.AppendChild(mruList);
+            sgdk2Prefs.AppendChild(doc.CreateElement("Windows"));
+         }
+         return doc;
+      }
+
+      public static void SaveUserSettings(System.Xml.XmlDocument doc)
+      {
+         string prefsFile = System.IO.Path.Combine(Application.UserAppDataPath, "Settings.xml");
+         doc.Save(prefsFile);
+      }
+
+      public static void LoadFormSettings(Form form)
+      {
+         try
+         {
+            System.Xml.XmlDocument doc = LoadUserSettings();
+            System.Xml.XmlElement settings = doc.SelectSingleNode("//Windows/" + form.GetType().Name) as System.Xml.XmlElement;
+            if (settings == null)
+               return;
+            if (settings.HasAttribute("Left"))
+               form.Location = new Point(Int32.Parse(settings.GetAttribute("Left")), Int32.Parse(settings.GetAttribute("Top")));
+            if ((form.FormBorderStyle == FormBorderStyle.Sizable) && settings.HasAttribute("Width"))
+               form.Size = new Size(Int32.Parse(settings.GetAttribute("Width")), Int32.Parse(settings.GetAttribute("Height")));
+            if (form.MaximizeBox && settings.HasAttribute("FormWindowState"))
+               form.WindowState = (FormWindowState)System.Enum.Parse(typeof(FormWindowState), settings.GetAttribute("FormWindowState"));
+         }
+         catch(System.Exception ex)
+         {
+            MessageBox.Show(System.Windows.Forms.Form.ActiveForm, ex.Message, "Error Reading User Settings", MessageBoxButtons.OK, MessageBoxIcon.Error);
+         }
+      }
+
+      public static void SaveFormSettings(Form form)
+      {
+         System.Xml.XmlDocument doc = LoadUserSettings();
+         System.Xml.XmlElement settings = doc.SelectSingleNode("//Windows/" + form.GetType().Name) as System.Xml.XmlElement;
+         if (settings == null)
+         {
+            settings = doc.CreateElement(form.GetType().Name);
+            doc.SelectSingleNode("//Windows").AppendChild(settings);
+         }
+         if (form.MaximizeBox && (form.WindowState!=FormWindowState.Minimized))
+         {
+            settings.SetAttribute("FormWindowState", form.WindowState.ToString());
+         }
+         if (form.WindowState == FormWindowState.Normal)
+         {
+            settings.SetAttribute("Left", form.Left.ToString());
+            settings.SetAttribute("Top", form.Top.ToString());
+            if (form.FormBorderStyle == FormBorderStyle.Sizable)
+            {
+               settings.SetAttribute("Width", form.Width.ToString());
+               settings.SetAttribute("Height", form.Height.ToString());
+            }
+         }
+         SaveUserSettings(doc);
+      }
       #endregion
    }
 }

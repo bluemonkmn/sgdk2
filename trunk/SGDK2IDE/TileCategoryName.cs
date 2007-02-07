@@ -34,6 +34,8 @@ namespace SGDK2
          //
          InitializeComponent();
 
+         SGDK2IDE.LoadFormSettings(this);
+
          int iNew;
          for (iNew = 1; ProjectData.GetTileCategory("New Category " + iNew.ToString()) != null; iNew++)
             ;
@@ -47,6 +49,8 @@ namespace SGDK2
 			// Required for Windows Form Designer support
 			//
 			InitializeComponent();
+
+         SGDK2IDE.LoadFormSettings(this);
 
          txtName.Text = row.Name;
          m_Category = row;
@@ -196,7 +200,8 @@ namespace SGDK2
          frmNew.Show();
       }
       #endregion
-      
+
+      #region Overrides
       protected override void OnLoad(EventArgs e)
       {
          foreach(System.Data.DataRowView drv in ProjectData.Tileset.DefaultView)
@@ -204,6 +209,14 @@ namespace SGDK2
          base.OnLoad (e);
       }
 
+      protected override void OnClosing(CancelEventArgs e)
+      {
+         base.OnClosing (e);
+         SGDK2IDE.SaveFormSettings(this);
+      }
+      #endregion
+
+      #region Private Properties
       private ProjectDataset.TilesetRow SelectedTileset
       {
          get
@@ -211,7 +224,9 @@ namespace SGDK2
             return (ProjectDataset.TilesetRow)cboTileset.SelectedItem;
          }
       }
+      #endregion
 
+      #region Event Handlers
       private void btnEdit_Click(object sender, System.EventArgs e)
       {
          if (cboTileset.SelectedIndex < 0)
@@ -286,5 +301,6 @@ namespace SGDK2
             e.Cancel = true;
          }         
       }
+      #endregion
    }
 }

@@ -19,7 +19,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyTitle("SGDK2")]
 [assembly: AssemblyDescription("Scrolling Game Development Kit 2")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Benjamin Marty")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("")]
 [assembly: AssemblyCopyright("Copyright ©2000-2006 Benjamin Marty (GPL)")]
 [assembly: AssemblyTrademark("")]

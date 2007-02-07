@@ -141,6 +141,7 @@ namespace SGDK2
 		public frmGfxSheet()
 		{
 			InitializeComponent();
+         SGDK2IDE.LoadFormSettings(this);
          int iNew;
          for (iNew = 1; ProjectData.GetGraphicSheet("New Sheet " + iNew.ToString()) != null; iNew++)
             ;
@@ -159,6 +160,7 @@ namespace SGDK2
       public frmGfxSheet(ProjectDataset.GraphicSheetRow EditRow)
       {
          InitializeComponent();
+         SGDK2IDE.LoadFormSettings(this);
          btnOK.Text = "Update";
          EditRow.BeginEdit();
          m_RowChangeEvent = new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(ProjectData_GraphicSheetRowDeleted);
@@ -427,6 +429,15 @@ namespace SGDK2
          frmNew.MdiParent = MdiParent;
          frmNew.Show();
       }
+      #endregion
+
+      #region Overrides
+      protected override void OnClosing(CancelEventArgs e)
+      {
+         base.OnClosing (e);
+         SGDK2IDE.SaveFormSettings(this);
+      }
+
       #endregion
 
       #region Event Handlers

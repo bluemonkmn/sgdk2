@@ -25,10 +25,8 @@ namespace SGDK2
 			//
 			InitializeComponent();
 
-			//
-			// TODO: Add any constructor code after InitializeComponent call
-			//
-		}
+         SGDK2IDE.LoadFormSettings(this);
+      }
 
 		/// <summary>
 		/// Clean up any resources being used.
@@ -77,6 +75,7 @@ namespace SGDK2
       }
 		#endregion
 
+      #region Overrides
       protected override void OnLoad(EventArgs e)
       {
          base.OnLoad (e);
@@ -105,5 +104,12 @@ namespace SGDK2
          txtChanges.Text = sw.ToString();
          sw.Close();
       }
+      
+      protected override void OnClosing(CancelEventArgs e)
+      {
+         base.OnClosing (e);
+         SGDK2IDE.SaveFormSettings(this);
+      }
+      #endregion
    }
 }

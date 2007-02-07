@@ -34,11 +34,11 @@ namespace SGDK2
       #region Form Designer Components
       private System.Windows.Forms.Label lblName;
       private System.Windows.Forms.TextBox txtName;
-      #endregion
       private SGDK2.DataChangeNotifier dataMonitor;
       private System.Windows.Forms.CheckedListBox chlSpriteDefs;
       private System.Windows.Forms.CheckBox chkCheckedOnly;
       private System.ComponentModel.IContainer components;
+      #endregion
 
       #region Initialization and Clean-up
       public frmSpriteCategory()
@@ -47,6 +47,8 @@ namespace SGDK2
 			// Required for Windows Form Designer support
 			//
 			InitializeComponent();
+
+         SGDK2IDE.LoadFormSettings(this);
 
          String sName;
          Int32 nIdx = 1;
@@ -61,6 +63,8 @@ namespace SGDK2
       public frmSpriteCategory(ProjectDataset.SpriteCategoryRow drCategory)
       {
          InitializeComponent();
+
+         SGDK2IDE.LoadFormSettings(this);
 
          m_Category = drCategory;
          txtName.Text = drCategory.Name;
@@ -209,6 +213,11 @@ namespace SGDK2
       {
          PopulateSpriteDefs();
          base.OnLoad (e);
+      }
+      protected override void OnClosing(CancelEventArgs e)
+      {
+         base.OnClosing (e);
+         SGDK2IDE.SaveFormSettings(this);
       }
       #endregion
 

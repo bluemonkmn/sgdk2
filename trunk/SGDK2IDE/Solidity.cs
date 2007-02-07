@@ -30,6 +30,8 @@ namespace SGDK2
          //
          InitializeComponent();
 
+         SGDK2IDE.LoadFormSettings(this);
+
          String sName;
          Int32 nIdx = 1;
          do
@@ -48,6 +50,8 @@ namespace SGDK2
          // Required for Windows Form Designer support
          //
          InitializeComponent();
+
+         SGDK2IDE.LoadFormSettings(this);
 
          m_Solidity = solidity;
          txtName.Text = solidity.Name;
@@ -210,6 +214,14 @@ namespace SGDK2
          frmSolidity frmNew = new frmSolidity(EditRow);
          frmNew.MdiParent = MdiParent;
          frmNew.Show();
+      }
+      #endregion
+
+      #region Overrides
+      protected override void OnClosing(CancelEventArgs e)
+      {
+         base.OnClosing (e);
+         SGDK2IDE.SaveFormSettings(this);
       }
       #endregion
 

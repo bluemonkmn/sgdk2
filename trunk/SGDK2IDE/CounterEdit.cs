@@ -29,6 +29,8 @@ namespace SGDK2
 			// This call is required by the Windows Form Designer.
 			InitializeComponent();
 
+         SGDK2IDE.LoadFormSettings(this);
+
          String sName;
          Int32 nIdx = 1;
          do
@@ -45,6 +47,8 @@ namespace SGDK2
       {
          // This call is required by the Windows Form Designer.
          InitializeComponent();
+
+         SGDK2IDE.LoadFormSettings(this);
 
          m_Counter = drCounter;
          txtCounterName.Text = drCounter.Name;
@@ -202,6 +206,14 @@ namespace SGDK2
          frmCounterEdit frmNew = new frmCounterEdit(EditRow);
          frmNew.MdiParent = MdiParent;
          frmNew.Show();
+      }
+      #endregion
+
+      #region Overrides
+      protected override void OnClosing(CancelEventArgs e)
+      {
+         base.OnClosing (e);
+         SGDK2IDE.SaveFormSettings(this);
       }
       #endregion
 

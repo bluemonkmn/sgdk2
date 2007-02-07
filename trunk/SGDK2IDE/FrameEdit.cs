@@ -155,6 +155,8 @@ namespace SGDK2
 			//
 			InitializeComponent();
 
+         SGDK2IDE.LoadFormSettings(this);
+
          String sName;
          Int32 nIdx = 1;
          do
@@ -171,6 +173,8 @@ namespace SGDK2
          // Required for Windows Form Designer support
          //
          InitializeComponent();
+
+         SGDK2IDE.LoadFormSettings(this);
 
          txtFramesetName.Text = dr.Name;
          FrameBrowser.Frameset = dr;
@@ -1454,6 +1458,12 @@ namespace SGDK2
       {
          base.OnLoad (e);
          ConnectData();
+      }
+
+      protected override void OnClosing(CancelEventArgs e)
+      {
+         base.OnClosing (e);
+         SGDK2IDE.SaveFormSettings(this);
       }
       #endregion
 

@@ -75,6 +75,8 @@ namespace SGDK2
 			//
 			InitializeComponent();
 
+         SGDK2IDE.LoadFormSettings(this);
+
          String sName;
          Int32 nIdx = 1;
          do
@@ -108,6 +110,8 @@ namespace SGDK2
          //
          InitializeComponent();
 
+         SGDK2IDE.LoadFormSettings(this);
+
          m_Tileset = drTileset;
          txtTilesetName.Text = drTileset.Name;
          nudTileWidth.Value = m_Tileset.TileWidth;
@@ -116,8 +120,6 @@ namespace SGDK2
          FillFramesets();
          FillCounters();
       }
-
-      #endregion
 
 		/// <summary>
 		/// Clean up any resources being used.
@@ -133,6 +135,7 @@ namespace SGDK2
 			}
 			base.Dispose( disposing );
 		}
+      #endregion
 
 		#region Windows Form Designer generated code
 		/// <summary>
@@ -757,6 +760,14 @@ namespace SGDK2
          frmTileEdit frmNew = new frmTileEdit(EditRow);
          frmNew.MdiParent = MdiParent;
          frmNew.Show();
+      }
+      #endregion
+
+      #region Overrides
+      protected override void OnClosing(CancelEventArgs e)
+      {
+         base.OnClosing (e);
+         SGDK2IDE.SaveFormSettings(this);
       }
       #endregion
 

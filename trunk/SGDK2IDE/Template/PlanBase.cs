@@ -286,23 +286,7 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    [Description("Associate the state of the input device for the specified player (1-4) with the inputs on the specified sprite.")]
    public void MapPlayerToInputs(int PlayerNumber, SpriteBase Target)
    {
-      System.Diagnostics.Debug.Assert(Target.isActive, "Attempted to execute MapPlayerToInput on an inactive sprite");
-      if (PlayerNumber > Project.MaxPlayers)
-      {
-         System.Diagnostics.Debug.Fail("Attempted to map inactive player input");
-         return;
-      }
-      Target.oldinputs = Target.inputs;
-      IPlayer player = Project.GameWindow.Players[PlayerNumber-1];
-      Target.inputs = 0;
-      if (player.Up) Target.inputs |= SpriteBase.InputBits.Up;
-      if (player.Left) Target.inputs |= SpriteBase.InputBits.Left;
-      if (player.Right) Target.inputs |= SpriteBase.InputBits.Right;
-      if (player.Down) Target.inputs |= SpriteBase.InputBits.Down;
-      if (player.Button1) Target.inputs |= SpriteBase.InputBits.Button1;
-      if (player.Button2) Target.inputs |= SpriteBase.InputBits.Button2;
-      if (player.Button3) Target.inputs |= SpriteBase.InputBits.Button3;
-      if (player.Button4) Target.inputs |= SpriteBase.InputBits.Button4;
+      Target.MapPlayerToInputs(PlayerNumber);
    }
 
    #endregion

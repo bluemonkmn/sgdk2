@@ -269,6 +269,8 @@ namespace SGDK2
          this.tbbStateSeparator = new System.Windows.Forms.ToolBarButton();
          this.tbbMoveStateUp = new System.Windows.Forms.ToolBarButton();
          this.tbbMoveStateDown = new System.Windows.Forms.ToolBarButton();
+         this.tbbStateSeparator2 = new System.Windows.Forms.ToolBarButton();
+         this.tbbPreview = new System.Windows.Forms.ToolBarButton();
          this.imlSpriteDefinition = new System.Windows.Forms.ImageList(this.components);
          this.tabParameters = new System.Windows.Forms.TabPage();
          this.grdParameters = new System.Windows.Forms.DataGrid();
@@ -310,6 +312,7 @@ namespace SGDK2
          this.mnuMoveStateDown = new System.Windows.Forms.MenuItem();
          this.mnuAddFrame = new System.Windows.Forms.MenuItem();
          this.mnuRemoveFrame = new System.Windows.Forms.MenuItem();
+         this.mnuPreviewAnimation = new System.Windows.Forms.MenuItem();
          this.mnuSpriteDefSeparator = new System.Windows.Forms.MenuItem();
          this.mnuAddAction = new System.Windows.Forms.MenuItem();
          this.mnuRemoveRule = new System.Windows.Forms.MenuItem();
@@ -321,9 +324,6 @@ namespace SGDK2
          this.mnuRotateWizard = new System.Windows.Forms.MenuItem();
          this.DataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.tmrPopulateRules = new System.Windows.Forms.Timer(this.components);
-         this.tbbPreview = new System.Windows.Forms.ToolBarButton();
-         this.tbbStateSeparator2 = new System.Windows.Forms.ToolBarButton();
-         this.mnuPreviewAnimation = new System.Windows.Forms.MenuItem();
          this.tabSpriteDefinition.SuspendLayout();
          this.tabStates.SuspendLayout();
          this.pnlFrames.SuspendLayout();
@@ -686,6 +686,15 @@ namespace SGDK2
          this.tbbMoveStateDown.ImageIndex = 3;
          this.tbbMoveStateDown.ToolTipText = "Move the selected state down one slot";
          // 
+         // tbbStateSeparator2
+         // 
+         this.tbbStateSeparator2.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+         // 
+         // tbbPreview
+         // 
+         this.tbbPreview.ImageIndex = 4;
+         this.tbbPreview.ToolTipText = "Preview state animation";
+         // 
          // imlSpriteDefinition
          // 
          this.imlSpriteDefinition.ImageSize = new System.Drawing.Size(15, 15);
@@ -730,10 +739,10 @@ namespace SGDK2
          this.tvwRules.Dock = System.Windows.Forms.DockStyle.Fill;
          this.tvwRules.HideSelection = false;
          this.tvwRules.ImageIndex = -1;
-         this.tvwRules.Location = new System.Drawing.Point(0, 40);
+         this.tvwRules.Location = new System.Drawing.Point(0, 25);
          this.tvwRules.Name = "tvwRules";
          this.tvwRules.SelectedImageIndex = -1;
-         this.tvwRules.Size = new System.Drawing.Size(187, 319);
+         this.tvwRules.Size = new System.Drawing.Size(187, 334);
          this.tvwRules.TabIndex = 0;
          this.tvwRules.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvwRules_AfterSelect);
          // 
@@ -751,7 +760,7 @@ namespace SGDK2
          this.tbrRules.Location = new System.Drawing.Point(0, 0);
          this.tbrRules.Name = "tbrRules";
          this.tbrRules.ShowToolTips = true;
-         this.tbrRules.Size = new System.Drawing.Size(187, 40);
+         this.tbrRules.Size = new System.Drawing.Size(187, 25);
          this.tbrRules.TabIndex = 28;
          this.tbrRules.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tbrRules_ButtonClick);
          // 
@@ -865,9 +874,10 @@ namespace SGDK2
          this.cboParam3.Enabled = false;
          this.cboParam3.Location = new System.Drawing.Point(128, 168);
          this.cboParam3.Name = "cboParam3";
-         this.cboParam3.Size = new System.Drawing.Size(229, 20);
+         this.cboParam3.Size = new System.Drawing.Size(229, 21);
          this.cboParam3.TabIndex = 22;
          this.cboParam3.Validated += new System.EventHandler(this.cboParam_Validated);
+         this.cboParam3.SelectionChangeCommitted += new System.EventHandler(this.cboParam_SelectionChangeCommitted);
          // 
          // cboFunction
          // 
@@ -876,7 +886,7 @@ namespace SGDK2
          this.cboFunction.Enabled = false;
          this.cboFunction.Location = new System.Drawing.Point(128, 56);
          this.cboFunction.Name = "cboFunction";
-         this.cboFunction.Size = new System.Drawing.Size(229, 20);
+         this.cboFunction.Size = new System.Drawing.Size(229, 21);
          this.cboFunction.TabIndex = 16;
          this.cboFunction.Validated += new System.EventHandler(this.cboFunction_Validated);
          this.cboFunction.SelectedIndexChanged += new System.EventHandler(this.cboFunction_SelectedIndexChanged);
@@ -942,7 +952,7 @@ namespace SGDK2
          this.cboOutput.Enabled = false;
          this.cboOutput.Location = new System.Drawing.Point(128, 192);
          this.cboOutput.Name = "cboOutput";
-         this.cboOutput.Size = new System.Drawing.Size(229, 20);
+         this.cboOutput.Size = new System.Drawing.Size(229, 21);
          this.cboOutput.TabIndex = 24;
          this.cboOutput.Validated += new System.EventHandler(this.cboParam_Validated);
          // 
@@ -973,9 +983,10 @@ namespace SGDK2
          this.cboParam2.Enabled = false;
          this.cboParam2.Location = new System.Drawing.Point(128, 144);
          this.cboParam2.Name = "cboParam2";
-         this.cboParam2.Size = new System.Drawing.Size(229, 20);
+         this.cboParam2.Size = new System.Drawing.Size(229, 21);
          this.cboParam2.TabIndex = 20;
          this.cboParam2.Validated += new System.EventHandler(this.cboParam_Validated);
+         this.cboParam2.SelectionChangeCommitted += new System.EventHandler(this.cboParam_SelectionChangeCommitted);
          // 
          // cboParam1
          // 
@@ -984,9 +995,10 @@ namespace SGDK2
          this.cboParam1.Enabled = false;
          this.cboParam1.Location = new System.Drawing.Point(128, 120);
          this.cboParam1.Name = "cboParam1";
-         this.cboParam1.Size = new System.Drawing.Size(229, 20);
+         this.cboParam1.Size = new System.Drawing.Size(229, 21);
          this.cboParam1.TabIndex = 18;
          this.cboParam1.Validated += new System.EventHandler(this.cboParam_Validated);
+         this.cboParam1.SelectionChangeCommitted += new System.EventHandler(this.cboParam_SelectionChangeCommitted);
          // 
          // lblParam3
          // 
@@ -1104,6 +1116,12 @@ namespace SGDK2
          this.mnuRemoveFrame.Text = "&Remove Frame from State";
          this.mnuRemoveFrame.Click += new System.EventHandler(this.mnuRemoveFrame_Click);
          // 
+         // mnuPreviewAnimation
+         // 
+         this.mnuPreviewAnimation.Index = 6;
+         this.mnuPreviewAnimation.Text = "&Preview State Animation";
+         this.mnuPreviewAnimation.Click += new System.EventHandler(this.OnPreviewAnimation);
+         // 
          // mnuSpriteDefSeparator
          // 
          this.mnuSpriteDefSeparator.Index = 7;
@@ -1174,21 +1192,6 @@ namespace SGDK2
          // tmrPopulateRules
          // 
          this.tmrPopulateRules.Tick += new System.EventHandler(this.tmrPopulateRules_Tick);
-         // 
-         // tbbPreview
-         // 
-         this.tbbPreview.ImageIndex = 4;
-         this.tbbPreview.ToolTipText = "Preview state animation";
-         // 
-         // tbbStateSeparator2
-         // 
-         this.tbbStateSeparator2.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
-         // 
-         // mnuPreviewAnimation
-         // 
-         this.mnuPreviewAnimation.Index = 6;
-         this.mnuPreviewAnimation.Text = "&Preview State Animation";
-         this.mnuPreviewAnimation.Click += new System.EventHandler(this.OnPreviewAnimation);
          // 
          // frmSpriteDefinition
          // 
@@ -1322,7 +1325,7 @@ namespace SGDK2
          }
       }
 
-      private string[] GetEnumInfo(string enumName)
+      private EnumTable.EnumDetails GetEnumInfo(string enumName)
       {
          try
          {
@@ -1334,7 +1337,7 @@ namespace SGDK2
             {
                txtErrors.Text = errs;
                txtErrors.Visible = true;
-               return new string[] {};
+               return new EnumTable.EnumDetails();
             }
             else
             {
@@ -1345,14 +1348,16 @@ namespace SGDK2
             RemotingServices.IRemoteTypeInfo reflector = CodeGenerator.CreateInstanceAndUnwrap(
                "RemoteReflector", enumName) as RemotingServices.IRemoteTypeInfo;
 
-            string[] remoteResults = reflector.GetEnumVals();
+            EnumTable.EnumDetails remoteResults = new EnumTable.EnumDetails();
+            remoteResults.names = reflector.GetEnumVals();
+            remoteResults.isFlags = reflector.IsFlags;
 
             return remoteResults;
          }
          catch(System.Exception ex)
          {
             MessageBox.Show(this, ex.ToString(), "GetEnumInfo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return new string[] {};
+            return new EnumTable.EnumDetails();
          }
       }
 
@@ -1619,13 +1624,16 @@ namespace SGDK2
 
          if (param.IsEnum)
          {
-            string[] enumVals;
+            EnumTable.EnumDetails enumVals;
             if (m_Enums.Contains(param.Type.FullName))
                enumVals = m_Enums[param.Type.FullName];
             else
                enumVals = m_Enums[param.Type.FullName] = GetEnumInfo(param.Type.FullName);
 
-            foreach (string enumVal in enumVals)
+            if (enumVals.isFlags)
+               cboParameter.Items.Add(new EnumOptionSelector(param.Type.Name, enumVals));
+
+            foreach (string enumVal in enumVals.names)
                cboParameter.Items.Add(enumVal);
             return;
          }
@@ -2730,6 +2738,32 @@ namespace SGDK2
          else
          {
             MessageBox.Show(this, "Select a sprite state first.", "Preview State Animation", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+         }
+      }
+ 
+      private void cboParam_SelectionChangeCommitted(object sender, System.EventArgs e)
+      {
+         ComboBox source = (ComboBox)sender;
+         if ((source.SelectedIndex >= 0) && (source.Items[source.SelectedIndex] is EnumOptionSelector))
+         {
+            string oldText = source.Text;
+            string newValue = frmSpecifyFlags.GetOptions(this, (EnumOptionSelector)source.Items[source.SelectedIndex], oldText);
+            if (newValue == null)
+            {
+               int selIdx = source.FindStringExact(oldText);
+               if (selIdx >= 0)
+                  source.SelectedIndex = selIdx;
+               else
+                  source.SelectedIndex = source.Items.Add(oldText);
+            }
+            else
+            {
+               int selIdx = source.FindStringExact(newValue);
+               if (selIdx >= 0)
+                  source.SelectedIndex = selIdx;
+               else
+                  source.SelectedIndex = source.Items.Add(newValue);
+            }
          }
       }
       #endregion

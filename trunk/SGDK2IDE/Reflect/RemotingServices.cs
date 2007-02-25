@@ -118,6 +118,10 @@ namespace SGDK2
          {
             get;
          }
+         bool IsFlags
+         {
+            get;
+         }
          string[] GetEnumVals();
          RemoteTypeName[] GetSubclasses();
       }
@@ -224,11 +228,22 @@ namespace SGDK2
 
    public class EnumTable : System.Collections.DictionaryBase
    {
-      public string[] this[string name]
+      public class EnumDetails
+      {
+         public string[] names;
+         public bool isFlags;
+         public EnumDetails()
+         {
+            names = new string[] {};
+            isFlags = false;
+         }
+      }
+
+      public EnumDetails this[string name]
       {
          get
          {
-            return InnerHashtable[name] as string[];
+            return InnerHashtable[name] as EnumDetails;
          }
          set
          {

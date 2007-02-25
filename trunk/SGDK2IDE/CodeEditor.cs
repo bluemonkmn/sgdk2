@@ -78,6 +78,8 @@ namespace SGDK2
          // This call is required by the Windows Form Designer.
          InitializeComponent();
 
+         SGDK2IDE.LoadFormSettings(this);
+
          m_SourceCode = ProjectData.AddSourceCode(Name, CodeGenerator.GetCustomCodeTemplate(Name), DependsOn, true, null);
          rtfCode.Rtf = ConvertToRTF(m_SourceCode.Text);
          mnuFileSeparator.Visible = mnuFileRename.Visible = mnuEmbeddedData.Visible = true;
@@ -89,6 +91,8 @@ namespace SGDK2
          // Required for Windows Form Designer support
          //
          InitializeComponent();
+
+         SGDK2IDE.LoadFormSettings(this);
 
          m_SourceCode = drSourceCode;
          if (!m_SourceCode.IsTextNull())
@@ -392,6 +396,12 @@ namespace SGDK2
                return;
          }
          base.WndProc (ref m);
+      }
+
+      protected override void OnClosing(CancelEventArgs e)
+      {
+         base.OnClosing (e);
+         SGDK2IDE.SaveFormSettings(this);
       }
       #endregion
 

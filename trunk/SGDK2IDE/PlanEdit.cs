@@ -451,6 +451,7 @@ namespace SGDK2
          this.cboParam3.TabIndex = 30;
          this.cboParam3.Validated += new System.EventHandler(this.cboParam_Validated);
          this.cboParam3.SelectedIndexChanged += new System.EventHandler(this.cboParam_SelectedIndexChanged);
+         this.cboParam3.SelectionChangeCommitted += new EventHandler(cboParam_SelectionChangeCommitted);
          // 
          // cboRuleType
          // 
@@ -502,6 +503,7 @@ namespace SGDK2
          this.cboParam2.TabIndex = 28;
          this.cboParam2.Validated += new System.EventHandler(this.cboParam_Validated);
          this.cboParam2.SelectedIndexChanged += new System.EventHandler(this.cboParam_SelectedIndexChanged);
+         this.cboParam2.SelectionChangeCommitted += new EventHandler(cboParam_SelectionChangeCommitted);
          // 
          // cboParam1
          // 
@@ -514,6 +516,7 @@ namespace SGDK2
          this.cboParam1.TabIndex = 26;
          this.cboParam1.Validated += new System.EventHandler(this.cboParam_Validated);
          this.cboParam1.SelectedIndexChanged += new System.EventHandler(this.cboParam_SelectedIndexChanged);
+         this.cboParam1.SelectionChangeCommitted += new EventHandler(cboParam_SelectionChangeCommitted);
          // 
          // chkNot
          // 
@@ -912,13 +915,16 @@ namespace SGDK2
 
          if (param.IsEnum)
          {
-            string[] enumVals;
+            EnumTable.EnumDetails enumVals;
             if (m_Enums.Contains(param.Type.FullName))
                enumVals = m_Enums[param.Type.FullName];
             else
                enumVals = m_Enums[param.Type.FullName] = GetEnumInfo(param.Type.FullName);
 
-            foreach (string enumVal in enumVals)
+            if (enumVals.isFlags)
+               cboParameter.Items.Add(new EnumOptionSelector(param.Type.Name, enumVals));
+
+            foreach (string enumVal in enumVals.names)
                cboParameter.Items.Add(enumVal);
             return;
          }
@@ -1000,7 +1006,7 @@ namespace SGDK2
          }
       }
 
-      private string[] GetEnumInfo(string enumName)
+      private EnumTable.EnumDetails GetEnumInfo(string enumName)
       {
          string errs;
          CodeGenerator gen = new CodeGenerator();
@@ -1010,7 +1016,7 @@ namespace SGDK2
          {
             txtErrors.Text = errs;
             txtErrors.Visible = true;
-            return new string[] {};
+            return new EnumTable.EnumDetails();
          }
 
          txtErrors.Visible = false;
@@ -1020,14 +1026,16 @@ namespace SGDK2
             RemotingServices.IRemoteTypeInfo reflector = CodeGenerator.CreateInstanceAndUnwrap(
                "RemoteReflector", enumName) as RemotingServices.IRemoteTypeInfo;
 
-            string[] remoteResults = reflector.GetEnumVals();
+            EnumTable.EnumDetails remoteResults = new EnumTable.EnumDetails();
+            remoteResults.names = reflector.GetEnumVals();
+            remoteResults.isFlags = reflector.IsFlags;
 
             return remoteResults;
          }
          catch(System.Exception ex)
          {
             MessageBox.Show(this, ex.ToString(), "GetEnumInfo", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return new string[] {};
+            return new EnumTable.EnumDetails();
          }
       }
       
@@ -1578,19 +1586,47 @@ namespace SGDK2
             (source.Items[source.SelectedIndex].Equals(SelectWritableSpriteParameterItem)))
          {
             bool isRef = (source.Items[source.SelectedIndex].Equals(SelectWritableSpriteParameterItem));
-            frm = new frmSelectSpriteParameter(m_Plan.LayerRowParent);
-            if (DialogResult.OK == frm.ShowDialog(this))
+            using (frm = new frmSelectSpriteParameter(m_Plan.LayerRowParent))
             {
-               m_SpriteContext = new SpriteCodeRef(frm.SpriteRow);
-               string newSel = (isRef ? "ref ":"") + m_SpriteContext.ToString() + "." + CodeGenerator.NameToVariable(frm.SpriteParameterRow.Name);
-               int selIdx = source.FindStringExact(newSel);
+               if (DialogResult.OK == frm.ShowDialog(this))
+               {
+                  m_SpriteContext = new SpriteCodeRef(frm.SpriteRow);
+                  string newSel = (isRef ? "ref ":"") + m_SpriteContext.ToString() + "." + CodeGenerator.NameToVariable(frm.SpriteParameterRow.Name);
+                  int selIdx = source.FindStringExact(newSel);
+                  if (selIdx >= 0)
+                     source.SelectedIndex = selIdx;
+                  else
+                     source.SelectedIndex = source.Items.Add(newSel);
+               }
+               else
+                  source.SelectedIndex = -1;
+            }
+         }
+      }
+
+      private void cboParam_SelectionChangeCommitted(object sender, EventArgs e)
+      {
+         ComboBox source = (ComboBox)sender;
+         if ((source.SelectedIndex >= 0) && (source.Items[source.SelectedIndex] is EnumOptionSelector))
+         {
+            string oldText = source.Text;
+            string newValue = frmSpecifyFlags.GetOptions(this, (EnumOptionSelector)source.Items[source.SelectedIndex], oldText);
+            if (newValue == null)
+            {
+               int selIdx = source.FindStringExact(oldText);
                if (selIdx >= 0)
                   source.SelectedIndex = selIdx;
                else
-                  source.SelectedIndex = source.Items.Add(newSel);
+                  source.SelectedIndex = source.Items.Add(oldText);
             }
             else
-               source.SelectedIndex = -1;
+            {
+               int selIdx = source.FindStringExact(newValue);
+               if (selIdx >= 0)
+                  source.SelectedIndex = selIdx;
+               else
+                  source.SelectedIndex = source.Items.Add(newValue);
+            }
          }
       }
 

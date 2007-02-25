@@ -34,7 +34,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
          else if (frame.Color == -1)
             this.color = color;
          else
-            this.color = Microsoft.DirectX.Direct3D.ColorOperator.Modulate(frame.Color, color);
+            this.color = Microsoft.DirectX.Direct3D.ColorOperator.Modulate(ColorValue.FromArgb(frame.Color), ColorValue.FromArgb(color)).ToArgb();
       }
       #region IComparable Members
 

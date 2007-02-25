@@ -1047,9 +1047,8 @@ namespace SGDK2
          this.Focus();
          if (nCell >=0)
          {
-            if (m_SelectionMode == SelectionMode.MultiSimple)
-               m_DragStart = new Point(e.X, e.Y);
-            else
+            m_DragStart = new Point(e.X, e.Y);
+            if (m_SelectionMode != SelectionMode.MultiSimple)
                m_bDragReady = true;
          }
 
@@ -1117,8 +1116,12 @@ namespace SGDK2
 
          if (m_bDragReady && (0 != (int)(e.Button & MouseButtons.Left)))
          {
-            DoDragDrop(this, DragDropEffects.Copy | DragDropEffects.Move);
-            m_bDragReady = false;
+            if ((Math.Abs(m_DragStart.X-e.X) >= 5) || (Math.Abs(m_DragStart.Y-e.Y) >= 5))
+            {
+               DoDragDrop(this, DragDropEffects.Copy | DragDropEffects.Move);
+               m_bDragReady = false;
+               m_DragStart = Point.Empty;
+            }
          }
          else
          {

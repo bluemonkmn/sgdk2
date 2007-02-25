@@ -315,9 +315,10 @@ namespace SGDK2
             Microsoft.DirectX.Direct3D.Sprite sprite = display.Sprite;
             sprite.Begin(Microsoft.DirectX.Direct3D.SpriteFlags.AlphaBlend);
             display.Device.Clear(Microsoft.DirectX.Direct3D.ClearFlags.Target, m_Background, 0, 0);
-            Rectangle bounds = m_FrameCache[m_TileCache[tileValue, 0][0]].Bounds;
+            Rectangle bounds;
             if (m_TileRow != null)
             {
+               bounds = m_FrameCache[m_TileCache[tileValue, 0][0]].Bounds;
                int[] sf = m_TileCache.GetSubFramesByFrameIndex(tileValue, realIndex);
                for (int i=0; i<sf.Length; i++)
                {
@@ -333,6 +334,7 @@ namespace SGDK2
             }
             else
             {
+               bounds = ((StateInfo)m_SpriteCache[m_SpriteStateRow.Name]).Bounds;
                StateInfo si = m_SpriteCache[spriteName];
                int[] sf = si.frames[realIndex].subFrames;
                for (int i=0; i<sf.Length; i++)

@@ -256,11 +256,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "Display.resx"
-                    DependentUpon = "Display.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
                     RelPath = "DragPanel.cs"
                     SubType = "Component"
                     BuildAction = "Compile"
@@ -593,6 +588,16 @@
                 <File
                     RelPath = "SoundPlayer.resx"
                     DependentUpon = "SoundPlayer.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
+                    RelPath = "SpecifyFlags.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "SpecifyFlags.resx"
+                    DependentUpon = "SpecifyFlags.cs"
                     BuildAction = "EmbeddedResource"
                 />
                 <File

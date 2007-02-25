@@ -732,6 +732,7 @@ public abstract class SpriteBase : GeneralRules
          Debug.Fail("Attempted to map inactive player input");
          return;
       }
+      oldinputs = inputs;
       IPlayer player = Project.GameWindow.Players[PlayerNumber-1];
       inputs = 0;
       if (player.Up) inputs |= InputBits.Up;

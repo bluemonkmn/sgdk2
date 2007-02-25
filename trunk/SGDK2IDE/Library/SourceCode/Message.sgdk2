@@ -1,0 +1,836 @@
+<?xml version="1.0" standalone="yes"?>
+<ProjectDataset>
+  <xs:schema id="ProjectDataset" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop">
+    <xs:element name="ProjectDataset" msdata:IsDataSet="true" msprop:SchemaVersion="1">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="GraphicSheet">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Image" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="5" />
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Columns" type="xs:short" default="16" />
+              <xs:attribute name="Rows" type="xs:short" default="8" />
+              <xs:attribute name="CellWidth" msdata:Caption="Cell Width" type="xs:short" default="32" />
+              <xs:attribute name="CellHeight" msdata:Caption="Cell Height" type="xs:short" default="32" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Frameset">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Frame" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:attribute name="FrameValue" type="xs:int" use="required" />
+                    <xs:attribute name="GraphicSheet" type="xs:string" use="required" />
+                    <xs:attribute name="CellIndex" type="xs:short" use="required" />
+                    <xs:attribute name="m11" type="xs:float" default="1" />
+                    <xs:attribute name="m12" type="xs:float" default="0" />
+                    <xs:attribute name="m21" type="xs:float" default="0" />
+                    <xs:attribute name="m22" type="xs:float" default="1" />
+                    <xs:attribute name="dx" type="xs:float" default="0" />
+                    <xs:attribute name="dy" type="xs:float" default="0" />
+                    <xs:attribute name="Name" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="color" type="xs:int" default="-1" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Tileset">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Tile" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="TileFrame" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                          <xs:attribute name="Sequence" type="xs:short" use="required" />
+                          <xs:attribute name="FrameValue" type="xs:int" />
+                          <xs:attribute name="Duration" type="xs:short" />
+                          <xs:attribute name="Name" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="TileValue" type="xs:int" msdata:AllowDBNull="false" use="prohibited" />
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="TileValue" type="xs:int" use="required" />
+                    <xs:attribute name="Counter" type="xs:string" />
+                    <xs:attribute name="Name" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Frameset" type="xs:string" />
+              <xs:attribute name="TileWidth" type="xs:short" use="required" />
+              <xs:attribute name="TileHeight" type="xs:short" use="required" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Counter">
+            <xs:complexType>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Value" type="xs:int" />
+              <xs:attribute name="Max" type="xs:int" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Map">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Layer" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="Tiles" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="12" />
+                      <xs:element name="Sprite" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="ParameterValue" minOccurs="0" maxOccurs="unbounded">
+                              <xs:complexType>
+                                <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="SpriteName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="ParameterName" type="xs:string" use="required" />
+                                <xs:attribute name="Value" type="xs:int" />
+                                <xs:attribute name="DefinitionName" type="xs:string" use="prohibited" />
+                                <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                              </xs:complexType>
+                            </xs:element>
+                          </xs:sequence>
+                          <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="Name" type="xs:string" use="required" />
+                          <xs:attribute name="DefinitionName" type="xs:string" use="required" />
+                          <xs:attribute name="StateName" type="xs:string" />
+                          <xs:attribute name="CurrentFrame" type="xs:short" />
+                          <xs:attribute name="X" type="xs:int" />
+                          <xs:attribute name="Y" type="xs:int" />
+                          <xs:attribute name="DX" type="xs:float" />
+                          <xs:attribute name="DY" type="xs:float" />
+                          <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="Priority" type="xs:int" />
+                          <xs:attribute name="Active" type="xs:boolean" default="true" />
+                          <xs:attribute name="Solidity" type="xs:string" />
+                          <xs:attribute name="Color" type="xs:int" default="-1" />
+                        </xs:complexType>
+                      </xs:element>
+                      <xs:element name="SpritePlan" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="Coordinate" minOccurs="0" maxOccurs="unbounded">
+                              <xs:complexType>
+                                <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="PlanName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="Sequence" type="xs:short" use="required" />
+                                <xs:attribute name="X" type="xs:int" />
+                                <xs:attribute name="Y" type="xs:int" />
+                                <xs:attribute name="Weight" type="xs:int" />
+                              </xs:complexType>
+                            </xs:element>
+                            <xs:element name="PlanRule" minOccurs="0" maxOccurs="unbounded">
+                              <xs:complexType>
+                                <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="PlanName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="Name" type="xs:string" use="required" />
+                                <xs:attribute name="Sequence" type="xs:int" use="required" />
+                                <xs:attribute name="Type" type="xs:string" use="required" />
+                                <xs:attribute name="Function" type="xs:string" use="required" />
+                                <xs:attribute name="Parameter1" type="xs:string" />
+                                <xs:attribute name="Parameter2" type="xs:string" />
+                                <xs:attribute name="Parameter3" type="xs:string" />
+                                <xs:attribute name="ResultParameter" type="xs:string" />
+                                <xs:attribute name="EndIf" type="xs:boolean" default="false" />
+                                <xs:attribute name="Suspended" type="xs:boolean" default="false" />
+                              </xs:complexType>
+                            </xs:element>
+                            <xs:element name="PlanParameterValue" minOccurs="0" maxOccurs="unbounded">
+                              <xs:complexType>
+                                <xs:attribute name="MapName" type="xs:string" use="required" />
+                                <xs:attribute name="LayerName" type="xs:string" use="required" />
+                                <xs:attribute name="PlanName" type="xs:string" use="required" />
+                                <xs:attribute name="Name" type="xs:string" use="required" />
+                                <xs:attribute name="Value" type="xs:string" />
+                              </xs:complexType>
+                            </xs:element>
+                          </xs:sequence>
+                          <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="Name" type="xs:string" use="required" />
+                          <xs:attribute name="Priority" type="xs:int" />
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="Name" type="xs:string" use="required" />
+                    <xs:attribute name="Width" type="xs:int" use="required" />
+                    <xs:attribute name="Height" type="xs:int" use="required" />
+                    <xs:attribute name="Tileset" type="xs:string" />
+                    <xs:attribute name="BytesPerTile" type="xs:unsignedByte" use="required" />
+                    <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="OffsetX" type="xs:int" default="0" />
+                    <xs:attribute name="OffsetY" type="xs:int" default="0" />
+                    <xs:attribute name="ScrollRateX" type="xs:float" default="1" />
+                    <xs:attribute name="ScrollRateY" type="xs:float" default="1" />
+                    <xs:attribute name="ZIndex" type="xs:int" />
+                    <xs:attribute name="Priority" type="xs:int" default="0" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="ScrollMarginLeft" type="xs:short" use="required" />
+              <xs:attribute name="ScrollMarginTop" type="xs:short" use="required" />
+              <xs:attribute name="ScrollMarginRight" type="xs:short" use="required" />
+              <xs:attribute name="ScrollMarginBottom" type="xs:short" use="required" />
+              <xs:attribute name="ScrollWidth" msdata:Caption="Scrollable pixel width of the map independent of its layers" type="xs:int" />
+              <xs:attribute name="ScrollHeight" msdata:Caption="Scrollable pixel height of the map independent of its layers" type="xs:int" />
+              <xs:attribute name="ViewLeft" type="xs:short" />
+              <xs:attribute name="ViewTop" type="xs:short" />
+              <xs:attribute name="ViewWidth" type="xs:short" />
+              <xs:attribute name="ViewHeight" type="xs:short" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="SpriteDefinition">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="SpriteRule" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:attribute name="DefinitionName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="Name" type="xs:string" use="required" />
+                    <xs:attribute name="Sequence" type="xs:int" use="required" />
+                    <xs:attribute name="Type" type="xs:string" use="required" />
+                    <xs:attribute name="Function" type="xs:string" use="required" />
+                    <xs:attribute name="Parameter1" type="xs:string" />
+                    <xs:attribute name="Parameter2" type="xs:string" />
+                    <xs:attribute name="Parameter3" type="xs:string" />
+                    <xs:attribute name="ResultParameter" type="xs:string" />
+                    <xs:attribute name="EndIf" type="xs:boolean" default="false" />
+                    <xs:attribute name="Suspended" type="xs:boolean" default="false" />
+                  </xs:complexType>
+                </xs:element>
+                <xs:element name="SpriteParameter" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:attribute name="DefinitionName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="Name" type="xs:string" use="required" />
+                  </xs:complexType>
+                </xs:element>
+                <xs:element name="SpriteState" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="SpriteFrame" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                          <xs:attribute name="DefinitionName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="StateName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="Sequence" type="xs:short" use="required" />
+                          <xs:attribute name="FrameValue" type="xs:int" />
+                          <xs:attribute name="Duration" type="xs:short" />
+                          <xs:attribute name="MaskAlphaLevel" type="xs:unsignedByte" default="0" />
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="DefinitionName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="Name" type="xs:string" use="required" />
+                    <xs:attribute name="FramesetName" type="xs:string" use="required" />
+                    <xs:attribute name="SolidWidth" type="xs:short" use="required" />
+                    <xs:attribute name="SolidHeight" type="xs:short" use="required" />
+                    <xs:attribute name="Sequence" type="xs:short" use="required" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="SpriteCategory">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="SpriteCategorySprite" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:attribute name="CategoryName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="DefinitionName" type="xs:string" use="required" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Solidity">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="SolidityShape" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:attribute name="SolidityName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="CategoryName" type="xs:string" use="required" />
+                    <xs:attribute name="ShapeName" type="xs:string" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="SourceCode">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Text" type="xs:string" minOccurs="0" msdata:Ordinal="3" />
+                <xs:element name="CustomObjectData" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="4" />
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="IsCustomObject" type="xs:boolean" default="false" />
+              <xs:attribute name="DependsOn" type="xs:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Project">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Comments" type="xs:string" default="" msdata:Ordinal="8" />
+              </xs:sequence>
+              <xs:attribute name="DisplayMode" type="xs:string" use="required" />
+              <xs:attribute name="Windowed" type="xs:boolean" use="required" />
+              <xs:attribute name="TitleText" type="xs:string" />
+              <xs:attribute name="StartMap" type="xs:string" />
+              <xs:attribute name="OverlayMap" type="xs:string" />
+              <xs:attribute name="MaxPlayers" type="xs:unsignedByte" default="1" />
+              <xs:attribute name="MaxViews" type="xs:unsignedByte" default="1" />
+              <xs:attribute name="Credits" type="xs:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="TileCategory">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="CategorizedTileset" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="CategoryTile" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="CategoryFrame" minOccurs="0" maxOccurs="unbounded">
+                              <xs:complexType>
+                                <xs:attribute name="Tileset" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="Category" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="TileValue" type="xs:int" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="Frame" type="xs:short" use="required" />
+                              </xs:complexType>
+                            </xs:element>
+                          </xs:sequence>
+                          <xs:attribute name="Tileset" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="Category" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="TileValue" type="xs:int" use="required" />
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="Tileset" type="xs:string" use="required" />
+                    <xs:attribute name="Name" type="xs:string" use="required" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+      <xs:unique name="GraphicSheetKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//GraphicSheet" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="FrameKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Frame" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@FrameValue" />
+      </xs:unique>
+      <xs:unique name="FramesetKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Frameset" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="TileFrameKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//TileFrame" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@TileValue" />
+        <xs:field xpath="@Sequence" />
+      </xs:unique>
+      <xs:unique name="TileKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Tile" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@TileValue" />
+      </xs:unique>
+      <xs:unique name="TilesetKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Tileset" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="CounterKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Counter" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="ParameterValueKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//ParameterValue" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@SpriteName" />
+        <xs:field xpath="@ParameterName" />
+        <xs:field xpath="@MapName" />
+      </xs:unique>
+      <xs:unique name="SpriteKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Sprite" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@MapName" />
+      </xs:unique>
+      <xs:unique name="SpriteKeyWithDefinition">
+        <xs:selector xpath=".//Sprite" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@MapName" />
+      </xs:unique>
+      <xs:unique name="CoordinateKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Coordinate" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+        <xs:field xpath="@Sequence" />
+      </xs:unique>
+      <xs:unique name="PlanRuleKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//PlanRule" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="PlanParameterValueKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//PlanParameterValue" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpritePlanKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpritePlan" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="LayerKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Layer" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="MapKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Map" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpriteRuleKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteRule" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpriteParameterKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteParameter" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpriteFrameKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteFrame" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@StateName" />
+        <xs:field xpath="@Sequence" />
+      </xs:unique>
+      <xs:unique name="SpriteStateKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteState" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpriteStateFramesetKey">
+        <xs:selector xpath=".//SpriteState" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@FramesetName" />
+      </xs:unique>
+      <xs:unique name="SpriteDefinitionKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteDefinition" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpriteCategorySpriteKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteCategorySprite" />
+        <xs:field xpath="@CategoryName" />
+        <xs:field xpath="@DefinitionName" />
+      </xs:unique>
+      <xs:unique name="SpriteCategoryKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteCategory" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SolidityShapeKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SolidityShape" />
+        <xs:field xpath="@SolidityName" />
+        <xs:field xpath="@CategoryName" />
+      </xs:unique>
+      <xs:unique name="SolidityKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Solidity" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SourceCodeKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SourceCode" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="CategoryFrameKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//CategoryFrame" />
+        <xs:field xpath="@Tileset" />
+        <xs:field xpath="@Category" />
+        <xs:field xpath="@TileValue" />
+        <xs:field xpath="@Frame" />
+      </xs:unique>
+      <xs:unique name="CategoryTileKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//CategoryTile" />
+        <xs:field xpath="@Tileset" />
+        <xs:field xpath="@Category" />
+        <xs:field xpath="@TileValue" />
+      </xs:unique>
+      <xs:unique name="CategorizedTilesetKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//CategorizedTileset" />
+        <xs:field xpath="@Tileset" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="CategoryKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//TileCategory" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:keyref name="TilesetCategory" refer="TilesetKey">
+        <xs:selector xpath=".//CategorizedTileset" />
+        <xs:field xpath="@Tileset" />
+      </xs:keyref>
+      <xs:keyref name="TileCategoryCategorizedTileset" refer="CategoryKey" msdata:IsNested="true">
+        <xs:selector xpath=".//CategorizedTileset" />
+        <xs:field xpath="@Name" />
+      </xs:keyref>
+      <xs:keyref name="CategoryCategoryTile" refer="CategorizedTilesetKey" msdata:IsNested="true">
+        <xs:selector xpath=".//CategoryTile" />
+        <xs:field xpath="@Tileset" />
+        <xs:field xpath="@Category" />
+      </xs:keyref>
+      <xs:keyref name="CategoryTileCategoryFrame" refer="CategoryTileKey" msdata:IsNested="true">
+        <xs:selector xpath=".//CategoryFrame" />
+        <xs:field xpath="@Tileset" />
+        <xs:field xpath="@Category" />
+        <xs:field xpath="@TileValue" />
+      </xs:keyref>
+      <xs:keyref name="MapProject" refer="MapKey" msdata:ConstraintOnly="true" msdata:DeleteRule="SetNull">
+        <xs:selector xpath=".//Project" />
+        <xs:field xpath="@StartMap" />
+      </xs:keyref>
+      <xs:keyref name="CategorySolidityShape" refer="CategoryKey">
+        <xs:selector xpath=".//SolidityShape" />
+        <xs:field xpath="@CategoryName" />
+      </xs:keyref>
+      <xs:keyref name="SoliditySolidityShape" refer="SolidityKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SolidityShape" />
+        <xs:field xpath="@SolidityName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteDefinitionCategory" refer="SpriteDefinitionKey">
+        <xs:selector xpath=".//SpriteCategorySprite" />
+        <xs:field xpath="@DefinitionName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteCategorySpriteCategorySprite" refer="SpriteCategoryKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpriteCategorySprite" />
+        <xs:field xpath="@CategoryName" />
+      </xs:keyref>
+      <xs:keyref name="FramesetSpriteState" refer="FramesetKey">
+        <xs:selector xpath=".//SpriteState" />
+        <xs:field xpath="@FramesetName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteDefinitionState" refer="SpriteDefinitionKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpriteState" />
+        <xs:field xpath="@DefinitionName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteStateFrame" refer="SpriteStateKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpriteFrame" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@StateName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteDefinitionSpriteParameter" refer="SpriteDefinitionKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpriteParameter" />
+        <xs:field xpath="@DefinitionName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteDefinitionSpriteRule" refer="SpriteDefinitionKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpriteRule" />
+        <xs:field xpath="@DefinitionName" />
+      </xs:keyref>
+      <xs:keyref name="TilesetLayer" refer="TilesetKey">
+        <xs:selector xpath=".//Layer" />
+        <xs:field xpath="@Tileset" />
+      </xs:keyref>
+      <xs:keyref name="MapLayer" refer="MapKey" msdata:IsNested="true">
+        <xs:selector xpath=".//Layer" />
+        <xs:field xpath="@MapName" />
+      </xs:keyref>
+      <xs:keyref name="LayerSpritePlan" refer="LayerKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpritePlan" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+      </xs:keyref>
+      <xs:keyref name="SpritePlanPlanParameterValue" refer="SpritePlanKey" msdata:IsNested="true">
+        <xs:selector xpath=".//PlanParameterValue" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+      </xs:keyref>
+      <xs:keyref name="SpritePlanPlanRule" refer="SpritePlanKey" msdata:IsNested="true">
+        <xs:selector xpath=".//PlanRule" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+      </xs:keyref>
+      <xs:keyref name="SpritePlanCoordinate" refer="SpritePlanKey" msdata:IsNested="true">
+        <xs:selector xpath=".//Coordinate" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteDefinitionSprite" refer="SpriteStateKey">
+        <xs:selector xpath=".//Sprite" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@StateName" />
+      </xs:keyref>
+      <xs:keyref name="LayerSprite" refer="LayerKey" msdata:IsNested="true">
+        <xs:selector xpath=".//Sprite" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteParameterParameterValue" refer="SpriteParameterKey">
+        <xs:selector xpath=".//ParameterValue" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@ParameterName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteParameterValue" refer="SpriteKeyWithDefinition" msdata:IsNested="true">
+        <xs:selector xpath=".//ParameterValue" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@SpriteName" />
+        <xs:field xpath="@MapName" />
+      </xs:keyref>
+      <xs:keyref name="FramesetTileset" refer="FramesetKey">
+        <xs:selector xpath=".//Tileset" />
+        <xs:field xpath="@Frameset" />
+      </xs:keyref>
+      <xs:keyref name="CounterTile" refer="CounterKey" msdata:DeleteRule="SetNull">
+        <xs:selector xpath=".//Tile" />
+        <xs:field xpath="@Counter" />
+      </xs:keyref>
+      <xs:keyref name="TilesetTile" refer="TilesetKey" msdata:IsNested="true">
+        <xs:selector xpath=".//Tile" />
+        <xs:field xpath="@Name" />
+      </xs:keyref>
+      <xs:keyref name="TileTileFrame" refer="TileKey" msdata:IsNested="true">
+        <xs:selector xpath=".//TileFrame" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@TileValue" />
+      </xs:keyref>
+      <xs:keyref name="GraphicSheetFrame" refer="GraphicSheetKey" msdata:ConstraintOnly="true" msdata:DeleteRule="None">
+        <xs:selector xpath=".//Frame" />
+        <xs:field xpath="@GraphicSheet" />
+      </xs:keyref>
+      <xs:keyref name="FramesetFrame" refer="FramesetKey" msdata:IsNested="true">
+        <xs:selector xpath=".//Frame" />
+        <xs:field xpath="@Name" />
+      </xs:keyref>
+    </xs:element>
+  </xs:schema>
+  <SourceCode Name="Message.cs" IsCustomObject="true" DependsOn="">
+    <Text>using System.ComponentModel;
+using Microsoft.DirectX;
+using Microsoft.DirectX.Direct3D;
+using System.Drawing;
+using System;
+
+namespace CustomObjects
+{
+   public class Message
+   {
+      private static System.Collections.ArrayList messageList = new System.Collections.ArrayList();
+      private static bool initialized = false;
+      private Rectangle messagePosition;
+      private string message;
+      private Options options;
+      int buttonState = 0; // 0=initial/still pressed, 1=released, 2=re-pressed
+
+      [Flags]
+      public enum Options
+      {
+         Player1=1,
+         Player2=2,
+         Player3=3,
+         Player4=4,
+         Button1Dismiss=8,
+         Button2Dismiss=16,
+         Button3Dismiss=24,
+         Button4Dismiss=32,
+         Top=64,
+         Bottom=128
+      }
+
+      public Message(string message, Options options)
+      {
+         Initialize();
+         this.message = message;
+         Display disp = Project.GameWindow.GameDisplay;
+         Rectangle rectText = disp.D3DFont.MeasureString(disp.Sprite, message, 0, Color.White);
+         Rectangle container;
+         this.options = options;
+         if (PlayerIndex &lt;= 0)
+            container = AdjustRectangle(Project.GameWindow.OverlayMap.CurrentView);
+         else
+            container = AdjustRectangle(Project.GameWindow.CurrentMap.GetView(PlayerIndex-1));
+         rectText.X = container.X + (container.Width - rectText.Width) / 2;
+         rectText.Y = container.Y + (container.Height - rectText.Height) / 2;
+         messagePosition = rectText;
+         messagePosition.Inflate(6, 6);
+         if ((messagePosition.X &lt; 0) || (messagePosition.Y &lt; 0) ||
+             (messagePosition.X + messagePosition.Width &gt; disp.DisplayRectangle.Width) ||
+             (messagePosition.Y + messagePosition.Height &gt; disp.DisplayRectangle.Height))
+            System.Diagnostics.Debug.Fail("Message is too long to display");
+      }
+
+      private Rectangle AdjustRectangle(Rectangle container)
+      {
+         if ((options &amp; (Options.Top | Options.Bottom)) &gt; 0)
+            container.Height /= 2;
+         if ((options &amp; Options.Bottom) == Options.Bottom)
+            container.Y += container.Height;
+         return container;
+      }
+
+      private static void Initialize()
+      {
+         if (!initialized)
+         {
+            Project.GameWindow.OnAfterDrawOverlay += new GameForm.SimpleNotification(DrawCurrentMessages);
+            Project.GameWindow.OnBeforeExecuteRules += new GameForm.SimpleNotification(OnBeforeExecuteRules);
+            initialized = true;
+         }
+      }
+
+      private static void DrawMessage(string message, Rectangle rectText, Rectangle rectMessage)
+      {
+         Display disp = Project.GameWindow.GameDisplay;
+         if ((rectMessage.X &gt;= 0) &amp;&amp; (rectMessage.Y &gt;= 0) &amp;&amp;
+             (rectMessage.X + rectMessage.Width &lt;= disp.DisplayRectangle.Width) &amp;&amp;
+             (rectMessage.Y + rectMessage.Height &lt;= disp.DisplayRectangle.Height))
+         {
+            disp.Device.ColorFill(disp.Device.GetRenderTarget(0), rectMessage, Color.DarkBlue);
+            disp.D3DFont.DrawText(disp.Sprite, message, rectText, DrawTextFormat.Left | DrawTextFormat.WordBreak, Color.White);
+            disp.D3DLine.Antialias = true;
+            disp.D3DLine.Width = 2.5f;
+            disp.D3DLine.Draw(new Vector2[] {new Vector2(rectMessage.X,rectMessage.Y), new Vector2(rectMessage.Right,rectMessage.Y), new Vector2(rectMessage.Right,rectMessage.Bottom), new Vector2(rectMessage.X,rectMessage.Bottom), new Vector2(rectMessage.X,rectMessage.Y)}, Color.Yellow.ToArgb());
+            disp.Sprite.Flush();
+         }
+      }
+
+      private int PlayerIndex
+      {
+         get
+         {
+            Options mask = Options.Player1 | Options.Player2 | Options.Player3 | Options.Player4;
+            if ((options &amp; mask) == Options.Player1)
+               return 1;
+            if ((options &amp; mask) == Options.Player2)
+               return 2;
+            if ((options &amp; mask) == Options.Player3)
+               return 3;
+            if ((options &amp; mask) == Options.Player4)
+               return 4;
+            return 0;
+         }
+      }
+
+      private int DismissButton
+      {
+         get
+         {
+            Options mask = Options.Button1Dismiss | Options.Button2Dismiss |
+               Options.Button3Dismiss | Options.Button4Dismiss;
+            if ((options &amp; mask) == Options.Button1Dismiss)
+               return 1;
+            if ((options &amp; mask) == Options.Button2Dismiss)
+               return 2;
+            if ((options &amp; mask) == Options.Button3Dismiss)
+               return 3;
+            if ((options &amp; mask) == Options.Button4Dismiss)
+               return 4;
+            return 0;
+         }
+      }
+
+      private static void DrawCurrentMessages()
+      {
+         for(int msgIdx = 0; msgIdx &lt; messageList.Count; msgIdx++)
+         {
+            Rectangle rectText = ((Message)messageList[msgIdx]).messagePosition;
+            rectText.Inflate(-6, -6);
+            DrawMessage(((Message)messageList[msgIdx]).message, rectText, ((Message)messageList[msgIdx]).messagePosition);
+         }
+      }
+
+      private static void OnBeforeExecuteRules()
+      {
+         for (int msgIdx = 0; msgIdx &lt; messageList.Count; msgIdx++)
+         {
+            Message msg = (Message)messageList[msgIdx];
+            int plr = msg.PlayerIndex-1;
+            if (plr &lt; 0)
+               plr = 0;
+            bool dismissButtonDown;
+            switch(msg.DismissButton)
+            {
+               case 1:
+                  dismissButtonDown = Project.GameWindow.Players[plr].Button1;
+                  break;
+               case 2:
+                  dismissButtonDown = Project.GameWindow.Players[plr].Button2;
+                  break;
+               case 3:
+                  dismissButtonDown = Project.GameWindow.Players[plr].Button3;
+                  break;
+               case 4:
+                  dismissButtonDown = Project.GameWindow.Players[plr].Button4;
+                  break;
+               default:
+                  continue;
+            }
+            if (dismissButtonDown)
+            {
+               if (msg.buttonState == 1)
+                  msg.buttonState = 2;
+            }
+            else
+            {
+               if (msg.buttonState == 2)
+                  messageList.RemoveAt(msgIdx);
+               else
+                  msg.buttonState = 1;
+            }
+         }
+      }
+
+      [Description("Map the input from the specified player (1-4) to the specified sprite only if no messages are waiting on the player for dismissal.")]
+      public static void MapPlayerToInputs(int PlayerNumber, SpriteBase Target)
+      {
+         System.Diagnostics.Debug.Assert(Target.isActive, "Attempted to execute Message.MapPlayerToInputs on an inactive sprite");
+         for (int msgIdx=0; msgIdx &lt; messageList.Count; msgIdx++)
+         {
+            int waitIdx = ((Message)messageList[msgIdx]).PlayerIndex;
+            if (waitIdx == PlayerNumber)
+               return;
+         }
+         Target.MapPlayerToInputs(PlayerNumber);
+      }
+
+      [Description("Add a message to the center of the display")]
+      public static void ShowMessage(string message, Options options)
+      {
+         messageList.Add(new Message(message, options));
+      }
+
+      [Description("Hide/close all messages")]
+      public static void HideMessages()
+      {
+         messageList.Clear();
+      }
+   }
+}
+</Text>
+  </SourceCode>
+  <Project DisplayMode="m640x480x24" Windowed="true" TitleText="Display pop-up messages" MaxPlayers="1" MaxViews="1" Credits="SGDK2 Engine: http://sgdk2.sf.net">
+    <Comments />
+  </Project>
+</ProjectDataset>

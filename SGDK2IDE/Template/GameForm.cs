@@ -22,6 +22,7 @@ public class GameForm : Form
    private DateTime m_frameStart;
    public System.IO.StringWriter debugText = new System.IO.StringWriter();
    private bool m_quit = false;
+   public IPlayer[] Players = new IPlayer[Project.MaxPlayers];
 
    #region Events
    public delegate void SimpleNotification();
@@ -33,6 +34,10 @@ public class GameForm : Form
    /// Event fires every frame that the game is advancing right before the scene is started
    /// </summary>
    public event SimpleNotification OnBeforeBeginScene;
+   /// <summary>
+   /// Event fires every frame that the game is advancing right before executing rules.
+   /// </summary>
+   public event SimpleNotification OnBeforeExecuteRules;
    /// <summary>
    /// Event fires every frame that the game is advancing while the scene is being
    /// generated, right before the overlay map is drawn.
@@ -51,7 +56,6 @@ public class GameForm : Form
    private System.Windows.Forms.MenuItem mnuFileExit;
    private System.Windows.Forms.MenuItem mnuTools;
    private System.Windows.Forms.MenuItem mnuToolsOptions;
-   public IPlayer[] Players = new IPlayer[Project.MaxPlayers];
    private System.Windows.Forms.MenuItem mnuHelp;
    private System.Windows.Forms.MenuItem mnuHelpAbout;
    #endregion
@@ -194,6 +198,8 @@ public class GameForm : Form
             if (keyboard != null)
                m_keyboardState = keyboard.GetCurrentKeyboardState();
             ReadControllers();
+            if (OnBeforeExecuteRules != null)
+               OnBeforeExecuteRules();
             CurrentMap.ExecuteRules();
             if (OnBeforeDrawOverlay != null)
                OnBeforeDrawOverlay();

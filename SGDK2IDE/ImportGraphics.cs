@@ -296,7 +296,7 @@ namespace SGDK2
 
       private void picImport_MouseUp(object sender, System.Windows.Forms.MouseEventArgs e)
       {
-         if (m_bIsDragging)
+         if ((m_bIsDragging) && (m_szDragSize.Width > 0) && (m_szDragSize.Height > 0))
          {
             Bitmap bmpClip = new Bitmap(m_szDragSize.Width, m_szDragSize.Height, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             for (int y = m_ptDragStart.Y; y < m_ptDragStart.Y + m_szDragSize.Height; y++)

@@ -115,6 +115,7 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
    private CoverWindow m_CoverWindow = null;
    private Sprite m_Sprite = null;
    private Font m_Font = null;
+   private Line m_Line = null;
    #endregion
 
    #region Initialization and clean-up
@@ -157,6 +158,11 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
          {
             m_Font.Dispose();
             m_Font = null;
+         }
+         if (m_Line != null)
+         {
+            m_Line.Dispose();
+            m_Line = null;
          }
          if (m_d3d != null)
          {
@@ -243,6 +249,11 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
             m_Font.Dispose();
             m_Font = null;
          }
+         if (m_Line != null)
+         {
+            m_Line.Dispose();
+            m_Line = null;
+         }
          if (m_d3d != null)
          {
             m_d3d.Dispose();
@@ -265,6 +276,11 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
          {
             m_Font.Dispose();
             m_Font = null;
+         }
+         if (m_Line != null)
+         {
+            m_Line.Dispose();
+            m_Line = null;
          }
          m_d3d.Reset(m_pp);
       }
@@ -367,6 +383,11 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
             {
                m_Font.Dispose();
                m_Font = null;
+            }
+            if (m_Line != null)
+            {
+               m_Line.Dispose();
+               m_Line = null;
             }
             if (m_d3d != null)
             {
@@ -546,6 +567,11 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
                m_Font.Dispose();
                m_Font = null;
             }
+            if (m_Line != null)
+            {
+               m_Line.Dispose();
+               m_Line = null;
+            }
             m_d3d.Reset(m_pp);
          }
       }
@@ -563,6 +589,11 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
       {
          m_Font.Dispose();
          m_Font = null;
+      }
+      if (m_Line != null)
+      {
+         m_Line.Dispose();
+         m_Line = null;
       }
       if (m_d3d != null)
          m_d3d.Dispose();
@@ -606,6 +637,16 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
             m_Font = new Microsoft.DirectX.Direct3D.Font(m_d3d, Font);
          }
          return m_Font;
+      }
+   }
+
+   public Line D3DLine
+   {
+      get
+      {
+         if ((m_Line == null) && (m_d3d != null))
+            m_Line = new Microsoft.DirectX.Direct3D.Line(m_d3d);
+         return m_Line;
       }
    }
    #endregion

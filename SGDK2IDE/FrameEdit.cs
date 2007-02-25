@@ -141,8 +141,12 @@ namespace SGDK2
       private System.Windows.Forms.StatusBarPanel sbpCellIndex;
       private System.Windows.Forms.StatusBarPanel sbpFrameIndex;
       private System.Windows.Forms.MainMenu mnuFrameset;
-      private System.Windows.Forms.MenuItem mnuTools;
       private System.Windows.Forms.MenuItem mnuFrameRemappingWizard;
+      private System.Windows.Forms.MenuItem mnuFramesetPop;
+      private System.Windows.Forms.MenuItem mnuDeleteFrames;
+      private System.Windows.Forms.MenuItem mnuLoadCell;
+      private System.Windows.Forms.MenuItem mnuAddCell;
+      private System.Windows.Forms.MenuItem mnuFramesetSeparator;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -286,8 +290,12 @@ namespace SGDK2
          this.ttFrameset = new System.Windows.Forms.ToolTip(this.components);
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.mnuFrameset = new System.Windows.Forms.MainMenu();
-         this.mnuTools = new System.Windows.Forms.MenuItem();
+         this.mnuFramesetPop = new System.Windows.Forms.MenuItem();
+         this.mnuDeleteFrames = new System.Windows.Forms.MenuItem();
          this.mnuFrameRemappingWizard = new System.Windows.Forms.MenuItem();
+         this.mnuLoadCell = new System.Windows.Forms.MenuItem();
+         this.mnuAddCell = new System.Windows.Forms.MenuItem();
+         this.mnuFramesetSeparator = new System.Windows.Forms.MenuItem();
          this.pnlFrameSet.SuspendLayout();
          this.pnlFrames.SuspendLayout();
          this.pnlFrameAction.SuspendLayout();
@@ -1111,21 +1119,51 @@ namespace SGDK2
          // mnuFrameset
          // 
          this.mnuFrameset.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                    this.mnuTools});
+                                                                                    this.mnuFramesetPop});
          // 
-         // mnuTools
+         // mnuFramesetPop
          // 
-         this.mnuTools.Index = 0;
-         this.mnuTools.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                 this.mnuFrameRemappingWizard});
-         this.mnuTools.MergeOrder = 3;
-         this.mnuTools.Text = "&Tools";
+         this.mnuFramesetPop.Index = 0;
+         this.mnuFramesetPop.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                       this.mnuLoadCell,
+                                                                                       this.mnuAddCell,
+                                                                                       this.mnuDeleteFrames,
+                                                                                       this.mnuFramesetSeparator,
+                                                                                       this.mnuFrameRemappingWizard});
+         this.mnuFramesetPop.MergeOrder = 2;
+         this.mnuFramesetPop.Text = "F&rameset";
+         // 
+         // mnuDeleteFrames
+         // 
+         this.mnuDeleteFrames.Index = 2;
+         this.mnuDeleteFrames.Shortcut = System.Windows.Forms.Shortcut.Del;
+         this.mnuDeleteFrames.Text = "&Delete Selected Frames";
+         this.mnuDeleteFrames.Click += new System.EventHandler(this.mnuDeleteFrames_Click);
          // 
          // mnuFrameRemappingWizard
          // 
-         this.mnuFrameRemappingWizard.Index = 0;
+         this.mnuFrameRemappingWizard.Index = 4;
          this.mnuFrameRemappingWizard.Text = "&Frame Remapping Wizard...";
          this.mnuFrameRemappingWizard.Click += new System.EventHandler(this.mnuFrameRemappingWizard_Click);
+         // 
+         // mnuLoadCell
+         // 
+         this.mnuLoadCell.Index = 0;
+         this.mnuLoadCell.Shortcut = System.Windows.Forms.Shortcut.CtrlL;
+         this.mnuLoadCell.Text = "&Load Selected Cell into Editor";
+         this.mnuLoadCell.Click += new System.EventHandler(this.btnLoadGCell_Click);
+         // 
+         // mnuAddCell
+         // 
+         this.mnuAddCell.Index = 1;
+         this.mnuAddCell.Shortcut = System.Windows.Forms.Shortcut.CtrlA;
+         this.mnuAddCell.Text = "&Add Selected Cell to Frameset";
+         this.mnuAddCell.Click += new System.EventHandler(this.btnAddFrame_Click);
+         // 
+         // mnuFramesetSeparator
+         // 
+         this.mnuFramesetSeparator.Index = 3;
+         this.mnuFramesetSeparator.Text = "-";
          // 
          // frmFrameEdit
          // 
@@ -1428,6 +1466,44 @@ namespace SGDK2
       {
          using (frmFrameRemappingWizard frm = new frmFrameRemappingWizard(FrameBrowser.Frameset))
             frm.ShowDialog();
+      }
+      private void DeleteSelectedFrames()
+      {
+         ProjectDataset.FrameRow[] deleteFrames = FrameBrowser.GetSelectedFrames();
+
+         if (deleteFrames.Length == 0)
+         {
+            MessageBox.Show(this, "Select frames to delete first.", "Delete Selected Frames", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
+
+         int newCount = (FrameBrowser.Frameset.GetFrameRows().Length - deleteFrames.Length);
+
+         System.Data.DataRow[] errors = ProjectData.SpriteFrame.Select(
+            "Parent.FramesetName='" + FrameBrowser.Frameset.Name + "' and FrameValue>="
+            + newCount.ToString(), string.Empty, DataViewRowState.CurrentRows);
+         if (errors.Length > 0)
+         {
+            ProjectDataset.SpriteFrameRow errMsgRow = (ProjectDataset.SpriteFrameRow)errors[0];
+            MessageBox.Show(this, "Deleting the selected frames would cause one or more sprites to reference frame indexes beyond the bounds of this frameset.  Remove frames from state \"" + errMsgRow.SpriteStateRowParent.Name + "\" of sprite definition \"" + errMsgRow.SpriteStateRowParent.SpriteDefinitionRow.Name + "\" and any other sprite states that may be affected before deleting these frames.", "Delete Frameset Frames", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
+
+         errors = ProjectData.Tile.Select(
+            "Parent(TilesetTile).Frameset='" + FrameBrowser.Frameset.Name + "' and Max(Child(TileTileFrame).FrameValue)>="
+            + newCount.ToString(), string.Empty, DataViewRowState.CurrentRows);
+         if (errors.Length > 0)
+         {
+            ProjectDataset.TileRow errMsgRow = (ProjectDataset.TileRow)errors[0];
+            MessageBox.Show(this, "Deleting the selected frames would cause one or more tile mappings to reference frame indexes beyond the bounds of this frameset.  Remove frames from tile number " + errMsgRow.TileValue.ToString() + " of tileset \"" + errMsgRow.TilesetRow.Name + "\" and any other tiles that may be affeted before deleting these frames.", "Delete Frameset Frames", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
+
+         if (DialogResult.Yes != MessageBox.Show(this, "Are you sure you want to delete " + deleteFrames.Length.ToString() + " frames?", "Delete Selected Frames", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
+            return;
+
+         foreach (ProjectDataset.FrameRow fr in deleteFrames)
+            ProjectData.DeleteFrame(fr);
       }
       #endregion
 
@@ -1977,6 +2053,7 @@ namespace SGDK2
                   CellBrowser.GraphicSheet.Name, nIdx, 1f, 0f, 0f, 1f, 0f, 0f, -1);
             }
          }
+         FrameBrowser.Invalidate();
       }
 
       private void btnLoadGCell_Click(object sender, System.EventArgs e)
@@ -2011,31 +2088,7 @@ namespace SGDK2
 
       private void btnDeleteFrame_Click(object sender, System.EventArgs e)
       {
-         ProjectDataset.FrameRow[] deleteFrames = FrameBrowser.GetSelectedFrames();
-         int newCount = (FrameBrowser.Frameset.GetFrameRows().Length - deleteFrames.Length);
-
-         System.Data.DataRow[] errors = ProjectData.SpriteFrame.Select(
-            "Parent.FramesetName='" + FrameBrowser.Frameset.Name + "' and FrameValue>="
-            + newCount.ToString(), string.Empty, DataViewRowState.CurrentRows);
-         if (errors.Length > 0)
-         {
-            ProjectDataset.SpriteFrameRow errMsgRow = (ProjectDataset.SpriteFrameRow)errors[0];
-            MessageBox.Show(this, "Deleting the selected frames would cause one or more sprites to reference frame indexes beyond the bounds of this frameset.  Remove frames from state \"" + errMsgRow.SpriteStateRowParent.Name + "\" of sprite definition \"" + errMsgRow.SpriteStateRowParent.SpriteDefinitionRow.Name + "\" and any other sprite states that may be affected before deleting these frames.", "Delete Frameset Frames", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            return;
-         }
-
-         errors = ProjectData.Tile.Select(
-            "Parent(TilesetTile).Frameset='" + FrameBrowser.Frameset.Name + "' and Max(Child(TileTileFrame).FrameValue)>="
-            + newCount.ToString(), string.Empty, DataViewRowState.CurrentRows);
-         if (errors.Length > 0)
-         {
-            ProjectDataset.TileRow errMsgRow = (ProjectDataset.TileRow)errors[0];
-            MessageBox.Show(this, "Deleting the selected frames would cause one or more tile mappings to reference frame indexes beyond the bounds of this frameset.  Remove frames from tile number " + errMsgRow.TileValue.ToString() + " of tileset \"" + errMsgRow.TilesetRow.Name + "\" and any other tiles that may be affeted before deleting these frames.", "Delete Frameset Frames", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            return;
-         }
-
-         foreach (ProjectDataset.FrameRow fr in FrameBrowser.GetSelectedFrames())
-            ProjectData.DeleteFrame(fr);
+         DeleteSelectedFrames();
       }
 
       private void pnlTransform_Resize(object sender, System.EventArgs e)
@@ -2090,6 +2143,11 @@ namespace SGDK2
       private void mnuFrameRemappingWizard_Click(object sender, System.EventArgs e)
       {
          LaunchFrameRemappingWizard();
+      }
+
+      private void mnuDeleteFrames_Click(object sender, System.EventArgs e)
+      {
+         DeleteSelectedFrames();
       }
       #endregion
    }

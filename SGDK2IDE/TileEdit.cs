@@ -64,6 +64,7 @@ namespace SGDK2
       private System.Windows.Forms.StatusBarPanel sbpTileFrame;
       private System.Windows.Forms.StatusBarPanel sbpTileCell;
       private System.Windows.Forms.ToolBarButton tbbPreview;
+      private System.Windows.Forms.MenuItem mnuDeleteFrames;
       private DataChangeNotifier dataMonitor;
       #endregion
 
@@ -158,6 +159,7 @@ namespace SGDK2
          this.tbMappedTiles = new System.Windows.Forms.ToolBar();
          this.tbbNewTile = new System.Windows.Forms.ToolBarButton();
          this.tbbDeleteTile = new System.Windows.Forms.ToolBarButton();
+         this.tbbPreview = new System.Windows.Forms.ToolBarButton();
          this.imlTileset = new System.Windows.Forms.ImageList(this.components);
          this.cboMappedTiles = new System.Windows.Forms.ComboBox();
          this.lblCustomizeTile = new System.Windows.Forms.Label();
@@ -190,7 +192,7 @@ namespace SGDK2
          this.sbpFrameIndex = new System.Windows.Forms.StatusBarPanel();
          this.sbpCellIndex = new System.Windows.Forms.StatusBarPanel();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
-         this.tbbPreview = new System.Windows.Forms.ToolBarButton();
+         this.mnuDeleteFrames = new System.Windows.Forms.MenuItem();
          this.pnlTileHeader.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.nudTileHeight)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.nudTileWidth)).BeginInit();
@@ -362,6 +364,11 @@ namespace SGDK2
          this.tbbDeleteTile.ImageIndex = 1;
          this.tbbDeleteTile.ToolTipText = "Delete the current custom tile mapping.";
          // 
+         // tbbPreview
+         // 
+         this.tbbPreview.ImageIndex = 2;
+         this.tbbPreview.ToolTipText = "Preview animation";
+         // 
          // imlTileset
          // 
          this.imlTileset.ImageSize = new System.Drawing.Size(15, 15);
@@ -408,7 +415,8 @@ namespace SGDK2
          this.mnuInsert.Index = 0;
          this.mnuInsert.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
                                                                                   this.mnuInsertNewTile,
-                                                                                  this.mnuDeleteTile});
+                                                                                  this.mnuDeleteTile,
+                                                                                  this.mnuDeleteFrames});
          this.mnuInsert.MergeOrder = 2;
          this.mnuInsert.Text = "&Tileset";
          // 
@@ -674,10 +682,12 @@ namespace SGDK2
          this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
          this.dataMonitor.CounterRowChanged += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowChanged);
          // 
-         // tbbPreview
+         // mnuDeleteFrames
          // 
-         this.tbbPreview.ImageIndex = 2;
-         this.tbbPreview.ToolTipText = "Preview animation";
+         this.mnuDeleteFrames.Index = 2;
+         this.mnuDeleteFrames.Shortcut = System.Windows.Forms.Shortcut.Del;
+         this.mnuDeleteFrames.Text = "Delete Selected &Frames";
+         this.mnuDeleteFrames.Click += new System.EventHandler(this.mnuDeleteFrames_Click);
          // 
          // frmTileEdit
          // 
@@ -738,6 +748,39 @@ namespace SGDK2
             throw new ApplicationException("Please select a Tile first");
 
          return m_Tile;
+      }
+      private void DeleteSelectedFrames()
+      {
+         int count;
+         if ((count = TileFrames.GetSelectedCellCount()) <= 0)
+         {
+            MessageBox.Show(this, "Select which frames should be deleted from the current tile first.", "Delete Selected Frames", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
+
+         if (DialogResult.Yes != MessageBox.Show(
+            "Are you sure you want to delete " +
+            TileFrames.GetSelectedCellCount().ToString() + " frames?",
+            "Delete Tile Frames", MessageBoxButtons.YesNo,
+            MessageBoxIcon.Question,
+            MessageBoxDefaultButton.Button2))
+            return;
+
+         FrameList DeleteFrames = new FrameList();
+
+         for (int nIdx = 0; nIdx < TileFrames.FramesToDisplay.Count; nIdx++)
+         {
+            if (TileFrames.Selected[nIdx])
+               DeleteFrames.Add((TileFrame)(TileFrames.FramesToDisplay[nIdx]));
+         }
+
+         foreach (TileFrame tf in DeleteFrames)
+         {
+            ProjectData.DeleteTileFrame(tf.Row);
+            TileFrames.FramesToDisplay.Remove(tf);
+         }
+
+         TileFrames.Invalidate();
       }
       #endregion
 
@@ -1086,29 +1129,7 @@ namespace SGDK2
 
       private void btnDeleteFrame_Click(object sender, System.EventArgs e)
       {
-         if (DialogResult.Yes != MessageBox.Show(
-            "Are you sure you want to delete " +
-            TileFrames.GetSelectedCellCount().ToString() + " frames?",
-            "Delete Tile Frames", MessageBoxButtons.YesNo,
-            MessageBoxIcon.Question,
-            MessageBoxDefaultButton.Button2))
-            return;
-
-         FrameList DeleteFrames = new FrameList();
-
-         for (int nIdx = 0; nIdx < TileFrames.FramesToDisplay.Count; nIdx++)
-         {
-            if (TileFrames.Selected[nIdx])
-               DeleteFrames.Add((TileFrame)(TileFrames.FramesToDisplay[nIdx]));
-         }
-
-         foreach (TileFrame tf in DeleteFrames)
-         {
-            ProjectData.DeleteTileFrame(tf.Row);
-            TileFrames.FramesToDisplay.Remove(tf);
-         }
-
-         TileFrames.Invalidate();
+         DeleteSelectedFrames();
       }
 
       private void TileFrames_CurrentCellChanged(object sender, System.EventArgs e)
@@ -1207,6 +1228,11 @@ namespace SGDK2
             sbpFrameIndex.Text = "#" + row.FrameValue.ToString();
             sbpCellIndex.Text = "#" + row.CellIndex.ToString() + " (" + row.GraphicSheet + ")";
          }
+      }
+
+      private void mnuDeleteFrames_Click(object sender, System.EventArgs e)
+      {
+         DeleteSelectedFrames();
       }
       #endregion
 

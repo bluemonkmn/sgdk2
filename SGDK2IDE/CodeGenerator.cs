@@ -331,6 +331,10 @@ namespace SGDK2
             GenerateAssemblyInfo(txt);
             txt.Close();
 
+            txt = new System.IO.StreamWriter(GetVSProjectFile(FolderName));
+            GenerateVSProject(txt);
+            txt.Close();
+
             GenerateProjectSourceCode(FolderName, err);
             GenerateEmbeddedResources(FolderName);
          }
@@ -438,6 +442,11 @@ namespace SGDK2
                fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(drCode.Name)));
          }
          return (string[])(fileList.ToArray(typeof(string)));
+      }
+
+      public string GetVSProjectFile(string FolderName)
+      {
+         return System.IO.Path.Combine(FolderName, System.IO.Path.GetFileNameWithoutExtension(SGDK2IDE.CurrentProjectFile) + ".csproj");
       }
 
       public string[] GenerateCodeStrings()
@@ -2701,6 +2710,145 @@ namespace SGDK2
          }
 
          Generator.GenerateCodeFromCompileUnit(attributes, txt, GeneratorOptions);
+      }
+
+      public void GenerateVSProject(System.IO.TextWriter txt)
+      {
+         System.Xml.XmlDocument xml = new System.Xml.XmlDocument();
+         System.Xml.XmlElement root = xml.CreateElement("VisualStudioProject");
+         xml.AppendChild(root);
+         System.Xml.XmlElement csharp = xml.CreateElement("CSHARP");
+         root.AppendChild(csharp);
+         csharp.SetAttribute("ProjectType","Local");
+         csharp.SetAttribute("ProductVersion", "7.10.3077");
+         csharp.SetAttribute("SchemaVersion","2.0");
+         System.Xml.XmlElement build = xml.CreateElement("Build");
+         csharp.AppendChild(build);
+         System.Xml.XmlElement settings = xml.CreateElement("Settings");
+         build.AppendChild(settings);
+         if (SGDK2IDE.CurrentProjectFile != null)
+            settings.SetAttribute("AssemblyName", System.IO.Path.GetFileNameWithoutExtension(SGDK2IDE.CurrentProjectFile));
+         settings.SetAttribute("OutputType", "WinExe");
+         System.Xml.XmlElement configD = xml.CreateElement("Config");
+         System.Xml.XmlElement configR = xml.CreateElement("Config");
+         settings.AppendChild(configD);
+         settings.AppendChild(configR);
+         configD.SetAttribute("Name", "Debug");
+         configR.SetAttribute("Name", "Release");
+         configD.SetAttribute("AllowUnsafeBlocks", "false");
+         configR.SetAttribute("AllowUnsafeBlocks", "false");
+         //configD["BaseAddress"] = configR["BaseAddress"] = 
+         configD.SetAttribute("CheckForOverflowUnderflow", "false");
+         configR.SetAttribute("CheckforOverflowUnderflow", "false");
+         configD.SetAttribute("DebugSymbols", "true");
+         configR.SetAttribute("DebugSymbols", "false");
+         configD.SetAttribute("DefineConstants", "DEBUG");
+         configD.SetAttribute("FileAlignment", "4096");
+         configR.SetAttribute("FileAlignment", "4096");
+         configD.SetAttribute("IncrementalBuild", "false");
+         configR.SetAttribute("IncrementalBuild", "false");
+         configD.SetAttribute("NoStdLib", "false");
+         configR.SetAttribute("NoStdLib", "false");
+         configD.SetAttribute("Optimize", "false");
+         configR.SetAttribute("Optimize", "true");
+         configD.SetAttribute("OutputPath", ".\\");
+         configR.SetAttribute("OutputPath", ".\\");
+         configD.SetAttribute("RegisterForComInterop", "false");
+         configR.SetAttribute("RegisterForComInterop", "false");
+         configD.SetAttribute("RemoveIntegerChecks", "false");
+         configR.SetAttribute("RemoveIntegerChecks", "false");
+         configD.SetAttribute("TreatWarningsAsErrors", "false");
+         configR.SetAttribute("TreatWarningsAsErrors", "false");
+         configD.SetAttribute("WarningLevel", "1");
+         configR.SetAttribute("WarningLevel", "1");
+         System.Xml.XmlElement references = xml.CreateElement("References");
+         System.Reflection.Assembly[] refAssys = AppDomain.CurrentDomain.GetAssemblies();
+         foreach(string refName in new string[]
+            {
+               "microsoft.directx",
+               "microsoft.directx.direct3d",
+               "microsoft.directx.direct3dx",
+               "microsoft.directx.directinput",
+               "System.Drawing",
+               "System.Windows.Forms",
+               "System"
+            })
+         {
+            build.AppendChild(references);
+            System.Xml.XmlElement reference = xml.CreateElement("Reference");
+            references.AppendChild(reference);
+            reference.SetAttribute("Name", refName);
+            reference.SetAttribute("AssemblyName", refName);
+            if (refName.StartsWith("microsoft.directx"))
+            {
+               foreach(System.Reflection.Assembly refAssy in refAssys)
+               {
+                  if (string.Compare(refAssy.GetName().Name,refName,true)==0)
+                  {
+                     Microsoft.Win32.RegistryKey dn = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\.NETFramework\AssemblyFolders\DX_" + refAssy.GetName().Version, false);
+                     if (dn != null)
+                     {
+                        reference.SetAttribute("AssemblyFolderKey", @"hklm\dn\dx_" + refAssy.GetName().Version);
+                        dn.Close();
+                     }
+                     break;
+                  }
+               }
+            }
+         }
+         foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
+         {
+            ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
+            if (drCode.Name.EndsWith(".dll") && !IsOldDll(FindFullPath(drCode.Name)))
+            {
+               System.Reflection.Assembly refAssy = System.Reflection.Assembly.LoadWithPartialName(System.IO.Path.GetFileNameWithoutExtension(drCode.Name));
+               if (refAssy != null)
+               {
+                  System.Xml.XmlElement reference = xml.CreateElement("Reference");
+                  references.AppendChild(reference);
+                  reference.SetAttribute("Name", System.IO.Path.GetFileNameWithoutExtension(drCode.Name));
+                  reference.SetAttribute("AssemblyName", System.IO.Path.GetFileNameWithoutExtension(drCode.Name));
+                  references.SetAttribute("HintPath", refAssy.GetModules(false)[0].FullyQualifiedName);
+               }
+            }
+         }
+
+         System.Xml.XmlElement files = xml.CreateElement("Files");
+         csharp.AppendChild(files);
+         System.Xml.XmlElement include = xml.CreateElement("Include");
+         files.AppendChild(include);
+
+         int filePos = SGDK2IDE.CurrentProjectFile.IndexOf(System.IO.Path.GetFileName(SGDK2IDE.CurrentProjectFile));
+         foreach(string filename in GetCodeFileList(System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile)))
+         {
+            System.Xml.XmlElement file = xml.CreateElement("File");
+            include.AppendChild(file);
+            file.SetAttribute("RelPath", filename.Substring(filePos));
+            file.SetAttribute("SubType", "Code");
+            file.SetAttribute("BuildAction", "Compile");
+         }
+
+         foreach(string filename in GetEmbeddedResourceList(System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile)))
+         {
+            System.Xml.XmlElement file = xml.CreateElement("File");
+            include.AppendChild(file);
+            file.SetAttribute("RelPath", filename.Substring(filePos));
+            file.SetAttribute("BuildAction", "EmbeddedResource");
+         }
+
+         foreach(string resx in GetResourcesFileList(System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile)))
+         {
+            System.Xml.XmlElement file = xml.CreateElement("File");
+            include.AppendChild(file);
+            file.SetAttribute("RelPath", resx.Substring(filePos));
+            file.SetAttribute("BuildAction", "EmbeddedResource");
+         }
+
+         System.Xml.XmlTextWriter xw = new System.Xml.XmlTextWriter(txt);
+         xw.Indentation = 2;
+         xw.IndentChar = ' ';
+         xw.Formatting = System.Xml.Formatting.Indented;
+         xml.WriteContentTo(xw);
       }
       #endregion
 

@@ -194,6 +194,14 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
       }
    }
 
+   public bool IsFlags
+   {
+      get
+      {
+         return reflectType.GetCustomAttributes(typeof(System.FlagsAttribute), false).Length > 0;
+      }
+   }
+
    public string[] GetEnumVals()
    {
       string[] result = System.Enum.GetNames(reflectType);

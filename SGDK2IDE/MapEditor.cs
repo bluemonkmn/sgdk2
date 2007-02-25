@@ -1954,6 +1954,7 @@ namespace SGDK2
             {
                sfc.ReleaseGraphics();
             }
+
             MapDisplay.Device.Present();
          }
          catch(System.Exception ex)

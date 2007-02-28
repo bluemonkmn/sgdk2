@@ -275,12 +275,8 @@ namespace SGDK2
             if (!System.IO.Directory.Exists(FolderName))
                System.IO.Directory.CreateDirectory(FolderName);
 
-            txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, ProjectClass + ".cs"));
-            GenerateMainCode(txt, err);
-            txt.Close();
-
             txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, ProjectClass + ".resx"));
-            GenerateResx(txt);
+            GenerateProjectResx(txt, err);
             txt.Close();
 
             txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, CounterClass + ".cs"));
@@ -360,7 +356,6 @@ namespace SGDK2
 
          fileList.AddRange(new string[]
             {
-               System.IO.Path.Combine(FolderName, ProjectClass + ".cs"),
                System.IO.Path.Combine(FolderName, CounterClass + ".cs"),
                System.IO.Path.Combine(FolderName, FramesetClass + ".cs"),
                System.IO.Path.Combine(FolderName, TilesetClass + ".cs"),
@@ -462,7 +457,6 @@ namespace SGDK2
          System.IO.TextWriter err = new System.IO.StringWriter();
          System.IO.StringWriter txt = new System.IO.StringWriter();
 
-         GenerateMainCode(txt, err);
          txt.Close();
          result.Add(txt.ToString());
 
@@ -587,102 +581,25 @@ namespace SGDK2
       #endregion
 
       #region File Level Code Generation
-      public void GenerateMainCode(System.IO.TextWriter txt, System.IO.TextWriter err)
-      {
-         CodeTypeDeclaration typ = new CodeTypeDeclaration(ProjectClass);
-         CodeMemberField resDecl = new CodeMemberField(typeof(System.Resources.ResourceManager), ResourcesField);
-         resDecl.Attributes |= MemberAttributes.Static;
-         typ.Members.Add(resDecl);
-         CodeEntryPointMethod main = new CodeEntryPointMethod();
-         typ.Members.Add(main);
-
-         CodeTryCatchFinallyStatement tryBlock = new CodeTryCatchFinallyStatement();
-
-         CodeFieldReferenceExpression resRef = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(ProjectClass), ResourcesField);
-         CodeObjectCreateExpression createResources = new CodeObjectCreateExpression(typeof(System.Resources.ResourceManager), new CodeTypeOfExpression(ProjectClass));
-         CodeAssignStatement assign = new CodeAssignStatement(resRef, createResources);
-         tryBlock.TryStatements.Add(assign);
-
-         ProjectDataset.ProjectRow prj = ProjectData.ProjectRow;
-         CodeMemberField declareGame = new CodeMemberField(GameFormType, "game");
-         declareGame.Attributes = MemberAttributes.Private | MemberAttributes.Final | MemberAttributes.Static;
-         typ.Members.Add(declareGame);
-         CodeExpression overlay = new CodePrimitiveExpression(null);
-         if ((prj.OverlayMap != null) && !System.Convert.IsDBNull(prj.OverlayMap) && prj.OverlayMap.Length > 0)
-            overlay = new CodeTypeOfExpression(NameToMapClass(prj.OverlayMap));
-         if ((prj.StartMap == null) || (prj.StartMap.Length == 0))
-            err.WriteLine("Startup map has not been specified in the project settings");
-         tryBlock.TryStatements.Add(new CodeAssignStatement(
-            new CodeFieldReferenceExpression(
-            new CodeTypeReferenceExpression(typ.Name), declareGame.Name),
-            new CodeObjectCreateExpression(GameFormType,
-            new CodeFieldReferenceExpression(
-            new CodeTypeReferenceExpression("GameDisplayMode"), prj.DisplayMode),
-            new CodePrimitiveExpression(prj.Windowed),
-            new CodePrimitiveExpression(prj.TitleText),
-            ((prj.StartMap != null) && (prj.StartMap.Length > 0)) ?
-            (CodeExpression)new CodeTypeOfExpression(NameToMapClass(prj.StartMap)):(CodeExpression)new CodePrimitiveExpression(null),
-            overlay)));
-         tryBlock.TryStatements.Add(new CodeMethodInvokeExpression(
-            new CodeVariableReferenceExpression(declareGame.Name), "Show"));
-         tryBlock.TryStatements.Add(new CodeMethodInvokeExpression(
-            new CodeVariableReferenceExpression(declareGame.Name), "Run"));
-
-         tryBlock.CatchClauses.Add(new CodeCatchClause(
-            "ex", new CodeTypeReference(typeof(System.Exception)),
-            new CodeExpressionStatement(
-            new CodeMethodInvokeExpression(
-            new CodeTypeReferenceExpression(GameFormType),
-            "HandleException",
-            new CodeVariableReferenceExpression("ex")))));
-
-         main.Statements.Add(tryBlock);
-
-         CodeMemberProperty prpRes = new CodeMemberProperty();
-         prpRes.HasSet = false;
-         prpRes.HasGet = true;
-         prpRes.Name = "Resources";
-         prpRes.Attributes = MemberAttributes.Final | MemberAttributes.Public | MemberAttributes.Static;
-         prpRes.Type = new CodeTypeReference(typeof(System.Resources.ResourceManager));
-         prpRes.GetStatements.Add(new CodeMethodReturnStatement(new CodeVariableReferenceExpression(ResourcesField)));
-         typ.Members.Add(prpRes);
-
-         CodeMemberProperty prpGame = new CodeMemberProperty();
-         prpGame.HasSet = false;
-         prpGame.HasGet = true;
-         prpGame.Name = GameFormInstance;
-         prpGame.Attributes = MemberAttributes.Final | MemberAttributes.Public | MemberAttributes.Static;
-         prpGame.Type = new CodeTypeReference(GameFormType);
-         prpGame.GetStatements.Add(new CodeMethodReturnStatement(
-            new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typ.Name), "game")));
-         typ.Members.Add(prpGame);
-
-         CodeMemberField constMaxPlayers = new CodeMemberField(typeof(byte), "MaxPlayers");
-         constMaxPlayers.Attributes = MemberAttributes.Const | MemberAttributes.Public;
-         constMaxPlayers.InitExpression = new CodePrimitiveExpression(ProjectData.ProjectRow.MaxPlayers);
-         typ.Members.Add(constMaxPlayers);
-
-         CodeMemberField constMaxViews = new CodeMemberField(typeof(byte), "MaxViews");
-         constMaxViews.Attributes = MemberAttributes.Const | MemberAttributes.Public;
-         constMaxViews.InitExpression = new CodePrimitiveExpression(ProjectData.ProjectRow.MaxViews);
-         typ.Members.Add(constMaxViews);
-
-         CodeMemberField constCredits = new CodeMemberField(typeof(string), "GameCredits");
-         constCredits.Attributes = MemberAttributes.Const | MemberAttributes.Public;
-         if (!ProjectData.ProjectRow.IsCreditsNull())
-            constCredits.InitExpression = new CodePrimitiveExpression(ProjectData.ProjectRow.Credits);
-         else
-            constCredits.InitExpression = new CodePrimitiveExpression(String.Empty);
-         typ.Members.Add(constCredits);
-
-         Generator.GenerateCodeFromType(typ, txt, GeneratorOptions);
-      }
-
-      public void GenerateResx(System.IO.TextWriter txt)
+      public void GenerateProjectResx(System.IO.TextWriter txt, System.IO.TextWriter err)
       {
          System.Resources.ResXResourceWriter w = new System.Resources.ResXResourceWriter(txt);
          try
          {
+            ProjectDataset.ProjectRow prj = ProjectData.ProjectRow;
+            w.AddResource("_MaxPlayers", prj.MaxPlayers.ToString());
+            w.AddResource("_MaxViews", prj.MaxViews.ToString());
+            w.AddResource("_GameCredits", prj.Credits);
+            w.AddResource("_DisplayMode", prj.DisplayMode);
+            w.AddResource("_Windowed", prj.Windowed.ToString());
+            w.AddResource("_WindowTitle", prj.TitleText.ToString());
+            if ((prj.StartMap == null) || (prj.StartMap.Length == 0))
+               err.WriteLine("Startup map has not been specified in the project settings");
+            else
+               w.AddResource("_StartupMapType", prj.StartMap);
+            if ((prj.OverlayMap != null) && (prj.OverlayMap.Length > 0))
+               w.AddResource("_OverlayMapType", prj.OverlayMap);
+
             foreach(System.Data.DataRowView drv in ProjectData.GraphicSheet.DefaultView)
             {
                ProjectDataset.GraphicSheetRow drGfx = (ProjectDataset.GraphicSheetRow)drv.Row;

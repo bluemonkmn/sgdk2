@@ -771,6 +771,11 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "Template\Project.cs"
+                    SubType = "Code"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "Template\SpriteBase.cs"
                     SubType = "Code"
                     BuildAction = "EmbeddedResource"

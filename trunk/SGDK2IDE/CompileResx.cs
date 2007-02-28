@@ -135,6 +135,9 @@ class CompileResx
          rd = new System.Resources.ResXResourceReader("AnimPreview.resx");
          WriteResources(rd,"SGDK2.frmAnimPreview.resources");
          rd.Close();
+         rd = new System.Resources.ResXResourceReader("SpecifyFlags.resx");
+         WriteResources(rd,"SGDK2.frmSpecifyFlags.resources");
+         rd.Close();
       }
       public static void WriteResources(System.Resources.ResXResourceReader rd, string sFile)
       {

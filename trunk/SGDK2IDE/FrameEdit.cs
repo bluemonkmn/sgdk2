@@ -62,6 +62,7 @@ namespace SGDK2
       short m_nCurrentCellIndex = -1;
       Point m_ptCenter = Point.Empty;
       System.Data.DataRow m_FrameEditorSource = null;
+      bool editingFrame = false;
       #endregion
 
       #region Windows Form Designer Components
@@ -152,6 +153,11 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuXCounter90;
       private System.Windows.Forms.MenuItem mnuXCounter90Origin;
       private System.Windows.Forms.MenuItem mnuXCounter90Center;
+      private System.Windows.Forms.MenuItem mnuTransformCustom;
+      private System.Windows.Forms.MenuItem mnuXReset;
+      private System.Windows.Forms.MenuItem mnuReset;
+      private System.Windows.Forms.MenuItem mnuEditGraphicCell;
+      private System.Windows.Forms.MenuItem mnuFsEditGraphicCell;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -242,6 +248,8 @@ namespace SGDK2
          this.mnuCounter90 = new System.Windows.Forms.MenuItem();
          this.mnuCounter90Origin = new System.Windows.Forms.MenuItem();
          this.mnuCounter90Center = new System.Windows.Forms.MenuItem();
+         this.mnuReset = new System.Windows.Forms.MenuItem();
+         this.mnuEditGraphicCell = new System.Windows.Forms.MenuItem();
          this.FrameSplitter = new System.Windows.Forms.Splitter();
          this.pnlFrameAction = new System.Windows.Forms.Panel();
          this.txtFramesetName = new System.Windows.Forms.TextBox();
@@ -278,12 +286,6 @@ namespace SGDK2
          this.mnuFramesetPop = new System.Windows.Forms.MenuItem();
          this.mnuAddCell = new System.Windows.Forms.MenuItem();
          this.mnuDeleteFrames = new System.Windows.Forms.MenuItem();
-         this.mnuFramesetSeparator = new System.Windows.Forms.MenuItem();
-         this.mnuFrameRemappingWizard = new System.Windows.Forms.MenuItem();
-         this.tabFrameset = new System.Windows.Forms.TabControl();
-         this.tpgFrameset = new System.Windows.Forms.TabPage();
-         this.splitterGraphics = new System.Windows.Forms.Splitter();
-         this.tpgFrameEditor = new System.Windows.Forms.TabPage();
          this.mnuFramesetTransform = new System.Windows.Forms.MenuItem();
          this.mnuXHFlip = new System.Windows.Forms.MenuItem();
          this.mnuXHFlipOrigin = new System.Windows.Forms.MenuItem();
@@ -305,6 +307,15 @@ namespace SGDK2
          this.mnuXCounter90 = new System.Windows.Forms.MenuItem();
          this.mnuXCounter90Origin = new System.Windows.Forms.MenuItem();
          this.mnuXCounter90Center = new System.Windows.Forms.MenuItem();
+         this.mnuTransformCustom = new System.Windows.Forms.MenuItem();
+         this.mnuXReset = new System.Windows.Forms.MenuItem();
+         this.mnuFramesetSeparator = new System.Windows.Forms.MenuItem();
+         this.mnuFrameRemappingWizard = new System.Windows.Forms.MenuItem();
+         this.mnuFsEditGraphicCell = new System.Windows.Forms.MenuItem();
+         this.tabFrameset = new System.Windows.Forms.TabControl();
+         this.tpgFrameset = new System.Windows.Forms.TabPage();
+         this.splitterGraphics = new System.Windows.Forms.Splitter();
+         this.tpgFrameEditor = new System.Windows.Forms.TabPage();
          this.pnlFrames.SuspendLayout();
          this.pnlFrameAction.SuspendLayout();
          this.pnlTransform.SuspendLayout();
@@ -350,8 +361,10 @@ namespace SGDK2
          this.FrameBrowser.SheetImage = null;
          this.FrameBrowser.Size = new System.Drawing.Size(235, 218);
          this.FrameBrowser.TabIndex = 6;
+         this.FrameBrowser.Resize += new System.EventHandler(this.FrameBrowser_Resize);
          this.FrameBrowser.CurrentCellChanged += new System.EventHandler(this.FrameBrowser_CurrentCellChanged);
          this.FrameBrowser.DragDrop += new System.Windows.Forms.DragEventHandler(this.FrameBrowser_DragDrop);
+         this.FrameBrowser.DoubleClick += new System.EventHandler(this.FrameBrowser_DoubleClick);
          this.FrameBrowser.DragOver += new System.Windows.Forms.DragEventHandler(this.FrameBrowser_DragOver);
          // 
          // mnuContext
@@ -368,7 +381,9 @@ namespace SGDK2
                                                                                    this.mnuUpHalf,
                                                                                    this.mnuDownHalf,
                                                                                    this.mnuClockwise90,
-                                                                                   this.mnuCounter90});
+                                                                                   this.mnuCounter90,
+                                                                                   this.mnuReset,
+                                                                                   this.mnuEditGraphicCell});
          // 
          // mnuHFlip
          // 
@@ -498,6 +513,18 @@ namespace SGDK2
          this.mnuCounter90Center.Text = "Around center";
          this.mnuCounter90Center.Click += new System.EventHandler(this.mnuContextItem_Click);
          // 
+         // mnuReset
+         // 
+         this.mnuReset.Index = 12;
+         this.mnuReset.Text = "Reset";
+         this.mnuReset.Click += new System.EventHandler(this.mnuContextItem_Click);
+         // 
+         // mnuEditGraphicCell
+         // 
+         this.mnuEditGraphicCell.Index = 13;
+         this.mnuEditGraphicCell.Text = "Edit &Graphic Cell...";
+         this.mnuEditGraphicCell.Click += new System.EventHandler(this.mnuGraphicEditor_Click);
+         // 
          // FrameSplitter
          // 
          this.FrameSplitter.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -604,7 +631,7 @@ namespace SGDK2
          this.btnCancel.Location = new System.Drawing.Point(368, 40);
          this.btnCancel.Name = "btnCancel";
          this.btnCancel.Size = new System.Drawing.Size(72, 24);
-         this.btnCancel.TabIndex = 14;
+         this.btnCancel.TabIndex = 13;
          this.btnCancel.Text = "Cancel";
          this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
          // 
@@ -728,7 +755,7 @@ namespace SGDK2
          this.btnOK.Location = new System.Drawing.Point(368, 8);
          this.btnOK.Name = "btnOK";
          this.btnOK.Size = new System.Drawing.Size(72, 24);
-         this.btnOK.TabIndex = 13;
+         this.btnOK.TabIndex = 12;
          this.btnOK.Text = "OK";
          this.ttFrameset.SetToolTip(this.btnOK, "Close the frame editor pane and apply these changes to all selected frames.");
          this.btnOK.Click += new System.EventHandler(this.btnApply_Click);
@@ -739,7 +766,7 @@ namespace SGDK2
          this.btnReset.Location = new System.Drawing.Point(368, 72);
          this.btnReset.Name = "btnReset";
          this.btnReset.Size = new System.Drawing.Size(72, 24);
-         this.btnReset.TabIndex = 12;
+         this.btnReset.TabIndex = 14;
          this.btnReset.Text = "Reset";
          this.ttFrameset.SetToolTip(this.btnReset, "Reset the current frame to initial state (untransformed graphic cell)");
          this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
@@ -815,7 +842,7 @@ namespace SGDK2
          this.trbRotate.Maximum = 180;
          this.trbRotate.Minimum = -179;
          this.trbRotate.Name = "trbRotate";
-         this.trbRotate.Size = new System.Drawing.Size(290, 45);
+         this.trbRotate.Size = new System.Drawing.Size(290, 34);
          this.trbRotate.TabIndex = 0;
          this.trbRotate.TickFrequency = 15;
          this.trbRotate.Scroll += new System.EventHandler(this.trbRotate_Scroll);
@@ -847,6 +874,7 @@ namespace SGDK2
          this.CellBrowser.Size = new System.Drawing.Size(216, 396);
          this.CellBrowser.TabIndex = 2;
          this.CellBrowser.CurrentCellChanged += new System.EventHandler(this.CellBrowser_CurrentCellChanged);
+         this.CellBrowser.DoubleClick += new System.EventHandler(this.CellBrowser_DoubleClick);
          // 
          // tbrGraphicSheet
          // 
@@ -927,7 +955,8 @@ namespace SGDK2
                                                                                        this.mnuDeleteFrames,
                                                                                        this.mnuFramesetTransform,
                                                                                        this.mnuFramesetSeparator,
-                                                                                       this.mnuFrameRemappingWizard});
+                                                                                       this.mnuFrameRemappingWizard,
+                                                                                       this.mnuFsEditGraphicCell});
          this.mnuFramesetPop.MergeOrder = 2;
          this.mnuFramesetPop.Text = "F&rameset";
          // 
@@ -945,57 +974,6 @@ namespace SGDK2
          this.mnuDeleteFrames.Text = "&Delete Selected Frames";
          this.mnuDeleteFrames.Click += new System.EventHandler(this.mnuDeleteFrames_Click);
          // 
-         // mnuFramesetSeparator
-         // 
-         this.mnuFramesetSeparator.Index = 3;
-         this.mnuFramesetSeparator.Text = "-";
-         // 
-         // mnuFrameRemappingWizard
-         // 
-         this.mnuFrameRemappingWizard.Index = 4;
-         this.mnuFrameRemappingWizard.Text = "&Frame Remapping Wizard...";
-         this.mnuFrameRemappingWizard.Click += new System.EventHandler(this.mnuFrameRemappingWizard_Click);
-         // 
-         // tabFrameset
-         // 
-         this.tabFrameset.Controls.Add(this.tpgFrameset);
-         this.tabFrameset.Controls.Add(this.tpgFrameEditor);
-         this.tabFrameset.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.tabFrameset.Location = new System.Drawing.Point(0, 0);
-         this.tabFrameset.Name = "tabFrameset";
-         this.tabFrameset.SelectedIndex = 0;
-         this.tabFrameset.Size = new System.Drawing.Size(464, 473);
-         this.tabFrameset.TabIndex = 15;
-         this.tabFrameset.SelectedIndexChanged += new System.EventHandler(this.tabFrameset_SelectedIndexChanged);
-         // 
-         // tpgFrameset
-         // 
-         this.tpgFrameset.Controls.Add(this.pnlFrames);
-         this.tpgFrameset.Controls.Add(this.splitterGraphics);
-         this.tpgFrameset.Controls.Add(this.pnlGraphicSheet);
-         this.tpgFrameset.Location = new System.Drawing.Point(4, 22);
-         this.tpgFrameset.Name = "tpgFrameset";
-         this.tpgFrameset.Size = new System.Drawing.Size(456, 447);
-         this.tpgFrameset.TabIndex = 0;
-         this.tpgFrameset.Text = "Frameset";
-         // 
-         // splitterGraphics
-         // 
-         this.splitterGraphics.Location = new System.Drawing.Point(216, 0);
-         this.splitterGraphics.Name = "splitterGraphics";
-         this.splitterGraphics.Size = new System.Drawing.Size(5, 447);
-         this.splitterGraphics.TabIndex = 26;
-         this.splitterGraphics.TabStop = false;
-         // 
-         // tpgFrameEditor
-         // 
-         this.tpgFrameEditor.Controls.Add(this.pnlTransform);
-         this.tpgFrameEditor.Location = new System.Drawing.Point(4, 22);
-         this.tpgFrameEditor.Name = "tpgFrameEditor";
-         this.tpgFrameEditor.Size = new System.Drawing.Size(456, 447);
-         this.tpgFrameEditor.TabIndex = 1;
-         this.tpgFrameEditor.Text = "Frame Editor";
-         // 
          // mnuFramesetTransform
          // 
          this.mnuFramesetTransform.Index = 2;
@@ -1011,7 +989,9 @@ namespace SGDK2
                                                                                              this.mnuXUpHalf,
                                                                                              this.mnuXDownHalf,
                                                                                              this.mnuXClockwise90,
-                                                                                             this.mnuXCounter90});
+                                                                                             this.mnuXCounter90,
+                                                                                             this.mnuTransformCustom,
+                                                                                             this.mnuXReset});
          this.mnuFramesetTransform.Text = "&Transform Selected Frames";
          // 
          // mnuXHFlip
@@ -1141,6 +1121,77 @@ namespace SGDK2
          this.mnuXCounter90Center.Index = 1;
          this.mnuXCounter90Center.Text = "Around center";
          this.mnuXCounter90Center.Click += new System.EventHandler(this.mnuTransformItem_Click);
+         // 
+         // mnuTransformCustom
+         // 
+         this.mnuTransformCustom.Index = 12;
+         this.mnuTransformCustom.Shortcut = System.Windows.Forms.Shortcut.CtrlT;
+         this.mnuTransformCustom.Text = "Custom...";
+         this.mnuTransformCustom.Click += new System.EventHandler(this.mnuTransformCustom_Click);
+         // 
+         // mnuXReset
+         // 
+         this.mnuXReset.Index = 13;
+         this.mnuXReset.Shortcut = System.Windows.Forms.Shortcut.CtrlR;
+         this.mnuXReset.Text = "Reset";
+         this.mnuXReset.Click += new System.EventHandler(this.mnuTransformItem_Click);
+         // 
+         // mnuFramesetSeparator
+         // 
+         this.mnuFramesetSeparator.Index = 3;
+         this.mnuFramesetSeparator.Text = "-";
+         // 
+         // mnuFrameRemappingWizard
+         // 
+         this.mnuFrameRemappingWizard.Index = 4;
+         this.mnuFrameRemappingWizard.Text = "&Frame Remapping Wizard...";
+         this.mnuFrameRemappingWizard.Click += new System.EventHandler(this.mnuFrameRemappingWizard_Click);
+         // 
+         // mnuFsEditGraphicCell
+         // 
+         this.mnuFsEditGraphicCell.Index = 5;
+         this.mnuFsEditGraphicCell.Text = "Edit &Graphic Cell...";
+         this.mnuFsEditGraphicCell.Click += new System.EventHandler(this.mnuGraphicEditor_Click);
+         // 
+         // tabFrameset
+         // 
+         this.tabFrameset.Controls.Add(this.tpgFrameset);
+         this.tabFrameset.Controls.Add(this.tpgFrameEditor);
+         this.tabFrameset.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.tabFrameset.Location = new System.Drawing.Point(0, 0);
+         this.tabFrameset.Name = "tabFrameset";
+         this.tabFrameset.SelectedIndex = 0;
+         this.tabFrameset.Size = new System.Drawing.Size(464, 473);
+         this.tabFrameset.TabIndex = 15;
+         this.tabFrameset.SelectedIndexChanged += new System.EventHandler(this.tabFrameset_SelectedIndexChanged);
+         // 
+         // tpgFrameset
+         // 
+         this.tpgFrameset.Controls.Add(this.pnlFrames);
+         this.tpgFrameset.Controls.Add(this.splitterGraphics);
+         this.tpgFrameset.Controls.Add(this.pnlGraphicSheet);
+         this.tpgFrameset.Location = new System.Drawing.Point(4, 22);
+         this.tpgFrameset.Name = "tpgFrameset";
+         this.tpgFrameset.Size = new System.Drawing.Size(456, 447);
+         this.tpgFrameset.TabIndex = 0;
+         this.tpgFrameset.Text = "Frameset";
+         // 
+         // splitterGraphics
+         // 
+         this.splitterGraphics.Location = new System.Drawing.Point(216, 0);
+         this.splitterGraphics.Name = "splitterGraphics";
+         this.splitterGraphics.Size = new System.Drawing.Size(5, 447);
+         this.splitterGraphics.TabIndex = 26;
+         this.splitterGraphics.TabStop = false;
+         // 
+         // tpgFrameEditor
+         // 
+         this.tpgFrameEditor.Controls.Add(this.pnlTransform);
+         this.tpgFrameEditor.Location = new System.Drawing.Point(4, 22);
+         this.tpgFrameEditor.Name = "tpgFrameEditor";
+         this.tpgFrameEditor.Size = new System.Drawing.Size(456, 447);
+         this.tpgFrameEditor.TabIndex = 1;
+         this.tpgFrameEditor.Text = "Frame Editor";
          // 
          // frmFrameEdit
          // 
@@ -1472,6 +1523,8 @@ namespace SGDK2
          }
          else if ((sender == mnuVFlipOrigin) || (sender == mnuXVFlipOrigin))
             m_CurrentTransform.Scale(1f, -1f, MatrixOrder.Append);
+         else if ((sender == mnuReset) || (sender == mnuXReset))
+            m_CurrentTransform.Reset();
          else
             MessageBox.Show(this, "Not Implemented");
 
@@ -1538,6 +1591,7 @@ namespace SGDK2
       private void cboGraphicSheet_SelectedIndexChanged(object sender, System.EventArgs e)
       {
          CellBrowser.GraphicSheet = (ProjectDataset.GraphicSheetRow)cboGraphicSheet.SelectedItem;
+         CellBrowser.ClearSelection();
       }
 
       private void FrameBrowser_DragOver(object sender, System.Windows.Forms.DragEventArgs e)
@@ -1687,7 +1741,7 @@ namespace SGDK2
          }
 
          Point ptBottom = new Point(m_ptCenter.X, trbRotate.Top - 1);
-         Point ptRight = new Point(trbRotate.ClientSize.Width - 1, m_ptCenter.Y);
+         Point ptRight = new Point(btnOK.Left, m_ptCenter.Y);
          Point ptLeft = new Point(0, m_ptCenter.Y);
          Point ptTop = new Point(m_ptCenter.X, 0);
          e.Graphics.ResetTransform();
@@ -1714,9 +1768,11 @@ namespace SGDK2
          CtlTransform.Dispose();
          RoundMatrix(ref m_CurrentTransform);
          ResetControls();
+         int editCell = 0;
          if (m_FrameEditorSource is ProjectDataset.FrameRow)
          {
             CopyTransformToFrameRow((ProjectDataset.FrameRow)m_FrameEditorSource, m_CurrentTransform);
+            editCell = ((ProjectDataset.FrameRow)m_FrameEditorSource).FrameValue;
          }
          else if (m_FrameEditorSource is ProjectDataset.GraphicSheetRow)
          {
@@ -1724,10 +1780,11 @@ namespace SGDK2
                m_CurrentTransform.Elements[0], m_CurrentTransform.Elements[1],
                m_CurrentTransform.Elements[2], m_CurrentTransform.Elements[3],
                m_CurrentTransform.Elements[4], m_CurrentTransform.Elements[5], m_CurrentColor);
-            FrameBrowser.CurrentCellIndex = FrameBrowser.CellCount - 1;
-            FrameBrowser.ScrollCellIntoView(FrameBrowser.CellCount - 1);
+            editCell = FrameBrowser.CellCount - 1;
          }
+         editingFrame = false;
          tabFrameset.SelectedTab = tpgFrameset;
+         FrameBrowser.CurrentCellIndex = editCell;
       }
 
       private void btnReset_Click(object sender, System.EventArgs e)
@@ -2032,22 +2089,64 @@ namespace SGDK2
       {
          if (tabFrameset.SelectedTab == tpgFrameEditor)
          {
-            if (m_FrameEditorSource is ProjectDataset.FrameRow)
+            mnuDeleteFrames.Enabled = false;
+            if (!editingFrame)
             {
-               LoadFrameRow((ProjectDataset.FrameRow)m_FrameEditorSource);
+               if (m_FrameEditorSource is ProjectDataset.FrameRow)
+               {
+                  LoadFrameRow((ProjectDataset.FrameRow)m_FrameEditorSource);
+               }
+               else if ((CellBrowser.CurrentCellIndex >= 0) && (CellBrowser.GraphicSheet != null))
+               {
+                  if (m_CurrentImage != null)
+                     m_CurrentImage.Dispose();
+                  m_CurrentImage = CellBrowser.GetCellImageData(CellBrowser.CurrentCellIndex);
+                  m_nCurrentCellIndex = (short)CellBrowser.CurrentCellIndex;
+                  if (m_CurrentTransform != null)
+                     m_CurrentTransform.Dispose();
+                  m_CurrentTransform = new Matrix();
+                  ResetControls();
+                  pnlTransform.Invalidate();
+               }
+               editingFrame = true;
             }
-            else if ((CellBrowser.CurrentCellIndex >= 0) && (CellBrowser.GraphicSheet != null))
+         }
+         else
+         {
+            if (ActiveControl != FrameProperties)
+               mnuDeleteFrames.Enabled = true;
+            if (editingFrame && (m_FrameEditorSource is ProjectDataset.GraphicSheetRow))
             {
-               if (m_CurrentImage != null)
-                  m_CurrentImage.Dispose();
-               m_CurrentImage = CellBrowser.GetCellImageData(CellBrowser.CurrentCellIndex);
-               m_nCurrentCellIndex = (short)CellBrowser.CurrentCellIndex;
-               if (m_CurrentTransform != null)
-                  m_CurrentTransform.Dispose();
-               m_CurrentTransform = new Matrix();
-               ResetControls();
-               pnlTransform.Invalidate();
-            }            
+               switch (MessageBox.Show(this, "Do you want to add the transformed graphic to the frameset?", "Unsaved Changes Exist", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+               {
+                  case DialogResult.Yes:
+                     btnApply_Click(tabFrameset, null);
+                     editingFrame = false;
+                     break;
+                  case DialogResult.No:
+                     editingFrame = false;
+                     break;
+                  case DialogResult.Cancel:
+                     tabFrameset.SelectedTab = tpgFrameEditor;
+                     break;
+               }
+            }
+            else if (editingFrame && (m_FrameEditorSource is ProjectDataset.FrameRow))
+            {
+               switch (MessageBox.Show(this, "Do you want to update the frame?", "Unsaved Changes Exist", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+               {
+                  case DialogResult.Yes:
+                     btnApply_Click(tabFrameset, null);
+                     editingFrame = false;
+                     break;
+                  case DialogResult.No:
+                     editingFrame = false;
+                     break;
+                  case DialogResult.Cancel:
+                     tabFrameset.SelectedTab = tpgFrameEditor;
+                     break;
+               }
+            }
          }
       }
 
@@ -2063,6 +2162,7 @@ namespace SGDK2
             m_CurrentTransform.Dispose();
          m_CurrentTransform = null;
          ResetControls();
+         editingFrame = false;
          tabFrameset.SelectedTab = tpgFrameset;
       }
 
@@ -2074,6 +2174,44 @@ namespace SGDK2
       private void FrameProperties_Leave(object sender, System.EventArgs e)
       {
          mnuDeleteFrames.Enabled = true;
+      }
+
+      private void mnuTransformCustom_Click(object sender, System.EventArgs e)
+      {
+         tabFrameset.SelectedTab = tpgFrameEditor;
+      }
+
+      private void FrameBrowser_DoubleClick(object sender, System.EventArgs e)
+      {
+         tabFrameset.SelectedTab = tpgFrameEditor;
+      }
+
+      private void CellBrowser_DoubleClick(object sender, System.EventArgs e)
+      {
+         tabFrameset.SelectedTab = tpgFrameEditor;
+      }
+
+      private void mnuGraphicEditor_Click(object sender, System.EventArgs e)
+      {
+         if (m_FrameEditorSource is ProjectDataset.FrameRow)
+         {
+            ProjectDataset.FrameRow fr = ((ProjectDataset.FrameRow)m_FrameEditorSource);
+            frmGraphicsEditor.Edit(MdiParent, ProjectData.GetGraphicSheet(fr.GraphicSheet), fr.CellIndex);
+         }
+         else if (m_FrameEditorSource is ProjectDataset.GraphicSheetRow)
+         {
+            if (CellBrowser.CurrentCellIndex >= 0)
+            {
+               ProjectDataset.GraphicSheetRow gr = CellBrowser.GraphicSheet;
+               frmGraphicsEditor.Edit(MdiParent, CellBrowser.GraphicSheet, CellBrowser.CurrentCellIndex);
+            }
+         }
+      }
+
+      private void FrameBrowser_Resize(object sender, System.EventArgs e)
+      {
+         if (FrameBrowser.CurrentCellIndex >= 0)
+            FrameBrowser.ScrollCellIntoView(FrameBrowser.CurrentCellIndex);
       }
       #endregion
    }

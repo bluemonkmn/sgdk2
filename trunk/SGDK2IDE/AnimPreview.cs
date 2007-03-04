@@ -120,7 +120,7 @@ namespace SGDK2
          this.display.GameDisplayMode = SGDK2.GameDisplayMode.m640x480x24;
          this.display.Location = new System.Drawing.Point(0, 0);
          this.display.Name = "display";
-         this.display.Size = new System.Drawing.Size(160, 96);
+         this.display.Size = new System.Drawing.Size(160, 94);
          this.display.TabIndex = 0;
          this.display.Windowed = true;
          this.display.Paint += new System.Windows.Forms.PaintEventHandler(this.display_Paint);
@@ -146,7 +146,7 @@ namespace SGDK2
          // 
          this.trbFPS.Dock = System.Windows.Forms.DockStyle.Bottom;
          this.trbFPS.LargeChange = 20;
-         this.trbFPS.Location = new System.Drawing.Point(0, 46);
+         this.trbFPS.Location = new System.Drawing.Point(0, 54);
          this.trbFPS.Maximum = 120;
          this.trbFPS.Minimum = 15;
          this.trbFPS.Name = "trbFPS";
@@ -159,7 +159,7 @@ namespace SGDK2
          // lblFPS
          // 
          this.lblFPS.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.lblFPS.Location = new System.Drawing.Point(0, 30);
+         this.lblFPS.Location = new System.Drawing.Point(0, 38);
          this.lblFPS.Name = "lblFPS";
          this.lblFPS.Size = new System.Drawing.Size(160, 16);
          this.lblFPS.TabIndex = 2;
@@ -192,9 +192,9 @@ namespace SGDK2
          this.pnlOptions.Controls.Add(this.lblFPS);
          this.pnlOptions.Controls.Add(this.trbFPS);
          this.pnlOptions.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.pnlOptions.Location = new System.Drawing.Point(0, 96);
+         this.pnlOptions.Location = new System.Drawing.Point(0, 94);
          this.pnlOptions.Name = "pnlOptions";
-         this.pnlOptions.Size = new System.Drawing.Size(160, 80);
+         this.pnlOptions.Size = new System.Drawing.Size(160, 88);
          this.pnlOptions.TabIndex = 3;
          // 
          // label1
@@ -209,7 +209,7 @@ namespace SGDK2
          // frmAnimPreview
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-         this.ClientSize = new System.Drawing.Size(160, 176);
+         this.ClientSize = new System.Drawing.Size(160, 182);
          this.Controls.Add(this.display);
          this.Controls.Add(this.pnlOptions);
          this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;

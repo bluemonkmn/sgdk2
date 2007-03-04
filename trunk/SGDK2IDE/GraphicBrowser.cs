@@ -394,6 +394,8 @@ namespace SGDK2
       #region Private methods
       private Size CalculateVirtualSize()
       {
+         if (CellCount == 0)
+            return new Size(0,0);
          int nTilesPerRow = (ClientSize.Width - m_CellPadding.Width) /
             (m_LargestCell.Width + m_CellPadding.Width);
          if (nTilesPerRow <= 0)
@@ -846,6 +848,23 @@ namespace SGDK2
             return true;
          }
          return false;
+      }
+
+      /// <summary>
+      /// Recompute the size of the largest cell and re-draw the contents with the new size
+      /// </summary>
+      public void RecalcSizes()
+      {
+         if (RecalcTimer != null)
+         {
+            RecalcTimer.Dispose();
+            RecalcTimer = null;
+         }
+         m_LargestCell = GetLargestCell();
+         AutoScrollMinSize = CalculateVirtualSize();
+         if (m_FocusIndex >= 0)
+            ScrollCellIntoView(m_FocusIndex);
+         Invalidate();
       }
       #endregion
 
@@ -1410,10 +1429,7 @@ namespace SGDK2
 
       private void RecalcTimer_Tick(object sender, EventArgs e)
       {
-         RecalcTimer.Dispose();
-         RecalcTimer = null;
-         m_LargestCell = GetLargestCell();
-         Invalidate();
+         RecalcSizes();
       }
 
       private void FramesToDisplay_ListChanged(object sender, ListChangedEventArgs e)

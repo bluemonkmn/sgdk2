@@ -281,6 +281,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "FrameConverter.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "FrameEdit.cs"
                     SubType = "Form"
                     BuildAction = "Compile"

@@ -344,7 +344,7 @@ namespace SGDK2
             if (settings.HasAttribute("Left"))
                form.Location = new Point(Int32.Parse(settings.GetAttribute("Left")), Int32.Parse(settings.GetAttribute("Top")));
             if ((form.FormBorderStyle == FormBorderStyle.Sizable) && settings.HasAttribute("Width"))
-               form.Size = new Size(Int32.Parse(settings.GetAttribute("Width")), Int32.Parse(settings.GetAttribute("Height")));
+               form.ClientSize = new Size(Int32.Parse(settings.GetAttribute("Width")), Int32.Parse(settings.GetAttribute("Height")));
             if (form.MaximizeBox && settings.HasAttribute("FormWindowState"))
                form.WindowState = (FormWindowState)System.Enum.Parse(typeof(FormWindowState), settings.GetAttribute("FormWindowState"));
          }
@@ -373,8 +373,8 @@ namespace SGDK2
             settings.SetAttribute("Top", form.Top.ToString());
             if (form.FormBorderStyle == FormBorderStyle.Sizable)
             {
-               settings.SetAttribute("Width", form.Width.ToString());
-               settings.SetAttribute("Height", form.Height.ToString());
+               settings.SetAttribute("Width", form.ClientSize.Width.ToString());
+               settings.SetAttribute("Height", form.ClientSize.Height.ToString());
             }
          }
          SaveUserSettings(doc);

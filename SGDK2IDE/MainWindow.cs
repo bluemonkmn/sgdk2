@@ -148,6 +148,7 @@ namespace SGDK2
          this.mnuFileRunProjectInDebugMode = new System.Windows.Forms.MenuItem();
          this.mnuFileResetCode = new System.Windows.Forms.MenuItem();
          this.mnuFileGenerate = new System.Windows.Forms.MenuItem();
+         this.mnuFileDeleteIntermediateFiles = new System.Windows.Forms.MenuItem();
          this.mnuFileDeleteOutputFiles = new System.Windows.Forms.MenuItem();
          this.mnuFileSep3 = new System.Windows.Forms.MenuItem();
          this.mnuFileSep4 = new System.Windows.Forms.MenuItem();
@@ -162,7 +163,6 @@ namespace SGDK2
          this.lblProjectTree = new System.Windows.Forms.Label();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.sbMain = new System.Windows.Forms.StatusBar();
-         this.mnuFileDeleteIntermediateFiles = new System.Windows.Forms.MenuItem();
          this.pnlProjectTree.SuspendLayout();
          this.SuspendLayout();
          // 
@@ -408,18 +408,26 @@ namespace SGDK2
          this.mnuFileGenerate.Text = "&Generate Project";
          this.mnuFileGenerate.Click += new System.EventHandler(this.mnuFileGenerate_Click);
          // 
+         // mnuFileDeleteIntermediateFiles
+         // 
+         this.mnuFileDeleteIntermediateFiles.Enabled = false;
+         this.mnuFileDeleteIntermediateFiles.Index = 13;
+         this.mnuFileDeleteIntermediateFiles.MergeOrder = 25;
+         this.mnuFileDeleteIntermediateFiles.Text = "Delete In&termediate Output Files";
+         this.mnuFileDeleteIntermediateFiles.Click += new System.EventHandler(this.mnuFileDeleteIntermediateFiles_Click);
+         // 
          // mnuFileDeleteOutputFiles
          // 
          this.mnuFileDeleteOutputFiles.Enabled = false;
          this.mnuFileDeleteOutputFiles.Index = 14;
-         this.mnuFileDeleteOutputFiles.MergeOrder = 25;
+         this.mnuFileDeleteOutputFiles.MergeOrder = 26;
          this.mnuFileDeleteOutputFiles.Text = "Delete All Output &Files";
          this.mnuFileDeleteOutputFiles.Click += new System.EventHandler(this.mnuFileDeleteOutputFiles_Click);
          // 
          // mnuFileSep3
          // 
          this.mnuFileSep3.Index = 15;
-         this.mnuFileSep3.MergeOrder = 26;
+         this.mnuFileSep3.MergeOrder = 27;
          this.mnuFileSep3.Text = "-";
          // 
          // mnuFileSep4
@@ -572,13 +580,6 @@ namespace SGDK2
          this.sbMain.Name = "sbMain";
          this.sbMain.Size = new System.Drawing.Size(800, 20);
          this.sbMain.TabIndex = 8;
-         // 
-         // mnuFileDeleteIntermediateFiles
-         // 
-         this.mnuFileDeleteIntermediateFiles.Enabled = false;
-         this.mnuFileDeleteIntermediateFiles.Index = 13;
-         this.mnuFileDeleteIntermediateFiles.Text = "Delete In&termediate Output Files";
-         this.mnuFileDeleteIntermediateFiles.Click += new System.EventHandler(this.mnuFileDeleteIntermediateFiles_Click);
          // 
          // frmMain
          // 

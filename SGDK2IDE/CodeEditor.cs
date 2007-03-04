@@ -11,6 +11,57 @@ namespace SGDK2
 	/// </summary>
    public class frmCodeEditor : System.Windows.Forms.Form
    {
+      #region Embedded Types
+      private class UndoUnit
+      {
+         public POINT scrollPos = POINT.Empty;
+         public int changeStart = 0;
+         public int changeLen = 0; // Only for Inserts (undo=delete) or replace
+         public string text = null; // Only for delete (undo=insert) or replace
+         private UndoUnit next = null;
+         public int GetSize()
+         {
+            if (text == null)
+               return 24;
+            else
+               return 24 + text.Length * 2;
+         }
+         public static void Push(ref UndoUnit target, UndoUnit insert)
+         {
+            if (target != null)
+               insert.next = target;
+            else
+               insert.next = null;
+            target = insert;
+         }
+         public static UndoUnit Pop(ref UndoUnit target)
+         {
+            UndoUnit result = target;
+            target = target.next;
+            result.next = null;
+            return result;
+         }
+         public static void TruncateAtSize(ref UndoUnit target, int maxSize)
+         {
+            int size = target.GetSize();
+            if (size > maxSize)
+            {
+               target = null;
+               return;
+            }
+            for (UndoUnit cur = target; cur.next != null; cur = cur.next)
+            {
+               size += cur.next.GetSize();
+               if (size > maxSize)
+               {
+                  cur.next = null;
+                  return;
+               }
+            }
+         }
+      }
+      #endregion
+
       #region Non-control members
       ProjectDataset.SourceCodeRow m_SourceCode;
       frmFindReplace m_frmFindReplace = null;
@@ -19,13 +70,15 @@ namespace SGDK2
       private SGDK2.DataChangeNotifier DataMonitor;
       private CodeEditor rtfCode;
       private System.ComponentModel.IContainer components;
+      private UndoUnit undoStack;
+      private UndoUnit redoStack;
 
       #region Win32 API
       private const int WM_USER = 0x0400;
       private const int EM_GETSCROLLPOS = WM_USER + 221;
       private System.Windows.Forms.Timer tmrReparse;
       private const int EM_SETSCROLLPOS = WM_USER + 222;
-      private const int EM_SETTEXTEX = WM_USER + 97;
+      private const int EM_SETUNDOLIMIT = WM_USER + 82;
       private System.Windows.Forms.StatusBar staCode;
       private System.Windows.Forms.StatusBarPanel sbpLineNum;
       private System.Windows.Forms.StatusBarPanel sbpChar;
@@ -47,29 +100,29 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuFileRename;
       private System.Windows.Forms.MenuItem mnuFileSeparator;
       private System.Windows.Forms.OpenFileDialog dlgEmbeddedFile;
+      private System.Windows.Forms.MenuItem mnuEditUndo;
+      private System.Windows.Forms.MenuItem mnuEditRedo;
+      private System.Windows.Forms.MenuItem mnuEditSeparator;
       private System.Windows.Forms.MenuItem mnuDataPlay;
-      private const int ST_KEEPUNDO = 1;
       private struct POINT
       {
          public int x;
          public int y;
-      }
-      private struct SETTEXTEX
-      {
-         public uint flags;
-         public uint codepage;
+         public static readonly POINT Empty;
+         static POINT()
+         {
+            Empty = new POINT();
+            Empty.x = 0;
+            Empty.y = 0;
+         }
       }
 
       [System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint="SendMessage")]
       static extern IntPtr SendScrollPosMessage(IntPtr hWnd, uint Msg, IntPtr wParam, ref POINT lParam);
-      [System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint="SendMessage")]
-      static extern IntPtr SendSetTextMessage(IntPtr hWnd, uint Msg, ref SETTEXTEX wParam, string lParam);
       [System.Runtime.InteropServices.DllImport("user32.dll")]
       static extern short GetKeyState(Keys nVirtKey);
-      #endregion
-
-      #region Windows Form Designer Components
-
+      [System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint="SendMessage")]
+      static extern int SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
       #endregion
 
       #region Initialization and Clean-up
@@ -156,6 +209,9 @@ namespace SGDK2
          this.mnuDataPlay = new System.Windows.Forms.MenuItem();
          this.tmrInvalidateStatus = new System.Windows.Forms.Timer(this.components);
          this.dlgEmbeddedFile = new System.Windows.Forms.OpenFileDialog();
+         this.mnuEditUndo = new System.Windows.Forms.MenuItem();
+         this.mnuEditRedo = new System.Windows.Forms.MenuItem();
+         this.mnuEditSeparator = new System.Windows.Forms.MenuItem();
          ((System.ComponentModel.ISupportInitialize)(this.sbpStatus)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpCAPS)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpInsert)).BeginInit();
@@ -276,6 +332,9 @@ namespace SGDK2
          // 
          this.mnuEdit.Index = 1;
          this.mnuEdit.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                this.mnuEditUndo,
+                                                                                this.mnuEditRedo,
+                                                                                this.mnuEditSeparator,
                                                                                 this.mnuEditFind,
                                                                                 this.mnuFindNext,
                                                                                 this.mnuEditReplace,
@@ -284,28 +343,28 @@ namespace SGDK2
          // 
          // mnuEditFind
          // 
-         this.mnuEditFind.Index = 0;
+         this.mnuEditFind.Index = 3;
          this.mnuEditFind.Shortcut = System.Windows.Forms.Shortcut.CtrlF;
          this.mnuEditFind.Text = "&Find...";
          this.mnuEditFind.Click += new System.EventHandler(this.mnuEditFind_Click);
          // 
          // mnuFindNext
          // 
-         this.mnuFindNext.Index = 1;
+         this.mnuFindNext.Index = 4;
          this.mnuFindNext.Shortcut = System.Windows.Forms.Shortcut.F3;
          this.mnuFindNext.Text = "Find &Next";
          this.mnuFindNext.Click += new System.EventHandler(this.mnuFindNext_Click);
          // 
          // mnuEditReplace
          // 
-         this.mnuEditReplace.Index = 2;
+         this.mnuEditReplace.Index = 5;
          this.mnuEditReplace.Shortcut = System.Windows.Forms.Shortcut.CtrlH;
          this.mnuEditReplace.Text = "&Replace...";
          this.mnuEditReplace.Click += new System.EventHandler(this.mnuEditReplace_Click);
          // 
          // mnuEditGoto
          // 
-         this.mnuEditGoto.Index = 3;
+         this.mnuEditGoto.Index = 6;
          this.mnuEditGoto.Shortcut = System.Windows.Forms.Shortcut.CtrlG;
          this.mnuEditGoto.Text = "&Go To Line...";
          this.mnuEditGoto.Click += new System.EventHandler(this.mnuEditGoto_Click);
@@ -357,6 +416,25 @@ namespace SGDK2
          this.dlgEmbeddedFile.Filter = "All Files (*.*)|*.*";
          this.dlgEmbeddedFile.Title = "Select File To Embed";
          // 
+         // mnuEditUndo
+         // 
+         this.mnuEditUndo.Index = 0;
+         this.mnuEditUndo.Shortcut = System.Windows.Forms.Shortcut.CtrlZ;
+         this.mnuEditUndo.Text = "&Undo";
+         this.mnuEditUndo.Click += new System.EventHandler(this.rtfCode_OnUndo);
+         // 
+         // mnuEditRedo
+         // 
+         this.mnuEditRedo.Index = 1;
+         this.mnuEditRedo.Shortcut = System.Windows.Forms.Shortcut.CtrlY;
+         this.mnuEditRedo.Text = "Re&do";
+         this.mnuEditRedo.Click += new System.EventHandler(this.rtfCode_OnRedo);
+         // 
+         // mnuEditSeparator
+         // 
+         this.mnuEditSeparator.Index = 2;
+         this.mnuEditSeparator.Text = "-";
+         // 
          // frmCodeEditor
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -384,6 +462,7 @@ namespace SGDK2
       {
          UpdateStatus();
          Text = "Source Code Editor - " + m_SourceCode.Name;
+         SendMessage(rtfCode.Handle, EM_SETUNDOLIMIT, 0, 0);
          base.OnLoad (e);
       }
 
@@ -1058,18 +1137,54 @@ namespace SGDK2
             rtfCode.Visible = false;
             int selStart = rtfCode.SelectionStart;
             int selLen = rtfCode.SelectionLength;
-            // Keep the undo buffer while updating the RTF content
-            SETTEXTEX st = new SETTEXTEX();
-            st.flags = ST_KEEPUNDO;
-            st.codepage = (uint)System.Globalization.CultureInfo.CurrentUICulture.TextInfo.ANSICodePage;
-            SendSetTextMessage(rtfCode.Handle, EM_SETTEXTEX, ref st, ConvertToRTF(rtfCode.Text));
+            rtfCode.Rtf = ConvertToRTF(rtfCode.Text);
             rtfCode.SelectionStart = selStart;
             rtfCode.SelectionLength = selLen;
             SendScrollPosMessage(rtfCode.Handle, EM_SETSCROLLPOS, IntPtr.Zero, ref scrollPos);
-            string rtfCodeText = rtfCode.Text.Replace("\r", String.Empty);
+            string rtfCodeText;
+            if (rtfCode.Text.IndexOf('\r') >= 0)
+               rtfCodeText = rtfCode.Text.Replace("\r", String.Empty);
+            else
+               rtfCodeText = rtfCode.Text;
+            string rowText = null;
+            if (!m_SourceCode.IsTextNull())
+               rowText = m_SourceCode.Text.Replace("\r", String.Empty);
             if ((m_SourceCode.IsTextNull() && (rtfCodeText.Length > 0)) ||
-               (!m_SourceCode.IsTextNull()) && (m_SourceCode.Text.Replace("\r", String.Empty) != rtfCodeText))
+               (!m_SourceCode.IsTextNull()) && (rowText != rtfCodeText))
             {
+               UndoUnit undo = new UndoUnit();
+               int startDiff, endDiffRow, endDiffRtf;
+               int endPos = (rowText.Length < rtfCodeText.Length ? rowText.Length : rtfCodeText.Length);
+               for (startDiff=-1; ++startDiff < endPos;)
+               {
+                  if (rowText[startDiff] != rtfCodeText[startDiff])
+                     break;
+               }
+               for (endDiffRow=rowText.Length, endDiffRtf=rtfCodeText.Length;
+                    (--endDiffRow >= startDiff) && (--endDiffRtf >= startDiff);)
+               {
+                  if (rowText[endDiffRow] != rtfCodeText[endDiffRtf])
+                  {
+                     endDiffRow++;
+                     endDiffRtf++;
+                     break;
+                  }
+               }
+               undo.scrollPos = scrollPos;
+               undo.changeStart = startDiff;
+               if (endDiffRtf > startDiff)
+               {
+                  // Text was inserted or replaced, remember to delete for undo
+                  undo.changeLen = endDiffRtf - startDiff;
+               }
+               if (endDiffRow > startDiff)
+               {
+                  // Text was deleted or replaced, remember to insert for undo
+                  undo.text = rowText.Substring(startDiff, endDiffRow-startDiff);
+               }
+               UndoUnit.Push(ref undoStack, undo);
+               UndoUnit.TruncateAtSize(ref undoStack, 1000000);
+               redoStack = null;
                m_SourceCode.Text = rtfCodeText.Replace("\n","\r\n");
                CodeGenerator.ResetTempAssembly();
             }
@@ -1080,6 +1195,7 @@ namespace SGDK2
             tmrReparse.Stop();
          }         
       }
+
       private void rtfCode_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
       {
          UpdateStatus();
@@ -1289,6 +1405,104 @@ namespace SGDK2
          }
          frmSoundPlayer.PlaySound(this, m_SourceCode.CustomObjectData);
       }
+
+      private void rtfCode_OnUndo(object sender, EventArgs e)
+      {
+         if (undoStack == null)
+            return;
+
+         UndoUnit undo = UndoUnit.Pop(ref undoStack);
+         UndoUnit redo = new UndoUnit();
+
+         redo.scrollPos = undo.scrollPos;
+         redo.changeStart = undo.changeStart;
+         if (undo.text == null)
+            redo.changeLen = 0;
+         else
+            redo.changeLen = undo.text.Length;
+         if (undo.changeLen > 0)
+            redo.text = rtfCode.Text.Substring(undo.changeStart, undo.changeLen);
+
+         string left;
+         string right;
+         left = rtfCode.Text.Substring(0, undo.changeStart);
+         if (left.IndexOf('\r') >= 0)
+            left = left.Replace("\r", String.Empty);
+         right = rtfCode.Text.Substring(undo.changeStart + undo.changeLen);
+         if (right.IndexOf('\r') >= 0)
+            right = right.Replace("\r", String.Empty);
+         if ((undo.text != null) && (undo.text.IndexOf('\r') >= 0))
+            undo.text = undo.text.Replace("\r", String.Empty);
+         rtfCode.Visible = false;
+         if (undo.text != null)
+         {
+            m_SourceCode.Text = (left + undo.text + right).Replace("\n", "\r\n");
+            rtfCode.Rtf = ConvertToRTF(left + undo.text + right);
+         }
+         else
+         {
+            m_SourceCode.Text = (left + right).Replace("\n", "\r\n");
+            rtfCode.Rtf = ConvertToRTF(left + right);
+         }
+         rtfCode.SelectionStart = undo.changeStart;
+         if (undo.text != null)
+            rtfCode.SelectionLength = undo.text.Length;
+         else
+            rtfCode.SelectionLength = 0;
+         SendScrollPosMessage(rtfCode.Handle, EM_SETSCROLLPOS, IntPtr.Zero, ref undo.scrollPos);
+         rtfCode.Visible = true;
+
+         UndoUnit.Push(ref redoStack, redo);
+      }
+
+      private void rtfCode_OnRedo(object sender, EventArgs e)
+      {
+         if (redoStack == null)
+            return;
+
+         UndoUnit redo = UndoUnit.Pop(ref redoStack);
+         UndoUnit undo = new UndoUnit();
+
+         undo.scrollPos = redo.scrollPos;
+         undo.changeStart = redo.changeStart;
+         if (redo.text == null)
+            undo.changeLen = 0;
+         else
+            undo.changeLen = redo.text.Length;
+         if (redo.changeLen > 0)
+            undo.text = rtfCode.Text.Substring(redo.changeStart, redo.changeLen);
+
+         string left;
+         string right;
+         left = rtfCode.Text.Substring(0, redo.changeStart);
+         if (left.IndexOf('\r') >= 0)
+            left = left.Replace("\r", String.Empty);
+         right = rtfCode.Text.Substring(redo.changeStart + redo.changeLen);
+         if (right.IndexOf('\r') >= 0)
+            right = right.Replace("\r", String.Empty);
+         if ((redo.text != null) && (redo.text.IndexOf('\r') >= 0))
+            redo.text = redo.text.Replace("\r", String.Empty);
+         rtfCode.Visible = false;
+         if (redo.text != null)
+         {
+            m_SourceCode.Text = (left + redo.text + right).Replace("\n", "\r\n");
+            rtfCode.Rtf = ConvertToRTF(left + redo.text + right);
+         }
+         else
+         {
+            m_SourceCode.Text = (left + right).Replace("\n", "\r\n");
+            rtfCode.Rtf = ConvertToRTF(left + right);
+         }
+         rtfCode.SelectionStart = redo.changeStart;
+         if (redo.text != null)
+            rtfCode.SelectionLength = redo.text.Length;
+         else
+            rtfCode.SelectionLength = 0;
+         SendScrollPosMessage(rtfCode.Handle, EM_SETSCROLLPOS, IntPtr.Zero, ref redo.scrollPos);
+         rtfCode.Visible = true;
+
+         UndoUnit.Push(ref undoStack, undo);
+      }
       #endregion
    }
 
@@ -1300,7 +1514,9 @@ namespace SGDK2
       [System.Runtime.InteropServices.DllImport("user32.dll", EntryPoint="SendMessage")]
       static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
 
-      private bool m_isUndo;
+      public event System.EventHandler OnUndo;
+      public event System.EventHandler OnRedo;
+
       private bool m_isInsert = true;
 
       /// <summary>
@@ -1374,18 +1590,12 @@ namespace SGDK2
       protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
       {
          if ((msg.Msg == WM_KEYDOWN) && (keyData == (Keys.Control | Keys.Z)))
-            m_isUndo = true;
+            if (OnUndo != null)
+               OnUndo(this, null);
+         if ((msg.Msg == WM_KEYDOWN) && (keyData == (Keys.Control | Keys.Y)))
+            if (OnRedo != null)
+               OnRedo(this, null);
          return base.ProcessCmdKey (ref msg, keyData);
-      }
-
-      protected override void OnTextChanged(EventArgs e)
-      {
-         if (m_isUndo)
-         {
-            m_isUndo = false;
-            return;
-         }
-         base.OnTextChanged (e);
       }
    }
    #endregion

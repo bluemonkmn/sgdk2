@@ -1351,27 +1351,6 @@ namespace SGDK2
          QueueRecalc();
       }
 
-      private void Frame_FrameRowChanged(object sender, SGDK2.ProjectDataset.FrameRowChangeEvent e)
-      {
-         try
-         {
-            switch(e.Action)
-            {
-               case DataRowAction.Commit:
-               case DataRowAction.Nothing:
-               case DataRowAction.Rollback:
-                  return;
-            }
-
-            if (e.Row.FramesetRow == m_Frameset)
-               QueueRecalc();
-         }
-         catch(Exception ex)
-         {
-            MessageBox.Show(this, ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-         }
-      }
-
       private void Frame_FrameRowChanging(object sender, SGDK2.ProjectDataset.FrameRowChangeEvent e)
       {
          if (Frameset == null)
@@ -1383,8 +1362,7 @@ namespace SGDK2
             return;
          }
 
-         if (e.Row.HasVersion(DataRowVersion.Current) &&
-            (e.Row[ProjectData.Frame.NameColumn, DataRowVersion.Current].ToString() == Frameset.Name))
+         if (e.Row.FramesetRow == Frameset)
          {
             if (FramesToDisplay == null)
             {
@@ -1420,6 +1398,10 @@ namespace SGDK2
                {
                   if (CellCount > 0)
                      m_bSelTemp = Selected[CellCount-1];
+                  QueueRecalc();
+               }
+               else if (e.Action == DataRowAction.Add)
+               {
                   QueueRecalc();
                }
             }

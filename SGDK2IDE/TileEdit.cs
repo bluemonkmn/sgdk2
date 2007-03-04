@@ -46,11 +46,8 @@ namespace SGDK2
       private System.Windows.Forms.Panel pnlFrameProperties;
       private System.Windows.Forms.GroupBox grpFrameProperties;
       private System.Windows.Forms.NumericUpDown updRepeatCount;
-      private System.Windows.Forms.Panel pnlAddFrame;
-      private System.Windows.Forms.Button btnAddFrame;
       private System.Windows.Forms.Label lblRepeatCount;
       private System.Windows.Forms.MenuItem mnuInsertNewTile;
-      private System.Windows.Forms.Button btnDeleteFrame;
       private System.Windows.Forms.MenuItem mnuDeleteTile;
       private System.ComponentModel.IContainer components;
       private System.Windows.Forms.Label lblTilewidth;
@@ -65,6 +62,9 @@ namespace SGDK2
       private System.Windows.Forms.StatusBarPanel sbpTileCell;
       private System.Windows.Forms.ToolBarButton tbbPreview;
       private System.Windows.Forms.MenuItem mnuDeleteFrames;
+      private System.Windows.Forms.MenuItem mnuAddFrames;
+      private System.Windows.Forms.ContextMenu mnuFramesetContext;
+      private System.Windows.Forms.MenuItem mnuCAddFrames;
       private DataChangeNotifier dataMonitor;
       #endregion
 
@@ -168,11 +168,14 @@ namespace SGDK2
          this.mnuInsert = new System.Windows.Forms.MenuItem();
          this.mnuInsertNewTile = new System.Windows.Forms.MenuItem();
          this.mnuDeleteTile = new System.Windows.Forms.MenuItem();
+         this.mnuDeleteFrames = new System.Windows.Forms.MenuItem();
+         this.mnuAddFrames = new System.Windows.Forms.MenuItem();
          this.ttTileset = new System.Windows.Forms.ToolTip(this.components);
          this.cboFrameCounter = new System.Windows.Forms.ComboBox();
          this.updRepeatCount = new System.Windows.Forms.NumericUpDown();
-         this.btnAddFrame = new System.Windows.Forms.Button();
          this.AvailableFrames = new SGDK2.GraphicBrowser();
+         this.mnuFramesetContext = new System.Windows.Forms.ContextMenu();
+         this.mnuCAddFrames = new System.Windows.Forms.MenuItem();
          this.grpTileProperties = new System.Windows.Forms.GroupBox();
          this.pnlFrames = new System.Windows.Forms.Panel();
          this.TileFrames = new SGDK2.GraphicBrowser();
@@ -182,8 +185,6 @@ namespace SGDK2
          this.pnlFrameProperties = new System.Windows.Forms.Panel();
          this.grpFrameProperties = new System.Windows.Forms.GroupBox();
          this.lblRepeatCount = new System.Windows.Forms.Label();
-         this.pnlAddFrame = new System.Windows.Forms.Panel();
-         this.btnDeleteFrame = new System.Windows.Forms.Button();
          this.pnlTileProperties = new System.Windows.Forms.Panel();
          this.lblFrames = new System.Windows.Forms.Label();
          this.lblFrameCounter = new System.Windows.Forms.Label();
@@ -192,7 +193,6 @@ namespace SGDK2
          this.sbpFrameIndex = new System.Windows.Forms.StatusBarPanel();
          this.sbpCellIndex = new System.Windows.Forms.StatusBarPanel();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
-         this.mnuDeleteFrames = new System.Windows.Forms.MenuItem();
          this.pnlTileHeader.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.nudTileHeight)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.nudTileWidth)).BeginInit();
@@ -203,7 +203,6 @@ namespace SGDK2
          ((System.ComponentModel.ISupportInitialize)(this.sbpTileCell)).BeginInit();
          this.pnlFrameProperties.SuspendLayout();
          this.grpFrameProperties.SuspendLayout();
-         this.pnlAddFrame.SuspendLayout();
          this.pnlTileProperties.SuspendLayout();
          this.grpAvailableFrames.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.sbpFrameIndex)).BeginInit();
@@ -416,7 +415,8 @@ namespace SGDK2
          this.mnuInsert.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
                                                                                   this.mnuInsertNewTile,
                                                                                   this.mnuDeleteTile,
-                                                                                  this.mnuDeleteFrames});
+                                                                                  this.mnuDeleteFrames,
+                                                                                  this.mnuAddFrames});
          this.mnuInsert.MergeOrder = 2;
          this.mnuInsert.Text = "&Tileset";
          // 
@@ -432,6 +432,20 @@ namespace SGDK2
          this.mnuDeleteTile.Index = 1;
          this.mnuDeleteTile.Text = "&Delete/Reset Tile";
          this.mnuDeleteTile.Click += new System.EventHandler(this.mnuDeleteTile_Click);
+         // 
+         // mnuDeleteFrames
+         // 
+         this.mnuDeleteFrames.Index = 2;
+         this.mnuDeleteFrames.Shortcut = System.Windows.Forms.Shortcut.Del;
+         this.mnuDeleteFrames.Text = "Delete Selected &Frames";
+         this.mnuDeleteFrames.Click += new System.EventHandler(this.mnuDeleteFrames_Click);
+         // 
+         // mnuAddFrames
+         // 
+         this.mnuAddFrames.Index = 3;
+         this.mnuAddFrames.Shortcut = System.Windows.Forms.Shortcut.CtrlA;
+         this.mnuAddFrames.Text = "&Add Selected Frames to Tile";
+         this.mnuAddFrames.Click += new System.EventHandler(this.mnuAddFrames_Click);
          // 
          // cboFrameCounter
          // 
@@ -465,21 +479,12 @@ namespace SGDK2
          this.updRepeatCount.Validated += new System.EventHandler(this.nudControl_Validated);
          this.updRepeatCount.ValueChanged += new System.EventHandler(this.updRepeatCount_ValueChanged);
          // 
-         // btnAddFrame
-         // 
-         this.btnAddFrame.Location = new System.Drawing.Point(8, 8);
-         this.btnAddFrame.Name = "btnAddFrame";
-         this.btnAddFrame.Size = new System.Drawing.Size(96, 24);
-         this.btnAddFrame.TabIndex = 1;
-         this.btnAddFrame.Text = "^ &Add Frames ^";
-         this.ttTileset.SetToolTip(this.btnAddFrame, "Add the selected frame from \"Available Frames\" to the current tile\'s animation");
-         this.btnAddFrame.Click += new System.EventHandler(this.btnAddFrame_Click);
-         // 
          // AvailableFrames
          // 
          this.AvailableFrames.BorderStyle = SGDK2.DragPanelBorderStyle.FixedInset;
          this.AvailableFrames.CellPadding = new System.Drawing.Size(6, 6);
          this.AvailableFrames.CellSize = new System.Drawing.Size(0, 0);
+         this.AvailableFrames.ContextMenu = this.mnuFramesetContext;
          this.AvailableFrames.CurrentCellIndex = -1;
          this.AvailableFrames.Dock = System.Windows.Forms.DockStyle.Fill;
          this.AvailableFrames.Frameset = null;
@@ -491,6 +496,17 @@ namespace SGDK2
          this.AvailableFrames.Size = new System.Drawing.Size(490, 108);
          this.AvailableFrames.TabIndex = 1;
          this.AvailableFrames.CurrentCellChanged += new System.EventHandler(this.AvailableFrames_CurrentCellChanged);
+         // 
+         // mnuFramesetContext
+         // 
+         this.mnuFramesetContext.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                           this.mnuCAddFrames});
+         // 
+         // mnuCAddFrames
+         // 
+         this.mnuCAddFrames.Index = 0;
+         this.mnuCAddFrames.Text = "Add Selected Frames to Tile";
+         this.mnuCAddFrames.Click += new System.EventHandler(this.mnuAddFrames_Click);
          // 
          // grpTileProperties
          // 
@@ -562,7 +578,6 @@ namespace SGDK2
          // pnlFrameProperties
          // 
          this.pnlFrameProperties.Controls.Add(this.grpFrameProperties);
-         this.pnlFrameProperties.Controls.Add(this.pnlAddFrame);
          this.pnlFrameProperties.Dock = System.Windows.Forms.DockStyle.Bottom;
          this.pnlFrameProperties.Location = new System.Drawing.Point(5, 101);
          this.pnlFrameProperties.Name = "pnlFrameProperties";
@@ -576,7 +591,7 @@ namespace SGDK2
          this.grpFrameProperties.Dock = System.Windows.Forms.DockStyle.Fill;
          this.grpFrameProperties.Location = new System.Drawing.Point(0, 0);
          this.grpFrameProperties.Name = "grpFrameProperties";
-         this.grpFrameProperties.Size = new System.Drawing.Size(264, 40);
+         this.grpFrameProperties.Size = new System.Drawing.Size(480, 40);
          this.grpFrameProperties.TabIndex = 1;
          this.grpFrameProperties.TabStop = false;
          this.grpFrameProperties.Text = "Current Frame Properties";
@@ -589,25 +604,6 @@ namespace SGDK2
          this.lblRepeatCount.TabIndex = 0;
          this.lblRepeatCount.Text = "Repeat Count:";
          this.lblRepeatCount.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-         // 
-         // pnlAddFrame
-         // 
-         this.pnlAddFrame.Controls.Add(this.btnDeleteFrame);
-         this.pnlAddFrame.Controls.Add(this.btnAddFrame);
-         this.pnlAddFrame.Dock = System.Windows.Forms.DockStyle.Right;
-         this.pnlAddFrame.Location = new System.Drawing.Point(264, 0);
-         this.pnlAddFrame.Name = "pnlAddFrame";
-         this.pnlAddFrame.Size = new System.Drawing.Size(216, 40);
-         this.pnlAddFrame.TabIndex = 2;
-         // 
-         // btnDeleteFrame
-         // 
-         this.btnDeleteFrame.Location = new System.Drawing.Point(112, 8);
-         this.btnDeleteFrame.Name = "btnDeleteFrame";
-         this.btnDeleteFrame.Size = new System.Drawing.Size(96, 24);
-         this.btnDeleteFrame.TabIndex = 2;
-         this.btnDeleteFrame.Text = "&Delete Frames";
-         this.btnDeleteFrame.Click += new System.EventHandler(this.btnDeleteFrame_Click);
          // 
          // pnlTileProperties
          // 
@@ -682,13 +678,6 @@ namespace SGDK2
          this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
          this.dataMonitor.CounterRowChanged += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowChanged);
          // 
-         // mnuDeleteFrames
-         // 
-         this.mnuDeleteFrames.Index = 2;
-         this.mnuDeleteFrames.Shortcut = System.Windows.Forms.Shortcut.Del;
-         this.mnuDeleteFrames.Text = "Delete Selected &Frames";
-         this.mnuDeleteFrames.Click += new System.EventHandler(this.mnuDeleteFrames_Click);
-         // 
          // frmTileEdit
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -712,7 +701,6 @@ namespace SGDK2
          ((System.ComponentModel.ISupportInitialize)(this.sbpTileCell)).EndInit();
          this.pnlFrameProperties.ResumeLayout(false);
          this.grpFrameProperties.ResumeLayout(false);
-         this.pnlAddFrame.ResumeLayout(false);
          this.pnlTileProperties.ResumeLayout(false);
          this.grpAvailableFrames.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.sbpFrameIndex)).EndInit();
@@ -922,7 +910,7 @@ namespace SGDK2
          {
             if (e.Button == tbbNewTile)
             {
-               int nNewVal = frmNewTileValue.PromptForNewTileValue(this);
+               int nNewVal = frmNewTileValue.PromptForNewTileValue(this, m_Tileset);
                if (nNewVal < 0)
                   return;
                ProjectDataset.TileRow trNew = ProjectData.AddTileRow(m_Tileset, nNewVal, null);
@@ -1092,7 +1080,7 @@ namespace SGDK2
 
       private void mnuNewTile_Click(object sender, System.EventArgs e)
       {
-         int nNewVal = frmNewTileValue.PromptForNewTileValue(this);
+         int nNewVal = frmNewTileValue.PromptForNewTileValue(this, m_Tileset);
          if (nNewVal < 0)
             return;
          ProjectDataset.TileRow trNew = ProjectData.AddTileRow(m_Tileset, nNewVal, null);
@@ -1104,7 +1092,7 @@ namespace SGDK2
          cboMappedTiles.SelectedItem = trNew;      
       }
 
-      private void btnAddFrame_Click(object sender, System.EventArgs e)
+      private void mnuAddFrames_Click(object sender, System.EventArgs e)
       {
          try
          {

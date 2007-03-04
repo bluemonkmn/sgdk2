@@ -292,6 +292,25 @@ namespace SGDK2
          }
          StoreImageToProject();
       }
+
+      public void LoadCellIntoEditor(int cellIndex)
+      {
+         m_nEndSelectCell = m_nStartSelectCell = cellIndex;
+         LoadSelectionIntoEditor();
+      }
+
+      public void LoadSelectionIntoEditor()
+      {
+         int nCols = (m_nEndSelectCell % m_DataSource.Columns) - (m_nStartSelectCell % m_DataSource.Columns) + 1;
+         int nRows = (m_nEndSelectCell / m_DataSource.Columns) - (m_nStartSelectCell / m_DataSource.Columns) + 1;
+         int nX = (m_nStartSelectCell % m_DataSource.Columns) * m_DataSource.CellWidth;
+         int nY = (m_nStartSelectCell / m_DataSource.Columns) * m_DataSource.CellHeight;
+         Bitmap bmpLoad = new Bitmap(picSheet.Image, m_DataSource.CellWidth * nCols, m_DataSource.CellHeight * nRows);
+         for (int y = 0; y < nRows * m_DataSource.CellHeight; y++)
+            for (int x = 0; x < nCols * m_DataSource.CellWidth; x++)
+               bmpLoad.SetPixel(x,y,((Bitmap)picSheet.Image).GetPixel(x+nX, y+nY));
+         ParentEditor.LoadImage(bmpLoad);
+      }
       #endregion
 
       #region Event Handlers
@@ -355,15 +374,7 @@ namespace SGDK2
 
       private void btnLoadCell_Click(object sender, System.EventArgs e)
       {
-         int nCols = (m_nEndSelectCell % m_DataSource.Columns) - (m_nStartSelectCell % m_DataSource.Columns) + 1;
-         int nRows = (m_nEndSelectCell / m_DataSource.Columns) - (m_nStartSelectCell / m_DataSource.Columns) + 1;
-         int nX = (m_nStartSelectCell % m_DataSource.Columns) * m_DataSource.CellWidth;
-         int nY = (m_nStartSelectCell / m_DataSource.Columns) * m_DataSource.CellHeight;
-         Bitmap bmpLoad = new Bitmap(picSheet.Image, m_DataSource.CellWidth * nCols, m_DataSource.CellHeight * nRows);
-         for (int y = 0; y < nRows * m_DataSource.CellHeight; y++)
-            for (int x = 0; x < nCols * m_DataSource.CellWidth; x++)
-               bmpLoad.SetPixel(x,y,((Bitmap)picSheet.Image).GetPixel(x+nX, y+nY));
-         ParentEditor.LoadImage(bmpLoad);
+         LoadSelectionIntoEditor();
       }
 
       private void DataSource_GraphicSheetRowChanged(object sender, SGDK2.ProjectDataset.GraphicSheetRowChangeEvent e)

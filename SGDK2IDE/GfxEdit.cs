@@ -2084,7 +2084,7 @@ namespace SGDK2
       #endregion
 
       #region Public Static Members
-      public static void Edit(Form MdiParent, ProjectDataset.GraphicSheetRow EditRow)
+      public static frmGraphicsEditor Edit(Form MdiParent, ProjectDataset.GraphicSheetRow EditRow)
       {
          foreach(Form frm in MdiParent.MdiChildren)
          {
@@ -2094,7 +2094,7 @@ namespace SGDK2
                if (f.m_DataSource == EditRow)
                {
                   f.Activate();
-                  return;
+                  return f;
                }
             }
          }
@@ -2102,6 +2102,13 @@ namespace SGDK2
          frmGraphicsEditor frmNew = new frmGraphicsEditor(EditRow);
          frmNew.MdiParent = MdiParent;
          frmNew.Show();
+         return frmNew;
+      }
+
+      public static void Edit(Form MdiParent, ProjectDataset.GraphicSheetRow EditRow, int cellIndex)
+      {
+         frmGraphicsEditor frmNew = Edit(MdiParent, EditRow);
+         frmNew.m_frmCells.LoadCellIntoEditor(cellIndex);
       }
       #endregion
 

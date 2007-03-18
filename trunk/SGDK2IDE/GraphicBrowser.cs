@@ -55,6 +55,7 @@ namespace SGDK2
       private int m_FocusIndex = -1;
       private bool m_bSelTemp;
       private Timer RecalcTimer = null;
+      private DateTime DragScrollTime = DateTime.MinValue;
       private FrameList m_FramesToDisplay = null;
       private bool m_bIsOrdered;
 
@@ -1234,11 +1235,47 @@ namespace SGDK2
             Point ptDrag = PointToClient(new Point(drgevent.X, drgevent.Y));
             int nCell = GetCellAtXY(ptDrag.X, ptDrag.Y, HitFlags.GetNearest | HitFlags.AllowExtraCell);
             Rectangle rcInsert = GetCellRect(nCell);
+            Point ptNew = AutoScrollPosition;
+            m_FrameDrawSize = Size.Empty;
+            bool updateRequired = false;
+            if (rcInsert.Bottom > ClientRectangle.Bottom)
+            {
+               ptNew.Y = -ptNew.Y + rcInsert.Bottom - ClientRectangle.Bottom;
+               updateRequired = true;
+            }
+            else if (rcInsert.Top < ClientRectangle.Top)
+            {
+               ptNew.Y = -ptNew.Y + rcInsert.Top;
+               updateRequired = true;
+            }
+            else if ((ptDrag.Y > ClientSize.Height - 16) && (-AutoScrollPosition.Y + ClientSize.Height < AutoScrollMinSize.Height) && (DateTime.Now.Subtract(DragScrollTime).TotalMilliseconds > 180))
+            {
+               ptNew.Y = -ptNew.Y + CellSize.Height + CellPadding.Height;
+               if (ptNew.Y > AutoScrollMinSize.Height - ClientSize.Height)
+                  ptNew.Y = AutoScrollMinSize.Height - ClientSize.Height;
+               updateRequired = true;
+            }
+            else if ((ptDrag.Y < 16) && (AutoScrollPosition.Y < 0) && (DateTime.Now.Subtract(DragScrollTime).TotalMilliseconds > 180))
+            {
+               ptNew.Y = -ptNew.Y - CellSize.Height - CellPadding.Height;
+               if (ptNew.Y < 0)
+                  ptNew.Y = 0;
+               updateRequired = true;
+            }
+            if (updateRequired)
+            {
+               AutoScrollPosition = ptNew;
+               rcInsert = GetCellRect(nCell);
+               Update();
+               DragScrollTime = DateTime.Now;
+            }
+
             if (nCell < CellCount)
             {
                rcInsert.Width = 2;
                rcInsert.Offset(-2,0);
             }
+            
             m_DragStart = rcInsert.Location;
             m_FrameDrawSize = rcInsert.Size;
 

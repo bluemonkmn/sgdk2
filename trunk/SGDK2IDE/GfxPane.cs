@@ -377,8 +377,6 @@ namespace SGDK2
          {
             DragEnd = ConvertMouseCoordsToPoint(e.X, e.Y);
 
-            this.Text = GetScaleFactorString() + " " + DragEnd.X.ToString() + "," + DragEnd.Y.ToString();
-
             if ((e.Button > 0) || ((ParentEditor.FreehandPoints != null) &&
                ((ParentEditor.CurrentTool == DrawingTool.Bezier) ||
                (ParentEditor.CurrentTool == DrawingTool.FreeLine))) ||
@@ -426,6 +424,8 @@ namespace SGDK2
                         }
                         break;
                   }
+
+                  this.Text = GetScaleFactorString() + " " + DragEnd.X.ToString() + "," + DragEnd.Y.ToString();
 
                   switch(ParentEditor.CurrentTool)
                   {
@@ -754,6 +754,7 @@ namespace SGDK2
             }
             else
             {
+               this.Text = GetScaleFactorString() + " " + DragEnd.X.ToString() + "," + DragEnd.Y.ToString();
                DrawCurrentToolState();
             }
             if (ViewChanged != null)

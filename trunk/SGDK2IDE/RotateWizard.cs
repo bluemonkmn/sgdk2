@@ -222,7 +222,7 @@ namespace SGDK2
          this.pnlFrameset.Controls.Add(this.lblFramesetHeader);
          this.pnlFrameset.Location = new System.Drawing.Point(-10168, 42);
          this.pnlFrameset.Name = "pnlFrameset";
-         this.pnlFrameset.Size = new System.Drawing.Size(285, 231);
+         this.pnlFrameset.Size = new System.Drawing.Size(286, 231);
          this.pnlFrameset.TabIndex = 7;
          // 
          // cboFrameset
@@ -266,7 +266,7 @@ namespace SGDK2
          this.pnlSizingStyle.Controls.Add(this.lblSizingStyleHeader);
          this.pnlSizingStyle.Location = new System.Drawing.Point(-10168, 42);
          this.pnlSizingStyle.Name = "pnlSizingStyle";
-         this.pnlSizingStyle.Size = new System.Drawing.Size(285, 231);
+         this.pnlSizingStyle.Size = new System.Drawing.Size(286, 231);
          this.pnlSizingStyle.TabIndex = 8;
          // 
          // rdoVariableSize
@@ -322,7 +322,7 @@ namespace SGDK2
          this.pnlPrefix.Controls.Add(this.lblPrefixHeader);
          this.pnlPrefix.Location = new System.Drawing.Point(-10168, 42);
          this.pnlPrefix.Name = "pnlPrefix";
-         this.pnlPrefix.Size = new System.Drawing.Size(285, 231);
+         this.pnlPrefix.Size = new System.Drawing.Size(286, 231);
          this.pnlPrefix.TabIndex = 9;
          // 
          // txtPrefix
@@ -364,7 +364,7 @@ namespace SGDK2
          this.pnlStateCount.Controls.Add(this.lblStateCountHeader);
          this.pnlStateCount.Location = new System.Drawing.Point(-10168, 42);
          this.pnlStateCount.Name = "pnlStateCount";
-         this.pnlStateCount.Size = new System.Drawing.Size(284, 231);
+         this.pnlStateCount.Size = new System.Drawing.Size(285, 231);
          this.pnlStateCount.TabIndex = 10;
          // 
          // nudStateCount
@@ -405,7 +405,7 @@ namespace SGDK2
          this.lblStateCountHeader.Size = new System.Drawing.Size(264, 80);
          this.lblStateCountHeader.TabIndex = 0;
          this.lblStateCountHeader.Text = "The number of states determines the increments in which the sprite rotates.  A st" +
-            "ate count of 36 would result in a sprite with 72 rotation states, each represent" +
+            "ate count of 72 would result in a sprite with 72 rotation states, each represent" +
             "ing a 5 degree increment from the previous state.";
          // 
          // StateCount
@@ -419,7 +419,7 @@ namespace SGDK2
          this.pnlReview.Controls.Add(this.lblReview);
          this.pnlReview.Location = new System.Drawing.Point(-10168, 42);
          this.pnlReview.Name = "pnlReview";
-         this.pnlReview.Size = new System.Drawing.Size(284, 231);
+         this.pnlReview.Size = new System.Drawing.Size(285, 231);
          this.pnlReview.TabIndex = 11;
          // 
          // txtReview
@@ -457,7 +457,7 @@ namespace SGDK2
          this.pnlFrameSettings.Controls.Add(this.lblFrameRepeatHeader);
          this.pnlFrameSettings.Location = new System.Drawing.Point(-10168, 42);
          this.pnlFrameSettings.Name = "pnlFrameSettings";
-         this.pnlFrameSettings.Size = new System.Drawing.Size(283, 231);
+         this.pnlFrameSettings.Size = new System.Drawing.Size(284, 231);
          this.pnlFrameSettings.TabIndex = 12;
          // 
          // nudAlpha
@@ -530,7 +530,7 @@ namespace SGDK2
          this.pnlBaseSize.Controls.Add(this.lblSizingWidth);
          this.pnlBaseSize.Location = new System.Drawing.Point(-10168, 42);
          this.pnlBaseSize.Name = "pnlBaseSize";
-         this.pnlBaseSize.Size = new System.Drawing.Size(281, 231);
+         this.pnlBaseSize.Size = new System.Drawing.Size(282, 231);
          this.pnlBaseSize.TabIndex = 13;
          // 
          // pnlPreviewSolid

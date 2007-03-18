@@ -68,6 +68,7 @@ namespace SGDK2
       private const string FramesetRefClassName = "FramesetRef";
       private const string FramesetSerializeName = "FramesetName";
       private const string GameDisplayField = "GameDisplay";
+      private const string d3dx9File = "d3dx9_30.dll";
       #endregion
 
       #region Embedded Types
@@ -436,6 +437,7 @@ namespace SGDK2
             if (drCode.Name.EndsWith(".dll"))
                fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(drCode.Name)));
          }
+         fileList.Add(System.IO.Path.Combine(FolderName, d3dx9File));
          return (string[])(fileList.ToArray(typeof(string)));
       }
 
@@ -3010,6 +3012,22 @@ namespace SGDK2
             compilerParams.ReferencedAssemblies.Add("System.dll");
             compilerParams.ReferencedAssemblies.Add("System.Drawing.dll");
             compilerParams.ReferencedAssemblies.Add("System.Design.dll");
+            string d3dx9Path = null;
+            foreach(string path in new string []
+               {
+                  System.IO.Path.Combine(Environment.CurrentDirectory, d3dx9File),
+                  System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, d3dx9File),
+                  System.IO.Path.Combine(Environment.SystemDirectory, d3dx9File)
+               })
+            {
+               if (System.IO.File.Exists(path))
+               {
+                  d3dx9Path = path;
+                  break;
+               }
+            }
+            if (d3dx9Path != null)
+               System.IO.File.Copy(d3dx9Path, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(d3dx9File)), false);
             foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
             {
                ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;

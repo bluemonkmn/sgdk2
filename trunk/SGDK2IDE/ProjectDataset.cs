@@ -6911,11 +6911,11 @@ namespace SGDK2 {
             }
             
             private void InitClass() {
-                this.columnMapName = new DataColumn("MapName", typeof(string), null, System.Data.MappingType.Attribute);
+                this.columnMapName = new DataColumn("MapName", typeof(string), null, System.Data.MappingType.Hidden);
                 this.Columns.Add(this.columnMapName);
-                this.columnLayerName = new DataColumn("LayerName", typeof(string), null, System.Data.MappingType.Attribute);
+                this.columnLayerName = new DataColumn("LayerName", typeof(string), null, System.Data.MappingType.Hidden);
                 this.Columns.Add(this.columnLayerName);
-                this.columnPlanName = new DataColumn("PlanName", typeof(string), null, System.Data.MappingType.Attribute);
+                this.columnPlanName = new DataColumn("PlanName", typeof(string), null, System.Data.MappingType.Hidden);
                 this.Columns.Add(this.columnPlanName);
                 this.columnName = new DataColumn("Name", typeof(string), null, System.Data.MappingType.Attribute);
                 this.Columns.Add(this.columnName);
@@ -6990,33 +6990,6 @@ namespace SGDK2 {
             internal PlanParameterValueRow(DataRowBuilder rb) : 
                     base(rb) {
                 this.tablePlanParameterValue = ((PlanParameterValueDataTable)(this.Table));
-            }
-            
-            public string MapName {
-                get {
-                    return ((string)(this[this.tablePlanParameterValue.MapNameColumn]));
-                }
-                set {
-                    this[this.tablePlanParameterValue.MapNameColumn] = value;
-                }
-            }
-            
-            public string LayerName {
-                get {
-                    return ((string)(this[this.tablePlanParameterValue.LayerNameColumn]));
-                }
-                set {
-                    this[this.tablePlanParameterValue.LayerNameColumn] = value;
-                }
-            }
-            
-            public string PlanName {
-                get {
-                    return ((string)(this[this.tablePlanParameterValue.PlanNameColumn]));
-                }
-                set {
-                    this[this.tablePlanParameterValue.PlanNameColumn] = value;
-                }
             }
             
             public string Name {

@@ -2115,37 +2115,42 @@ namespace SGDK2
          {
             if (ActiveControl != FrameProperties)
                mnuDeleteFrames.Enabled = true;
-            if (editingFrame && (m_FrameEditorSource is ProjectDataset.GraphicSheetRow))
+            if (editingFrame)
             {
-               switch (MessageBox.Show(this, "Do you want to add the transformed graphic to the frameset?", "Unsaved Changes Exist", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+               if (m_FrameEditorSource is ProjectDataset.GraphicSheetRow)
                {
-                  case DialogResult.Yes:
-                     btnApply_Click(tabFrameset, null);
-                     editingFrame = false;
-                     break;
-                  case DialogResult.No:
-                     editingFrame = false;
-                     break;
-                  case DialogResult.Cancel:
-                     tabFrameset.SelectedTab = tpgFrameEditor;
-                     break;
+                  switch (MessageBox.Show(this, "Do you want to add the transformed graphic to the frameset?", "Unsaved Changes Exist", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+                  {
+                     case DialogResult.Yes:
+                        btnApply_Click(tabFrameset, null);
+                        editingFrame = false;
+                        break;
+                     case DialogResult.No:
+                        editingFrame = false;
+                        break;
+                     case DialogResult.Cancel:
+                        tabFrameset.SelectedTab = tpgFrameEditor;
+                        break;
+                  }
                }
-            }
-            else if (editingFrame && (m_FrameEditorSource is ProjectDataset.FrameRow))
-            {
-               switch (MessageBox.Show(this, "Do you want to update the frame?", "Unsaved Changes Exist", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+               else if (m_FrameEditorSource is ProjectDataset.FrameRow)
                {
-                  case DialogResult.Yes:
-                     btnApply_Click(tabFrameset, null);
-                     editingFrame = false;
-                     break;
-                  case DialogResult.No:
-                     editingFrame = false;
-                     break;
-                  case DialogResult.Cancel:
-                     tabFrameset.SelectedTab = tpgFrameEditor;
-                     break;
+                  switch (MessageBox.Show(this, "Do you want to update the frame?", "Unsaved Changes Exist", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
+                  {
+                     case DialogResult.Yes:
+                        btnApply_Click(tabFrameset, null);
+                        editingFrame = false;
+                        break;
+                     case DialogResult.No:
+                        editingFrame = false;
+                        break;
+                     case DialogResult.Cancel:
+                        tabFrameset.SelectedTab = tpgFrameEditor;
+                        break;
+                  }
                }
+               else
+                  editingFrame = false;
             }
          }
       }
@@ -2183,12 +2188,14 @@ namespace SGDK2
 
       private void FrameBrowser_DoubleClick(object sender, System.EventArgs e)
       {
-         tabFrameset.SelectedTab = tpgFrameEditor;
+         if (m_FrameEditorSource is ProjectDataset.FrameRow)
+            tabFrameset.SelectedTab = tpgFrameEditor;
       }
 
       private void CellBrowser_DoubleClick(object sender, System.EventArgs e)
       {
-         tabFrameset.SelectedTab = tpgFrameEditor;
+         if ((m_FrameEditorSource is ProjectDataset.GraphicSheetRow) && (CellBrowser.CurrentCellIndex >= 0))
+            tabFrameset.SelectedTab = tpgFrameEditor;
       }
 
       private void mnuGraphicEditor_Click(object sender, System.EventArgs e)

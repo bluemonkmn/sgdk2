@@ -1161,7 +1161,7 @@ namespace SGDK2
                      break;
                }
                for (endDiffRow=rowText.Length, endDiffRtf=rtfCodeText.Length;
-                    (--endDiffRow >= startDiff) && (--endDiffRtf >= startDiff);)
+                    (--endDiffRow > startDiff) && (--endDiffRtf > startDiff);)
                {
                   if (rowText[endDiffRow] != rtfCodeText[endDiffRtf])
                   {

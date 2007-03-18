@@ -48,10 +48,10 @@ public class Project
          GameDisplayMode mode = (GameDisplayMode)System.Enum.Parse(typeof(GameDisplayMode), m_res.GetString("_DisplayMode"));
          bool windowed = bool.Parse(m_res.GetString("_Windowed"));
          string windowTitle = m_res.GetString("_WindowTitle");
-         System.Type startupMapType = System.Reflection.Assembly.GetExecutingAssembly().GetType(m_res.GetString("_StartupMapType") + "_Map", true);
+         System.Type startupMapType = System.Reflection.Assembly.GetExecutingAssembly().GetType(m_res.GetString("_StartupMapType").Replace(" ","_") + "_Map", true);
          System.Type overlayMapType = null;
          if (m_res.GetString("_OverlayMapType") != null)
-             overlayMapType = System.Reflection.Assembly.GetExecutingAssembly().GetType(m_res.GetString("_OverlayMapType") + "_Map", true);
+             overlayMapType = System.Reflection.Assembly.GetExecutingAssembly().GetType(m_res.GetString("_OverlayMapType").Replace(" ","_") + "_Map", true);
 
          Project.game = new GameForm(mode, windowed, windowTitle, startupMapType, overlayMapType);
          game.Show();

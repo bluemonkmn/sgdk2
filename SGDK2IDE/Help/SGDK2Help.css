@@ -1,0 +1,29 @@
+BODY
+{
+   font-size: small;
+   font-family: Sans-Serif, Verdana;
+}
+H3
+{
+   margin-left: 15px;
+}
+P
+{
+   margin-left: 15px;
+}
+H3+P
+{
+   margin-left: 30px;
+}
+H3+P+P
+{
+   margin-left: 30px;
+}
+H3+P+P+P
+{
+   margin-left: 30px;
+}
+H3+P+P+P+P
+{
+   margin-left: 30px;
+}

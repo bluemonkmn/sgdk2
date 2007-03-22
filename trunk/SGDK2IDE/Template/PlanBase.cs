@@ -551,7 +551,7 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
          }
          if (targety < 0)
             continue;
-         if (targety >= Target.ParentLayer.Rows)
+         if (targety >= Target.ParentLayer.VirtualRows)
             break;
          for (int x = src_left; x <= src_right; x++)
          {
@@ -574,7 +574,7 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
             }
             if (targetx < 0)
                continue;
-            if (targetx >= Target.ParentLayer.Columns)
+            if (targetx >= Target.ParentLayer.VirtualColumns)
                break;
             
             Target.ParentLayer[targetx,targety] = ParentLayer[x,y];

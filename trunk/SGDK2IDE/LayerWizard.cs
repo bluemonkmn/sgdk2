@@ -20,6 +20,7 @@ namespace SGDK2
       private Point m_RememberedOffset = Point.Empty;
       private Size m_ViewSize = Size.Empty;
       private Size m_PropsedSize = Size.Empty;
+      private Size m_PropsedVirtualSize = Size.Empty;
       private frmLayerManager.LayerProperties m_LayerProperties;
       #endregion
 
@@ -75,6 +76,14 @@ namespace SGDK2
       private SGDK2.frmWizardBase.StepInfo Review;
       private System.Windows.Forms.Label lblReview;
       private System.Windows.Forms.TextBox txtReview;
+      private SGDK2.frmWizardBase.StepInfo VirtualSize;
+      private System.Windows.Forms.Panel pnlVirtualSize;
+      private System.Windows.Forms.TextBox txtVirtualColumns;
+      private System.Windows.Forms.Label lblVirtualColumns;
+      private System.Windows.Forms.TextBox txtVirtualRows;
+      private System.Windows.Forms.Label lblVirtualRows;
+      private System.Windows.Forms.CheckBox chkFitVirtualToMap;
+      private System.Windows.Forms.Label lblVirtualSizePrompt;
       private System.ComponentModel.IContainer components = null;
       #endregion
 
@@ -164,6 +173,14 @@ namespace SGDK2
          this.txtReview = new System.Windows.Forms.TextBox();
          this.lblReview = new System.Windows.Forms.Label();
          this.Review = new SGDK2.frmWizardBase.StepInfo();
+         this.VirtualSize = new SGDK2.frmWizardBase.StepInfo();
+         this.pnlVirtualSize = new System.Windows.Forms.Panel();
+         this.txtVirtualColumns = new System.Windows.Forms.TextBox();
+         this.lblVirtualColumns = new System.Windows.Forms.Label();
+         this.txtVirtualRows = new System.Windows.Forms.TextBox();
+         this.lblVirtualRows = new System.Windows.Forms.Label();
+         this.chkFitVirtualToMap = new System.Windows.Forms.CheckBox();
+         this.lblVirtualSizePrompt = new System.Windows.Forms.Label();
          this.pnlTileset.SuspendLayout();
          this.pnlBytesPerTile.SuspendLayout();
          this.pnlBackgroundTile.SuspendLayout();
@@ -175,6 +192,7 @@ namespace SGDK2
          ((System.ComponentModel.ISupportInitialize)(this.nudZIndex)).BeginInit();
          this.pnlSize.SuspendLayout();
          this.pnlReview.SuspendLayout();
+         this.pnlVirtualSize.SuspendLayout();
          this.SuspendLayout();
          // 
          // pnlTileset
@@ -186,7 +204,7 @@ namespace SGDK2
          this.pnlTileset.Controls.Add(this.lblTilesetInfo);
          this.pnlTileset.Location = new System.Drawing.Point(168, 42);
          this.pnlTileset.Name = "pnlTileset";
-         this.pnlTileset.Size = new System.Drawing.Size(287, 231);
+         this.pnlTileset.Size = new System.Drawing.Size(288, 231);
          this.pnlTileset.TabIndex = 6;
          this.pnlTileset.Visible = false;
          // 
@@ -256,7 +274,7 @@ namespace SGDK2
          this.pnlBytesPerTile.Controls.Add(this.lblBytesPerTileInfo);
          this.pnlBytesPerTile.Location = new System.Drawing.Point(-10168, 42);
          this.pnlBytesPerTile.Name = "pnlBytesPerTile";
-         this.pnlBytesPerTile.Size = new System.Drawing.Size(290, 231);
+         this.pnlBytesPerTile.Size = new System.Drawing.Size(292, 231);
          this.pnlBytesPerTile.TabIndex = 7;
          this.pnlBytesPerTile.Visible = false;
          // 
@@ -302,7 +320,7 @@ namespace SGDK2
          this.pnlBackgroundTile.Controls.Add(this.lblBackgroundTileInfo);
          this.pnlBackgroundTile.Location = new System.Drawing.Point(-10168, 42);
          this.pnlBackgroundTile.Name = "pnlBackgroundTile";
-         this.pnlBackgroundTile.Size = new System.Drawing.Size(290, 231);
+         this.pnlBackgroundTile.Size = new System.Drawing.Size(292, 231);
          this.pnlBackgroundTile.TabIndex = 8;
          this.pnlBackgroundTile.Visible = false;
          // 
@@ -355,7 +373,7 @@ namespace SGDK2
          this.pnlOffset.Controls.Add(this.lblOffset);
          this.pnlOffset.Location = new System.Drawing.Point(-10168, 42);
          this.pnlOffset.Name = "pnlOffset";
-         this.pnlOffset.Size = new System.Drawing.Size(284, 231);
+         this.pnlOffset.Size = new System.Drawing.Size(286, 231);
          this.pnlOffset.TabIndex = 9;
          this.pnlOffset.Visible = false;
          // 
@@ -386,7 +404,7 @@ namespace SGDK2
          this.lblOffset.Dock = System.Windows.Forms.DockStyle.Bottom;
          this.lblOffset.Location = new System.Drawing.Point(0, 207);
          this.lblOffset.Name = "lblOffset";
-         this.lblOffset.Size = new System.Drawing.Size(284, 24);
+         this.lblOffset.Size = new System.Drawing.Size(286, 24);
          this.lblOffset.TabIndex = 2;
          this.lblOffset.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
          // 
@@ -405,7 +423,7 @@ namespace SGDK2
          this.pnlScrollRate.Controls.Add(this.lblScrollRateInfo);
          this.pnlScrollRate.Location = new System.Drawing.Point(-10168, 42);
          this.pnlScrollRate.Name = "pnlScrollRate";
-         this.pnlScrollRate.Size = new System.Drawing.Size(290, 231);
+         this.pnlScrollRate.Size = new System.Drawing.Size(292, 231);
          this.pnlScrollRate.TabIndex = 10;
          this.pnlScrollRate.Visible = false;
          // 
@@ -468,7 +486,7 @@ namespace SGDK2
          this.pnlPriority.Controls.Add(this.lblPriorityInfo);
          this.pnlPriority.Location = new System.Drawing.Point(-10168, 42);
          this.pnlPriority.Name = "pnlPriority";
-         this.pnlPriority.Size = new System.Drawing.Size(288, 231);
+         this.pnlPriority.Size = new System.Drawing.Size(290, 231);
          this.pnlPriority.TabIndex = 11;
          this.pnlPriority.Visible = false;
          // 
@@ -548,7 +566,7 @@ namespace SGDK2
          this.pnlSize.Controls.Add(this.lblSizeInfo);
          this.pnlSize.Location = new System.Drawing.Point(-10168, 42);
          this.pnlSize.Name = "pnlSize";
-         this.pnlSize.Size = new System.Drawing.Size(287, 231);
+         this.pnlSize.Size = new System.Drawing.Size(289, 231);
          this.pnlSize.TabIndex = 12;
          this.pnlSize.Visible = false;
          // 
@@ -628,7 +646,7 @@ namespace SGDK2
          this.pnlReview.Controls.Add(this.lblReview);
          this.pnlReview.Location = new System.Drawing.Point(-10168, 42);
          this.pnlReview.Name = "pnlReview";
-         this.pnlReview.Size = new System.Drawing.Size(283, 231);
+         this.pnlReview.Size = new System.Drawing.Size(285, 231);
          this.pnlReview.TabIndex = 13;
          // 
          // txtReview
@@ -659,10 +677,86 @@ namespace SGDK2
          this.Review.InitFunction += new System.EventHandler(this.Review_InitFunction);
          this.Review.ValidateFunction += new SGDK2.frmWizardBase.ValidateFunctionEvent(this.Review_ValidateFunction);
          // 
+         // VirtualSize
+         // 
+         this.VirtualSize.StepControl = this.pnlVirtualSize;
+         this.VirtualSize.TitleText = "Virtual Size";
+         this.VirtualSize.InitFunction += new System.EventHandler(this.VirtualSize_InitFunction);
+         this.VirtualSize.ValidateFunction += new SGDK2.frmWizardBase.ValidateFunctionEvent(this.VirtualSize_ValidateFunction);
+         // 
+         // pnlVirtualSize
+         // 
+         this.pnlVirtualSize.Controls.Add(this.txtVirtualColumns);
+         this.pnlVirtualSize.Controls.Add(this.lblVirtualColumns);
+         this.pnlVirtualSize.Controls.Add(this.txtVirtualRows);
+         this.pnlVirtualSize.Controls.Add(this.lblVirtualRows);
+         this.pnlVirtualSize.Controls.Add(this.chkFitVirtualToMap);
+         this.pnlVirtualSize.Controls.Add(this.lblVirtualSizePrompt);
+         this.pnlVirtualSize.Location = new System.Drawing.Point(-10168, 42);
+         this.pnlVirtualSize.Name = "pnlVirtualSize";
+         this.pnlVirtualSize.Size = new System.Drawing.Size(280, 231);
+         this.pnlVirtualSize.TabIndex = 14;
+         // 
+         // txtVirtualColumns
+         // 
+         this.txtVirtualColumns.Location = new System.Drawing.Point(88, 144);
+         this.txtVirtualColumns.MaxLength = 7;
+         this.txtVirtualColumns.Name = "txtVirtualColumns";
+         this.txtVirtualColumns.Size = new System.Drawing.Size(72, 20);
+         this.txtVirtualColumns.TabIndex = 11;
+         this.txtVirtualColumns.Text = "";
+         // 
+         // lblVirtualColumns
+         // 
+         this.lblVirtualColumns.Location = new System.Drawing.Point(8, 144);
+         this.lblVirtualColumns.Name = "lblVirtualColumns";
+         this.lblVirtualColumns.Size = new System.Drawing.Size(80, 20);
+         this.lblVirtualColumns.TabIndex = 10;
+         this.lblVirtualColumns.Text = "Tile Columns:";
+         this.lblVirtualColumns.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+         // 
+         // txtVirtualRows
+         // 
+         this.txtVirtualRows.Location = new System.Drawing.Point(88, 168);
+         this.txtVirtualRows.MaxLength = 7;
+         this.txtVirtualRows.Name = "txtVirtualRows";
+         this.txtVirtualRows.Size = new System.Drawing.Size(72, 20);
+         this.txtVirtualRows.TabIndex = 9;
+         this.txtVirtualRows.Text = "";
+         // 
+         // lblVirtualRows
+         // 
+         this.lblVirtualRows.Location = new System.Drawing.Point(8, 168);
+         this.lblVirtualRows.Name = "lblVirtualRows";
+         this.lblVirtualRows.Size = new System.Drawing.Size(80, 20);
+         this.lblVirtualRows.TabIndex = 8;
+         this.lblVirtualRows.Text = "Tile Rows:";
+         this.lblVirtualRows.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+         // 
+         // chkFitVirtualToMap
+         // 
+         this.chkFitVirtualToMap.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+         this.chkFitVirtualToMap.Location = new System.Drawing.Point(8, 104);
+         this.chkFitVirtualToMap.Name = "chkFitVirtualToMap";
+         this.chkFitVirtualToMap.Size = new System.Drawing.Size(264, 32);
+         this.chkFitVirtualToMap.TabIndex = 7;
+         this.chkFitVirtualToMap.Text = "Size the layer to fill the map\'s scrollable area. (Assumes single-view mode or sc" +
+            "roll rate=1.)";
+         this.chkFitVirtualToMap.CheckedChanged += new System.EventHandler(this.chkFitVirtualToMap_CheckedChanged);
+         // 
+         // lblVirtualSizePrompt
+         // 
+         this.lblVirtualSizePrompt.Location = new System.Drawing.Point(8, 8);
+         this.lblVirtualSizePrompt.Name = "lblVirtualSizePrompt";
+         this.lblVirtualSizePrompt.Size = new System.Drawing.Size(264, 96);
+         this.lblVirtualSizePrompt.TabIndex = 6;
+         this.lblVirtualSizePrompt.Text = @"The virtual size of the layer determines the display size of the layer independently of how many tiles are actually defined in it.  By creating a layer whose virtual size is larger than the layer, you can achieve a wrapping effect in which moving beyond the edge of the layer wraps back to the beginning.  Setting these to 0 uses the layer's actual size.";
+         // 
          // frmLayerWizard
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
          this.ClientSize = new System.Drawing.Size(450, 313);
+         this.Controls.Add(this.pnlVirtualSize);
          this.Controls.Add(this.pnlReview);
          this.Controls.Add(this.pnlSize);
          this.Controls.Add(this.pnlPriority);
@@ -679,6 +773,7 @@ namespace SGDK2
          this.Steps.Add(this.Offset);
          this.Steps.Add(this.Priority);
          this.Steps.Add(this.LayerSize);
+         this.Steps.Add(this.VirtualSize);
          this.Steps.Add(this.Review);
          this.Text = "Layer Wizard";
          this.Controls.SetChildIndex(this.pnlTileset, 0);
@@ -689,6 +784,7 @@ namespace SGDK2
          this.Controls.SetChildIndex(this.pnlPriority, 0);
          this.Controls.SetChildIndex(this.pnlSize, 0);
          this.Controls.SetChildIndex(this.pnlReview, 0);
+         this.Controls.SetChildIndex(this.pnlVirtualSize, 0);
          this.pnlTileset.ResumeLayout(false);
          this.pnlBytesPerTile.ResumeLayout(false);
          this.pnlBackgroundTile.ResumeLayout(false);
@@ -700,6 +796,7 @@ namespace SGDK2
          ((System.ComponentModel.ISupportInitialize)(this.nudZIndex)).EndInit();
          this.pnlSize.ResumeLayout(false);
          this.pnlReview.ResumeLayout(false);
+         this.pnlVirtualSize.ResumeLayout(false);
          this.ResumeLayout(false);
 
       }
@@ -787,6 +884,8 @@ namespace SGDK2
          m_Layer.ScrollRateY = (float)m_nScrollRateY;
          m_Layer.Width = m_PropsedSize.Width;
          m_Layer.Height = m_PropsedSize.Height;
+         m_Layer.VirtualWidth = m_PropsedVirtualSize.Width;
+         m_Layer.VirtualHeight = m_PropsedVirtualSize.Height;
 
          return true;
       }
@@ -1027,6 +1126,68 @@ namespace SGDK2
          return true;
       }
 
+      private void VirtualSize_InitFunction(object sender, System.EventArgs e)
+      {
+         if (txtVirtualRows.Text.Length == 0)
+         {
+            txtVirtualRows.Text = m_Layer.VirtualHeight.ToString();
+            txtVirtualColumns.Text = m_Layer.VirtualWidth.ToString();
+         }      
+      }
+
+      private void chkFitVirtualToMap_CheckedChanged(object sender, System.EventArgs e)
+      {
+         if (chkFitVirtualToMap.Checked)
+         {
+            int scrollDist;
+            if (m_ViewSize.Width > m_Layer.MapRow.ScrollWidth)
+               scrollDist = 0;
+            else
+               scrollDist = m_Layer.MapRow.ScrollWidth - m_ViewSize.Width;
+            txtVirtualColumns.Text = ((int)Math.Ceiling((scrollDist * m_nScrollRateX + m_ViewSize.Width - m_ProposedOffset.X) / m_Layer.TilesetRow.TileWidth)).ToString();
+            if (m_ViewSize.Height > m_Layer.MapRow.ScrollHeight)
+               scrollDist = 0;
+            else
+               scrollDist = m_Layer.MapRow.ScrollHeight - m_ViewSize.Height;
+            txtVirtualRows.Text = ((int)Math.Ceiling((scrollDist * m_nScrollRateY + m_ViewSize.Height - m_ProposedOffset.Y) / m_Layer.TilesetRow.TileHeight)).ToString();
+         }
+         else
+         {
+            txtVirtualColumns.Text = m_Layer.VirtualWidth.ToString();
+            txtVirtualRows.Text = m_Layer.VirtualHeight.ToString();
+         }      
+      }
+
+      private bool VirtualSize_ValidateFunction(SGDK2.frmWizardBase.StepInfo sender)
+      {
+         double dblTemp;
+         if (!double.TryParse(txtVirtualColumns.Text, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.CurrentCulture, out dblTemp))
+         {
+            MessageBox.Show(this, "Invalid value specified for Tile Columns", "Layer Virtual Size", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return false;
+         }
+         if ((dblTemp < 0) || (dblTemp > 9999999))
+         {
+            MessageBox.Show(this, "Number out of valid range for Tile Columns", "Layer Virtual Size", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return false;
+         }
+         m_PropsedVirtualSize.Width = (int)dblTemp;
+
+         if (!double.TryParse(txtVirtualRows.Text, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.CurrentCulture, out dblTemp))
+         {
+            MessageBox.Show(this, "Invalid value specified for Tile Rows", "Layer Virtual Size", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return false;
+         }
+         if ((dblTemp < 0) || (dblTemp > 9999999))
+         {
+            MessageBox.Show(this, "Number out of valid range for Tile Rows", "Layer Virtual Size", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return false;
+         }
+         m_PropsedVirtualSize.Height = (int)dblTemp;
+
+         return true;
+      }
+
       private void Review_InitFunction(object sender, System.EventArgs e)
       {
          System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -1070,6 +1231,12 @@ namespace SGDK2
          {
             sb.Append("Change layer size from " + m_Layer.Width.ToString() + ", " + m_Layer.Height.ToString() + " to " +
                m_PropsedSize.Width.ToString() + ", " + m_PropsedSize.Height.ToString() + ".\r\n");
+         }
+
+         if ((m_Layer.VirtualWidth != m_PropsedVirtualSize.Width) || (m_Layer.VirtualHeight != m_PropsedVirtualSize.Height))
+         {
+            sb.Append("Change layer virtual size from " + m_Layer.VirtualWidth.ToString() + ", " + m_Layer.VirtualHeight.ToString() + " to " +
+               m_PropsedVirtualSize.Width.ToString() + ", " + m_PropsedVirtualSize.Height.ToString() + ".\r\n");
          }
 
          txtReview.Text = sb.ToString();

@@ -3,6 +3,7 @@
    <head>
       <title>Scrolling Game Development Kit 2 - Simple Tutorial</title>
       <meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+      <link rel="stylesheet" href="SGDK2Help.css" />
    </head>
    <body>
       <h1>Tutorial 1 - Functional Game Without Importing</h1>
@@ -20,7 +21,7 @@
          necessary).
          <li>
       Create a new graphic sheet.
-      <OL type="a">
+      <OL>
          <LI>
             Right-click on "Graphic Sheets" and select "New", <B>or</B>
          select "Graphic Sheets" and select "New Object" from the File menu or toolbar.
@@ -91,7 +92,7 @@
             Close the Graphics editor.</li></OL>
       <li>
          Create a frameset.
-         <OL type="a">
+         <OL>
       <li>
          Right-click on the "Framesets" folder and select "New", <STRONG>or </STRONG>
       select the "Framesets" folder and then select "New Object" from the file menu 
@@ -113,7 +114,7 @@
          Close the Frameset Editor.</li></OL>
       <li>
          Add a rotating sprite in the same frameset.
-         <OL type="a">
+         <OL>
       <li>
          Right-click on "Sprite Definitions" and select "New", <STRONG>or</STRONG>
       select "Sprite Definitions" and then select "New Object" from the File menu or 
@@ -144,7 +145,7 @@
          Close the Sprite Definition editor.</li></OL>
       <li>
          Create a Tileset. You can't create maps or define solidity without tiles.
-         <OL type="a">
+         <OL>
       <li>
       Create a new Tileset in the "Tilesets" folder; you should know how to create 
       new objects by now.
@@ -157,7 +158,7 @@
          Close the Tileset Editor.</li></OL>
       <li>
          Create a solid tile category.
-         <OL type="a">
+         <OL>
       <li>
       Create a new tile category in the "Tile Categories" folder.
       <li>
@@ -178,7 +179,7 @@
       <li>
          Create a Map. The project can't compile without a default map, and if the 
          project can't compile, you can't create a solidity definition.
-         <OL type="a">
+         <OL>
       <li>
       Create a new Map object in the "Maps" folder.
       <li>
@@ -187,7 +188,7 @@
          Click Add or press Enter again.</li></OL>
       <li>
          Set the startup map.
-         <OL type="a">
+         <OL>
       <li>
          Right-click on the top-level "Project" node in the tree and select "Edit", <STRONG>
             or</STRONG>
@@ -199,7 +200,7 @@
          Close the Project Properties window.</LI></OL>
       <LI>
          Create a solidity definition.
-         <OL type="a">
+         <OL>
       <LI>
       Create a new Solidity Definition in the "Solidity" folder.
       <LI>
@@ -214,7 +215,7 @@
          Close the "Solidity" window.</LI></OL>
       <LI>
          Define the rules for the player sprite.
-         <OL type="a">
+         <OL>
       <LI>
       Display the sprite definition editor for the "Player" sprite definition, by 
       double-clicking it, right-clicking it and selecting "Edit", or selecting it and 
@@ -224,7 +225,7 @@
       <LI>
          Add a new rule by selecting "Add Rule" from the "Sprite Definition" menu, or by 
          selecting the New button from the toolbar in the Rules tab.
-         <OL type="i">
+         <OL>
       <LI>
       Enter "If player is pressing left" at the rule name.
       <LI>
@@ -239,7 +240,7 @@
          keep turning while holding the left arrow.</LI></OL>
       <LI>
          Add another new rule named "Turn left"
-         <OL type="i">
+         <OL>
       <LI>
       Select "Do" from the first dropdown and "SwitchToState" from the second 
       dropdown.
@@ -256,7 +257,7 @@
          Check the "End If/End While" checkbox to end the first rule's condition.</LI></OL>
       <LI>
          Add a new rule named "If player is pressing right"
-         <OL type="i">
+         <OL>
       <LI>
       Select "If" from the first dropdown and "IsInputPressed" from the next 
       dropdown.
@@ -266,7 +267,7 @@
          Select "false" from the "InitialOnly" dropdown list.</LI></OL>
       <LI>
          Add a new rule named "Turn right"
-         <OL type="i">
+         <OL>
       <LI>
       Select "Do" from the first dropdown and "SwitchToState" from the second 
       dropdown.
@@ -280,7 +281,7 @@
          condition.</LI></OL>
       <LI>
          Add a new rule named "If the player is pressing up"
-         <OL type="i">
+         <OL>
       <LI>
       Select "If" from the first dropdown and "IsInputPressed" from the next 
       dropdown.
@@ -290,7 +291,7 @@
          Select "false" from the "InitialOnly" dropdown list.</LI></OL>
       <LI>
          Add a new rule named "Accelerate"
-         <OL type="i">
+         <OL>
       <LI>
       Select "Do" from the first dropdown and "PolarAccelerate" from the second 
       dropdown.
@@ -304,19 +305,19 @@
          Check the "End If/End While" checkbox.</LI></OL>
       <LI>
          Add a new rule named "React to solidity"
-         <OL type="i">
+         <OL>
       <LI>
          Select "Do" from the first dropdown and "ReactToSolid" from the second 
          dropdown.</LI></OL>
       <LI>
          Add a new rule named "Move"
-         <OL type="i">
+         <OL>
       <LI>
          Select "Do" from the first dropdown and "MoveByVelocity" from the second 
          dropdown.</LI></OL>
       <LI>
          Add a new rule named "Inertia"
-         <OL type="i">
+         <OL>
       <LI>
       Select "Do" from the first dropdown and "ReactToInertia" from the second 
       dropdown.
@@ -335,7 +336,7 @@
          Close the sprite definition editor.</LI></OL>
       <LI>
          Create a new layer.
-         <OL type="a">
+         <OL>
       <LI>
       Locate the "Layers" folder under "Level 1" in the project tree and create a new 
       layer in it.
@@ -348,7 +349,7 @@
          Click Add.</LI></OL>
       <LI>
          Edit the layer
-         <OL type="a">
+         <OL>
       <LI>
       Locate the "Editor" node inside the new "My Layer" node in the project tree, 
       and double-click it.
@@ -404,7 +405,7 @@
          Close the map editor.</LI></OL>
       <LI>
          Define a tile mapping.
-         <OL type="a">
+         <OL>
       <LI>
       Double-click "My Tileset" in the Tilesets folder (or select it and open it with 
       F4 or the Properties command).
@@ -437,14 +438,14 @@
       <LI>
          Add a new plan to select a player sprite (map keyboard input to the sprite and 
          scroll it into view).
-         <OL type="a">
+         <OL>
       <LI>
       Add a new plan to the "Plans" folder under Maps - Level 1 - Layers - My Layer.
       <LI>
       Enter the name "Manage player sprite" in the Name field of the plan.
       <LI>
          Select "Add New Rule" from the "Plan" menu or the toolbar above the rule list.
-         <OL type="i">
+         <OL>
       <LI>
       Enter the rule name "Map input to player sprite"
       <LI>
@@ -459,7 +460,7 @@
          could be done on the sprite definition instead (so you don't have to repeat 
          this on every map) but if you want multiple players, it's better to see that it 
          can be done here too.
-         <OL type="i">
+         <OL>
       <LI>
       Select "Do" from the first dropdown and "ScrollSpriteIntoView" from the second.
       <LI>
@@ -470,7 +471,7 @@
          Close the plan editing window.</LI></OL>
       <LI>
          Set the appropriate scrolling size for the map.
-         <OL type="a">
+         <OL>
       <LI>
       Open the properties window for&nbsp;Level 1 (double-click on "Level 1" in the 
       project tree)
@@ -500,7 +501,7 @@
          Close the running game window.
          <LI>
       Add a rule for gravity.
-      <OL type="a">
+      <OL>
          <LI>
          Open the "Player" sprite definition for editing.
          <LI>
@@ -513,7 +514,7 @@
          arrow buttons on the toolbar to position it.
          <LI>
       Add a new rule before "React to solidity" named "Gravity"
-      <OL type="i">
+      <OL>
          <LI>
          Select "Do" from the first dropdown and "AlterYVelocity" from the second 
          dropdown.
@@ -523,7 +524,7 @@
          Close the sprite definition editor</LI></OL>
       <LI>
          Create a counter to&nbsp;represent collected stars.
-         <OL type="a">
+         <OL>
       <LI>
       Create a new counter in the "Counters" folder.
       <LI>
@@ -538,7 +539,7 @@
          Close the Edit Counter window.</LI></OL>
       <LI>
          Create an overlay&nbsp;map to display inventory.
-         <OL type="a">
+         <OL>
       <LI>
       Create a new map in the "Maps" folder and name it "My Overlay".
       <LI>
@@ -572,7 +573,7 @@
          Click "Add" to add the layer.</LI></OL>
       <LI>
          Define&nbsp;an empty tile
-         <OL type="a">
+         <OL>
       <LI>
       Open "My Tileset" for editing.
       <LI>
@@ -590,7 +591,7 @@
          Close the Tileset Editor.</LI></OL>
       <LI>
          Activate the overlay map as an overlay.
-         <OL type="a">
+         <OL>
       <LI>
       Double-click on the top level "Project" node to open the project properties 
       window.
@@ -600,7 +601,7 @@
          Close the Project Properties window.</LI></OL>
       <LI>
          Draw the Stars counter on the overlay map.
-         <OL type="a">
+         <OL>
       <LI>
       Open the map editor for the "Inventory" layer of "My Overlay".
       <LI>
@@ -658,7 +659,7 @@
          Close the Map Editor.</LI></OL>
       <LI>
          Define a category of tiles that should react to the player.
-         <OL type="a">
+         <OL>
       <LI>
       Create a new category in the "Tile Categories" folder in the project tree.
       <LI>
@@ -683,7 +684,7 @@
       <LI>
          Define a rule to allow player sprites to acquire stars.
       </LI>
-      <OL type="a">
+      <OL>
          <LI>
          Open the "Player" Sprite Definition for editing.
          <LI>
@@ -695,14 +696,14 @@
       the sprite interacts with tiles based on their category or tile numbers rather 
       than simply their solidity.&nbsp; It creates a list of tiles that the sprite is 
       touching that can be processed by other rules.
-      <OL type="i">
+      <OL>
          <LI>
          Select "Do" in the first dropdown and "TouchTiles" in the second dropdown.
          <LI>
             Select "TileCategoryName.Touchable" in the "Category" dropdown list.</LI></OL>
       <LI>
          Add a new rule called "Get stars".
-         <OL type="i">
+         <OL>
       <LI>
       Select "Do" from the first dropdown and "TileTake" from the second dropdown.
       <LI>
@@ -717,7 +718,7 @@
          Close the sprite definition editor.</LI></OL>
       <LI>
          Add walls to the map.</LI>
-      <OL type="a">
+      <OL>
          <LI>
          Open "My Layer" from map&nbsp;"Level 1" in the editor.
          <LI>

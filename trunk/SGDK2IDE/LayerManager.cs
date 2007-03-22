@@ -73,7 +73,7 @@ namespace SGDK2
             }
          }
 
-         [Description("Width of the layer in tiles"),
+         [Description("Width of the layer's data in tiles"),
          Category("Layout")]
          public int Width
          {
@@ -87,7 +87,7 @@ namespace SGDK2
             }
          }
 
-         [Description("Height of the layer in tiles"),
+         [Description("Height of the layer's data in tiles"),
          Category("Layout")]
          public int Height
          {
@@ -98,6 +98,34 @@ namespace SGDK2
             set
             {
                m_drLayer.Height = value;
+            }
+         }
+
+         [Description("Width of the layer's display in tiles (the data is wrapped if this is wider than Width)"),
+         Category("Layout")]
+         public int VirtualWidth
+         {
+            get
+            {
+               return m_drLayer.VirtualWidth;
+            }
+            set
+            {
+               m_drLayer.VirtualWidth = value;
+            }
+         }
+
+         [Description("Height of the layer's display in tiles (the data is wrapped if this is taller than Height)"),
+         Category("Layout")]
+         public int VirtualHeight
+         {
+            get
+            {
+               return m_drLayer.VirtualHeight;
+            }
+            set
+            {
+               m_drLayer.VirtualHeight = value;
             }
          }
 

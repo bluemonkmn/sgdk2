@@ -882,8 +882,8 @@ namespace SGDK2
       private Size GetScrollBounds()
       {
          ProjectDataset.TilesetRow tsr = m_Layers[m_nCurLayer].LayerRow.TilesetRow;
-         return new Size(m_Layers[m_nCurLayer].Columns * tsr.TileWidth,
-            m_Layers[m_nCurLayer].Rows * tsr.TileHeight);
+         return new Size(m_Layers[m_nCurLayer].VirtualColumns * tsr.TileWidth,
+            m_Layers[m_nCurLayer].VirtualRows * tsr.TileHeight);
       }
 
       private int CurrentTile
@@ -1233,7 +1233,7 @@ namespace SGDK2
                Point TilePos = StartPos;
                TilePos.Offset(x,y);
                int nSel = tiles[x,y] % max;
-               if ((TilePos.X >= 0) && (TilePos.Y >= 0) && (TilePos.X < m_Layers[m_nCurLayer].Columns) && (TilePos.Y < m_Layers[m_nCurLayer].Rows))
+               if ((TilePos.X >= 0) && (TilePos.Y >= 0) && (TilePos.X < m_Layers[m_nCurLayer].VirtualColumns) && (TilePos.Y < m_Layers[m_nCurLayer].VirtualRows))
                {
                   switch(mode)
                   {
@@ -1557,7 +1557,7 @@ namespace SGDK2
             m_LayerMouseCoord.Y = TilePos.Y * tsr.TileHeight;
          }
          sbpPixelCoord.Text = "Pixel X,Y: " + m_LayerMouseCoord.X.ToString() + "," + m_LayerMouseCoord.Y.ToString();
-         if ((TilePos.X >= 0) && (TilePos.Y >= 0) && (TilePos.X < m_Layers[m_nCurLayer].Columns) && (TilePos.Y < m_Layers[m_nCurLayer].Rows))
+         if ((TilePos.X >= 0) && (TilePos.Y >= 0) && (TilePos.X < m_Layers[m_nCurLayer].VirtualColumns) && (TilePos.Y < m_Layers[m_nCurLayer].VirtualRows))
          {
             sbpTileCoord.Text = "Tile X,Y: " + TilePos.X.ToString() + "," + TilePos.Y.ToString();
             sbpTileAtCursor.Text = "Tile @X,Y: " + m_Layers[m_nCurLayer][TilePos.X, TilePos.Y].ToString();
@@ -1575,7 +1575,7 @@ namespace SGDK2
          {
             case CursorMode.PlaceTile:
                int nSel = CurrentTile;
-               if ((TilePos.X >= 0) && (TilePos.Y >= 0) && (TilePos.X < m_Layers[m_nCurLayer].Columns) && (TilePos.Y < m_Layers[m_nCurLayer].Rows))
+               if ((TilePos.X >= 0) && (TilePos.Y >= 0) && (TilePos.X < m_Layers[m_nCurLayer].VirtualColumns) && (TilePos.Y < m_Layers[m_nCurLayer].VirtualRows))
                {
                   if (0 != (e.Button & MouseButtons.Left))
                   {
@@ -1668,7 +1668,7 @@ namespace SGDK2
             {
                case CursorMode.PlaceTile:
                   int nSel = CurrentTile;
-                  if ((TilePos.X < m_Layers[m_nCurLayer].Columns) && (TilePos.Y < m_Layers[m_nCurLayer].Rows))
+                  if ((TilePos.X < m_Layers[m_nCurLayer].VirtualColumns) && (TilePos.Y < m_Layers[m_nCurLayer].VirtualRows))
                   {
                      // Dataset doesn't recognize that data changed without BeginEdit, apparently.
                      m_Layers[m_nCurLayer].LayerRow.BeginEdit();

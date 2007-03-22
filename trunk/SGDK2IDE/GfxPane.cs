@@ -561,15 +561,24 @@ namespace SGDK2
                                  {
                                     if (IsSelectionOutlineLongEnoughToDraw(ParentEditor.FreehandPoints))
                                     {
-                                       GraphicsPath gpTemp = new GraphicsPath();
-                                       gpTemp.AddLines(ParentEditor.FreehandPoints);
-                                       gpTemp.CloseAllFigures();
-                                       PathGradientBrush pgb = new PathGradientBrush(gpTemp);
-                                       pgb.CenterColor = ((SolidBrush)ParentEditor.CurrentBrush).Color;
-                                       pgb.SurroundColors = new Color[] {ParentEditor.CurrentPen.Color};
-                                       g.FillPath(pgb, gpTemp);
-                                       pgb.Dispose();
-                                       gpTemp.Dispose();
+                                       using (GraphicsPath gpTemp = new GraphicsPath())
+                                       {
+                                          gpTemp.AddLines(ParentEditor.FreehandPoints);
+                                          gpTemp.CloseAllFigures();
+                                          try
+                                          {
+                                             using (PathGradientBrush pgb = new PathGradientBrush(gpTemp))
+                                             {
+                                                pgb.CenterColor = ((SolidBrush)ParentEditor.CurrentBrush).Color;
+                                                pgb.SurroundColors = new Color[] {ParentEditor.CurrentPen.Color};
+                                                g.FillPath(pgb, gpTemp);
+                                             }
+                                          }
+                                          catch(System.OutOfMemoryException)
+                                          {
+                                             // GDI+ bug? Error occurs when there is no fill area, but only sometimes (like perfect vertical)
+                                          }
+                                       }
                                     }
                                  }
                                  else
@@ -598,11 +607,19 @@ namespace SGDK2
                               {
                                  if (IsSelectionOutlineLongEnoughToDraw(ParentEditor.FreehandPoints))
                                  {
-                                    PathGradientBrush pgb = new PathGradientBrush(gpTemp);
-                                    pgb.CenterColor = ((SolidBrush)ParentEditor.CurrentBrush).Color;
-                                    pgb.SurroundColors = new Color[] {ParentEditor.CurrentPen.Color};
-                                    g.FillPath(pgb, gpTemp);
-                                    pgb.Dispose();
+                                    try
+                                    {
+                                       using (PathGradientBrush pgb = new PathGradientBrush(gpTemp))
+                                       {
+                                          pgb.CenterColor = ((SolidBrush)ParentEditor.CurrentBrush).Color;
+                                          pgb.SurroundColors = new Color[] {ParentEditor.CurrentPen.Color};
+                                          g.FillPath(pgb, gpTemp);
+                                       }
+                                    }
+                                    catch(System.OutOfMemoryException)
+                                    {
+                                       // GDI+ bug? Error occurs when there is no fill area, but only sometimes (like perfect vertical)
+                                    }
                                  }
                               }
                               else

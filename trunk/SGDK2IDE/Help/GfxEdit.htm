@@ -1,9 +1,10 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
    <head>
       <title>Scrolling Game Development Kit 2 - Graphics Editor</title>
-      <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5">
-      <link rel="stylesheet" href="SGDK2Help.css">
+      <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5" />
+      <link rel="stylesheet" href="SGDK2Help.css" type="text/css" />
    </head>
    <body>
       <h1>Graphics Editor</h1>
@@ -12,354 +13,530 @@
          which you want more information, or you can scroll down to see features listed 
          in the order they appear in the menus. Not all features from the menus are 
          visible in the screenshot.</p>
-      <map id="GfxEditMap">
-         <area shape="RECT" coords="4,4,24,24" href="#FreeDraw" alt="Freehand Drawing">
-         <area shape="RECT" coords="29,5,45,24" href="#FreehandLines" alt="Freehand Lines">
-         <area shape="RECT" coords="5,29,27,44" href="#BezierCurves" alt="Bezier Curves">
-         <area shape="RECT" coords="27,26,46,45" href="#Line" alt="Line">
-         <area shape="RECT" coords="6,48,24,66" href="#Rectangle" alt="Rectangle">
-         <area shape="RECT" coords="27,49,47,65" href="#Ellipse" alt="Ellipse">
-         <area shape="RECT" coords="7,70,25,86" href="#Airbrush" alt="Airbrush">
-         <area shape="RECT" coords="26,71,47,87" href="#Smooth" alt="Smooth">
-         <area shape="RECT" coords="6,89,25,108" href="#Erase" alt="Erase">
-         <area shape="RECT" coords="27,89,47,109" href="#GradientFill" alt="Gradient Fill">
-         <area shape="RECT" coords="5,111,25,130" href="#FloodFill" alt="Flood Fill">
-         <area shape="RECT" coords="26,109,48,131" href="#ColorWand" alt="Color Wand">
-         <area shape="RECT" coords="6,133,24,149" href="#RectangularSelection" alt="Rectangular Selection">
-         <area shape="RECT" coords="28,133,47,149" href="#IrregularSelection" alt="Irregular Selection">
-         <area shape="RECT" coords="6,153,24,171" href="#MoveSelection" alt="Move Selection">
-         <area shape="RECT" coords="27,152,46,172" href="#RotateSelection" alt="Rotate Selection">
-         <area shape="RECT" coords="5,173,25,193" href="#SizeSelection" alt="Size Selection">
-         <area shape="RECT" coords="28,173,46,192" href="#ColorPickDropper" alt="Color Pick Dropper">
-         <area shape="RECT" coords="4,193,40,215" href="#CustomTool" alt="Custom Tool">
-         <area shape="RECT" coords="5,223,24,242" href="#FlipHorizontally" alt="Flip Horizontally">
-         <area shape="RECT" coords="28,224,46,242" href="#FlipVertically" alt="Flip Vertically">
-         <area shape="RECT" coords="5,244,25,264" href="#HorizontalOffsetAndWrap" alt="Horizontal Offset and Wrap">
-         <area shape="RECT" coords="27,244,47,264" href="#VerticalOffsetAndWrap" alt="Vertical Offset and Wrap">
-         <area shape="RECT" coords="5,264,25,286" href="#PreviewTiling" alt="Prevew Tiling">
-         <area shape="RECT" coords="27,265,47,285" href="#RemapHues" alt="Remap Hues">
-         <area shape="RECT" coords="6,287,24,305" href="#AddNoise" alt="Add Noise">
-         <area shape="RECT" coords="59,5,82,26" href="#AntiAlias" alt="Anti-Alias">
-         <area shape="RECT" coords="82,5,105,26" href="#DrawOutlinedShapes" alt="Draw Outlined Shapes">
-         <area shape="RECT" coords="105,5,128,26" href="#DrawFilledShapes" alt="Draw Filled Shapes">
-         <area shape="RECT" coords="128,5,151,26" href="#GradientFills" alt="Gradient Fills">
-         <area shape="RECT" coords="151,5,172,26" href="#LockToolProportions" alt="Lock Tool Proportions">
-         <area shape="RECT" coords="173,5,197,27" href="#AffectUnjoinedColorRegions" alt="Affect Unjoined Color Regions">
-         <area shape="RECT" coords="201,5,413,26" href="#Pen" alt="Pen">
-         <area shape="RECT" coords="414,5,455,26" href="#Zoom" alt="Zoom">
-         <area shape="RECT" coords="455,5,475,25" href="#Grid" alt="Grid">
-         <area shape="RECT" coords="58,31,190,179" href="#MagnifiedView" alt="Magnified View">
-         <area shape="RECT" coords="58,181,94,233" href="#ActualView" alt="Actual View">
-         <area shape="RECT" coords="193,32,354,193" href="#ColorWheel" alt="Color Wheel">
-         <area shape="RECT" coords="354,32,401,194" href="#ValueSlider" alt="Value Slider">
-         <area shape="RECT" coords="402,32,451,192" href="#AlphaSlider" alt="Alpha Slider">
-         <area shape="RECT" coords="197,194,295,300" href="#ColorBytes" alt="Color Bytes">
-         <area shape="RECT" coords="304,199,376,226" href="#LineColor" alt="Line Color">
-         <area shape="RECT" coords="376,199,395,226" href="#SwapColors" alt="Swap Colors">
-         <area shape="RECT" coords="393,200,463,226" href="#SolidColor" alt="Solid Color">
-         <area shape="RECT" coords="303,232,475,274" href="#ColoringMode" alt="Coloring Mode">
-         <area shape="RECT" coords="304,273,475,318" href="#RecentColorList" alt="Recent Color List">
-         <area shape="RECT" coords="191,326,520,471" href="#CellManager" alt="Cell Manager">
-      </map><img src="GfxEdit.PNG" alt="Graphics Editor" usemap="#GfxEditMap">
+      <map id="GfxEditMap" name="GfxEditMap">
+         <area shape="rect" coords="4,4,24,24" href="#FreeDraw" title="Freehand Drawing" />
+         <area shape="rect" coords="29,5,45,24" href="#FreehandLines" title="Freehand Lines" />
+         <area shape="rect" coords="5,29,27,44" href="#BezierCurves" title="Bezier Curves" />
+         <area shape="rect" coords="27,26,46,45" href="#Line" title="Line" />
+         <area shape="rect" coords="6,48,24,66" href="#Rectangle" title="Rectangle" />
+         <area shape="rect" coords="27,49,47,65" href="#Ellipse" title="Ellipse" />
+         <area shape="rect" coords="7,70,25,86" href="#Airbrush" title="Airbrush" />
+         <area shape="rect" coords="26,71,47,87" href="#Smooth" title="Smooth" />
+         <area shape="rect" coords="6,89,25,108" href="#Erase" title="Erase" />
+         <area shape="rect" coords="27,89,47,109" href="#GradientFill" title="Gradient Fill" />
+         <area shape="rect" coords="5,111,25,130" href="#FloodFill" title="Flood Fill" />
+         <area shape="rect" coords="26,109,48,131" href="#ColorWand" title="Color Wand" />
+         <area shape="rect" coords="6,133,24,149" href="#RectangularSelection" title="Rectangular Selection" />
+         <area shape="rect" coords="28,133,47,149" href="#IrregularSelection" title="Irregular Selection" />
+         <area shape="rect" coords="6,153,24,171" href="#MoveSelection" title="Move Selection" />
+         <area shape="rect" coords="27,152,46,172" href="#RotateSelection" title="Rotate Selection" />
+         <area shape="rect" coords="5,173,25,193" href="#SizeSelection" title="Size Selection" />
+         <area shape="rect" coords="28,173,46,192" href="#ColorPickDropper" title="Color Pick Dropper" />
+         <area shape="rect" coords="4,193,40,215" href="#CustomTool" title="Custom Tool" />
+         <area shape="rect" coords="5,223,24,242" href="#FlipHorizontally" title="Flip Horizontally" />
+         <area shape="rect" coords="28,224,46,242" href="#FlipVertically" title="Flip Vertically" />
+         <area shape="rect" coords="5,244,25,264" href="#HorizontalOffsetAndWrap" title="Horizontal Offset and Wrap" />
+         <area shape="rect" coords="27,244,47,264" href="#VerticalOffsetAndWrap" title="Vertical Offset and Wrap" />
+         <area shape="rect" coords="5,264,25,286" href="#PreviewTiling" title="Prevew Tiling" />
+         <area shape="rect" coords="27,265,47,285" href="#RemapHues" title="Remap Hues" />
+         <area shape="rect" coords="6,287,24,305" href="#AddNoise" title="Add Noise" />
+         <area shape="rect" coords="59,5,82,26" href="#AntiAlias" title="Anti-Alias" />
+         <area shape="rect" coords="82,5,105,26" href="#DrawOutlinedShapes" title="Draw Outlined Shapes" />
+         <area shape="rect" coords="105,5,128,26" href="#DrawFilledShapes" title="Draw Filled Shapes" />
+         <area shape="rect" coords="128,5,151,26" href="#GradientFills" title="Gradient Fills" />
+         <area shape="rect" coords="151,5,172,26" href="#LockToolProportions" title="Lock Tool Proportions" />
+         <area shape="rect" coords="173,5,197,27" href="#AffectUnjoinedColorRegions" title="Affect Unjoined Color Regions" />
+         <area shape="rect" coords="201,5,413,26" href="#Pen" title="Pen" />
+         <area shape="rect" coords="414,5,455,26" href="#Zoom" title="Zoom" />
+         <area shape="rect" coords="455,5,475,25" href="#Grid" title="Grid" />
+         <area shape="rect" coords="58,31,190,179" href="#MagnifiedView" title="Magnified View" />
+         <area shape="rect" coords="58,181,94,233" href="#ActualView" title="Actual View" />
+         <area shape="rect" coords="193,32,354,193" href="#ColorWheel" title="Color Wheel" />
+         <area shape="rect" coords="354,32,401,194" href="#ValueSlider" title="Value Slider" />
+         <area shape="rect" coords="402,32,451,192" href="#AlphaSlider" title="Alpha Slider" />
+         <area shape="rect" coords="197,194,295,300" href="#ColorBytes" title="Color Bytes" />
+         <area shape="rect" coords="304,199,376,226" href="#LineColor" title="Line Color" />
+         <area shape="rect" coords="376,199,395,226" href="#SwapColors" title="Swap Colors" />
+         <area shape="rect" coords="393,200,463,226" href="#SolidColor" title="Solid Color" />
+         <area shape="rect" coords="303,232,475,274" href="#ColoringMode" title="Coloring Mode" />
+         <area shape="rect" coords="304,273,475,318" href="#RecentColorList" title="Recent Color List" />
+         <area shape="rect" coords="191,326,520,471" href="#CellManager" title="Cell Manager" />
+      </map><img src="GfxEdit.PNG" title="Graphics Editor" usemap="#GfxEditMap" />
       <h2>File Menu</h2>
       <h3>Import Graphic</h3>
-      <P>Select any portion of an external image file to import into the cell editor. 
+      <p>Select any portion of an external image file to import into the cell editor. 
          The size if the imported graphic must be a multiple of the width and height of 
          the cell size, and must fit in the current size of teh graphics editor at the 
-         current magnification.</P>
+         current magnification.</p>
       <h3>Export Graphic</h3>
-      <P>Export the contents of the image currently loaded into the cell editor to an 
-         external file. Supported file formats&nbsp;are PNG, BMP, GIF, JPG and 
-         TIF.&nbsp; The PNG format is recommended for retaining alpha transparency.</P>
+      <p>Export the contents of the image currently loaded into the cell editor to an 
+         external file. Supported file formats are PNG, BMP, GIF, JPG and 
+         TIF.  The PNG format is recommended for retaining alpha transparency.</p>
       <h3>Export Sheet as Image</h3>
-      <P>Exports the entire graphic sheet (as currently persisted in the Cell Manager 
-         window) as an external image file. Only PNG format is supported.&nbsp; The PNG 
-         retains alpha transparency.</P>
+      <p>Exports the entire graphic sheet (as currently persisted in the Cell Manager 
+         window) as an external image file. Only PNG format is supported.  The PNG 
+         retains alpha transparency.</p>
       <h3>Import Image as Sheet</h3>
-      <P>Imports an external image as the entire contents of the graphic sheet, 
+      <p>Imports an external image as the entire contents of the graphic sheet, 
          replacing all graphics currently in the sheet. Only PNG format is 
-         supported.&nbsp; The imported graphic must be exactly the size of the graphic 
-         sheet: c*w pixels wide and r*h pixels tall, where&nbsp;c is the number of cell 
-         columns, w is the width of each cell in pixels,&nbsp;r is the number of cell 
-         rows and h is the height of each cell in pixels.&nbsp; This feature is 
+         supported.  The imported graphic must be exactly the size of the graphic 
+         sheet: c*w pixels wide and r*h pixels tall, where c is the number of cell 
+         columns, w is the width of each cell in pixels, r is the number of cell 
+         rows and h is the height of each cell in pixels.  This feature is 
          particularly useful if you've exported an entire graphic sheet for editing in 
-         an external program and would like to re-import the updated version.</P>
-      <P>
-         <STRONG>Note:</STRONG> you can also import a graphic sheet from another project 
+         an external program and would like to re-import the updated version.</p>
+      <p><strong>Note:</strong> you can also import a graphic sheet from another project 
          by right-clicking on the "Graphic Sheets" folder in the project tree and 
-         selecting "Import From..."</P>
+         selecting "Import From..."</p>
       <h2>View Menu</h2>
-      <h3><a id="Zoom">Zoom</a></h3>
-      <P>You can use the "+" and "-" keys, the toolbar dropdown selector or the Zoom 
+      <h3><a id="Zoom" name="Zoom">Zoom</a></h3>
+      <p>You can use the "+" and "-" keys, the toolbar dropdown selector or the Zoom 
          menu to increase and decrease the magnification level of the magnified view 
-         where editing takes place.&nbsp;Higher levels of magnification allow higher 
+         where editing takes place. Higher levels of magnification allow higher 
          precision not only in the sense that you can see more detail, but in the sense 
          that the mouse can be positioned at finer divisions within a pixel, which may 
-         be especially useful when anti-aliasing is turned on.&nbsp;For example, when 
+         be especially useful when anti-aliasing is turned on. For example, when 
          the magnification is at 4x4, the mouse can be positioned at 16 positions within 
          each pixel, but at 8x8 magnification, the mouse can distinguish 64 different 
          positions within each pixel, each which will yield different results when 
-         anti-aliased.&nbsp; Keep in mind that, since this is designed as a tile 
-         editor,&nbsp;editing large graphics at high magnifications may not be 
-         practical.</P>
+         anti-aliased.  Keep in mind that, since this is designed as a tile 
+         editor, editing large graphics at high magnifications may not be 
+         practical.</p>
       <h2>Edit Menu</h2>
       <h3>Undo</h3>
-      <P>You can undo your most recent actions in the editor.&nbsp; This cannot be used 
+      <p>You can undo your most recent actions in the editor.  This cannot be used 
          to undo operations such as loading and storing graphics, but can be used to 
-         undo most or all operations confined to the cell editor.&nbsp; The undo buffer 
-         stores 10 images representing the 10 most recent states of the editor.</P>
+         undo most or all operations confined to the cell editor.  The undo buffer 
+         stores 10 images representing the 10 most recent states of the editor.</p>
       <h3>Redo</h3>
-      <P>If you undo an operation that you wanted to keep, redo will&nbsp;cycle the 
-         opposite direction through the 10-level undo buffer.</P>
+      <p>If you undo an operation that you wanted to keep, redo will cycle the 
+         opposite direction through the 10-level undo buffer.</p>
       <h3>Cut</h3>
-      <P>After using the irregular selection, rectangular selection, select all, or 
+      <p>After using the irregular selection, rectangular selection, select all, or 
          color wand commands, you can cut the selection to remove it from the image 
-         (erase it) and optionally paste it elsewhere.&nbsp; The clipped image is stored 
-         in teh system clipboard so it can be pasted into other applications.&nbsp; 
-         However, support for alpha transparency&nbsp;is limited.&nbsp; If you use the 
+         (erase it) and optionally paste it elsewhere.  The clipped image is stored 
+         in teh system clipboard so it can be pasted into other applications.  
+         However, support for alpha transparency is limited.  If you use the 
          Cut command without any active selection, the entire image will be copied, but 
-         nothing will be deleted.</P>
+         nothing will be deleted.</p>
       <h3>Copy</h3>
-      <P>After using the selection tools mentioned in "Cut" above, you can copy the 
-         selected portion of the image to the system&nbsp;clipboard without erasing it 
-         from the image.&nbsp; If you use the Copy command without any active selection, 
-         the entire image will be copied.</P>
+      <p>After using the selection tools mentioned in "Cut" above, you can copy the 
+         selected portion of the image to the system clipboard without erasing it 
+         from the image.  If you use the Copy command without any active selection, 
+         the entire image will be copied.</p>
       <h3>Paste</h3>
-      <P>You can paste images that have been cut/copied from other tiles or other 
-         graphic sheets or even external applications.&nbsp; However, external 
-         applications will likely not provide alpha transparency support.&nbsp; For 
+      <p>You can paste images that have been cut/copied from other tiles or other 
+         graphic sheets or even external applications.  However, external 
+         applications will likely not provide alpha transparency support.  For 
          transferring images with transparency to the graphics editor, the "import 
-         graphic" command is best.&nbsp; After you paste an image, it is represented as 
+         graphic" command is best.  After you paste an image, it is represented as 
          a "floating" selection, which means that you may drag it to another position or 
-         transform it with rotation and scaling without affecting the image underneath.</P>
+         transform it with rotation and scaling without affecting the image underneath.</p>
       <h3>Delete Selection</h3>
-      <P>If there is a "floating" selection, remove it without merging it into the 
+      <p>If there is a "floating" selection, remove it without merging it into the 
          current image, otherwise replace the selected area with transparent pixels and 
-         de-select it.</P>
+         de-select it.</p>
       <h3>Reset Position</h3>
-      <P>After moving, rotating or sizing the selection, you can use this command to 
-         reset the selection to its initial position.</P>
+      <p>After moving, rotating or sizing the selection, you can use this command to 
+         reset the selection to its initial position.</p>
       <h3>Select All</h3>
-      <P>Select the entire area in the cell editor for operations such as cut, copy, 
-         rotate, scale and move.</P>
+      <p>Select the entire area in the cell editor for operations such as cut, copy, 
+         rotate, scale and move.</p>
       <h3>Deselect All</h3>
-      <P>If any pending selection is still "floating" in a state where you can move it 
+      <p>If any pending selection is still "floating" in a state where you can move it 
          (for example after a paste or move operation), it will be "dropped" onto the 
-         image (merged).&nbsp; The selection will then be&nbsp;un-highlighted, so there 
-         is no selection.</P>
-      <h3><a id="FlipHorizontally">Flip Horizontally</a></h3>
-      <P>Flip the current selection horizontally accross the center of the 
-         selection.&nbsp; If there is no selection, the entire tile is flipped.</P>
-      <h3><a id="FlipVertically">Flip Vertically</a></h3>
-      <P>Flip the current selection vertically accross the center of the 
-         selection.&nbsp; If there is no selection, the entire tile is flipped.</P>
-      <h3><a id="HorizontalOffsetAndWrap">Horizontal Offset and Wrap</a></h3>
-      <P>This effectively puts the right half of the tile on the left side of the editor 
-         and the left half of the tile on the right.&nbsp; This is only supported when 
+         image (merged).  The selection will then be un-highlighted, so there 
+         is no selection.</p>
+      <h3><a id="FlipHorizontally" name="FlipHorizontally">Flip Horizontally</a></h3>
+      <p>Flip the current selection horizontally accross the center of the 
+         selection.  If there is no selection, the entire tile is flipped.</p>
+      <h3><a id="FlipVertically" name="FlipVertically">Flip Vertically</a></h3>
+      <p>Flip the current selection vertically accross the center of the 
+         selection.  If there is no selection, the entire tile is flipped.</p>
+      <h3><a id="HorizontalOffsetAndWrap" name="HorizontalOffsetAndWrap">Horizontal Offset 
+            and Wrap</a></h3>
+      <p>This effectively puts the right half of the tile on the left side of the editor 
+         and the left half of the tile on the right.  This is only supported when 
          the width of the tile is an even number of pixels (in order to ensure that 
-         clicking the button twice will leave you where you started).&nbsp; The command 
+         clicking the button twice will leave you where you started).  The command 
          will work when the width is odd, but the rightmost column of pixels will be 
-         untouched.&nbsp;This command is useful for adjusting the seams at the edge of 
-         the tile to make sure it merges smoothly when tiled with itself.&nbsp;If there 
-         is a floating selection when you execute this command, it will not move.</P>
-      <h3><a id="VerticalOffsetAndWrap">Vertical Offset and Wrap</a></h3>
-      <P>This effectively puts the&nbsp;bottom half of the tile on top of the editor and 
-         the top half of the tile on the bottom.&nbsp; This is only supported when 
-         the&nbsp;height of the tile is an even number of pixels (in order to ensure 
-         that clicking the button twice will leave you where you started).&nbsp; The 
-         command will work when the&nbsp;height is odd, but the&nbsp;bottom row&nbsp;of 
-         pixels will be untouched.&nbsp;This command is useful for adjusting the seams 
+         untouched. This command is useful for adjusting the seams at the edge of 
+         the tile to make sure it merges smoothly when tiled with itself. If there 
+         is a floating selection when you execute this command, it will not move.</p>
+      <h3><a id="VerticalOffsetAndWrap" name="VerticalOffsetAndWrap">Vertical Offset and 
+            Wrap</a></h3>
+      <p>This effectively puts the bottom half of the tile on top of the editor and 
+         the top half of the tile on the bottom.  This is only supported when 
+         the height of the tile is an even number of pixels (in order to ensure 
+         that clicking the button twice will leave you where you started).  The 
+         command will work when the height is odd, but the bottom row of 
+         pixels will be untouched. This command is useful for adjusting the seams 
          at the edge of the tile to make sure it merges smoothly when tiled with itself. 
          If there is a floating selection when you execute this command, it will not 
-         move.</P>
-      <h3><a id="PreviewTiling">Preview Tiling</a></h3>
-      <P>Shows a window full of this&nbsp;image&nbsp;tiled&nbsp;over the whole 
-         window.&nbsp; This is useful to ensure that this image tiles cleanly.</P>
-      <h3><a id="RemapHues">Remap Hues</a></h3>
-      <P>Allows you to replace one range of colors with another based on hue.&nbsp; 
+         move.</p>
+      <h3><a id="PreviewTiling" name="PreviewTiling">Preview Tiling</a></h3>
+      <p>Shows a window full of this image tiled over the whole 
+         window.  This is useful to ensure that this image tiles cleanly.</p>
+      <h3><a id="RemapHues" name="RemapHues">Remap Hues</a></h3>
+      <p>Allows you to replace one range of colors with another based on hue.  
          Click and drag an arc around the edge of the left-hand color wheel to define a 
-         range of hues that will be affected.&nbsp; Then click and drag an arc around 
+         range of hues that will be affected.  Then click and drag an arc around 
          the edge of the right-hand color wheel to define a range of hues that will 
-         replace the range selected in the left wheel.&nbsp; For example, if you click 
-         on yellow and drag clockwise&nbsp;through magenta in the left color wheel, and 
+         replace the range selected in the left wheel.  For example, if you click 
+         on yellow and drag clockwise through magenta in the left color wheel, and 
          then click on green and drag counter-clockwise through blue in the right color 
          wheel, then yellow hues will be replaced with green, orange hues with sea 
-         green, red hues with cyan, and magenta hues with blue.&nbsp; All the hues in 
+         green, red hues with cyan, and magenta hues with blue.  All the hues in 
          between will also be smoothly mapped to corresponding hues in the target 
-         range.&nbsp; This is useful for recoloring objects, but is not effective on 
-         gray, and can't be used to enhance or diminish brightness or saturation levels.</P>
-      <P>As you drag the color ranges you can see a preview of the result in the editor, 
+         range.  This is useful for recoloring objects, but is not effective on 
+         gray, and can't be used to enhance or diminish brightness or saturation levels.</p>
+      <p>As you drag the color ranges you can see a preview of the result in the editor, 
          however, if you move a window in front of the image and cause it to re-display, 
-         the original image will be drawn rather than the preview.&nbsp; The proposed 
-         (preview) image is only drawn when an arc is being dragged.</P>
-      <P>If&nbsp;a selection is active when using this tool, only the selection will be 
-         affected, otherwise the entire graphic will be affected.</P>
-      <h3><a id="AddNoise">Add Noise</a></h3>
-      <P>Add random noise to the image.&nbsp; This is useful for large smooth areas that 
-         should show some texture.&nbsp; You will be prompted for a noise level, 
-         which&nbsp;determines how much the image will be affected.&nbsp; If a selection 
+         the original image will be drawn rather than the preview.  The proposed 
+         (preview) image is only drawn when an arc is being dragged.</p>
+      <p>If a selection is active when using this tool, only the selection will be 
+         affected, otherwise the entire graphic will be affected.</p>
+      <h3><a id="AddNoise" name="AddNoise">Add Noise</a></h3>
+      <p>Add random noise to the image.  This is useful for large smooth areas that 
+         should show some texture.  You will be prompted for a noise level, 
+         which determines how much the image will be affected.  If a selection 
          is active with using this tool, only the selected area will be affected, 
-         otherwise the entire image will be affected.&nbsp; Note the alpha level of each 
-         pixel remains the same.&nbsp; No noise will appear in transparent areas.</P>
+         otherwise the entire image will be affected.  Note the alpha level of each 
+         pixel remains the same.  No noise will appear in transparent areas.</p>
       <h3>Selection Highlight</h3>
-      <P>By default, any selection made in the editor is represented by highlighting it 
-         in blue.&nbsp; If the default selection color of blue is too distracting for 
-         your current task, you&nbsp;can change the color, select a fainter variation, 
-         or turn off the&nbsp;selection highlighting completely.&nbsp; Ctrl-T is a handy 
+      <p>By default, any selection made in the editor is represented by highlighting it 
+         in blue.  If the default selection color of blue is too distracting for 
+         your current task, you can change the color, select a fainter variation, 
+         or turn off the selection highlighting completely.  Ctrl-T is a handy 
          shortcut to remember when you quickly want to see what the image looks like 
-         without the highlight and then turn it back on.&nbsp; Keep in mind that this 
+         without the highlight and then turn it back on.  Keep in mind that this 
          highlight color also affects the Cell Manager, so if you turn off the highlight 
          and wonder why you can't see any selected cell in the Cell Manager, remember to 
-         turn it back on.</P>
+         turn it back on.</p>
       <h3>Backdrop</h3>
-      <P>The backdrop appears behind your image and represents areas that are 
-         transparent in your image.&nbsp; It exists to clarify which portions of your 
-         image are transparent versus a particular (opaque) color.&nbsp; If it's hard to 
+      <p>The backdrop appears behind your image and represents areas that are 
+         transparent in your image.  It exists to clarify which portions of your 
+         image are transparent versus a particular (opaque) color.  If it's hard to 
          determine which pixels are transparent with the default backdrop, you can 
-         change to a variety of other backdrops.&nbsp; Generally you want to use light 
+         change to a variety of other backdrops.  Generally you want to use light 
          backdrops with dark images and darg backdrops with light images in order to 
-         contrast the transparent pixels from the opaque pixels.</P>
-      <h3><a id="Grid">Grid</a></h3>
-      <P>Turns on a grid of white lines delineating the edges of the pixels.&nbsp; This 
-         is only applicable for magnifications of 4x4 or higher.</P>
+         contrast the transparent pixels from the opaque pixels.</p>
+      <h3><a id="Grid" name="Grid">Grid</a></h3>
+      <p>Turns on a grid of white lines delineating the edges of the pixels.  This 
+         is only applicable for magnifications of 4x4 or higher.</p>
       <h2>Tools Menu</h2>
-      <h3><a id="FreeDraw">Freehand Drawing</a></h3>
-      <P>Works like&nbsp;a paint brush or a pencil.&nbsp; Just drag strokes out in the 
-         editor.&nbsp; Note that you can use this with the "Filled Shapes" and "Gradient 
-         Fills" options to draw an irregular filled shape freehand.</P>
-      <h3><a id="FreehandLines">Freehand Lines</a></h3>
-      <P>Draw straight lines or edges.&nbsp;Click one then move the mouse to another 
-         location to draw a straight line between the two points.&nbsp;Move again and 
-         click again to draw a series of connected lines.&nbsp;Right-click to finish. 
+      <h3><a id="FreeDraw" name="FreeDraw">Freehand Drawing</a></h3>
+      <p>Works like a paint brush or a pencil.  Just drag strokes out in the 
+         editor.  Note that you can use this with the "Filled Shapes" and "Gradient 
+         Fills" options to draw an irregular filled shape freehand.</p>
+      <h3><a id="FreehandLines" name="FreehandLines">Freehand Lines</a></h3>
+      <p>Draw straight lines or edges. Click one then move the mouse to another 
+         location to draw a straight line between the two points. Move again and 
+         click again to draw a series of connected lines. Right-click to finish. 
          Use this with the "Filled Shapes" and "Gradient Fills" options if you want to 
          draw shapes with straight edges that are filled with a solid or gradient 
-         fill.&nbsp; Dragging the mouse while using this tool will cause it to behave 
+         fill.  Dragging the mouse while using this tool will cause it to behave 
          like the Freehand Drawing tool, but allow you to then proceed to add straight 
-         lines afterward.&nbsp; If the "Lock Tools Proportions" option is selected (use 
-         the&nbsp;Shift key to activate and de-activate on the fly) the angles of the 
-         lines will be confined to a limited set.</P>
-      <h3><a id="BezierCurves">Bezier Curves</a></h3>
-      <P>Click once to define the starting point.&nbsp; Click again to define and end 
-         point.&nbsp; Click a third time to affect the end of the line near the starting 
+         lines afterward.  If the "Lock Tools Proportions" option is selected (use 
+         the Shift key to activate and de-activate on the fly) the angles of the 
+         lines will be confined to a limited set.</p>
+      <h3><a id="BezierCurves" name="BezierCurves">Bezier Curves</a></h3>
+      <p>Click once to define the starting point.  Click again to define and end 
+         point.  Click a third time to affect the end of the line near the starting 
          point, and click a fourth to affect the end of the line near the end 
-         point.&nbsp; Affecting the line generates a smooth curve leading from the 
-         starting point ot the end point.&nbsp; Continue this process by clicking a 
+         point.  Affecting the line generates a smooth curve leading from the 
+         starting point ot the end point.  Continue this process by clicking a 
          fifth time to add a new end point, a sixth to affect the beginning of the new 
-         segment, and a seventh to affect the end of the new segment.&nbsp; Repeat as 
-         much as you like to form a series of connected curves.&nbsp; This can be used 
-         with "Filled Shapes" and "Gradient Fills".&nbsp; Right click at any time to 
-         make the image you're looking at permanent.</P>
-      <h3><a id="Line">Line</a></h3>
-      <P>Click and drag a single straight line.&nbsp; Use the Shift key or "Lock Tools 
-         Proportions" if you want to confine the angle of the line</P>
-      <h3><a id="Rectangle">Rectangle</a></h3>
-      <P>Click and drag a rectangle into the image by specifying the opposite 
-         corners.&nbsp; Use the Shift key or "Lock Tools Proportions" if you want to 
-         draw a square.</P>
-      <h3><a id="Ellipse">Ellipse</a></h3>
-      <P>Click and drag a rectangle the defines the boundaries of an ellipse to add to 
-         the image.&nbsp; Use the Shift key or "Lock Tools Proportions" if you want to 
-         draw a circle.</P>
-      <h3><a id="Airbrush">Airbrush</a></h3>
-      <P>Draw dithered pixels on the image.&nbsp;This is most effective when the 
-         Anti-Alias option is on.&nbsp;The airbrush will draw only opaque pixels when 
+         segment, and a seventh to affect the end of the new segment.  Repeat as 
+         much as you like to form a series of connected curves.  This can be used 
+         with "Filled Shapes" and "Gradient Fills".  Right click at any time to 
+         make the image you're looking at permanent.</p>
+      <h3><a id="Line" name="Line">Line</a></h3>
+      <p>Click and drag a single straight line.  Use the Shift key or "Lock Tools 
+         Proportions" if you want to confine the angle of the line</p>
+      <h3><a id="Rectangle" name="Rectangle">Rectangle</a></h3>
+      <p>Click and drag a rectangle into the image by specifying the opposite 
+         corners.  Use the Shift key or "Lock Tools Proportions" if you want to 
+         draw a square.</p>
+      <h3><a id="Ellipse" name="Ellipse">Ellipse</a></h3>
+      <p>Click and drag a rectangle the defines the boundaries of an ellipse to add to 
+         the image.  Use the Shift key or "Lock Tools Proportions" if you want to 
+         draw a circle.</p>
+      <h3><a id="Airbrush" name="Airbrush">Airbrush</a></h3>
+      <p>Draw dithered pixels on the image. This is most effective when the 
+         Anti-Alias option is on. The airbrush will draw only opaque pixels when 
          anti-aliasing is off, but will draw many partially opaque pixels when 
-         performing anti-aliasing.&nbsp;The airbrush uses the current solid/fill color 
-         to draw pixels onto the image in random patterns.&nbsp;The radius of pixels 
-         affected (around the cursor) is determined by the current pen size.</P>
-      <h3><a id="Smooth">Smooth</a></h3>
-      <P>Blend hard edges between two colors into a smooth gradient.&nbsp;This is useful 
-         for eliminating seams.&nbsp;The radius affected by this tool is determined by 
-         the pen size.&nbsp;This tool may have unexpected effects when used around 
-         transparent pixels.&nbsp; It tends to affect transparent pixels dramatically 
+         performing anti-aliasing. The airbrush uses the current solid/fill color 
+         to draw pixels onto the image in random patterns. The radius of pixels 
+         affected (around the cursor) is determined by the current pen size.</p>
+      <h3><a id="Smooth" name="Smooth">Smooth</a></h3>
+      <p>Blend hard edges between two colors into a smooth gradient. This is useful 
+         for eliminating seams. The radius affected by this tool is determined by 
+         the pen size. This tool may have unexpected effects when used around 
+         transparent pixels.  It tends to affect transparent pixels dramatically 
          because transparent pixels, unlike other pixels, have no opposing effect on the 
-         colors around them.&nbsp; It's not possible to "blend" transparency into an 
+         colors around them.  It's not possible to "blend" transparency into an 
          opaque color, only to "blend" an opaque color into transparency... kind of like 
-         trying to blend paper with ink.</P>
-      <h3><a id="Erase">Erase</a></h3>
-      <P>Draw 100% transparent pixels onto the image, replacing existing 
-         pixels.&nbsp;Selecting this tool automatically selects a large pen 
-         size.&nbsp;Remember to switch back to the desired size before using another 
-         tool.&nbsp; The effect of this tool is the same as selecting the "Copy" 
+         trying to blend paper with ink.</p>
+      <h3><a id="Erase" name="Erase">Erase</a></h3>
+      <p>Draw 100% transparent pixels onto the image, replacing existing 
+         pixels. Selecting this tool automatically selects a large pen 
+         size. Remember to switch back to the desired size before using another 
+         tool.  The effect of this tool is the same as selecting the "Copy" 
          coloring mode, the "Freehand Drawing" tool, the "Large" pen size, and a color 
          with alpha level 0, but easier to accomplish, and doesn't actually change the 
-         coloring mode or current color.</P>
-      <h3><a id="GradientFill">Gradient Fill</a></h3>
-      <P>Draw color cradients onto the image.&nbsp; Click and drag a range onto the 
-         image to draw the gradient.&nbsp; The gradient is formed by generating a smooth 
+         coloring mode or current color.</p>
+      <h3><a id="GradientFill" name="GradientFill">Gradient Fill</a></h3>
+      <p>Draw color cradients onto the image.  Click and drag a range onto the 
+         image to draw the gradient.  The gradient is formed by generating a smooth 
          series of colors between the starting point and the ending point of the drag 
          with the Solid color at the starting point and the Line color at the ending 
-         point.&nbsp; This range is then extended perpendicular to that line, and 
-         reversed and repeated parallel to the line&nbsp;to fill the image.&nbsp; For 
+         point.  This range is then extended perpendicular to that line, and 
+         reversed and repeated parallel to the line to fill the image.  For 
          example, dragging from the top of the image to middle of the image will draw a 
          gradient from the solid color at the top to the line color in the middle and 
-         mirror that on the bottom half of the image.&nbsp; The gradient will&nbsp;fill 
-         the horizontal space with stripes of the same color filling each row.&nbsp; If 
+         mirror that on the bottom half of the image.  The gradient will fill 
+         the horizontal space with stripes of the same color filling each row.  If 
          there is an active selection the gradient fill will only affect the selected 
-         area.</P>
-      <h3><a id="FloodFill">Flood Fill</a></h3>
-      <P>Flood fill areas of similar colors with the currently selected solid 
-         color.&nbsp; Click on a pixel and drag to nearby pixels to specify a range of 
-         colors that you want to be affected by the fill.&nbsp; If you click on a single 
+         area.</p>
+      <h3><a id="FloodFill" name="FloodFill">Flood Fill</a></h3>
+      <p>Flood fill areas of similar colors with the currently selected solid 
+         color.  Click on a pixel and drag to nearby pixels to specify a range of 
+         colors that you want to be affected by the fill.  If you click on a single 
          pixel, only pixels with exactly that color will be flooded with the new 
-         color.&nbsp; If you drag to different color, both colors will be affects, as 
+         color.  If you drag to different color, both colors will be affects, as 
          will any colors that are "between" those two colors. "Between" means that the 
          largest difference in the R, G, B and A components of the color from the source 
          color is less than or equal to that difference between the end color and the 
-         start color.&nbsp; If the "Affect Unjoined Color Regions" option is selected, 
+         start color.  If the "Affect Unjoined Color Regions" option is selected, 
          this tool will affect all pixels of these colors in the image instead of only 
-         affecting adjacent (connected) pixels.</P>
-      <h3><a id="ColorWand">Color Wand</a></h3>
-      <P>This is similar to the flood fill, but instead of changing the pixels' colors, 
-         they are selected as the active selection.</P>
-      <h3><a id="RectangularSelection">Rectangular Selection</a></h3>
-      <P>Click and drag a rectangular area to select it.</P>
-      <h3><a id="IrregularSelection">Irregular Selection</a></h3>
-      <P>Draw an outline around an arbitrarily-shaped area to select it.</P>
-      <h3><a id="MoveSelection">Move Selection</a></h3>
-      <P>As soon as you start dragging with this tool, the selection is effectively cut 
+         affecting adjacent (connected) pixels.</p>
+      <h3><a id="ColorWand" name="ColorWand">Color Wand</a></h3>
+      <p>This is similar to the flood fill, but instead of changing the pixels' colors, 
+         they are selected as the active selection.</p>
+      <h3><a id="RectangularSelection" name="RectangularSelection">Rectangular Selection</a></h3>
+      <p>Click and drag a rectangular area to select it.</p>
+      <h3><a id="IrregularSelection" name="IrregularSelection">Irregular Selection</a></h3>
+      <p>Draw an outline around an arbitrarily-shaped area to select it.</p>
+      <h3><a id="MoveSelection" name="MoveSelection">Move Selection</a></h3>
+      <p>As soon as you start dragging with this tool, the selection is effectively cut 
          from the image and "floated" above it so you can move it to any location you 
-         want.&nbsp; The image is moved in the direction and distance determined by the 
-         drag.&nbsp; If there is no selection the entire image is "floated" and 
-         moved.&nbsp;</P>
-      <h3><a id="RotateSelection">Rotate Selection</a></h3>
-      <P>Drag the mouse rightward or downward to rotate the selection clockwise.&nbsp; 
-         Drag the mouse leftward or upward to rotate counter-clockwise.&nbsp; 
-         Anti-aliasing is recommended for smooth results.&nbsp; If there is no 
-         selection, the entire image is "floated" and rotated.</P>
-      <h3><a id="SizeSelection">Size Selection</a></h3>
-      <P>Drag rightward to widen (stretch) the selecttion.&nbsp; Drag downward to 
-         increase the height of the selection.&nbsp; Drag leftward or upward to compress 
+         want.  The image is moved in the direction and distance determined by the 
+         drag.  If there is no selection the entire image is "floated" and 
+         moved. </p>
+      <h3><a id="RotateSelection" name="RotateSelection">Rotate Selection</a></h3>
+      <p>Drag the mouse rightward or downward to rotate the selection clockwise.  
+         Drag the mouse leftward or upward to rotate counter-clockwise.  
+         Anti-aliasing is recommended for smooth results.  If there is no 
+         selection, the entire image is "floated" and rotated.</p>
+      <h3><a id="SizeSelection" name="SizeSelection">Size Selection</a></h3>
+      <p>Drag rightward to widen (stretch) the selecttion.  Drag downward to 
+         increase the height of the selection.  Drag leftward or upward to compress 
          the selection. If you drag left or up far enough, the image will be inverted 
-         and the actions above will then have the opposite effect.&nbsp; If there is no 
-         selection, the entire image is "floated" and affected.</P>
-      <h3><a id="ColorPickDropper">Color Pick Dropper</a></h3>
-      <P>Clicking with this tool will select that color under the cursor as the active 
+         and the actions above will then have the opposite effect.  If there is no 
+         selection, the entire image is "floated" and affected.</p>
+      <h3><a id="ColorPickDropper" name="ColorPickDropper">Color Pick Dropper</a></h3>
+      <p>Clicking with this tool will select that color under the cursor as the active 
          color. This is useful if you want to exactly match a particular color to add 
          something new to the image using that color (especially if it's no longer in 
-         the recent colors list).&nbsp;Most tools will allow you to right-click to 
+         the recent colors list). Most tools will allow you to right-click to 
          temporarily switch to the color dropper and do a "quick pick" of the pixel 
-         color currently&nbsp;behind the cursor, without having to explicitly switch 
-         tools.</P>
-      <h3><a id="CustomTool">Custom Tool</a></h3>
-      <h3><a id="AntiAlias">Anti-Alias</a></h3>
-      <h3><a id="DrawOutlinedShapes">Draw Outlined Shapes</a></h3>
-      <h3><a id="DrawFilledShapes">Draw Filled Shapes</a></h3>
-      <h3><a id="GradientFills">Gradient Fills</a></h3>
-      <h3><a id="LockToolProportions">Lock Tool Proportions</a></h3>
-      <h3><a id="AffectUnjoinedColorRegions">Affect Unjoined Color Regions</a></h3>
-      <h3><a id="Pen">Pen</a></h3>
+         color currently behind the cursor, without having to explicitly switch 
+         tools.</p>
+      <h3><a id="CustomTool" name="CustomTool">Custom Tool</a></h3>
+      <p>This custom tool selection is designed for specific customizable tools.  A 
+         number of default custom tools are delivered as examples.  Each of these 
+         delivered custom tool examples can be used with the "Draw Filled Shapes", 
+         "Gradient Fills" and "Lock Tools Proportions" options:</p>
+      <ul>
+         <li>
+            Star - Click where you want the center of the star to be and drag to specify 
+            the radius of the arms.</li>
+         <li>
+            Triangle (equilateral), Diamond (square), Pentagon, Hexagon, Septagon, 
+            Octagon - These are all shapes with equal side lengths and 
+            angles.  Click where you want the center of the shape to be, and drag 
+            to specify the radius of the vertecies.</li>
+         <li>
+            Right Triangle - Click where you want the right angle to be and drag to specify 
+            the length of the legs (both legs will have the same length).</li>
+         <li>
+            Droplet - Click where you want the center of the rounded end to be and drag to 
+            specify the location of the pointed end.</li>
+         <li>
+            Torus - Click and drag to specify a rectangle containing the outer perimiter of 
+            the torus.</li>
+      </ul>
+      <p>Notice that many of these tools are relatively restricted and don't allow you 
+         to adjust details like inner radius or different side lengths in the UI.  
+         This is because they are designed primarily as examples, and any additional 
+         customization is to be done by rewriting code.  If you are comfortable 
+         writing C# code and recompiling SGDK2IDE.exe (with MakeSGDK2.bat) you can 
+         change the existing tools or create your own custom tools.  The code is in 
+         the source file named CustTool.cs.  To create a new custom tool, follow 
+         the example of the existing toold and remember to check a number of areas:</p>
+      <ol>
+         <li>
+            Increase the CustomToolCount constant defined at the top.</li>
+         <li>
+            Create a new index (probably equal to CustomToolCount - 1) and provide the new 
+            tools name in the GetToolName function.</li>
+         <li>
+            Provide an image to display on the custom tool button in the GetToolImage 
+            function.</li>
+         <li>
+            Implement the behavior of the tool in DrawTool.</li>
+      </ol>
+      <p>Note that all custom tools are defined in terms of a single click and drag 
+         operation.  DrawTool will provide the Graphics object where the tool 
+         results are to be rendered, the starting point of the drag, the ending point, 
+         the line color (pen), the fill color (brush), and the currently selected tool 
+         options.</p>
+      <h3><a id="AntiAlias" name="AntiAlias">Anti-Alias</a></h3>
+      <p>This option is a toggle that remains on or off for use with any of a number of 
+         other tools.  It primarily affects lines and edges of shapes.  When 
+         the options is on, smooth edges will be generated by partially drawing pixels 
+         that are partially affected by the operation.  For example if you draw a 
+         diagonal line at a width of 1 pixel, some pixels may be completely contained 
+         within the line and some will be completely outside, but others will be 
+         partially contained within the line.  Depending on how much of pixel is 
+         contained within the line, the color of that pixel will be changed accordingly, 
+         resulting in a smoother appearance.  A pixel only half contained within 
+         the line will only receive half the color (and will remain 
+         half-transparent if the background was transparent).  Note that this also 
+         affects how the mouse position is interpreted.  When you draw a single 
+         point with the mouse, and anti-aliasing is off, only a single pixel will be 
+         affected, either 100% or 0%.  But if anti-aliasing is on, you can move the 
+         cursor to fractional pixel positions and see different results.  In some 
+         cases where you want sharper/crisper edges, you may want to turn anti-aliasing 
+         off.</p>
+      <h3><a id="DrawOutlinedShapes" name="DrawOutlinedShapes">Draw Outlined Shapes</a></h3>
+      <p>When this is turned on, connected lines, curves, rectangles, ellipses and 
+         similar tools will draw with an outline using the current line 
+         color.  You can turn this off and just leave the "Draw Filled Shapes" 
+         option on if you prefer to draw a shape without an outline.  It's not 
+         possible to turn this option off if you don't have "Fill Solid Shapes" turned 
+         on.</p>
+      <h3><a id="DrawFilledShapes" name="DrawFilledShapes">Draw Filled Shapes</a></h3>
+      <p>Although it's possible to draw a series of lines or shapes and then flood fill 
+         them with the color you want, this doesn't work well when using anti-aliasing 
+         because the anti-aliased pixels will not be properly affected by the fill 
+         operation.  Therefore it's recommended that if you want to draw a shape 
+         with a solid fill color, you do so all at once by selecting this option before 
+         drawing the shape.  The freehand drawing, freehand lines and bezier curves 
+         tools can all be used to draw filled shapes (along with the other more obvious 
+         choices for filled shapes -- rectangle, ellipse, custom tools and so forth).</p>
+      <h3><a id="GradientFills" name="GradientFills">Gradient Fills</a></h3>
+      <p>When this option it turned on, filled shapes will be filled with a smooth 
+         gradient that extends from the line color around the perimiter to the solid 
+         color in the center.  This option only has an effect when used in 
+         combination with the "Draw Filled Shapes" option.</p>
+      <h3><a id="LockToolProportions" name="LockToolProportions">Lock Tool Proportions</a></h3>
+      <p>When used with a tool where angle is relevant, this tool restricts the angles 
+         to horizontal, vertical, diagonal and a few primary angles in between.  
+         When used on a tool where angle is irrelevant, but size is relevant, the size 
+         will be confined to a square area instead of an arbitrary rectangle.  That 
+         means ellipses will be drawn as circles, and rectangles as squares.  This 
+         tool can be quickly toggled by using the Shift key.  When shift is pressed 
+         while using a tool, the lock will be turned on, and if shift is released while 
+         using a tool, the lock will be turned off.</p>
+      <h3><a id="AffectUnjoinedColorRegions" name="AffectUnjoinedColorRegions">Affect 
+            Unjoined Color Regions</a></h3>
+      <p>If you want to select or fill regions of similar color, and you want to affect 
+         those colors in the entire graphic instead of just affecting the areas adjacent 
+         to the cursor, turn this option on.  This option changes the behavior of 
+         the flood fill and color wand tools by selecting all pixels of the specified 
+         colors instead of only selecting connected pixels of those colors.</p>
+      <h3><a id="Pen" name="Pen">Pen</a></h3>
+      <p>The pen size can be quickly adjusted with the "[" and "]" keys, or you can 
+         immediately select any one of the available pen sizes from the toolbar or 
+         menu.  The pen size determines how wide a line will be or how thick 
+         the outline of a shape will be when the "Draw Outlined Shapes" option is 
+         on.  When drawing wide lines, you should also consider the pen 
+         shape.  A round pen will produce rounded corners, effectively joining 
+         every pair of lines with a solid circle over the joint.  A square pen, 
+         despite the name, is not necessarily square at the joints, but rather extends 
+         the edges of the lines at the joint until they meet.  That means a sharp 
+         corner could cause the line's joint to extend quite a ways.  There is 
+         a limit, however, and if you draw a sufficiently sharp angle, the corner will 
+         become a simple overlapping of two square-ended lines instead of a sharp 
+         angle.  The available pen sizes jump from 11x11 to 64x64 pixels.  The 
+         64x64 pixel pen is not really intended for drawing lines (it would likely cover 
+         your whole tile no matter what you did) but is rather indended for tools that 
+         use the pen size to determine what area to affect.  You can use this pen 
+         to affect (probably) your whole tile, or at least a much larger portion of 
+         it.  Air brush and smooth are good examples.</p>
       <h2>Screen Controls</h2>
-      <h3><a id="MagnifiedView">Magnified View</a></h3>
-      <h3><a id="ActualView">Actual View</a></h3>
-      <h3><a id="ColorWheel">Color Wheel</a></h3>
-      <h3><a id="ValueSlider">Value Slider</a></h3>
-      <h3><a id="AlphaSlider">Alpha Slider</a></h3>
-      <h3><a id="ColorBytes">Color Bytes</a></h3>
-      <h3><a id="LineColor">Line Color</a></h3>
-      <h3><a id="SwapColors">Swap Colors</a></h3>
-      <h3><a id="SolidColor">Solid Color</a></h3>
-      <h3><a id="RecentColorList">Recent Color List</a></h3>
-      <h3><a id="CellManager">Cell Manager</a></h3>
+      <h3><a id="MagnifiedView" name="MagnifiedView">Magnified View</a></h3>
+      <p>This are is where your main editing takes place.  It shows a magnified 
+         view of the graphic you are currently editing in memory.  Changes made 
+         here are not permanent until you store them back into the graphic sheet with 
+         the Cell Manager.</p>
+      <h3><a id="ActualView" name="ActualView">Actual View</a></h3>
+      <p>This is exactly the same as the magnified view, but it shows the tile actual 
+         size instead of magnified.  You can also use this window to edit the tile, 
+         but it will never let you deal with fractions of pixels since the mouse cursor 
+         is always positioned in whole pixels..</p>
+      <h3><a id="ColorWheel" name="ColorWheel">Color Wheel</a></h3>
+      <p>Click anywhere on this image to select a color by hue and saturation.  You 
+         may then use the value/brightness and alpha sliders to adjust the other two 
+         aspects of the color.  Note that clicking this wheel won't have much 
+         effect if the brightness slider is all the way down.  All hues end up 
+         black at zero brightness.</p>
+      <h3><a id="ValueSlider" name="ValueSlider">Value Slider</a></h3>
+      <p>Slide this up to make the current color brighter, or down to make it darker.</p>
+      <h3><a id="AlphaSlider" name="AlphaSlider">Alpha Slider</a></h3>
+      <p>Slide this up to make the current color more opaque or down to make it more 
+         transparent.</p>
+      <h3><a id="ColorBytes" name="ColorBytes">Color Bytes</a></h3>
+      <p>If you would rather specify a color by its numeric red, green, blue and alpha 
+         components rather than using the sliders to select by hue, saturation, value 
+         and alpha, you can type exact numbers into these boxes.  The result 
+         changes the current color just like clicking the color wheel and sliders 
+         would.  You can also see the numeric components of the currently selected 
+         color reflected here while using teh color wheel and sliders.  Each 
+         component must be a value from 0 to 255.</p>
+      <h3><a id="LineColor" name="LineColor">Line Color</a></h3>
+      <p>When the line color button is pressed it means that selecting a new color will 
+         change the line color. You can press the button if it's not pressed and you 
+         want to select a new line color. The current line color is displayed next to 
+         the line color button, and determines the color for lines drawn by various 
+         tools. Some tools may automatically press or un-press the line color 
+         button if line color is irrelevant or exclusively relevant to the selected 
+         tool.</p>
+      <h3><a id="SwapColors" name="SwapColors">Swap Colors</a></h3>
+      <p>If you want your current line color to be swapped with the current solid color, 
+         press this swap button, and they will switch places.</p>
+      <h3><a id="SolidColor" name="SolidColor">Solid Color</a></h3>
+      <p>When the solid color button is pressed, it means that selecting a new color 
+         will change the solid color. You can press the button if it's not pressed 
+         and you want to select a new solid color. The current solid color is 
+         displayed next to the solid color button, and generally determines the color 
+         for solid filled areas drawn by various tools. Some tools may 
+         automatically press or un-press the solid color button if it is ittelevant or 
+         exclusively relevant to the selected tool.</p>
+      <h3><a id="ColoringMode" name="ColoringMode">Coloring Mode</a></h3>
+      <p>Normally, when draw with a transparent or partially transparent color, it is 
+         merged with the colors underneath it using the "Overlay" mode (unless you are 
+         using the flood fill tool).  So a half-transparent red pixel drawn over a 
+         blue pixel will leave half the blue in the original pixel and add half the red 
+         from the new color.  However, you may wish to completely replace the 
+         graphics underneath (like the eraser does) instead of merging new graphics with 
+         the existing graphics.  If so, select the "Copy" coloring mode.</p>
+      <h3><a id="RecentColorList" name="RecentColorList">Recent Color List</a></h3>
+      <p>This is a list of default or recently used colors available for quick 
+         access.  Each time you draw using a particular color, it is inserted 
+         at or moved to the beginning of the recent color list.  To re-use a 
+         color from this list, simply ensure that the appropriate line/solid color 
+         button is clicked and then click the color you want to use.  Note that 
+         transparent colors show up with the diamond background.</p>
+      <h3><a id="CellManager" name="CellManager">Cell Manager</a></h3>
+      <p>This shows all the graphics within the graphic sheet currently being 
+         edited.  Here you can select cells to edit, load them, and store them back 
+         in the project.  You can select multiple cells to edit at once by clicking 
+         and draging over multiple cells.  You are limited by the size of the 
+         screen and the current magnification level, but as long as the selection fits 
+         in the window at the current magnification, you should be able to load, edit 
+         and store it.</p>
    </body>
 </html>

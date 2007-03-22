@@ -93,7 +93,7 @@ namespace SGDK2
       /// <summary>
       /// Get the number of columns of tiles in the layer
       /// </summary>
-      public int Columns
+      public int ActualColumns
       {
          get
          {
@@ -103,11 +103,32 @@ namespace SGDK2
       /// <summary>
       /// Get the number of rows of tiles in the layer
       /// </summary>
-      public int Rows
+      public int ActualRows
       {
          get
          {
             return m_Layer.Height;
+         }
+      }
+
+      /// <summary>
+      /// Get the number of columns of tiles in the layer
+      /// </summary>
+      public int VirtualColumns
+      {
+         get
+         {
+            return (m_Layer.VirtualWidth == 0) ? m_Layer.Width : m_Layer.VirtualWidth;
+         }
+      }
+      /// <summary>
+      /// Get the number of rows of tiles in the layer
+      /// </summary>
+      public int VirtualRows
+      {
+         get
+         {
+            return (m_Layer.VirtualHeight == 0) ? m_Layer.Height : m_Layer.VirtualHeight;
          }
       }
 
@@ -138,11 +159,11 @@ namespace SGDK2
             switch(m_Layer.BytesPerTile)
             {
                case 1:
-                  return m_Layer.Tiles[y*m_Layer.Width + x];
+                  return m_Layer.Tiles[(y % ActualRows)*m_Layer.Width + (x % ActualColumns)];
                case 2:
-                  return BitConverter.ToInt16(m_Layer.Tiles,(y*m_Layer.Width + x) * 2);
+                  return BitConverter.ToInt16(m_Layer.Tiles,((y%ActualRows)*m_Layer.Width + (x%ActualColumns)) * 2);
                case 4:
-                  return BitConverter.ToInt32(m_Layer.Tiles,(y*m_Layer.Width + x) * 4);
+                  return BitConverter.ToInt32(m_Layer.Tiles,((y%ActualRows)*m_Layer.Width + (x%ActualColumns)) * 4);
             }
             throw new ApplicationException("Unexpected BytesPerTile value");
          }
@@ -151,13 +172,13 @@ namespace SGDK2
             switch(m_Layer.BytesPerTile)
             {
                case 1:
-                  m_Layer.Tiles[y*m_Layer.Width + x] = System.Convert.ToByte(value);
+                  m_Layer.Tiles[(y%ActualRows)*m_Layer.Width + (x%ActualColumns)] = System.Convert.ToByte(value);
                   break;
                case 2:
-                  BitConverter.GetBytes(System.Convert.ToInt16(value)).CopyTo(m_Layer.Tiles,(y*m_Layer.Width + x) * 2);
+                  BitConverter.GetBytes(System.Convert.ToInt16(value)).CopyTo(m_Layer.Tiles,((y%ActualRows)*m_Layer.Width + (x%ActualColumns)) * 2);
                   break;
                case 4:
-                  BitConverter.GetBytes(value).CopyTo(m_Layer.Tiles,(y*m_Layer.Width + x) * 4);
+                  BitConverter.GetBytes(value).CopyTo(m_Layer.Tiles,((y%ActualRows)*m_Layer.Width + (x%ActualColumns)) * 4);
                   break;
             }
          }
@@ -244,11 +265,11 @@ namespace SGDK2
             nStartRow = 0;
 
          int EndCol = (ViewSize.Width - 1 + m_nRightBuffer - m_CurrentPosition.X) / nTileWidth;
-         if (EndCol >= Columns)
-            EndCol = Columns - 1;
+         if (EndCol >= VirtualColumns)
+            EndCol = VirtualColumns - 1;
          int EndRow = (ViewSize.Height - 1 + m_nBottomBuffer - m_CurrentPosition.Y) / nTileHeight;
-         if (EndRow >= Rows)
-            EndRow = Rows - 1;
+         if (EndRow >= VirtualRows)
+            EndRow = VirtualRows - 1;
 
          Sprite spr = Display.Sprite;
          Device Device = Display.Device;

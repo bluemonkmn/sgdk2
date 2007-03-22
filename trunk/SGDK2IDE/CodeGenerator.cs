@@ -1503,6 +1503,8 @@ namespace SGDK2
                   new CodeParameterDeclarationExpression(typeof(int), "nBottomBuffer"),
                   new CodeParameterDeclarationExpression(typeof(int), "nColumns"),
                   new CodeParameterDeclarationExpression(typeof(int), "nRows"),
+                  new CodeParameterDeclarationExpression(typeof(int), "nVirtualColumns"),
+                  new CodeParameterDeclarationExpression(typeof(int), "nVirtualRows"),
                   new CodeParameterDeclarationExpression(typeof(System.Drawing.Point), "Position"),
                   new CodeParameterDeclarationExpression(typeof(System.Drawing.SizeF), "ScrollRate"),
                   new CodeParameterDeclarationExpression(typeof(string), "Name")
@@ -1518,6 +1520,8 @@ namespace SGDK2
                   new CodeArgumentReferenceExpression("nBottomBuffer"),
                   new CodeArgumentReferenceExpression("nColumns"),
                   new CodeArgumentReferenceExpression("nRows"),
+                  new CodeArgumentReferenceExpression("nVirtualColumns"),
+                  new CodeArgumentReferenceExpression("nVirtualRows"),
                   new CodeArgumentReferenceExpression("Position"),
                   new CodeArgumentReferenceExpression("ScrollRate"),
                   new CodeArgumentReferenceExpression("Name")
@@ -1539,6 +1543,8 @@ namespace SGDK2
                new CodePrimitiveExpression(nBottom),
                new CodePrimitiveExpression(drLayer.Width),
                new CodePrimitiveExpression(drLayer.Height),
+               new CodePrimitiveExpression(drLayer.VirtualWidth),
+               new CodePrimitiveExpression(drLayer.VirtualHeight),
                new CodeObjectCreateExpression(typeof(System.Drawing.Point), 
                new CodePrimitiveExpression(drLayer.OffsetX),
                new CodePrimitiveExpression(drLayer.OffsetY)),
@@ -3027,7 +3033,8 @@ namespace SGDK2
                }
             }
             if (d3dx9Path != null)
-               System.IO.File.Copy(d3dx9Path, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(d3dx9File)), false);
+               if (!System.IO.File.Exists(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(d3dx9File))))
+                  System.IO.File.Copy(d3dx9Path, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(d3dx9File)), false);
             foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
             {
                ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;

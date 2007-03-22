@@ -1054,14 +1054,14 @@ public abstract class SpriteBase : GeneralRules
       int th = layer.Tileset.TileHeight;
       int minYEdge = (PixelY / th);
       int maxY = (PixelY + SolidHeight) / th;
-      if (maxY >= layer.Rows)
-         maxY = layer.Rows -1;
+      if (maxY >= layer.VirtualRows)
+         maxY = layer.VirtualRows -1;
       int maxYEdge = (PixelY + SolidHeight - 1) / th;
       int minX = (PixelX - 1)/ tw;
       int minXEdge = PixelX / tw;
       int maxX = (PixelX + SolidHeight) / tw;
-      if (maxX >= layer.Columns)
-         maxX = layer.Columns - 1;
+      if (maxX >= layer.VirtualColumns)
+         maxX = layer.VirtualColumns - 1;
       int maxXEdge = (PixelX + SolidHeight - 1) / tw;
       for (int yidx = (PixelY - 1) / th; yidx <= maxY; yidx++)
       {

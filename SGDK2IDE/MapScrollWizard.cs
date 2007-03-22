@@ -253,9 +253,13 @@ namespace SGDK2
             int layerMaxX = 0;
             int layerMaxY = 0;
             if (layer.ScrollRateX > 0)
-               layerMaxX = (int)((layer.OffsetX + layer.Width * layer.TilesetRow.TileWidth - m_Map.ViewWidth) / layer.ScrollRateX) + m_Map.ViewWidth;
+               layerMaxX = (int)((layer.OffsetX +
+                  ((layer.VirtualWidth == 0) ? layer.Width : layer.VirtualWidth) *
+                  layer.TilesetRow.TileWidth - m_Map.ViewWidth) / layer.ScrollRateX) + m_Map.ViewWidth;
             if (layer.ScrollRateY > 0)
-               layerMaxY = (int)((layer.OffsetY + layer.Height * layer.TilesetRow.TileHeight - m_Map.ViewHeight) / layer.ScrollRateY) + m_Map.ViewHeight;
+               layerMaxY = (int)((layer.OffsetY +
+                  ((layer.VirtualHeight == 0) ? layer.Height : layer.VirtualHeight) *
+                  layer.TilesetRow.TileHeight - m_Map.ViewHeight) / layer.ScrollRateY) + m_Map.ViewHeight;
             if (rdoConstDepth.Checked)
             {
                if ((m_nScrollWidth < 0) || (layerMaxX < m_nScrollWidth))

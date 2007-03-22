@@ -4153,6 +4153,10 @@ namespace SGDK2 {
             
             private DataColumn columnPriority;
             
+            private DataColumn columnVirtualWidth;
+            
+            private DataColumn columnVirtualHeight;
+            
             private DataColumn columnTiles;
             
             internal LayerDataTable() : 
@@ -4255,6 +4259,18 @@ namespace SGDK2 {
                 }
             }
             
+            internal DataColumn VirtualWidthColumn {
+                get {
+                    return this.columnVirtualWidth;
+                }
+            }
+            
+            internal DataColumn VirtualHeightColumn {
+                get {
+                    return this.columnVirtualHeight;
+                }
+            }
+            
             internal DataColumn TilesColumn {
                 get {
                     return this.columnTiles;
@@ -4279,7 +4295,7 @@ namespace SGDK2 {
                 this.Rows.Add(row);
             }
             
-            public LayerRow AddLayerRow(string Name, int Width, int Height, TilesetRow parentTilesetRowByTilesetLayer, System.Byte BytesPerTile, MapRow parentMapRowByMapLayer, int OffsetX, int OffsetY, System.Single ScrollRateX, System.Single ScrollRateY, int ZIndex, int Priority, System.Byte[] Tiles) {
+            public LayerRow AddLayerRow(string Name, int Width, int Height, TilesetRow parentTilesetRowByTilesetLayer, System.Byte BytesPerTile, MapRow parentMapRowByMapLayer, int OffsetX, int OffsetY, System.Single ScrollRateX, System.Single ScrollRateY, int ZIndex, int Priority, int VirtualWidth, int VirtualHeight, System.Byte[] Tiles) {
                 LayerRow rowLayerRow = ((LayerRow)(this.NewRow()));
                 rowLayerRow.ItemArray = new object[] {
                         Name,
@@ -4294,6 +4310,8 @@ namespace SGDK2 {
                         ScrollRateY,
                         ZIndex,
                         Priority,
+                        VirtualWidth,
+                        VirtualHeight,
                         Tiles};
                 this.Rows.Add(rowLayerRow);
                 return rowLayerRow;
@@ -4332,6 +4350,8 @@ namespace SGDK2 {
                 this.columnScrollRateY = this.Columns["ScrollRateY"];
                 this.columnZIndex = this.Columns["ZIndex"];
                 this.columnPriority = this.Columns["Priority"];
+                this.columnVirtualWidth = this.Columns["VirtualWidth"];
+                this.columnVirtualHeight = this.Columns["VirtualHeight"];
                 this.columnTiles = this.Columns["Tiles"];
             }
             
@@ -4360,6 +4380,10 @@ namespace SGDK2 {
                 this.Columns.Add(this.columnZIndex);
                 this.columnPriority = new DataColumn("Priority", typeof(int), null, System.Data.MappingType.Attribute);
                 this.Columns.Add(this.columnPriority);
+                this.columnVirtualWidth = new DataColumn("VirtualWidth", typeof(int), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnVirtualWidth);
+                this.columnVirtualHeight = new DataColumn("VirtualHeight", typeof(int), null, System.Data.MappingType.Attribute);
+                this.Columns.Add(this.columnVirtualHeight);
                 this.columnTiles = new DataColumn("Tiles", typeof(System.Byte[]), null, System.Data.MappingType.Element);
                 this.Columns.Add(this.columnTiles);
                 this.Constraints.Add(new UniqueConstraint("LayerKey", new DataColumn[] {
@@ -4387,6 +4411,10 @@ namespace SGDK2 {
                 this.columnZIndex.Namespace = "";
                 this.columnPriority.Namespace = "";
                 this.columnPriority.DefaultValue = 0;
+                this.columnVirtualWidth.Namespace = "";
+                this.columnVirtualWidth.DefaultValue = 0;
+                this.columnVirtualHeight.Namespace = "";
+                this.columnVirtualHeight.DefaultValue = 0;
             }
             
             public LayerRow NewLayerRow() {
@@ -4578,6 +4606,34 @@ namespace SGDK2 {
                 }
             }
             
+            public int VirtualWidth {
+                get {
+                    if (this.IsVirtualWidthNull()) {
+                        return 0;
+                    }
+                    else {
+                        return ((int)(this[this.tableLayer.VirtualWidthColumn]));
+                    }
+                }
+                set {
+                    this[this.tableLayer.VirtualWidthColumn] = value;
+                }
+            }
+            
+            public int VirtualHeight {
+                get {
+                    if (this.IsVirtualHeightNull()) {
+                        return 0;
+                    }
+                    else {
+                        return ((int)(this[this.tableLayer.VirtualHeightColumn]));
+                    }
+                }
+                set {
+                    this[this.tableLayer.VirtualHeightColumn] = value;
+                }
+            }
+            
             public System.Byte[] Tiles {
                 get {
                     try {
@@ -4664,6 +4720,22 @@ namespace SGDK2 {
             
             public void SetPriorityNull() {
                 this[this.tableLayer.PriorityColumn] = System.Convert.DBNull;
+            }
+            
+            public bool IsVirtualWidthNull() {
+                return this.IsNull(this.tableLayer.VirtualWidthColumn);
+            }
+            
+            public void SetVirtualWidthNull() {
+                this[this.tableLayer.VirtualWidthColumn] = System.Convert.DBNull;
+            }
+            
+            public bool IsVirtualHeightNull() {
+                return this.IsNull(this.tableLayer.VirtualHeightColumn);
+            }
+            
+            public void SetVirtualHeightNull() {
+                this[this.tableLayer.VirtualHeightColumn] = System.Convert.DBNull;
             }
             
             public bool IsTilesNull() {

@@ -63,8 +63,10 @@ public abstract class LayerBase : System.Collections.IEnumerable
    private readonly int m_nTopBuffer;
    private readonly int m_nRightBuffer;
    private readonly int m_nBottomBuffer;
-   private readonly int m_nColumns;
-   private readonly int m_nRows;
+   protected readonly int m_nColumns;
+   protected readonly int m_nRows;
+   private readonly int m_nVirtualColumns;
+   private readonly int m_nVirtualRows;
    private System.Drawing.Point m_AbsolutePosition;
    protected SpriteCollection m_Sprites;
    private readonly System.Drawing.SizeF m_ScrollRate;
@@ -74,7 +76,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
    #endregion
 
    protected LayerBase(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer, int nBottomBuffer,
-      int nColumns, int nRows, System.Drawing.Point Position, System.Drawing.SizeF ScrollRate)
+      int nColumns, int nRows, int nVirtualColumns, int nVirtualRows, System.Drawing.Point Position, System.Drawing.SizeF ScrollRate)
    {
       this.m_ParentMap = Parent;
       this.m_Tileset = Tileset;
@@ -85,6 +87,14 @@ public abstract class LayerBase : System.Collections.IEnumerable
       this.m_nBottomBuffer = nBottomBuffer;
       this.m_nColumns = nColumns;
       this.m_nRows = nRows;
+      if (nVirtualColumns == 0)
+         this.m_nVirtualColumns = nColumns;
+      else
+         this.m_nVirtualColumns = nVirtualColumns;
+      if (nVirtualRows == 0)
+         this.m_nVirtualRows = nRows;
+      else
+         this.m_nVirtualRows = nVirtualRows;
       this.m_AbsolutePosition = Position;
       this.m_ScrollRate = ScrollRate;
       this.Move(new Point(0,0));
@@ -113,9 +123,9 @@ public abstract class LayerBase : System.Collections.IEnumerable
 
    #region Properties
    /// <summary>
-   /// Get the number of columns of tiles in the layer
+   /// Get the number of columns of tiles in the layer's tile data
    /// </summary>
-   public int Columns
+   public int ActualColumns
    {
       get
       {
@@ -123,13 +133,36 @@ public abstract class LayerBase : System.Collections.IEnumerable
       }
    }
    /// <summary>
-   /// Get the number of rows of tiles in the layer
+   /// Get the number of rows of tiles in the layer's tile data
    /// </summary>
-   public int Rows
+   public int ActualRows
    {
       get
       {
          return m_nRows;
+      }
+   }
+
+   /// <summary>
+   /// Get the number of columns of tiles in the layer's displayed
+   /// virtual scroll space (data is wrapped)
+   /// </summary>
+   public int VirtualColumns
+   {
+      get
+      {
+         return m_nVirtualColumns;
+      }
+   }
+   /// <summary>
+   /// Get the number of rows of tiles in the layer's displayed
+   /// virtual scroll space (data is wrapped)
+   /// </summary>
+   public int VirtualRows
+   {
+      get
+      {
+         return m_nVirtualRows;
       }
    }
 
@@ -235,11 +268,11 @@ public abstract class LayerBase : System.Collections.IEnumerable
       m_ParentMap.Display.Device.ScissorRectangle = ViewRect;
 
       int EndCol = (ViewRect.Width - 1 + m_nRightBuffer - CurrentPosition.X) / nTileWidth;
-      if (EndCol >= Columns)
-         EndCol = Columns - 1;
+      if (EndCol >= VirtualColumns)
+         EndCol = VirtualColumns - 1;
       int EndRow = (ViewRect.Height - 1 + m_nBottomBuffer - CurrentPosition.Y) / nTileHeight;
-      if (EndRow >= Rows)
-         EndRow = Rows - 1;
+      if (EndRow >= VirtualRows)
+         EndRow = VirtualRows - 1;
 
       System.Collections.IEnumerator Injected = null;
       InjectedFrame CurFrame;
@@ -489,8 +522,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
       int leftTile = (testArea.Left + m_Tileset.TileHeight) / m_Tileset.TileWidth - 1;
       int rightTile = (int)((testArea.Left + testArea.Width - 1) / m_Tileset.TileWidth);
       bool outOfBounds = false;
-      if ((topTile < 0) || (topTile >= Rows) || (bottomTile < 0) || (bottomTile >= Rows)
-         || (leftTile < 0) || (leftTile >= Columns) || (rightTile < 0) || (rightTile >= Columns))
+      if ((topTile < 0) || (topTile >= VirtualRows) || (bottomTile < 0) || (bottomTile >= VirtualRows)
+         || (leftTile < 0) || (leftTile >= VirtualColumns) || (rightTile < 0) || (rightTile >= VirtualColumns))
          outOfBounds = true;
       short minTileTop = (short)(testArea.Top % m_Tileset.TileHeight);
       int tileLeft = leftTile * m_Tileset.TileWidth;
@@ -499,7 +532,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
          if (rightTile == leftTile)
          {
             short topMost;
-            if (outOfBounds && ((leftTile < 0) || (leftTile >= Columns) || (y < 0) || (y >= Rows)))
+            if (outOfBounds && ((leftTile < 0) || (leftTile >= VirtualColumns) || (y < 0) || (y >= VirtualRows)))
                topMost = 0;
             else
                topMost = solid.GetCurrentTileShape(m_Tileset[this[leftTile,y]]).GetTopSolidPixel(
@@ -517,7 +550,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
          else
          {
             short topMost;
-            if (outOfBounds && ((leftTile < 0) || (leftTile >= Columns) || (y < 0) || (y >= Rows)))
+            if (outOfBounds && ((leftTile < 0) || (leftTile >= VirtualColumns) || (y < 0) || (y >= VirtualRows)))
                topMost = 0;
             else
                topMost = solid.GetCurrentTileShape(m_Tileset[this[leftTile,y]]).GetTopSolidPixel(
@@ -527,7 +560,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
             short top;
             for (int x = leftTile + 1; x < rightTile; x++)
             {
-               if (outOfBounds && ((x < 0) || (x >= Columns) || (y < 0) || (y >= Rows)))
+               if (outOfBounds && ((x < 0) || (x >= VirtualColumns) || (y < 0) || (y >= VirtualRows)))
                   top = 0;
                else
                   top = solid.GetCurrentTileShape(m_Tileset[this[x,y]]).GetTopSolidPixel(
@@ -535,7 +568,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
                if ((top < topMost) && ((y > topTile) || (top >= minTileTop)))
                   topMost = top;
             }
-            if (outOfBounds && ((rightTile < 0) || (rightTile >= Columns) || (y < 0) || (y >= Rows)))
+            if (outOfBounds && ((rightTile < 0) || (rightTile >= VirtualColumns) || (y < 0) || (y >= VirtualRows)))
                top = 0;
             else
                top = solid.GetCurrentTileShape(m_Tileset[this[rightTile,y]]).GetTopSolidPixel(
@@ -562,8 +595,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
       int leftTile = (testArea.Left + m_Tileset.TileHeight) / m_Tileset.TileWidth - 1;
       int rightTile = (int)((testArea.Left + testArea.Width - 1) / m_Tileset.TileWidth);
       bool outOfBounds = false;
-      if ((topTile < 0) || (topTile >= Rows) || (bottomTile < 0) || (bottomTile >= Rows)
-         || (leftTile < 0) || (leftTile >= Columns) || (rightTile < 0) || (rightTile >= Columns))
+      if ((topTile < 0) || (topTile >= VirtualRows) || (bottomTile < 0) || (bottomTile >= VirtualRows)
+         || (leftTile < 0) || (leftTile >= VirtualColumns) || (rightTile < 0) || (rightTile >= VirtualColumns))
          outOfBounds = true;
       short maxTileBottom = (short)((testArea.Top+testArea.Height-1) % m_Tileset.TileHeight);
       int tileLeft = leftTile * m_Tileset.TileWidth;
@@ -572,7 +605,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
          if (rightTile == leftTile)
          {
             short bottomMost;
-            if (outOfBounds && ((leftTile < 0) || (leftTile >= Columns) || (y < 0) || (y >= Rows)))
+            if (outOfBounds && ((leftTile < 0) || (leftTile >= VirtualColumns) || (y < 0) || (y >= VirtualRows)))
                bottomMost = (short)(m_Tileset.TileHeight - 1);
             else
                bottomMost = solid.GetCurrentTileShape(m_Tileset[this[leftTile,y]]).GetBottomSolidPixel(
@@ -590,7 +623,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
          else
          {
             short bottomMost;
-            if (outOfBounds && ((leftTile < 0) || (leftTile >= Columns) || (y < 0) || (y >= Rows)))
+            if (outOfBounds && ((leftTile < 0) || (leftTile >= VirtualColumns) || (y < 0) || (y >= VirtualRows)))
                bottomMost = (short)(m_Tileset.TileHeight - 1);
             else
                bottomMost = solid.GetCurrentTileShape(m_Tileset[this[leftTile,y]]).GetBottomSolidPixel(
@@ -600,7 +633,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
             short bottom;
             for (int x = leftTile + 1; x < rightTile; x++)
             {
-               if (outOfBounds && ((x < 0) || (x >= Columns) || (y < 0) || (y >= Rows)))
+               if (outOfBounds && ((x < 0) || (x >= VirtualColumns) || (y < 0) || (y >= VirtualRows)))
                   bottom = (short)(m_Tileset.TileHeight - 1);
                else
                   bottom = solid.GetCurrentTileShape(m_Tileset[this[x,y]]).GetBottomSolidPixel(
@@ -608,7 +641,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
                if ((bottom > bottomMost) && ((y < bottomTile) || (bottom <= maxTileBottom)))
                   bottomMost = bottom;
             }
-            if (outOfBounds && ((rightTile < 0) || (rightTile >= Columns) || (y < 0) || (y >= Rows)))
+            if (outOfBounds && ((rightTile < 0) || (rightTile >= VirtualColumns) || (y < 0) || (y >= VirtualRows)))
                bottom = (short)(m_Tileset.TileHeight - 1);
             else
                bottom = solid.GetCurrentTileShape(m_Tileset[this[rightTile,y]]).GetBottomSolidPixel(
@@ -635,8 +668,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
       int leftTile = (testArea.Left + m_Tileset.TileHeight) / m_Tileset.TileWidth - 1;
       int rightTile = (int)((testArea.Left + testArea.Width - 1) / m_Tileset.TileWidth);
       bool outOfBounds = false;
-      if ((topTile < 0) || (topTile >= Rows) || (bottomTile < 0) || (bottomTile >= Rows)
-         || (leftTile < 0) || (leftTile >= Columns) || (rightTile < 0) || (rightTile >= Columns))
+      if ((topTile < 0) || (topTile >= VirtualRows) || (bottomTile < 0) || (bottomTile >= VirtualRows)
+         || (leftTile < 0) || (leftTile >= VirtualColumns) || (rightTile < 0) || (rightTile >= VirtualColumns))
          outOfBounds = true;
       short minTileLeft = (short)(testArea.Left % m_Tileset.TileWidth);
       int tileTop = topTile * m_Tileset.TileHeight;
@@ -645,7 +678,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
          if (bottomTile == topTile)
          {
             short leftMost;
-            if (outOfBounds && ((topTile < 0) || (topTile >= Rows) || (x < 0) || (x >= Columns)))
+            if (outOfBounds && ((topTile < 0) || (topTile >= VirtualRows) || (x < 0) || (x >= VirtualColumns)))
                leftMost = 0;
             else
                leftMost = solid.GetCurrentTileShape(m_Tileset[this[x,topTile]]).GetLeftSolidPixel(
@@ -663,7 +696,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
          else
          {
             short leftMost;
-            if (outOfBounds && ((topTile < 0) || (topTile >= Rows) || (x < 0) || (x >= Columns)))
+            if (outOfBounds && ((topTile < 0) || (topTile >= VirtualRows) || (x < 0) || (x >= VirtualColumns)))
                leftMost = 0;
             else
                leftMost = solid.GetCurrentTileShape(m_Tileset[this[x, topTile]]).GetLeftSolidPixel(
@@ -673,7 +706,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
             short left;
             for (int y = topTile + 1; y < bottomTile; y++)
             {
-               if (outOfBounds && ((x < 0) || (x >= Columns) || (y < 0) || (y >= Rows)))
+               if (outOfBounds && ((x < 0) || (x >= VirtualColumns) || (y < 0) || (y >= VirtualRows)))
                   left = 0;
                else
                   left = solid.GetCurrentTileShape(m_Tileset[this[x,y]]).GetLeftSolidPixel(
@@ -681,7 +714,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
                if ((left < leftMost) && ((x > leftTile) || (left >= minTileLeft)))
                   leftMost = left;
             }
-            if (outOfBounds && ((bottomTile < 0) || (bottomTile >= Rows) || (x < 0) || (x >= Columns)))
+            if (outOfBounds && ((bottomTile < 0) || (bottomTile >= VirtualRows) || (x < 0) || (x >= VirtualColumns)))
                left = 0;
             else
                left = solid.GetCurrentTileShape(m_Tileset[this[x, bottomTile]]).GetLeftSolidPixel(
@@ -708,8 +741,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
       int leftTile = (testArea.Left + m_Tileset.TileHeight) / m_Tileset.TileWidth - 1;
       int rightTile = (int)((testArea.Left + testArea.Width - 1) / m_Tileset.TileWidth);
       bool outOfBounds = false;
-      if ((topTile < 0) || (topTile >= Rows) || (bottomTile < 0) || (bottomTile >= Rows)
-         || (leftTile < 0) || (leftTile >= Columns) || (rightTile < 0) || (rightTile >= Columns))
+      if ((topTile < 0) || (topTile >= VirtualRows) || (bottomTile < 0) || (bottomTile >= VirtualRows)
+         || (leftTile < 0) || (leftTile >= VirtualColumns) || (rightTile < 0) || (rightTile >= VirtualColumns))
          outOfBounds = true;
       short maxTileRight = (short)((testArea.Left+testArea.Width-1) % m_Tileset.TileWidth);
       int tileTop = topTile * m_Tileset.TileHeight;
@@ -718,7 +751,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
          if (bottomTile == topTile)
          {
             short rightMost;
-            if (outOfBounds && ((topTile < 0) || (topTile >= Rows) || (x < 0) || (x >= Columns)))
+            if (outOfBounds && ((topTile < 0) || (topTile >= VirtualRows) || (x < 0) || (x >= VirtualColumns)))
                rightMost = (short)(m_Tileset.TileWidth - 1);
             else
                rightMost = solid.GetCurrentTileShape(m_Tileset[this[x,topTile]]).GetRightSolidPixel(
@@ -736,7 +769,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
          else
          {
             short rightMost;
-            if (outOfBounds && ((topTile < 0) || (topTile >= Rows) || (x < 0) || (x >= Columns)))
+            if (outOfBounds && ((topTile < 0) || (topTile >= VirtualRows) || (x < 0) || (x >= VirtualColumns)))
                rightMost = (short)(m_Tileset.TileWidth - 1);
             else
                rightMost = solid.GetCurrentTileShape(m_Tileset[this[x, topTile]]).GetRightSolidPixel(
@@ -746,7 +779,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
             short right;
             for (int y = topTile + 1; y < bottomTile; y++)
             {
-               if (outOfBounds && ((x < 0) || (x >= Columns) || (y < 0) || (y >= Rows)))
+               if (outOfBounds && ((x < 0) || (x >= VirtualColumns) || (y < 0) || (y >= VirtualRows)))
                   right = (short)(m_Tileset.TileWidth - 1);
                else
                   right = solid.GetCurrentTileShape(m_Tileset[this[x,y]]).GetRightSolidPixel(
@@ -754,7 +787,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
                if ((right > rightMost) && ((x < rightTile) || (right <= maxTileRight)))
                   rightMost = right;
             }
-            if (outOfBounds && ((bottomTile < 0) || (bottomTile >= Rows) || (x < 0) || (x >= Columns)))
+            if (outOfBounds && ((bottomTile < 0) || (bottomTile >= VirtualRows) || (x < 0) || (x >= VirtualColumns)))
                right = (short)(m_Tileset.TileWidth - 1);
             else
                right = solid.GetCurrentTileShape(m_Tileset[this[x, bottomTile]]).GetRightSolidPixel(
@@ -779,13 +812,13 @@ public abstract class LayerBase : System.Collections.IEnumerable
 [Serializable()]
 public abstract class IntLayer : LayerBase
 {
-   public int[,] m_Tiles;
+   private int[,] m_Tiles;
 
    public IntLayer(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
-      int nBottomBuffer, int nColumns, int nRows, System.Drawing.Point Position,
-      System.Drawing.SizeF ScrollRate, string Name) : 
+      int nBottomBuffer, int nColumns, int nRows, int nVirtualColumns, int nVirtualRows,
+      System.Drawing.Point Position, System.Drawing.SizeF ScrollRate, string Name) : 
       base(Tileset, Parent, nLeftBuffer, nTopBuffer, nRightBuffer,
-      nBottomBuffer, nColumns, nRows, Position, ScrollRate)
+      nBottomBuffer, nColumns, nRows, nVirtualColumns, nVirtualRows, Position, ScrollRate)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
       m_Tiles = (int[,])(resources.GetObject(Name));
@@ -795,35 +828,35 @@ public abstract class IntLayer : LayerBase
    {
       get
       {
-         return m_Tiles[x,y];
+         return m_Tiles[x % m_nColumns, y % m_nRows];
       }
       set
       {
-         m_Tiles[x,y] = value;
+         m_Tiles[x % m_nColumns, y % m_nRows] = value;
       }
    }
 
    public override int[] GetTileFrame(int x, int y)
    {
-      return m_Tileset[m_Tiles[x,y]].CurrentFrame;
+      return m_Tileset[m_Tiles[x % m_nColumns, y % m_nRows]].CurrentFrame;
    }
 
    public override TileBase GetTile(int x, int y)
    {
-      return m_Tileset[m_Tiles[x,y]];
+      return m_Tileset[m_Tiles[x % m_nColumns,y % m_nRows]];
    }
 }
 
 [Serializable()]
 public abstract class ShortLayer : LayerBase
 {
-   public short[,] m_Tiles;
+   private short[,] m_Tiles;
 
    public ShortLayer(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
-      int nBottomBuffer, int nColumns, int nRows, System.Drawing.Point Position,
+      int nBottomBuffer, int nColumns, int nRows, int nVirtualColumns, int nVirtualRows, System.Drawing.Point Position,
       System.Drawing.SizeF ScrollRate, string Name) : 
       base(Tileset, Parent, nLeftBuffer, nTopBuffer, nRightBuffer,
-      nBottomBuffer, nColumns, nRows, Position, ScrollRate)
+      nBottomBuffer, nColumns, nRows, nVirtualColumns, nVirtualRows, Position, ScrollRate)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
       m_Tiles = (short[,])(resources.GetObject(Name));
@@ -855,13 +888,13 @@ public abstract class ShortLayer : LayerBase
 [Serializable()]
 public abstract class ByteLayer : LayerBase
 {
-   public byte[,] m_Tiles;
+   private byte[,] m_Tiles;
 
    public ByteLayer(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
-      int nBottomBuffer, int nColumns, int nRows, System.Drawing.Point Position,
+      int nBottomBuffer, int nColumns, int nRows, int nVirtualColumns, int nVirtualRows, System.Drawing.Point Position,
       System.Drawing.SizeF ScrollRate, string Name) : 
       base(Tileset, Parent, nLeftBuffer, nTopBuffer, nRightBuffer,
-      nBottomBuffer, nColumns, nRows, Position, ScrollRate)
+      nBottomBuffer, nColumns, nRows, nVirtualColumns, nVirtualRows, Position, ScrollRate)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
       m_Tiles = (byte[,])(resources.GetObject(Name));
@@ -871,21 +904,21 @@ public abstract class ByteLayer : LayerBase
    {
       get
       {
-         return (int)(m_Tiles[x,y]);
+         return (int)(m_Tiles[x % m_nColumns, y % m_nRows]);
       }
       set
       {
-         m_Tiles[x,y] = (byte)value;
+         m_Tiles[x % m_nColumns, y % m_nRows] = (byte)value;
       }
    }
 
    public override int[] GetTileFrame(int x, int y)
    {
-      return m_Tileset[m_Tiles[x,y]].CurrentFrame;
+      return m_Tileset[m_Tiles[x % m_nColumns, y % m_nRows]].CurrentFrame;
    }
 
    public override TileBase GetTile(int x, int y)
    {
-      return m_Tileset[m_Tiles[x,y]];
+      return m_Tileset[m_Tiles[x % m_nColumns, y % m_nRows]];
    }
 }

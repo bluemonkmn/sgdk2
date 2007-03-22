@@ -11,19 +11,21 @@ P
 {
    margin-left: 15px;
 }
-H3+P
+H3+P, H3+P+P, H3+P+P+P, H3+P+P+P+P, H3+P+UL+P, H3+P+UL+P+OL+P
 {
    margin-left: 30px;
 }
-H3+P+P
+H3+P+UL, H3+P+UL+P+OL
 {
-   margin-left: 30px;
+   margin-left: 60px;
 }
-H3+P+P+P
+
+OL OL
 {
-   margin-left: 30px;
+   list-style: lower-alpha;
 }
-H3+P+P+P+P
+
+OL OL OL
 {
-   margin-left: 30px;
+   list-style: lower-roman;
 }

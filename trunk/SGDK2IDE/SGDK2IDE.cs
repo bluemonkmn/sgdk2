@@ -35,6 +35,7 @@ namespace SGDK2
       #region Non-Control Members
       public static ResourceManager g_Resources = null;
       public static CommandLineArgs g_CommandLine = new CommandLineArgs();
+      public static System.Windows.Forms.HelpProvider g_HelpProvider;
       private static frmMain mainWindow = null;
       private static System.Collections.Stack statusStack = null;
       #endregion
@@ -57,6 +58,23 @@ namespace SGDK2
          new frmSplashForm(GetSplashImage()).Show();
          try
          {
+            g_HelpProvider = new System.Windows.Forms.HelpProvider();
+            g_HelpProvider.HelpNamespace = System.IO.Path.Combine(Application.StartupPath, "SGDK2IDE.chm");
+            if (!System.IO.File.Exists(g_HelpProvider.HelpNamespace))
+            {            
+               string helpParentDir = Application.StartupPath;
+               do
+               {
+                  if (System.IO.File.Exists(System.IO.Path.Combine(helpParentDir, @"Help\SGDK2IDE.chm")))
+                  {
+                     g_HelpProvider.HelpNamespace = System.IO.Path.Combine(helpParentDir, @"Help\SGDK2IDE.chm");
+                     break;
+                  }
+                  else
+                     helpParentDir = System.IO.Directory.GetParent(helpParentDir).FullName;
+               } while (helpParentDir != null);
+            }
+
             Application.Run(mainWindow = new frmMain());
          }
          catch(System.Exception ex)

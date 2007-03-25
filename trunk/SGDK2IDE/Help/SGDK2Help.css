@@ -11,11 +11,11 @@ P
 {
    margin-left: 15px;
 }
-H3+P, H3+P+P, H3+P+P+P, H3+P+P+P+P, H3+P+UL+P, H3+P+UL+P+OL+P
+P.SubPara
 {
    margin-left: 30px;
 }
-H3+P+UL, H3+P+UL+P+OL
+OL.SubList, UL.SubList
 {
    margin-left: 60px;
 }

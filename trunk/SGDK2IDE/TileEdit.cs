@@ -910,7 +910,7 @@ namespace SGDK2
          {
             if (e.Button == tbbNewTile)
             {
-               int nNewVal = frmNewTileValue.PromptForNewTileValue(this, m_Tileset);
+               int nNewVal = frmNewTileValue.PromptForNewTileValue(this, m_Tileset, AvailableFrames.CurrentCellIndex);
                if (nNewVal < 0)
                   return;
                ProjectDataset.TileRow trNew = ProjectData.AddTileRow(m_Tileset, nNewVal, null);
@@ -1080,7 +1080,7 @@ namespace SGDK2
 
       private void mnuNewTile_Click(object sender, System.EventArgs e)
       {
-         int nNewVal = frmNewTileValue.PromptForNewTileValue(this, m_Tileset);
+         int nNewVal = frmNewTileValue.PromptForNewTileValue(this, m_Tileset, AvailableFrames.CurrentCellIndex);
          if (nNewVal < 0)
             return;
          ProjectDataset.TileRow trNew = ProjectData.AddTileRow(m_Tileset, nNewVal, null);

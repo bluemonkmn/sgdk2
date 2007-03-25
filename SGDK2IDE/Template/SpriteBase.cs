@@ -248,7 +248,7 @@ public abstract class SpriteBase : GeneralRules
    /// <summary>
    /// Adjust this sprite's velocity according to the motion of the platform it is riding
    /// </summary>
-   [Description("Moves this sprite according to the motion of the platform it is riding. Slipperiness is a value from 0 to 100 where 0 causes the sprite to immediately assume the velocity of the platform and 100 causes the sprite to retain its own velocity relative to the map.")]
+   [Description("Moves this sprite according to the motion of the platform it is riding.")]
    public void ReactToPlatform()
    {
       Debug.Assert(this.isActive, "Attempted to execute ReactToPlatform on an inactive sprite");

@@ -79,7 +79,7 @@
                 <xs:element name="Layer" minOccurs="0" maxOccurs="unbounded">
                   <xs:complexType>
                     <xs:sequence>
-                      <xs:element name="Tiles" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="12" />
+                      <xs:element name="Tiles" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="14" />
                       <xs:element name="Sprite" minOccurs="0" maxOccurs="unbounded">
                         <xs:complexType>
                           <xs:sequence>
@@ -143,9 +143,9 @@
                             </xs:element>
                             <xs:element name="PlanParameterValue" minOccurs="0" maxOccurs="unbounded">
                               <xs:complexType>
-                                <xs:attribute name="MapName" type="xs:string" use="required" />
-                                <xs:attribute name="LayerName" type="xs:string" use="required" />
-                                <xs:attribute name="PlanName" type="xs:string" use="required" />
+                                <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="PlanName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
                                 <xs:attribute name="Name" type="xs:string" use="required" />
                                 <xs:attribute name="Value" type="xs:string" />
                               </xs:complexType>
@@ -170,6 +170,8 @@
                     <xs:attribute name="ScrollRateY" type="xs:float" default="1" />
                     <xs:attribute name="ZIndex" type="xs:int" />
                     <xs:attribute name="Priority" type="xs:int" default="0" />
+                    <xs:attribute name="VirtualWidth" type="xs:int" default="0" />
+                    <xs:attribute name="VirtualHeight" type="xs:int" default="0" />
                   </xs:complexType>
                 </xs:element>
               </xs:sequence>
@@ -2197,7 +2199,7 @@
   <Counter Name="Player 1 Score" Value="0" Max="10000000" />
   <Counter Name="Player 2 Score" Value="0" Max="10000000" />
   <Map Name="Menu" ScrollMarginLeft="32" ScrollMarginTop="32" ScrollMarginRight="32" ScrollMarginBottom="32" ScrollWidth="800" ScrollHeight="600">
-    <Layer Name="Letters" Width="25" Height="19" Tileset="LetterTiles" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="1" ScrollRateY="1" ZIndex="0" Priority="0">
+    <Layer Name="Letters" Width="25" Height="19" Tileset="LetterTiles" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="1" ScrollRateY="1" ZIndex="0" Priority="0" VirtualWidth="0" VirtualHeight="0">
       <Tiles>z8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8XFGhEjzwInHBgNJREezxMNGRHGxs/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Px8caESPPAyccGA0lER7PEw0ZEcjIz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/JyQ8bGiAVGiERzxMNGRHKys/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8vLHSEVIMzMz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pzw==</Tiles>
       <SpritePlan Name="Select Menu Items" Priority="1">
         <PlanRule Name="If down is pressed" Sequence="1" Type="If" Function="IsKeyPressed" Parameter1="Microsoft.DirectX.DirectInput.Key.DownArrow" EndIf="false" Suspended="false" />
@@ -2253,7 +2255,7 @@
         <PlanRule Name="If initial counter values are not saved" Sequence="1" Type="If" Function="!SaveExists" Parameter1="0" Parameter2="true" EndIf="false" Suspended="false" />
       </SpritePlan>
     </Layer>
-    <Layer Name="DisabledContinue" Width="20" Height="1" Tileset="LetterTiles" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="1" ScrollRateY="1" Priority="0">
+    <Layer Name="DisabledContinue" Width="20" Height="1" Tileset="LetterTiles" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="1" ScrollRateY="1" Priority="0" VirtualWidth="0" VirtualHeight="0">
       <Tiles>oq6ts6ittKQApqCspAAAAAAAAAA=</Tiles>
       <SpritePlan Name="Initialize map" Priority="1">
         <Coordinate Sequence="1" X="0" Y="0" Weight="0" />
@@ -2268,10 +2270,10 @@
     </Layer>
   </Map>
   <Map Name="Level 1" ScrollMarginLeft="128" ScrollMarginTop="256" ScrollMarginRight="128" ScrollMarginBottom="256" ScrollWidth="2048" ScrollHeight="1024">
-    <Layer Name="Background" Width="25" Height="19" Tileset="SHFLTileset" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="0" ScrollRateY="0" ZIndex="0" Priority="0">
+    <Layer Name="Background" Width="25" Height="19" Tileset="SHFLTileset" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="0" ScrollRateY="0" ZIndex="0" Priority="0" VirtualWidth="0" VirtualHeight="0">
       <Tiles>mJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJiYmJqampqampqampqampqampqampqampqampqbm5ubm5ubm5ubm5ubm5ubm5ubm5ubm5ubnJycnJycnJycnJycnJycnJycnJycnJycnJ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2dnZ2enp6enp6enp6enp6enp6enp6enp6enp6en5+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fn6CgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoA==</Tiles>
     </Layer>
-    <Layer Name="Main" Width="64" Height="32" Tileset="SHFLTileset" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="1" ScrollRateY="1" ZIndex="2" Priority="0">
+    <Layer Name="Main" Width="64" Height="32" Tileset="SHFLTileset" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="1" ScrollRateY="1" ZIndex="2" Priority="0" VirtualWidth="0" VirtualHeight="0">
       <Tiles>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</Tiles>
       <Sprite Name="Player 1" DefinitionName="Player" StateName="Right" CurrentFrame="0" X="204" Y="960" DX="0" DY="0" Priority="1" Active="true" Solidity="Standard" Color="-1">
         <ParameterValue ParameterName="TempNum" Value="0" />
@@ -2345,7 +2347,7 @@
         <PlanRule Name="Ensure up is now seen as an old keyprss for player 2" Sequence="9" Type="Do" Function="CopyInputsToOld" Parameter1="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
       </SpritePlan>
     </Layer>
-    <Layer Name="Spectrum" Width="32" Height="24" Tileset="Spectrum" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="0" ScrollRateY="0" ZIndex="0" Priority="0">
+    <Layer Name="Spectrum" Width="32" Height="24" Tileset="Spectrum" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="0" ScrollRateY="0" ZIndex="0" Priority="0" VirtualWidth="0" VirtualHeight="0">
       <Tiles>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</Tiles>
       <SpritePlan Name="Spectrum Handler" Priority="1">
         <PlanRule Name="Draw Spectrum" Sequence="1" Type="Do" Function="CustomObjects.DrawSpectrum.Draw" Parameter1="CustomObjects.Signal94.Value" Parameter2="ParentLayer" EndIf="false" Suspended="false" />
@@ -2353,10 +2355,10 @@
     </Layer>
   </Map>
   <Map Name="Overlay for 2 players" ScrollMarginLeft="32" ScrollMarginTop="32" ScrollMarginRight="32" ScrollMarginBottom="32" ScrollWidth="800" ScrollHeight="600">
-    <Layer Name="ViewSplitter" Width="1" Height="5" Tileset="ViewSplitterTiles" BytesPerTile="1" OffsetX="393" OffsetY="0" ScrollRateX="0" ScrollRateY="0" ZIndex="0" Priority="0">
+    <Layer Name="ViewSplitter" Width="1" Height="5" Tileset="ViewSplitterTiles" BytesPerTile="1" OffsetX="393" OffsetY="0" ScrollRateX="0" ScrollRateY="0" ZIndex="0" Priority="0" VirtualWidth="0" VirtualHeight="0">
       <Tiles>AQEBAQE=</Tiles>
     </Layer>
-    <Layer Name="Inventory" Width="25" Height="19" Tileset="SHFLTileset" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="0" ScrollRateY="0" ZIndex="0" Priority="0">
+    <Layer Name="Inventory" Width="25" Height="19" Tileset="SHFLTileset" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="0" ScrollRateY="0" ZIndex="0" Priority="0" VirtualWidth="0" VirtualHeight="0">
       <Tiles>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==</Tiles>
       <SpritePlan Name="Player 1 Grapes" Priority="1">
         <Coordinate Sequence="1" X="32" Y="0" Weight="0" />
@@ -2404,7 +2406,7 @@
     </Layer>
   </Map>
   <Map Name="Overlay for 1 player" ScrollMarginLeft="32" ScrollMarginTop="32" ScrollMarginRight="32" ScrollMarginBottom="32">
-    <Layer Name="Inventory" Width="25" Height="19" Tileset="SHFLTileset" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="0" ScrollRateY="0" ZIndex="0" Priority="0">
+    <Layer Name="Inventory" Width="25" Height="19" Tileset="SHFLTileset" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="0" ScrollRateY="0" ZIndex="0" Priority="0" VirtualWidth="0" VirtualHeight="0">
       <Tiles>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==</Tiles>
       <SpritePlan Name="Grapes" Priority="1">
         <Coordinate Sequence="1" X="32" Y="0" Weight="0" />
@@ -5220,8 +5222,10 @@ public abstract class LayerBase : System.Collections.IEnumerable
    private readonly int m_nTopBuffer;
    private readonly int m_nRightBuffer;
    private readonly int m_nBottomBuffer;
-   private readonly int m_nColumns;
-   private readonly int m_nRows;
+   protected readonly int m_nColumns;
+   protected readonly int m_nRows;
+   private readonly int m_nVirtualColumns;
+   private readonly int m_nVirtualRows;
    private System.Drawing.Point m_AbsolutePosition;
    protected SpriteCollection m_Sprites;
    private readonly System.Drawing.SizeF m_ScrollRate;
@@ -5231,7 +5235,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
    #endregion
 
    protected LayerBase(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer, int nBottomBuffer,
-      int nColumns, int nRows, System.Drawing.Point Position, System.Drawing.SizeF ScrollRate)
+      int nColumns, int nRows, int nVirtualColumns, int nVirtualRows, System.Drawing.Point Position, System.Drawing.SizeF ScrollRate)
    {
       this.m_ParentMap = Parent;
       this.m_Tileset = Tileset;
@@ -5242,6 +5246,14 @@ public abstract class LayerBase : System.Collections.IEnumerable
       this.m_nBottomBuffer = nBottomBuffer;
       this.m_nColumns = nColumns;
       this.m_nRows = nRows;
+      if (nVirtualColumns == 0)
+         this.m_nVirtualColumns = nColumns;
+      else
+         this.m_nVirtualColumns = nVirtualColumns;
+      if (nVirtualRows == 0)
+         this.m_nVirtualRows = nRows;
+      else
+         this.m_nVirtualRows = nVirtualRows;
       this.m_AbsolutePosition = Position;
       this.m_ScrollRate = ScrollRate;
       this.Move(new Point(0,0));
@@ -5270,9 +5282,9 @@ public abstract class LayerBase : System.Collections.IEnumerable
 
    #region Properties
    /// &lt;summary&gt;
-   /// Get the number of columns of tiles in the layer
+   /// Get the number of columns of tiles in the layer's tile data
    /// &lt;/summary&gt;
-   public int Columns
+   public int ActualColumns
    {
       get
       {
@@ -5280,13 +5292,36 @@ public abstract class LayerBase : System.Collections.IEnumerable
       }
    }
    /// &lt;summary&gt;
-   /// Get the number of rows of tiles in the layer
+   /// Get the number of rows of tiles in the layer's tile data
    /// &lt;/summary&gt;
-   public int Rows
+   public int ActualRows
    {
       get
       {
          return m_nRows;
+      }
+   }
+
+   /// &lt;summary&gt;
+   /// Get the number of columns of tiles in the layer's displayed
+   /// virtual scroll space (data is wrapped)
+   /// &lt;/summary&gt;
+   public int VirtualColumns
+   {
+      get
+      {
+         return m_nVirtualColumns;
+      }
+   }
+   /// &lt;summary&gt;
+   /// Get the number of rows of tiles in the layer's displayed
+   /// virtual scroll space (data is wrapped)
+   /// &lt;/summary&gt;
+   public int VirtualRows
+   {
+      get
+      {
+         return m_nVirtualRows;
       }
    }
 
@@ -5392,11 +5427,11 @@ public abstract class LayerBase : System.Collections.IEnumerable
       m_ParentMap.Display.Device.ScissorRectangle = ViewRect;
 
       int EndCol = (ViewRect.Width - 1 + m_nRightBuffer - CurrentPosition.X) / nTileWidth;
-      if (EndCol &gt;= Columns)
-         EndCol = Columns - 1;
+      if (EndCol &gt;= VirtualColumns)
+         EndCol = VirtualColumns - 1;
       int EndRow = (ViewRect.Height - 1 + m_nBottomBuffer - CurrentPosition.Y) / nTileHeight;
-      if (EndRow &gt;= Rows)
-         EndRow = Rows - 1;
+      if (EndRow &gt;= VirtualRows)
+         EndRow = VirtualRows - 1;
 
       System.Collections.IEnumerator Injected = null;
       InjectedFrame CurFrame;
@@ -5646,8 +5681,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
       int leftTile = (testArea.Left + m_Tileset.TileHeight) / m_Tileset.TileWidth - 1;
       int rightTile = (int)((testArea.Left + testArea.Width - 1) / m_Tileset.TileWidth);
       bool outOfBounds = false;
-      if ((topTile &lt; 0) || (topTile &gt;= Rows) || (bottomTile &lt; 0) || (bottomTile &gt;= Rows)
-         || (leftTile &lt; 0) || (leftTile &gt;= Columns) || (rightTile &lt; 0) || (rightTile &gt;= Columns))
+      if ((topTile &lt; 0) || (topTile &gt;= VirtualRows) || (bottomTile &lt; 0) || (bottomTile &gt;= VirtualRows)
+         || (leftTile &lt; 0) || (leftTile &gt;= VirtualColumns) || (rightTile &lt; 0) || (rightTile &gt;= VirtualColumns))
          outOfBounds = true;
       short minTileTop = (short)(testArea.Top % m_Tileset.TileHeight);
       int tileLeft = leftTile * m_Tileset.TileWidth;
@@ -5656,7 +5691,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
          if (rightTile == leftTile)
          {
             short topMost;
-            if (outOfBounds &amp;&amp; ((leftTile &lt; 0) || (leftTile &gt;= Columns) || (y &lt; 0) || (y &gt;= Rows)))
+            if (outOfBounds &amp;&amp; ((leftTile &lt; 0) || (leftTile &gt;= VirtualColumns) || (y &lt; 0) || (y &gt;= VirtualRows)))
                topMost = 0;
             else
                topMost = solid.GetCurrentTileShape(m_Tileset[this[leftTile,y]]).GetTopSolidPixel(
@@ -5674,7 +5709,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
          else
          {
             short topMost;
-            if (outOfBounds &amp;&amp; ((leftTile &lt; 0) || (leftTile &gt;= Columns) || (y &lt; 0) || (y &gt;= Rows)))
+            if (outOfBounds &amp;&amp; ((leftTile &lt; 0) || (leftTile &gt;= VirtualColumns) || (y &lt; 0) || (y &gt;= VirtualRows)))
                topMost = 0;
             else
                topMost = solid.GetCurrentTileShape(m_Tileset[this[leftTile,y]]).GetTopSolidPixel(
@@ -5684,7 +5719,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
             short top;
             for (int x = leftTile + 1; x &lt; rightTile; x++)
             {
-               if (outOfBounds &amp;&amp; ((x &lt; 0) || (x &gt;= Columns) || (y &lt; 0) || (y &gt;= Rows)))
+               if (outOfBounds &amp;&amp; ((x &lt; 0) || (x &gt;= VirtualColumns) || (y &lt; 0) || (y &gt;= VirtualRows)))
                   top = 0;
                else
                   top = solid.GetCurrentTileShape(m_Tileset[this[x,y]]).GetTopSolidPixel(
@@ -5692,7 +5727,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
                if ((top &lt; topMost) &amp;&amp; ((y &gt; topTile) || (top &gt;= minTileTop)))
                   topMost = top;
             }
-            if (outOfBounds &amp;&amp; ((rightTile &lt; 0) || (rightTile &gt;= Columns) || (y &lt; 0) || (y &gt;= Rows)))
+            if (outOfBounds &amp;&amp; ((rightTile &lt; 0) || (rightTile &gt;= VirtualColumns) || (y &lt; 0) || (y &gt;= VirtualRows)))
                top = 0;
             else
                top = solid.GetCurrentTileShape(m_Tileset[this[rightTile,y]]).GetTopSolidPixel(
@@ -5719,8 +5754,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
       int leftTile = (testArea.Left + m_Tileset.TileHeight) / m_Tileset.TileWidth - 1;
       int rightTile = (int)((testArea.Left + testArea.Width - 1) / m_Tileset.TileWidth);
       bool outOfBounds = false;
-      if ((topTile &lt; 0) || (topTile &gt;= Rows) || (bottomTile &lt; 0) || (bottomTile &gt;= Rows)
-         || (leftTile &lt; 0) || (leftTile &gt;= Columns) || (rightTile &lt; 0) || (rightTile &gt;= Columns))
+      if ((topTile &lt; 0) || (topTile &gt;= VirtualRows) || (bottomTile &lt; 0) || (bottomTile &gt;= VirtualRows)
+         || (leftTile &lt; 0) || (leftTile &gt;= VirtualColumns) || (rightTile &lt; 0) || (rightTile &gt;= VirtualColumns))
          outOfBounds = true;
       short maxTileBottom = (short)((testArea.Top+testArea.Height-1) % m_Tileset.TileHeight);
       int tileLeft = leftTile * m_Tileset.TileWidth;
@@ -5729,7 +5764,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
          if (rightTile == leftTile)
          {
             short bottomMost;
-            if (outOfBounds &amp;&amp; ((leftTile &lt; 0) || (leftTile &gt;= Columns) || (y &lt; 0) || (y &gt;= Rows)))
+            if (outOfBounds &amp;&amp; ((leftTile &lt; 0) || (leftTile &gt;= VirtualColumns) || (y &lt; 0) || (y &gt;= VirtualRows)))
                bottomMost = (short)(m_Tileset.TileHeight - 1);
             else
                bottomMost = solid.GetCurrentTileShape(m_Tileset[this[leftTile,y]]).GetBottomSolidPixel(
@@ -5747,7 +5782,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
          else
          {
             short bottomMost;
-            if (outOfBounds &amp;&amp; ((leftTile &lt; 0) || (leftTile &gt;= Columns) || (y &lt; 0) || (y &gt;= Rows)))
+            if (outOfBounds &amp;&amp; ((leftTile &lt; 0) || (leftTile &gt;= VirtualColumns) || (y &lt; 0) || (y &gt;= VirtualRows)))
                bottomMost = (short)(m_Tileset.TileHeight - 1);
             else
                bottomMost = solid.GetCurrentTileShape(m_Tileset[this[leftTile,y]]).GetBottomSolidPixel(
@@ -5757,7 +5792,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
             short bottom;
             for (int x = leftTile + 1; x &lt; rightTile; x++)
             {
-               if (outOfBounds &amp;&amp; ((x &lt; 0) || (x &gt;= Columns) || (y &lt; 0) || (y &gt;= Rows)))
+               if (outOfBounds &amp;&amp; ((x &lt; 0) || (x &gt;= VirtualColumns) || (y &lt; 0) || (y &gt;= VirtualRows)))
                   bottom = (short)(m_Tileset.TileHeight - 1);
                else
                   bottom = solid.GetCurrentTileShape(m_Tileset[this[x,y]]).GetBottomSolidPixel(
@@ -5765,7 +5800,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
                if ((bottom &gt; bottomMost) &amp;&amp; ((y &lt; bottomTile) || (bottom &lt;= maxTileBottom)))
                   bottomMost = bottom;
             }
-            if (outOfBounds &amp;&amp; ((rightTile &lt; 0) || (rightTile &gt;= Columns) || (y &lt; 0) || (y &gt;= Rows)))
+            if (outOfBounds &amp;&amp; ((rightTile &lt; 0) || (rightTile &gt;= VirtualColumns) || (y &lt; 0) || (y &gt;= VirtualRows)))
                bottom = (short)(m_Tileset.TileHeight - 1);
             else
                bottom = solid.GetCurrentTileShape(m_Tileset[this[rightTile,y]]).GetBottomSolidPixel(
@@ -5792,8 +5827,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
       int leftTile = (testArea.Left + m_Tileset.TileHeight) / m_Tileset.TileWidth - 1;
       int rightTile = (int)((testArea.Left + testArea.Width - 1) / m_Tileset.TileWidth);
       bool outOfBounds = false;
-      if ((topTile &lt; 0) || (topTile &gt;= Rows) || (bottomTile &lt; 0) || (bottomTile &gt;= Rows)
-         || (leftTile &lt; 0) || (leftTile &gt;= Columns) || (rightTile &lt; 0) || (rightTile &gt;= Columns))
+      if ((topTile &lt; 0) || (topTile &gt;= VirtualRows) || (bottomTile &lt; 0) || (bottomTile &gt;= VirtualRows)
+         || (leftTile &lt; 0) || (leftTile &gt;= VirtualColumns) || (rightTile &lt; 0) || (rightTile &gt;= VirtualColumns))
          outOfBounds = true;
       short minTileLeft = (short)(testArea.Left % m_Tileset.TileWidth);
       int tileTop = topTile * m_Tileset.TileHeight;
@@ -5802,7 +5837,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
          if (bottomTile == topTile)
          {
             short leftMost;
-            if (outOfBounds &amp;&amp; ((topTile &lt; 0) || (topTile &gt;= Rows) || (x &lt; 0) || (x &gt;= Columns)))
+            if (outOfBounds &amp;&amp; ((topTile &lt; 0) || (topTile &gt;= VirtualRows) || (x &lt; 0) || (x &gt;= VirtualColumns)))
                leftMost = 0;
             else
                leftMost = solid.GetCurrentTileShape(m_Tileset[this[x,topTile]]).GetLeftSolidPixel(
@@ -5820,7 +5855,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
          else
          {
             short leftMost;
-            if (outOfBounds &amp;&amp; ((topTile &lt; 0) || (topTile &gt;= Rows) || (x &lt; 0) || (x &gt;= Columns)))
+            if (outOfBounds &amp;&amp; ((topTile &lt; 0) || (topTile &gt;= VirtualRows) || (x &lt; 0) || (x &gt;= VirtualColumns)))
                leftMost = 0;
             else
                leftMost = solid.GetCurrentTileShape(m_Tileset[this[x, topTile]]).GetLeftSolidPixel(
@@ -5830,7 +5865,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
             short left;
             for (int y = topTile + 1; y &lt; bottomTile; y++)
             {
-               if (outOfBounds &amp;&amp; ((x &lt; 0) || (x &gt;= Columns) || (y &lt; 0) || (y &gt;= Rows)))
+               if (outOfBounds &amp;&amp; ((x &lt; 0) || (x &gt;= VirtualColumns) || (y &lt; 0) || (y &gt;= VirtualRows)))
                   left = 0;
                else
                   left = solid.GetCurrentTileShape(m_Tileset[this[x,y]]).GetLeftSolidPixel(
@@ -5838,7 +5873,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
                if ((left &lt; leftMost) &amp;&amp; ((x &gt; leftTile) || (left &gt;= minTileLeft)))
                   leftMost = left;
             }
-            if (outOfBounds &amp;&amp; ((bottomTile &lt; 0) || (bottomTile &gt;= Rows) || (x &lt; 0) || (x &gt;= Columns)))
+            if (outOfBounds &amp;&amp; ((bottomTile &lt; 0) || (bottomTile &gt;= VirtualRows) || (x &lt; 0) || (x &gt;= VirtualColumns)))
                left = 0;
             else
                left = solid.GetCurrentTileShape(m_Tileset[this[x, bottomTile]]).GetLeftSolidPixel(
@@ -5865,8 +5900,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
       int leftTile = (testArea.Left + m_Tileset.TileHeight) / m_Tileset.TileWidth - 1;
       int rightTile = (int)((testArea.Left + testArea.Width - 1) / m_Tileset.TileWidth);
       bool outOfBounds = false;
-      if ((topTile &lt; 0) || (topTile &gt;= Rows) || (bottomTile &lt; 0) || (bottomTile &gt;= Rows)
-         || (leftTile &lt; 0) || (leftTile &gt;= Columns) || (rightTile &lt; 0) || (rightTile &gt;= Columns))
+      if ((topTile &lt; 0) || (topTile &gt;= VirtualRows) || (bottomTile &lt; 0) || (bottomTile &gt;= VirtualRows)
+         || (leftTile &lt; 0) || (leftTile &gt;= VirtualColumns) || (rightTile &lt; 0) || (rightTile &gt;= VirtualColumns))
          outOfBounds = true;
       short maxTileRight = (short)((testArea.Left+testArea.Width-1) % m_Tileset.TileWidth);
       int tileTop = topTile * m_Tileset.TileHeight;
@@ -5875,7 +5910,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
          if (bottomTile == topTile)
          {
             short rightMost;
-            if (outOfBounds &amp;&amp; ((topTile &lt; 0) || (topTile &gt;= Rows) || (x &lt; 0) || (x &gt;= Columns)))
+            if (outOfBounds &amp;&amp; ((topTile &lt; 0) || (topTile &gt;= VirtualRows) || (x &lt; 0) || (x &gt;= VirtualColumns)))
                rightMost = (short)(m_Tileset.TileWidth - 1);
             else
                rightMost = solid.GetCurrentTileShape(m_Tileset[this[x,topTile]]).GetRightSolidPixel(
@@ -5893,7 +5928,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
          else
          {
             short rightMost;
-            if (outOfBounds &amp;&amp; ((topTile &lt; 0) || (topTile &gt;= Rows) || (x &lt; 0) || (x &gt;= Columns)))
+            if (outOfBounds &amp;&amp; ((topTile &lt; 0) || (topTile &gt;= VirtualRows) || (x &lt; 0) || (x &gt;= VirtualColumns)))
                rightMost = (short)(m_Tileset.TileWidth - 1);
             else
                rightMost = solid.GetCurrentTileShape(m_Tileset[this[x, topTile]]).GetRightSolidPixel(
@@ -5903,7 +5938,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
             short right;
             for (int y = topTile + 1; y &lt; bottomTile; y++)
             {
-               if (outOfBounds &amp;&amp; ((x &lt; 0) || (x &gt;= Columns) || (y &lt; 0) || (y &gt;= Rows)))
+               if (outOfBounds &amp;&amp; ((x &lt; 0) || (x &gt;= VirtualColumns) || (y &lt; 0) || (y &gt;= VirtualRows)))
                   right = (short)(m_Tileset.TileWidth - 1);
                else
                   right = solid.GetCurrentTileShape(m_Tileset[this[x,y]]).GetRightSolidPixel(
@@ -5911,7 +5946,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
                if ((right &gt; rightMost) &amp;&amp; ((x &lt; rightTile) || (right &lt;= maxTileRight)))
                   rightMost = right;
             }
-            if (outOfBounds &amp;&amp; ((bottomTile &lt; 0) || (bottomTile &gt;= Rows) || (x &lt; 0) || (x &gt;= Columns)))
+            if (outOfBounds &amp;&amp; ((bottomTile &lt; 0) || (bottomTile &gt;= VirtualRows) || (x &lt; 0) || (x &gt;= VirtualColumns)))
                right = (short)(m_Tileset.TileWidth - 1);
             else
                right = solid.GetCurrentTileShape(m_Tileset[this[x, bottomTile]]).GetRightSolidPixel(
@@ -5936,13 +5971,13 @@ public abstract class LayerBase : System.Collections.IEnumerable
 [Serializable()]
 public abstract class IntLayer : LayerBase
 {
-   public int[,] m_Tiles;
+   private int[,] m_Tiles;
 
    public IntLayer(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
-      int nBottomBuffer, int nColumns, int nRows, System.Drawing.Point Position,
-      System.Drawing.SizeF ScrollRate, string Name) : 
+      int nBottomBuffer, int nColumns, int nRows, int nVirtualColumns, int nVirtualRows,
+      System.Drawing.Point Position, System.Drawing.SizeF ScrollRate, string Name) : 
       base(Tileset, Parent, nLeftBuffer, nTopBuffer, nRightBuffer,
-      nBottomBuffer, nColumns, nRows, Position, ScrollRate)
+      nBottomBuffer, nColumns, nRows, nVirtualColumns, nVirtualRows, Position, ScrollRate)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
       m_Tiles = (int[,])(resources.GetObject(Name));
@@ -5952,35 +5987,35 @@ public abstract class IntLayer : LayerBase
    {
       get
       {
-         return m_Tiles[x,y];
+         return m_Tiles[x % m_nColumns, y % m_nRows];
       }
       set
       {
-         m_Tiles[x,y] = value;
+         m_Tiles[x % m_nColumns, y % m_nRows] = value;
       }
    }
 
    public override int[] GetTileFrame(int x, int y)
    {
-      return m_Tileset[m_Tiles[x,y]].CurrentFrame;
+      return m_Tileset[m_Tiles[x % m_nColumns, y % m_nRows]].CurrentFrame;
    }
 
    public override TileBase GetTile(int x, int y)
    {
-      return m_Tileset[m_Tiles[x,y]];
+      return m_Tileset[m_Tiles[x % m_nColumns,y % m_nRows]];
    }
 }
 
 [Serializable()]
 public abstract class ShortLayer : LayerBase
 {
-   public short[,] m_Tiles;
+   private short[,] m_Tiles;
 
    public ShortLayer(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
-      int nBottomBuffer, int nColumns, int nRows, System.Drawing.Point Position,
+      int nBottomBuffer, int nColumns, int nRows, int nVirtualColumns, int nVirtualRows, System.Drawing.Point Position,
       System.Drawing.SizeF ScrollRate, string Name) : 
       base(Tileset, Parent, nLeftBuffer, nTopBuffer, nRightBuffer,
-      nBottomBuffer, nColumns, nRows, Position, ScrollRate)
+      nBottomBuffer, nColumns, nRows, nVirtualColumns, nVirtualRows, Position, ScrollRate)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
       m_Tiles = (short[,])(resources.GetObject(Name));
@@ -6012,13 +6047,13 @@ public abstract class ShortLayer : LayerBase
 [Serializable()]
 public abstract class ByteLayer : LayerBase
 {
-   public byte[,] m_Tiles;
+   private byte[,] m_Tiles;
 
    public ByteLayer(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
-      int nBottomBuffer, int nColumns, int nRows, System.Drawing.Point Position,
+      int nBottomBuffer, int nColumns, int nRows, int nVirtualColumns, int nVirtualRows, System.Drawing.Point Position,
       System.Drawing.SizeF ScrollRate, string Name) : 
       base(Tileset, Parent, nLeftBuffer, nTopBuffer, nRightBuffer,
-      nBottomBuffer, nColumns, nRows, Position, ScrollRate)
+      nBottomBuffer, nColumns, nRows, nVirtualColumns, nVirtualRows, Position, ScrollRate)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
       m_Tiles = (byte[,])(resources.GetObject(Name));
@@ -6028,22 +6063,22 @@ public abstract class ByteLayer : LayerBase
    {
       get
       {
-         return (int)(m_Tiles[x,y]);
+         return (int)(m_Tiles[x % m_nColumns, y % m_nRows]);
       }
       set
       {
-         m_Tiles[x,y] = (byte)value;
+         m_Tiles[x % m_nColumns, y % m_nRows] = (byte)value;
       }
    }
 
    public override int[] GetTileFrame(int x, int y)
    {
-      return m_Tileset[m_Tiles[x,y]].CurrentFrame;
+      return m_Tileset[m_Tiles[x % m_nColumns, y % m_nRows]].CurrentFrame;
    }
 
    public override TileBase GetTile(int x, int y)
    {
-      return m_Tileset[m_Tiles[x,y]];
+      return m_Tileset[m_Tiles[x % m_nColumns, y % m_nRows]];
    }
 }</Text>
   </SourceCode>
@@ -6822,7 +6857,7 @@ public abstract class SpriteBase : GeneralRules
    /// &lt;summary&gt;
    /// Adjust this sprite's velocity according to the motion of the platform it is riding
    /// &lt;/summary&gt;
-   [Description("Moves this sprite according to the motion of the platform it is riding. Slipperiness is a value from 0 to 100 where 0 causes the sprite to immediately assume the velocity of the platform and 100 causes the sprite to retain its own velocity relative to the map.")]
+   [Description("Moves this sprite according to the motion of the platform it is riding.")]
    public void ReactToPlatform()
    {
       Debug.Assert(this.isActive, "Attempted to execute ReactToPlatform on an inactive sprite");
@@ -7628,14 +7663,14 @@ public abstract class SpriteBase : GeneralRules
       int th = layer.Tileset.TileHeight;
       int minYEdge = (PixelY / th);
       int maxY = (PixelY + SolidHeight) / th;
-      if (maxY &gt;= layer.Rows)
-         maxY = layer.Rows -1;
+      if (maxY &gt;= layer.VirtualRows)
+         maxY = layer.VirtualRows -1;
       int maxYEdge = (PixelY + SolidHeight - 1) / th;
       int minX = (PixelX - 1)/ tw;
       int minXEdge = PixelX / tw;
       int maxX = (PixelX + SolidHeight) / tw;
-      if (maxX &gt;= layer.Columns)
-         maxX = layer.Columns - 1;
+      if (maxX &gt;= layer.VirtualColumns)
+         maxX = layer.VirtualColumns - 1;
       int maxXEdge = (PixelX + SolidHeight - 1) / tw;
       for (int yidx = (PixelY - 1) / th; yidx &lt;= maxY; yidx++)
       {
@@ -8411,7 +8446,7 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
          }
          if (targety &lt; 0)
             continue;
-         if (targety &gt;= Target.ParentLayer.Rows)
+         if (targety &gt;= Target.ParentLayer.VirtualRows)
             break;
          for (int x = src_left; x &lt;= src_right; x++)
          {
@@ -8434,7 +8469,7 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
             }
             if (targetx &lt; 0)
                continue;
-            if (targetx &gt;= Target.ParentLayer.Columns)
+            if (targetx &gt;= Target.ParentLayer.VirtualColumns)
                break;
             
             Target.ParentLayer[targetx,targety] = ParentLayer[x,y];
@@ -14204,8 +14239,8 @@ namespace CustomObjects
       {
         steps = (steps + 1) % 5;
          if (steps != 1) return;
-         int cols = Layer.Columns;
-         int rows = Layer.Rows;
+         int cols = Layer.ActualColumns;
+         int rows = Layer.ActualRows;
          int[] blocks = GetBlocksFromSpectrum(Sound.getTotalSpectrum(cols),rows);
 
          for (int i = 0; i &lt; blocks.Length; i++)
@@ -14525,10 +14560,10 @@ public class Project
          GameDisplayMode mode = (GameDisplayMode)System.Enum.Parse(typeof(GameDisplayMode), m_res.GetString("_DisplayMode"));
          bool windowed = bool.Parse(m_res.GetString("_Windowed"));
          string windowTitle = m_res.GetString("_WindowTitle");
-         System.Type startupMapType = System.Reflection.Assembly.GetExecutingAssembly().GetType(m_res.GetString("_StartupMapType") + "_Map", true);
+         System.Type startupMapType = System.Reflection.Assembly.GetExecutingAssembly().GetType(m_res.GetString("_StartupMapType").Replace(" ","_") + "_Map", true);
          System.Type overlayMapType = null;
          if (m_res.GetString("_OverlayMapType") != null)
-             overlayMapType = System.Reflection.Assembly.GetExecutingAssembly().GetType(m_res.GetString("_OverlayMapType") + "_Map", true);
+             overlayMapType = System.Reflection.Assembly.GetExecutingAssembly().GetType(m_res.GetString("_OverlayMapType").Replace(" ","_") + "_Map", true);
 
          Project.game = new GameForm(mode, windowed, windowTitle, startupMapType, overlayMapType);
          game.Show();

@@ -113,6 +113,7 @@ namespace SGDK2
          this.updTileValue.Name = "updTileValue";
          this.updTileValue.Size = new System.Drawing.Size(88, 20);
          this.updTileValue.TabIndex = 12;
+         this.updTileValue.Enter += new System.EventHandler(this.updTileValue_Enter);
          // 
          // btnOK
          // 
@@ -249,14 +250,14 @@ namespace SGDK2
          this.Name = "frmNewTileValue";
          this.ShowInTaskbar = false;
          this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-         this.Text = "Enter New Tile Value";
+         this.Text = "Specify New Tile Value";
          ((System.ComponentModel.ISupportInitialize)(this.updTileValue)).EndInit();
          this.ResumeLayout(false);
 
       }
 		#endregion
 
-      public static int PromptForNewTileValue(IWin32Window owner, ProjectDataset.TilesetRow drTileset)
+      public static int PromptForNewTileValue(IWin32Window owner, ProjectDataset.TilesetRow drTileset, int defaultIndex)
       {
          frmNewTileValue frm = new frmNewTileValue();
 
@@ -271,32 +272,40 @@ namespace SGDK2
          if ((tiles.Length == 0) || (tiles[0].TileValue > 0))
             frm.txtUnmapped.Text = "0";
          else
-         {
             for (int i=1; i<tiles.Length; i++)
             {
-               if (tiles[i].TileValue > tiles[i-1].TileValue + 1)
+               if ((frm.txtUnmapped.Text.Length == 0) && (tiles[i].TileValue > tiles[i-1].TileValue + 1))
                {
-                  if (frm.txtUnmapped.Text.Length == 0)
-                     frm.txtUnmapped.Text = (tiles[i-1].TileValue + 1).ToString();
-                  if (tiles[i-1].TileValue + 1 > lastFrame)
-                  {
-                     frm.txtUndefined.Text = (tiles[i-1].TileValue + 1).ToString();
-                     break;
-                  }
+                  frm.txtUnmapped.Text = (tiles[i-1].TileValue + 1).ToString();
+                  break;
                }
             }
-         }
+
+         int undefined = lastFrame + 1;
+         for (int i=0; (i<tiles.Length) && (tiles[i].TileValue <= undefined); i++)
+            if (tiles[i].TileValue >= undefined)
+               undefined = tiles[i].TileValue + 1;
+
+         for (int i=0; i<tiles.Length; i++)
+            if (tiles[i].TileValue == defaultIndex)
+            {
+               defaultIndex = -1;
+               break;
+            }
+
+         frm.txtUndefined.Text = undefined.ToString();
          
          if (frm.txtUnmapped.Text.Length == 0)
          {
             frm.txtUnmapped.Text = (tiles[tiles.Length-1].TileValue + 1).ToString();
          }
 
-         if (frm.txtUndefined.Text.Length == 0)
+         if (defaultIndex >= 0)
          {
-            frm.txtUndefined.Text = (lastFrame + 1).ToString();
+            frm.updTileValue.Value = defaultIndex;
+            frm.rdoCustom.Checked = true;
          }
-
+ 
          if (tiles.Length > 0)
          {
             if (tiles[tiles.Length-1].TileValue > lastFrame)
@@ -307,24 +316,42 @@ namespace SGDK2
          else
             frm.txtEnd.Text = (lastFrame + 1).ToString();
 
-         if (DialogResult.OK == frm.ShowDialog(owner))
+         while(true)
          {
-            if (frm.rdoUnmapped.Checked)
-               return int.Parse(frm.txtUnmapped.Text);
-            else if (frm.rdoUndefined.Checked)
-               return int.Parse(frm.txtUndefined.Text);
-            else if (frm.rdoEnd.Checked)
-               return int.Parse(frm.txtEnd.Text);
+            if (DialogResult.OK == frm.ShowDialog(owner))
+            {
+               if (frm.rdoUnmapped.Checked)
+                  return int.Parse(frm.txtUnmapped.Text);
+               else if (frm.rdoUndefined.Checked)
+                  return int.Parse(frm.txtUndefined.Text);
+               else if (frm.rdoEnd.Checked)
+                  return int.Parse(frm.txtEnd.Text);
+               else
+               {
+                  int result = (int)frm.updTileValue.Value;
+                  int i;
+                  for (i=0; i<tiles.Length; i++)
+                     if (tiles[i].TileValue == result)
+                        break;
+                  if (i<tiles.Length)
+                     MessageBox.Show(owner, "Tile index " + result.ToString() + " has already been mapped.  You must enter a tile index that has not been explicitly mapped by this Tileset.", "Specify New Tile Value", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  else
+                     return result;
+               }
+            }
             else
-               return (int)frm.updTileValue.Value;
+               return -1;
          }
-         else
-            return -1;
       }
 
       private void rdoValueSource_CheckedChanged(object sender, System.EventArgs e)
       {
          btnOK.Enabled = true;
+      }
+
+      private void updTileValue_Enter(object sender, System.EventArgs e)
+      {
+         rdoCustom.Checked = true;
       }
 	}
 }

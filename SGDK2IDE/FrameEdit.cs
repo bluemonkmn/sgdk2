@@ -1570,6 +1570,8 @@ namespace SGDK2
       {
          base.OnLoad (e);
          ConnectData();
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"Frameset.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
       protected override void OnClosing(CancelEventArgs e)
@@ -1898,6 +1900,7 @@ namespace SGDK2
                Cursor.Current = Cursors.SizeWE;
                break;
             case MouseZone.Frame:
+            case MouseZone.Inside:
                Cursor.Current = Cursors.SizeAll;
                break;
          }
@@ -1946,6 +1949,7 @@ namespace SGDK2
                   rcNew = RectangleF.FromLTRB(rcNew.X, rcNew.Y, ptMouse.X, ptMouse.Y);
                   break;
                case MouseZone.Frame:
+               case MouseZone.Inside:
                   rcNew.Offset(ptMouse.X - m_DragStart.X, ptMouse.Y - m_DragStart.Y);
                   m_DragStart = ptMouse;
                   break;

@@ -1,0 +1,18 @@
+[OPTIONS]
+Compatibility=1.1 or later
+Compiled file=SGDK2IDE.chm
+Contents file=SGDK2IDE.hhc
+Default topic=Introduction.html
+Display compile progress=No
+Index file=SGDK2IDE.hhk
+Language=0x409 English (United States)
+
+
+[FILES]
+Introduction.html
+Tutorial1.html
+GfxEdit.html
+Frameset.html
+
+[INFOTYPES]
+

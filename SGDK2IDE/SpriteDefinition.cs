@@ -1732,37 +1732,7 @@ namespace SGDK2
 
             cboRuleType.Text = drRule.Type;
 
-            if (CurrentRule != null)
-            {
-               if (!cboParam1.Enabled)
-                  CurrentRule.SetParameter1Null();
-               if (!cboParam2.Enabled)
-                  CurrentRule.SetParameter2Null();
-               if (!cboParam3.Enabled)
-                  CurrentRule.SetParameter3Null();
-               if (!cboOutput.Enabled)
-                  CurrentRule.SetResultParameterNull();
-            }
-
-            if (drRule.IsParameter1Null())
-               cboParam1.SelectedIndex = -1;
-            else
-               cboParam1.Text = drRule.Parameter1;
-
-            if (drRule.IsParameter2Null())
-               cboParam2.SelectedIndex = -1;
-            else
-               cboParam2.Text = drRule.Parameter2;
-
-            if (drRule.IsParameter3Null())
-               cboParam3.SelectedIndex = -1;
-            else
-               cboParam3.Text = drRule.Parameter3;
-
-            if (drRule.IsResultParameterNull())
-               cboOutput.SelectedIndex = -1;
-            else
-               cboOutput.Text = drRule.ResultParameter;
+            LoadParameters(drRule);
 
             chkEndIf.Checked = drRule.EndIf;
             chkSuspended.Checked = drRule.Suspended;
@@ -1775,6 +1745,41 @@ namespace SGDK2
          {
             m_Loading = false;
          }
+      }
+
+      private void LoadParameters(ProjectDataset.SpriteRuleRow drRule)
+      {
+         if (CurrentRule != null)
+         {
+            if (!cboParam1.Enabled)
+               CurrentRule.SetParameter1Null();
+            if (!cboParam2.Enabled)
+               CurrentRule.SetParameter2Null();
+            if (!cboParam3.Enabled)
+               CurrentRule.SetParameter3Null();
+            if (!cboOutput.Enabled)
+               CurrentRule.SetResultParameterNull();
+         }
+
+         if (drRule.IsParameter1Null())
+            cboParam1.SelectedIndex = -1;
+         else
+            cboParam1.Text = drRule.Parameter1;
+
+         if (drRule.IsParameter2Null())
+            cboParam2.SelectedIndex = -1;
+         else
+            cboParam2.Text = drRule.Parameter2;
+
+         if (drRule.IsParameter3Null())
+            cboParam3.SelectedIndex = -1;
+         else
+            cboParam3.Text = drRule.Parameter3;
+
+         if (drRule.IsResultParameterNull())
+            cboOutput.SelectedIndex = -1;
+         else
+            cboOutput.Text = drRule.ResultParameter;
       }
 
       private void QueuePopulateRules()
@@ -2417,6 +2422,8 @@ namespace SGDK2
       {
          EnableFields();
          PrepareFunction(cboFunction.SelectedItem.ToString());
+         if (CurrentRule != null)
+            LoadParameters(CurrentRule);
       }
 
       private void cboFunction_Validated(object sender, System.EventArgs e)
@@ -2430,6 +2437,8 @@ namespace SGDK2
             CurrentRule.Function = "!" + cboFunction.Text;
          else
             CurrentRule.Function = cboFunction.Text;
+         if (CurrentRule != null)
+            LoadParameters(CurrentRule);
       }
 
       private void updRepeatCount_Validated(object sender, System.EventArgs e)

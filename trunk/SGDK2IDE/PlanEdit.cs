@@ -988,6 +988,12 @@ namespace SGDK2
          {
             FillComboWithCounters(cboParameter);
          }
+         else if (param.Type.FullName.StartsWith("Sprites."))
+         {
+            foreach(ProjectDataset.SpriteRow drSprite in ProjectData.GetSortedSpriteRows(m_Plan.LayerRowParent))
+               if (param.Type.FullName.EndsWith("." + drSprite.DefinitionName))
+                  cboParameter.Items.Add(new SpriteCodeRef(drSprite));
+         }
          else 
          {
             foreach(string typeName in new string[]

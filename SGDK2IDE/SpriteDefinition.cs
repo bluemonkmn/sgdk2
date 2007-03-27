@@ -1676,7 +1676,7 @@ namespace SGDK2
          {
             FillComboWithCounters(cboParameter);
          }
-         else if(string.Compare(param.Type.Name, "SpriteBase") == 0)
+         else if((string.Compare(param.Type.Name, "SpriteBase") == 0) || (param.Type.FullName.EndsWith("Sprites." + m_SpriteDef.Name)))
          {
             cboParameter.Items.Add("this");
          }

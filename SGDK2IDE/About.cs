@@ -247,7 +247,7 @@ namespace SGDK2
 
       protected override void OnLoad(EventArgs e)
       {
-         lblVersion.Text = "Version " + Application.ProductVersion + " alpha release 2";
+         lblVersion.Text = "Version " + Application.ProductVersion + " alpha release 3";
          base.OnLoad (e);
 
          System.Text.StringBuilder sb = new System.Text.StringBuilder();

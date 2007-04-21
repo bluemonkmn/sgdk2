@@ -73,59 +73,33 @@ namespace SGDK2
             }
          }
 
-         [Description("Width of the layer's data in tiles"),
+         [Description("Defines how many tiles are stored by the layer"),
          Category("Layout")]
-         public int Width
+         public Size SizeInTiles
          {
             get
             {
-               return m_drLayer.Width;
+               return new Size(m_drLayer.Width, m_drLayer.Height);
             }
             set
             {
-               m_drLayer.Width = value;
+               m_drLayer.Width = value.Width;
+               m_drLayer.Height = value.Height;
             }
          }
 
-         [Description("Height of the layer's data in tiles"),
+         [Description("Displayable size of the layer in tiles (the data is wrapped if this is larger than SizeInTiles).  Defaults of 0 defer to SizeInTiles."),
          Category("Layout")]
-         public int Height
+         public Size VirtualSize
          {
             get
             {
-               return m_drLayer.Height;
+               return new Size(m_drLayer.VirtualWidth, m_drLayer.VirtualHeight);
             }
             set
             {
-               m_drLayer.Height = value;
-            }
-         }
-
-         [Description("Width of the layer's display in tiles (the data is wrapped if this is wider than Width)"),
-         Category("Layout")]
-         public int VirtualWidth
-         {
-            get
-            {
-               return m_drLayer.VirtualWidth;
-            }
-            set
-            {
-               m_drLayer.VirtualWidth = value;
-            }
-         }
-
-         [Description("Height of the layer's display in tiles (the data is wrapped if this is taller than Height)"),
-         Category("Layout")]
-         public int VirtualHeight
-         {
-            get
-            {
-               return m_drLayer.VirtualHeight;
-            }
-            set
-            {
-               m_drLayer.VirtualHeight = value;
+               m_drLayer.VirtualWidth = value.Width;
+               m_drLayer.VirtualHeight = value.Height;
             }
          }
 
@@ -161,7 +135,7 @@ namespace SGDK2
             }
          }
 
-         [Description("1 byte allows 256 tiles; 2 bytes allows 65536 tiles; 4 bytes allows 4294967296 tiles"),
+         [Description("1 byte allows 256 tiles; 2 bytes allows 32,768 tiles; 4 bytes allows 2,147,483,648 tiles"),
          Category("Behavior")]
          public BytesPerTile BytesPerTile
          {
@@ -254,7 +228,8 @@ namespace SGDK2
             }
          }
 
-         [Description("Determines the order of layers in the map.  The lowest ZIndex is drawn farthest in the background")]
+         [Description("Determines the order of layers in the map.  The lowest ZIndex is drawn farthest in the background"),
+         Category("Layout")]
          public int ZIndex
          {
             get

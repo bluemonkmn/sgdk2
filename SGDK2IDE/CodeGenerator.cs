@@ -33,7 +33,7 @@ namespace SGDK2
       private const string AnimTileClass = "AnimTile";
       private const string SimpleTileClass = "SimpleTile";
       private const string EmptyTileClass = "EmptyTile";
-      private const string TilesField = "m_Tiles";
+      private const string TilesField = "m_arTiles";
       private const string TileWidthField = "m_nTileWidth";
       private const string TileHeightField = "m_nTileHeight";
       private const string TilesetFramesetField = "m_strFrameset";
@@ -44,14 +44,15 @@ namespace SGDK2
       public const string SolidityClassName = "Solidity";
       private const string SpriteStateClassName = "SpriteState";
       private const string SpriteStateField = "m_SpriteStates";
+      private const string LayerSpriteCollectionField = "m_Sprites";
       public const string SpriteStateEnumName = "State";
       private const string GetFramesetMethodName = "GetFrameset";
       private const string CoordinateTypeName = "PlanBase.Coordinate";
       private const string LayerParentField = "m_ParentMap";
       private const string LayerParentArg = "ParentMap";
       public const string SpritePlanParentField = "m_ParentLayer";
-      public const string SpritePlanParentProperty = "ParentLayer";
       private const string SpritePlanParentArg = "ParentLayer";
+      public const string ParentLayerProperty = "ParentLayer";
       private const string GameFormInstance = "GameWindow";
       private const string GameFormType = "GameForm";
       private const string SpriteIsActiveRef = "isActive";
@@ -69,6 +70,8 @@ namespace SGDK2
       private const string FramesetSerializeName = "FramesetName";
       private const string GameDisplayField = "GameDisplay";
       private const string d3dx9File = "d3dx9_30.dll";
+      private const string InjectStartIndexField = "m_nInjectStartIndex";
+      private const string AppendStartIndexField = "m_nAppendStartIndex";
       #endregion
 
       #region Embedded Types
@@ -366,20 +369,42 @@ namespace SGDK2
             });
 
          foreach (System.Data.DataRowView drv in ProjectData.Map.DefaultView)
-            fileList.Add(System.IO.Path.Combine(FolderName, NameToVariable(((ProjectDataset.MapRow)drv.Row).Name) + "_Map.cs"));
+            fileList.Add(GetIntermediateCodeFilename(FolderName, drv.Row));
 
-         string SpritesFolder = System.IO.Path.Combine(FolderName, "Sprites");
          foreach (System.Data.DataRowView drv in ProjectData.SpriteDefinition.DefaultView)
-            fileList.Add(System.IO.Path.Combine(SpritesFolder, NameToVariable(((ProjectDataset.SpriteDefinitionRow)drv.Row).Name) + ".cs"));
+            fileList.Add(GetIntermediateCodeFilename(FolderName, drv.Row));
 
          foreach (System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
          {
-            ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
-            if (!drCode.IsTextNull() && (drCode.Text.Trim().Length > 0) && drCode.Name.EndsWith(".cs"))
-               fileList.Add(System.IO.Path.Combine(FolderName, drCode.Name));
+            string fileName = GetIntermediateCodeFilename(FolderName, drv.Row);
+            if (fileName != null)
+               fileList.Add(fileName);
          }
 
          return (string[])(fileList.ToArray(typeof(string)));
+      }
+
+      public static string GetIntermediateCodeFilename(string FolderName, System.Data.DataRow row)
+      {
+         if (!System.IO.Path.IsPathRooted(FolderName))
+            FolderName = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, FolderName);
+
+         if (row is ProjectDataset.SpriteDefinitionRow)
+         {
+            return System.IO.Path.Combine(System.IO.Path.Combine(FolderName, "Sprites"),
+               NameToVariable(((ProjectDataset.SpriteDefinitionRow)row).Name) + ".cs");
+         }
+         else if (row is ProjectDataset.MapRow)
+         {
+            return System.IO.Path.Combine(FolderName, NameToVariable(((ProjectDataset.MapRow)row).Name) + "_Map.cs");
+         }
+         else if (row is ProjectDataset.SourceCodeRow)
+         {
+            ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)row;
+            if (!drCode.IsTextNull() && (drCode.Text.Trim().Length > 0) && drCode.Name.EndsWith(".cs"))
+               return System.IO.Path.Combine(FolderName, drCode.Name);
+         }
+         return null;
       }
 
       public string[] GetResxFileList(string FolderName)
@@ -389,17 +414,33 @@ namespace SGDK2
             FolderName = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, FolderName);
          fileList.Add(System.IO.Path.Combine(FolderName, ProjectClass + ".resx"));
          foreach (System.Data.DataRowView drv in ProjectData.Map.DefaultView)
-            fileList.Add(System.IO.Path.Combine(FolderName, NameToVariable(((ProjectDataset.MapRow)drv.Row).Name) + "_Map.resx"));
+            fileList.Add(GetIntermediateResxFilename(FolderName, drv.Row));
          return (string[])(fileList.ToArray(typeof(string)));
+      }
+
+      public static string GetIntermediateResxFilename(string FolderName, System.Data.DataRow row)
+      {
+         if (!System.IO.Path.IsPathRooted(FolderName))
+            FolderName = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, FolderName);
+         if (row is ProjectDataset.MapRow)
+         {
+            return System.IO.Path.Combine(FolderName, NameToVariable(((ProjectDataset.MapRow)row).Name) + "_Map.resx");
+         }
+         return null;
       }
 
       public string[] GetResourcesFileList(string FolderName)
       {
          string[] result = GetResxFileList(FolderName);
          for (int i=0; i<result.Length; i++)
-            result[i] = result[i].Substring(0,result[i].Length -
-               System.IO.Path.GetExtension(result[i]).Length) + ".resources";
+            result[i] = GetIntermediateResourcesFilename(result[i]);
          return result;
+      }
+
+      public static string GetIntermediateResourcesFilename(string ResxFilename)
+      {
+         return ResxFilename.Substring(0, ResxFilename.Length -
+            System.IO.Path.GetExtension(ResxFilename).Length) + ".resources";
       }
 
       public string[] GetEmbeddedResourceList(string FolderName)
@@ -411,9 +452,22 @@ namespace SGDK2
          {
             ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
             if ((!drCode.IsCustomObjectDataNull()) && drCode.Name.EndsWith(".cs"))
-               fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileNameWithoutExtension(drCode.Name)) + ".bin");
+               fileList.Add(GetIntermediateEmbeddedFilename(FolderName, drv.Row));
          }
          return (string[])(fileList.ToArray(typeof(string)));
+      }
+
+      public static string GetIntermediateEmbeddedFilename(string FolderName, System.Data.DataRow row)
+      {
+         if (!System.IO.Path.IsPathRooted(FolderName))
+            FolderName = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, FolderName);
+         if (row is ProjectDataset.SourceCodeRow)
+         {
+            ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)row;
+            if ((!drCode.IsCustomObjectDataNull()) && drCode.Name.EndsWith(".cs"))
+               return System.IO.Path.Combine(FolderName, System.IO.Path.GetFileNameWithoutExtension(drCode.Name)) + ".bin";
+         }
+         return null;
       }
 
       public string[] GetLocalReferenceFileList(string FolderName)
@@ -1524,6 +1578,8 @@ namespace SGDK2
                   new CodeArgumentReferenceExpression("nVirtualRows"),
                   new CodeArgumentReferenceExpression("Position"),
                   new CodeArgumentReferenceExpression("ScrollRate"),
+                  new CodePrimitiveExpression(-1), // Placeholder for nInjectStartIndex
+                  new CodePrimitiveExpression(-1), // Placeholders for nAppendStartIndex
                   new CodeArgumentReferenceExpression("Name")
                });
             clsMap.Members.Add(clsLayer);
@@ -1581,12 +1637,6 @@ namespace SGDK2
                new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), fldLayer.Name),
                "ClearInjections"));
 
-            CodeMemberMethod mthInject = new CodeMemberMethod();
-            mthInject.Name = "InjectSprites";
-            mthInject.Attributes = MemberAttributes.Override | MemberAttributes.Public;
-            mthInject.ReturnType = new CodeTypeReference(typeof(void));
-            clsLayer.Members.Add(mthInject);
-
             CodeMemberField fldLayerParent = new CodeMemberField(clsMap.Name, LayerParentField);
             fldLayerParent.Attributes = MemberAttributes.Public | MemberAttributes.Final;
             clsLayer.Members.Add(fldLayerParent);
@@ -1631,7 +1681,7 @@ namespace SGDK2
                   new CodeArgumentReferenceExpression(SpritePlanParentArg)));
 
                CodeMemberProperty prpPlanParent = new CodeMemberProperty();
-               prpPlanParent.Name = SpritePlanParentProperty;
+               prpPlanParent.Name = ParentLayerProperty;
                prpPlanParent.Attributes = MemberAttributes.Public | MemberAttributes.Override;
                prpPlanParent.HasGet = true;
                prpPlanParent.HasSet = false;
@@ -1768,15 +1818,31 @@ namespace SGDK2
                new CodeThisReferenceExpression(), "m_layer"),
                new CodeArgumentReferenceExpression("layer")));
 
+            int injectStartIndex = -1;
+            int appendStartIndex = -1;
+            for (int spriteIndex = 0; spriteIndex < sprites.Length; spriteIndex++)
+            {
+               if ((injectStartIndex < 0) &&  (sprites[spriteIndex].Priority >= drLayer.Priority))
+                  injectStartIndex = spriteIndex;
+               if ((appendStartIndex < 0) && (sprites[spriteIndex].Priority > drLayer.Priority))
+                  appendStartIndex = spriteIndex;
+            }
+
+            if (injectStartIndex >= 0)
+               lyrConstructor.BaseConstructorArgs[12] = new CodePrimitiveExpression(injectStartIndex);
+            else
+               lyrConstructor.BaseConstructorArgs[12] = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(int)), "MaxValue");
+
+            if (appendStartIndex >= 0)
+               lyrConstructor.BaseConstructorArgs[13] = new CodePrimitiveExpression(appendStartIndex);
+            else
+               lyrConstructor.BaseConstructorArgs[13] = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(int)), "MaxValue");
+
             System.Collections.Hashtable htCategories = new System.Collections.Hashtable();
             if (sprites.Length > 0)
             {
-               CodeMemberMethod mthClearProcessedFlag = new CodeMemberMethod();
-               mthClearProcessedFlag.Attributes = MemberAttributes.Private;
-               mthClearProcessedFlag.Name = "ClearProcessedFlag";
-               clsLayer.Members.Add(mthClearProcessedFlag);
                mthExecuteLayerRules.Statements.Add(new CodeMethodInvokeExpression(
-                  new CodeThisReferenceExpression(), mthClearProcessedFlag.Name));
+                  new CodeThisReferenceExpression(), "ProcessSprites"));
 
                foreach(ProjectDataset.SpriteRow sprite in sprites)
                {
@@ -1813,9 +1879,9 @@ namespace SGDK2
                      }
                   }
                   CodeObjectCreateExpression createSprite = new CodeObjectCreateExpression(
-                     "Sprites." + NameToVariable(drDef.Name), (CodeExpression[])
+                     SpritesNamespace + "." + NameToVariable(drDef.Name), (CodeExpression[])
                      SpriteCreateParams.ToArray(typeof(CodeExpression)));
-                  clsLayer.Members.Add(new CodeMemberField("Sprites." + NameToVariable(drDef.Name), "m_" + NameToVariable(sprite.Name)));
+                  clsLayer.Members.Add(new CodeMemberField(SpritesNamespace + "." + NameToVariable(drDef.Name), "m_" + NameToVariable(sprite.Name)));
                   lyrConstructor.Statements.Add(new CodeAssignStatement(
                      new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "m_" + NameToVariable(sprite.Name)),
                      createSprite));
@@ -1833,55 +1899,6 @@ namespace SGDK2
                         new CodeArgumentReferenceExpression(constructLayerSpriteCategories.Parameters[0].Name),
                         fldrefSpr.FieldName));
                   }
-
-                  int priority;
-                  if (sprite.Priority < drLayer.Priority)
-                     priority = -1;
-                  else if (sprite.Priority > drLayer.Priority)
-                     priority = 1;
-                  else
-                     priority = 0;
-
-                  // Generate code that injects ths sprite into the layer when visible
-                  System.Collections.ArrayList InjectParams = new System.Collections.ArrayList();
-                  InjectParams.AddRange(new CodeExpression[]
-                     {
-                        new CodePropertyReferenceExpression(fldrefSpr, "PixelX"),
-                        new CodePropertyReferenceExpression(fldrefSpr, "PixelY"),
-                        new CodeMethodInvokeExpression(fldrefSpr, "GetCurrentFramesetFrames"),
-                        new CodePropertyReferenceExpression(fldrefSpr, "color")
-                     });
-                  if (priority != 0)
-                     InjectParams.Add(new CodePrimitiveExpression(priority));
-
-                  mthInject.Statements.Add(new CodeConditionStatement(
-                     new CodeMethodInvokeExpression(
-                     new CodeThisReferenceExpression(), "IsSpriteVisible",
-                     fldrefSpr),
-                     new CodeExpressionStatement(
-                     new CodeMethodInvokeExpression(
-                     new CodeThisReferenceExpression(),
-                     (priority == 0)?"InjectFrames":"AppendFrames",
-                     (CodeExpression[])InjectParams.ToArray(typeof(CodeExpression))))));
-
-                  mthClearProcessedFlag.Statements.Add(new CodeAssignStatement(
-                     new CodeFieldReferenceExpression(
-                     new CodeFieldReferenceExpression(
-                     new CodeThisReferenceExpression(), "m_" + NameToVariable(sprite.Name)),
-                     SpriteProcessedRulesField),
-                     new CodePrimitiveExpression(false)));
-
-                  mthExecuteLayerRules.Statements.Add(new CodeConditionStatement(new CodeFieldReferenceExpression(
-                     new CodeFieldReferenceExpression(new CodeThisReferenceExpression(),
-                     "m_" + NameToVariable(sprite.Name)), SpriteIsActiveRef),
-                     new CodeStatement[]
-                     {
-                        new CodeExpressionStatement(
-                        new CodeMethodInvokeExpression(
-                        new CodeFieldReferenceExpression(
-                        new CodeThisReferenceExpression(),
-                        "m_" + NameToVariable(sprite.Name)), "ProcessRules"))
-                     }));
                }
 
                if (htCategories.Count > 0)
@@ -1934,7 +1951,7 @@ namespace SGDK2
 
             lyrConstructor.Statements.Add(new CodeAssignStatement(
                new CodeFieldReferenceExpression(
-               new CodeThisReferenceExpression(), "m_Sprites"),
+               new CodeThisReferenceExpression(), LayerSpriteCollectionField),
                createLayerSprites));
 
             lyrConstructor.Statements.Add(
@@ -2209,6 +2226,39 @@ namespace SGDK2
                new CodeArgumentReferenceExpression("color")
             });
 
+         CodeConstructor dynamicConstructor = new CodeConstructor();
+         dynamicConstructor.Attributes = MemberAttributes.Public;
+         dynamicConstructor.Parameters.AddRange(new CodeParameterDeclarationExpression[]
+            {
+               new CodeParameterDeclarationExpression(LayerBaseClassName, "layer"),
+               new CodeParameterDeclarationExpression(typeof(double), "x"),
+               new CodeParameterDeclarationExpression(typeof(double), "y"),
+               new CodeParameterDeclarationExpression(typeof(double), "dx"),
+               new CodeParameterDeclarationExpression(typeof(double), "dy"),
+               new CodeParameterDeclarationExpression(typeof(int), "state"),
+               new CodeParameterDeclarationExpression(typeof(int), "frame"),
+               new CodeParameterDeclarationExpression(typeof(bool), "active"),
+               new CodeParameterDeclarationExpression("Display", "disp"),
+               new CodeParameterDeclarationExpression("Solidity", "solidity"),
+               new CodeParameterDeclarationExpression(typeof(int), "color"),
+               new CodeParameterDeclarationExpression(typeof(bool), "dynamic")
+            });
+         dynamicConstructor.ChainedConstructorArgs.AddRange(new CodeExpression[]
+            {
+               new CodeArgumentReferenceExpression("layer"),
+               new CodeArgumentReferenceExpression("x"),
+               new CodeArgumentReferenceExpression("y"),
+               new CodeArgumentReferenceExpression("dx"),
+               new CodeArgumentReferenceExpression("dy"),
+               new CodeCastExpression("Sprites." + NameToVariable(drSpriteDef.Name) + ".State",
+               new CodeArgumentReferenceExpression("state")),
+               new CodeArgumentReferenceExpression("frame"),
+               new CodeArgumentReferenceExpression("active"),
+               new CodeArgumentReferenceExpression("disp"),
+               new CodeArgumentReferenceExpression("solidity"),
+               new CodeArgumentReferenceExpression("color")
+            });
+
          CodeMemberMethod mthClearParams = new CodeMemberMethod();
          mthClearParams.Name = "ClearParameters";
          mthClearParams.Attributes = MemberAttributes.Override | MemberAttributes.Public;
@@ -2223,11 +2273,49 @@ namespace SGDK2
                new CodeThisReferenceExpression(), NameToVariable(drParam.Name));
             constructor.Parameters.Add(new CodeParameterDeclarationExpression(
                typeof(int), NameToVariable(drParam.Name)));
+            dynamicConstructor.ChainedConstructorArgs.Add(new CodePrimitiveExpression(0));
             constructor.Statements.Add(new CodeAssignStatement(refParam,               
                new CodeArgumentReferenceExpression(NameToVariable(drParam.Name))));
             mthClearParams.Statements.Add(new CodeAssignStatement(refParam, new CodePrimitiveExpression(0)));
          }
+
+         CodeConditionStatement dynamicCondition = new CodeConditionStatement();
+         dynamicCondition.Condition = new CodeArgumentReferenceExpression("dynamic");
+         dynamicConstructor.Statements.Add(dynamicCondition);
+
+         dynamicCondition.TrueStatements.Add(
+            new CodeMethodInvokeExpression(
+            new CodeFieldReferenceExpression(
+            new CodePropertyReferenceExpression(
+            new CodeThisReferenceExpression(), ParentLayerProperty),
+            LayerSpriteCollectionField),
+            "Add", new CodeThisReferenceExpression()));
+
+         CodeMemberMethod mthRemoveFromCategories = new CodeMemberMethod();
+         mthRemoveFromCategories.Name = "RemoveFromCategories";
+         mthRemoveFromCategories.Attributes = MemberAttributes.Public | MemberAttributes.Override;
+         clsSpriteDef.Members.Add(mthRemoveFromCategories);
+
+         foreach(ProjectDataset.SpriteCategorySpriteRow drCategory in drSpriteDef.GetSpriteCategorySpriteRows())
+         {
+            CodePropertyReferenceExpression refCategory =
+            new CodePropertyReferenceExpression(
+               new CodeFieldReferenceExpression(
+               new CodePropertyReferenceExpression(
+               new CodeThisReferenceExpression(), ParentLayerProperty),
+               SpriteCategoriesFieldName), NameToVariable(drCategory.SpriteCategoryRow.Name));
+
+            dynamicCondition.TrueStatements.Add(
+               new CodeMethodInvokeExpression(refCategory,
+               "Add", new CodeThisReferenceExpression()));
+
+            mthRemoveFromCategories.Statements.Add(
+               new CodeMethodInvokeExpression(refCategory,
+               "Remove", new CodeThisReferenceExpression()));
+         }
+
          clsSpriteDef.Members.Add(constructor);
+         clsSpriteDef.Members.Add(dynamicConstructor);
 
          CodeMemberMethod initStates = new CodeMemberMethod();
          initStates.Name = "InitializeStates";
@@ -2479,23 +2567,31 @@ namespace SGDK2
       {
          CodeTypeDeclaration clsLayerSpriteCategoriesBase = new CodeTypeDeclaration(LayerSpriteCategoriesBaseClassName);
          clsLayerSpriteCategoriesBase.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
-         CodeMemberField fldEmpty = new CodeMemberField(SpriteCollectionClassName, "m_EmptyCollection");
-         fldEmpty.Attributes = MemberAttributes.Private | MemberAttributes.Static;
-         fldEmpty.InitExpression = new CodeObjectCreateExpression(SpriteCollectionClassName);
-         clsLayerSpriteCategoriesBase.Members.Add(fldEmpty);
 
          foreach(System.Data.DataRowView drv in ProjectData.SpriteCategory.DefaultView)
          {
             ProjectDataset.SpriteCategoryRow drCat = (ProjectDataset.SpriteCategoryRow)drv.Row;
+            CodeMemberField fldCat = new CodeMemberField(SpriteCollectionClassName, "m_" + NameToVariable(drCat.Name));
+            fldCat.Attributes = MemberAttributes.Private;
+            fldCat.InitExpression = new CodePrimitiveExpression(null);
+            clsLayerSpriteCategoriesBase.Members.Add(fldCat);
+
             CodeMemberProperty prpCat = new CodeMemberProperty();
             prpCat.Name = NameToVariable(drCat.Name);
             prpCat.Type = new CodeTypeReference(SpriteCollectionClassName);
             prpCat.Attributes = MemberAttributes.Public;
             prpCat.HasGet = true;
             prpCat.HasSet = false;
-            prpCat.GetStatements.Add(new CodeMethodReturnStatement(
-               new CodeFieldReferenceExpression(
-               new CodeTypeReferenceExpression(clsLayerSpriteCategoriesBase.Name), fldEmpty.Name)));
+            CodeFieldReferenceExpression refCat = new CodeFieldReferenceExpression(
+               new CodeThisReferenceExpression(), "m_" + NameToVariable(drCat.Name));
+            prpCat.GetStatements.Add(new CodeConditionStatement(
+               new CodeBinaryOperatorExpression(refCat,
+               CodeBinaryOperatorType.IdentityEquality,
+               new CodePrimitiveExpression(null)),
+               new CodeAssignStatement(refCat,
+               new CodeObjectCreateExpression(
+               SpriteCollectionClassName))));
+            prpCat.GetStatements.Add(new CodeMethodReturnStatement(refCat));
             clsLayerSpriteCategoriesBase.Members.Add(prpCat);
          }
          Generator.GenerateCodeFromType(clsLayerSpriteCategoriesBase, txt, GeneratorOptions);
@@ -2588,7 +2684,7 @@ namespace SGDK2
                   mappings.Add(new CodeObjectCreateExpression("SolidityMapping",
                      new CodeFieldReferenceExpression(
                      new CodeTypeReferenceExpression("TileCategoryName"),
-                     drShape.TileCategoryRow.Name),
+                     NameToVariable(drShape.TileCategoryRow.Name)),
                      new CodeFieldReferenceExpression(
                      new CodeTypeReferenceExpression(NameToVariable(drShape.ShapeName)), "Value")));
                }

@@ -15,5 +15,15 @@
 		<param name="Name" value="Scrolling Game Development Kit 2 - Graphics Editor">
 		<param name="Local" value="GfxEdit.html">
 		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Tileset Editor">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Tileset Editor">
+		<param name="Local" value="TileEdit.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Tile Categories">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Tile Categories">
+		<param name="Local" value="TileCategories.html">
+		</OBJECT>
 </UL>
 </BODY></HTML>

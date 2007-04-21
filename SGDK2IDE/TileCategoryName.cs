@@ -207,6 +207,8 @@ namespace SGDK2
          foreach(System.Data.DataRowView drv in ProjectData.Tileset.DefaultView)
             cboTileset.Items.Add(drv.Row);
          base.OnLoad (e);
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"TileCategories.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
       protected override void OnClosing(CancelEventArgs e)

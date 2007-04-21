@@ -2,7 +2,7 @@
 <html>
    <head>
       <title>Scrolling Game Development Kit 2 - Simple Tutorial</title>
-      <meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema">
+      <meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema" />
       <link rel="stylesheet" href="SGDK2Help.css" />
    </head>
    <body>
@@ -10,10 +10,10 @@
       This page describes some steps to get a simple game running in SGDK2 without 
       importing any external data. This is a very simple game, but steps through a 
       few features of SGDK2 that are interesting and important to understand in the 
-      process of learning SGDK2.&nbsp; Keep in mind that creating a game from scratch 
+      process of learning SGDK2.  Keep in mind that creating a game from scratch 
       (without importing anything) may look significantly more complicated than 
       importing some key pieces (especially sprite definitions), but in the interest 
-      of completeness, this tutorial will expose all&nbsp;the details of re-creating 
+      of completeness, this tutorial will expose all the details of re-creating 
       this data rather than simply importing it.
       <OL>
          <li>
@@ -245,12 +245,12 @@
       Select "Do" from the first dropdown and "SwitchToState" from the second 
       dropdown.
       <LI>
-      Type "(state + 1) % 72" in the "State" combo box.&nbsp; This is the formula for 
-      calculating the next state number for turning left in a 72-state sprite.&nbsp; 
+      Type "(state + 1) % 72" in the "State" combo box.  This is the formula for 
+      calculating the next state number for turning left in a 72-state sprite.  
       Normally you could simply import a rotating sprite instead of having to know 
       formulas, but this tutorial will show you all the details.
       <LI>
-      Select "RelativePosition.TopLeft" from the "Alignment" dropdown list.&nbsp; 
+      Select "RelativePosition.TopLeft" from the "Alignment" dropdown list.  
       This selection is really irrelavent because all states are the same size, so 
       it's not important what you pick.
       <LI>
@@ -272,7 +272,7 @@
       Select "Do" from the first dropdown and "SwitchToState" from the second 
       dropdown.
       <LI>
-      Type "(72 + state - 1) % 72" in the "State" combo box.&nbsp; This is the 
+      Type "(72 + state - 1) % 72" in the "State" combo box.  This is the 
       formula for calculating the next state for turning right.
       <LI>
       Select "RelativePosition.TopLeft" from the "Alignment" dropdown list.
@@ -324,7 +324,7 @@
       <LI>
       Select the "Parameters" tab.
       <LI>
-      In the first row of the grid, type "My inertia".&nbsp; This adds a parameter to 
+      In the first row of the grid, type "My inertia".  This adds a parameter to 
       this sprite type that can be specified on each sprite instance in the map 
       editor.
       <LI>
@@ -343,7 +343,7 @@
       <LI>
       Enter "My Layer" for the layer name.
       <LI>
-      Note&nbsp;the deault selection of "My Tileset" for the Tileset, and the default 
+      Note the deault selection of "My Tileset" for the Tileset, and the default 
       values of 100 and 15 for the layer width and height.
       <LI>
          Click Add.</LI></OL>
@@ -381,12 +381,12 @@
       Select the red triangle sprite.
       <LI>
       In the sprite properties pane at the bottom of the sprites pane, enter "1" into 
-      the "Priority" field, and press Enter.&nbsp; This ensures that the sprite will 
+      the "Priority" field, and press Enter.  This ensures that the sprite will 
       draw after the layer it's in instead of before or instead of interleaving with 
       the tiles.
       <LI>
       Scroll to the left end of the map and click the sprite onto the layer's blue 
-      background somewhere.&nbsp; Notice that the sprite doesn't need to worry about 
+      background somewhere.  Notice that the sprite doesn't need to worry about 
       the background because it is drawn independently of the tiles in the layer, 
       rather than replacing tiles in the layer.
       <LI>
@@ -394,12 +394,12 @@
       <LI>
       Click on the sprite that was just added to select it.
       <LI>
-      In the sprite properties pane, select "Standard" in the "Solidity" field.&nbsp; 
+      In the sprite properties pane, select "Standard" in the "Solidity" field.  
       Defining the solidity on the individual sprite instance allows different 
       instances of the same sprite definition to react differently to map solidity or 
       allows the same instance to act differently at different times.
       <LI>
-      In the sprite properties pane, enter "98" for "My inertia".&nbsp; Notice that 
+      In the sprite properties pane, enter "98" for "My inertia".  Notice that 
       this is the parameter added to the sprite definition for this sprite type.
       <LI>
          Close the map editor.</LI></OL>
@@ -421,9 +421,9 @@
       <LI>
       Select and drag the blue frame from the bottom pane to the top pane and drop it 
       on the left side of the star. Alternatively, you can select the blue tile in 
-      the bottom frame and press Ctrl-A to add it to the tile.&nbsp; If it gets added 
+      the bottom frame and press Ctrl-A to add it to the tile.  If it gets added 
       after the star, then select the star frame in the bottom pane and add that 
-      (with Ctrl-A) too.&nbsp; Then select the first star in the top pane and press 
+      (with Ctrl-A) too.  Then select the first star in the top pane and press 
       the delete key to delete that frame from the tile.
       <LI>
       With only the blue frame in the top pane selected, replace the default value of 
@@ -456,7 +456,7 @@
       <LI>
          Select m_ParentLayer.m_Player_1 from the Target dropdown list.</LI></OL>
       <LI>
-         Add another new rule named "Scroll player sprite into view".&nbsp; Note: this 
+         Add another new rule named "Scroll player sprite into view".  Note: this 
          could be done on the sprite definition instead (so you don't have to repeat 
          this on every map) but if you want multiple players, it's better to see that it 
          can be done here too.
@@ -473,7 +473,7 @@
          Set the appropriate scrolling size for the map.
          <OL>
       <LI>
-      Open the properties window for&nbsp;Level 1 (double-click on "Level 1" in the 
+      Open the properties window for Level 1 (double-click on "Level 1" in the 
       project tree)
       <LI>
       Click the "Wizard..." button.
@@ -489,11 +489,11 @@
          Press F5 or select "Run Project in Debug Mode" from the File menu</LI></OL>
       <P>At this point you should be able to move the player around using the arrow keys 
          and see the map scroll (although you might not notice it scrolling until you 
-         get to the star because the graphics are so uniform).&nbsp; If you'd like to 
+         get to the star because the graphics are so uniform).  If you'd like to 
          further enhance the game to pick up the star, add some walls and introduce 
-         gravity, you can proceed with the steps below.&nbsp; After each step you can 
-         run the game again to see your progress (if any is visible)&nbsp;by pressing 
-         F5.&nbsp; Note that you will be un-able to re-compile (re-run) your game if 
+         gravity, you can proceed with the steps below.  After each step you can 
+         run the game again to see your progress (if any is visible) by pressing 
+         F5.  Note that you will be un-able to re-compile (re-run) your game if 
          it's still running, so it's a good idea to quit before proceeding to the next 
          step.</P>
       <OL>
@@ -507,9 +507,9 @@
          <LI>
          Go to the Rules tab.
          <LI>
-         Expand "If the player is pressing up" and select "Accelerate".&nbsp; This is to 
+         Expand "If the player is pressing up" and select "Accelerate".  This is to 
          ensure that the new rule gets added in the right position (right before "React 
-         to solidity").&nbsp; New rules are always added below the selected rule.&nbsp; 
+         to solidity").  New rules are always added below the selected rule.  
          Alternatively you could simply create the rule and then use the up and down 
          arrow buttons on the toolbar to position it.
          <LI>
@@ -523,7 +523,7 @@
       <LI>
          Close the sprite definition editor</LI></OL>
       <LI>
-         Create a counter to&nbsp;represent collected stars.
+         Create a counter to represent collected stars.
          <OL>
       <LI>
       Create a new counter in the "Counters" folder.
@@ -532,13 +532,13 @@
       <LI>
       Enter a maximum of 18.
       <LI>
-      Leave the default Value of 1.&nbsp; This will allow you to see/test the 
+      Leave the default Value of 1.  This will allow you to see/test the 
       inventory display as soon as it's implemented instead of waiting until the 
       player has the ability to pick up stars.
       <LI>
          Close the Edit Counter window.</LI></OL>
       <LI>
-         Create an overlay&nbsp;map to display inventory.
+         Create an overlay map to display inventory.
          <OL>
       <LI>
       Create a new map in the "Maps" folder and name it "My Overlay".
@@ -554,8 +554,8 @@
       Accept the default of 1 byte per tile and click Next.
       <LI>
       Check the box to delete all tiles and use a new background (this is required 
-      when adding a new layer).&nbsp; Select the first red triangle and click 
-      Next.&nbsp; We don't have a transparent background tile but we need one.&nbsp; 
+      when adding a new layer).  Select the first red triangle and click 
+      Next.  We don't have a transparent background tile but we need one.  
       We'll go back and replace the first red triangle tile with an empty tile in a 
       moment.
       <LI>
@@ -563,7 +563,7 @@
       <LI>
       Accept the default positioning and click Next.
       <LI>
-      Accept the default&nbsp;priority and click Next.
+      Accept the default priority and click Next.
       <LI>
       Check the box to "Size the layer to fill the map's scrollable area." and click 
       Next.
@@ -572,7 +572,7 @@
       <LI>
          Click "Add" to add the layer.</LI></OL>
       <LI>
-         Define&nbsp;an empty tile
+         Define an empty tile
          <OL>
       <LI>
       Open "My Tileset" for editing.
@@ -584,7 +584,7 @@
       Select the triangle frame in the top pane.
       <LI>
       Press the delete key (or select "Delete Selected Frames" from the Tileset menu) 
-      and confirm the delete operation.&nbsp; Note that a tile without any frames is 
+      and confirm the delete operation.  Note that a tile without any frames is 
       somewhat more efficient than a tile with a graphic cell that is all 
       transparent.
       <LI>
@@ -620,16 +620,16 @@
       <LI>
       Move the mouse to tile coordinate 19,2. Note that the size of the rectangle 
       combined with the maximum value of the counter has an effect on how the 
-      inventory will be drawn.&nbsp; Notice that the maximum for stars was set to 18, 
+      inventory will be drawn.  Notice that the maximum for stars was set to 18, 
       and 18 is also the width (in tiles) of the rectangle.
       <LI>
-      Left click to define a rectangle where stars will be drawn.&nbsp; Note that 
+      Left click to define a rectangle where stars will be drawn.  Note that 
       after you click the rectangle will go away and propose a thirs coordinate as 
       you move the mouse around, but if you do not add another point and do move the 
       mouse out of the map editor the rectangle will re-appear demonstrating that the 
       plan in its saved form has two points defining a rectangle.
       <LI>
-      Enter&nbsp;the&nbsp;name "Draw Stars" for the plan in the plan properties pane 
+      Enter the name "Draw Stars" for the plan in the plan properties pane 
       at the bottom left, and press Enter.
       <LI>
       Click the "Edit Selected Plan" button in toolbar in the "Plans" frame, or 
@@ -646,12 +646,12 @@
       Select "Counter.Stars" from the "counter" dropdown list.
       <LI>
          Select "PlanBase.DrawStyle.RepeatRightToCounter" from the "style" dropdown 
-         list.&nbsp; This style will draw a bar filled with un-stretched (normal-size) 
+         list.  This style will draw a bar filled with un-stretched (normal-size) 
          stars and cut it off based <STRONG>not</STRONG>
       on the number of stars displayed, but on the ratios of owned stars to maximum 
-      stars and drawn bar size to total bar size.&nbsp; For example, if your bar were 
+      stars and drawn bar size to total bar size.  For example, if your bar were 
       3 tiles wide, and your max quantity were 2, but you only owned 1, then 
-      the&nbsp;bar would draw&nbsp;one and a half tiles because 1 is half of 2 and 
+      the bar would draw one and a half tiles because 1 is half of 2 and 
       half of 3 is one and a half.
       <LI>
       Close the Plan Editor.
@@ -674,13 +674,13 @@
       <LI>
       Close the Tile Category Name window.
       <LI>
-         Press the F7 key or select "Generate Project" from the file menu.&nbsp; If you 
+         Press the F7 key or select "Generate Project" from the file menu.  If you 
          don't do this, the new category might not show up as an available option when 
-         defining the sprite rule.&nbsp; If that happens, remember that F7 will 
+         defining the sprite rule.  If that happens, remember that F7 will 
          re-compile the project, making all the recent changes available to the 
-         environment for "reflection" (reflection is&nbsp;a&nbsp;term&nbsp;used often in 
+         environment for "reflection" (reflection is a term used often in 
          .NET programming that refers to the kind of process that SGDK2 uses to examine 
-         the generated code to see what objects are in&nbsp;a compiled&nbsp;project).</LI></OL>
+         the generated code to see what objects are in a compiled project).</LI></OL>
       <LI>
          Define a rule to allow player sprites to acquire stars.
       </LI>
@@ -692,9 +692,9 @@
          <LI>
          Select "Move".
          <LI>
-      Add&nbsp;a new rule called "Touch tiles".&nbsp; Touch tiles is required once if 
+      Add a new rule called "Touch tiles".  Touch tiles is required once if 
       the sprite interacts with tiles based on their category or tile numbers rather 
-      than simply their solidity.&nbsp; It creates a list of tiles that the sprite is 
+      than simply their solidity.  It creates a list of tiles that the sprite is 
       touching that can be processed by other rules.
       <OL>
          <LI>
@@ -707,7 +707,7 @@
       <LI>
       Select "Do" from the first dropdown and "TileTake" from the second dropdown.
       <LI>
-      Enter the value 2 into the TileValue combo box.&nbsp; Remember that 2 was the 
+      Enter the value 2 into the TileValue combo box.  Remember that 2 was the 
       number of the star tile we defined (with the blue background) in the TileSet 
       editor.
       <LI>
@@ -720,7 +720,7 @@
          Add walls to the map.</LI>
       <OL>
          <LI>
-         Open "My Layer" from map&nbsp;"Level 1" in the editor.
+         Open "My Layer" from map "Level 1" in the editor.
          <LI>
          Select the green tile.
          <LI>

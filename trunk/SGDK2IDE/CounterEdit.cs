@@ -41,6 +41,9 @@ namespace SGDK2
          nudMaximum.Value = m_Counter.Max;
          nudValue.Value = m_Counter.Value;
          txtCounterName.Text = sName;
+
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"EditCounters.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
       public frmCounterEdit(ProjectDataset.CounterRow drCounter)
@@ -54,6 +57,9 @@ namespace SGDK2
          txtCounterName.Text = drCounter.Name;
          nudMaximum.Value = drCounter.Max;
          nudValue.Value = drCounter.Value;
+
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"EditCounters.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
 		/// <summary>

@@ -35,6 +35,9 @@ namespace SGDK2
          m_SelectedSequences = SelectedSequences;
          trbAlphaLevel.Value = ProjectData.GetSortedSpriteFrames(drSpriteState)[SelectedSequences[0]].MaskAlphaLevel;
          cboMode.SelectedIndex = 0;
+
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"SpriteDefinition.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
 		}
 
 		/// <summary>

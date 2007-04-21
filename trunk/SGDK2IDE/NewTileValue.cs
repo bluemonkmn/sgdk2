@@ -38,10 +38,9 @@ namespace SGDK2
 			//
 			InitializeComponent();
 
-			//
-			// TODO: Add any constructor code after InitializeComponent call
-			//
-		}
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"TileEdit.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
+      }
 
 		/// <summary>
 		/// Clean up any resources being used.

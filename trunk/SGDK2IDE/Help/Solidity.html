@@ -5,58 +5,55 @@
       <title>Scrolling Game Development Kit 2 - Solidity</title>
       <meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR" />
       <meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema" />
-      <LINK href="SGDK2Help.css" type="text/css" rel="stylesheet" />
+      <link href="SGDK2Help.css" type="text/css" rel="stylesheet" />
    </head>
    <body>
       <h1>Solidity</h1>
-      <P>The term "Solidity" is used to refer to a set of rules that determines which 
+      <p>The term "Solidity" is used to refer to a set of rules that determines which 
          shapes are applied to which tiles. Each sprite can have its own solidity 
          setting, referring to a particular Solidity object defined in the project. This 
-         will affect whether the sprite can walk stright through a tile, 
-         whether it walks up it like a hill or whether it hits it and 
-         stops dead in its tracks.</P>
-      <P>Solidity is based on tile categories, so tile categories must be defined before 
-         any useful solidity information can be created.  The function of this 
-         window is to associate tile categories with tile shapes to form a single named 
-         "Solidity" object that sprites can refer to as a single set of rules about what 
-         is solid and what is not.  Note that assigning a tile category to a shape 
-         does not apply globally, but only within the scope of a Solidity 
-         definition.  Therefore, it's possible to have one solidity object that 
-         defines tiles in a "water" category as solid, and another solidity object 
-         that defines tiles in the "water" category as empty. This would allow, for 
-         example, a "fish" sprite to use one solidity object to be able to travel freely 
-         through water, and a "player" sprite to be blocked by water.  It's even 
-         possible to change this solidity during the game so that, for example, if the 
-         player receives an item to allow it to walk on water, it can switch to the 
-         other solidity definition.</P>
-      <P>To create a new solidity definition, right-click on the "Solidity" folder 
-         in the project tree and select "New", or select the folder, and then choose 
-         "New Object" from the file menu.  To edit an existing solidity object, 
-         double-click it in the project tree, or select it and choose "Properties" from 
-         the view menu or "Edit" from the context (right-mouse) menu.</P>
-      <H2>Name</H2>
-      <P>Each solidity definition must have a name unique among all solidity definitions 
-         in the project.  Names must begin with a letter and contain only letters, 
-         digits and spaces.</P>
-      <H2>Category</H2>
-      <P>Select a tile category whose tiles will be defined by this row.  Any tiles 
-         that are not included in a category listed in this column will default to an 
-         empty shape, allowing sprites to travel through them unimpeded.  A 
-         particular tile category can only be specified once per solidity definition. 
-         Attempting to add multiple rows with the same tile category will result in an 
-         error message.</P>
-      <H2>Shape</H2>
-      <P>Select a shape that will be associated with all tiles in the specified 
-         category.  The list of available shapes are determined by the shapes 
-         defined in TileShapes.cs in the project's Source Code folder.  That means 
-         that it's possible to create custom shapes specifically for a project by adding 
-         new classes to this file.  This must be done with care, however.  An 
-         improper shape definition can result in inconsistent and unwanted behavior.</P>
-      <P>Note that in order for the list of shapes to be available in the dropdown list, 
+         will affect whether the sprite can walk stright through a tile, whether it 
+         walks up it like a hill or whether it hits it and stops dead in its tracks.</p>
+      <p>Solidity is based on tile categories, so tile categories must be defined before 
+         any useful solidity information can be created. The function of this window is 
+         to associate tile categories with tile shapes to form a single named "Solidity" 
+         object that sprites can refer to as a single set of rules about what is solid 
+         and what is not. Note that assigning a tile category to a shape does not apply 
+         globally, but only within the scope of a Solidity definition. Therefore, it's 
+         possible to have one solidity object that defines tiles in a "water" category 
+         as solid, and another solidity object that defines tiles in the "water" 
+         category as empty. This would allow, for example, a "fish" sprite to use one 
+         solidity object to be able to travel freely through water, and a "player" 
+         sprite to be blocked by water. It's even possible to change this solidity 
+         during the game so that, for example, if the player receives an item to allow 
+         it to walk on water, it can switch to the other solidity definition.</p>
+      <p>To create a new solidity definition, right-click on the "Solidity" folder in 
+         the project tree and select "New", or select the folder, and then choose "New 
+         Object" from the file menu. To edit an existing solidity object, double-click 
+         it in the project tree, or select it and choose "Properties" from the view menu 
+         or "Edit" from the context (right-mouse) menu.</p>
+      <h2>Name</h2>
+      <p>Each solidity definition must have a name unique among all solidity definitions 
+         in the project. Names must begin with a letter and contain only letters, digits 
+         and spaces.</p>
+      <h2>Category</h2>
+      <p>Select a tile category whose tiles will be defined by this row. Any tiles that 
+         are not included in a category listed in this column will default to an empty 
+         shape, allowing sprites to travel through them unimpeded. A particular tile 
+         category can only be specified once per solidity definition. Attempting to add 
+         multiple rows with the same tile category will result in an error message.</p>
+      <h2>Shape</h2>
+      <p>Select a shape that will be associated with all tiles in the specified 
+         category. The list of available shapes are determined by the shapes defined in 
+         TileShapes.cs in the project's Source Code folder. That means that it's 
+         possible to create custom shapes specifically for a project by adding new 
+         classes to this file. This must be done with care, however. An improper shape 
+         definition can result in inconsistent and unwanted behavior.</p>
+      <p>Note that in order for the list of shapes to be available in the dropdown list, 
          the environment needs to compile the project. Therefore, you must make sure 
          that some minimum number of steps have been completed in order to qualify the 
-         project as compilable before you can start defining solidity.  Pressing F7 
-         or selecting "Generate Project" from the file menu can help you find incomplete 
-         areas of the project.</P>
+         project as compilable before you can start defining solidity. Pressing F7 or 
+         selecting "Generate Project" from the file menu can help you find incomplete 
+         areas of the project.</p>
    </body>
 </html>

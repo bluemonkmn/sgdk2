@@ -297,6 +297,9 @@ namespace SGDK2
          EditRow.BeginEdit();
          pgrLayer.SelectedObject = DataObject = new LayerProperties(EditRow);
          DataObject.BackgroundTile = 0;
+
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"LayerManager.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
       public frmLayerManager(ProjectDataset.LayerRow EditRow)
@@ -308,6 +311,9 @@ namespace SGDK2
          pgrLayer.SelectedObject = DataObject = new LayerProperties(EditRow);
          m_PersistedDimensions = new Size(EditRow.Width, EditRow.Height);
          m_PersistedBytesPerTile = EditRow.BytesPerTile;
+
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"LayerManager.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
       /// <summary>

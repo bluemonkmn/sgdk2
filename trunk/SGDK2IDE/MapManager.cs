@@ -162,6 +162,9 @@ namespace SGDK2
          EditRow.ScrollMarginBottom = 32;
          EditRow.BeginEdit();
          pgrMap.SelectedObject = DataObject = new MapProperties(EditRow);         
+
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"MapManager.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
       public frmMapManager(ProjectDataset.MapRow EditRow)
@@ -171,6 +174,9 @@ namespace SGDK2
          btnOK.Text = "Update";
          EditRow.BeginEdit();
          pgrMap.SelectedObject = DataObject = new MapProperties(EditRow);
+
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"MapManager.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
 		/// <summary>

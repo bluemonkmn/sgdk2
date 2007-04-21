@@ -1,60 +1,56 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>Scrolling Game Development Kit 2 - Map Manager</title>
-<meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1" />
-<meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5" />
-    <link href="SGDK2Help.css" type="text/css" rel="stylesheet" />
-</head>
-<body>
-<h1>Map Manager</h1>
-<P>Use this window to edit the general parameters of a map within the 
-project.  This window is displayed when creating a new map, or by editing 
-the properties of a map node in the project tree (by double-clicking it or 
-selecting it and choosing the "Properties" command from the View menu).</P>
-<H2>Name</H2>
-<P>The name of a map must be unique among all map names in the project.  A 
-name must begin with a letter and contain only letters, digits and spaces.</P>
-<P>Each map is associated with its own source code file in the generated 
-project.  The name of the map determines the filename of the source code 
-file containing all code for the map (which is the name of the map with 
-"_Map.cs" appended).</P>
-<H2>Scrollable Size</H2>
-<P>Simply stated, this is the size of the map.  The size is specified 
-independently of the layer sizes because you may have layers that you don't 
-want to be entirely visible within the map (for example if a portion of a 
-layer is used only as a source of tiles for copying to another part of the 
-layer).  To understand this size, consider a map with a scrollable size of 
-800x600 displayed on a screen that shows 640x480 pixels.  Such a map will 
-be able to scroll 160 pixels to the right (800 minus 640) and 120 pixels down 
-(600 minus 480).  Notice how the display size plus the distance that a 
-map can scroll represents the total scrollable size for the map.</P>
-<P>To easily calculate a reasonable value for the Scrollable Size based on the 
-layers within the map, use the "Wizard..." button.  It will allow you 
-calculate a size based on a desire to make all areas of all layers visible or a 
-desire to keep the map from scrolling to any area where any one of the layers 
-will not fill the display.  (You can also select a subset of layers on 
-which to base this calculation.)</P>
-<P>Keep in mind that changing a layer's scroll rate or size, or changing the 
-resolution of the game after setting this may result in layers no longer 
-exhibiting the desired behavior specified in the wizard, until you update the 
-Scrollable Size in accordance with new conditions.</P>
-<H2>Scroll Margin</H2>
-<P>Each side of the display has a scroll margin associated with it on each 
-map.  This number is used when using rules that scroll the map.  
-Scrolling a sprite into view can use the scroll margins of the map 
-containing the sprite to position the view so that the sprite will maintain a 
-minimum distance between the edge of teh display and itself.  A bottom 
-scroll margin of 100, for example, will ensure that the sprite doesn't come 
-within less than 100 pixels of the bottom of the display unless it has reached 
-the bottom of the map.</P>
-<H2>View</H2>
-<P>If you don't want the map to completely fill the display when it is active, 
-you can specify a smaller area in which to draw the map.  If you want to 
-map to fill the display regardless of the resolution, you can specify all zeros, 
-and the size will default to fill the display.</P>
-
-
-</body>
+   <head>
+      <title>Scrolling Game Development Kit 2 - Map Manager</title>
+      <meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1" />
+      <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5" />
+      <link href="SGDK2Help.css" type="text/css" rel="stylesheet" />
+   </head>
+   <body>
+      <h1>Map Manager</h1>
+      <p>Use this window to edit the general parameters of a map within the project. 
+         This window is displayed when creating a new map, or by editing the properties 
+         of a map node in the project tree (by double-clicking it or selecting it and 
+         choosing the "Properties" command from the View menu).</p>
+      <h2>Name</h2>
+      <p>The name of a map must be unique among all map names in the project. A name 
+         must begin with a letter and contain only letters, digits and spaces.</p>
+      <p>Each map is associated with its own source code file in the generated project. 
+         The name of the map determines the filename of the source code file containing 
+         all code for the map (which is the name of the map with "_Map.cs" appended).</p>
+      <h2>Scrollable Size</h2>
+      <p>Simply stated, this is the size of the map. The size is specified independently 
+         of the layer sizes because you may have layers that you don't want to be 
+         entirely visible within the map (for example if a portion of a layer is used 
+         only as a source of tiles for copying to another part of the layer). To 
+         understand this size, consider a map with a scrollable size of 800x600 
+         displayed on a screen that shows 640x480 pixels. Such a map will be able to 
+         scroll 160 pixels to the right (800 minus 640) and 120 pixels down (600 minus 
+         480). Notice how the display size plus the distance that a map can scroll 
+         represents the total scrollable size for the map.</p>
+      <p>To easily calculate a reasonable value for the Scrollable Size based on the 
+         layers within the map, use the "Wizard..." button. It will allow you calculate 
+         a size based on a desire to make all areas of all layers visible or a desire to 
+         keep the map from scrolling to any area where any one of the layers will not 
+         fill the display. (You can also select a subset of layers on which to base this 
+         calculation.)</p>
+      <p>Keep in mind that changing a layer's scroll rate or size, or changing the 
+         resolution of the game after setting this may result in layers no longer 
+         exhibiting the desired behavior specified in the wizard, until you update the 
+         Scrollable Size in accordance with new conditions.</p>
+      <h2>Scroll Margin</h2>
+      <p>Each side of the display has a scroll margin associated with it on each map. 
+         This number is used when using rules that scroll the map. Scrolling a sprite 
+         into view can use the scroll margins of the map containing the sprite to 
+         position the view so that the sprite will maintain a minimum distance between 
+         the edge of teh display and itself. A bottom scroll margin of 100, for example, 
+         will ensure that the sprite doesn't come within less than 100 pixels of the 
+         bottom of the display unless it has reached the bottom of the map.</p>
+      <h2>View</h2>
+      <p>If you don't want the map to completely fill the display when it is active, you 
+         can specify a smaller area in which to draw the map. If you want to map to fill 
+         the display regardless of the resolution, you can specify all zeros, and the 
+         size will default to fill the display.</p>
+   </body>
 </html>

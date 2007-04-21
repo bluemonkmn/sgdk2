@@ -1,70 +1,101 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <title>Scrolling Game Development Kit 2 - Tile Categories</title>
-  <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5" />
-  <link href="SGDK2Help.css" type="text/css" rel="stylesheet" />
-</head>
-
-<body>
-  <h1>Tile Categories</h1>
-
-  <p>In order to treat groups of tiles using a common set of rules, they can be grouped into categories.  Tile categories are used to define the solid shapes of tiles as well as allow groups of tile types to interact with sprites.</p>
-
-  <p>A tile category may contain tiles from multiple tilesets.  This is why you will see a sub-grouping under Tile Categories that lists tileset names.  Doing this allows a sprite definition to define rules based on a tile category, and the same rule can apply whether the sprite is on a layer using one tileset or another tileset.</p>
-
-  <p>There are a number of approaches to editing different components of the tile category.</p>
-
-  <h2>Tile Category Name Editor</h2>
-
-  <p>This window appears when you create a new tile category by selecting the "New" command when the "Tile Categories" folder is selected, in order to create a new tile category.  It also appears when you edit an existing category by selecting the "Edit" command when an individual category is selected, or double-click on a category name. It allows you to provide a name for a single category object that can encompass tiles from any number of tilesets (that's why it has been split from the main Tile Category Editor window).</p>
-
-  <h3>Name</h3>
-
-  <p class="SubPara">Give the tile category a name unique among all tile category names in the project.  Names must begin with a letter and may contain letters, spaces and digits.</p>
-
-  <h3>Edit Category Tiles</h3>
-
-  <p class="SubPara">This box provides a shortcut to add tiles to the category.  Select a tileset from the dropdown list and click "Edit..." to add tiles from the specified tileset to this category.  If there are already tiles from the specified tileset in this category, you will be editing an existing set of tiles.  Otherwise a new sub-grouping of tiles will be added to the category to contain the tiles from the newly specified tileset.  Alternatively, you can right-click on the tile category in the "Tile Categories" folder and select "New" to add tiles from a new tileset to the category, or double-click on an existing tileset name under the category to alter which tiles in the specified tileset are in the category.</p>
-
-  <h2>Add Tileset</h2>
-
-  <p>This window appears if you select the "New" command when an individual tileset is selected.  It prompts you to specify the name of a tileset whose tiles can be added to the category.</p>
-
-  <p>If you specify the name of a tileset that already has tiles in this category, you will be notified and taken to an editor to edit the already existing memberships for tiles in this category for that tileset.</p>
-
-  <h2>Tile Category Editor</h2>
-
-  <p>This window allows you to define which tiles from an individual tileset are in this category.</p>
-
-  <h3>Name</h3>
-
-  <p class="SubPara">Displays the name of the category being edited (for reference purposes only)</p>
-
-  <h3>Tileset</h3>
-
-  <p class="SubPara">Displays the name of the tileset whose tiles are being displayed for membership in this category (for reference purposes only)</p>
-
-  <h3>Tiles Available in Tileset</h3>
-
-  <p class="SubPara">Displays all the tiles in the tileset.  To add a tile to the category, drag it from this box into the bottom box, or select a tile and then select "Add to category" from the Tiles menu.</p>
-
-  <h3>Include only some frames from the selected tile</h3>
-
-  <p class="SubPara">If you select an animated tile, this checkbox will be enabled.  If you check the box, a new panel of tiles containing the selected tile's frames will appear in the middle.  You can then drag frames from this middle pane into the bottom pane to add selected frames to the category.  Alternatively, you can select the frames and select "Add to category" from the Tiles menu.  This is useful if you want the tile to behave differently on different frames.  For example, if you want a tile to animate from visible to invisible, you can add just the visible frames to the solid category.  Then the tile will only be solid when it's displaying its visible frame.  Keep in mind that if you later add more frames to the tile, you may have to re-visit this category to define what to do with the new frames.  By default, they will not be added to the category.  However, if you add a tile to a category without checking this box, than all frames in this tile will always by in the category.</p>
-
-  <h3>Tiles in Category</h3>
-
-  <p class="SubPara">This displays all the tiles currently in the category.  If individual frames of some tiles were added to the category, they will be displayed as independent frames.  To remove a tile or frame from the category, drag it from this pane to the "Tiles Available in Tileset" pane, or select it and then select "Remove from category" from the Tiles menu.</p>
-
-  <h3>Tile Index</h3>
-
-  <p class="SubPara">In the status bar you can see details about the currently selected tile or frame. When you select a tile from the top pane, the tile index of that tile appears here. When you select a tile from the bottom pane, the tile index of the member tile appears here. When you select a tile from the "Include only some frames from the selected tile" pane, the tile containing the selected frame appears here.</p>
-
-  <h3>Frame Index</h3>
-
-  <p class="SubPara">If you have selected a frame in the "Include only some frames from the selected tile" pane, or if the item selected in the bottom pane is a frame rather than an entire tile, this will display the frame number of the selected frame.  This is how you can tell whether a particular member of a category represents a frame versus a tile.  If the selected item in the bottom pane is a tile, this will display "Any" indicating that this tile is a member of the category when it's displaying any of its frames rather than only a particular frame.</p>
-</body>
+   <head>
+      <title>Scrolling Game Development Kit 2 - Tile Categories</title>
+      <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5" />
+      <link href="SGDK2Help.css" type="text/css" rel="stylesheet" />
+   </head>
+   <body>
+      <h1>Tile Categories</h1>
+      <p>In order to treat groups of tiles using a common set of rules, they can be 
+         grouped into categories. Tile categories are used to define the solid shapes of 
+         tiles as well as allow groups of tile types to interact with sprites.</p>
+      <p>A tile category may contain tiles from multiple tilesets. This is why you will 
+         see a sub-grouping under Tile Categories that lists tileset names. Doing this 
+         allows a sprite definition to define rules based on a tile category, and the 
+         same rule can apply whether the sprite is on a layer using one tileset or 
+         another tileset.</p>
+      <p>There are a number of approaches to editing different components of the tile 
+         category.</p>
+      <h2>Tile Category Name Editor</h2>
+      <p>This window appears when you create a new tile category by selecting the "New" 
+         command when the "Tile Categories" folder is selected, in order to create a new 
+         tile category. It also appears when you edit an existing category by selecting 
+         the "Edit" command when an individual category is selected, or double-click on 
+         a category name. It allows you to provide a name for a single category object 
+         that can encompass tiles from any number of tilesets (that's why it has been 
+         split from the main Tile Category Editor window).</p>
+      <h3>Name</h3>
+      <p class="SubPara">Give the tile category a name unique among all tile category 
+         names in the project. Names must begin with a letter and may contain letters, 
+         spaces and digits.</p>
+      <h3>Edit Category Tiles</h3>
+      <p class="SubPara">This box provides a shortcut to add tiles to the category. 
+         Select a tileset from the dropdown list and click "Edit..." to add tiles from 
+         the specified tileset to this category. If there are already tiles from the 
+         specified tileset in this category, you will be editing an existing set of 
+         tiles. Otherwise a new sub-grouping of tiles will be added to the category to 
+         contain the tiles from the newly specified tileset. Alternatively, you can 
+         right-click on the tile category in the "Tile Categories" folder and select 
+         "New" to add tiles from a new tileset to the category, or double-click on an 
+         existing tileset name under the category to alter which tiles in the specified 
+         tileset are in the category.</p>
+      <h2>Add Tileset</h2>
+      <p>This window appears if you select the "New" command when an individual tileset 
+         is selected. It prompts you to specify the name of a tileset whose tiles can be 
+         added to the category.</p>
+      <p>If you specify the name of a tileset that already has tiles in this category, 
+         you will be notified and taken to an editor to edit the already existing 
+         memberships for tiles in this category for that tileset.</p>
+      <h2>Tile Category Editor</h2>
+      <p>This window allows you to define which tiles from an individual tileset are in 
+         this category.</p>
+      <h3>Name</h3>
+      <p class="SubPara">Displays the name of the category being edited (for reference 
+         purposes only)</p>
+      <h3>Tileset</h3>
+      <p class="SubPara">Displays the name of the tileset whose tiles are being 
+         displayed for membership in this category (for reference purposes only)</p>
+      <h3>Tiles Available in Tileset</h3>
+      <p class="SubPara">Displays all the tiles in the tileset. To add a tile to the 
+         category, drag it from this box into the bottom box, or select a tile and then 
+         select "Add to category" from the Tiles menu.</p>
+      <h3>Include only some frames from the selected tile</h3>
+      <p class="SubPara">If you select an animated tile, this checkbox will be enabled. 
+         If you check the box, a new panel of tiles containing the selected tile's 
+         frames will appear in the middle. You can then drag frames from this middle 
+         pane into the bottom pane to add selected frames to the category. 
+         Alternatively, you can select the frames and select "Add to category" from the 
+         Tiles menu. This is useful if you want the tile to behave differently on 
+         different frames. For example, if you want a tile to animate from visible to 
+         invisible, you can add just the visible frames to the solid category. Then the 
+         tile will only be solid when it's displaying its visible frame. Keep in mind 
+         that if you later add more frames to the tile, you may have to re-visit this 
+         category to define what to do with the new frames. By default, they will not be 
+         added to the category. However, if you add a tile to a category without 
+         checking this box, than all frames in this tile will always by in the category.</p>
+      <h3>Tiles in Category</h3>
+      <p class="SubPara">This displays all the tiles currently in the category. If 
+         individual frames of some tiles were added to the category, they will be 
+         displayed as independent frames. To remove a tile or frame from the category, 
+         drag it from this pane to the "Tiles Available in Tileset" pane, or select it 
+         and then select "Remove from category" from the Tiles menu.</p>
+      <h3>Tile Index</h3>
+      <p class="SubPara">In the status bar you can see details about the currently 
+         selected tile or frame. When you select a tile from the top pane, the tile 
+         index of that tile appears here. When you select a tile from the bottom pane, 
+         the tile index of the member tile appears here. When you select a tile from the 
+         "Include only some frames from the selected tile" pane, the tile containing the 
+         selected frame appears here.</p>
+      <h3>Frame Index</h3>
+      <p class="SubPara">If you have selected a frame in the "Include only some frames 
+         from the selected tile" pane, or if the item selected in the bottom pane is a 
+         frame rather than an entire tile, this will display the frame number of the 
+         selected frame. This is how you can tell whether a particular member of a 
+         category represents a frame versus a tile. If the selected item in the bottom 
+         pane is a tile, this will display "Any" indicating that this tile is a member 
+         of the category when it's displaying any of its frames rather than only a 
+         particular frame.</p>
+   </body>
 </html>

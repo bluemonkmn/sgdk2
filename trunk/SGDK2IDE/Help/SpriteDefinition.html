@@ -1,0 +1,249 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <title>Scrolling Game Development Kit 2 - Sprite Definition</title>
+      <meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR" />
+      <meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema" />
+      <LINK href="SGDK2Help.css" type="text/css" rel="stylesheet" />
+   </head>
+   <body>
+      <h1>Sprite Definition</h1>
+      <P>Sprite Definitions determine the basic kinds of moving elements that can exist 
+         in a game, and defines in detail how they behave under various circumstances 
+         throughout the entire game.</P>
+      <P>This window can be invoked to edit a new sprite definition by 
+         right-clicking on the Sprite Definitions folder and selecting "New", or by 
+         left-clicking on the folder and choosing "New Object" from the File menu.  
+         To edit an existing sprite definition, double-click the sprite definition 
+         beneath the Sprite Definitions folder, or select it and then choose 
+         "Properties" from teh View menu, or "Edit" from the context (right-mouse) menu.</P>
+      <P>Because sprite definitions consist of different components that have a 
+         significant deal of detail to explain, the description of sprite definitions is 
+         split up into 3 parts corresponding with the 3 tabs.  This page will 
+         explain sprite states. For more information about sprite parameters or 
+         sprite rules, see one of these pages:</P>
+      <UL>
+         <LI>
+            <H2><A href="SpriteParam.html">Sprite Parameters</A></H2>
+         <LI>
+            <H2><A href="SpriteRule.html">Sprite Rules</A></H2>
+         </LI>
+      </UL>
+      <H2>Introduction to Sprite States</H2>
+      <P>Sprite states define the various appearances and behaviors the sprite can 
+         have.  For example, if you have a sprite that can move left and right (and 
+         face in the appropriate direction while moving), it would make sense to have at 
+         least two states, one for moving left and one for moving right.  Each 
+         state could have its own animation. Jumping left and jumping right could be a 
+         good use for two additional states. The states are not inherently linked to 
+         distinct behaviors, but the rules can refer to the sprite's current state to 
+         determine how it will behave.</P>
+      <H2>Sprite Definition Menu</H2>
+      <P>The Sprite Definition menu contains a number of commands that specifically 
+         apply to sprite states.</P>
+      <H3>Add State</H3>
+      <P class="SubPara">Creates a new state within the current sprite definition, and 
+         assigns it a default name with a uniquely identifying number.</P>
+      <H3>Delete State</H3>
+      <P class="SubPara">Delete the state currently selected in the state list. <STRONG>Note:</STRONG>
+         Any sprite instances that are using the state being deleted will also be 
+         deleted!</P>
+      <H3>Move State Up</H3>
+      <P class="SubPara">Move the state upward in the list. This decreases the 
+         number assigned to the state, which may affect some rules that rely on the 
+         sequence of sprite states (especially those involving rotating sprites, 
+         which assume the states are all in order rotating counter-clockwise).</P>
+      <H3>Move State Down</H3>
+      <P class="SubPara">Move the state downward in the list. This increases the 
+         number assigned to the state, which may affect some rules that rely on the 
+         sequence of sprite states (especially those involving rotating sprites, 
+         which assume the states are all in order rotating counter-clockwise).</P>
+      <H3>Add Frame to State</H3>
+      <P class="SubPara">Append an animation frame to the end of the currently selected 
+         state. A frame must be selected in the "Available Frames" pane. The selected 
+         frame is added to the end of the state using the currently displayed Repeat 
+         Count and Mask Alpha Level.  If the repeat count of the previous frame is 
+         0, then the frame is not technically added as an animation frame but becomes 
+         part of the existing frame as a new "sub-frame" (see Repeat Count below for 
+         details).</P>
+      <H3>Remove Frame from State</H3>
+      <P class="SubPara">Remove the selected frames in the "Frames in Current State" 
+         pane from the currently selected state.</P>
+      <H3>Preview State Animation</H3>
+      <P class="SubPara">Display a small preview window that estimates how the sprite 
+         will appear and animate at runtime.  Because DirectX limits the number of 
+         displays that can be active at once, it is recommended that you keep the number 
+         of running preview windows to a minimum to avoid error messages.</P>
+      <H3>Export to template...</H3>
+      <P class="SubPara">If you are creating a sprite definition that you want to re-use 
+         in other projects or submit to a public SGDK2 sprite library, you can use this 
+         command to automaticlly pick out all the pieces related to this sprite 
+         definition and export them to a separate SGDK2 file.  This will prompt for 
+         text as it exports. This text is displayed in the Import Sprite wizard as the 
+         file description when the sprite template file is selected.  The credits 
+         that are inserted into the template file are taken from the current project's 
+         credits, so make sure thay are applicable to the sprite template being 
+         exported.</P>
+      <H3>Rotating Sprite State Wizard</H3>
+      <P class="SubPara">Rotating sprites can require many states, one for each 
+         angle which the sprite may aim. Manually creating these states and the 
+         associated frames would be tedious. This wizard walks through collecting some 
+         parameters and then automatically creates the frames and states for a rotating 
+         sprite, adding them to the current sprite.  The wizard can also be used to 
+         append frames to existing states in cases where the rotating states should have 
+         multiple frames.</P>
+      <H2>Toolbar</H2>
+      <P>A toolbar at the top of the box listing all the sprite states provides 
+         shortcuts to relavent operations for sprite states.  In order, the buttons 
+         correspond to the following menu items that are relevant to sprite states:</P>
+      <UL>
+         <LI>
+         Add State
+         <LI>
+         Delete State
+         <LI>
+         Move State Up
+         <LI>
+         Move State Down
+         <LI>
+            Preview State Animation</LI></UL>
+      <H2>State List</H2>
+      <P>The list on the left of the States tab displays all the states belonging to 
+         this sprite definition.  Selecting a state will display its properties and 
+         frames for editing.</P>
+      <H2>State Properties</H2>
+      <P>The properties that apply to the state as a whole are displayed at the top of 
+         State tab to the right of the state list.</P>
+      <H3>State Name</H3>
+      <P class="SubPara">The name of a sprite state must be unique within the sprite 
+         definition. Other sprite definitions may re-use the same state names. Names 
+         must begin with a letter and contain only letters, digits and spaces.</P>
+      <H3>Frameset</H3>
+      <P class="SubPara">Each sprite state can refer to its own frameset. Only one 
+         frameset may be used per sprite state. The frames from the frameset selected 
+         here are displayed in the "Available Frames" panel at the bottom. If a 
+         state contains frames when changing the frameset, you will be prompted to 
+         delete the frames because the frame numbers referred to by the state 
+         likely do not apply for a different frameset. You may choose not to delete the 
+         frames if you believe the new framesets frames are similar enough to be 
+         applicable to the existing frame index references.</P>
+      <H3>Width, Height</H3>
+      <P class="SubPara">This size in no way affects the appearance of the sprite 
+         state, but rather affects how it behaves. The width and height determine how 
+         much of this sprite state is treated as "solid".  These properties are 
+         used to define a rectangle that extends rightward and downward from the current 
+         frame's origin. The origin is the coordinate where the axes meet in the Frame 
+         Editor tab of the <A href="Frameset.html">frameset editor</A>, usually the top 
+         left corner of the image. Each state can have its own size.  For example, 
+         a crouching state might be shorter than a standing state. In cases where sprite 
+         states are different sizes, the rule functions that are provided for switching 
+         between states will disallow switching to a state if it's new size would cause 
+         it to penetrate a solid tile.</P>
+      <H2>Frames</H2>
+      <P>Below the state properties is a list of the individual frames contained in the 
+         current state. These frames are generally used to provide an animation sequence 
+         for the state, but can also be used to form "composite frames" in which 
+         multiple frames overlap. The frame that is displayed is determined by a 
+         property if the sprite called "frame" which determines the index of the 
+         currently active frame.  So it doesn't necessarily need to be used to 
+         constantly animate the sprite state either. To add frames to the state, drag 
+         them from the "Available Frames" panel at the bottom, or select a frame in that 
+         panel and choose "Add Frame To State" (or press Ctrl+I) to append the selected 
+         frame(s) to the state. You can also add frames by duplicating 
+         existing frames in the state. To duplicate a frame, hold the Ctrl key 
+         while dragging a frame to the position in the sequence where a duplicate should 
+         be added.  Dragging a frame to a new location without holding Ctrl will 
+         change the sequence of the frames (removing the frame from its old position and 
+         inserting it into the new position).</P>
+      <P>Below the frame list are two properties that apply specifically to each frame:</P>
+      <H3>Repeat Count</H3>
+      <P class="SubPara">When animating a sprite state, it's likely that you won't want 
+         to flip through the frames at top speed.  Use the repeat count setting to 
+         determine how long the selected frame(s) are displayed (how many times they are 
+         implicitly repeated before moving to the next frame in the animation 
+         sequence).  If the repeat count is 0, the frame is merged with the next 
+         frame. A series of frames that have a repeat count of 0 will draw the first 
+         frame in the back, and draw each subsequent frame in front of the 
+         previous until a frame with a non-zero repeat count is reached. Assigning a 
+         repeat count of 0 to the last frame is invalid, and will be implicitly assumed 
+         to be 1.</P>
+      <H3>Mask Alpha Level</H3>
+      <P class="SubPara">This setting determines the shape of the frame for use in 
+         detecting collisions with other sprites.  The "shape" of a frame is based 
+         on its opaque pixels. Because the frames can have up to 255 levels of 
+         transparency, you can use this setting to determine at which level 
+         pixels are considered opaque versus transparent. A value of 1, for example, 
+         will consider any pixel that is the slightest bit opaque to be solid. A 
+         value of 255 will cause the sprite to be entirely empty as far as 
+         collisions are concerned. A value of 0 will cause the sprite to assume a 
+         rectangular shape that matches its "solid size" defined by the width and height 
+         above.</P>
+      <P class="SubPara">A mask level of 0 is recommended for sprites that don't really 
+         need fine-tuned collision detection based on pixels. There are two reasons for 
+         this: 1) creating collision masks can take a significant amount of time during 
+         the map's loading sequence (if there are many large sprites with lots of frames 
+         that need masks) but no collision mask is needed for sprites that use a Mask 
+         Alpha Level of 0; 2) Detecting collisions between two sprites that have a 
+         Mask Alpha Level of 0 is very simple and may improve performance if there are 
+         many large collision tests required.</P>
+      <P class="SubPara">Rather than directly entering the value into the field, you 
+         must use the button to display the editor to set the value. The editor for this 
+         field will show the sprite and show distinctions between the solid pixels and 
+         the empty pixels based on the current setting as it is changed.  There are 
+         a number of options for how to display the solidity as this value is adjusted:</P>
+      <P class="SubPara">
+         <TABLE id="Table1" cellSpacing="1" cellPadding="1" border="1">
+            <TR>
+               <TD>Solid Black on Image</TD>
+               <TD>Pixels from the sprite that are considered solid for the purposes of collision 
+                  detection with other sprites are drawn as black. The remainder of the non-solid 
+                  pixels are drawn unaltered against a diagonal mesh background. Use this 
+                  setting to clearly see the areas of a light sprite that are visible, 
+                  but not solid.</TD>
+            </TR>
+            <TR>
+               <TD>Solid White on Image</TD>
+               <TD>Pixels from the sprite that are considered solid are drawn as white. The 
+                  remainder of the non-solid pixels are drawn unaltered against a diagonal 
+                  mesh background. Use this setting to clearly see the areas of a dark sprite 
+                  that are visible, but not solid.</TD>
+            </TR>
+            <TR>
+               <TD>Solid Image on Black</TD>
+               <TD>Pixels from the sprite that are considered solid are drawn as they originally 
+                  appear in the sprite (against a diagonal mesh background, which may be visible 
+                  if some solid pixels are partially transparent). The non-solid areas are 
+                  covered in black. Use this setting to clearly see the part of a light sprite 
+                  that will collide with other sprites.</TD>
+            </TR>
+            <TR>
+               <TD>Solid Image on White</TD>
+               <TD>Pixels from the sprite that are considered solid are drawn as they originally 
+                  appear in the sprite. The non-solid areas are covered in white. Use this 
+                  setting to clearly see the part of a dark sprite that will collide with 
+                  other sprites.</TD>
+            </TR>
+            <TR>
+               <TD>Solid Black on White</TD>
+               <TD>Pixels from the sprite that are considered solid are drawn in black. Non-solid 
+                  pixels are drawn in white. Use this setting to clearly contrast the solid areas 
+                  of the sprite from the non-solid areas regardless of the colors used in the 
+                  sprite.</TD>
+            </TR>
+            <TR>
+               <TD>Solid White on Black</TD>
+               <TD>Pixels from the sprite that are considered solid are drawn in white. Non-solid 
+                  pixels are drawn in black. Use this setting to clearly contrast the solid areas 
+                  of the sprite from the non-solid areas regardless of the colors used in the 
+                  sprite.</TD>
+            </TR>
+         </TABLE>
+      </P>
+      <P class="SubPara">Note that if you set the alpha mask level to 0, the collision 
+         rectangle can actually be smaller than the visible area of the sprite (smaller 
+         than it would be if the mask level were 1) because the solidity rectangle can 
+         be smaller than the visible area of the sprite.  This is reflected in the 
+         solidity preview when the level is 0.</P>
+   </body>
+</html>

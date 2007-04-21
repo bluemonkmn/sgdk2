@@ -278,7 +278,6 @@ namespace SGDK2
          this.rdoVariableSize.TabIndex = 7;
          this.rdoVariableSize.TabStop = true;
          this.rdoVariableSize.Text = "Variable size based on cell size and rotation";
-         this.rdoVariableSize.CheckedChanged += new System.EventHandler(this.SizingStyle_CheckedChanged);
          // 
          // lblSizingStyleNote
          // 
@@ -297,7 +296,6 @@ namespace SGDK2
          this.rdoFixedSize.Size = new System.Drawing.Size(264, 16);
          this.rdoFixedSize.TabIndex = 1;
          this.rdoFixedSize.Text = "Use a fixed size for all states";
-         this.rdoFixedSize.CheckedChanged += new System.EventHandler(this.SizingStyle_CheckedChanged);
          // 
          // lblSizingStyleHeader
          // 
@@ -665,15 +663,6 @@ namespace SGDK2
 
       }
       #endregion
-
-      private void SizingStyle_CheckedChanged(object sender, System.EventArgs e)
-      {
-         if (((RadioButton)sender).Checked)
-         {
-            lblSizingWidth.Enabled = nudSizingWidth.Enabled =
-               lblSizingHeight.Enabled = nudSizingHeight.Enabled = (sender == rdoFixedSize);
-         }
-      }
 
       private void cboGraphicSheet_SelectedIndexChanged(object sender, System.EventArgs e)
       {

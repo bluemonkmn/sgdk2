@@ -1568,6 +1568,15 @@ namespace SGDK2
                CodeGenerator.NameToVariable(drState.Name));
       }
 
+      private void FillComboWithSpriteDefinitions(ComboBox cboTarget)
+      {
+         foreach(System.Data.DataRowView drv in ProjectData.SpriteDefinition.DefaultView)
+         {
+            ProjectDataset.SpriteDefinitionRow drSpriteDef = (ProjectDataset.SpriteDefinitionRow)drv.Row;
+            cboTarget.Items.Add("typeof(Sprites." + CodeGenerator.NameToVariable(drSpriteDef.Name) + ")");
+         }
+      }
+
       private void FillComboWithMapTypes(ComboBox cboTarget)
       {
          foreach(DataRowView drv in ProjectData.Map.DefaultView)
@@ -1658,6 +1667,9 @@ namespace SGDK2
                      break;
                   case "CustomObject":
                      FillComboWithCustomObjects(cboParameter, param);
+                     break;
+                  case "SpriteDefinition":
+                     FillComboWithSpriteDefinitions(cboParameter);
                      break;
                }
             }

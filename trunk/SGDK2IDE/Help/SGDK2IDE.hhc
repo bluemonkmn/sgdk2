@@ -24,5 +24,13 @@
 		<param name="Name" value="Frameset Editor">
 		<param name="Local" value="Frameset.html">
 		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Tileset Editor">
+		<param name="Local" value="TileEdit.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Tile Categories">
+		<param name="Local" value="TileCategories.html">
+		</OBJECT>
 </UL>
 </BODY></HTML>

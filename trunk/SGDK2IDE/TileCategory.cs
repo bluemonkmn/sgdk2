@@ -152,6 +152,9 @@ namespace SGDK2
          txtName.Text = row.Name;
          txtTileset.Text = row.Tileset;
          InitializeTiles();
+
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"TileCategories.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
       /// <summary>

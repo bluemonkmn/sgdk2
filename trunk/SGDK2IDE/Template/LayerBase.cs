@@ -68,15 +68,18 @@ public abstract class LayerBase : System.Collections.IEnumerable
    private readonly int m_nVirtualColumns;
    private readonly int m_nVirtualRows;
    private System.Drawing.Point m_AbsolutePosition;
-   protected SpriteCollection m_Sprites;
+   public SpriteCollection m_Sprites;
    private readonly System.Drawing.SizeF m_ScrollRate;
    private System.Drawing.Point[] m_CurrentPosition = new System.Drawing.Point[Project.MaxViews];
    private MapBase m_ParentMap;
    public LayerSpriteCategoriesBase m_SpriteCategories;
+   protected readonly int m_nInjectStartIndex;
+   protected readonly int m_nAppendStartIndex;
    #endregion
 
    protected LayerBase(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer, int nBottomBuffer,
-      int nColumns, int nRows, int nVirtualColumns, int nVirtualRows, System.Drawing.Point Position, System.Drawing.SizeF ScrollRate)
+      int nColumns, int nRows, int nVirtualColumns, int nVirtualRows, System.Drawing.Point Position,
+      System.Drawing.SizeF ScrollRate, int nInjectStartIndex, int nAppendStartIndex)
    {
       this.m_ParentMap = Parent;
       this.m_Tileset = Tileset;
@@ -98,6 +101,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
       this.m_AbsolutePosition = Position;
       this.m_ScrollRate = ScrollRate;
       this.Move(new Point(0,0));
+      this.m_nInjectStartIndex = nInjectStartIndex;
+      this.m_nAppendStartIndex = nAppendStartIndex;
    }
 
    #region Abstract Members
@@ -111,7 +116,6 @@ public abstract class LayerBase : System.Collections.IEnumerable
    }
    public abstract int[] GetTileFrame(int x, int y);
    public abstract TileBase GetTile(int x, int y);
-   public abstract void InjectSprites();
    #endregion
 
    #region IEnumerable Members
@@ -394,6 +398,40 @@ public abstract class LayerBase : System.Collections.IEnumerable
    {
       if (m_InjectedFrames != null)
          m_InjectedFrames.Clear();
+   }
+
+   public void InjectSprites()
+   {
+      for (int i = 0; (i < m_nInjectStartIndex) && (i < m_Sprites.Count); i++)
+      {
+         SpriteBase sprite = m_Sprites[i];
+         if (IsSpriteVisible(sprite))
+            AppendFrames(sprite.PixelX, sprite.PixelY, sprite.GetCurrentFramesetFrames(), sprite.color, -1);
+      }
+      for (int i = m_nInjectStartIndex; (i < m_nAppendStartIndex) && (i < m_Sprites.Count); i++)
+      {
+         SpriteBase sprite = m_Sprites[i];
+         if (IsSpriteVisible(sprite))
+            InjectFrames(sprite.PixelX, sprite.PixelY, sprite.GetCurrentFramesetFrames(), sprite.color);
+      }
+      for (int i = m_nAppendStartIndex; (i < m_Sprites.Count); i++)
+      {
+         SpriteBase sprite = m_Sprites[i];
+         if (IsSpriteVisible(sprite))
+            AppendFrames(sprite.PixelX, sprite.PixelY, sprite.GetCurrentFramesetFrames(), sprite.color, 1);
+      }
+   }
+
+   public void ProcessSprites()
+   {
+      foreach(SpriteBase sprite in m_Sprites)
+         // Assuming it's more efficient to just set them all to false rather than
+         // try and only enumerate the active ones.
+         sprite.Processed = false;
+      for(int i=0; i < m_Sprites.Count; i++)
+         if (m_Sprites[i].isActive)
+            m_Sprites[i].ProcessRules();
+      m_Sprites.Clean();
    }
 
    public Point GetMousePosition()
@@ -816,9 +854,11 @@ public abstract class IntLayer : LayerBase
 
    public IntLayer(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
       int nBottomBuffer, int nColumns, int nRows, int nVirtualColumns, int nVirtualRows,
-      System.Drawing.Point Position, System.Drawing.SizeF ScrollRate, string Name) : 
+      System.Drawing.Point Position, System.Drawing.SizeF ScrollRate,
+      int nInjectStartIndex, int nAppendStartIndex, string Name) : 
       base(Tileset, Parent, nLeftBuffer, nTopBuffer, nRightBuffer,
-      nBottomBuffer, nColumns, nRows, nVirtualColumns, nVirtualRows, Position, ScrollRate)
+      nBottomBuffer, nColumns, nRows, nVirtualColumns, nVirtualRows, Position,
+      ScrollRate, nInjectStartIndex, nAppendStartIndex)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
       m_Tiles = (int[,])(resources.GetObject(Name));
@@ -854,9 +894,10 @@ public abstract class ShortLayer : LayerBase
 
    public ShortLayer(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
       int nBottomBuffer, int nColumns, int nRows, int nVirtualColumns, int nVirtualRows, System.Drawing.Point Position,
-      System.Drawing.SizeF ScrollRate, string Name) : 
+      System.Drawing.SizeF ScrollRate, int nInjectStartIndex, int nAppendStartIndex, string Name) : 
       base(Tileset, Parent, nLeftBuffer, nTopBuffer, nRightBuffer,
-      nBottomBuffer, nColumns, nRows, nVirtualColumns, nVirtualRows, Position, ScrollRate)
+      nBottomBuffer, nColumns, nRows, nVirtualColumns, nVirtualRows, Position,
+      ScrollRate, nInjectStartIndex, nAppendStartIndex)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
       m_Tiles = (short[,])(resources.GetObject(Name));
@@ -892,9 +933,10 @@ public abstract class ByteLayer : LayerBase
 
    public ByteLayer(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
       int nBottomBuffer, int nColumns, int nRows, int nVirtualColumns, int nVirtualRows, System.Drawing.Point Position,
-      System.Drawing.SizeF ScrollRate, string Name) : 
+      System.Drawing.SizeF ScrollRate, int nInjectStartIndex, int nAppendStartIndex, string Name) : 
       base(Tileset, Parent, nLeftBuffer, nTopBuffer, nRightBuffer,
-      nBottomBuffer, nColumns, nRows, nVirtualColumns, nVirtualRows, Position, ScrollRate)
+      nBottomBuffer, nColumns, nRows, nVirtualColumns, nVirtualRows, Position,
+      ScrollRate, nInjectStartIndex, nAppendStartIndex)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
       m_Tiles = (byte[,])(resources.GetObject(Name));

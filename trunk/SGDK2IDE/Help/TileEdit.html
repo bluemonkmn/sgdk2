@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Scrolling Game Development Kit 2 - Tileset Editor</title>
+  <meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1" />
+  <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5" />
+  <link href="SGDK2Help.css" type="text/css" rel="stylesheet" />
+</head>
+
+<body>
+  <h1>Tileset Editor</h1>
+
+  <p>A Tileset defines what can appear within a layer.  It maps numeric values stored in a layer to frames in a frameset, determining which numbers draw which graphics.  It can be used to define animated tiles as well as composite tiles -- tiles that draw multiple overlapping graphics in the same place.  In its simplest form, a tileset can just refer to a frameset and not define any tiles.  If you do this, then all the tiles in your tileset will be determined by the frames in the frameset.  This allows you to quickly and painlessly create whole tileset in a single shot without having to define individual tiles.  However, if you'd like to override the numbering or define some animations or composite tiles, you will want to learn in more detail about how to use the Tileset Editor</p>
+
+  <h2>Tileset Menu</h2>
+
+  <h3><a id="NewTile" name="NewTile">New Tile</a></h3>
+
+  <p class="SubPara">Creates a new tile definition.  You specify a number that you want to "define".  If you pick a number that is within the frameset, the new tile will contain the specified frameset frame by default.  If you pick a number beyond the range of the frameset's frames, it will be empty, so you can start with a blank slate to define your new tile.  For example, if your frameset has 8 frames (which would be numbered 0 through 7), and you enter "2" for your new tile index, you will get a default tile for number 2 that is based on frame 2.  That means tile 2 will look exactly as it did before you created this tile because when you don't specifically define what a tile index means, it will simply draw the frame (frame 2 in this case).  So the idea is that after you create a tile, you customize it in some way by adding frames or assigning a different frame.  If you specify 9 as your new tile index, you will get a completely empty tile.  You'll probably want to add some frames to it.  Note that after you add tile 9, the map editor will "fill in" the tiles between the end of the frameset and the last specified tile.  So in this case, after you create tile 9, you'll get the usual 8 tiles (0 through 7) listed in the map editor as your available tiles, <strong>followed</strong> by two more tiles.  Tile number 8 will be a repeat of tile number 0 (the tiles just wrap if you haven't overridden them) and tile number 9 will be whatever you defined for tile 9.</p>
+
+  <h3><a id="DeleteTile" name="DeleteTile"></a>Delete/Reset Tile</h3>
+
+  <p class="SubPara">This deletes a tile definition, effectively re-setting the selected tile index to behave as it did before you added it (it will map to the frameset frame with the same index).</p>
+
+  <h3>Delete Selected Frames</h3>
+
+  <p class="SubPara">Remove the selected frames from the current tile definition. <strong>Note:</strong> you can remove ALL frames from a tile, which will cause it to not draw any graphics when encountering the specified tile index.  This is recommended for blank tiles rather than using a tile that maps to a frame using an empty graphic cell because then the system doesn't even have to consider drawing any graphics at that tile's position, which is easier than drawing empty space.  Keep in mind, however, that if you don't draw anything on any layer at a particular position in a map, the graphics will never be erased so you may get undesired behavior.  For any particular location on a map there should generally be at least one opaque tile at that position on some layer.  But all the layers in front are free to use transparent tiles or completely empty tiles (with no frames).</p>
+
+  <h3>Add Selected Frames to Tile</h3>
+
+  <p class="SubPara">To add frames to a tile (which will either add to the tile's animation or add frames to the tile's composite image, depending on the <a href="#RepeatCount">Repeat Count</a>) you can either drag tiles from the Available Frames at the bottom into the Tile Properties frame, or you can select the frames in the Available Frames pane, and then select this command from the menu or with "Ctrl+A".</p>
+
+  <h3><a id="PreviewAnimation" name="PreviewAnimation"></a>Preview Tile Animation</h3>
+
+  <p class="SubPara">Displays a small window with a running preview of the animation for the current tile.  The speed may be adjusted to see how it will appear at various FPS speeds.  Changing this FPS speed only affects the preview.  The number of preview windows you can view at once may be limited by DirectX, so it's recommended that you close unneeded preview windows to avoid errors and unnecessary overhead.  If your tile fails to animate, make sure you remembered to link it to a counter by setting the Frame Counter.</p>
+
+  <h2>Tileset Properties</h2>
+
+  <p>The top portion of the window contains properties that apply to the entire tileset as a whole.</p>
+
+  <h3>Tileset Name</h3>
+
+  <p class="SubPara">Names must start with a letter and contain only letters, digits, and spaces. The tileset name must be unique among all other tileset names within the project.</p>
+
+  <h3>Frameset</h3>
+
+  <p class="SubPara">This determines which frameset's frames will be used for this tileset. Only one frameset can be used per tileset, but any number of tilesets can refer to the same frameset. The selection in this field determines which frames are displayed in the "Available Frames" pane.  Changing this value will prompt you to reset all frames in teh frameset because it's unlikely that frame indexes in one frameset are applicable to those in another.  You may choose not to reset the tile definitions if, for example, you have to very similar framesets.  But even if you choose not to reset the frames, some will be affected if they refer to frame indexes that are out of range for the new frameset selection.</p>
+
+  <h3><a id="MappedTiles" name="MappedTiles">Mapped Tiles</a></h3>
+
+  <p class="SubPara">This is a dropdown list that displays all the tiles that have been specifically defined for this tileset.  Any tiles not in this list will simply "default through" to the frameset frame with the same index.  The currently selected number here determines which tile in the frameset you are currently working on, and whose frames are displayed in the "Tile Properties" frame.  The buttons next to this field correspond to the "<a href="#NewTile">New Tile</a>", "<a href="#DeleteTile">Delete/Reset Tile</a>" and "<a href="#PreviewAnimation">Preview Tile Animation</a>" menu commands.</p>
+
+  <h3>Tile Width, Tile Height</h3>
+
+  <p class="SubPara">These determine the spacing between tiles of this tileset when drawn on a layer.  Note that changing these after the tiles are already being used in a layer may result in unexpected side effects as a result of the overall layer size changing.  Using these properties you can define a tileset whose tiles overlap.  Tiles are always drawn in order from top left to bottom right, row by row.  So each roe of tiles will be drawn in front of the row above it and behind the row below it.  If tiles overlap horizontally, the tiles on the right will overlap the tiles on the left.</p>
+
+  <h2>Tile Properties</h2>
+
+  <p>The contents of the "Tile Properties" frame shows properties that can be set differently for each tile within the tileset.  The displayed properties apply to the tile currently selected in the "<a href="#MappedTiles">Mapped Tiles</a>" dropdown list.</p>
+
+  <h3><a id="FrameCounter" name="FrameCounter">Frame Counter</a></h3>
+
+  <p class="SubPara">Here you can select a counter that was defined in the <a href="EditCounters.html">Edit Counters</a> window.  This is required in order to allow a tile with multiple frames to display any frame after the first frame (unless the frames are all composited to display at once).  The counter specified here will be used to determine which frame this tile is currently displaying.  In most cases, you will probably define some counter that always increments by one for each frame in the game, and link all your animated tiles to that counter, however, you can also link this to a counter that only changes at certain times.  For example, you could create a tileset that has daytime images in the first frame and nighttime images in the second frame of each tile.  Then you could increment the counter by 1 to toggle between daytime and nighttime.  Or you could create tiles that show a faint outline of a solid block, but which arent solid on teh first frame.  Then you could define a solid second frame, and when the player hits a particular switch block, the counter is incremented and all the tiles become solid.</p>
+
+  <p class="SubPara">When specifying a maximum value for a counter linked to a tile, consider the number of frames and repeat count in the tile.  Ideally, you want the maximum counter value to be one less than a multiple of the sum of the <a href="#RepeatCount">Repeat Counts</a> for the frames in this tile in order to allow the animation to loop smoothly when the counter resets.  A nice high counter value with lots of factors should help to ensure that the many tiles that may be referencing the counter will loop smoothly.  The value 446,185,740 has factors of all the prime numbers through 23 and is divisible by 2 twice, and is also large enough that the player will almost certainly never see the counter loop (the counter would not loop for over a month at 60 FPS, and even most RPG games' total play times don't last more than 80 hours).</p>
+
+  <h3>Frames</h3>
+
+  <p class="SubPara">Below the Frame Counter is a pane displaying all the frames in the current tile.  You can drag frames within this pane to re-arrange the sequence of frames in the tile, or you can drag frames from the Available Frames pane to add new frames from the tileset's associated frameset.  If you hold the Ctrl key while dragging a frame, the frame will be copied to the drop location instead of moved.  In order to remove a frame from the tile, select it and press the Delete key or select "Delete Selected Frames" from the Tileset menu.</p>
+
+  <h2>Frame Properties</h2>
+
+  <p>The "Frame Properties" frame below the frames panel shows properties of the currently selected frame.  These properties may be set independently for each frame, and may be set for multiple frames at once by selecting multiple frames in the Frames list using the Ctrl or Shift key while making a selection.</p>
+
+  <h3><a id="RepeatCount" name="RepeatCount">Repeat Count</a></h3>
+
+  <p class="SubPara">Each frame within a tile may be displayed for any period of time before displaying switching to the next frame, or it may be merged with the next frame.  The repeat count determines how many counter increments the current frame waits before drawing the next frame.  If the repeat count is 0, then this frame is merged with the next frame (the next frame will be drawn in front of this frame).  Using a repeat count of 0 on the last frame is not supported. The last frame is treated to have a repeat count of 1 if it is set to 0.  To visualize the meaning of the repeat count, consider the following example.  There are 3 frames.  The first frame has a repeat count of 1, the second 2, and the third 1.  When the counter linked to this tile has a value of 0, the first frame will be displayed.  When the counter has a value of 1 or 2, the second frame will be displayed.  When the counter has a value of 3, the third frame will be displayed.  When the counter has a value of 4, the first frame will be displayed again, and the cycle continues.</p>
+
+  <h2>Available Frames</h2>
+
+  <p>At the bottom of the Tileset Editor is a frame labeled "Available Frames", which displays the frames from the frameset that is linked to this tileset.  The purpose of this frame is to allow you to select frames to add to tile definitions.  You can either drag frames from this frame into the Tile Properties' frames pane and drop them at a particular location within the tile, or select one or more frames and press Ctrl+A (or select Add Selected Frames to Tile from the Tileset menu) to append the selected frames to the end of the current tile.</p>
+</body>
+</html>

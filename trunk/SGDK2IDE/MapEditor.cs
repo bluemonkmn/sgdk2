@@ -185,6 +185,7 @@ namespace SGDK2
          this.mnuEdit = new System.Windows.Forms.MenuItem();
          this.mnuEditDelete = new System.Windows.Forms.MenuItem();
          this.mnuSnapToTiles = new System.Windows.Forms.MenuItem();
+         this.mnuAddPlan = new System.Windows.Forms.MenuItem();
          this.mnuEditDetails = new System.Windows.Forms.MenuItem();
          this.mnuLocateCoordinate = new System.Windows.Forms.MenuItem();
          this.mnuSortPlans = new System.Windows.Forms.MenuItem();
@@ -236,7 +237,6 @@ namespace SGDK2
          this.sbpPixelCoord = new System.Windows.Forms.StatusBarPanel();
          this.sbpTileAtCursor = new System.Windows.Forms.StatusBarPanel();
          this.sbpSelTile = new System.Windows.Forms.StatusBarPanel();
-         this.mnuAddPlan = new System.Windows.Forms.MenuItem();
          this.tabSelector.SuspendLayout();
          this.tabTiles.SuspendLayout();
          this.pnlTiles.SuspendLayout();
@@ -309,6 +309,13 @@ namespace SGDK2
          this.mnuSnapToTiles.Shortcut = System.Windows.Forms.Shortcut.CtrlT;
          this.mnuSnapToTiles.Text = "&Snap to Tiles";
          this.mnuSnapToTiles.Click += new System.EventHandler(this.mnuSnapToTiles_Click);
+         // 
+         // mnuAddPlan
+         // 
+         this.mnuAddPlan.Index = 2;
+         this.mnuAddPlan.Shortcut = System.Windows.Forms.Shortcut.CtrlA;
+         this.mnuAddPlan.Text = "&Add Plan";
+         this.mnuAddPlan.Click += new System.EventHandler(this.mnuAddPlan_Click);
          // 
          // mnuEditDetails
          // 
@@ -584,10 +591,10 @@ namespace SGDK2
          this.lstPlans.DisplayMember = "Name";
          this.lstPlans.Dock = System.Windows.Forms.DockStyle.Fill;
          this.lstPlans.IntegralHeight = false;
-         this.lstPlans.Location = new System.Drawing.Point(3, 56);
+         this.lstPlans.Location = new System.Drawing.Point(3, 41);
          this.lstPlans.Name = "lstPlans";
          this.lstPlans.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-         this.lstPlans.Size = new System.Drawing.Size(162, 106);
+         this.lstPlans.Size = new System.Drawing.Size(162, 121);
          this.lstPlans.TabIndex = 0;
          this.lstPlans.Leave += new System.EventHandler(this.lstPlans_Leave);
          this.lstPlans.Enter += new System.EventHandler(this.lstPlans_Enter);
@@ -629,7 +636,7 @@ namespace SGDK2
          this.tbPlans.Location = new System.Drawing.Point(3, 16);
          this.tbPlans.Name = "tbPlans";
          this.tbPlans.ShowToolTips = true;
-         this.tbPlans.Size = new System.Drawing.Size(162, 40);
+         this.tbPlans.Size = new System.Drawing.Size(162, 25);
          this.tbPlans.TabIndex = 16;
          this.tbPlans.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tbPlans_ButtonClick);
          // 
@@ -728,7 +735,6 @@ namespace SGDK2
          // 
          this.grdPlan.CommandsVisibleIfAvailable = true;
          this.grdPlan.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.grdPlan.HelpVisible = false;
          this.grdPlan.LargeButtons = false;
          this.grdPlan.LineColor = System.Drawing.SystemColors.ScrollBar;
          this.grdPlan.Location = new System.Drawing.Point(0, 327);
@@ -836,13 +842,6 @@ namespace SGDK2
          // 
          this.sbpSelTile.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
          this.sbpSelTile.Width = 10;
-         // 
-         // mnuAddPlan
-         // 
-         this.mnuAddPlan.Index = 2;
-         this.mnuAddPlan.Shortcut = System.Windows.Forms.Shortcut.CtrlA;
-         this.mnuAddPlan.Text = "&Add Plan";
-         this.mnuAddPlan.Click += new System.EventHandler(this.mnuAddPlan_Click);
          // 
          // frmMapEditor
          // 

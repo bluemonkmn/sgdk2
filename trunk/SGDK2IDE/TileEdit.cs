@@ -65,6 +65,7 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuAddFrames;
       private System.Windows.Forms.ContextMenu mnuFramesetContext;
       private System.Windows.Forms.MenuItem mnuCAddFrames;
+      private System.Windows.Forms.MenuItem mnuPreviewAnimation;
       private DataChangeNotifier dataMonitor;
       #endregion
 
@@ -102,6 +103,9 @@ namespace SGDK2
          nudTileHeight.Value = m_Tileset.TileHeight;
          FillFramesets();
          FillCounters();
+
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"TileEdit.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
       public frmTileEdit(ProjectDataset.TilesetRow drTileset)
@@ -193,6 +197,7 @@ namespace SGDK2
          this.sbpFrameIndex = new System.Windows.Forms.StatusBarPanel();
          this.sbpCellIndex = new System.Windows.Forms.StatusBarPanel();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
+         this.mnuPreviewAnimation = new System.Windows.Forms.MenuItem();
          this.pnlTileHeader.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.nudTileHeight)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.nudTileWidth)).BeginInit();
@@ -416,7 +421,8 @@ namespace SGDK2
                                                                                   this.mnuInsertNewTile,
                                                                                   this.mnuDeleteTile,
                                                                                   this.mnuDeleteFrames,
-                                                                                  this.mnuAddFrames});
+                                                                                  this.mnuAddFrames,
+                                                                                  this.mnuPreviewAnimation});
          this.mnuInsert.MergeOrder = 2;
          this.mnuInsert.Text = "&Tileset";
          // 
@@ -678,6 +684,12 @@ namespace SGDK2
          this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
          this.dataMonitor.CounterRowChanged += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowChanged);
          // 
+         // mnuPreviewAnimation
+         // 
+         this.mnuPreviewAnimation.Index = 4;
+         this.mnuPreviewAnimation.Text = "&Preview Tile Animation";
+         this.mnuPreviewAnimation.Click += new System.EventHandler(this.mnuPreviewAnimation_Click);
+         // 
          // frmTileEdit
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -881,6 +893,7 @@ namespace SGDK2
                   cboMappedTiles.Items.Clear();
                   break;
                case DialogResult.Cancel:
+                  cboFrameset.SelectedItem = m_Tileset.FramesetRow;
                   return;
             }
          }
@@ -1221,6 +1234,21 @@ namespace SGDK2
       private void mnuDeleteFrames_Click(object sender, System.EventArgs e)
       {
          DeleteSelectedFrames();
+      }
+
+      private void mnuPreviewAnimation_Click(object sender, System.EventArgs e)
+      {
+         try
+         {
+            frmAnimPreview frm = new frmAnimPreview(GetCurrentTile());
+            frm.Owner = this;
+            frm.Show();
+         }
+         catch (System.Exception ex)
+         {
+            MessageBox.Show(this, ex.Message, "Preview Animation", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            ProjectData.RejectChanges();
+         }
       }
       #endregion
 

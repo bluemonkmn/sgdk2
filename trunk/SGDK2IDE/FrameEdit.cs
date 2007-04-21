@@ -569,6 +569,7 @@ namespace SGDK2
          // 
          this.FrameProperties.CommandsVisibleIfAvailable = true;
          this.FrameProperties.Dock = System.Windows.Forms.DockStyle.Bottom;
+         this.FrameProperties.HelpVisible = false;
          this.FrameProperties.LargeButtons = false;
          this.FrameProperties.LineColor = System.Drawing.SystemColors.ScrollBar;
          this.FrameProperties.Location = new System.Drawing.Point(0, 247);

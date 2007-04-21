@@ -1160,8 +1160,8 @@ namespace SGDK2
                   if (rowText[startDiff] != rtfCodeText[startDiff])
                      break;
                }
-               for (endDiffRow=rowText.Length, endDiffRtf=rtfCodeText.Length;
-                    (--endDiffRow > startDiff) && (--endDiffRtf > startDiff);)
+               for (endDiffRow=rowText.Length-1, endDiffRtf=rtfCodeText.Length-1;
+                    (endDiffRow >= startDiff) && (endDiffRtf >= startDiff); endDiffRow--, endDiffRtf--)
                {
                   if (rowText[endDiffRow] != rtfCodeText[endDiffRtf])
                   {
@@ -1169,6 +1169,11 @@ namespace SGDK2
                      endDiffRtf++;
                      break;
                   }
+               }
+               if ((endDiffRow < startDiff) || (endDiffRtf < startDiff))
+               {
+                  endDiffRow++;
+                  endDiffRtf++;
                }
                undo.scrollPos = scrollPos;
                undo.changeStart = startDiff;

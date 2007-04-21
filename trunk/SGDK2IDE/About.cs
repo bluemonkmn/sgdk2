@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
+using System.Reflection;
 
 namespace SGDK2
 {
@@ -11,6 +12,8 @@ namespace SGDK2
 	/// </summary>
 	public class frmAbout : System.Windows.Forms.Form
 	{
+      Bitmap sidebar;
+
       private System.Windows.Forms.Label lblVersion;
       private System.Windows.Forms.Button btnClose;
       private System.Windows.Forms.LinkLabel llbHomepage;
@@ -21,9 +24,9 @@ namespace SGDK2
       private System.Windows.Forms.Label lblCopyright;
       private System.Windows.Forms.TextBox txtCredits;
       private System.Windows.Forms.GroupBox grpCredits;
-      private System.Windows.Forms.PictureBox picLogo;
       private System.Windows.Forms.GroupBox groupBox1;
       private System.Windows.Forms.TextBox txtModules;
+      private System.Windows.Forms.Label lblGPL;
 		/// <summary>
 		/// Required designer variable.
 		/// </summary>
@@ -47,6 +50,7 @@ namespace SGDK2
 				if(components != null)
 				{
 					components.Dispose();
+               sidebar.Dispose();
 				}
 			}
 			base.Dispose( disposing );
@@ -70,9 +74,9 @@ namespace SGDK2
          this.llbLicense = new System.Windows.Forms.LinkLabel();
          this.txtCredits = new System.Windows.Forms.TextBox();
          this.grpCredits = new System.Windows.Forms.GroupBox();
-         this.picLogo = new System.Windows.Forms.PictureBox();
          this.groupBox1 = new System.Windows.Forms.GroupBox();
          this.txtModules = new System.Windows.Forms.TextBox();
+         this.lblGPL = new System.Windows.Forms.Label();
          this.grpCredits.SuspendLayout();
          this.groupBox1.SuspendLayout();
          this.SuspendLayout();
@@ -81,7 +85,7 @@ namespace SGDK2
          // 
          this.lblTitle.BackColor = System.Drawing.Color.Transparent;
          this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-         this.lblTitle.Location = new System.Drawing.Point(72, 8);
+         this.lblTitle.Location = new System.Drawing.Point(120, 8);
          this.lblTitle.Name = "lblTitle";
          this.lblTitle.Size = new System.Drawing.Size(344, 32);
          this.lblTitle.TabIndex = 0;
@@ -90,7 +94,7 @@ namespace SGDK2
          // lblVersion
          // 
          this.lblVersion.BackColor = System.Drawing.Color.Transparent;
-         this.lblVersion.Location = new System.Drawing.Point(72, 40);
+         this.lblVersion.Location = new System.Drawing.Point(120, 40);
          this.lblVersion.Name = "lblVersion";
          this.lblVersion.Size = new System.Drawing.Size(344, 16);
          this.lblVersion.TabIndex = 1;
@@ -99,7 +103,7 @@ namespace SGDK2
          // 
          this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
          this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-         this.btnClose.Location = new System.Drawing.Point(336, 288);
+         this.btnClose.Location = new System.Drawing.Point(384, 312);
          this.btnClose.Name = "btnClose";
          this.btnClose.Size = new System.Drawing.Size(72, 24);
          this.btnClose.TabIndex = 2;
@@ -108,17 +112,16 @@ namespace SGDK2
          // lblCopyright
          // 
          this.lblCopyright.BackColor = System.Drawing.Color.Transparent;
-         this.lblCopyright.Location = new System.Drawing.Point(72, 56);
+         this.lblCopyright.Location = new System.Drawing.Point(120, 56);
          this.lblCopyright.Name = "lblCopyright";
          this.lblCopyright.Size = new System.Drawing.Size(344, 24);
          this.lblCopyright.TabIndex = 3;
-         this.lblCopyright.Text = "Copyright © 2000-2006 Benjamin Marty (GPL)";
          // 
          // llbHomepage
          // 
          this.llbHomepage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
          this.llbHomepage.BackColor = System.Drawing.Color.Transparent;
-         this.llbHomepage.Location = new System.Drawing.Point(192, 248);
+         this.llbHomepage.Location = new System.Drawing.Point(240, 272);
          this.llbHomepage.Name = "llbHomepage";
          this.llbHomepage.Size = new System.Drawing.Size(224, 16);
          this.llbHomepage.TabIndex = 4;
@@ -130,7 +133,7 @@ namespace SGDK2
          // 
          this.lblHomepage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
          this.lblHomepage.BackColor = System.Drawing.Color.Transparent;
-         this.lblHomepage.Location = new System.Drawing.Point(72, 248);
+         this.lblHomepage.Location = new System.Drawing.Point(120, 272);
          this.lblHomepage.Name = "lblHomepage";
          this.lblHomepage.Size = new System.Drawing.Size(120, 16);
          this.lblHomepage.TabIndex = 5;
@@ -140,7 +143,7 @@ namespace SGDK2
          // 
          this.lblLicense.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
          this.lblLicense.BackColor = System.Drawing.Color.Transparent;
-         this.lblLicense.Location = new System.Drawing.Point(72, 264);
+         this.lblLicense.Location = new System.Drawing.Point(120, 288);
          this.lblLicense.Name = "lblLicense";
          this.lblLicense.Size = new System.Drawing.Size(120, 16);
          this.lblLicense.TabIndex = 6;
@@ -150,7 +153,7 @@ namespace SGDK2
          // 
          this.llbLicense.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
          this.llbLicense.BackColor = System.Drawing.Color.Transparent;
-         this.llbLicense.Location = new System.Drawing.Point(192, 264);
+         this.llbLicense.Location = new System.Drawing.Point(240, 288);
          this.llbLicense.Name = "llbLicense";
          this.llbLicense.Size = new System.Drawing.Size(224, 16);
          this.llbLicense.TabIndex = 7;
@@ -175,29 +178,19 @@ namespace SGDK2
          // grpCredits
          // 
          this.grpCredits.Controls.Add(this.txtCredits);
-         this.grpCredits.Location = new System.Drawing.Point(72, 80);
+         this.grpCredits.Location = new System.Drawing.Point(120, 96);
          this.grpCredits.Name = "grpCredits";
          this.grpCredits.Size = new System.Drawing.Size(344, 72);
          this.grpCredits.TabIndex = 9;
          this.grpCredits.TabStop = false;
          this.grpCredits.Text = "Credits";
          // 
-         // picLogo
-         // 
-         this.picLogo.Image = ((System.Drawing.Image)(resources.GetObject("picLogo.Image")));
-         this.picLogo.Location = new System.Drawing.Point(0, 0);
-         this.picLogo.Name = "picLogo";
-         this.picLogo.Size = new System.Drawing.Size(72, 72);
-         this.picLogo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-         this.picLogo.TabIndex = 10;
-         this.picLogo.TabStop = false;
-         // 
          // groupBox1
          // 
          this.groupBox1.Controls.Add(this.txtModules);
-         this.groupBox1.Location = new System.Drawing.Point(72, 160);
+         this.groupBox1.Location = new System.Drawing.Point(120, 176);
          this.groupBox1.Name = "groupBox1";
-         this.groupBox1.Size = new System.Drawing.Size(344, 72);
+         this.groupBox1.Size = new System.Drawing.Size(344, 88);
          this.groupBox1.TabIndex = 11;
          this.groupBox1.TabStop = false;
          this.groupBox1.Text = "Loaded Modules";
@@ -212,18 +205,27 @@ namespace SGDK2
          this.txtModules.Name = "txtModules";
          this.txtModules.ReadOnly = true;
          this.txtModules.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-         this.txtModules.Size = new System.Drawing.Size(328, 48);
+         this.txtModules.Size = new System.Drawing.Size(328, 64);
          this.txtModules.TabIndex = 0;
          this.txtModules.Text = "";
+         // 
+         // lblGPL
+         // 
+         this.lblGPL.Location = new System.Drawing.Point(120, 72);
+         this.lblGPL.Name = "lblGPL";
+         this.lblGPL.Size = new System.Drawing.Size(344, 16);
+         this.lblGPL.TabIndex = 12;
+         this.lblGPL.Text = "Distributed under the terms of the GPL license.";
          // 
          // frmAbout
          // 
          this.AcceptButton = this.btnClose;
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+         this.BackColor = System.Drawing.SystemColors.Control;
          this.CancelButton = this.btnClose;
-         this.ClientSize = new System.Drawing.Size(426, 319);
+         this.ClientSize = new System.Drawing.Size(474, 343);
+         this.Controls.Add(this.lblGPL);
          this.Controls.Add(this.groupBox1);
-         this.Controls.Add(this.picLogo);
          this.Controls.Add(this.grpCredits);
          this.Controls.Add(this.llbLicense);
          this.Controls.Add(this.lblLicense);
@@ -247,7 +249,10 @@ namespace SGDK2
 
       protected override void OnLoad(EventArgs e)
       {
-         lblVersion.Text = "Version " + Application.ProductVersion + " alpha release 3";
+         lblVersion.Text = "Version " + Application.ProductVersion + " alpha release 4";
+         AssemblyCopyrightAttribute attrCopyright = (AssemblyCopyrightAttribute)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(AssemblyCopyrightAttribute), false);
+         this.lblCopyright.Text = attrCopyright.Copyright;
+
          base.OnLoad (e);
 
          System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -256,6 +261,14 @@ namespace SGDK2
             sb.Append(string.Format("{0} ({1})\r\n", mod.FileName, mod.FileVersionInfo.FileVersion));
          }
          txtModules.Text = sb.ToString();
+
+         sidebar = (Bitmap)SGDK2IDE.g_Resources.GetObject("AboutGraphic.png");
+      }
+
+      protected override void OnPaint(PaintEventArgs e)
+      {
+         base.OnPaint (e);
+         e.Graphics.DrawImageUnscaled(sidebar, 0, 0);
       }
 
       private void Link_Clicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)

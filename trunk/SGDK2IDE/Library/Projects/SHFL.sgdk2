@@ -2481,42 +2481,40 @@
     <SpriteRule Name="Scroll into view" Sequence="39" Type="Do" Function="ScrollSpriteIntoView" Parameter1="true" EndIf="false" Suspended="false" />
     <SpriteRule Name="Activate player's view" Sequence="38" Type="Do" Function="=" Parameter1="ViewNum" ResultParameter="CurrentView" EndIf="false" Suspended="false" />
     <SpriteRule Name="Player 1 take grapes" Sequence="42" Type="Do" Function="TileTake" Parameter1="55" Parameter2="Counter.Player_1_grapes" ResultParameter="TempNum" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Else player 2 take grapes" Sequence="57" Type="Else" Function="TileTake" Parameter1="55" Parameter2="Counter.Player_2_grapes" ResultParameter="TempNum" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Else player 2 take grapes" Sequence="55" Type="Else" Function="TileTake" Parameter1="55" Parameter2="Counter.Player_2_grapes" ResultParameter="TempNum" EndIf="false" Suspended="false" />
     <SpriteRule Name="Player 1 take cherries" Sequence="49" Type="Do" Function="TileTake" Parameter1="54" Parameter2="Counter.Player_1_cherries" ResultParameter="TempNum" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Player 1 take ice cream" Sequence="56" Type="Do" Function="TileTake" Parameter1="56" Parameter2="Counter.Player_1_ice_cream" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Player 2 take cherries" Sequence="64" Type="Do" Function="TileTake" Parameter1="54" Parameter2="Counter.Player_2_cherries" ResultParameter="TempNum" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Player 2 take ice cream" Sequence="71" Type="Do" Function="TileTake" Parameter1="56" Parameter2="Counter.Player_2_ice_cream" EndIf="true" Suspended="false" />
+    <SpriteRule Name="Player 1 take ice cream" Sequence="54" Type="Do" Function="TileTake" Parameter1="56" Parameter2="Counter.Player_1_ice_cream" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Player 2 take cherries" Sequence="62" Type="Do" Function="TileTake" Parameter1="54" Parameter2="Counter.Player_2_cherries" ResultParameter="TempNum" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Player 2 take ice cream" Sequence="69" Type="Do" Function="TileTake" Parameter1="56" Parameter2="Counter.Player_2_ice_cream" EndIf="true" Suspended="false" />
     <SpriteRule Name="Get player 1 grape points" Sequence="43" Type="If" Function="&gt;" Parameter1="TempNum" Parameter2="0" EndIf="false" Suspended="false" />
     <SpriteRule Name="Show player 1 grape points" Sequence="45" Type="Do" Function="TileActivateSprite" Parameter1="0" Parameter2="ParentLayer.m_SpriteCategories.Points" Parameter3="true" ResultParameter="TempNum" EndIf="false" Suspended="false" />
     <SpriteRule Name="Switch player 1 grape points to 1000" Sequence="47" Type="Do" Function="SetCategorySpriteState" Parameter1="ParentLayer.m_SpriteCategories.Points" Parameter2="TempNum" Parameter3="1" EndIf="true" Suspended="false" />
     <SpriteRule Name="Get player 1 cherry points" Sequence="50" Type="If" Function="&gt;" Parameter1="TempNum" Parameter2="0" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Show player 1 cherry points" Sequence="52" Type="Do" Function="TileActivateSprite" Parameter1="0" Parameter2="ParentLayer.m_SpriteCategories.Points" Parameter3="true" ResultParameter="TempNum" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Switch player 1 cherry points to 100" Sequence="54" Type="Do" Function="SetCategorySpriteState" Parameter1="ParentLayer.m_SpriteCategories.Points" Parameter2="TempNum" Parameter3="0" EndIf="true" Suspended="false" />
+    <SpriteRule Name="Show player 1 cherry points" Sequence="52" Type="Do" Function="TileAddSprite" Parameter1="0" Parameter2="typeof(Sprites.Points)" EndIf="false" Suspended="false" />
     <SpriteRule Name="If new player 1 grape points were shown" Sequence="46" Type="If" Function="&gt;=" Parameter1="TempNum" Parameter2="0" EndIf="false" Suspended="false" />
     <SpriteRule Name="Add grape points to player 1 score" Sequence="48" Type="Do" Function="+" Parameter1="Counter.Player_1_Score.CurrentValue" Parameter2="1000" ResultParameter="Counter.Player_1_Score.CurrentValue" EndIf="true" Suspended="false" />
-    <SpriteRule Name="If new player 1 cherry points were shown" Sequence="53" Type="If" Function="&gt;=" Parameter1="TempNum" Parameter2="0" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Add cherry points to player 1 score" Sequence="55" Type="Do" Function="+" Parameter1="Counter.Player_1_Score.CurrentValue" Parameter2="100" ResultParameter="Counter.Player_1_Score.CurrentValue" EndIf="true" Suspended="false" />
-    <SpriteRule Name="Get player 2 grape points" Sequence="58" Type="If" Function="&gt;" Parameter1="TempNum" Parameter2="0" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Show player 2 grape points" Sequence="60" Type="Do" Function="TileActivateSprite" Parameter1="0" Parameter2="ParentLayer.m_SpriteCategories.Points" Parameter3="true" ResultParameter="TempNum" EndIf="false" Suspended="false" />
-    <SpriteRule Name="If new player 2 grape points were shown" Sequence="61" Type="If" Function="&gt;=" Parameter1="TempNum" Parameter2="0" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Switch player 2 grape points to 1000" Sequence="62" Type="Do" Function="SetCategorySpriteState" Parameter1="ParentLayer.m_SpriteCategories.Points" Parameter2="TempNum" Parameter3="1" EndIf="true" Suspended="false" />
-    <SpriteRule Name="Add grape points to player 2 score" Sequence="63" Type="Do" Function="+" Parameter1="Counter.Player_2_Score.CurrentValue" Parameter2="1000" ResultParameter="Counter.Player_2_Score.CurrentValue" EndIf="true" Suspended="false" />
-    <SpriteRule Name="Show player 2 cherry points" Sequence="67" Type="Do" Function="TileActivateSprite" Parameter1="0" Parameter2="ParentLayer.m_SpriteCategories.Points" Parameter3="true" ResultParameter="TempNum" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Get player 2 cherry points" Sequence="65" Type="If" Function="&gt;" Parameter1="TempNum" Parameter2="0" EndIf="false" Suspended="false" />
-    <SpriteRule Name="If new player 2 cherry points were shown" Sequence="68" Type="If" Function="&gt;=" Parameter1="TempNum" Parameter2="0" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Switch player 2 cherry points to 100" Sequence="69" Type="Do" Function="SetCategorySpriteState" Parameter1="ParentLayer.m_SpriteCategories.Points" Parameter2="TempNum" Parameter3="0" EndIf="true" Suspended="false" />
-    <SpriteRule Name="Add cherry points to player 2 score" Sequence="70" Type="Do" Function="+" Parameter1="Counter.Player_2_Score.CurrentValue" Parameter2="100" ResultParameter="Counter.Player_2_Score.CurrentValue" EndIf="true" Suspended="false" />
-    <SpriteRule Name="End tile interactions" Sequence="72" Type="End" Function="End" EndIf="true" Suspended="false" />
-    <SpriteRule Name="If menu requested" Sequence="73" Type="If" Function="IsKeyPressed" Parameter1="Microsoft.DirectX.DirectInput.Key.Escape" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Go to menu" Sequence="76" Type="Do" Function="SwitchToMap" Parameter1="typeof(Menu_Map)" Parameter2="false" EndIf="true" Suspended="false" />
-    <SpriteRule Name="Reset map's initialized flag" Sequence="75" Type="Do" Function="SetMapFlag" Parameter1="0" Parameter2="false" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Add cherry points to player 1 score" Sequence="53" Type="Do" Function="+" Parameter1="Counter.Player_1_Score.CurrentValue" Parameter2="100" ResultParameter="Counter.Player_1_Score.CurrentValue" EndIf="true" Suspended="false" />
+    <SpriteRule Name="Get player 2 grape points" Sequence="56" Type="If" Function="&gt;" Parameter1="TempNum" Parameter2="0" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Show player 2 grape points" Sequence="58" Type="Do" Function="TileActivateSprite" Parameter1="0" Parameter2="ParentLayer.m_SpriteCategories.Points" Parameter3="true" ResultParameter="TempNum" EndIf="false" Suspended="false" />
+    <SpriteRule Name="If new player 2 grape points were shown" Sequence="59" Type="If" Function="&gt;=" Parameter1="TempNum" Parameter2="0" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Switch player 2 grape points to 1000" Sequence="60" Type="Do" Function="SetCategorySpriteState" Parameter1="ParentLayer.m_SpriteCategories.Points" Parameter2="TempNum" Parameter3="1" EndIf="true" Suspended="false" />
+    <SpriteRule Name="Add grape points to player 2 score" Sequence="61" Type="Do" Function="+" Parameter1="Counter.Player_2_Score.CurrentValue" Parameter2="1000" ResultParameter="Counter.Player_2_Score.CurrentValue" EndIf="true" Suspended="false" />
+    <SpriteRule Name="Show player 2 cherry points" Sequence="65" Type="Do" Function="TileActivateSprite" Parameter1="0" Parameter2="ParentLayer.m_SpriteCategories.Points" Parameter3="true" ResultParameter="TempNum" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Get player 2 cherry points" Sequence="63" Type="If" Function="&gt;" Parameter1="TempNum" Parameter2="0" EndIf="false" Suspended="false" />
+    <SpriteRule Name="If new player 2 cherry points were shown" Sequence="66" Type="If" Function="&gt;=" Parameter1="TempNum" Parameter2="0" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Switch player 2 cherry points to 100" Sequence="67" Type="Do" Function="SetCategorySpriteState" Parameter1="ParentLayer.m_SpriteCategories.Points" Parameter2="TempNum" Parameter3="0" EndIf="true" Suspended="false" />
+    <SpriteRule Name="Add cherry points to player 2 score" Sequence="68" Type="Do" Function="+" Parameter1="Counter.Player_2_Score.CurrentValue" Parameter2="100" ResultParameter="Counter.Player_2_Score.CurrentValue" EndIf="true" Suspended="false" />
+    <SpriteRule Name="End tile interactions" Sequence="70" Type="End" Function="End" EndIf="true" Suspended="false" />
+    <SpriteRule Name="If menu requested" Sequence="71" Type="If" Function="IsKeyPressed" Parameter1="Microsoft.DirectX.DirectInput.Key.Escape" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Go to menu" Sequence="74" Type="Do" Function="SwitchToMap" Parameter1="typeof(Menu_Map)" Parameter2="false" EndIf="true" Suspended="false" />
+    <SpriteRule Name="Reset map's initialized flag" Sequence="73" Type="Do" Function="SetMapFlag" Parameter1="0" Parameter2="false" EndIf="false" Suspended="false" />
     <SpriteRule Name="React to springs" Sequence="35" Type="Do" Function="CustomObjects.TileSpecialization.ReactToSprings" Parameter1="this" EndIf="false" Suspended="false" />
-    <SpriteRule Name="And player 1" Sequence="74" Type="And" Function="==" Parameter1="ViewNum" Parameter2="0" EndIf="false" Suspended="false" />
+    <SpriteRule Name="And player 1" Sequence="72" Type="And" Function="==" Parameter1="ViewNum" Parameter2="0" EndIf="false" Suspended="false" />
     <SpriteRule Name="Play player 1 grape sound" Sequence="44" Type="Do" Function="CustomObjects.FMODBase.PlaySound" Parameter1="CustomObjects.Chime.Value" Parameter2="CustomObjects.SoundReplay.Restart" EndIf="false" Suspended="false" />
     <SpriteRule Name="Play player 1 cherry sound" Sequence="51" Type="Do" Function="CustomObjects.FMODBase.PlaySound" Parameter1="CustomObjects.Chime.Value" Parameter2="CustomObjects.SoundReplay.Restart" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Play player 2 grape sound" Sequence="59" Type="Do" Function="CustomObjects.FMODBase.PlaySound" Parameter1="CustomObjects.Chime.Value" Parameter2="CustomObjects.SoundReplay.Restart" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Play player 2 cherry sound" Sequence="66" Type="Do" Function="CustomObjects.FMODBase.PlaySound" Parameter1="CustomObjects.Chime.Value" Parameter2="CustomObjects.SoundReplay.Restart" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Continue music" Sequence="77" Type="Do" Function="CustomObjects.FMODBase.PlaySound" Parameter1="CustomObjects.Signal94.Value" Parameter2="CustomObjects.SoundReplay.Continue" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Play player 2 grape sound" Sequence="57" Type="Do" Function="CustomObjects.FMODBase.PlaySound" Parameter1="CustomObjects.Chime.Value" Parameter2="CustomObjects.SoundReplay.Restart" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Play player 2 cherry sound" Sequence="64" Type="Do" Function="CustomObjects.FMODBase.PlaySound" Parameter1="CustomObjects.Chime.Value" Parameter2="CustomObjects.SoundReplay.Restart" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Continue music" Sequence="75" Type="Do" Function="CustomObjects.FMODBase.PlaySound" Parameter1="CustomObjects.Signal94.Value" Parameter2="CustomObjects.SoundReplay.Continue" EndIf="false" Suspended="false" />
     <SpriteRule Name="Switch solidity to ladder" Sequence="12" Type="Do" Function="SetSolidity" Parameter1="Solidity.OnLadder" EndIf="false" Suspended="false" />
     <SpriteRule Name="Switch to non-ladder solidity" Sequence="3" Type="Do" Function="SetSolidity" Parameter1="Solidity.Standard" EndIf="false" Suspended="false" />
     <SpriteRule Name="And standing in front of ladder" Sequence="10" Type="And" Function="IsOnTile" Parameter1="TileCategoryName.Ladder" Parameter2="RelativePosition.BottomCenter" EndIf="false" Suspended="false" />
@@ -4126,6 +4124,7 @@ public class GameForm : Form
       // 
       this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
       this.ClientSize = new System.Drawing.Size(292, 273);
+      this.MaximizeBox = false;
       this.Menu = this.mnuGame;
       this.Name = "GameForm";
 
@@ -4237,6 +4236,7 @@ public class GameForm : Form
    /// &lt;param name="ex"&gt;Refers to the exception that was received at the top level&lt;/param&gt;
    public static void HandleException(System.Exception ex)
    {
+      Project.GameWindow.Close();
       MessageBox.Show("A fatal error occurred initializing or running the game:\r\n" + ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
    }
 }</Text>
@@ -5227,15 +5227,18 @@ public abstract class LayerBase : System.Collections.IEnumerable
    private readonly int m_nVirtualColumns;
    private readonly int m_nVirtualRows;
    private System.Drawing.Point m_AbsolutePosition;
-   protected SpriteCollection m_Sprites;
+   public SpriteCollection m_Sprites;
    private readonly System.Drawing.SizeF m_ScrollRate;
    private System.Drawing.Point[] m_CurrentPosition = new System.Drawing.Point[Project.MaxViews];
    private MapBase m_ParentMap;
    public LayerSpriteCategoriesBase m_SpriteCategories;
+   protected readonly int m_nInjectStartIndex;
+   protected readonly int m_nAppendStartIndex;
    #endregion
 
    protected LayerBase(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer, int nBottomBuffer,
-      int nColumns, int nRows, int nVirtualColumns, int nVirtualRows, System.Drawing.Point Position, System.Drawing.SizeF ScrollRate)
+      int nColumns, int nRows, int nVirtualColumns, int nVirtualRows, System.Drawing.Point Position,
+      System.Drawing.SizeF ScrollRate, int nInjectStartIndex, int nAppendStartIndex)
    {
       this.m_ParentMap = Parent;
       this.m_Tileset = Tileset;
@@ -5257,6 +5260,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
       this.m_AbsolutePosition = Position;
       this.m_ScrollRate = ScrollRate;
       this.Move(new Point(0,0));
+      this.m_nInjectStartIndex = nInjectStartIndex;
+      this.m_nAppendStartIndex = nAppendStartIndex;
    }
 
    #region Abstract Members
@@ -5270,7 +5275,6 @@ public abstract class LayerBase : System.Collections.IEnumerable
    }
    public abstract int[] GetTileFrame(int x, int y);
    public abstract TileBase GetTile(int x, int y);
-   public abstract void InjectSprites();
    #endregion
 
    #region IEnumerable Members
@@ -5553,6 +5557,40 @@ public abstract class LayerBase : System.Collections.IEnumerable
    {
       if (m_InjectedFrames != null)
          m_InjectedFrames.Clear();
+   }
+
+   public void InjectSprites()
+   {
+      for (int i = 0; (i &lt; m_nInjectStartIndex) &amp;&amp; (i &lt; m_Sprites.Count); i++)
+      {
+         SpriteBase sprite = m_Sprites[i];
+         if (IsSpriteVisible(sprite))
+            AppendFrames(sprite.PixelX, sprite.PixelY, sprite.GetCurrentFramesetFrames(), sprite.color, -1);
+      }
+      for (int i = m_nInjectStartIndex; (i &lt; m_nAppendStartIndex) &amp;&amp; (i &lt; m_Sprites.Count); i++)
+      {
+         SpriteBase sprite = m_Sprites[i];
+         if (IsSpriteVisible(sprite))
+            InjectFrames(sprite.PixelX, sprite.PixelY, sprite.GetCurrentFramesetFrames(), sprite.color);
+      }
+      for (int i = m_nAppendStartIndex; (i &lt; m_Sprites.Count); i++)
+      {
+         SpriteBase sprite = m_Sprites[i];
+         if (IsSpriteVisible(sprite))
+            AppendFrames(sprite.PixelX, sprite.PixelY, sprite.GetCurrentFramesetFrames(), sprite.color, 1);
+      }
+   }
+
+   public void ProcessSprites()
+   {
+      foreach(SpriteBase sprite in m_Sprites)
+         // Assuming it's more efficient to just set them all to false rather than
+         // try and only enumerate the active ones.
+         sprite.Processed = false;
+      for(int i=0; i &lt; m_Sprites.Count; i++)
+         if (m_Sprites[i].isActive)
+            m_Sprites[i].ProcessRules();
+      m_Sprites.Clean();
    }
 
    public Point GetMousePosition()
@@ -5975,9 +6013,11 @@ public abstract class IntLayer : LayerBase
 
    public IntLayer(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
       int nBottomBuffer, int nColumns, int nRows, int nVirtualColumns, int nVirtualRows,
-      System.Drawing.Point Position, System.Drawing.SizeF ScrollRate, string Name) : 
+      System.Drawing.Point Position, System.Drawing.SizeF ScrollRate,
+      int nInjectStartIndex, int nAppendStartIndex, string Name) : 
       base(Tileset, Parent, nLeftBuffer, nTopBuffer, nRightBuffer,
-      nBottomBuffer, nColumns, nRows, nVirtualColumns, nVirtualRows, Position, ScrollRate)
+      nBottomBuffer, nColumns, nRows, nVirtualColumns, nVirtualRows, Position,
+      ScrollRate, nInjectStartIndex, nAppendStartIndex)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
       m_Tiles = (int[,])(resources.GetObject(Name));
@@ -6013,9 +6053,10 @@ public abstract class ShortLayer : LayerBase
 
    public ShortLayer(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
       int nBottomBuffer, int nColumns, int nRows, int nVirtualColumns, int nVirtualRows, System.Drawing.Point Position,
-      System.Drawing.SizeF ScrollRate, string Name) : 
+      System.Drawing.SizeF ScrollRate, int nInjectStartIndex, int nAppendStartIndex, string Name) : 
       base(Tileset, Parent, nLeftBuffer, nTopBuffer, nRightBuffer,
-      nBottomBuffer, nColumns, nRows, nVirtualColumns, nVirtualRows, Position, ScrollRate)
+      nBottomBuffer, nColumns, nRows, nVirtualColumns, nVirtualRows, Position,
+      ScrollRate, nInjectStartIndex, nAppendStartIndex)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
       m_Tiles = (short[,])(resources.GetObject(Name));
@@ -6051,9 +6092,10 @@ public abstract class ByteLayer : LayerBase
 
    public ByteLayer(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
       int nBottomBuffer, int nColumns, int nRows, int nVirtualColumns, int nVirtualRows, System.Drawing.Point Position,
-      System.Drawing.SizeF ScrollRate, string Name) : 
+      System.Drawing.SizeF ScrollRate, int nInjectStartIndex, int nAppendStartIndex, string Name) : 
       base(Tileset, Parent, nLeftBuffer, nTopBuffer, nRightBuffer,
-      nBottomBuffer, nColumns, nRows, nVirtualColumns, nVirtualRows, Position, ScrollRate)
+      nBottomBuffer, nColumns, nRows, nVirtualColumns, nVirtualRows, Position,
+      ScrollRate, nInjectStartIndex, nAppendStartIndex)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
       m_Tiles = (byte[,])(resources.GetObject(Name));
@@ -6155,11 +6197,24 @@ public struct TileFrameMembership
 /// Categorizes / collects sprite instances
 /// &lt;/summary&gt;
 [Serializable()]
-public class SpriteCollection : System.Collections.ReadOnlyCollectionBase
+public class SpriteCollection : System.Collections.CollectionBase
 {
+   /// &lt;summary&gt;
+   /// Indicates the initial size of this collection, and the size below which
+   /// sprites are never removed.
+   /// &lt;/summary&gt;
+   public readonly int staticSize;
+
+   /// &lt;summary&gt;
+   /// Defines a maximum sprite collection size to help ensure sprites are not
+   /// "leaking" into the system without getting cleaned up.
+   /// &lt;/summary&gt;
+   public const int maxCollectionSize = 100;
+
    public SpriteCollection(params SpriteBase[] sprites)
    {
       InnerList.AddRange(sprites);
+      staticSize = sprites.Length;
    }
 
    public SpriteBase this[int index]
@@ -6167,6 +6222,45 @@ public class SpriteCollection : System.Collections.ReadOnlyCollectionBase
       get
       {
          return (SpriteBase)InnerList[index];
+      }
+   }
+
+   public int Add(SpriteBase sprite)
+   {
+      if (List.Count &gt;= maxCollectionSize)
+         throw new ApplicationException("A sprite collection has reached the maximum size of " + maxCollectionSize.ToString() + ". This may be a result of failing to properly clean up dynamic sprites, or it may be the result of a maximum that is too small. To increase it, change the value associated with maxCollectionSize in SpriteCollection.cs");
+      return List.Add(sprite);
+   }
+
+   protected override void OnRemove( int index, Object value )  
+   {
+      if (index &lt; staticSize)
+         throw new ApplicationException("Attempted to remove from a collection a sprite that was not dynamically added");
+   }
+
+   public int IndexOf(SpriteBase sprite)
+   {
+      return List.IndexOf(sprite);
+   }
+
+   public void Remove(SpriteBase sprite)
+   {
+      List.Remove(sprite);
+   }
+
+   /// &lt;summary&gt;
+   /// Remove inactive dynamic sprites from the collection
+   /// &lt;/summary&gt;
+   public void Clean()
+   {
+      for (int index=staticSize; index &lt; List.Count; index++)
+      {
+         SpriteBase sprite = this[index];
+         if (!sprite.isActive)
+         {
+            RemoveAt(index);
+            sprite.RemoveFromCategories();
+         }
       }
    }
 }
@@ -6632,6 +6726,8 @@ public abstract class SpriteBase : GeneralRules
    private Solidity m_solidity;
    public int color;
 
+   public static SpriteBase lastCreatedSprite;
+
    /// &lt;summary&gt;
    /// Horizontal velocity relative to the sprite's environment (like a platform)
    /// &lt;/summary&gt;
@@ -6807,6 +6903,12 @@ public abstract class SpriteBase : GeneralRules
 
    public abstract void ClearParameters();
 
+   /// &lt;summary&gt;
+   /// Remove the sprite from its designated categories.
+   /// USE ONLY on dynamically added sprites.
+   /// &lt;/summary&gt;
+   public abstract void RemoveFromCategories();
+
    #endregion
 
    #region Public Methods
@@ -6842,6 +6944,7 @@ public abstract class SpriteBase : GeneralRules
 
    #endregion
 
+   #region Sprite Interaction
    #region Rider Feature
    /// &lt;summary&gt;
    /// Stores the platform sprite (the sprite that this sprite rides on).
@@ -6938,6 +7041,32 @@ public abstract class SpriteBase : GeneralRules
          }
       }
       return false;
+   }
+   #endregion
+   
+   [Description("Determine whether the sprite's collision mask is overlapping part of any sprite in the specified category. Return the index of the sprite within the category if a collision is occurring, otherwise return -1.")]
+   public int TestCollisionMask(SpriteCollection Targets)
+   {
+      if (!isActive)
+         return -1;
+      CollisionMask sourceMask = CurrentState.GetMask(frame);
+      if (sourceMask == null)
+         sourceMask = CollisionMask.GetRectangularMask(new System.Drawing.Size(SolidWidth, SolidHeight));
+      for (int idx = 0; idx &lt; Targets.Count; idx++)
+      {
+         SpriteBase TargetSprite = Targets[idx];
+         if (TargetSprite == this)
+            continue;
+         if (TargetSprite.isActive)
+         {
+            CollisionMask targetMask = TargetSprite.CurrentState.GetMask(TargetSprite.frame);
+            if (targetMask == null)
+               targetMask = CollisionMask.GetRectangularMask(new System.Drawing.Size(TargetSprite.SolidWidth, TargetSprite.SolidHeight));
+            if (sourceMask.TestCollisionWith(targetMask, TargetSprite.PixelX - PixelX, TargetSprite.PixelY - PixelY))
+               return idx;
+         }         
+      }
+      return -1;
    }
    #endregion
 
@@ -7247,7 +7376,7 @@ public abstract class SpriteBase : GeneralRules
    public bool IsInState([Editor("SpriteState", "UITypeEditor")] int FirstState, [Editor("SpriteState", "UITypeEditor")] int LastState)
    {
       Debug.Assert(this.isActive, "Attempted to execute IsInState on an inactive sprite");
-      return (state &lt;= FirstState) &amp;&amp; (state &gt;= LastState);
+      return (state &gt;= FirstState) &amp;&amp; (state &lt;= LastState);
    }
 
    public int ModulateAlpha
@@ -7810,6 +7939,20 @@ public abstract class SpriteBase : GeneralRules
          }
       }
       return -1;
+   }
+
+   [Description("Create a new (dynamic) instance of the specified sprite type at the coordinates of a tile being touched by the player.  Use TileTouchingIndex to acquire TouchingIndex.")]
+   public void TileAddSprite(int TouchingIndex, [Editor("SpriteDefinition", "UITypeEditor")] System.Type SpriteDefinition)
+   {
+      System.Reflection.ConstructorInfo constructor = SpriteDefinition.GetConstructor(new System.Type[]
+      {
+         typeof(LayerBase), typeof(double), typeof(double), typeof(double), typeof(double), typeof(int), typeof(int), typeof(bool), typeof(Display), typeof(Solidity), typeof(int), typeof(bool)
+      });
+      TouchedTile tt = (TouchedTile)TouchedTiles[TouchingIndex];
+      lastCreatedSprite = (SpriteBase)constructor.Invoke(new object[]
+      {
+         layer, tt.x * layer.Tileset.TileWidth, tt.y * layer.Tileset.TileHeight, 0, 0, 0, 0, true, layer.ParentMap.Display, null, -1, true
+      });
    }
 
    [Description("Change the specified tile that the sprite is touching to another tile. Return the number of tiles affected. (Must run TouchTiles first.)")]

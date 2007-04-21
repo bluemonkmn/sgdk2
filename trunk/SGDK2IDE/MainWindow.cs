@@ -999,6 +999,57 @@ namespace SGDK2
          }
       }
 
+      /// <summary>
+      /// Prompt user to delete intermediate files associated with an object if they exist
+      /// </summary>
+      /// <param name="row">Row whose intermediate files will be checked</param>
+      /// <returns>0 = No message was necessary, proceed and prompt for confirmation
+      /// 1 = Message was displayed and user confirmed delete, proceed with delete
+      ///     without further confirmation
+      /// 2 = Message was displayed and user canceled delete operation</returns>
+      private int ConfirmDeleteIntermediateFiles(System.Data.DataRow row, bool autoConfirm)
+      {
+         string strFolder = GetProjectOutFolder();
+         string codeFilename = CodeGenerator.GetIntermediateCodeFilename(strFolder, row);
+         string resxFilename = CodeGenerator.GetIntermediateResxFilename(strFolder, row);
+         string resourcesFilename = null;
+         if (resxFilename != null)
+            resourcesFilename = CodeGenerator.GetIntermediateResourcesFilename(resxFilename);
+         string embeddedFilename = CodeGenerator.GetIntermediateEmbeddedFilename(strFolder, row);
+         if (((codeFilename != null) && System.IO.File.Exists(codeFilename)) ||
+            ((resxFilename != null) && System.IO.File.Exists(resxFilename)) ||
+            ((resourcesFilename != null) && System.IO.File.Exists(resourcesFilename)) ||
+            ((embeddedFilename != null) && System.IO.File.Exists(embeddedFilename)))
+         {
+            DialogResult result = DialogResult.None;
+            if(!autoConfirm)
+               result = MessageBox.Show(this, "Intermediate files associated with this object exist.  Do you want to delete the intermediate files now?",
+                  "Delete Object", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+            if ((result == DialogResult.Yes) || autoConfirm)
+            {
+               if (row is ProjectDataset.SourceCodeRow)
+               {
+                  foreach(ProjectDataset.SourceCodeRow dependentRow in ProjectData.GetDependentSourceCode((ProjectDataset.SourceCodeRow)row))
+                     ConfirmDeleteIntermediateFiles(dependentRow, true);
+               }
+               if ((codeFilename != null) && System.IO.File.Exists(codeFilename))
+                  System.IO.File.Delete(codeFilename);
+               if ((resxFilename != null) && System.IO.File.Exists(resxFilename))
+                  System.IO.File.Delete(resxFilename);
+               if ((resourcesFilename != null) && System.IO.File.Exists(resourcesFilename))
+                  System.IO.File.Delete(resourcesFilename);
+               if ((embeddedFilename != null) && System.IO.File.Exists(embeddedFilename))
+                  System.IO.File.Delete(embeddedFilename);
+               return 1;
+            }
+            else if (result == DialogResult.No)
+               return 1;
+            else
+               return 2;
+         }
+         return 0;
+      }
+
       private void DeleteObject()
       {
          string Key = m_ContextNode.Tag.ToString();
@@ -1105,10 +1156,18 @@ namespace SGDK2
                      MessageBox.Show(this, "A specific Sprite Definition must be selected to delete.", "Delete Sprite Definition", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                      return;
                   }
-                  if (DialogResult.Yes == MessageBox.Show(this, "Are you sure you want to delete Sprite Definition \"" + KeyParts[0] + "\"?", "Delete Tile Shape", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
-                  {
+               switch(ConfirmDeleteIntermediateFiles(ProjectData.GetSpriteDefinition(KeyParts[0]), false))
+               {
+                  case 0:
+                     if (DialogResult.Yes == MessageBox.Show(this, "Are you sure you want to delete Sprite Definition \"" + KeyParts[0] + "\"?", "Delete Tile Shape", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
+                     {
+                        ProjectData.GetSpriteDefinition(KeyParts[0]).Delete();
+                     }
+                     break;
+                  case 1:
                      ProjectData.GetSpriteDefinition(KeyParts[0]).Delete();
-                  }
+                     break;
+               }
                   break;
                case "SY":
                   if (Key == "SY")
@@ -1127,10 +1186,18 @@ namespace SGDK2
                      MessageBox.Show(this, "A specific Map must be selected to delete.", "Delete Map", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                      return;
                   }
-                  if (DialogResult.Yes == MessageBox.Show(this, "Are you sure you want to delete Map \"" + KeyParts[0] + "\"?", "Delete Map", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
-                  {
+               switch(ConfirmDeleteIntermediateFiles(ProjectData.GetMap(KeyParts[0]), false))
+               {
+                  case 0:
+                     if (DialogResult.Yes == MessageBox.Show(this, "Are you sure you want to delete Map \"" + KeyParts[0] + "\"?", "Delete Map", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
+                     {
+                        ProjectData.GetMap(KeyParts[0]).Delete();
+                     }
+                     break;
+                  case 1:
                      ProjectData.GetMap(KeyParts[0]).Delete();
-                  }
+                     break;
+               }
                   break;
                case "LR":
                   if (KeyParts.Length <= 1)
@@ -1186,9 +1253,17 @@ namespace SGDK2
                               return;
                         }
                      }
-                     if (DialogResult.Yes == MessageBox.Show(this, "Are you sure you want to delete custom code object \"" + KeyParts[KeyParts.Length-1] + "\"?", "Delete Source Code", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
+                     switch(ConfirmDeleteIntermediateFiles(row, false))
                      {
-                        ProjectData.DeleteSourceCode(row);
+                        case 0:
+                           if (DialogResult.Yes == MessageBox.Show(this, "Are you sure you want to delete custom code object \"" + KeyParts[KeyParts.Length-1] + "\"?", "Delete Source Code", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
+                           {
+                              ProjectData.DeleteSourceCode(row);
+                           }
+                           break;
+                        case 1:
+                           ProjectData.DeleteSourceCode(row);
+                           break;
                      }
                   }
                   break;
@@ -1282,7 +1357,11 @@ namespace SGDK2
                return;
             }
          }
-   }
+      }
+      private string GetProjectOutFolder()
+      {
+         return System.IO.Path.Combine(System.IO.Path.GetDirectoryName(m_strProjectPath), System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath));
+      }      
       #endregion
 
       #region Public Methods
@@ -1366,9 +1445,17 @@ namespace SGDK2
                MessageBox.Show(this, ex.Message, "Open Project", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                DoNewProject();
             }
+
+         foreach(Control c in this.Controls)
+            if (c is MdiClient)
+            {
+               ((MdiClient)c).Paint += new PaintEventHandler(MdiClient_OnPaint);
+               ((MdiClient)c).SizeChanged += new EventHandler(MdiClient_SizeChanged);
+               break;
+            }
+
          SGDK2IDE.PushStatus("Ready", false);
       }
-
       #endregion
 
       #region Event Handlers
@@ -2340,7 +2427,7 @@ namespace SGDK2
 
          CodeGenerator.ResetTempAssembly();
 
-         string strFolder = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(m_strProjectPath), System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath));
+         string strFolder = GetProjectOutFolder();
          CodeGenerator g = new CodeGenerator();
          g.GeneratorOptions.BracingStyle = "C";
          string errs;
@@ -2376,7 +2463,7 @@ namespace SGDK2
 
          CodeGenerator.ResetTempAssembly();
 
-         string strFolder = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(m_strProjectPath), System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath));
+         string strFolder = GetProjectOutFolder();
          CodeGenerator g = new CodeGenerator();
          g.GeneratorOptions.BracingStyle = "C";
          string errs;
@@ -2394,7 +2481,7 @@ namespace SGDK2
       private void mnuFileDeleteIntermediateFiles_Click(object sender, System.EventArgs e)
       {
          CodeGenerator g = new CodeGenerator();
-         string strFolder = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(m_strProjectPath), System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath));
+         string strFolder = GetProjectOutFolder();
          System.Collections.Specialized.StringCollection deleteFiles = new System.Collections.Specialized.StringCollection();
          deleteFiles.AddRange(g.GetCodeFileList(strFolder));
          deleteFiles.AddRange(g.GetResxFileList(strFolder));
@@ -2417,7 +2504,7 @@ namespace SGDK2
       {
          mnuFileDeleteIntermediateFiles_Click(sender, e);
          CodeGenerator g = new CodeGenerator();
-         string strFolder = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(m_strProjectPath), System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath));
+         string strFolder = GetProjectOutFolder();
          System.Collections.Specialized.StringCollection deleteFiles = new System.Collections.Specialized.StringCollection();
          deleteFiles.AddRange(g.GetLocalReferenceFileList(strFolder));
          deleteFiles.Add(System.IO.Path.Combine(strFolder, System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath) + ".exe"));
@@ -2444,7 +2531,7 @@ namespace SGDK2
 
          CodeGenerator.ResetTempAssembly();
 
-         string strFolder = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(m_strProjectPath), System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath));
+         string strFolder = GetProjectOutFolder();
          CodeGenerator g = new CodeGenerator();
          g.GeneratorOptions.BracingStyle = "C";
          g.Debug = true;
@@ -2517,6 +2604,17 @@ namespace SGDK2
          }
       }
 
+      private void MdiClient_OnPaint(object source, PaintEventArgs e)
+      {
+         Bitmap watermark = (Bitmap)SGDK2IDE.g_Resources.GetObject("sgdk2monocon.png");
+         MdiClient src = (MdiClient)source;
+         e.Graphics.DrawImage(watermark, src.ClientSize.Width - watermark.Width, src.ClientSize.Height - watermark.Height, watermark.Width, watermark.Height);
+      }
+
+      private void MdiClient_SizeChanged(object sender, EventArgs e)
+      {
+         ((MdiClient)sender).Invalidate();
+      }
       #endregion
    }
 }

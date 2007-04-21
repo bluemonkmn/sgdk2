@@ -337,6 +337,7 @@ public class GameForm : Form
       // 
       this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
       this.ClientSize = new System.Drawing.Size(292, 273);
+      this.MaximizeBox = false;
       this.Menu = this.mnuGame;
       this.Name = "GameForm";
 
@@ -448,6 +449,7 @@ public class GameForm : Form
    /// <param name="ex">Refers to the exception that was received at the top level</param>
    public static void HandleException(System.Exception ex)
    {
+      Project.GameWindow.Close();
       MessageBox.Show("A fatal error occurred initializing or running the game:\r\n" + ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
    }
 }

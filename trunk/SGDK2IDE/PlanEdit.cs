@@ -842,6 +842,15 @@ namespace SGDK2
                CodeGenerator.NameToVariable(drState.Name));
       }
 
+      private void FillComboWithSpriteDefinitions(ComboBox cboTarget)
+      {
+         foreach(System.Data.DataRowView drv in ProjectData.SpriteDefinition.DefaultView)
+         {
+            ProjectDataset.SpriteDefinitionRow drSpriteDef = (ProjectDataset.SpriteDefinitionRow)drv.Row;
+            cboTarget.Items.Add("typeof(Sprites." + CodeGenerator.NameToVariable(drSpriteDef.Name) + ")");
+         }
+      }
+
       private void FillComboWithMapTypes(ComboBox cboTarget)
       {
          foreach(DataRowView drv in ProjectData.Map.DefaultView)
@@ -942,7 +951,7 @@ namespace SGDK2
                if (drCoords.Length == 1)
                   cboParameter.Items.Add(CodeGenerator.SpritePlanParentField + ".m_" + CodeGenerator.NameToVariable(drPlan.Name) + "[0]");
             }
-            cboParameter.Items.Add(CodeGenerator.SpritePlanParentProperty + ".GetMousePosition()");
+            cboParameter.Items.Add(CodeGenerator.ParentLayerProperty + ".GetMousePosition()");
          }
          else if (string.Compare(param.Type.Name, CodeGenerator.SpriteBaseClass) == 0)
          {
@@ -974,6 +983,9 @@ namespace SGDK2
                      break;
                   case "CustomObject":
                      FillComboWithCustomObjects(cboParameter, param);
+                     break;
+                  case "SpriteDefinition":
+                     FillComboWithSpriteDefinitions(cboParameter);
                      break;
                }
             }
@@ -1210,7 +1222,7 @@ namespace SGDK2
          }
 
          txtRuleName.Enabled = lblRuleName.Enabled =
-            cboRuleType.Enabled = true;
+            cboRuleType.Enabled = chkSuspended.Enabled = true;
 
          if (String.Compare(cboRuleType.Text, "End", true) == 0)
          {
@@ -1219,7 +1231,7 @@ namespace SGDK2
                lblParam2.Enabled = cboParam2.Enabled =
                lblParam3.Enabled = cboParam3.Enabled =
                lblOutput.Enabled = cboOutput.Enabled =
-               chkEndIf.Enabled = chkSuspended.Enabled = false;
+               chkEndIf.Enabled = false;
             return;
          }
          

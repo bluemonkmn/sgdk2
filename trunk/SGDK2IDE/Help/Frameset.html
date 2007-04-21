@@ -14,10 +14,10 @@
       Frameset Editor
     </h1>
     <p>
-      Framesets allow you to re-use the same graphic cells in different orientations at different sizes or through a different color filter. Whether you want to re-use graphics or not, though, you do need to create a Frameset before using any of the graphics in a sprite or tile, which in turn is necessary before seeing the graphics on a map.&nbsp; A single frameset may contain graphics from any number of graphic sheets (yes, that means they can even be different sizes).&nbsp; Performance may be improved, however,&nbsp;if you ensure that the graphics being drawn on the screen at any particular point in time are from a limited number of graphic sheet sources.
+      Framesets allow you to re-use the same graphic cells in different orientations at different sizes or through a different color filter. Whether you want to re-use graphics or not, though, you do need to create a Frameset before using any of the graphics in a sprite or tile, which in turn is necessary before seeing the graphics on a map.  A single frameset may contain graphics from any number of graphic sheets (yes, that means they can even be different sizes).  Performance may be improved, however, if you ensure that the graphics being drawn on the screen at any particular point in time are from a limited number of graphic sheet sources.
     </p>
     <p>
-      The frameset editor assists you in creating a frameset and manipulating the graphic cells to desired orientations that you plan to use in your project.&nbsp; There are two main features of this screen represented on the two tabs: Frameset and Frame Editor.&nbsp; There are also a number of commands accessible in the Frameset menu.
+      The frameset editor assists you in creating a frameset and manipulating the graphic cells to desired orientations that you plan to use in your project.  There are two main features of this screen represented on the two tabs: Frameset and Frame Editor.  There are also a number of commands accessible in the Frameset menu.
     </p>
     <h2>
       Frameset Tab
@@ -26,35 +26,35 @@
       Graphic sheet
     </h3>
     <p class="SubPara">
-      The left side of this tab allows you to select graphic cells that will serve as the source graphics for the frames in the frameset.&nbsp; Select a graphic sheet from the dropdown list at the top.&nbsp; The cells within the graphic sheet are displayed in the panel below.&nbsp; You can select which cells you would like to add to the frameset directly, or select a cell and manipulate it before adding it to the frameset.
+      The left side of this tab allows you to select graphic cells that will serve as the source graphics for the frames in the frameset.  Select a graphic sheet from the dropdown list at the top.  The cells within the graphic sheet are displayed in the panel below.  You can select which cells you would like to add to the frameset directly, or select a cell and manipulate it before adding it to the frameset.
     </p>
     <p class="SubPara">
-      In many cases, you'll want to start out by adding many or all frames from a graphic sheet to the frameset.&nbsp; To do this, select the first cell in the graphic sheet by clicking on it, and then hold shift while clicking on the last cell.&nbsp; One all the cells are selected, you can press Ctrl-A or select "Add selected cells to frameset" from the Frameset menu or toolbar.
+      In many cases, you'll want to start out by adding many or all frames from a graphic sheet to the frameset.  To do this, select the first cell in the graphic sheet by clicking on it, and then hold shift while clicking on the last cell.  One all the cells are selected, you can press Ctrl-A or select "Add selected cells to frameset" from the Frameset menu or toolbar.
     </p>
     <p class="SubPara">
-      If you'd like to manipulate a graphic cell before adding it to the frameset, select a single cell, and then click on the "Frame Editor" tab.&nbsp; From there you can save the manipulated graphic as a new frame on the end of the frameset.&nbsp; (See below for more information about the Frame Editor tab.)
+      If you'd like to manipulate a graphic cell before adding it to the frameset, select a single cell, and then click on the "Frame Editor" tab.  From there you can save the manipulated graphic as a new frame on the end of the frameset.  (See below for more information about the Frame Editor tab.)
     </p>
     <h3>
       Frameset
     </h3>
     <p class="SubPara">
-      The right side of this tab displays the contents of the frameset (all the frames). At the top you can see and change the frameset's name.&nbsp; In the panel below the name, is a list of all the frames. If there are different size frames or frames that are offset differently from the origin, the space allocated for each frame will be larger than the graphics in the frame itself. The properties of the selected are displayed at the bottom and can be edited directly.&nbsp;These properties include all the information about the frame, which means you can also change the transformation matrix directly on this tab if you know which numbers to put where.&nbsp; The "Frame Editor" tab functions mainly as a convenience to come up with these numbers with a visual editor, but the actual data for the frames transformation is stored and displayed here.&nbsp; Here is a listing of the properties and their descriptions:
+      The right side of this tab displays the contents of the frameset (all the frames). At the top you can see and change the frameset's name.  In the panel below the name, is a list of all the frames. If there are different size frames or frames that are offset differently from the origin, the space allocated for each frame will be larger than the graphics in the frame itself. The properties of the selected are displayed at the bottom and can be edited directly. These properties include all the information about the frame, which means you can also change the transformation matrix directly on this tab if you know which numbers to put where.  The "Frame Editor" tab functions mainly as a convenience to come up with these numbers with a visual editor, but the actual data for the frames transformation is stored and displayed here.  Here is a listing of the properties and their descriptions:
     </p>
     <ul class="SubList">
       <li>
-        <strong>ModuleateAlpha</strong> - Affects how transparently the frame is drawn.&nbsp; A value of 0 results in an invisible frame, a value of 255 results in an opaque frame, and a value of 128 results in a 50%&nbsp;transparent frame.
+        <strong>ModuleateAlpha</strong> - Affects how transparently the frame is drawn.  A value of 0 results in an invisible frame, a value of 255 results in an opaque frame, and a value of 128 results in a 50% transparent frame.
       </li>
       <li>
-        <strong>ModulateBlue</strong> - Affects how much of the graphic cell's blue is drawn.&nbsp; A value of 0 removes all blue from the image (blue becomes black, white becomes yellow, cyan becomes green, etc).&nbsp; A value of 255 retains all the blue in the image (leaving it unaffected), and a value of 128 removes half the blue from the image (blue becomes dark blue, white becomes light yellow, etc).
+        <strong>ModulateBlue</strong> - Affects how much of the graphic cell's blue is drawn.  A value of 0 removes all blue from the image (blue becomes black, white becomes yellow, cyan becomes green, etc).  A value of 255 retains all the blue in the image (leaving it unaffected), and a value of 128 removes half the blue from the image (blue becomes dark blue, white becomes light yellow, etc).
       </li>
       <li>
-        <strong>ModulateGreen</strong> - Affects how much of the graphic cell's green is drawn.&nbsp;A value of 0 removes all green from the image (green becomes black, white becomes magenta, cyan becomes blue, etc).&nbsp; A value of 255 retains all the green in the image (leaving it unaffected), and a value of 128 removes half the green from the image (green becomes dark green, white becomes pink, etc).
+        <strong>ModulateGreen</strong> - Affects how much of the graphic cell's green is drawn. A value of 0 removes all green from the image (green becomes black, white becomes magenta, cyan becomes blue, etc).  A value of 255 retains all the green in the image (leaving it unaffected), and a value of 128 removes half the green from the image (green becomes dark green, white becomes pink, etc).
       </li>
       <li>
-        <strong>ModulateRed</strong> -&nbsp;Affects how much of the graphic cell's&nbsp;red is drawn.&nbsp;A value of 0 removes all red from the image (red becomes black, white becomes cyan,&nbsp;yellow becomes green, etc).&nbsp; A value of 255 retains all the red in the image (leaving it unaffected), and a value of 128 removes half the red from the image (red becomes dark red, white becomes light cyan, etc).
+        <strong>ModulateRed</strong> - Affects how much of the graphic cell's red is drawn. A value of 0 removes all red from the image (red becomes black, white becomes cyan, yellow becomes green, etc).  A value of 255 retains all the red in the image (leaving it unaffected), and a value of 128 removes half the red from the image (red becomes dark red, white becomes light cyan, etc).
       </li>
       <li>
-        <strong>FrameValue</strong> - Shows the index of the frame within the frameset.&nbsp; You can change this only by dragging the frame to a new position in the frameset.
+        <strong>FrameValue</strong> - Shows the index of the frame within the frameset.  You can change this only by dragging the frame to a new position in the frameset.
       </li>
       <li>
         <strong>dx</strong> - Represents the part of the transformation matrix that determines how for the graphic is offset horizontally when drawn.
@@ -75,24 +75,24 @@
         <strong>m22</strong> - Represents the part of the transformation matrix that affects vertical scaling.
       </li>
       <li>
-        <strong>CellIndex</strong> - This represents the index of the cell in the graphic sheet on which the frame is based.&nbsp; Changing this will cause the selected&nbsp;frame apply all the same transformations to a different image in the graphic sheet.
+        <strong>CellIndex</strong> - This represents the index of the cell in the graphic sheet on which the frame is based.  Changing this will cause the selected frame apply all the same transformations to a different image in the graphic sheet.
       </li>
       <li>
-        <strong>GraphicSheet</strong> - This represents the graphic sheet from which the frame's image is taken.&nbsp; Changing this will use a cell from another graphic sheet with all the same transfomrations applied to this frame.
+        <strong>GraphicSheet</strong> - This represents the graphic sheet from which the frame's image is taken.  Changing this will use a cell from another graphic sheet with all the same transfomrations applied to this frame.
       </li>
     </ul>
     <p class="SubPara">
-      You can move and copy frames by dragging them.&nbsp; Pressing control while dragging will make a copy of the frame instead of moving it.&nbsp; You can also select multiple frames and mass-change properties.&nbsp; For example, if you want to make a set of frames use graphics from another graphic sheet (at the same indexes they're using now), you could select the frames, then select the new graphic sheet.
+      You can move and copy frames by dragging them.  Pressing control while dragging will make a copy of the frame instead of moving it.  You can also select multiple frames and mass-change properties.  For example, if you want to make a set of frames use graphics from another graphic sheet (at the same indexes they're using now), you could select the frames, then select the new graphic sheet.
     </p>
     <p class="SubPara">
       <strong>Notes:</strong>
     </p>
     <ul class="SubList">
-      <li>Changing CellIndex,&nbsp;to a number beyond the number of cells in the selected graphic sheet will result in an error.
+      <li>Changing CellIndex, to a number beyond the number of cells in the selected graphic sheet will result in an error.
       </li>
-      <li>Changing GraphicSheet to a sheet&nbsp;that doesn't have cells numbering up to CellIndex will also result in an error.
+      <li>Changing GraphicSheet to a sheet that doesn't have cells numbering up to CellIndex will also result in an error.
       </li>
-      <li>Moving frames around in the frame sequence&nbsp;may cause undesirable results on tiles and sprites that use this frameset.&nbsp; If you move frame 1 to frame 3, then anything referencing frames 1, 2 and 3 will now refer to former frames 2, 3 and 1 respectively.&nbsp; The frame indexes in referring objects are not changed to reflect new frame positions. The former frame 2 is now at position 1, and anything referencing frame 1 will display what used to be frame 2.
+      <li>Moving frames around in the frame sequence may cause undesirable results on tiles and sprites that use this frameset.  If you move frame 1 to frame 3, then anything referencing frames 1, 2 and 3 will now refer to former frames 2, 3 and 1 respectively.  The frame indexes in referring objects are not changed to reflect new frame positions. The former frame 2 is now at position 1, and anything referencing frame 1 will display what used to be frame 2.
       </li>
     </ul>
     <p class="SubPara">
@@ -102,40 +102,40 @@
       Frame Editor Tab
     </h2>
     <p>
-      The frame editor tab allows you to visually manipulate the shape and orientation of a graphic cell and update a frameset frame with the results.&nbsp; If you select a graphic cell on the left half of the Frameset tab before switching to this tab, then saving the frame will add a new frame to the frameset.&nbsp; Othwerwise the edited frame will be saved back to the frame that was selected before switching to the Frame Editor tab.
+      The frame editor tab allows you to visually manipulate the shape and orientation of a graphic cell and update a frameset frame with the results.  If you select a graphic cell on the left half of the Frameset tab before switching to this tab, then saving the frame will add a new frame to the frameset.  Othwerwise the edited frame will be saved back to the frame that was selected before switching to the Frame Editor tab.
     </p>
     <h3>
       Coordinate Preview
     </h3>
     <p class="SubPara">
-      This view covering the main portion of the frame editor tab shows how the graphic will appear relative to the coordinates at which it is drawn (its origin).&nbsp;By moving the mouse over the graphic you can drag it to a new position relative to this origin.&nbsp; Most sprites and tiles are drawn below and to the right of their origin, but here you can designate certain graphics to draw beyond those usual boundaries.&nbsp; By moving the mouse over the drag handles on the surrounding frame, and dragging them, you can scale the frame to a new size.&nbsp; Similar operations can be achieved by entering specific numbers in the controls below or selecting commands from the context menu.
+      This view covering the main portion of the frame editor tab shows how the graphic will appear relative to the coordinates at which it is drawn (its origin). By moving the mouse over the graphic you can drag it to a new position relative to this origin.  Most sprites and tiles are drawn below and to the right of their origin, but here you can designate certain graphics to draw beyond those usual boundaries.  By moving the mouse over the drag handles on the surrounding frame, and dragging them, you can scale the frame to a new size.  Similar operations can be achieved by entering specific numbers in the controls below or selecting commands from the context menu.
     </p>
     <h3>
       Rotation
     </h3>
     <p class="SubPara">
-      Below the Coordinate preview is a slider that you can drag to any position to rotate the graphic from a range of -179 degrees to +180 degrees.&nbsp; If you know a specific rotation that you'd like to apply to the graphic you can also enter it in the text box below the rotation slider.&nbsp; Rotation can be applied either around the origin or around the center of the image.&nbsp; Generally rotation is desired around the center of the image, but you can un-check the box if you want to rotate (by slider or text entry) around the origin.&nbsp; Positive rotations&nbsp;are clockwise and negative rotations are counter-clockwise.
+      Below the Coordinate preview is a slider that you can drag to any position to rotate the graphic from a range of -179 degrees to +180 degrees.  If you know a specific rotation that you'd like to apply to the graphic you can also enter it in the text box below the rotation slider.  Rotation can be applied either around the origin or around the center of the image.  Generally rotation is desired around the center of the image, but you can un-check the box if you want to rotate (by slider or text entry) around the origin.  Positive rotations are clockwise and negative rotations are counter-clockwise.
     </p>
     <p class="SubPara">
-      Note that if you scale or move the image after rotating, all the controls are reset (but the transformation is retained), so make sure your rotation is correct before&nbsp;proceeding with&nbsp;other transformations.&nbsp; This is done because scaling and&nbsp;translation do not always behave intuitively when they are being applied at the same time as rotation, therefore the rotation is applied before any other types of pperations are introduced.
+      Note that if you scale or move the image after rotating, all the controls are reset (but the transformation is retained), so make sure your rotation is correct before proceeding with other transformations.  This is done because scaling and translation do not always behave intuitively when they are being applied at the same time as rotation, therefore the rotation is applied before any other types of pperations are introduced.
     </p>
     <h3>
       Scaling
     </h3>
     <p class="SubPara">
-      Below the rotation controls you can manually enter a precice scaling value.&nbsp; Negative values for "X Scale" will flip the image horizontally accross the origin.&nbsp; Negative values for "Y Scale" will flip the image vertically accross the origin.&nbsp; Note that when the image is flipped accross one axis and you are applying a rotation on top of that, rotation occurs in the opposite direction.
+      Below the rotation controls you can manually enter a precice scaling value.  Negative values for "X Scale" will flip the image horizontally accross the origin.  Negative values for "Y Scale" will flip the image vertically accross the origin.  Note that when the image is flipped accross one axis and you are applying a rotation on top of that, rotation occurs in the opposite direction.
     </p>
     <h3>
       Offset
     </h3>
     <p class="SubPara">
-      At the bottom of the Frame Editor you can enter specific offsets&nbsp;to move the frames position relative to its origin.&nbsp; These numbers are measured in pixels.&nbsp; Entering fractional values will cause the frame to draw anti-aliased "between" pixel positions.
+      At the bottom of the Frame Editor you can enter specific offsets to move the frames position relative to its origin.  These numbers are measured in pixels.  Entering fractional values will cause the frame to draw anti-aliased "between" pixel positions.
     </p>
     <h3>
       Reset
     </h3>
     <p class="SubPara">
-      This button will clear all matrix transformations applied to the frame.&nbsp; Note that this does not just reset the image to the state it was in when you entered the Frame Editor, but to the completely un-transformed graphic cell.
+      This button will clear all matrix transformations applied to the frame.  Note that this does not just reset the image to the state it was in when you entered the Frame Editor, but to the completely un-transformed graphic cell.
     </p>
     <h3>
       OK
@@ -165,13 +165,13 @@
       Delete Selected Frames
     </h3>
     <p class="SubPara">
-      Removes the currently selected frames in the Frameset pane from the frameset.&nbsp; If your attempt to remove frames would result in a tileset or sprite definition referring to frame indexes beyond the bounds of the new frameset, you will be notified and unable to delete the frames until you address the issue in the appropriate tileset or sprite definition.&nbsp; Note that deleting frames causes all the frame indexes after the deleted frames to change, which can impact the related tilesets and sprite definitions undesirably.&nbsp; Therefore, if you have tilesets and sprite definitions based on the frameset,&nbsp;it's recommended that you simply leave the frame unused (possibly mark it with a particular cell), instead of deleting it.&nbsp; Then if/when you want to insert or add a frame, re-use that&nbsp;unused frame for a new purpose.
+      Removes the currently selected frames in the Frameset pane from the frameset.  If your attempt to remove frames would result in a tileset or sprite definition referring to frame indexes beyond the bounds of the new frameset, you will be notified and unable to delete the frames until you address the issue in the appropriate tileset or sprite definition.  Note that deleting frames causes all the frame indexes after the deleted frames to change, which can impact the related tilesets and sprite definitions undesirably.  Therefore, if you have tilesets and sprite definitions based on the frameset, it's recommended that you simply leave the frame unused (possibly mark it with a particular cell), instead of deleting it.  Then if/when you want to insert or add a frame, re-use that unused frame for a new purpose.
     </p>
     <h3>
       Transform Selected Frames
     </h3>
     <p class="SubPara">
-      The commands in this menu can be used on either the Frameset tab or the Frame Editor tab to apply pre-defined transformations to frames.&nbsp; On the Frameset tab you can select one or more frames and immediately apply a transformation to them without visiting the Frame Editor tab if it's a transformation represented by one of the commands in this menu.&nbsp; On the Frame Editor tab, the transformation will apply to the frame being edited.&nbsp; Most of the commands are self-explanatory; here is a list:
+      The commands in this menu can be used on either the Frameset tab or the Frame Editor tab to apply pre-defined transformations to frames.  On the Frameset tab you can select one or more frames and immediately apply a transformation to them without visiting the Frame Editor tab if it's a transformation represented by one of the commands in this menu.  On the Frame Editor tab, the transformation will apply to the frame being edited.  Most of the commands are self-explanatory; here is a list:
     </p>
     <ul class="SubList">
       <li>Horizontal Flip
@@ -224,14 +224,14 @@
       </li>
       <li>Custom... - Switches to the Frame Editor tab
       </li>
-      <li>Reset - Clears all matrix transformations for the&nbsp;selected frame(s),&nbsp;resulting in the un-transformed graphic cell being drawn.
+      <li>Reset - Clears all matrix transformations for the selected frame(s), resulting in the un-transformed graphic cell being drawn.
       </li>
     </ul>
     <h3>
       Frame Remapping Wizard
     </h3>
     <p class="SubPara">
-      This wizard walks you through the steps of copying or remapping frames in a frameset to use different graphics.&nbsp; This wizard can perform the following operations:
+      This wizard walks you through the steps of copying or remapping frames in a frameset to use different graphics.  This wizard can perform the following operations:
     </p>
     <ul class="SubList">
       <li>Change the graphic sheet referenced by frames.
@@ -242,13 +242,13 @@
       </li>
     </ul>
     <p class="SubPara">
-      The results of the wizard can either change existing frames in place or copy the frames to the end of the current frameset or a new frameset.&nbsp;
+      The results of the wizard can either change existing frames in place or copy the frames to the end of the current frameset or a new frameset. 
     </p>
     <h3>
       Edit Graphic Cell...
     </h3>
     <p class="SubPara">
-      You can jump directly to the graphic sheet editor to change the graphics used by a particular frame by selecting this command from the Frameset menu or the context menu.&nbsp; Note that since you are editing the cell,&nbsp;edits&nbsp;will affect all frames that reference the same graphic cell.
+      You can jump directly to the graphic sheet editor to change the graphics used by a particular frame by selecting this command from the Frameset menu or the context menu.  Note that since you are editing the cell, edits will affect all frames that reference the same graphic cell.
     </p>
     <p>
       The context menu available with a right-click in the frames panel in the Frameset tab or in the Frame Editor displays all the items from the "Transform Selected Frames" menu and the "Edit Graphic Cell..." menu item for easy access.

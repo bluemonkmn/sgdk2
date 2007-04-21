@@ -23,6 +23,8 @@ public abstract class SpriteBase : GeneralRules
    private Solidity m_solidity;
    public int color;
 
+   public static SpriteBase lastCreatedSprite;
+
    /// <summary>
    /// Horizontal velocity relative to the sprite's environment (like a platform)
    /// </summary>
@@ -198,6 +200,12 @@ public abstract class SpriteBase : GeneralRules
 
    public abstract void ClearParameters();
 
+   /// <summary>
+   /// Remove the sprite from its designated categories.
+   /// USE ONLY on dynamically added sprites.
+   /// </summary>
+   public abstract void RemoveFromCategories();
+
    #endregion
 
    #region Public Methods
@@ -233,6 +241,7 @@ public abstract class SpriteBase : GeneralRules
 
    #endregion
 
+   #region Sprite Interaction
    #region Rider Feature
    /// <summary>
    /// Stores the platform sprite (the sprite that this sprite rides on).
@@ -329,6 +338,32 @@ public abstract class SpriteBase : GeneralRules
          }
       }
       return false;
+   }
+   #endregion
+   
+   [Description("Determine whether the sprite's collision mask is overlapping part of any sprite in the specified category. Return the index of the sprite within the category if a collision is occurring, otherwise return -1.")]
+   public int TestCollisionMask(SpriteCollection Targets)
+   {
+      if (!isActive)
+         return -1;
+      CollisionMask sourceMask = CurrentState.GetMask(frame);
+      if (sourceMask == null)
+         sourceMask = CollisionMask.GetRectangularMask(new System.Drawing.Size(SolidWidth, SolidHeight));
+      for (int idx = 0; idx < Targets.Count; idx++)
+      {
+         SpriteBase TargetSprite = Targets[idx];
+         if (TargetSprite == this)
+            continue;
+         if (TargetSprite.isActive)
+         {
+            CollisionMask targetMask = TargetSprite.CurrentState.GetMask(TargetSprite.frame);
+            if (targetMask == null)
+               targetMask = CollisionMask.GetRectangularMask(new System.Drawing.Size(TargetSprite.SolidWidth, TargetSprite.SolidHeight));
+            if (sourceMask.TestCollisionWith(targetMask, TargetSprite.PixelX - PixelX, TargetSprite.PixelY - PixelY))
+               return idx;
+         }         
+      }
+      return -1;
    }
    #endregion
 
@@ -638,7 +673,7 @@ public abstract class SpriteBase : GeneralRules
    public bool IsInState([Editor("SpriteState", "UITypeEditor")] int FirstState, [Editor("SpriteState", "UITypeEditor")] int LastState)
    {
       Debug.Assert(this.isActive, "Attempted to execute IsInState on an inactive sprite");
-      return (state <= FirstState) && (state >= LastState);
+      return (state >= FirstState) && (state <= LastState);
    }
 
    public int ModulateAlpha
@@ -1177,7 +1212,7 @@ public abstract class SpriteBase : GeneralRules
       return -1;
    }
 
-   [Description("Activate the next inactive sprite from a category at the coordinates of a tile being touched by the player.  Use TileTouchingIndex to acquire TouchingIndex.  Returns the index into the category of the sprite that was activated, or -1 if all sprites in the category were already active.")]
+   [Description("Activate the next inactive sprite from a category at the coordinates of a tile being touched by the sprite.  Use TileTouchingIndex to acquire TouchingIndex.  Returns the index into the category of the sprite that was activated, or -1 if all sprites in the category were already active.")]
    public int TileActivateSprite(int TouchingIndex, SpriteCollection Category, bool ClearParameters)
    {
       Debug.Assert(this.isActive, "Attempted to execute TileActivateSprite on an inactive sprite");
@@ -1201,6 +1236,20 @@ public abstract class SpriteBase : GeneralRules
          }
       }
       return -1;
+   }
+
+   [Description("Create a new (dynamic) instance of the specified sprite type at the coordinates of a tile being touched by the player.  Use TileTouchingIndex to acquire TouchingIndex.")]
+   public void TileAddSprite(int TouchingIndex, [Editor("SpriteDefinition", "UITypeEditor")] System.Type SpriteDefinition)
+   {
+      System.Reflection.ConstructorInfo constructor = SpriteDefinition.GetConstructor(new System.Type[]
+      {
+         typeof(LayerBase), typeof(double), typeof(double), typeof(double), typeof(double), typeof(int), typeof(int), typeof(bool), typeof(Display), typeof(Solidity), typeof(int), typeof(bool)
+      });
+      TouchedTile tt = (TouchedTile)TouchedTiles[TouchingIndex];
+      lastCreatedSprite = (SpriteBase)constructor.Invoke(new object[]
+      {
+         layer, tt.x * layer.Tileset.TileWidth, tt.y * layer.Tileset.TileHeight, 0, 0, 0, 0, true, layer.ParentMap.Display, null, -1, true
+      });
    }
 
    [Description("Change the specified tile that the sprite is touching to another tile. Return the number of tiles affected. (Must run TouchTiles first.)")]

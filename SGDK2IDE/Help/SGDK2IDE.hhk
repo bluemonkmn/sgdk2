@@ -25,5 +25,84 @@
 		<param name="Name" value="Scrolling Game Development Kit 2 - Tile Categories">
 		<param name="Local" value="TileCategories.html">
 		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Plan">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Map Editor">
+		<param name="Local" value="MapEditor.html">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Edit Plans">
+		<param name="Local" value="PlanEdit.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Rules">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Edit Plans">
+		<param name="Local" value="PlanEdit.html">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Sprite Rules">
+		<param name="Local" value="SpriteRule.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Sprites">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Sprite Definition">
+		<param name="Local" value="SpriteDefinition.html">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Sprite Category">
+		<param name="Local" value="SpriteCategory.html">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Sprite Parameters">
+		<param name="Local" value="SpriteParam.html">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Sprite Rules">
+		<param name="Local" value="SpriteRule.html">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Map Editor">
+		<param name="Local" value="MapEditor.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Layer">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Layer Manager">
+		<param name="Local" value="LayerManager.html">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Map Editor">
+		<param name="Local" value="MapEditor.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Counter">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Counters">
+		<param name="Local" value="EditCounters.html">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Tileset Editor">
+		<param name="Local" value="TileEdit.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Tiles">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Tileset Editor">
+		<param name="Local" value="TileEdit.html">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Tile Categories">
+		<param name="Local" value="TileCategories.html">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Map Editor">
+		<param name="Local" value="MapEditor.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Counters">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Counters">
+		<param name="Local" value="EditCounters.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Maps">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Map Manager">
+		<param name="Local" value="MapManager.html">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Map Editor">
+		<param name="Local" value="MapEditor.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Solidity">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Solidity">
+		<param name="Local" value="Solidity.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Categories">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Sprite Category">
+		<param name="Local" value="SpriteCategory.html">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Tile Categories">
+		<param name="Local" value="TileCategories.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Collision Mask">
+		<param name="Name" value="Scrolling Game Development Kit 2 - Sprite Definition">
+		<param name="Local" value="SpriteDefinition.html">
+		</OBJECT>
 </UL>
 </BODY></HTML>

@@ -1,183 +1,172 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>Scrolling Game Development Kit 2 - Layer Manager</title>
-<meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1" />
-<meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5" />
-<link href="SGDK2Help.css" type="text/css" rel="stylesheet" />
-</head>
-<body>
-<H1>Layer Manager</H1>
-<P>This window manages the general properties of a layer that must be 
-provided before the layer can be edited in the <A href="MapEditor.html">map 
-editor</A>.  It appears when creating a new layer or when editing an 
-existing layer by double-clicking a layer node in the project tree or selecting 
-it and choosing "Properties" from the View menu.  Using the wizard (click 
-the "Wizard..." button) is strongly recommended as an alternative to directly 
-editing the properties displayed in this window.  The wizard can be used 
-for defining new layers or editing the properties of existing layers, and will 
-step through the meaning of each property and assist in picking reasonable 
-values.</P>
-<P>The properties in this window can be grouped by category or simply displayed 
-alphabetically by clicking on the toolbar at the top of the grid.  This 
-page will describe the properties as grouped categorically.</P>
-<H2>Appearance</H2>
-<P>These properties affect the graphics displayed by the layer</P>
-<H3>BackgroundTile</H3>
-<P class=SubPara>When creating a new layer, you must specify a background 
-tile.  This tile will fill the new layer.  Keep in mind that this 
-doesn't necessarily form the background because placing any tile on the layer 
-will remove the existing tile at that position and replace it with a new 
-tile.  For a true background, you should use a separate layer behind this 
-layer.  When editing an existing layer, specifying a background tile will 
-replace all tiles on the layer with the value specified here.  A value 
-of "-1" for the background tile will leave the layer's tiles as they are (only 
-an option when updating an existing layer).  If you want to see what tiles 
-are available, use the wizard by clicking on the "Wizard..." button.</P>
-<H3>Tileset</H3>
-<P class=SubPara>Each layer must be associated with exactly one Tileset.  
-The tileset maps tile values on the layer (which are simply numbers) to 
-images displayed at the tiles' respective locations.  Many details of how 
-tiles are displayed on the layer are defined in the tileset.  See the <A 
-href="TileEdit.html">Tileset Editor</A> for details about the effects of various 
-tileset parameters.  For a visual tileset selector, use the wizard by 
-clicking on the "Wizard..." button.</P>
-<H2>Behavior</H2>
-<P>These properties define how the layer interacts with other elements of the 
-project.</P>
-<H3>BytesPerTile</H3>
-<P class=SubPara>Each tile on the layer is represented as a number.  But 
-the number is limited.  If you don't have too many tiles in your tileset, 
-you can store each tile in a single byte (which is a number between 0 and 255, 
-inclusive).  This results in a relatively small amount of memory required 
-to store the layer's tiles.  However, if you have more than 256 tiles in 
-the tileset, you will need to use more than one byte per tile to store the 
-number associated with each tile.  Using 2 bytes per tile doubles the 
-amount of space used to store the tiles of your layer, but allows you to put up 
-to 32,768 different tiles on the layer.  (A 2-byte integer can contain 
-65536 different values, but half of them are reserved for negative numbers, and 
-32,768 seems like a reasonably high enough number that the other half of the 
-range is not important.)  It's hard to imagine a realistic use for using 
-4-bytes per tile, but it is provided for completeness and allows you to 
-distinguish over 2 billion types of tiles.  Using the wizard will 
-automatically suggest a reasonable value for this based on the number of tiles 
-in the tileset.</P>
-<H3>Priority</H3>
-<P class=SubPara>The sprites contained within a layer can draw behind the tiles, 
-interleaved with the tiles, or in front of the tiles on the layer.  The 
-layer's priority value (combined with the sprites' priority values) determines 
-where the layer's tiles draw in relation to the sprites.  A priority of 0 
-will draw before (behind) a priority of 1, so if you want your sprites to remain 
-in front of the layer's tiles when there is overlap, you can set the priority of 
-the layer to be less than that of the sprites.  If the priority of the 
-layer is equal to the priority of a sprite, the sprite will be drawn in front of 
-tiles above it and behind tiles below it.  More specifically, the sprite 
-will draw behind a tile if the tile's origin is below that of the sprite, 
-otherwise it will draw in front of it.  The position of the origin in 
-relation to the graphic can be observed in the frame editor tab of the <A 
-href="Frameset.html">Frameset Editor</A>.  Since the default priority of 
-sprites is 0, you might want to set the priority of the layer to -1 if you 
-generally want your sprites to be drawn in front.  Interleaving sprites is 
-primarily designed for an isometric view.</P>
-<H3>ScrollRateX, ScrollRateY</H3>
-<P class=SubPara>If the scroll rate of a layer is set to a value other than 0, 
-it will automatically scroll when the map scrolls (for example, when 
-"ScrollSpriteIntoView" occurs).  By setting different layers to have 
-different scroll rates, you can achieve a parallax scrolling 3-D-looking 
-effect.  For parallax scrolling, layers farther in the background generally 
-have a scroll rate less than 1 but greater than 0, and layers appearing in the 
-foreground (in front of the layer where play is taking place) would have a 
-scroll rate greater than 1.  The horizontal scroll rate can be specified 
-independently of the vertical scroll rate.  It's reasonable to have a 
-background layer that scrolls at a rate of 0.5 horizontally and 0 vertically (no 
-vertical scrolling).</P>
-<P class=SubPara>If both scroll rates are set to 0, you can still move the layer 
-manually.  For example, it's conceivable that you could use a layer like a 
-very large sprite by setting the scroll rate to 0 and moving it manually.</P>
-<H2>Design</H2>
-<P>These properties exist primarily to support working with the 
-layer in the design environment.</P>
-<H3>Name</H3>
-<P class=SubPara>The name uniquely identifies the layer within its parent 
-map.  It only needs to be unique among the layers in the same 
-map.  The name must begin with a letter and contain only letters, digits 
-and spaces.</P>
-<H2>Layout</H2>
-<P>These properties determine the size and positioning of the layer in the 
-map.</P>
-<H3>OffsetX, OffsetY</H3>
-<P class=SubPara>Layers don't all have to be aligned to the top left corner of 
-the map. By setting these properties, you can position a small layer somewhere 
-in the middle of the map that only draws when that part of the 
-map scrolls into view. The wizard provides a visual way to position a layer 
-in the map.  Keep in mind, however, that sprites in a layer cannot normally 
-interact with tiles or sprites in another layer (although rules could 
-conceivably be written to do so), so this should be used only for 
-visual effects.</P>
-<P class=SubPara>OffsetX represents the number of pixels between the left edge 
-of the map and the left edge of the layer. OffsetY represents the number of 
-pixels between the top of the map and the top of the layer.  If the offset 
-is set on a layer whose scroll rate is not 1, be aware that this offset 
-represents the number of pixels between the edge of the map and the edge of the 
-layer <STRONG>when the map is scrolled to position 0,0</STRONG>.  Once the 
-map begins scrolling, this offset will change according to the layer's scroll 
-rate.  For example, a layer whose OffsetX is set to 10 will be 10 pixels 
-from the left edge of the map to start with.  But if ScrollRateX is set to 
-2 and the map scrolls 5 pixels to the right, then the left edge of the layer 
-will be aligned with the left edge of the map (no offset).</P>
-<H3>SizeInTiles</H3>
-<P class=SubPara>This determines how many rows and columns of tiles are stored 
-in the layer.  The total number of tiles, of course, ends up being the 
-width multiplied by the height.  To determine the number of bytes required 
-to store a layer's tiles, multiply the width by the height, and then by the 
-number of bytes per tile (specified above).  This doesn't necessarily 
-specify how big the layer's display is, but by default (when VirtualSize is set 
-to zeros) this does also determine how big the layer appears on the map.  
-See VirtualSize below for more details about a layer's display size and how it 
-interacts with SizeInTiles.</P>
-<H3>VirtualSize</H3>
-<P class=SubPara>The display size of a layer can be set independently of the 
-size of its data.  VirtualSize defines how many rows and columns of tiles 
-(yes, it's defined in tiles, not pixels) the layer will "pretend" to have.  
-That means that the number of tiles in the layer (SizeInTiles) doesn't 
-necessarily define how far the layer can scroll or where it ends.  However, 
-if VirtualSize is set to 0, SizeInTiles does then define the display size as 
-well as the data size.  When VirtualSize is larger than SizeInTiles, the 
-data "wraps" so that the data from the left edge of the layer appears at the 
-right when scrolling past the right edge of the SizeInTiles width.</P>
-<P class=SubPara>This can be useful for implementing a repetetive background 
-layer.  The SizeInTiles cold be very small like 5x5.  Then you can 
-wrap that to fill the whole background by setting the VirtualSize to match that 
-of the other layers in the map.  It could also be used to or achieve a 
-wrapping effect by allowing the player to walk off one edge (seeing the right 
-edge of the map) and "secretly" teleport back to the left edge after the edge is 
-no longer visible on the screen.  Keep in mind however, that this only 
-affects the layer's tiles.  If you put a sprite someplace on the layer, 
-then scroll far off the edge to find an identical area based on the same tiles, 
-the sprite will not appear there.</P>
-<P class=SubPara>This can be seen as either a limitation or a feature.  The 
-player can interact with the tiles as if they are in a wrapped world, and 
-removing a tile from one "copy" affects all "copies" of the displayed layer 
-tiles, but the sprites and plans on the layer will only be in one of the copies 
-unless you do extra work to make sure they are always on the "copy" that's 
-currently scrolled into view. That's the 
-limitation. <STRONG>However</STRONG>, this can also be used as a feature in 
-some cases.  You could create a relatively simple level that appears to 
-wrap infinitely (specify a very large virtual size).  This gives you a 
-lot of "level" for a relatively small amount of work and a small 
-amount of data (storage space).  Then you can hide a sprite here or a 
-plan there to introduce unique features into various "copies" of the layer 
-without having to duplicate all the tiles in the layer.</P>
-<H3>ZIndex</H3>
-<P class=SubPara>This determines where the layer appears within the sequence of 
-the layers in the map.  The lowest ZIndex is drawn first, farthest in 
-the background.  The highest is drawn last in the foreground.  The 
-wizard has a helpful interface to sort the layers into the desired arrangement 
-and adjust the ZIndex properties of multiple layers 
-accordingly.</P>
-
-
-
-</body>
+   <head>
+      <title>Scrolling Game Development Kit 2 - Layer Manager</title>
+      <meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1" />
+      <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5" />
+      <link href="SGDK2Help.css" type="text/css" rel="stylesheet" />
+   </head>
+   <body>
+      <h1>Layer Manager</h1>
+      <p>This window manages the general properties of a layer that must be provided 
+         before the layer can be edited in the <a href="MapEditor.html">map editor</a>. 
+         It appears when creating a new layer or when editing an existing layer by 
+         double-clicking a layer node in the project tree or selecting it and choosing 
+         "Properties" from the View menu. Using the wizard (click the "Wizard..." 
+         button) is strongly recommended as an alternative to directly editing the 
+         properties displayed in this window. The wizard can be used for defining new 
+         layers or editing the properties of existing layers, and will step through the 
+         meaning of each property and assist in picking reasonable values.</p>
+      <p>The properties in this window can be grouped by category or simply displayed 
+         alphabetically by clicking on the toolbar at the top of the grid. This page 
+         will describe the properties as grouped categorically.</p>
+      <h2>Appearance</h2>
+      <p>These properties affect the graphics displayed by the layer</p>
+      <h3>BackgroundTile</h3>
+      <p class="SubPara">When creating a new layer, you must specify a background tile. 
+         This tile will fill the new layer. Keep in mind that this doesn't necessarily 
+         form the background because placing any tile on the layer will remove the 
+         existing tile at that position and replace it with a new tile. For a true 
+         background, you should use a separate layer behind this layer. When editing an 
+         existing layer, specifying a background tile will replace all tiles on the 
+         layer with the value specified here. A value of "-1" for the background tile 
+         will leave the layer's tiles as they are (only an option when updating an 
+         existing layer). If you want to see what tiles are available, use the wizard by 
+         clicking on the "Wizard..." button.</p>
+      <h3>Tileset</h3>
+      <p class="SubPara">Each layer must be associated with exactly one Tileset. The 
+         tileset maps tile values on the layer (which are simply numbers) to images 
+         displayed at the tiles' respective locations. Many details of how tiles are 
+         displayed on the layer are defined in the tileset. See the <a href="TileEdit.html">
+            Tileset Editor</a> for details about the effects of various tileset 
+         parameters. For a visual tileset selector, use the wizard by clicking on the 
+         "Wizard..." button.</p>
+      <h2>Behavior</h2>
+      <p>These properties define how the layer interacts with other elements of the 
+         project.</p>
+      <h3>BytesPerTile</h3>
+      <p class="SubPara">Each tile on the layer is represented as a number. But the 
+         number is limited. If you don't have too many tiles in your tileset, you can 
+         store each tile in a single byte (which is a number between 0 and 255, 
+         inclusive). This results in a relatively small amount of memory required to 
+         store the layer's tiles. However, if you have more than 256 tiles in the 
+         tileset, you will need to use more than one byte per tile to store the number 
+         associated with each tile. Using 2 bytes per tile doubles the amount of space 
+         used to store the tiles of your layer, but allows you to put up to 32,768 
+         different tiles on the layer. (A 2-byte integer can contain 65536 different 
+         values, but half of them are reserved for negative numbers, and 32,768 seems 
+         like a reasonably high enough number that the other half of the range is not 
+         important.) It's hard to imagine a realistic use for using 4-bytes per tile, 
+         but it is provided for completeness and allows you to distinguish over 2 
+         billion types of tiles. Using the wizard will automatically suggest a 
+         reasonable value for this based on the number of tiles in the tileset.</p>
+      <h3>Priority</h3>
+      <p class="SubPara">The sprites contained within a layer can draw behind the tiles, 
+         interleaved with the tiles, or in front of the tiles on the layer. The layer's 
+         priority value (combined with the sprites' priority values) determines where 
+         the layer's tiles draw in relation to the sprites. A priority of 0 will draw 
+         before (behind) a priority of 1, so if you want your sprites to remain in front 
+         of the layer's tiles when there is overlap, you can set the priority of the 
+         layer to be less than that of the sprites. If the priority of the layer is 
+         equal to the priority of a sprite, the sprite will be drawn in front of tiles 
+         above it and behind tiles below it. More specifically, the sprite will draw 
+         behind a tile if the tile's origin is below that of the sprite, otherwise it 
+         will draw in front of it. The position of the origin in relation to the graphic 
+         can be observed in the frame editor tab of the <a href="Frameset.html">Frameset 
+            Editor</a>. Since the default priority of sprites is 0, you might want to 
+         set the priority of the layer to -1 if you generally want your sprites to be 
+         drawn in front. Interleaving sprites is primarily designed for an isometric 
+         view.</p>
+      <h3>ScrollRateX, ScrollRateY</h3>
+      <p class="SubPara">If the scroll rate of a layer is set to a value other than 0, 
+         it will automatically scroll when the map scrolls (for example, when 
+         "ScrollSpriteIntoView" occurs). By setting different layers to have different 
+         scroll rates, you can achieve a parallax scrolling 3-D-looking effect. For 
+         parallax scrolling, layers farther in the background generally have a scroll 
+         rate less than 1 but greater than 0, and layers appearing in the foreground (in 
+         front of the layer where play is taking place) would have a scroll rate greater 
+         than 1. The horizontal scroll rate can be specified independently of the 
+         vertical scroll rate. It's reasonable to have a background layer that scrolls 
+         at a rate of 0.5 horizontally and 0 vertically (no vertical scrolling).</p>
+      <p class="SubPara">If both scroll rates are set to 0, you can still move the layer 
+         manually. For example, it's conceivable that you could use a layer like a very 
+         large sprite by setting the scroll rate to 0 and moving it manually.</p>
+      <h2>Design</h2>
+      <p>These properties exist primarily to support working with the layer in the 
+         design environment.</p>
+      <h3>Name</h3>
+      <p class="SubPara">The name uniquely identifies the layer within its parent map. 
+         It only needs to be unique among the layers in the same map. The name must 
+         begin with a letter and contain only letters, digits and spaces.</p>
+      <h2>Layout</h2>
+      <p>These properties determine the size and positioning of the layer in the map.</p>
+      <h3>OffsetX, OffsetY</h3>
+      <p class="SubPara">Layers don't all have to be aligned to the top left corner of 
+         the map. By setting these properties, you can position a small layer somewhere 
+         in the middle of the map that only draws when that part of the map scrolls into 
+         view. The wizard provides a visual way to position a layer in the map. Keep in 
+         mind, however, that sprites in a layer cannot normally interact with tiles or 
+         sprites in another layer (although rules could conceivably be written to do 
+         so), so this should be used only for visual effects.</p>
+      <p class="SubPara">OffsetX represents the number of pixels between the left edge 
+         of the map and the left edge of the layer. OffsetY represents the number of 
+         pixels between the top of the map and the top of the layer. If the offset is 
+         set on a layer whose scroll rate is not 1, be aware that this offset represents 
+         the number of pixels between the edge of the map and the edge of the layer <strong>
+            when the map is scrolled to position 0,0</strong>. Once the map begins 
+         scrolling, this offset will change according to the layer's scroll rate. For 
+         example, a layer whose OffsetX is set to 10 will be 10 pixels from the left 
+         edge of the map to start with. But if ScrollRateX is set to 2 and the map 
+         scrolls 5 pixels to the right, then the left edge of the layer will be aligned 
+         with the left edge of the map (no offset).</p>
+      <h3>SizeInTiles</h3>
+      <p class="SubPara">This determines how many rows and columns of tiles are stored 
+         in the layer. The total number of tiles, of course, ends up being the width 
+         multiplied by the height. To determine the number of bytes required to store a 
+         layer's tiles, multiply the width by the height, and then by the number of 
+         bytes per tile (specified above). This doesn't necessarily specify how big the 
+         layer's display is, but by default (when VirtualSize is set to zeros) this does 
+         also determine how big the layer appears on the map. See VirtualSize below for 
+         more details about a layer's display size and how it interacts with 
+         SizeInTiles.</p>
+      <h3>VirtualSize</h3>
+      <p class="SubPara">The display size of a layer can be set independently of the 
+         size of its data. VirtualSize defines how many rows and columns of tiles (yes, 
+         it's defined in tiles, not pixels) the layer will "pretend" to have. That means 
+         that the number of tiles in the layer (SizeInTiles) doesn't necessarily define 
+         how far the layer can scroll or where it ends. However, if VirtualSize is set 
+         to 0, SizeInTiles does then define the display size as well as the data size. 
+         When VirtualSize is larger than SizeInTiles, the data "wraps" so that the data 
+         from the left edge of the layer appears at the right when scrolling past the 
+         right edge of the SizeInTiles width.</p>
+      <p class="SubPara">This can be useful for implementing a repetetive background 
+         layer. The SizeInTiles cold be very small like 5x5. Then you can wrap that to 
+         fill the whole background by setting the VirtualSize to match that of the other 
+         layers in the map. It could also be used to or achieve a wrapping effect by 
+         allowing the player to walk off one edge (seeing the right edge of the map) and 
+         "secretly" teleport back to the left edge after the edge is no longer visible 
+         on the screen. Keep in mind however, that this only affects the layer's tiles. 
+         If you put a sprite someplace on the layer, then scroll far off the edge to 
+         find an identical area based on the same tiles, the sprite will not appear 
+         there.</p>
+      <p class="SubPara">This can be seen as either a limitation or a feature. The 
+         player can interact with the tiles as if they are in a wrapped world, and 
+         removing a tile from one "copy" affects all "copies" of the displayed layer 
+         tiles, but the sprites and plans on the layer will only be in one of the copies 
+         unless you do extra work to make sure they are always on the "copy" that's 
+         currently scrolled into view. That's the limitation. <strong>However</strong>, 
+         this can also be used as a feature in some cases. You could create a relatively 
+         simple level that appears to wrap infinitely (specify a very large virtual 
+         size). This gives you a lot of "level" for a relatively small amount of work 
+         and a small amount of data (storage space). Then you can hide a sprite here or 
+         a plan there to introduce unique features into various "copies" of the layer 
+         without having to duplicate all the tiles in the layer.</p>
+      <h3>ZIndex</h3>
+      <p class="SubPara">This determines where the layer appears within the sequence of 
+         the layers in the map. The lowest ZIndex is drawn first, farthest in the 
+         background. The highest is drawn last in the foreground. The wizard has a 
+         helpful interface to sort the layers into the desired arrangement and adjust 
+         the ZIndex properties of multiple layers accordingly.</p>
+   </body>
 </html>

@@ -212,6 +212,10 @@ namespace SGDK2
       protected override void OnLoad(EventArgs e)
       {
          PopulateSpriteDefs();
+
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"SpriteCategory.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
+
          base.OnLoad (e);
       }
       protected override void OnClosing(CancelEventArgs e)

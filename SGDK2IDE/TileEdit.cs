@@ -124,6 +124,9 @@ namespace SGDK2
          TileFrames.Frameset = drTileset.FramesetRow;
          FillFramesets();
          FillCounters();
+
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"TileEdit.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
 		/// <summary>

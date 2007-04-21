@@ -120,6 +120,9 @@ namespace SGDK2
          m_Plan = ProjectData.AddSpritePlan(parent, sName, 1);
          txtName.Text = sName;
          txtPriority.Text = m_Plan.Priority.ToString();
+
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"PlanEdit.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
       public frmPlanEdit(ProjectDataset.SpritePlanRow plan)
@@ -133,6 +136,9 @@ namespace SGDK2
          txtPriority.Text = plan.Priority.ToString();
          
          QueuePopulateRules();
+
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"PlanEdit.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
       /// <summary>

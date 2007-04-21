@@ -147,7 +147,10 @@ namespace SGDK2
          RefreshLayerSprites();
          PopulateAvailableSprites();
          PopulatePlans();
-		}
+
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"MapEditor.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
+      }
 
 		/// <summary>
 		/// Clean up any resources being used.

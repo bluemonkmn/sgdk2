@@ -1418,6 +1418,8 @@ namespace SGDK2
       {
          base.OnLoad (e);
 
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.TableOfContents);
+
          try
          {
             foreach(System.Xml.XmlElement mru in SGDK2IDE.LoadUserSettings().SelectNodes("//MRUList/Entry[@Path]"))

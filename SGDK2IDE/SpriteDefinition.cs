@@ -195,6 +195,9 @@ namespace SGDK2
          FillFramesets();
          FillStates();
          InitParameters();
+
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"SpriteDefinition.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
       public frmSpriteDefinition(ProjectDataset.SpriteDefinitionRow drSpriteDef)
@@ -210,6 +213,9 @@ namespace SGDK2
          FillFramesets();
          FillStates();
          InitParameters();
+
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"SpriteDefinition.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
 		/// <summary>
@@ -2644,7 +2650,12 @@ namespace SGDK2
          if (tabSpriteDefinition.SelectedTab==tabRules)
          {
             QueuePopulateRules();
+            SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"SpriteRule.html");
          }
+         else if (tabSpriteDefinition.SelectedTab==tabStates)
+            SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"SpriteDefinition.html");
+         else
+            SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"SpriteParam.html");
       }
 
       private void txtRuleName_Validating(object sender, System.ComponentModel.CancelEventArgs e)

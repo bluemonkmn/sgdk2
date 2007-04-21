@@ -15,6 +15,16 @@ GfxEdit.html
 Frameset.html
 TileCategories.html
 TileEdit.html
+EditCounters.html
+LayerManager.html
+MapEditor.html
+MapManager.html
+PlanEdit.html
+Solidity.html
+SpriteCategory.html
+SpriteDefinition.html
+SpriteParam.html
+SpriteRule.html
 
 [INFOTYPES]
 

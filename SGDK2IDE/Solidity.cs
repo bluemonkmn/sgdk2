@@ -42,6 +42,9 @@ namespace SGDK2
          txtName.Text = sName;
 
          InitializeGrid();
+
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"Solidity.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
       public frmSolidity(ProjectDataset.SolidityRow solidity)
@@ -56,6 +59,9 @@ namespace SGDK2
          m_Solidity = solidity;
          txtName.Text = solidity.Name;
          InitializeGrid();
+
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"Solidity.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
       /// <summary>

@@ -29,3 +29,13 @@ OL OL OL
 {
    list-style: lower-roman;
 }
+
+TABLE.SubPara
+{
+   margin-left: 30px;
+}
+
+TABLE
+{
+   margin-left: 15px;
+}

@@ -1,12 +1,19 @@
+/*
+ * Created using Scrolling Game Development Kit 2.0
+ * See Project.cs for copyright/licensing details
+ */
 using System;
 using System.Drawing;
 using System.Windows.Forms;
 
 /// <summary>
-/// Form that contains and managed the main display for the game.
+/// UI that contains and manages the main display for the game.
 /// </summary>
 public class GameForm : Form
 {
+   /// <summary>
+   /// Hardware-backed display object embedded in the main window.
+   /// </summary>
    public Display GameDisplay = null;
    private Microsoft.DirectX.DirectInput.Device keyboard = null;
    private Microsoft.DirectX.DirectInput.KeyboardState m_keyboardState;
@@ -14,38 +21,70 @@ public class GameForm : Form
    private Microsoft.DirectX.DirectInput.JoystickState[] m_controllerState;
    private System.Collections.BitArray controllerEnabled;
    private System.Collections.BitArray controllerAcquired;
+   /// <summary>
+   /// Refers to the currently active primary map that is being drawn on the display
+   /// </summary>
    public MapBase CurrentMap;
+   /// <summary>
+   /// Refers to the currently active overlay map being drawn in front of the primary map
+   /// </summary>
+   /// <value>This is a null reference if no overlay is active</value>
    public MapBase OverlayMap;
+   /// <summary>
+   /// Contains a collection of all currently loaded maps.
+   /// </summary>
+   /// <remarks>The key of this collection is the type of the map class. The value is an
+   /// instance of the map.
+   /// <seealso cref="UnloadMap"/>
+   /// <seealso cref="GeneralRules.SwitchToMap"/></remarks>
    public System.Collections.Hashtable LoadedMaps = new System.Collections.Hashtable();
    private int m_fps = 0;
    private int m_frameCount = 0;
    private DateTime m_frameStart;
+   /// <summary>
+   /// Used to write debug text that will be displayed for the current frame.
+   /// </summary>
    public System.IO.StringWriter debugText = new System.IO.StringWriter();
    private bool m_quit = false;
+   /// <summary>
+   /// Provides access to the input currently coming from the players' input devices.
+   /// </summary>
+   /// <remarks>Each of these objects can refer to a <see cref="KeyboardPlayer"/>
+   /// or a <see cref="ControllerPlayer"/>, or you can create your own player input.</remarks>
    public IPlayer[] Players = new IPlayer[Project.MaxPlayers];
 
    #region Events
+   /// <summary>
+   /// Defines a mechanism by which simple notifications without any data can be triggered.
+   /// </summary>
    public delegate void SimpleNotification();
    /// <summary>
-   /// Event fires every frame even when the game is not advancing because it is minimized
+   /// Event fires every frame even when the game is not advancing.
    /// </summary>
+   /// <remarks>The game may not be moving because the window may be minimized, but
+   /// this event will still be raised. This might be useful for monitoring sounds that
+   /// might continue to play while the window is minimized.</remarks>
    public event SimpleNotification OnFrameStart;
    /// <summary>
-   /// Event fires every frame that the game is advancing right before the scene is started
+   /// Event fires every frame that the game is advancing right before the scene is started.
    /// </summary>
+   /// <remarks>This event does not occur if the game is minimized/paused.</remarks>
    public event SimpleNotification OnBeforeBeginScene;
    /// <summary>
    /// Event fires every frame that the game is advancing right before executing rules.
    /// </summary>
+   /// <remarks>This event does not occur if the game is minimized/paused.</remarks>
    public event SimpleNotification OnBeforeExecuteRules;
    /// <summary>
    /// Event fires every frame that the game is advancing while the scene is being
    /// generated, right before the overlay map is drawn.
    /// </summary>
+   /// <remarks>This event does not occur if the game is minimized/paused.</remarks>
    public event SimpleNotification OnBeforeDrawOverlay;
    /// <summary>
    /// Event fires every frame that the game is advancing after the overlay map is drawn.
    /// </summary>
+   /// <remarks>This event does not occur if the game is minimized/paused.</remarks>
    public event SimpleNotification OnAfterDrawOverlay;
    #endregion
 
@@ -60,6 +99,16 @@ public class GameForm : Form
    private System.Windows.Forms.MenuItem mnuHelpAbout;
    #endregion
 
+   /// <summary>
+   /// Constructs the main form for containing the game display.
+   /// </summary>
+   /// <param name="mode">Defines the size of the form in windowed mode and the resolution and
+   /// color depth of the display in full screen mode.</param>
+   /// <param name="windowed">Determines whether the display is initially windowed or full screen.</param>
+   /// <param name="title">Supplies a title for the window when the game is in windowed mode.</param>
+   /// <param name="initMapType">Defines the map that is initially active when the game starts.</param>
+   /// <param name="overlayMapType">Defines the map that in initially set as the
+   /// <seealso cref="OverlayMap"/> or null if there is no overlay initially.</param>
    public GameForm(GameDisplayMode mode, bool windowed, string title, System.Type initMapType, System.Type overlayMapType)
    {
       InitializeComponent();
@@ -101,6 +150,26 @@ public class GameForm : Form
       base.Dispose( disposing );
    }
 
+   /// <summary>
+   /// Main game loop initializes input devices and runs the game.
+   /// </summary>
+   /// <remarks>The general sequence of steps performed in this loop are:
+   /// <list type="number">
+   /// <item><description>Trigger <see cref="OnFrameStart"/>.</description></item>
+   /// <item><description>Check if game has been closed/quit, and exit if necessary.</description></item>
+   /// <item><description>If game is inactive draw the screen as it was when it
+   /// was last active, and skip the rest of the loop.</description></item>
+   /// <item><description>Trigger <see cref="OnBeforeBeginScene"/>.</description></item>
+   /// <item><description>Draw the main map.</description></item>
+   /// <item><description>Read players' input devices.</description></item>
+   /// <item><description>Trigger <see cref="OnBeforeExecuteRules"/>.</description></item>
+   /// <item><description>Execute the main map's rules.</description></item>
+   /// <item><description>Trigger <see cref="OnBeforeDrawOverlay"/>.</description></item>
+   /// <item><description>If an overlay map is active, draw it and execute its rules.</description></item>
+   /// <item><description>Draw the current debug output if debug mode is active, and clear the debug text buffer.</description></item>
+   /// <item><description>Trigger <see cref="OnAfterDrawOverlay"/>.</description></item>
+   /// </list>
+   /// </remarks>
    public void Run()
    {
       int coopCode;
@@ -219,6 +288,10 @@ public class GameForm : Form
       }
    }
 
+   /// <summary>
+   /// Draw the text currently in the <see cref="debugText"/> buffer and clear the buffer.
+   /// </summary>
+   /// <remarks>This will only execute in debug mode.</remarks>
    [System.Diagnostics.Conditional("DEBUG")]
    public void OutputDebugInfo()
    {
@@ -226,8 +299,7 @@ public class GameForm : Form
       GameDisplay.Device.RenderState.ScissorTestEnable = false;
       GameDisplay.D3DFont.DrawText(GameDisplay.Sprite, debugText.ToString(), GameDisplay.DisplayRectangle, Microsoft.DirectX.Direct3D.DrawTextFormat.Left, Color.White);
 
-      debugText.Close();
-      debugText = new System.IO.StringWriter();
+      debugText.GetStringBuilder().Length = 0;
       debugText.WriteLine("fps=" + m_fps.ToString());
       m_frameCount++;
       if (DateTime.Now.Subtract(m_frameStart).TotalSeconds >= 1f)
@@ -245,6 +317,15 @@ public class GameForm : Form
       base.OnClosing(e);
    }
 
+   /// <summary>
+   /// Retrieves an instance of the specified map.
+   /// </summary>
+   /// <param name="mapType">Specifies which map to retrieve by its type</param>
+   /// <returns>A newly initialized map if the map was not loaded, or the existing
+   /// map if it was already loaded.</returns>
+   /// <remarks>Loaded maps are stored in <see cref="LoadedMaps"/>.
+   /// <seealso cref="GeneralRules.UnloadMap"/>
+   /// <seealso cref="GeneralRules.SwitchToMap"/></remarks>
    public MapBase GetMap(System.Type mapType)
    {
       if (!LoadedMaps.ContainsKey(mapType))
@@ -257,11 +338,21 @@ public class GameForm : Form
          return (MapBase)(LoadedMaps[mapType]);
    }
 
+   /// <summary>
+   /// Unloads the currently loaded instance of the specified map type if it is loaded.
+   /// </summary>
+   /// <param name="mapType">Specifies which map to unload.</param>
+   /// <remarks>This is called by <see cref="GeneralRules.UnloadMap"/>.</remarks>
    public void UnloadMap(System.Type mapType)
    {
       LoadedMaps.Remove(mapType);
    }
 
+   /// <summary>
+   /// Unload all maps that are not the current primary map or overlay map.
+   /// </summary>
+   /// <remarks>This is called by <see cref="GeneralRules.UnloadBackgroundMaps"/>.
+   /// <seealso cref="UnloadMap"/></remarks>
    public void UnloadBackgroundMaps()
    {
       System.Collections.ArrayList toRemove = new System.Collections.ArrayList();
@@ -343,6 +434,9 @@ public class GameForm : Form
 
    }
 
+   /// <summary>
+   /// Represents the current state of the keyboard.
+   /// </summary>
    public Microsoft.DirectX.DirectInput.KeyboardState KeyboardState
    {
       get
@@ -351,11 +445,19 @@ public class GameForm : Form
       }
    }
 
+   /// <summary>
+   /// Retrieve information about which keys are pressed.
+   /// </summary>
+   /// <returns>Array of keys that are currently pressed.</returns>
    public Microsoft.DirectX.DirectInput.Key[] GetPressedKeys()
    {
       return keyboard.GetPressedKeys();
    }
 
+   /// <summary>
+   /// Reads the state of all relevant game controller devices into the respective
+   /// objects in <see cref="Players"/>.
+   /// </summary>
    public void ReadControllers()
    {
       if (controllerEnabled == null)
@@ -386,6 +488,9 @@ public class GameForm : Form
       }
    }
 
+   /// <summary>
+   /// Return the number of available controllers connected to the system
+   /// </summary>
    public int ControllerCount
    {
       get
@@ -396,16 +501,29 @@ public class GameForm : Form
       }
    }
 
+   /// <summary>
+   /// Return the name of a specific game controller as displayed in the options window.
+   /// </summary>
+   /// <param name="deviceNumber">Zero-based index of the game controller</param>
+   /// <returns>String containing the display name for the device</returns>
    public string GetControllerName(int deviceNumber)
    {
       return controllers[deviceNumber].DeviceInformation.InstanceName;
    }
 
+   /// <summary>
+   /// Reads the current state of a game controller
+   /// </summary>
+   /// <param name="deviceNumber">Zero-based index of the game controller</param>
    public Microsoft.DirectX.DirectInput.JoystickState GetControllerState(int deviceNumber)
    {
       return m_controllerState[deviceNumber];
    }
 
+   /// <summary>
+   /// Returns true if the controller is currently enabled for input.
+   /// </summary>
+   /// <remarks>A controller is enabled when a player is using it.</remarks>
    public System.Collections.BitArray ControllerEnabled
    {
       get
@@ -437,6 +555,11 @@ public class GameForm : Form
          frm.ShowDialog();
    }
 
+   /// <summary>
+   /// Sets an indicator that causes the game to quit at the beginning of the
+   /// next game loop.
+   /// </summary>
+   /// <remarks>This value is checked during <see cref="Run"/>.</remarks>
    public void Quit()
    {
       m_quit = true;

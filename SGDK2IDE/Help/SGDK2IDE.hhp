@@ -4,8 +4,10 @@ Compiled file=SGDK2IDE.chm
 Contents file=SGDK2IDE.hhc
 Default topic=Introduction.html
 Display compile progress=No
+Full-text search=Yes
 Index file=SGDK2IDE.hhk
 Language=0x409 English (United States)
+Title=Scrolling Game Development Kit 2 Help
 
 
 [FILES]
@@ -25,6 +27,12 @@ SpriteCategory.html
 SpriteDefinition.html
 SpriteParam.html
 SpriteRule.html
+CodeEdit.html
+GfxSheet.html
+ProjectProperties.html
+
+[MERGE FILES]
+SGDK2 Coding Reference.chm
 
 [INFOTYPES]
 

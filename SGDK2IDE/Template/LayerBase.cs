@@ -1,28 +1,73 @@
+/*
+ * Created using Scrolling Game Development Kit 2.0
+ * See Project.cs for copyright/licensing details
+ */
 using System;
 using System.Drawing;
 using Microsoft.DirectX.Direct3D;
 using Microsoft.DirectX;
 
 /// <summary>
-/// Summary description for LayerBase.
+/// Defines the basic operation of a layer of tiles and sprites within a map.
 /// </summary>
 [Serializable()]
 public abstract class LayerBase : System.Collections.IEnumerable
 {
    #region Embedded Classes
+   /// <summary>
+   /// Maintains information about a <see cref="Frame"/> that has been inserted
+   /// into the layer for the current loop.
+   /// </summary>
+   /// <remarks>Frames may be inserted behind the layer (drawn before the tiles),
+   /// Appended in front of the layer (drawn after all the tiles) or inserted between
+   /// rows of tiles in the layer (drawn after the rows above it, and before the rows
+   /// below it). Frames are generally injected into a layer by the existence of a
+   /// sprite on the layer.</remarks>
    private class InjectedFrame : IComparable
    {
+      /// <summary>
+      /// Horizontal pixel coordinate of the frame within the layer
+      /// </summary>
       public int x;
+      /// <summary>
+      /// Vertical pixel coordinate of the frame within the layer
+      /// </summary>
       public int y;
-      /* The runtime implementation only uses priority to determine
-       * whether the frame is behind the layer (-1), on the layer (0)
-       * or in front of the layer(1).  The rest of the priority
-       * handling is pre-processed by having sprites sorted in the
-       * original arrays.
-       */
+      /// <summary>
+      /// Determines whether the frame is drawn behind the layer, in front of it,
+      /// ir interleaved with the tiles.
+      /// </summary>
+      /// <value><list type="table">
+      /// <listheader><term>Value</term><description>Drawing Order</description></listheader>
+      /// <item><term>-1</term><description>Behind tiles</description></item>
+      /// <item><term>0</term><description>Interleaved with tiles</description></item>
+      /// <item><term>1</term><description>In front of tiles</description></item>
+      /// </list></value>
+      /// <remarks>Although at design time, priorities are generally specified with
+      /// a wide range of numbers on the sprite instances, all we need to know at
+      /// runtime is whether a frame is behind, interleaved or in front, so this
+      /// priority value only has 3 possible values.</remarks>
       public int priority;
+      /// <summary>
+      /// Refers to the frame that is drawn "injected" into this layer
+      /// </summary>
       public Frame frame;
+      /// <summary>
+      /// Speifies any color modulation that is applied to the frame when it is drawn
+      /// </summary>
       public int color;
+      /// <summary>
+      /// Constructs a new frame provided with all the values
+      /// </summary>
+      /// <param name="x">Initial value for <see cref="x"/></param>
+      /// <param name="y">Initial value for <see cref="y"/></param>
+      /// <param name="priority">Initial value for <see cref="priority"/></param>
+      /// <param name="frame">Initial value for <see cref="frame"/></param>
+      /// <param name="color">Initial value for <see cref="color"/></param>
+      /// <remarks>A frame may have its own color modulation value internally.
+      /// If the color provided to this constructor (presumably from the sprite's
+      /// color modulation value) and the frame's color are both specified (not the
+      /// default of -1) then they are combined.</remarks>
       public InjectedFrame(int x, int y, int priority, Frame frame, int color)
       {
          this.x = x;
@@ -38,6 +83,24 @@ public abstract class LayerBase : System.Collections.IEnumerable
       }
       #region IComparable Members
 
+      /// <summary>
+      /// Dertermine whether a specified frame should be drawn before or after this frame.
+      /// </summary>
+      /// <param name="obj">Another <see cref="InjectedFrame"/> object.</param>
+      /// <returns>A signed integer that indicates the sequence of the frames
+      /// <list type="table">
+      /// <listheader><term>Return Value</term><item>Description</item></listheader>
+      /// <item><term>Less than zero</term><description>This injected frame should be drawn
+      /// before <paramref name="obj"/>.</description></item>
+      /// <item><term>Zero</term><description>Frames overlap exactly, drawing order indeterminant.</description></item>
+      /// <item><term>Greater than zero</term><description>This injected frame should be drawn
+      /// after <paramref name="obj"/>.</description></item>
+      /// </list></returns>
+      /// <remarks><see cref="InjectFrames"/> relies on this interface to make sure that newly
+      /// injected frames will be drawn in the right order. Frames higher up in the layer are
+      /// drawn before frames that are lower down in the layer regardless of the order in which
+      /// they are injected. Frames at the same vertical position will use the horizontal position
+      /// to determine drawing order, frames on the left will draw first.</remarks>
       public int CompareTo(object obj)
       {
          int result = y.CompareTo((obj as InjectedFrame).y);
@@ -68,10 +131,23 @@ public abstract class LayerBase : System.Collections.IEnumerable
    private readonly int m_nVirtualColumns;
    private readonly int m_nVirtualRows;
    private System.Drawing.Point m_AbsolutePosition;
+   /// <summary>
+   /// A "Category" or collection of all sprites contained by the layer.
+   /// </summary>
+   /// <remarks>"Static" sprites (sprite instances added at design time in the
+   /// map editor) occupy the first portion of this collection. Any dynamically
+   /// added sprites (added with functions like <see cref="SpriteBase.TileAddSprite"/>)
+   /// are appended to the end. When a dynamically added sprite is deactivated, it is
+   /// removed from this collection.</remarks>
    public SpriteCollection m_Sprites;
    private readonly System.Drawing.SizeF m_ScrollRate;
    private System.Drawing.Point[] m_CurrentPosition = new System.Drawing.Point[Project.MaxViews];
    private MapBase m_ParentMap;
+   /// <summary>
+   /// Provides access to all sprite categories as they relate to this layer.
+   /// </summary>
+   /// <remarks>The objects provided by this member will return a collection of all sprites
+   /// in the requested category that are on this layer.</remarks>
    public LayerSpriteCategoriesBase m_SpriteCategories;
    protected readonly int m_nInjectStartIndex;
    protected readonly int m_nAppendStartIndex;
@@ -107,18 +183,30 @@ public abstract class LayerBase : System.Collections.IEnumerable
 
    #region Abstract Members
    /// <summary>
-   /// Retrieves the value of a tile at the specified tile coordinate
+   /// Retrieves or sets the value of a tile at the specified tile coordinate
    /// </summary>
    public abstract int this[int x, int y]
    {
       get;
       set;
    }
-   public abstract int[] GetTileFrame(int x, int y);
+   protected abstract int[] GetTileFrame(int x, int y);
+   /// <summary>
+   /// Retrieves information about the tile at the specified tile coordinate
+   /// </summary>
+   /// <param name="x">Horizontal tile coordinate of the tile to retrieve</param>
+   /// <param name="y">Vertical tile coordinate of the tile to retrieve</param>
+   /// <returns>Object describing the tile at the specified position in the layer.</returns>
+   /// <remarks>If the coordinate is beyond the edge of the layer's data, it wraps
+   /// to the other side of the layer in order to support layers whose virtual size
+   /// is larger than the data size.</remarks>
    public abstract TileBase GetTile(int x, int y);
    #endregion
 
    #region IEnumerable Members
+   /// <summary>
+   /// Enumerates active sprites on the layer.
+   /// </summary>
    public System.Collections.IEnumerator GetEnumerator()
    {
       return new ActiveSpriteEnumerator(m_Sprites);
@@ -239,8 +327,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
    /// The layer's current position is offset by its position on the map and scaled
    /// by the layer's scroll rate.
    /// </summary>
-   /// <param name="MapPosition">Position of the map.  If one component is int.minValue,
-   /// that axis is not affected</param>
+   /// <param name="MapPosition">Position of the map. If one component is int.minValue,
+   /// that axis is not affected.</param>
    /// <remarks>Map positions are usually negative because the map position indicates
    /// the position of the top-left corner of the map which is usually scrolled off
    /// the top-left corner of the screen to a negative position.</remarks>
@@ -255,6 +343,10 @@ public abstract class LayerBase : System.Collections.IEnumerable
          CurrentPosition = new Point(CurrentPosition.X, m_AbsolutePosition.Y + (int)(MapPosition.Y * m_ScrollRate.Height));
    }
 
+   /// <summary>
+   /// Draw the layer according to the currently active view defined by <see cref="MapBase.CurrentView"/>.
+   /// </summary>
+   /// <remarks>Drawing the layer includes drawing of all the tiles and the sprites in the layer.</remarks>
    public void Draw()
    {
       int nTileWidth = m_Tileset.TileWidth;
@@ -339,6 +431,9 @@ public abstract class LayerBase : System.Collections.IEnumerable
       }
    }
 
+   /// <summary>
+   /// Returns a rectangle within this layer that represents the currently visible portion.
+   /// </summary>
    public Rectangle VisibleArea
    {
       get
@@ -347,16 +442,42 @@ public abstract class LayerBase : System.Collections.IEnumerable
       }
    }
 
+   /// <summary>
+   /// Determines if any part of the specified sprite is visible in the current view.
+   /// </summary>
+   /// <param name="sprite">Sprite to test.</param>
+   /// <returns>True if any part of the specified sprite is visible in the map's
+   /// <see cref="MapBase.CurrentView"/>.</returns>
    public bool IsSpriteVisible(SpriteBase sprite)
    {
       return sprite.isActive && sprite.GetBounds().IntersectsWith(VisibleArea);
    }
 
+   /// <summary>
+   /// Injects a series of <see cref="Frame"/> objects into this layer, to be interleaved
+   /// with the tiles on the layer.
+   /// </summary>
+   /// <param name="x">Horizontal pixel coordinate of the location to inject the frames</param>
+   /// <param name="y">Vertical pixel coordinate of the location to inject the frames</param>
+   /// <param name="frames">Array of frames to be injected at the specified coordinate</param>
+   /// <remarks>Often times only a single frame is injected, but sprites with compound frames
+   /// may inject multiple frames at once.</remarks>
    public void InjectFrames(int x, int y, Frame[] frames)
    {
       InjectFrames(x, y, frames, -1);
    }
 
+   /// <summary>
+   /// Injects a series of <see cref="Frame"/> objects into this layer, to be interleaved
+   /// with the tiles on the layer, specifying a color modulation value.
+   /// </summary>
+   /// <param name="x">Horizontal pixel coordinate of the location to inject the frames</param>
+   /// <param name="y">Vertical pixel coordinate of the location to inject the frames</param>
+   /// <param name="frames">Array of frames to be injected at the specified coordinate</param>
+   /// <param name="color">Specifies how the color channels of the injected frames will be affected.
+   /// If the frames include their own color modulation, they will be merged with this.</param>
+   /// <remarks>Often times only a single frame is injected, but sprites with compound frames
+   /// may inject multiple frames at once.</remarks>
    public void InjectFrames(int x, int y, Frame[] frames, int color)
    {
       if (frames.Length <= 0)
@@ -381,6 +502,22 @@ public abstract class LayerBase : System.Collections.IEnumerable
       m_InjectedFrames.InsertRange(insIdx, additions);
    }
 
+   /// <summary>
+   /// Injects a series of <see cref="Frame"/> objects into this layer, to be drawn behind the
+   /// layer or in front of it, specifying a color modulation value.
+   /// </summary>
+   /// <param name="x">Horizontal pixel coordinate of the location to inject the frames</param>
+   /// <param name="y">Vertical pixel coordinate of the location to inject the frames</param>
+   /// <param name="frames">Array of frames to be injected at the specified coordinate</param>
+   /// <param name="color">Specifies how the color channels of the injected frames will be affected.
+   /// If the frames include their own color modulation, they will be merged with this.</param>
+   /// <param name="priority"><list type="table">
+   /// <listheader><term>Value</term><description>Drawing Order</description></listheader>
+   /// <item><term>-1</term><description>Behind tiles</description></item>
+   /// <item><term>1</term><description>In front of tiles</description></item>
+   /// </list></param>
+   /// <remarks>Often times only a single frame is injected, but sprites with compound frames
+   /// may inject multiple frames at once.</remarks>
    public void AppendFrames(int x, int y, Frame[] frames, int color, int priority)
    {
       InjectedFrame[] additions = new InjectedFrame[frames.Length];
@@ -394,12 +531,21 @@ public abstract class LayerBase : System.Collections.IEnumerable
          m_InjectedFrames.AddRange(additions);
    }
 
+   /// <summary>
+   /// Remove all injected frames from the layer.
+   /// </summary>
+   /// <remarks>This is performed after each time the layer is drawn to
+   /// prepare for the next iteration.</remarks>
    public void ClearInjections()
    {
       if (m_InjectedFrames != null)
          m_InjectedFrames.Clear();
    }
 
+   /// <summary>
+   /// Inject frames into the layer to represent the current images and positions of
+   /// the sprites contained in this layer for this loop iteration.
+   /// </summary>
    public void InjectSprites()
    {
       for (int i = 0; (i < m_nInjectStartIndex) && (i < m_Sprites.Count); i++)
@@ -422,6 +568,11 @@ public abstract class LayerBase : System.Collections.IEnumerable
       }
    }
 
+   /// <summary>
+   /// Execute the rules of all active sprites on this layer.
+   /// </summary>
+   /// <remarks>After the rules are executed, the function checks to see if
+   /// any dynamic sprites have been de-activated and removes them.</remarks>
    public void ProcessSprites()
    {
       foreach(SpriteBase sprite in m_Sprites)
@@ -434,6 +585,13 @@ public abstract class LayerBase : System.Collections.IEnumerable
       m_Sprites.Clean();
    }
 
+   /// <summary>
+   /// Retrieve the current mouse position
+   /// </summary>
+   /// <returns>Layer-relative coordinate representing the current position of the mouse.</returns>
+   /// <remarks>This can be used to set a sprite's position at the mouse cursor and make it behave
+   /// like a mouse pointer.
+   /// <seealso cref="PlanBase.TransportToPoint"/></remarks>
    public Point GetMousePosition()
    {
       Point dispPos;
@@ -445,6 +603,12 @@ public abstract class LayerBase : System.Collections.IEnumerable
       return dispPos;
    }
 
+   /// <summary>
+   /// Scroll the currently active view on the map so the specified sprite is visible.
+   /// </summary>
+   /// <param name="sprite">Sprite to scroll into view</param>
+   /// <param name="useScrollMargins">True to scroll the sprite so that it is also within
+   /// the scroll margins, false to only scroll it so it is fully visible in the view.</param>
    public void ScrollSpriteIntoView(SpriteBase sprite, bool useScrollMargins)
    {
       Rectangle spriteBounds = sprite.GetBounds();
@@ -500,6 +664,14 @@ public abstract class LayerBase : System.Collections.IEnumerable
       ParentMap.Scroll(new Point(newX, newY));
    }
 
+   /// <summary>
+   /// Push the specified sprite into the currently active view.
+   /// </summary>
+   /// <param name="sprite">Sprite to be pushed</param>
+   /// <param name="stayInScrollMargins">True to push the sprite until it's within the scroll
+   /// margins, or false to only push it until it's fully visible in the view.</param>
+   /// <remarks>This only affects the sprites intended velocity and does not actually move it.
+   /// Solidity ot other factors could still impede the sprite's ability to stay in the view.</remarks>
    public void PushSpriteIntoView(SpriteBase sprite, bool stayInScrollMargins)
    {
       Rectangle spriteBounds = sprite.GetBounds();
@@ -553,6 +725,17 @@ public abstract class LayerBase : System.Collections.IEnumerable
       }
    }
 
+   /// <summary>
+   /// Determine the vertical offset of the top-most solid pixel within the specified rectangle.
+   /// </summary>
+   /// <param name="testArea">Rectangle to test</param>
+   /// <param name="solid">Solidity definition defining tile shapes</param>
+   /// <returns>Layer-relative vertical coordinate (y) of the top-most solid pixel contained
+   /// in the rectangle, or <see cref="int.MinValue"/> if none exists.</returns>
+   /// <remarks>This function (and solidity in general) only deals with solid boundaries of tiles.
+   /// Therefore if the rectangle is fully embedded in a solid tile and is not crossing any solid
+   /// boundaries, the return value will indicate that no solidity was found. This allows such
+   /// features as tiles through which the player can jump upward but land down on solidly.</remarks>
    public int GetTopSolidPixel(Rectangle testArea, Solidity solid)
    {
       int topTile = (testArea.Top + m_Tileset.TileHeight) / m_Tileset.TileHeight - 1;
@@ -626,6 +809,17 @@ public abstract class LayerBase : System.Collections.IEnumerable
       return int.MinValue;
    }
 
+   /// <summary>
+   /// Determine the vertical offset of the bottom-most solid pixel within the specified rectangle.
+   /// </summary>
+   /// <param name="testArea">Rectangle to test</param>
+   /// <param name="solid">Solidity definition defining tile shapes</param>
+   /// <returns>Layer-relative vertical coordinate (y) of the bottom-most solid pixel contained
+   /// in the rectangle, or <see cref="int.MinValue"/> if none exists.</returns>
+   /// <remarks>This function (and solidity in general) only deals with solid boundaries of tiles.
+   /// Therefore if the rectangle is fully embedded in a solid tile and is not crossing any solid
+   /// boundaries, the return value will indicate that no solidity was found. This allows such
+   /// features as tiles through which the player can jump upward but land down on solidly.</remarks>
    public int GetBottomSolidPixel(Rectangle testArea, Solidity solid)
    {
       int topTile = (testArea.Top + m_Tileset.TileHeight) / m_Tileset.TileHeight - 1;
@@ -699,6 +893,17 @@ public abstract class LayerBase : System.Collections.IEnumerable
       return int.MinValue;
    }
 
+   /// <summary>
+   /// Determine the horizontal offset of the left-most solid pixel within the specified rectangle.
+   /// </summary>
+   /// <param name="testArea">Rectangle to test</param>
+   /// <param name="solid">Solidity definition defining tile shapes</param>
+   /// <returns>Layer-relative horizontal coordinate (x) of the left-most solid pixel contained
+   /// in the rectangle, or <see cref="int.MinValue"/> if none exists.</returns>
+   /// <remarks>This function (and solidity in general) only deals with solid boundaries of tiles.
+   /// Therefore if the rectangle is fully embedded in a solid tile and is not crossing any solid
+   /// boundaries, the return value will indicate that no solidity was found. This allows such
+   /// features as tiles through which the player can jump upward but land down on solidly.</remarks>
    public int GetLeftSolidPixel(Rectangle testArea, Solidity solid)
    {
       int topTile = (testArea.Top + m_Tileset.TileHeight) / m_Tileset.TileHeight - 1;
@@ -772,6 +977,17 @@ public abstract class LayerBase : System.Collections.IEnumerable
       return int.MinValue;
    }
 
+   /// <summary>
+   /// Determine the horizontal offset of the right-most solid pixel within the specified rectangle.
+   /// </summary>
+   /// <param name="testArea">Rectangle to test</param>
+   /// <param name="solid">Solidity definition defining tile shapes</param>
+   /// <returns>Layer-relative horizontal coordinate (x) of the right-most solid pixel contained
+   /// in the rectangle, or <see cref="int.MinValue"/> if none exists.</returns>
+   /// <remarks>This function (and solidity in general) only deals with solid boundaries of tiles.
+   /// Therefore if the rectangle is fully embedded in a solid tile and is not crossing any solid
+   /// boundaries, the return value will indicate that no solidity was found. This allows such
+   /// features as tiles through which the player can jump upward but land down on solidly.</remarks>
    public int GetRightSolidPixel(Rectangle testArea, Solidity solid)
    {
       int topTile = (testArea.Top + m_Tileset.TileHeight) / m_Tileset.TileHeight - 1;
@@ -847,6 +1063,9 @@ public abstract class LayerBase : System.Collections.IEnumerable
    #endregion
 }
 
+/// <summary>
+/// Represents a layer where each tile is represented as a 32-bit integer.
+/// </summary>
 [Serializable()]
 public abstract class IntLayer : LayerBase
 {
@@ -864,6 +1083,9 @@ public abstract class IntLayer : LayerBase
       m_Tiles = (int[,])(resources.GetObject(Name));
    }
 
+   /// <summary>
+   /// Retrieves or sets the value of a tile at the specified tile coordinate
+   /// </summary>
    public override int this[int x, int y]
    {
       get
@@ -876,17 +1098,23 @@ public abstract class IntLayer : LayerBase
       }
    }
 
-   public override int[] GetTileFrame(int x, int y)
+   protected override int[] GetTileFrame(int x, int y)
    {
       return m_Tileset[m_Tiles[x % m_nColumns, y % m_nRows]].CurrentFrame;
    }
 
+   /// <summary>
+   /// See <see cref="LayerBase.GetTile"/>.
+   /// </summary>
    public override TileBase GetTile(int x, int y)
    {
       return m_Tileset[m_Tiles[x % m_nColumns,y % m_nRows]];
    }
 }
 
+/// <summary>
+/// Represents a layer where each tile is represented as a 16-bit integer.
+/// </summary>
 [Serializable()]
 public abstract class ShortLayer : LayerBase
 {
@@ -903,6 +1131,13 @@ public abstract class ShortLayer : LayerBase
       m_Tiles = (short[,])(resources.GetObject(Name));
    }
 
+   /// <summary>
+   /// Retrieves or sets the value of a tile at the specified tile coordinate
+   /// </summary>
+   /// <value>A number from 0 to 32767</value>
+   /// <remarks>Although this member accepts an integer as the value (because that
+   /// is the type required by the base class), a layer of this type can only use
+   /// 16-bit values.</remarks>
    public override int this[int x, int y]
    {
       get
@@ -915,17 +1150,23 @@ public abstract class ShortLayer : LayerBase
       }
    }
 
-   public override int[] GetTileFrame(int x, int y)
+   protected override int[] GetTileFrame(int x, int y)
    {
       return m_Tileset[m_Tiles[x,y]].CurrentFrame;
    }
 
+   /// <summary>
+   /// See <see cref="LayerBase.GetTile"/>.
+   /// </summary>
    public override TileBase GetTile(int x, int y)
    {
       return m_Tileset[m_Tiles[x,y]];
    }
 }
 
+/// <summary>
+/// Represents a layer where each tile is represented as a single byte.
+/// </summary>
 [Serializable()]
 public abstract class ByteLayer : LayerBase
 {
@@ -942,6 +1183,13 @@ public abstract class ByteLayer : LayerBase
       m_Tiles = (byte[,])(resources.GetObject(Name));
    }
 
+   /// <summary>
+   /// Retrieves or sets the value of a tile at the specified tile coordinate
+   /// </summary>
+   /// <value>A number from 0 to 255</value>
+   /// <remarks>Although this member accepts an integer as the value (because that
+   /// is the type required by the base class), a layer of this type can only use
+   /// 8-bit values.</remarks>
    public override int this[int x, int y]
    {
       get
@@ -954,11 +1202,14 @@ public abstract class ByteLayer : LayerBase
       }
    }
 
-   public override int[] GetTileFrame(int x, int y)
+   protected override int[] GetTileFrame(int x, int y)
    {
       return m_Tileset[m_Tiles[x % m_nColumns, y % m_nRows]].CurrentFrame;
    }
 
+   /// <summary>
+   /// See <see cref="LayerBase.GetTile"/>.
+   /// </summary>
    public override TileBase GetTile(int x, int y)
    {
       return m_Tileset[m_Tiles[x % m_nColumns, y % m_nRows]];

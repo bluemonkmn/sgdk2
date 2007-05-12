@@ -1,0 +1,73 @@
+<html>
+<head>
+<title>Scrolling Game Development Kit 2 Coding Reference</title>
+<link rel="stylesheet" type="text/css" href="MSDN.css" />
+</head>
+<body>
+    <div id="nsbanner">
+      <div id="bannerrow1">
+        <table class="bannerparthead" cellspacing="0">
+          <tr id="hdr">
+            <td class="runninghead">Scrolling Game Development Kit 2 Coding Reference</td>
+            <td class="product">
+            </td>
+          </tr>
+        </table>
+      </div>
+      <div id="TitleRow">
+        <h1 class="dtH1">Coding Reference Overview</h1>
+      </div>
+    </div>
+    <div id="nstext">
+<p>Projects are generated and compiled by the IDE in C# using a combination of
+code from the project's Source Code folder and code that is generated based on
+the content of the project. In order to facilitate writing code for the Source
+Code folder, and to better understand the rules provided by the Sprite Rule and
+Plan Rule systems, this reference provides detailed documentation of the
+structure of the generated project.</p>
+<p>Some useful places to start:
+<div class="tablediv">
+<table class="dtTABLE" cellspacing="0">
+<thead>
+<tr style="background:lightgray"><th>Page</th><th>Description</th></tr>
+<thead>
+<tbody>
+<tr><td><a href="SpriteBaseMembers.html">SpriteBase&nbsp;Members</a></td>
+<td>Lists all properties and methods that are immediately available on the
+Sprite Definition Rules tab. From here you can see a summary of all the
+functions available and easily link to detailed descriptions of how each
+sprite rule function can be used.</td></tr>
+<tr><td><a href="PlanBaseMembers.html">PlanBase&nbsp;Members</a></td>
+<td>Lists all properties and methods that are immediately available when
+defining plan rules in the plan editor. From here you can see a summary of all
+the functions available and easily link to detailed descriptions of how
+each plan rule function can be used.</td></tr>
+</tbody>
+</table>
+</div>
+</p>
+<p>Of course there is much more to the API reference, but these are the most
+frequently used starting points even for those who aren't doing any formal
+coding, just to understand how to define rules.</p>
+<p>When using the coding reference primarily to understand how to use the
+various sprite and plan rule functions, it's important to understand how
+the UI for entering rules corresponds to the code. The following examples
+should clarify this.</p>
+<h3>Rule Definition (for Sprite Definition)</h3>
+<img src="SpriteRuleSample.GIF">
+<h3>Corresponding Generated Code</h3>
+<p>Generated in Sprites\Player.cs (for sprite named "Player") in function "ExecuteRules":</p>
+<tt style="color:green">// Show player 1 grape points</tt><br/>
+<tt>TempNum = <span style="color:blue">this</span>.TileActivateSprite(0, ParentLayer.m_SpriteCategories.Points, <span style="color:blue">true</span>);</tt>
+<h3>Rule Definition (for Plan)</h3>
+<img src="PlanRuleSample.GIF">
+<h3>Corresponding Generated Code</h3>
+<p>Generated in Level_1_Map.cs (for a plan in a map named "Level 1")
+in class "Main_Lyr" (for a layer named "Main") in a nested class named
+"ManagePlayers" (for a plan named "ManagePlayers") in function "ExecuteRules":</p>
+<tt style="color:green">// If 2 players</tt><br/>
+<tt><span style="color:blue">if</span> ((Counter.Players.CurrentValue >= 2))</tt><br/>
+<tt>{</tt>
+</div>
+</body>
+</html>

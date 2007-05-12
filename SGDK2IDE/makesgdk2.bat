@@ -155,6 +155,7 @@ echo >>Input.txt FrameRemappingWizard.cs
 echo >>Input.txt RotateWizard.cs
 echo >>Input.txt AnimPreview.cs
 echo >>Input.txt SpecifyFlags.cs
+echo >>Input.txt FrameConverter.cs
 csc /noconfig @Input.txt
 del Input.txt
 del *.resources

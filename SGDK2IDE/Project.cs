@@ -1,3 +1,7 @@
+/*
+ * Scrolling Game Development Kit 2.0
+ * See AssemblyInfo.cs for copyright/licensing details
+ */
 using System;
 using System.Drawing;
 using System.Collections;
@@ -173,7 +177,10 @@ namespace SGDK2
          SGDK2IDE.LoadFormSettings(this);
 
          grdProject.SelectedObject = new ProjectProperties(ProjectData.ProjectRow);
-		}
+
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"ProjectProperties.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
+      }
 
 		/// <summary>
 		/// Clean up any resources being used.

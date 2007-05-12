@@ -1,3 +1,7 @@
+/*
+ * Scrolling Game Development Kit 2.0
+ * See AssemblyInfo.cs for copyright/licensing details
+ */
 using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
@@ -72,6 +76,7 @@ namespace SGDK2
       private const string d3dx9File = "d3dx9_30.dll";
       private const string InjectStartIndexField = "m_nInjectStartIndex";
       private const string AppendStartIndexField = "m_nAppendStartIndex";
+      private const string TileCategoryNameClass = "TileCategoryName";
       #endregion
 
       #region Embedded Types
@@ -671,6 +676,13 @@ namespace SGDK2
       public void GenerateFramesets(System.IO.TextWriter txt)
       {
          CodeTypeDeclaration framesetClassDecl = new CodeTypeDeclaration(FramesetClass);
+
+         framesetClassDecl.Comments.AddRange(new CodeCommentStatement[]
+            {
+               new CodeCommentStatement("<summary>Provides objects that encapsulate the functionality of the framesets defined at design time.</summary>", true),
+               new CodeCommentStatement("<remarks>The class is entirely generated based on the framesets defined in the project. Static members exist to create/access instances of each frameset, and each instance represents one specific frameset. Only one instance (maximum) of each frameset will ever exist per display.</remarks>", true)
+            });
+
          framesetClassDecl.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
          framesetClassDecl.BaseTypes.Add(typeof(System.Runtime.Serialization.ISerializable));
          framesetClassDecl.Members.Add(new CodeMemberField(new CodeTypeReference(FrameClass, 1), "m_arFrames"));
@@ -730,6 +742,9 @@ namespace SGDK2
             new CodeExpression[]
             {new CodePrimitiveExpression(FramesetSerializeName)})));
 
+         classFramesetRef.Comments.Add(new CodeCommentStatement(
+            "<summary>Provides serialization services for <see cref=\"" + FramesetClass + "\" /> to allow objects that reference framesets to be saved without saving everything that is referenced by the frameset.</summary>", true));
+
          CodeMemberMethod mthRefGetObjectData = CreateGetObjectDataMethod();
          classFramesetRef.Members.Add(mthRefGetObjectData);
          mthRefGetObjectData.Statements.Add(
@@ -761,6 +776,14 @@ namespace SGDK2
             typeof(string), "Name"));
          mthGetFrameset.Parameters.Add(new CodeParameterDeclarationExpression(
             "Display", "disp"));
+         mthGetFrameset.Comments.AddRange(new CodeCommentStatement[]
+            {
+               new CodeCommentStatement("<summary>Retrieves an object representing the frameset by name</summary>", true),
+               new CodeCommentStatement("<param name=\"Name\">Specifies the name of the frameset as defined in the project at design time.</param>", true),
+               new CodeCommentStatement("<param name=\"disp\">Specifies the display to which the frameset is linked. This is used to construct the hardware objects that support the frameset if the graphics for the frameset have not been loaded into the hardware</param>", true),
+               new CodeCommentStatement("<returns>An instance of the <see cref=\"" + FramesetClass + "\"/> class.</returns>", true),
+               new CodeCommentStatement("<remarks>If the specified frameset has already been constructed for the specified display, it will be returned from the cache, otherwise a new instance will be constructed and added to the cache before returning.</remarks>", true)
+            });
          
          CodeVariableDeclarationStatement varResult = new CodeVariableDeclarationStatement(FramesetClass, "result");
          
@@ -877,6 +900,8 @@ namespace SGDK2
          indexer.HasGet=true;
          indexer.GetStatements.Add(new CodeMethodReturnStatement(new CodeArrayIndexerExpression(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "m_arFrames"), new CodeArgumentReferenceExpression("index"))));
          framesetClassDecl.Members.Add(indexer);
+         indexer.Comments.Add(
+            new CodeCommentStatement("<summary>Return the <see cref=\"" + FrameClass + "\"/> object defining the frame at the specified 0-based index within this frameset</summary>", true));
 
          CodeMemberProperty countProp = new CodeMemberProperty();
          countProp.Name = "Count";
@@ -886,6 +911,8 @@ namespace SGDK2
          countProp.HasGet = true;
          countProp.GetStatements.Add(new CodeMethodReturnStatement(new CodePropertyReferenceExpression(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "m_arFrames"), "Length")));
          framesetClassDecl.Members.Add(countProp);
+         countProp.Comments.Add(
+            new CodeCommentStatement("<summary>Return the number of frames in this frameset.</summary>", true));
 
          Generator.GenerateCodeFromType(framesetClassDecl, txt, GeneratorOptions);
          Generator.GenerateCodeFromType(classFramesetRef, txt, GeneratorOptions);
@@ -900,6 +927,18 @@ namespace SGDK2
          construct.Statements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), CounterValFld), new CodeArgumentReferenceExpression("nValue")));
          construct.Statements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), CounterMaxFld), new CodeArgumentReferenceExpression("nMax")));
          counterClassDecl.Members.Add(construct);
+         counterClassDecl.Comments.AddRange(new CodeCommentStatement[]
+            {
+               new CodeCommentStatement("<summary>Represents a numeric counter defined in the project</summary>", true),
+               new CodeCommentStatement("<remarks>This class is generated based on the counters defined in the project. Individual counter instances are represented as static members of this class whose names are based on the names defined for counters in the project.</remarks>", true)
+            });
+         construct.Comments.AddRange(new CodeCommentStatement[]
+            {
+               new CodeCommentStatement("<summary>Constructs a new counter instance given all its parameters</summary>", true),
+               new CodeCommentStatement("<param name=\"nValue\">Initial value of this counter</param>", true),
+               new CodeCommentStatement("<param name=\"nMax\">Maximum value of this counter</param>", true),
+               new CodeCommentStatement("<remarks>This is called by the generated code that creates all the counter instances to initialize all the projects' counters</remarks>", true)
+            });
 
          CodeMemberField fld = new CodeMemberField(typeof(int), CounterValFld);
          fld.Attributes = MemberAttributes.Private | MemberAttributes.Final;
@@ -933,6 +972,11 @@ namespace SGDK2
                {new CodeAssignStatement(fldRef, maxValue)});
          propDecl.SetStatements.Add(testMax);
          counterClassDecl.Members.Add(propDecl);
+         propDecl.Comments.AddRange(new CodeCommentStatement[]
+            {
+               new CodeCommentStatement("<summary>Gets or sets the current value of the counter to a specified integer</summary>", true),
+               new CodeCommentStatement("<remarks>If the value is less than zero, it is set to zero.  If it is greater than <see cref=\"" + CounterMaxProp + "\"/>, it is set to <see cref=\"" + CounterMaxProp + "\"/></remarks>.", true)
+            });
 
          propDecl = new CodeMemberProperty();
          propDecl.Attributes = MemberAttributes.Public | MemberAttributes.Final;
@@ -942,6 +986,7 @@ namespace SGDK2
          propDecl.Type = new CodeTypeReference(typeof(int));
          propDecl.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), CounterMaxFld)));
          counterClassDecl.Members.Add(propDecl);
+         propDecl.Comments.Add(new CodeCommentStatement("<summary>Returns the maximum value of this counter <seealso cref=\"" + CounterValProp + "\"/></summary>", true));
 
 
          foreach(System.Data.DataRowView drv in ProjectData.Counter.DefaultView)
@@ -973,7 +1018,12 @@ namespace SGDK2
          CodeTypeConstructor staticConstructor = new CodeTypeConstructor();
          classTileset.Members.Add(staticConstructor);
          staticConstructor.Attributes |= MemberAttributes.Static;
-
+         classTileset.Comments.AddRange( new CodeCommentStatement[]
+            {
+               new CodeCommentStatement("<summary>Represents tilesets defined in the project</summary>", true),
+               new CodeCommentStatement("<remarks>This class is generated based on tilesets defined in the project, and contains members to access all tilesets as <see cref=\"" + TilesetClass + "\"/> instances.</remarks>", true)
+            });
+         
          // Implement ISerializable
          CodeMemberMethod mthGetObjectData = CreateGetObjectDataMethod();
          classTileset.Members.Add(mthGetObjectData);
@@ -1004,6 +1054,11 @@ namespace SGDK2
             new CodeExpression[]
             { new CodePrimitiveExpression(TilesetIndexSerializeName) }));
          tilesetRefConstructor.Statements.Add(varTilesetIndex);
+         classTilesetRef.Comments.AddRange(new CodeCommentStatement[]
+            {
+               new CodeCommentStatement("<summary>Provides serialization services for <see cref=\"" + TilesetClass + "\"/> to allow classes that reference a tileset to be saved to a file without writing all the data internal to the tileset</summary>", true),
+               new CodeCommentStatement("<remarks>This class is generated when the project is compiled</remarks>", true)
+            });
 
          CodeMemberMethod mthRefGetObjectData = CreateGetObjectDataMethod();
          classTilesetRef.Members.Add(mthRefGetObjectData);
@@ -1161,7 +1216,7 @@ namespace SGDK2
                      CodeArrayCreateExpression createFrameList = new CodeArrayCreateExpression(
                         typeof(int), new CodeExpression[] {});
                      CodeFieldReferenceExpression refCategory = new CodeFieldReferenceExpression(
-                        new CodeTypeReferenceExpression("TileCategoryName"), NameToVariable(drCat.CategorizedTilesetRowParent.Name));
+                        new CodeTypeReferenceExpression(TileCategoryNameClass), NameToVariable(drCat.CategorizedTilesetRowParent.Name));
                      CodeObjectCreateExpression createTileFrameMembership = new CodeObjectCreateExpression(
                         "TileFrameMembership", new CodeExpression[]
                         { refCategory, createFrameList });
@@ -1253,6 +1308,7 @@ namespace SGDK2
             new CodeThisReferenceExpression(), TilesField),
             new CodeArgumentReferenceExpression(indexParam.Name))));
          classTileset.Members.Add(prpTile);
+         prpTile.Comments.Add(new CodeCommentStatement("<summary>Return a <see cref=\"" + TileBaseClass + "\"/> object describing the tile at the specified tile index in the tileset.</summary>", true));
 
          CodeMemberProperty prpTileWidth = new CodeMemberProperty();
          prpTileWidth.Name = "TileWidth";
@@ -1265,6 +1321,11 @@ namespace SGDK2
             new CodeFieldReferenceExpression(
             new CodeThisReferenceExpression(), TileWidthField)));
          classTileset.Members.Add(prpTileWidth);
+         prpTileWidth.Comments.AddRange(new CodeCommentStatement[]
+         {
+            new CodeCommentStatement("<summary>Return the width (in pixels) of tiles in this tileset</summary>", true),
+            new CodeCommentStatement("<remarks>This width determines the distance from one tile to the next when drawn on a layer, and does not necessarily correspond to the size of the graphics within the tile.</remarks>", true)
+         });
 
          CodeMemberProperty prpTileHeight = new CodeMemberProperty();
          prpTileHeight.Name = "TileHeight";
@@ -1277,6 +1338,11 @@ namespace SGDK2
             new CodeFieldReferenceExpression(
             new CodeThisReferenceExpression(), TileHeightField)));
          classTileset.Members.Add(prpTileHeight);
+         prpTileHeight.Comments.AddRange(new CodeCommentStatement[]
+         {
+            new CodeCommentStatement("<summary>Return the height (in pixels) of tiles in this tileset</summary>", true),
+            new CodeCommentStatement("<remarks>This height determines the distance from one tile to the next when drawn on a layer, and does not necessarily correspond to the size of the graphics within the tile.</remarks>", true)
+         });
 
          CodeMemberMethod mthCreateFrameset = new CodeMemberMethod();
          mthCreateFrameset.Name = GetFramesetMethodName;
@@ -1303,6 +1369,12 @@ namespace SGDK2
             new CodePropertyReferenceExpression(new CodeFieldReferenceExpression(
             new CodeThisReferenceExpression(), TilesField), "Length")));
          classTileset.Members.Add(prpTileCount);
+         prpTileCount.Comments.AddRange(new CodeCommentStatement[]
+         {
+            new CodeCommentStatement("<summary>Return the number of tiles in this tileset.</summary>", true),
+            new CodeCommentStatement("<remarks>This value will correspond to the largest mapped tile value or the largest frame index in the associated frameset, whichever is larger.</remarks>", true)
+         });
+
          Generator.GenerateCodeFromType(classTileset, txt, GeneratorOptions);
          Generator.GenerateCodeFromType(classTilesetRef, txt, GeneratorOptions);
       }
@@ -2549,7 +2621,7 @@ namespace SGDK2
 
       public void GenerateTileCategories(System.IO.TextWriter txt)
       {
-         CodeTypeDeclaration enumCategories = new CodeTypeDeclaration("TileCategoryName");
+         CodeTypeDeclaration enumCategories = new CodeTypeDeclaration(TileCategoryNameClass);
          enumCategories.IsEnum = true;
          foreach(System.Data.DataRowView drv in ProjectData.TileCategory.DefaultView)
          {
@@ -2560,6 +2632,12 @@ namespace SGDK2
             ((CodeMemberField)enumCategories.Members[0]).InitExpression = new CodePrimitiveExpression(0);
          enumCategories.Members.Add(new CodeMemberField(typeof(int), "Count"));
 
+         enumCategories.Comments.AddRange(new CodeCommentStatement[]
+            {
+               new CodeCommentStatement("<summary>Provides an enumerated list of every tile category defined in the project.</summary>", true),
+               new CodeCommentStatement("<remarks>This class is generated based on the tile categories defined in the project. Each category name is converted to an enumerated value based on the category name. These enumerated values can be used to refer to tile categories more efficiently than a string name would.</remarks>", true)
+            });
+
          Generator.GenerateCodeFromType(enumCategories, txt, GeneratorOptions);
       }
 
@@ -2567,6 +2645,11 @@ namespace SGDK2
       {
          CodeTypeDeclaration clsLayerSpriteCategoriesBase = new CodeTypeDeclaration(LayerSpriteCategoriesBaseClassName);
          clsLayerSpriteCategoriesBase.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
+         clsLayerSpriteCategoriesBase.Comments.AddRange(new CodeCommentStatement[]
+            {
+               new CodeCommentStatement("<summary>Provides categorized access to sprite within a layer for all categories defined in the project</summary>", true),
+               new CodeCommentStatement("<remarks>Each <see cref=\"" + LayerBaseClassName + "." + SpriteCategoriesFieldName + "\"/> member of each layer contains an instance of a class derived from this that knows how to return sprites by category for the individual layer. Each sprite category is represented as a member whose name is based on a sprite category defined in the project, and returns a <see cref=\"" + SpriteCollectionClassName + "\"/> containing the sprites in that layer that are in the named category. Even categories without any members are represented in order to allow this common base class to provide the same set of categories universally regardless of the specific layer to which it applies.</remarks>", true)
+            });
 
          foreach(System.Data.DataRowView drv in ProjectData.SpriteCategory.DefaultView)
          {
@@ -2613,6 +2696,11 @@ namespace SGDK2
             new CodeFieldReferenceExpression(
             new CodeThisReferenceExpression(), fldMappings.Name),
             new CodeArgumentReferenceExpression("mappings")));
+         clsSolidity.Comments.AddRange(new CodeCommentStatement[]
+            {
+               new CodeCommentStatement("<summary>Represents solidity definitions in the project</summary>", true),
+               new CodeCommentStatement("<remarks>This class is generated based on solidity definitions defined in the project. A solidity definition defines a set of \"rules\" that associates tiles with the shapes that they should assume when these rules are active. The \"shape\" of a tile determines how sprites react to it. Each individual solidity definition is represented as a static member of this class whose name is based on the name assigned at design-time, which returns an instance of this class</remarks>", true)
+            });
 
          CodeMemberMethod mthGetTileShape = new CodeMemberMethod();
          mthGetTileShape.Name = "GetCurrentTileShape";
@@ -2621,6 +2709,12 @@ namespace SGDK2
          mthGetTileShape.Parameters.Add(new CodeParameterDeclarationExpression(
             TileBaseClass, "tile"));
          clsSolidity.Members.Add(mthGetTileShape);
+         mthGetTileShape.Comments.AddRange(new CodeCommentStatement[]
+            {
+               new CodeCommentStatement("<summary>Retrieve the solid shape of the specified tile according to the rules of this solidity definition</summary>", true),
+               new CodeCommentStatement("<param name=\"tile\"><see cref=\"" + TileBaseClass + "\"/> object providing the necessary information to look it up in this solidity definition based on which category the tile is in.</param>", true),
+               new CodeCommentStatement("<remarks>If the tile is in multiple categories that cause it to be associated with multiple tile shapes, the first shape that matches one of the specified tile's categories will be returned. The reason the name of this method includes \"Current\" is because a tile's shape may change over time if its categorization is based on frames contained in the tile, which are linked to a counter.</remarks>", true)
+            });
 
          CodeVariableDeclarationStatement loopvar = new CodeVariableDeclarationStatement(
             typeof(int), "idx", new CodePrimitiveExpression(0));
@@ -2669,6 +2763,7 @@ namespace SGDK2
             new CodeFieldReferenceExpression(
             new CodeTypeReferenceExpression(clsSolidity.Name), fldUndefined.Name)));
          clsSolidity.Members.Add(prpUndefined);
+         prpUndefined.Comments.Add(new CodeCommentStatement("<summary>Used for all sprites that don't specify some other solidity, and yields an empty shape for all tiles.</summary>", true));
 
          foreach(System.Data.DataRowView drv in ProjectData.Solidity.DefaultView)
          {
@@ -2683,7 +2778,7 @@ namespace SGDK2
                {
                   mappings.Add(new CodeObjectCreateExpression("SolidityMapping",
                      new CodeFieldReferenceExpression(
-                     new CodeTypeReferenceExpression("TileCategoryName"),
+                     new CodeTypeReferenceExpression(TileCategoryNameClass),
                      NameToVariable(drShape.TileCategoryRow.Name)),
                      new CodeFieldReferenceExpression(
                      new CodeTypeReferenceExpression(NameToVariable(drShape.ShapeName)), "Value")));
@@ -2761,6 +2856,11 @@ namespace SGDK2
          //configD["BaseAddress"] = configR["BaseAddress"] = 
          configD.SetAttribute("CheckForOverflowUnderflow", "false");
          configR.SetAttribute("CheckforOverflowUnderflow", "false");
+         if (SGDK2IDE.CurrentProjectFile != null)
+         {
+            configD.SetAttribute("DocumentationFile", System.IO.Path.GetFileNameWithoutExtension(SGDK2IDE.CurrentProjectFile) + ".xml");
+            configR.SetAttribute("DocumentationFile", System.IO.Path.GetFileNameWithoutExtension(SGDK2IDE.CurrentProjectFile) + ".xml");
+         }
          configD.SetAttribute("DebugSymbols", "true");
          configR.SetAttribute("DebugSymbols", "false");
          configD.SetAttribute("DefineConstants", "DEBUG");

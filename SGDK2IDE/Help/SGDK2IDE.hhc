@@ -5,79 +5,99 @@
 <!-- Sitemap 1.0 -->
 </HEAD><BODY>
 <OBJECT type="text/site properties">
-	<param name="ImageType" value="Folder">
+	<param name="Window Styles" value="0x800025">
 </OBJECT>
 <UL>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="User Interface">
+		<param name="Name" value="Scrolling Game Development Kit 2 Help">
+		<param name="Local" value="Introduction.html">
+		<param name="ImageNumber" value="1">
 		</OBJECT>
 	<UL>
 		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="Introduction">
-			<param name="Local" value="Introduction.html">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="Tutorial 1">
-			<param name="Local" value="Tutorial1.html">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="Graphics Editor">
-			<param name="Local" value="GfxEdit.html">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="Frameset Editor">
-			<param name="Local" value="Frameset.html">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="Tileset Editor">
-			<param name="Local" value="TileEdit.html">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="Tile Categories">
-			<param name="Local" value="TileCategories.html">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="Edit Counters">
-			<param name="Local" value="EditCounters.html">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="Map Manager">
-			<param name="Local" value="MapManager.html">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="Layer Manager">
-			<param name="Local" value="LayerManager.html">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="Map Editor">
-			<param name="Local" value="MapEditor.html">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="Edit Plans">
-			<param name="Local" value="PlanEdit.html">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="Solidity">
-			<param name="Local" value="Solidity.html">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="Sprite Definition">
-			<param name="Local" value="SpriteDefinition.html">
+			<param name="Name" value="User Interface">
+			<param name="ImageNumber" value="1">
 			</OBJECT>
 		<UL>
 			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Sprite Parameters">
-				<param name="Local" value="SpriteParam.html">
+				<param name="Name" value="Tutorial 1">
+				<param name="Local" value="Tutorial1.html">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Sprite Rules">
-				<param name="Local" value="SpriteRule.html">
+				<param name="Name" value="Project Properties">
+				<param name="Local" value="ProjectProperties.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Graphic Sheet Properties">
+				<param name="Local" value="GfxSheet.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Graphics Editor">
+				<param name="Local" value="GfxEdit.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Frameset Editor">
+				<param name="Local" value="Frameset.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Tileset Editor">
+				<param name="Local" value="TileEdit.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Tile Categories">
+				<param name="Local" value="TileCategories.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Edit Counters">
+				<param name="Local" value="EditCounters.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Map Manager">
+				<param name="Local" value="MapManager.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Layer Manager">
+				<param name="Local" value="LayerManager.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Map Editor">
+				<param name="Local" value="MapEditor.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Edit Plans">
+				<param name="Local" value="PlanEdit.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Solidity">
+				<param name="Local" value="Solidity.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Sprite Definition">
+				<param name="Local" value="SpriteDefinition.html">
+				</OBJECT>
+			<UL>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Sprite Parameters">
+					<param name="Local" value="SpriteParam.html">
+					</OBJECT>
+				<LI> <OBJECT type="text/sitemap">
+					<param name="Name" value="Sprite Rules">
+					<param name="Local" value="SpriteRule.html">
+					</OBJECT>
+			</UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Sprite Category">
+				<param name="Local" value="SpriteCategory.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Source Code Editor">
+				<param name="Local" value="CodeEdit.html">
 				</OBJECT>
 		</UL>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="Sprite Category">
-			<param name="Local" value="SpriteCategory.html">
-			</OBJECT>
 	</UL>
+	<OBJECT type="text/sitemap">
+		<param name="Merge" value="SGDK2 Coding Reference.chm::\SGDK2 Coding Reference.hhc">
+
+		</OBJECT>
 </UL>
 </BODY></HTML>

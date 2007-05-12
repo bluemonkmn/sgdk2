@@ -1,9 +1,17 @@
+/*
+ * Created using Scrolling Game Development Kit 2.0
+ * See Project.cs for copyright/licensing details
+ */
 using System;
 using Microsoft.DirectX;
 using Microsoft.DirectX.Direct3D;
 using System.Windows.Forms;
 using System.Collections;
 
+/// <summary>
+/// Specifies a size and color depth for a display.
+/// </summary>
+/// <remarks>Color depth only applies when the display is in full screen mode.</remarks>
 public enum GameDisplayMode
 {
    m320x240x16,
@@ -58,6 +66,14 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
       }
    }
 
+   /// <summary>
+   /// Manages a reference to a graphic sheet ("texture") in the hardware.
+   /// </summary>
+   /// <remarks>This class tracks an instance of a Direct3D texture and provides
+   /// a layer of indirection, allowing a frameset to refer to a texture (via this
+   /// object) while the texture (and even the whole display) are destroyed and
+   /// re-created, without losing track of which graphics it is associated with.
+   /// </remarks>
    public class TextureRef : IDisposable
    {
       private string m_Name;
@@ -314,6 +330,9 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
    #endregion
 
    #region Public members
+   /// <summary>
+   /// Defines how the edges of teh display appear when embedded in a window.
+   /// </summary>
    public BorderStyle BorderStyle
    {
       get
@@ -327,6 +346,11 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
       }
    }
 
+   /// <summary>
+   /// Retrieve a reference to a hardware-supported graphic sheet ("texture") given its name
+   /// </summary>
+   /// <param name="Name">The name of a graphic sheet defined by the game</param>
+   /// <returns>Object that manages graphics on the hardware for this graphic sheet</returns>
    public TextureRef GetTextureRef(string Name)
    {
       if (m_TextureRefs == null)
@@ -344,6 +368,9 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
       return tex;
    }
 
+   /// <summary>
+   /// Release resources used by all hardware copies of graphic sheets
+   /// </summary>
    public void DisposeAllTextures()
    {
       if (m_TextureRefs != null)
@@ -356,6 +383,9 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
       }
    }
 
+   /// <summary>
+   /// Returns the Direct3D device supporting this display object
+   /// </summary>
    public Device Device
    {
       get
@@ -364,6 +394,9 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
       }
    }
 
+   /// <summary>
+   /// Gets or sets whether the display is running in windowed mode versus full screen mode.
+   /// </summary>
    public bool Windowed
    {
       set
@@ -544,6 +577,12 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
          throw new ApplicationException("Default display adapter is inadequate: " + errMsg);
    }
 
+   /// <summary>
+   /// Gets or sets the size/resolution and color depth of the display
+   /// </summary>
+   /// <remarks>If the display is windowed, this only affects the size. The color depth
+   /// will match that of the user's desktop. In full screen mode this affects the
+   /// resolution and color depth of the display.</remarks>
    public GameDisplayMode GameDisplayMode
    {
       get
@@ -577,6 +616,9 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
       }
    }
 
+   /// <summary>
+   /// Frees and re-creates all resources managed by the display
+   /// </summary>
    public void Recreate()
    {
       DisposeAllTextures();
@@ -618,6 +660,9 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
       return null;
    }
    
+   /// <summary>
+   /// Returns the Direct3D Sprite object implementing this display's ability to draw graphics.
+   /// </summary>
    public Sprite Sprite
    {
       get
@@ -628,6 +673,9 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
       }
    }
 
+   /// <summary>
+   /// Returns the Direct3D Font object implementing this display's ability to draw text.
+   /// </summary>
    public Font D3DFont
    {
       get
@@ -640,6 +688,10 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
       }
    }
 
+   /// <summary>
+   /// Returns the Direct3D Line object implementing this displays ability to perform simple line
+   /// drawing operations.
+   /// </summary>
    public Line D3DLine
    {
       get
@@ -668,6 +720,10 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
    #endregion
 }
 
+/// <summary>
+/// Provides serialization "services" for the <see cref="Display"/> object, preventing
+/// attempts to save or load data for the display object when the game is saved/loaded.
+/// </summary>
 [Serializable()]
 public class DisplayRef : System.Runtime.Serialization.IObjectReference, System.Runtime.Serialization.ISerializable
 {

@@ -1,3 +1,7 @@
+/*
+ * Created using Scrolling Game Development Kit 2.0
+ * See Project.cs for copyright/licensing details
+ */
 using System;
 using System.Drawing;
 using System.Collections;
@@ -5,7 +9,7 @@ using System.ComponentModel;
 using System.Windows.Forms;
 
 /// <summary>
-/// Summary description for frmControls.
+/// UI to support the player's customization of input device.
 /// </summary>
 public class frmControls : System.Windows.Forms.Form
 {

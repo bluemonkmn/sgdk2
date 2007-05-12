@@ -1,3 +1,7 @@
+/*
+ * Scrolling Game Development Kit 2.0
+ * See AssemblyInfo.cs for copyright/licensing details
+ */
 using System;
 using System.Drawing;
 using System.Collections;
@@ -464,6 +468,9 @@ namespace SGDK2
          Text = "Source Code Editor - " + m_SourceCode.Name;
          SendMessage(rtfCode.Handle, EM_SETUNDOLIMIT, 0, 0);
          base.OnLoad (e);
+
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"CodeEdit.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
       protected override void WndProc(ref Message m)

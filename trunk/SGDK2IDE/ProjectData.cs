@@ -1,3 +1,7 @@
+/*
+ * Scrolling Game Development Kit 2.0
+ * See AssemblyInfo.cs for copyright/licensing details
+ */
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;

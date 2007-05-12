@@ -1,11 +1,6 @@
 /*
  * Scrolling Game Development Kit 2.0
- *
- * Copyright © 2000 - 2005 Benjamin Marty <BlueMonkMN@email.com>
- * 
- * Distributed under the GNU General Public License (GPL)
- *   - see included file COPYING.txt for details, or visit:
- *     http://www.fsf.org/copyleft/gpl.html
+ * See AssemblyInfo.cs for copyright/licensing details
  */
 
 using System;

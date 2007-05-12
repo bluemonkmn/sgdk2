@@ -1,11 +1,6 @@
 /*
  * Scrolling Game Development Kit 2.0
- *
- * Copyright © 2000 - 2004 Benjamin Marty <BlueMonkMN@email.com>
- * 
- * Distributed under the GNU General Public License (GPL)
- *   - see included file COPYING.txt for details, or visit:
- *     http://www.fsf.org/copyleft/gpl.html
+ * See AssemblyInfo.cs for copyright/licensing details
  */
 
 using System;
@@ -155,6 +150,9 @@ namespace SGDK2
          m_RowChangeEvent = new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(ProjectData_GraphicSheetRowDeleted);
          ProjectData.GraphicSheetRowDeleted += m_RowChangeEvent;
          pgrGfxSheet.SelectedObject = DataObject = new GfxSheetProperties(EditRow);
+
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"GfxSheet.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
       public frmGfxSheet(ProjectDataset.GraphicSheetRow EditRow)
@@ -166,6 +164,9 @@ namespace SGDK2
          m_RowChangeEvent = new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(ProjectData_GraphicSheetRowDeleted);
          ProjectData.GraphicSheetRowDeleted += m_RowChangeEvent;
          pgrGfxSheet.SelectedObject = DataObject = new GfxSheetProperties(EditRow);
+
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"GfxSheet.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
 		/// <summary>

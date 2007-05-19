@@ -74,6 +74,7 @@ namespace SGDK2
       internal System.Windows.Forms.StatusBar sbMain;
       private System.Windows.Forms.MenuItem mnuFileSep4;
       private System.Windows.Forms.MenuItem mnuFileDeleteIntermediateFiles;
+      private System.Windows.Forms.MenuItem mnuNewBlankProject;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -158,6 +159,7 @@ namespace SGDK2
          this.lblProjectTree = new System.Windows.Forms.Label();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.sbMain = new System.Windows.Forms.StatusBar();
+         this.mnuNewBlankProject = new System.Windows.Forms.MenuItem();
          this.pnlProjectTree.SuspendLayout();
          this.SuspendLayout();
          // 
@@ -314,9 +316,10 @@ namespace SGDK2
          // mnuFileNewPrj
          // 
          this.mnuFileNewPrj.Index = 0;
+         this.mnuFileNewPrj.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                      this.mnuNewBlankProject});
          this.mnuFileNewPrj.MergeOrder = 1;
          this.mnuFileNewPrj.Text = "&New Project";
-         this.mnuFileNewPrj.Click += new System.EventHandler(this.mnuFileNewPrj_Click);
          // 
          // mnuFileOpenPrj
          // 
@@ -576,6 +579,12 @@ namespace SGDK2
          this.sbMain.Size = new System.Drawing.Size(800, 20);
          this.sbMain.TabIndex = 8;
          // 
+         // mnuNewBlankProject
+         // 
+         this.mnuNewBlankProject.Index = 0;
+         this.mnuNewBlankProject.Text = "<Blan&k>";
+         this.mnuNewBlankProject.Click += new System.EventHandler(this.mnuFileNewPrj_Click);
+         // 
          // frmMain
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -654,7 +663,7 @@ namespace SGDK2
          ndRoot.Nodes.Add(ndFolder);
       }
 
-      private void DoNewProject()
+      private void DoNewProject(string template)
       {
          if (ProjectData.GetChangedTables().Length > 0)
          {
@@ -682,25 +691,44 @@ namespace SGDK2
          InitializeTree();
          ProjectData.ExtendedProperties["SchemaVersion"] = "1";
 
-         // Initialize source code
-         string[] embeddedCodeFiles = System.Reflection.Assembly.GetAssembly(typeof(SGDK2IDE)).GetManifestResourceNames();
-         foreach (string resourceName in embeddedCodeFiles)
+         string templateFile = string.Empty;
+         if (!template.StartsWith("<"))
          {
-            if (resourceName.StartsWith("SGDK2.Template."))
-            {
-               System.IO.TextReader stm = new System.IO.StreamReader(System.Reflection.Assembly.GetAssembly(typeof(SGDK2IDE)).GetManifestResourceStream(resourceName));
-               ProjectData.AddSourceCode(resourceName.Substring(15), stm.ReadToEnd(), null, false, null);
-               stm.Close();
-            }
+            templateFile = System.IO.Path.Combine(
+               System.IO.Path.Combine(Application.StartupPath,
+               @"Library\Projects"), template + ".sgdk2");
          }
-         ProjectData.AcceptChanges();
+         if ((templateFile.Length <= 0) || !System.IO.File.Exists(templateFile))
+         {
+            // Initialize source code
+            string[] embeddedCodeFiles = System.Reflection.Assembly.GetAssembly(typeof(SGDK2IDE)).GetManifestResourceNames();
+            foreach (string resourceName in embeddedCodeFiles)
+            {
+               if (resourceName.StartsWith("SGDK2.Template."))
+               {
+                  System.IO.TextReader stm = new System.IO.StreamReader(System.Reflection.Assembly.GetAssembly(typeof(SGDK2IDE)).GetManifestResourceStream(resourceName));
+                  ProjectData.AddSourceCode(resourceName.Substring(15), stm.ReadToEnd(), null, false, null);
+                  stm.Close();
+               }
+            }
+            ProjectData.AcceptChanges();
+            tvwMain.CollapseAll();
+            tvwMain.Nodes[0].Expand();
+         }
+         else
+         {
+            DoOpenProject(templateFile, true);
+         }
 
-         tvwMain.CollapseAll();
-         tvwMain.Nodes[0].Expand();
          m_strProjectPath = null;
       }
 
       private void DoOpenProject(string projectFile)
+      {
+         DoOpenProject(projectFile, false);
+      }
+
+      private void DoOpenProject(string projectFile, bool asTemplate)
       {
          try
          {
@@ -711,11 +739,14 @@ namespace SGDK2
             InitializeTree();
             ProjectData.Merge(dsLoad);
             ProjectData.AcceptChanges();
-            m_strProjectPath = projectFile;
             tvwMain.CollapseAll();
             tvwMain.Nodes[0].Expand();
-            mnuFileDeleteOutputFiles.Enabled = mnuFileDeleteIntermediateFiles.Enabled = true;
-            AddMru(projectFile);
+            if (!asTemplate)
+            {
+               m_strProjectPath = projectFile;
+               mnuFileDeleteOutputFiles.Enabled = mnuFileDeleteIntermediateFiles.Enabled = true;
+               AddMru(projectFile);
+            }
          }
          finally
          {
@@ -1413,7 +1444,8 @@ namespace SGDK2
       {
          base.OnLoad (e);
 
-         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.TableOfContents);
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"MainWindow.html");
+         SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
 
          try
          {
@@ -1430,8 +1462,25 @@ namespace SGDK2
             MessageBox.Show(this, "Error loading user preferences: " + ex.ToString(), "Scrolling Game Development Kit", MessageBoxButtons.OK, MessageBoxIcon.Error);
          }
          
+         try
+         {
+            System.IO.DirectoryInfo diTemplates = new System.IO.DirectoryInfo(
+               System.IO.Path.Combine(Application.StartupPath, @"Library\Projects"));
+            EventHandler newHandler = new EventHandler(mnuFileNewPrj_Click);
+            foreach(System.IO.FileInfo fiTemplate in diTemplates.GetFiles("*.sgdk2"))
+            {
+               mnuFileNewPrj.MenuItems.Add(System.IO.Path.GetFileNameWithoutExtension(fiTemplate.Name), newHandler);
+            }
+         }
+         catch(System.Exception ex)
+         {
+            MessageBox.Show(this, "Failed to read project templates from Library\\Projects\\*.sgdk2: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+         }
+
          if (SGDK2IDE.g_CommandLine.ProjectFile == null)
-            DoNewProject();
+         {
+            DoNewProject("Default");
+         }
          else
             try
             {
@@ -1440,7 +1489,7 @@ namespace SGDK2
             catch (System.Exception ex)
             {
                MessageBox.Show(this, ex.Message, "Open Project", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-               DoNewProject();
+               DoNewProject("Default");
             }
 
          foreach(Control c in this.Controls)
@@ -2238,7 +2287,7 @@ namespace SGDK2
       {
          try
          {
-            DoNewProject();
+            DoNewProject(((MenuItem)sender).Text);
          }
          catch (Exception ex)
          {

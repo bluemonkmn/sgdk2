@@ -26,6 +26,9 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
       reflectType = typeof(System.Drawing.Color).Assembly.GetType(typeName, false);
       if (null != reflectType)
          return;
+      reflectType = typeof(System.Windows.Forms.Control).Assembly.GetType(typeName, false);
+      if (null != reflectType)
+         return;
       throw new System.ApplicationException("Failed to load type " + typeName);
    }
    #region IRemoteTypeInfo Members

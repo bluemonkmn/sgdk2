@@ -132,6 +132,8 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
    private Sprite m_Sprite = null;
    private Font m_Font = null;
    private Line m_Line = null;
+   private string fontName = null;
+   private int fontSize = 0;
    #endregion
 
    #region Initialization and clean-up
@@ -682,12 +684,37 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
       {
          if ((m_Font == null) && (m_d3d != null))
          {
-            m_Font = new Microsoft.DirectX.Direct3D.Font(m_d3d, Font);
+            if (fontName == null)
+            {
+               m_Font = new Microsoft.DirectX.Direct3D.Font(m_d3d, Font);
+            }
+            else
+            {
+               Microsoft.DirectX.Direct3D.FontDescription desc = new Microsoft.DirectX.Direct3D.FontDescription();
+               desc.FaceName = fontName;
+               desc.Height = fontSize;
+               m_Font = new Microsoft.DirectX.Direct3D.Font(m_d3d, desc);
+            }
          }
          return m_Font;
       }
    }
 
+   /// <summary>
+   /// Change the font used for drawing text on the display.
+   /// </summary>
+   /// <param name="font">Specifies a font to use</param>
+   public void SetFont(string name, int size)
+   {
+      if (m_Font != null)
+      {
+         m_Font.Dispose();
+         m_Font = null;
+      }
+      fontName = name;
+      fontSize = size;      
+   }
+   
    /// <summary>
    /// Returns the Direct3D Line object implementing this displays ability to perform simple line
    /// drawing operations.

@@ -143,7 +143,8 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    /// are immediately adjacent. The rectangles are not considered touching if the corners
    /// are only diagonally adjacent (kitty-corner). There must be some length of adjecent
    /// edge. This ensures that a plan that is blocked off by two diagonally-arranged
-   /// solid blocks can't be activated through the crack.</remarks>
+   /// solid blocks can't be touched (and thus potentially "activated") through the crack.
+   /// </remarks>
    [Description("Returns true if the specified sprite is touching this plan's rectangle")]
    public bool IsSpriteTouching(SpriteBase sprite)
    {
@@ -166,7 +167,7 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    /// </summary>
    /// <param name="sprite">Sprite whose position will be tested</param>
    /// <param name="RelativePosition">Specifies a point within the sprite to test</param>
-   /// <returns>True if the specified point within the sprcified sprite's solidity rectangle is
+   /// <returns>True if the specified point within the specified sprite's solidity rectangle is
    /// within the plan's rectangle.</returns>
    /// <remarks>Unlike <see cref="IsSpriteTouching"/>, this can only return true when the sprite
    /// and the plan's rectangle actually overlap because the point is inside the sprite's
@@ -188,7 +189,7 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    /// <remarks>This function is identical to <see cref="IsSpriteTouching"/> except that it operates
    /// on the sprite's previous position instead of its current position. This is useful for
    /// determining if the sprite just started touching a plan's rectangle or was already touching
-   /// it. Often times it's desirable to only perform an automated action like a message only
+   /// it. Often times it's desirable to perform an automated action like a message only
    /// when a sprite initially touches a plan's rectangle. It's not as desirable for plan rules
    /// that also require other conditions to activate.
    /// Consider, for example, a plan that displays
@@ -221,7 +222,7 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    /// <param name="UseScrollMargins">If true, the layer will scroll the sprite into the scroll margins
    /// of the map, otherwise it will only be scrolled just far enough for the sprite to be fully visible
    /// on the display.</param>
-   /// <remarks>For multi-player games, is may be desirable to set UseScrollMargins to false
+   /// <remarks>For multi-player games, it may be desirable to set UseScrollMargins to false
    /// to allow at least one player to get closer to the edge of the screen without trying to
    /// keep it scrolled so strictly within the scroll margin area.
    /// <seealso cref="PushSpriteIntoView"/></remarks>
@@ -310,7 +311,7 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    /// coordinate. If it is, then it checks the coordinate's <see cref="Coordinate.weight"/>,
    /// to see if the sprite is supposed to wait at this coordinate.  If it's not supposed to wait,
    /// the function returns the next coordinate index right away. If it is supposed to wait,
-   /// the function will only return thye next coordinate index if the sprite has waited the
+   /// the function will only return the next coordinate index if the sprite has waited the
    /// specified number of frames at the current coordinate.</para>
    /// <para>Normally two sprite parameters are used in conjunction with a sprite that follows
    /// a series of coordinates in a plan, and they are both passed into this function. One
@@ -393,7 +394,8 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    }
 
    /// <summary>
-   /// Determine whether the specified sprite's collision mask is overlapping part of any sprite in the specified category.
+   /// Determines whether the specified sprite's collision mask is overlapping part of any
+   /// sprite in the specified category.
    /// </summary>
    /// <param name="SourceSprite">A sprite that will be checked for collisions</param>
    /// <param name="Targets">A category of sprites against which collisions will be tested</param>
@@ -412,7 +414,8 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    }
 
    /// <summary>
-   /// Determine whether the solidity rectangle of the specified sprite overlaps that of any sprite in the specified category.
+   /// Determines whether the solidity rectangle of the specified sprite overlaps that
+   /// of any sprite in the specified category.
    /// </summary>
    /// <param name="SourceSprite">A sprite that will be checked for collisions</param>
    /// <param name="Targets">A category of sprites against which collisions will be tested</param>
@@ -450,7 +453,7 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    /// <remarks>The main differences between an active sprite and an inactive
    /// sprite are than only active sprites are drawn when they are in the visible
    /// part of the map, and only active sprites' rules are processed. Using
-   /// IsActiveSprite is a good way to determine if a sprite is currently valid
+   /// IsSpriteActive is a good way to determine if a sprite is currently valid
    /// for use because inactive sprites should not have any functions running on
    /// them except to activate them. Most functions will trigger an error message
    /// in debug mode if they find that they are operating on an inactive sprite.
@@ -468,7 +471,7 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    /// </summary>
    /// <param name="sprite">Sprite instance to be moved</param>
    /// <param name="target">Location to which the sprite will be moved</param>
-   /// <remarks>This very simply sets the position of the sprite to a sprcified
+   /// <remarks>This very simply sets the position of the sprite to a specified
    /// coordinate. No tests are performed for solidity and no velocity is
    /// changed. The old position of the target sprite, however, is tracked, so it's
    /// still possible to determine if the sprite was touching a tile or plan before
@@ -576,6 +579,13 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    /// <summary>
    /// Retrieves the coordinate specified by a 0-based index for this plan
    /// </summary>
+   /// <example>
+   /// The following code shows how you might limit the value of a coordinate so that
+   /// it doesn't exceed the value of the weight assigned to the first coordinate in
+   /// a plan. This indexer property ("this[]") is used to access the coordinates.
+   ///<code>if (Counter.AnimationCounter.CurrentValue > this[0].weight)
+   ///   Counter.AnimationCounter.CurrentValue = this[0].weight;</code>
+   ///</example>
    public Coordinate this[int index]
    {
       get
@@ -996,7 +1006,7 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    }
 
    /// <summary>
-   /// Determine if the specified sprite's specified input is pressed.
+   /// Determines if the specified sprite's specified input is pressed.
    /// </summary>
    /// <param name="Sprite">Sprite whose inputs will be examined</param>
    /// <param name="Input">Specifies which input will be examined</param>
@@ -1026,7 +1036,8 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    }
 
    /// <summary>
-   /// Create a new (dynamic) instance of the specified sprite type at the first coordinate in this plan.
+   /// Create a new (dynamic) instance of the specified sprite type at the first coordinate
+   /// in this plan.
    /// </summary>
    /// <param name="SpriteDefinition">Specifies the type of sprite that will be created.</param>
    /// <param name="RelativePosition">Specified a coordinate within the sprite that should be
@@ -1080,6 +1091,10 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    }
    #region IEnumerable Members
 
+   /// <summary>
+   /// Allows a the coordinates of a plan to be enumerated with a foreach loop.
+   /// </summary>
+   /// <returns>An object that enumerates this plan's coordinates.</returns>
    public System.Collections.IEnumerator GetEnumerator()
    {
       if (Coordinates == null)

@@ -23,7 +23,7 @@
          Source Code folder: built-in code and custom code. The term "built-in" does not 
          mean that it can't be changed, but rather that it is provided by default, and 
          usually is required in some form by the hidden code that is generated when the 
-         project compiles). When possible it's best to implement/provide customizations 
+         project compiles. When possible it's best to implement/provide customizations 
          in the form of a custom code object rather than by changing the code in a 
          built-in code file because it's more likely that a custom code object can 
          easily be ported from one project to another. Consider, for example, two 
@@ -158,5 +158,69 @@ style='color:blue'>null</span>;
    }
 }
 </pre>
+
+<h2>Accessing binary data sample</h2>
+<p>Sound effects store their data in a binary resource associated with the source code object.
+You can see how this data is accessed by looking at the Load function in fmodbase.cs, which
+is referenced by FMOD-based sounds in the sound library.  For a simpler and more direct
+example of accessing the binary data associated with a source code object, see the code below.
+It demonstrates the process of loading the binary data into a byte array, converting it to
+plain text, and providing a function to output the text to the project's debug output.</p>
+<pre style='margin-left:15px;font-size:10.0pt;font-family:"Courier New"'>
+<span style='color:blue'>namespace</span> CustomObjects
+{
+   <span style='color:blue'>public class</span> Test
+   {
+      <span style='color:blue'>private string</span> contentText = <span style='color:blue'>null</span>;
+      <span style='color:blue'>private static</span> Test instance = <span style='color:blue'>new</span> Test();
+
+      <span style='color:blue'>public</span> Test()
+      {
+         System.IO.Stream myContentStream =
+            GetType().Assembly.GetManifestResourceStream(
+            GetType().Name + ".bin");
+         <span style='color:blue'>byte</span>[] contentBytes = <span style='color:blue'>new byte</span>[myContentStream.Length];
+         myContentStream.Read(contentBytes, 0, contentBytes.Length);
+         contentText = System.Text.Encoding.UTF8.GetString(contentBytes);
+      }
+
+      [System.ComponentModel.Description("Add content to debug output")]
+      <span style='color:blue'>public static void</span> DebugContent([System.ComponentModel.Editor("CustomObject", "UITypeEditor")] Test source)
+      {
+         Project.GameWindow.debugText.WriteLine(source.contentText);
+      }
+
+      <span style='color:blue'>public static</span> Test DefaultInstance
+      {
+         <span style='color:blue'>get</span>
+         {
+            <span style='color:blue'>return</span> instance;
+         }
+      }
+   }
+}
+</pre>
+<p>Notice a few things:
+<ul>
+<li>There is an attribute on the "source" parameter to the DebugContent function:<br/>
+[System.ComponentModel.Editor("CustomObject", "UITypeEditor")]<br>
+This attribute informs the IDE to list public static functions and properties from the
+CustomObject namespace that return the appropriate type of object to be passed in to this
+parameter.</li>
+<li>The DefaultInstance is an example of just such a property, and will be listed in the
+dropdown list for this parameter.</li>
+<li>In order for DebugContent to be listed as an available function, it must be public,
+static, and have the System.ComponentModel.Description attribute applied.</li>
+<li>In order for the DefaultInstance to be available in the dropdown list for a parameter,
+the parameter type must match the return type of the property ("Test" in this case),
+and the property must be public and static.
+<li>Although only the static functions of a custom code object can be directly called by
+rule functions, there are many ways to use instance data from as many objects as you like,
+as demonstrated by the way FMODBase.cs refers to derived classes' binary data
+(notice that the GetType() function actually returns the derived type). The code above
+demonstrates creating one default instance that can be passed as a parameter to the static
+function, but any number of instances could exist or be dynamically created.</li>
+</ul>
+</p>
    </body>
 </html>

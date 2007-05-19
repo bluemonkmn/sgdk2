@@ -14,6 +14,8 @@ public abstract class GeneralRules
 {
    private static SaveUnit saveUnit = null;
    private static System.Collections.Hashtable memorySaveSlots = new System.Collections.Hashtable();
+   private static System.Random randomGen = new System.Random();
+
    /// <summary>
    /// Contains the last sprite created with <see cref="PlanBase.AddSpriteAtPlan"/>,
    /// <see cref="SpriteBase.TileAddSprite"/> or <see cref="SpriteBase.AddSpriteHere"/>.
@@ -643,6 +645,132 @@ public abstract class GeneralRules
    {
       return Project.GameWindow.KeyboardState[key];
    }
+
+   /// <summary>
+   /// Return a random number within a specified range.
+   /// </summary>
+   /// <param name="Minimum">Minimum value that can be returned</param>
+   /// <param name="Maximum">Maximum bound of the range; this value will never be returned</param>
+   /// <returns>A random integer greater than or equal to Minimum and less than Maximum.
+   /// This value is based on a random seed that was generated based on the current time when
+   /// the program started.</returns>
+   [Description("Return a random number greater than or equal to Minimum and less than Maximum.")]
+   public int GetRandomNumber(int Minimum, int Maximum)
+   {
+      return randomGen.Next(Minimum,Maximum);
+   }
+
+   /// <summary>
+   /// Change the font used for drawing text on the display.
+   /// </summary>
+   /// <param name="FontName">Name of the font (quoted string).</param>
+   /// <param name="FontSize">The em-size, in points, of the new font.</param>
+   [Description("Change the font used for drawing text on the display.")]
+   public void SetFont(string FontName, int FontSize)
+   {
+      Project.GameWindow.GameDisplay.SetFont(FontName, FontSize);
+   }
+
+   /// <summary>
+   /// Change a counter's value with a pre-defined operation.
+   /// </summary>
+   /// <param name="Operation">Specified a pre-defined operation to execute on a counter</param>
+   /// <returns>True if the counter value hit a limit, false otherwise. For an operation that
+   /// stops at a limit, true will only be returned if the counter was unable to change. For an
+   /// operation that loops, true indicates that the counter looped. For operators that set the
+   /// counter to a limit, true is returned if the counter was already at the limit value, false
+   /// otherwise.</returns>
+   /// <remarks>Counter values can be changed directly with the "=" function, but
+   /// using a pre-defined operation, you can easily cause the counter to loop when
+   /// it hits a limit, which is useful for counters linked to tile animations.</remarks>
+   [Description("Change a counter's value with a pre-defined operation. Return true if the counter hits a limit or is left unchanged.")]
+   public bool ChangeCounter(Counter Counter, CounterOperation Operation)
+   {
+      switch(Operation)
+      {
+         case CounterOperation.IncrementAndStop:
+            if (Counter.CurrentValue < Counter.MaxValue)
+               Counter.CurrentValue += 1;
+            else
+               return true;
+            return false;
+         case CounterOperation.DecrementAndStop:
+            if (Counter.CurrentValue > 0)
+               Counter.CurrentValue -= 1;
+            else
+               return true;
+            return false;
+         case CounterOperation.IncrementAndLoop:
+            if (Counter.CurrentValue < Counter.MaxValue)
+            {
+               Counter.CurrentValue += 1;
+               return false;
+            }
+            Counter.CurrentValue = 0;
+            return true;
+         case CounterOperation.DecrementAndLoop:
+            if (Counter.CurrentValue > 0)
+            {
+               Counter.CurrentValue -= 1;
+               return false;
+            }
+            Counter.CurrentValue = Counter.MaxValue;
+            return true;
+         case CounterOperation.SetToMinimum:
+            if (Counter.CurrentValue == 0)
+               return true;
+            Counter.CurrentValue = 0;
+            return false;
+         case CounterOperation.SetToMaximum:
+            if (Counter.CurrentValue == Counter.MaxValue)
+               return true;
+            Counter.CurrentValue = Counter.MaxValue;
+            return false;
+      }
+      return false;
+   }
+
+   /// <summary>
+   /// Determines if the specified mouse button is pressed.
+   /// </summary>
+   /// <param name="Button">Specifies which button to check.</param>
+   /// <returns>True if the button is pressed, false if it is not pressed.</returns>
+   [Description("Determines if the specified mouse button is pressed.")]
+   public bool IsMouseButtonPressed(System.Windows.Forms.MouseButtons Button)
+   {
+      return 0 != (System.Windows.Forms.Control.MouseButtons & Button);
+   }
+}
+
+/// <summary>
+/// Specifies an operation to perform on a counter.
+/// </summary>
+public enum CounterOperation
+{
+   /// <summary>
+   /// Add 1 to the counter value. If the counter was at it's maximum value, leave it there.
+   /// </summary>
+   IncrementAndStop,
+   /// <summary>
+   /// Subtract 1 from the counter value. If the counter was at it's minimum value, leave it there.
+   /// </summary>
+   DecrementAndStop,
+   /// <summary>
+   /// Add 1 to the counter value. If the counter was at it's maximum value, set it to its minimum value.
+   /// </summary>
+   IncrementAndLoop,
+   /// <summary>
+   /// Subtract 1 from the counter value. If the counter was at it's minimum value, set it to its maximum value.
+   /// </summary>
+   DecrementAndLoop,
+   /// <summary>
+   /// Set the counter to its minimum value.
+   /// </summary>
+   SetToMinimum,
+   /// <summary>
+   /// Set the counter to its maximum value.
+   /// </summary>
+   SetToMaximum
 }
 
 /// <summary>

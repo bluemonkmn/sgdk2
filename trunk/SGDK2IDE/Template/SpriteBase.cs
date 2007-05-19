@@ -386,6 +386,9 @@ public abstract class SpriteBase : GeneralRules
    /// <summary>
    /// Returns information about a specified state of this sprite
    /// </summary>
+   /// <example>The following code shows how you might retrieve the height
+   /// of a sprite's crouching state assuming it has one:
+   /// <code>crouchHeight = this[State.Crouch].LocalBounds.Height;</code></example>
    public abstract SpriteState this[int state]
    {
       get;
@@ -434,7 +437,7 @@ public abstract class SpriteBase : GeneralRules
    }
 
    /// <summary>
-   /// Get an list of frameset frames that the sprite is currently displaying
+   /// Get a list of frameset frames that the sprite is currently displaying
    /// </summary>
    /// <returns>
    /// Array of Frame objects representing the currently displayed frames.
@@ -1543,15 +1546,17 @@ public abstract class SpriteBase : GeneralRules
    }
 
    /// <summary>
-   /// If the sprite is close to the ground, alter its velocity so it will snap down onto the ground.
+   /// Ensure the sprite stays in contact with the ground by altering its velocity
+   /// to snap down onto the ground when it is close to the ground.
    /// </summary>
-   /// <param name="Threshhold">The number of pixels that mey separate the sprite from teh ground. If the sprite is within this threshhold distance, it will be "snapped".</param>
+   /// <param name="Threshhold">The number of pixels that mey separate the sprite from the ground.
+   /// If the sprite is within this threshhold distance, it will be "snapped".</param>
    /// <returns>True if the sprite was snapped to the ground.</returns>
    /// <remarks>Note that this does not actually move the sprite, but rather just alters its
    /// velocity so that when <see cref="MoveByVelocity"/> is applied, it will be touching the
    /// ground, if the appropriate conditions are met. The purpose of this rule is to help sprites
    /// behave as desired when going downhill in case the force of gravity isn't enough to keep
-   /// them "grounded" (which is often isn't with the simple physics model used for sprites).
+   /// them "grounded" (which it often isn't with the simple physics model used for sprites).
    /// </remarks>
    [Description("If the sprite's proposed position is within <Threshhold> pixels of the ground, alter its velocity so it will touch the ground.  Returns true if snap occurred.")]
    public bool SnapToGround(int Threshhold)
@@ -1731,7 +1736,8 @@ public abstract class SpriteBase : GeneralRules
    }
 
    /// <summary>
-   /// If the sprite is touching the specified tile, "take" it and increment a counter (requires <see cref="TouchTiles"/>).
+   /// Determine if the sprite is touching the specified tile, and if so,
+   /// "take" it and increment a counter (requires <see cref="TouchTiles"/>).
    /// </summary>
    /// <param name="TileValue">Index of the tile to look for.</param>
    /// <param name="Counter">Counter to be checked and incremented when the specified tile is found.
@@ -1778,16 +1784,19 @@ public abstract class SpriteBase : GeneralRules
    /// <param name="TileValue">Index of the tile to look for</param>
    /// <param name="Counter">Specifies a counter that will be affected. If this counter's value is
    /// greater than 0, it will be decremented and the tile removed.</param>
+   /// <param name="NewValue">Specifies a new tile value that will replace the touched tile when
+   /// it is removed. This value is commonly 0, which usually represents a tileset's empty tile.</param>
    /// <returns>The number of tiles affected</returns>
    /// <remarks><para>This function will search through all tiles that have been touched (collected
    /// by <see cref="TouchTiles"/>, and for each tile that it finds that matches the specified
    /// <paramref name="TileValue" />, it will check <paramref name="Counter" />, and, if it
-   /// is greater than 0, decrement the counter and replace the tile with tile number 0.</para>
+   /// is greater than 0, decrement the counter and replace the tile with tile number
+   /// <paramref name="NewValue"/>.</para>
    /// <para>Only unprocessed tiles are considered. Once this function (or similar functions)
    /// affects the tile, it is marked as processed. It is only marked as processed if
    /// it is affected (if the counter changes).</para></remarks>
    [Description("When the sprite is touching the specified tile, and the specified counter is greater than 0, decrement the counter and clear the tile value to 0. Returns the number of tiles affected. (Must run TouchTiles first.)")]
-   public int TileUseUp(int TileValue,  Counter Counter)
+   public int TileUseUp(int TileValue,  Counter Counter, int NewValue)
    {
       Debug.Assert(this.isActive, "Attempted to execute TileUseUp on an inactive sprite");
 
@@ -1804,7 +1813,7 @@ public abstract class SpriteBase : GeneralRules
             if (Counter.CurrentValue > 0)
             {
                Counter.CurrentValue--;
-               layer[tt.x, tt.y] = tt.tileValue = 0;
+               layer[tt.x, tt.y] = tt.tileValue = NewValue;
                tt.processed = true;
                result++;
             }

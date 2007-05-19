@@ -20,8 +20,16 @@
 			</OBJECT>
 		<UL>
 			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Introduction">
+				<param name="Local" value="Introduction.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Tutorial 1">
 				<param name="Local" value="Tutorial1.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Main Window">
+				<param name="Local" value="MainWindow.html">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Project Properties">

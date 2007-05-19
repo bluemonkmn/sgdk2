@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <title>Scrolling Game Development Kit 2 - Main Window</title>
+      <meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1" />
+      <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5" />
+      <link href="SGDK2Help.css" type="text/css" rel="stylesheet" />
+      <style>
+      th {background-color:lightgrey}
+      td {background-color:linen} 
+      </style>
+   </head>
+   <body>
+      <h1>Main Window</h1>
+      <p>Scrolling Game Development Kit 2 is a Multiple Document Interface (MDI) application,
+      meaning that all activity takes place in windows embedded in one top-level window. Any
+      number of child windows may be running simultaneously within the main window. This
+      application is also referred to as an Integrated Development Environment (IDE) because
+      many various tasks for designing and developing a game are combined in this single interface.
+      the term IDE is sometimes used in this documentation to distinguish the design environment
+      from the run-time environment (windows that are part of the actual game produced by this
+      program).</p>
+      <p>The details of using individual features of the program are documented separately, each
+      on its own help page.  The help for any particular window is generally available simply
+      by pressing the F1 key when that window is active.  A few of the features of the program
+      are universal and do not apply to the individual windows/objects that can be edited within
+      the main window.  These are documented here.</p>      
+      <h2>Project Tree</h2>
+      <p>On the left side of the main window is a project tree that provides an overview
+      of the entire project.  Creating new objects, editing existing objects, and deleting objects
+      depends on this tree view. To create a new object, select the folder associated with the type
+      of object you want to create, and then select "New Object" from the file menu, or right-click
+      on the folder and select "New" from the pop-up menu.  To edit an existing object, there are a
+      number of options:</p>
+      <ul>
+      <li>Double click on the item in the tree view that you want to edit.</li>
+      <li>Select the item you want to edit and press the F4 key.</li>
+      <li>Select the item you want to edit and select "Properties" from the view menu.</li>
+      <li>Right-click in the item you want to edit and select "Edit" from teh pop-up menu.</li>
+      </ul>
+      <p>To delete an item, select it, and then select "Delete Object" from the file menu,
+      or right-click on it and select "Delete" from the pop-up menu.  Notice that the pop-up menu
+      and file menu also provide and "Import From..." command. Similar to the new command, you can
+      also create new objects by importing them from external .SGDK2 files (make sure to choose the
+      import command from the correct folder). The "Import From..." command can be used to import
+      Sprite Definitions, Source Code, Graphic Sheets, Tilesets and Framesets.</p>
+      <h2>Menus</h2>
+      <p>Beyond the menu items designed for use with the project tree, there are a number of
+      other menu commands available universally.</p>
+      <h3>File</h3>
+      <p class="SubPara">
+      <table>
+      <thead>
+      <tr><th>Menu Item</th><th>Description</th></tr>
+      </thead>
+      <tbody>
+      <tr><td>New Project</td><td>Clear any existing project from memory and create a new project.
+      This menu cannot be selected directly, you must select a "template" from the pop-up menu. The
+      first item in the pop-up menu is the "&lt;blank&gt;" template which creates a new project
+      based on the source code stored internally in the IDE (in case all your templates have been
+      deleted). The "Default" template is the template that is automatically loaded when the IDE
+      starts up.  If you want to customize the default project that is loaded when the IDE starts
+      up you can overwrite Default.sgdk2 in the Library\Projects folder.  The only difference
+      between creating a new project from a project template and loading the project using the
+      "Open" project command is that the "New" command treats the project as an un-saved project
+      and prompts for a filename for the new project before it is compiled or saved.  The format
+      of a template and a project is identical.</td></tr>
+      <tr><td>Open Project</td><td>Open an existing SGDK2 project for editing. Normally, all data
+      relating to the project is contained in a single file, so you do not need to be concerned
+      about where the project is opened from. An SGDK2 file is mostly independent of any other
+      files and can be freely moved.  The main exception is external DLL references such as
+      FMODEX.dll, but many of these will be picked up from the directory where the IDE is running
+      or from the system path and don't need to be kept with the SGDK2 file.</td></tr>
+      <tr><td>Save Project</td><td>Save the currently loaded project to a file. If the project was
+      already saved or loaded from an existing file, it is saved to the same file, but if it is a
+      new project that hasn't been saved, you will be prompted for a new file name. When specifying
+      the location for the project, keep in mind that when the project is compiled, the compiled
+      files will be generated in a folder whose name is the same as the project name without the
+      .sgdk2 extension.</td></tr>
+      <tr><td>Save As...</td><td>This performs the same function as Save, but will always prompt
+      for a location.  If the project was already saved or loaded, the original copy is left as
+      is and any modifications that have been made are saved only to the new file. Since SGDK2
+      files are all-encompasing containers for game data, all data associated with the original
+      project is effectively copied into the newly specified file.</td></tr>
+      <tr><td>Run Project</td><td>Compile and run the currently loaded project. For details on
+      the process of compiling, see "Generate Project" below. This performs the same action as
+      Generate Project, and then proceeds to run the game.  The game cannot be compiled again
+      while it is still running because the executable file will be locked by the operating
+      system.</td></tr>
+      <tr><td>Run Project in Debug Mode</td><td>This performs the same acton as "Run Project",
+      but turns on a debug switch in the code that affects a few things. First of all, any
+      validations that are performed only in debug mode will display messages is the validation
+      fails. The most common example of this is trying to perform some action with an inactive
+      sprite. Messages about this problem will only appear in debug mode. Another effect is an
+      FPS (frames per second) will be displayed in the top left corner of the display while the
+      game is running. Furthermore any debug messages that are output by the <a href=
+      "ms-its:SGDK2 Coding Reference.chm::/GeneralRules.LogDebugLabel.html">LogDebugLabel</a> and
+      <a href="ms-its:SGDK2 Coding Reference.chm::/GeneralRules.LogDebugValue.html">LogDebugValue</a>
+      functions. You can also add your own debug code that only executes when the debug switch is
+      on by using the #if DEBUG" precompiler statement and/or the
+      [System.Diagnostics.Conditional("DEBUG")] attribute, both of which are demonstrated in
+      GameForm.cs in the Source Code folder of the default project.</td></tr>
+      <tr><td>Reset Source Code</td><td>Resets all the built-in code in the Source Code folder
+      (code that has an internally stored version in the IDE -- see <a href="CodeEdit.html">Source
+      Code Editor</a> for details). Each built-in code object in the Source Code folder will be
+      overwritten with the IDE's copy (or re-created if it does not exist). This is useful for
+      ensuring that the built-in source code objects in the current project are in sync with what
+      the IDE is expecting. The build-in code can be changed to a certain extent, but there are
+      certain expectations that the code generator has, and if these are not met, then the project
+      will not compile. Using this command is the easiest way to restore at least the built-in
+      code to a functional state. One way that the built-in code can diverge is by manual editing.
+      If you edit the code badly and can't restore it to a functional state, you may want to reset
+      it. Another way is if a new version of SGDK2 is released that has different built-in code
+      that is not compatible with oilder built-in code. Resetting the older project to use the newer
+      built-in code may be the easiest way to upgrade the project, but it would also lose any
+      customizations that were made to the built-in code.</td></tr>
+      <tr><td>Generate Project</td><td>This uses all the data contained in the project to create
+      an actual runnable game. There are two main steps to this process. First all the code is
+      generated based on the contents of the Source Code folder and the objects defined in the
+      project. Then the C# compiler provided with the .NET framework compiles the project. All this
+      takes place in a folder whose name is that of the SGDK2 file without the SGDK2 extension.
+      Note that during the process, a ".dsp" file is also created so that, if you have Visual
+      Studio, you can load the project into a more featureful debug environment if you want to
+      see how the project works or what may be going wrong with it.</td></tr>
+      <tr><td>Delete Intermediate Output Files</td><td>Deletes all the source code and similar files
+      that were generated by the Generate Project command. This essentially deletes all the files
+      from the output folder that do not need to be delivered when distributing your game.</td></tr>
+      <tr><td>Delete All Output Files</td><td>Deletes all files created by the Generate Project
+      command. If the folder is empty, the output folder will also be deleted. This might be handy
+      if you have extra/custom files in the folder and want to sort out all the generated files
+      from the extra files.</td></tr>
+      <tr><td>(Recent File List)</td><td>The 5 most recently loaded projects are displayed near the
+      bottom of the file menu for easy access (if you want to re-load a project you were recently
+      working on).</td></tr>
+      <tr><td>Exit</td><td>Quit the program. This does not close any games that may be running, just
+      the IDE itself.</td></tr>
+      </tbody>
+      </table>
+      </p>
+      <h3>View</h3>
+      <p class="SubPara">
+      The Unsaved Changes command in this menu is sort of a diagnostic/debug feature which may be
+      of limited use to actual users. It will show information about which data has changed since
+      the project was last saved/loaded. The format is not very user friendly, but should be
+      comprehensible with a little effort and understanding. The contents of the window basically
+      show a list of each "row" of data in the project that has changed. Since every piece of data
+      in a project is stored in a .NET dataset, it exists in a "row" somewhere, and this window
+      shows the identity of rows that have some content that has changed, but doesn't go into a
+      lot of detail about the specific changes.
+      </p>
+      
+      <p>The remainder of the menus in the main window are self-explanatory as they follow conventions
+      common to all Windows applications.</p>
+   </body>
+</html>

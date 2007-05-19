@@ -2088,6 +2088,10 @@ namespace SGDK2
                // If function is an operator
                if (op != CodeBinaryOperatorType.Modulus)
                {
+                  if (!rule.Parameter1.StartsWith("(") || !rule.Parameter1.EndsWith(")"))
+                     rule.Parameter1 = "(" + rule.Parameter1 + ")";
+                  if (!rule.Parameter2.StartsWith("(") || !rule.Parameter2.EndsWith(")"))
+                     rule.Parameter2 = "(" + rule.Parameter2 + ")";
                   invokeResult = new CodeBinaryOperatorExpression(
                      new CodeSnippetExpression(rule.Parameter1),
                      op, new CodeSnippetExpression(rule.Parameter2));

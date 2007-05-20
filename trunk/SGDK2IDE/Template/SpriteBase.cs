@@ -937,6 +937,90 @@ public abstract class SpriteBase : GeneralRules
    {
       ParentLayer.PushSpriteIntoView(this, StayInScrollMargins);
    }
+
+   /// <summary>
+   /// Compute the index of the nearest active sprite from the specified category and return it.
+   /// </summary>
+   /// <param name="Target">Sprite category whose sprites will be searched for sprites near this sprite.</param>
+   /// <returns>An integer representing the 0-based index of the nearest active sprite, or -1 if
+   /// there are no active sprites in the specified category.</returns>
+   /// <remarks>The output of this function would commonly be stored in a sprite parameter for
+   /// passing to <see cref="PushTowardCategory "/>.</remarks>
+   [Description("Compute the index of the nearest active sprite from the specified category and return it.")]
+   public int GetNearestSpriteIndex(SpriteCollection Target)
+   {
+      int minDist = int.MaxValue;
+      int result = -1;
+      for(int i = 0; i < Target.Count; i++)
+      {
+         if (!Target[i].isActive)
+            continue;
+         int xOff = Target[i].PixelX - PixelX;
+         int yOff = Target[i].PixelY - PixelY;
+         int dist = xOff * xOff + yOff * yOff;
+         if (dist < minDist)
+         {
+            minDist = dist;
+            result = i;
+         }
+      }
+      return result;
+   }
+
+   /// <summary>
+   /// Push this sprite toward a sprite in the specified category.
+   /// </summary>
+   /// <param name="Target">Specifies a category containint the target
+   /// sprite toward which this sprite will be pushed.</param>
+   /// <param name="Index">Specifies the 0-based index of a sprite in the specified category.
+   /// Use <see cref="GetNearestSpriteIndex"/> to compute the index of the nearest sprite, which
+   /// can then be passed to this parameter.  Pass -1 in this parameter to push the sprite toward
+   /// the current nearest sprite rather than a pre-computed index.</param>
+   /// <param name="Force">Force in tenths of a pixel per frame per frame that will be applied.</param>
+   /// <returns>True if the sprite was pushed, or false if there are no active sprites in the
+   /// target category or the sprite is already overlapping the target.</returns>
+   /// <remarks>If there is no active sprite in the target category, or if the sprite is overlapping
+   /// the target exactly, this function will have no effect.
+   /// <seealso cref="SetInputsTowardCategory"/>
+   /// <seealso cref="PushTowardSprite"/>
+   /// <seealso cref="SetInputsTowardSprite"/></remarks>
+   [Description("Push this sprite toward a sprite in the specified category. Use GetNearestSpriteIndex to compute the index of the nearest sprite and pass that to Index, or pass -1 to push toward the current nearest sprite. Force is in tenths of a pixel per frame per frame.")]
+   public bool PushTowardCategory(SpriteCollection Target, int Index, int Force)
+   {
+      Debug.Assert(this.isActive, "Attepmted to execute PushTowardCategory on an inactive sprite");
+      Debug.Assert(Index < Target.Count, "Attempted to PushTowardCategory on an index beyond the bounds of a collection");
+
+      if (Index < 0)
+         Index = GetNearestSpriteIndex(Target);
+      if (Index < 0)
+         return false;
+
+      return PushTowardSprite(Target[Index], Force);
+   }
+
+   /// <summary>
+   /// Push this sprite toward a specified sprite.
+   /// </summary>
+   /// <param name="Target">Sprite toward which this sprite is pushed.</param>
+   /// <param name="Force">Acceleration force in tenths of a pixel per frame per frame.</param>
+   /// <returns>True if the sprite is pushed or false if the sprite is already overlapping
+   /// the target.
+   /// <seealso cref="PushTowardCategory"/>
+   /// <seealso cref="SetInputsTowardSprite"/>
+   /// <seealso cref="SetInputsTowardCategory"/></returns>
+   public bool PushTowardSprite(SpriteBase Target, int Force)
+   {
+      double vx = Target.PixelX - PixelX + (Target.SolidWidth - SolidWidth) / 2;
+      double vy = Target.PixelY - PixelY + (Target.SolidHeight - SolidHeight) / 2;
+      double dist = Math.Sqrt(vx * vx + vy + vy);
+      if (dist >= 1)
+      {
+         dx += vx * Force / dist / 10.0;
+         dy += vy * Force / dist / 10.0;
+         return true;
+      }
+      return false;
+   }
    #endregion
 
    #region States and animation
@@ -1349,6 +1433,62 @@ public abstract class SpriteBase : GeneralRules
          if (LocalDX > (double)Max)
             LocalDX = (double)Max;
       }
+   }
+
+   /// <summary>
+   /// Set the state of the directional inputs on this sprite to move toward the specified sprite in a category.
+   /// </summary>
+   /// <param name="Target">Specifies the sprite collection containing the sprite toward which this sprite will try to move.</param>
+   /// <param name="Index">Use <see cref="GetNearestSpriteIndex"/> to compute this value or pass -1 to compute the current nearest sprite each time this is called.</param>
+   /// <remarks>This function assumes that the directional inputs on the sprite
+   /// cause the sprite to move directly in the direction associated with the input.  It will
+   /// not work if, for example, left arrow causes the sprite to turn left instead of move left.
+   /// <seealso cref="SetInputsTowardSprite"/>
+   /// <seealso cref="PushTowardCategory"/>
+   /// <seealso cref="GetNearestSpriteIndex"/></remarks>
+   [Description("Set the state of the directional inputs on this sprite to move toward the specified sprite in a category, assuming the input causes the sprite to move directly in its direction. Use GetNearestSpriteIndex to compute an Index or pass -1 to use the current nearest sprite.")]
+   public void SetInputsTowardCategory(SpriteCollection Target, int Index)
+   {
+      Debug.Assert(this.isActive, "Attepmted to execute SetInputsTowardCategory on an inactive sprite");
+      Debug.Assert(Index < Target.Count, "Attempted to SetInputsTowardCategory on an index beyond the bounds of a collection");
+
+      if (Index < 0)
+         Index = GetNearestSpriteIndex(Target);
+      if (Index < 0)
+         return;
+
+      SetInputsTowardSprite(Target[Index]);
+   }
+
+   /// <summary>
+   /// Set the state of the directional inputs on this sprite to move toward the specified sprite.
+   /// </summary>
+   /// <param name="Target">Specifies the sprite collection containing the sprite toward which
+   /// this sprite will try to move.</param>
+   /// <remarks>This function is not exposed as a rule function because it is intended to be
+   /// called by a plan or other code that can provide a target sprite based on specific
+   /// context whereas a sprite definition rule function is supposed to be generic.
+   /// This is called by <see cref="SetInputsTowardCategory"/>.</remarks>
+   public void SetInputsTowardSprite(SpriteBase Target)
+   {
+      int targetCenter = Target.PixelX + Target.SolidWidth / 2;
+      int myCenter = PixelX + SolidWidth / 2;
+
+      if (targetCenter < myCenter)
+         inputs |= InputBits.Left;
+      else if (targetCenter > myCenter)
+         inputs |= InputBits.Right;
+      else
+         inputs &= ~(InputBits.Left | InputBits.Right);
+
+      targetCenter = Target.PixelY + Target.SolidHeight / 2;
+      myCenter = PixelY + SolidHeight / 2;
+      if (targetCenter < myCenter)
+         inputs |= InputBits.Up;
+      else if (targetCenter > myCenter)
+         inputs |= InputBits.Down;
+      else
+         inputs &= ~(InputBits.Up | InputBits.Down);
    }
    #endregion
 

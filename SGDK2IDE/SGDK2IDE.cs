@@ -71,7 +71,13 @@ namespace SGDK2
                      break;
                   }
                   else
-                     helpParentDir = System.IO.Directory.GetParent(helpParentDir).FullName;
+                  {
+                     System.IO.DirectoryInfo diHelp = System.IO.Directory.GetParent(helpParentDir);
+                     if (diHelp == null)
+                        helpParentDir = null;
+                     else
+                        helpParentDir = diHelp.FullName;
+                  }
                } while (helpParentDir != null);
             }
 

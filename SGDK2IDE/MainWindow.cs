@@ -695,8 +695,8 @@ namespace SGDK2
          if (!template.StartsWith("<"))
          {
             templateFile = System.IO.Path.Combine(
-               System.IO.Path.Combine(Application.StartupPath,
-               @"Library\Projects"), template + ".sgdk2");
+               System.IO.Path.Combine(GetLibraryFolder(),
+               @"Projects"), template + ".sgdk2");
          }
          if ((templateFile.Length <= 0) || !System.IO.File.Exists(templateFile))
          {
@@ -1388,6 +1388,20 @@ namespace SGDK2
       {
          return System.IO.Path.Combine(System.IO.Path.GetDirectoryName(m_strProjectPath), System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath));
       }      
+      private string GetLibraryFolder()
+      {
+         string current = Application.StartupPath;
+         while(true)
+         {
+            string result = System.IO.Path.Combine(current, @"Library");
+            if (System.IO.Directory.Exists(result))
+               return result;
+            System.IO.DirectoryInfo di = System.IO.Directory.GetParent(current);
+            if (di == null)
+               return null;
+            current = di.FullName;
+         }
+      }
       #endregion
 
       #region Public Methods
@@ -1464,12 +1478,31 @@ namespace SGDK2
          
          try
          {
-            System.IO.DirectoryInfo diTemplates = new System.IO.DirectoryInfo(
-               System.IO.Path.Combine(Application.StartupPath, @"Library\Projects"));
-            EventHandler newHandler = new EventHandler(mnuFileNewPrj_Click);
-            foreach(System.IO.FileInfo fiTemplate in diTemplates.GetFiles("*.sgdk2"))
+            string libFolder = GetLibraryFolder();
+            if (libFolder == null)
             {
-               mnuFileNewPrj.MenuItems.Add(System.IO.Path.GetFileNameWithoutExtension(fiTemplate.Name), newHandler);
+               MessageBox.Show(this, "Cannot locate template library");
+            }
+            else
+            {
+               System.IO.DirectoryInfo diTemplates = new System.IO.DirectoryInfo(
+                  System.IO.Path.Combine(libFolder, @"Projects"));
+               EventHandler newHandler = new EventHandler(mnuFileNewPrj_Click);
+               foreach(System.IO.FileInfo fiTemplate in diTemplates.GetFiles("*.sgdk2"))
+               {
+                  using (System.IO.FileStream tplFile = new System.IO.FileStream(fiTemplate.FullName, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite))
+                  {
+                     System.Xml.XmlReader xml = new System.Xml.XmlTextReader(tplFile);
+                     while(xml.Read())
+                     {
+                        if (xml.Name == "Project")
+                        {
+                           mnuFileNewPrj.MenuItems.Add(xml.GetAttribute("TitleText"), newHandler);
+                           break;
+                        }
+                     }
+                  }
+               }
             }
          }
          catch(System.Exception ex)

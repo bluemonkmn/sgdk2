@@ -23,12 +23,13 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    /// This value is used by <see cref="CheckNextCoordinate"/> to determine how close a
    /// sprite must be to a coordinate before heading to the next coordinate.
    /// </summary>
+   /// <remarks>The default value for this property is 5 pixels.</remarks>
    [Description("How close must a sprite be to a coordinate in this plan before heading to the next (default=5)")]
    public int TargetDistance = 5;
 
-	protected PlanBase()
-	{
-	}
+   protected PlanBase()
+   {
+   }
 
    /// <summary>
    /// Stores information about a coordinate within a <see cref="PlanBase"/>.
@@ -156,7 +157,7 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
       if (!spriteRect.IntersectsWith(Rectangle.Inflate(targetRect,2,2)))
          return false;
       if (spriteRect.IntersectsWith(Rectangle.Inflate(targetRect,2,0)) ||
-            spriteRect.IntersectsWith(Rectangle.Inflate(targetRect,0,2)))
+         spriteRect.IntersectsWith(Rectangle.Inflate(targetRect,0,2)))
          return true;
       else
          return false;
@@ -349,6 +350,36 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
             return (CoordinateIndex + 1) % Count;
       }
       return CoordinateIndex;
+   }
+
+   /// <summary>
+   /// Cause the specified sprite to follow the coordinates in this plan as a path.
+   /// </summary>
+   /// <param name="Sprite">Sprite that will follow this plan's path.</param>
+   /// <param name="CoordinateIndex">0-based index of the coordinate in this plan toward which the sprite is currently heading.  This is usually a parameter of the sprite.</param>
+   /// <param name="WaitCounter">Counter that tracks how long a sprite has waited at a particular coordinage. This is usualyl a parameter of the sprite.</param>
+   /// <remarks>This function combines a number of other path-following rule functions into a single
+   /// simple function that you can use to make a sprite follow a path with just a single rule.
+   /// The following rule functions are combined within this function:
+   /// <see cref="IsSpriteActive"/>,
+   /// <see cref="PushSpriteTowardCoordinate"/>,
+   /// <see cref="StopSprite"/>
+   /// <see cref="CheckNextCoordinate"/>,
+   /// <note type="caution">When using this function to follow a path, the sprite definition
+   /// itself is responsible for limiting the speed (see <see cref="SpriteBase.LimitVelocity"/>) and
+   /// performing the actual movement (see <see cref="SpriteBase.MoveByVelocity"/>).</note>
+   /// </remarks>
+   [Description("Cause the specified sprite to follow the coordinates in this plan as a path, provided some parameters where the current point index and wait counter can be stored.")]
+   public void FollowPath(SpriteBase Sprite, ref int CoordinateIndex, ref int WaitCounter)
+   {
+      if (Sprite.isActive)
+      {
+         if (WaitCounter == 0)
+            PushSpriteTowardCoordinate(Sprite, CoordinateIndex, 10);
+         else
+            StopSprite(Sprite);
+         CoordinateIndex = CheckNextCoordinate(Sprite, CoordinateIndex, ref WaitCounter);
+      }
    }
 
    /// <summary>
@@ -1088,6 +1119,19 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
          lastCreatedSprite.x = Coordinates[0].x - offset.X;
          lastCreatedSprite.y = Coordinates[0].y - offset.Y ;
       }
+   }
+
+   /// <summary>
+   /// Push the specified Source sprite toward the specified Target sprite.
+   /// </summary>
+   /// <param name="Source">Sprite to push.</param>
+   /// <param name="Target">Sprite toward which to push.</param>
+   /// <param name="Force">Acceleration in tenths of a pixel per frame per frame.</param>
+   /// <returns>True if the sprite is pushed, false if the sprites are already a the same location.</returns>
+   [Description("Push the specified Source sprite toward the specified Target sprite. Force is in tenths of a pixel per frame per frame.")]
+   public bool PushSpriteTowardSprite(SpriteBase Source, SpriteBase Target, int Force)
+   {
+      return Source.PushTowardSprite(Target, Force);
    }
    #region IEnumerable Members
 

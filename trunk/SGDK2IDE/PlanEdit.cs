@@ -940,11 +940,12 @@ namespace SGDK2
             else
                enumVals = m_Enums[param.Type.FullName] = GetEnumInfo(param.Type.FullName);
 
-            if (enumVals.isFlags)
-               cboParameter.Items.Add(new EnumOptionSelector(param.Type.Name, enumVals));
-
             foreach (string enumVal in enumVals.names)
                cboParameter.Items.Add(enumVal);
+
+            if (enumVals.isFlags)
+               cboParameter.Items.Add(new EnumOptionSelector(param.Type.Name, enumVals));
+            
             return;
          }
 

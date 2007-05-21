@@ -25,6 +25,7 @@ namespace SGDK2
       private string m_strProjectPath;
       private Hashtable m_AffectedNodeKeys = new Hashtable();
       System.Collections.ArrayList m_mruMenuItems = new ArrayList();
+      private System.Collections.Hashtable m_NewMenuToTemplateMap = new Hashtable();
       #endregion
 
       #region Windows Form Designer Memebers
@@ -692,11 +693,14 @@ namespace SGDK2
          ProjectData.ExtendedProperties["SchemaVersion"] = "1";
 
          string templateFile = string.Empty;
-         if (!template.StartsWith("<"))
+         if (template != null)
          {
-            templateFile = System.IO.Path.Combine(
-               System.IO.Path.Combine(GetLibraryFolder(),
-               @"Projects"), template + ".sgdk2");
+            if (System.IO.Path.IsPathRooted(template))
+               templateFile = template;
+            else
+               templateFile = System.IO.Path.Combine(
+                  System.IO.Path.Combine(GetLibraryFolder(),
+                  @"Projects"), template + ".sgdk2");
          }
          if ((templateFile.Length <= 0) || !System.IO.File.Exists(templateFile))
          {
@@ -1497,7 +1501,9 @@ namespace SGDK2
                      {
                         if (xml.Name == "Project")
                         {
-                           mnuFileNewPrj.MenuItems.Add(xml.GetAttribute("TitleText"), newHandler);
+                           m_NewMenuToTemplateMap.Add(
+                              mnuFileNewPrj.MenuItems.Add(xml.GetAttribute("TitleText"), newHandler),
+                              fiTemplate.FullName);
                            break;
                         }
                      }
@@ -2320,7 +2326,10 @@ namespace SGDK2
       {
          try
          {
-            DoNewProject(((MenuItem)sender).Text);
+            if (m_NewMenuToTemplateMap.ContainsKey(sender))
+               DoNewProject(m_NewMenuToTemplateMap[sender].ToString());
+            else
+               DoNewProject(null);
          }
          catch (Exception ex)
          {

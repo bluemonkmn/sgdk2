@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <title>Scrolling Game Development Kit 2 - FAQ</title>
+      <meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1" />
+      <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5" />
+      <link href="SGDK2Help.css" type="text/css" rel="stylesheet" />
+      <style>
+      th {background-color:lightgrey}
+      td {background-color:linen} 
+      </style>
+   </head>
+   <body>
+      <h1>Frequently Asked Questions</h1>
+      <p>This document contains important and frequently asked questions and answers 
+         that explain aspects of Scrolling Game Development Kit 2 that most users should 
+         be familiar with in order to effectively use the program.</p>
+      <h2>How Do Plan Rules and Sprite Definition Rules interact?</h2>
+      <p>It's important to understand how the rules defined in plans and the rules 
+         defined in sprite definitions interact, in order to understand why sprites 
+         behave the way they do in many cases. During each loop of the game, all the 
+         rules for all plans are executed in sequence (one plan's rules execute, then 
+         the next plan). The plans are executed according to their priority (which can 
+         be ignored if you don't care about the order in which the plans execute). After 
+         all the plan rules have executed, then all the sprite rules execute. The 
+         important point is that sprite rules execute after plan rules, so don't expect 
+         the effects of a sprite rule to be available during a plan rule's execution 
+         until the next frame. By executing the rules in this order, it's possible to
+         have a specifid plan provide input to a specific sprite, and then allow the
+         sprite definition to act on the imput.</p>
+      <h2>How Do I Change the Default Keyboard Settings?</h2>
+      <p>Player.cs</p>
+   </body>
+</html>

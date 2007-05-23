@@ -210,47 +210,47 @@ public class KeyboardPlayer : IPlayer
       {
          case 0:
             InitializeKeys(
-               Microsoft.DirectX.DirectInput.Key.UpArrow,
-               Microsoft.DirectX.DirectInput.Key.LeftArrow,
-               Microsoft.DirectX.DirectInput.Key.RightArrow,
-               Microsoft.DirectX.DirectInput.Key.DownArrow,
-               Microsoft.DirectX.DirectInput.Key.RightControl,
-               Microsoft.DirectX.DirectInput.Key.Space,
-               Microsoft.DirectX.DirectInput.Key.Return,
-               Microsoft.DirectX.DirectInput.Key.RightShift);
+               Microsoft.DirectX.DirectInput.Key.UpArrow,      // Up
+               Microsoft.DirectX.DirectInput.Key.LeftArrow,    // Left
+               Microsoft.DirectX.DirectInput.Key.RightArrow,   // Right
+               Microsoft.DirectX.DirectInput.Key.DownArrow,    // Down
+               Microsoft.DirectX.DirectInput.Key.RightControl, // Button 1
+               Microsoft.DirectX.DirectInput.Key.Space,        // Button 2
+               Microsoft.DirectX.DirectInput.Key.Return,       // Button 3
+               Microsoft.DirectX.DirectInput.Key.RightShift);  // Button 4
             break;
          case 1:
             InitializeKeys(
-               Microsoft.DirectX.DirectInput.Key.W,
-               Microsoft.DirectX.DirectInput.Key.A,
-               Microsoft.DirectX.DirectInput.Key.D,
-               Microsoft.DirectX.DirectInput.Key.S,
-               Microsoft.DirectX.DirectInput.Key.LeftShift,
-               Microsoft.DirectX.DirectInput.Key.LeftControl,
-               Microsoft.DirectX.DirectInput.Key.Q,
-               Microsoft.DirectX.DirectInput.Key.E);
+               Microsoft.DirectX.DirectInput.Key.W,            // Up
+               Microsoft.DirectX.DirectInput.Key.A,            // Left
+               Microsoft.DirectX.DirectInput.Key.D,            // Right
+               Microsoft.DirectX.DirectInput.Key.S,            // Down
+               Microsoft.DirectX.DirectInput.Key.LeftShift,    // Button 1
+               Microsoft.DirectX.DirectInput.Key.LeftControl,  // Button 2
+               Microsoft.DirectX.DirectInput.Key.Q,            // Button 3
+               Microsoft.DirectX.DirectInput.Key.E);           // Button 4
             break;
          case 2:
             InitializeKeys(
-               Microsoft.DirectX.DirectInput.Key.NumPad8,
-               Microsoft.DirectX.DirectInput.Key.NumPad4,
-               Microsoft.DirectX.DirectInput.Key.NumPad6,
-               Microsoft.DirectX.DirectInput.Key.NumPad2,
-               Microsoft.DirectX.DirectInput.Key.NumPad5,
-               Microsoft.DirectX.DirectInput.Key.NumPad0,
-               Microsoft.DirectX.DirectInput.Key.NumPadEnter,
-               Microsoft.DirectX.DirectInput.Key.NumPad7);
+               Microsoft.DirectX.DirectInput.Key.NumPad8,      // Up
+               Microsoft.DirectX.DirectInput.Key.NumPad4,      // Right
+               Microsoft.DirectX.DirectInput.Key.NumPad6,      // Left
+               Microsoft.DirectX.DirectInput.Key.NumPad2,      // Down
+               Microsoft.DirectX.DirectInput.Key.NumPad5,      // Button 1
+               Microsoft.DirectX.DirectInput.Key.NumPad0,      // Button 2
+               Microsoft.DirectX.DirectInput.Key.NumPadEnter,  // Button 3
+               Microsoft.DirectX.DirectInput.Key.NumPad7);     // Button 4
             break;
          default:
             InitializeKeys(
-               Microsoft.DirectX.DirectInput.Key.I,
-               Microsoft.DirectX.DirectInput.Key.J,
-               Microsoft.DirectX.DirectInput.Key.L,
-               Microsoft.DirectX.DirectInput.Key.K,
-               Microsoft.DirectX.DirectInput.Key.U,
-               Microsoft.DirectX.DirectInput.Key.O,
-               Microsoft.DirectX.DirectInput.Key.M,
-               Microsoft.DirectX.DirectInput.Key.Comma);
+               Microsoft.DirectX.DirectInput.Key.I,            // Up
+               Microsoft.DirectX.DirectInput.Key.J,            // Right
+               Microsoft.DirectX.DirectInput.Key.L,            // Left
+               Microsoft.DirectX.DirectInput.Key.K,            // Down
+               Microsoft.DirectX.DirectInput.Key.U,            // Button 1
+               Microsoft.DirectX.DirectInput.Key.O,            // Button 2
+               Microsoft.DirectX.DirectInput.Key.M,            // Button 3
+               Microsoft.DirectX.DirectInput.Key.Comma);       // Button 4
             break;
       }
    }

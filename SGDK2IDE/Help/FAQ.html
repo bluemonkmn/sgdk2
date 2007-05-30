@@ -3,12 +3,11 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
    <head>
       <title>Scrolling Game Development Kit 2 - FAQ</title>
-      <meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1" />
-      <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5" />
-      <link href="SGDK2Help.css" type="text/css" rel="stylesheet" />
-      <style>
-      th {background-color:lightgrey}
-      td {background-color:linen} 
+      <meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1">
+      <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5">
+      <link href="SGDK2Help.css" type="text/css" rel="stylesheet">
+      <style> th {background-color:lightgrey}
+	td {background-color:linen}
       </style>
    </head>
    <body>
@@ -26,10 +25,14 @@
          all the plan rules have executed, then all the sprite rules execute. The 
          important point is that sprite rules execute after plan rules, so don't expect 
          the effects of a sprite rule to be available during a plan rule's execution 
-         until the next frame. By executing the rules in this order, it's possible to
-         have a specifid plan provide input to a specific sprite, and then allow the
+         until the next frame. By executing the rules in this order, it's possible to 
+         have a specifid plan provide input to a specific sprite, and then allow the 
          sprite definition to act on the imput.</p>
       <h2>How Do I Change the Default Keyboard Settings?</h2>
-      <p>Player.cs</p>
+      <p>Open the "Player.cs" file from the "Source Code" folder in&nbsp;your project. 
+         Search for "UpArrow" and you will find the first of many values that you can 
+         change to alter the default keyboard layouts.&nbsp; Look at all the keyboard 
+         layouts defined in the function for examples of valid values that you can use 
+         for key specifications.</p>
    </body>
 </html>

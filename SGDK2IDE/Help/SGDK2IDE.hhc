@@ -101,6 +101,10 @@
 				<param name="Name" value="Source Code Editor">
 				<param name="Local" value="CodeEdit.html">
 				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Frequently Asked Questions">
+				<param name="Local" value="FAQ.html">
+				</OBJECT>
 		</UL>
 	</UL>
 	<OBJECT type="text/sitemap">

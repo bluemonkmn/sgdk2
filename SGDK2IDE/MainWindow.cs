@@ -722,6 +722,21 @@ namespace SGDK2
          else
          {
             DoOpenProject(templateFile, true);
+
+            // Initialize source code
+            string[] embeddedCodeFiles = System.Reflection.Assembly.GetAssembly(typeof(SGDK2IDE)).GetManifestResourceNames();
+            foreach (string resourceName in embeddedCodeFiles)
+            {
+               if ((resourceName.StartsWith("SGDK2.Template.")) && (null == ProjectData.GetSourceCode(resourceName.Substring(15))))
+               {
+                  System.IO.TextReader stm = new System.IO.StreamReader(System.Reflection.Assembly.GetAssembly(typeof(SGDK2IDE)).GetManifestResourceStream(resourceName));
+                  ProjectData.AddSourceCode(resourceName.Substring(15), stm.ReadToEnd(), null, false, null);
+                  stm.Close();
+               }
+            }
+            ProjectData.AcceptChanges();
+            tvwMain.CollapseAll();
+            tvwMain.Nodes[0].Expand();
          }
 
          m_strProjectPath = null;
@@ -742,11 +757,11 @@ namespace SGDK2
             ProjectData.Clear();
             InitializeTree();
             ProjectData.Merge(dsLoad);
-            ProjectData.AcceptChanges();
-            tvwMain.CollapseAll();
-            tvwMain.Nodes[0].Expand();
             if (!asTemplate)
             {
+               ProjectData.AcceptChanges();
+               tvwMain.CollapseAll();
+               tvwMain.Nodes[0].Expand();
                m_strProjectPath = projectFile;
                mnuFileDeleteOutputFiles.Enabled = mnuFileDeleteIntermediateFiles.Enabled = true;
                AddMru(projectFile);

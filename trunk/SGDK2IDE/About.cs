@@ -253,7 +253,7 @@ namespace SGDK2
 
       protected override void OnLoad(EventArgs e)
       {
-         lblVersion.Text = "Version " + Application.ProductVersion + " alpha release 4";
+         lblVersion.Text = "Version " + Application.ProductVersion + " alpha release 5";
          AssemblyCopyrightAttribute attrCopyright = (AssemblyCopyrightAttribute)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(AssemblyCopyrightAttribute), false);
          this.lblCopyright.Text = attrCopyright.Copyright;
 

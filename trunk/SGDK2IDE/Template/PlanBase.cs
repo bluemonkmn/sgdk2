@@ -1135,17 +1135,18 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    }
 
    /// <summary>
-   /// Move the soecified sprite to the position of the mouse cursor and set the sprite's button inputs based on mouse button states.
+   /// Move the specified sprite to the position of the mouse cursor and set the sprite's button inputs based on mouse button states.
    /// </summary>
+   /// <param name="Target">Specifies the sprite to be moved.</param>
    /// <param name="InstantMove">If true, the sprite will be moved immediately without regard to
    /// the existing position or solidity or anything else.  If false, the sprite's position will
    /// not be immediately changed, but its velocity will be set so that the sprite will end up at
-   /// the mouse cursor's location after <see cref="MoveByVelocity"/> executes. Note that moving
+   /// the mouse cursor's location after <see cref="SpriteBase.MoveByVelocity"/> executes. Note that moving
    /// the sprite instantly will ignore solidity and will not work well with sprites riding on
    /// this sprite, while allowing just the velocity to be set will allow this, but limit the
    /// sprite's movement based on solidity.</param>
    /// <remarks>Before the button inputs are mapped from the mouse to the sprite,
-   /// the existing inputs are copied from <see cref="inputs"/> to <see cref="oldinputs"/>
+   /// the existing inputs are copied from <see cref="SpriteBase.inputs"/> to <see cref="SpriteBase.oldinputs"/>
    /// so other rules will be able to determine which buttons were pressed before.
    /// </remarks>
    [Description("Move the specified sprite to the position of the mouse cursor and set the sprite's button inputs based on mouse button states. If InstantMove is true, the sprite will be moved immediately, otherwise it the velocity will be set to move when MoveByVelocity runs.")]

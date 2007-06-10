@@ -95,6 +95,8 @@ namespace SGDK2
       private System.Windows.Forms.ToolBarButton tbbDeleteSprite;
       private System.Windows.Forms.ToolBarButton tbbGotoSprite;
       private System.Windows.Forms.MenuItem mnuAddPlan;
+      private System.Windows.Forms.MenuItem mnuView;
+      private System.Windows.Forms.MenuItem mnuViewLayerEdges;
       private System.Windows.Forms.Splitter SpriteSplitter;
       #endregion
 
@@ -187,6 +189,8 @@ namespace SGDK2
          this.mnuEditDetails = new System.Windows.Forms.MenuItem();
          this.mnuLocateCoordinate = new System.Windows.Forms.MenuItem();
          this.mnuSortPlans = new System.Windows.Forms.MenuItem();
+         this.mnuView = new System.Windows.Forms.MenuItem();
+         this.mnuViewLayerEdges = new System.Windows.Forms.MenuItem();
          this.mnuLayers = new System.Windows.Forms.MenuItem();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.tabSelector = new System.Windows.Forms.TabControl();
@@ -280,6 +284,7 @@ namespace SGDK2
          // 
          this.mnuMapEditor.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
                                                                                      this.mnuEdit,
+                                                                                     this.mnuView,
                                                                                      this.mnuLayers});
          // 
          // mnuEdit
@@ -334,9 +339,24 @@ namespace SGDK2
          this.mnuSortPlans.Text = "So&rt Plans";
          this.mnuSortPlans.Click += new System.EventHandler(this.mnuSortPlans_Click);
          // 
+         // mnuView
+         // 
+         this.mnuView.Index = 1;
+         this.mnuView.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                this.mnuViewLayerEdges});
+         this.mnuView.MergeOrder = 1;
+         this.mnuView.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
+         this.mnuView.Text = "&View";
+         // 
+         // mnuViewLayerEdges
+         // 
+         this.mnuViewLayerEdges.Index = 0;
+         this.mnuViewLayerEdges.Text = "&Layer Edges";
+         this.mnuViewLayerEdges.Click += new System.EventHandler(this.mnuViewLayerEdges_Click);
+         // 
          // mnuLayers
          // 
-         this.mnuLayers.Index = 1;
+         this.mnuLayers.Index = 2;
          this.mnuLayers.MergeOrder = 2;
          this.mnuLayers.Text = "&Layers";
          // 
@@ -1923,6 +1943,32 @@ namespace SGDK2
             Graphics gfxDx = sfc.GetGraphics();
             try
             {
+               if (mnuViewLayerEdges.Checked)
+               {
+                  float[] dashPattern = {4f, 4f};
+                  using (Pen layerOutline = new Pen(Color.Black))
+                  {
+                     layerOutline.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
+                     layerOutline.DashPattern = dashPattern;
+                     for (int i=0; i<m_Layers.Length; i++)
+                     {
+                        if ((i != m_nCurLayer) && (mnuLayers.MenuItems[i].Checked))
+                        {
+                           Layer lyr = m_Layers[i];
+                           ProjectDataset.TilesetRow tsr = lyr.LayerRow.TilesetRow;
+                           Rectangle rcLayer = new Rectangle(lyr.CurrentPosition,
+                              new Size(lyr.VirtualColumns * tsr.TileWidth,
+                              lyr.VirtualRows * tsr.TileHeight));
+                           gfxDx.DrawRectangle(layerOutline, rcLayer);
+                           layerOutline.Color = Color.White;
+                           layerOutline.DashOffset = 4;
+                           gfxDx.DrawRectangle(layerOutline, rcLayer);
+                           layerOutline.Color = Color.Black;
+                           layerOutline.DashOffset = 0;
+                        }
+                     }
+                  }
+               }
                switch(GetCurrentMode())
                {
                   case CursorMode.SelectSprite:
@@ -2370,6 +2416,12 @@ namespace SGDK2
             DeleteSelectedObjects();
          else if (e.Button == tbbGotoSprite)
             LocateSelectedObject();
+      }
+
+      private void mnuViewLayerEdges_Click(object sender, System.EventArgs e)
+      {
+         mnuViewLayerEdges.Checked = !mnuViewLayerEdges.Checked;
+         MapDisplay.Invalidate();
       }
    }
    #endregion

@@ -1911,8 +1911,11 @@ namespace SGDK2
                lyrConstructor.BaseConstructorArgs[13] = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(int)), "MaxValue");
 
             System.Collections.Hashtable htCategories = new System.Collections.Hashtable();
-            if (sprites.Length > 0)
-            {
+            
+            // Removed optimization to ignore sprites for layers that don't have
+            // sprites because they might get dynamically added sprites.
+            //if (sprites.Length > 0)
+            //{
                mthExecuteLayerRules.Statements.Add(new CodeMethodInvokeExpression(
                   new CodeThisReferenceExpression(), "ProcessSprites"));
 
@@ -2000,7 +2003,7 @@ namespace SGDK2
                      clsLayerSpriteCategories.Members.Add(prpLayerSpriteCategory);
                   }
                }
-            }
+            //} (Removed optimization to ignore sprites)
 
             // Initialize plan parameters after other objects are initialized because
             // the plan parameters might refer to them.

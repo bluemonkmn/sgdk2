@@ -1030,9 +1030,14 @@ namespace SGDK2
             || (ParentEditor.CurrentTool == DrawingTool.SelRect)
             || (ParentEditor.CurrentTool == DrawingTool.SelFree))
          {
-            ptResult.X = (float)Math.Round(ptResult.X);
-            ptResult.Y = (float)Math.Round(ptResult.Y);
-         } 
+            ptResult.X = (float)Math.Floor(ptResult.X);
+            ptResult.Y = (float)Math.Floor(ptResult.Y);
+         }
+         else
+         {
+            ptResult.X -= 0.5f;
+            ptResult.Y -= 0.5f;
+         }
 
          return ptResult;
       }
@@ -1123,7 +1128,6 @@ namespace SGDK2
                Transform.Multiply(ParentEditor.SelectionTransform);
             if (ParentEditor.TempTransform != null)
                Transform.Multiply(ParentEditor.TempTransform);
-            Transform.Translate(.5f, .5f, MatrixOrder.Append);
             Transform.Scale(bmp.Width / (float)img.Width, bmp.Height / (float)img.Height, MatrixOrder.Append);
             Transform.TransformPoints(ScaledOutline);
             Transform.Dispose();

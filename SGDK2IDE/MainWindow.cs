@@ -26,6 +26,7 @@ namespace SGDK2
       private Hashtable m_AffectedNodeKeys = new Hashtable();
       System.Collections.ArrayList m_mruMenuItems = new ArrayList();
       private System.Collections.Hashtable m_NewMenuToTemplateMap = new Hashtable();
+      private DateTime errorStatusTime = DateTime.MinValue;
       #endregion
 
       #region Windows Form Designer Memebers
@@ -76,42 +77,46 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuFileSep4;
       private System.Windows.Forms.MenuItem mnuFileDeleteIntermediateFiles;
       private System.Windows.Forms.MenuItem mnuNewBlankProject;
+      private System.Windows.Forms.MenuItem mnuHelpContents;
+      private System.Windows.Forms.MenuItem mnuHelpIndex;
+      private System.Windows.Forms.MenuItem mnuHelpSearch;
+      private System.Windows.Forms.MenuItem mnuHelpSeparator;
       private System.ComponentModel.IContainer components;
       #endregion
 
       #region Initialization and Clean-up
-		public frmMain()
-		{
-			//
-			// Required for Windows Form Designer support
-			//
-			InitializeComponent();
+      public frmMain()
+      {
+         //
+         // Required for Windows Form Designer support
+         //
+         InitializeComponent();
          SGDK2IDE.LoadFormSettings(this);
       }
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
+      /// <summary>
+      /// Clean up any resources being used.
+      /// </summary>
+      protected override void Dispose( bool disposing )
+      {
+         if( disposing )
+         {
+            if(components != null)
+            {
+               components.Dispose();
+            }
+         }
+         base.Dispose( disposing );
+      }
       #endregion
 
-		#region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+      #region Windows Form Designer generated code
+      /// <summary>
+      /// Required method for Designer support - do not modify
+      /// the contents of this method with the code editor.
+      /// </summary>
+      private void InitializeComponent()
+      {
          this.components = new System.ComponentModel.Container();
          System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(frmMain));
          this.tbrMain = new System.Windows.Forms.ToolBar();
@@ -133,6 +138,7 @@ namespace SGDK2
          this.mnuMain = new System.Windows.Forms.MainMenu();
          this.mnuFile = new System.Windows.Forms.MenuItem();
          this.mnuFileNewPrj = new System.Windows.Forms.MenuItem();
+         this.mnuNewBlankProject = new System.Windows.Forms.MenuItem();
          this.mnuFileOpenPrj = new System.Windows.Forms.MenuItem();
          this.mnuFileSavePrj = new System.Windows.Forms.MenuItem();
          this.mnuFileSavePrjAs = new System.Windows.Forms.MenuItem();
@@ -155,12 +161,15 @@ namespace SGDK2
          this.mnuViewChanges = new System.Windows.Forms.MenuItem();
          this.mnuWindows = new System.Windows.Forms.MenuItem();
          this.mnuHelp = new System.Windows.Forms.MenuItem();
+         this.mnuHelpContents = new System.Windows.Forms.MenuItem();
+         this.mnuHelpIndex = new System.Windows.Forms.MenuItem();
+         this.mnuHelpSearch = new System.Windows.Forms.MenuItem();
+         this.mnuHelpSeparator = new System.Windows.Forms.MenuItem();
          this.mnuHelpAbout = new System.Windows.Forms.MenuItem();
          this.pnlProjectTree = new System.Windows.Forms.Panel();
          this.lblProjectTree = new System.Windows.Forms.Label();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.sbMain = new System.Windows.Forms.StatusBar();
-         this.mnuNewBlankProject = new System.Windows.Forms.MenuItem();
          this.pnlProjectTree.SuspendLayout();
          this.SuspendLayout();
          // 
@@ -239,6 +248,7 @@ namespace SGDK2
          this.tvwMain.MouseUp += new System.Windows.Forms.MouseEventHandler(this.tvwMain_MouseUp);
          this.tvwMain.DoubleClick += new System.EventHandler(this.tvwMain_DoubleClick);
          this.tvwMain.Leave += new System.EventHandler(this.tvwMain_Leave);
+         this.tvwMain.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Mdi_MouseMove);
          // 
          // mnuTreeView
          // 
@@ -321,6 +331,12 @@ namespace SGDK2
                                                                                       this.mnuNewBlankProject});
          this.mnuFileNewPrj.MergeOrder = 1;
          this.mnuFileNewPrj.Text = "&New Project";
+         // 
+         // mnuNewBlankProject
+         // 
+         this.mnuNewBlankProject.Index = 0;
+         this.mnuNewBlankProject.Text = "<Blan&k>";
+         this.mnuNewBlankProject.Click += new System.EventHandler(this.mnuFileNewPrj_Click);
          // 
          // mnuFileOpenPrj
          // 
@@ -477,14 +493,41 @@ namespace SGDK2
          // 
          this.mnuHelp.Index = 3;
          this.mnuHelp.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                this.mnuHelpContents,
+                                                                                this.mnuHelpIndex,
+                                                                                this.mnuHelpSearch,
+                                                                                this.mnuHelpSeparator,
                                                                                 this.mnuHelpAbout});
          this.mnuHelp.MergeOrder = 7;
          this.mnuHelp.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
          this.mnuHelp.Text = "&Help";
          // 
+         // mnuHelpContents
+         // 
+         this.mnuHelpContents.Index = 0;
+         this.mnuHelpContents.Text = "&Contents";
+         this.mnuHelpContents.Click += new System.EventHandler(this.mnuHelpContents_Click);
+         // 
+         // mnuHelpIndex
+         // 
+         this.mnuHelpIndex.Index = 1;
+         this.mnuHelpIndex.Text = "&Index";
+         this.mnuHelpIndex.Click += new System.EventHandler(this.mnuHelpIndex_Click);
+         // 
+         // mnuHelpSearch
+         // 
+         this.mnuHelpSearch.Index = 2;
+         this.mnuHelpSearch.Text = "&Search";
+         this.mnuHelpSearch.Click += new System.EventHandler(this.mnuHelpSearch_Click);
+         // 
+         // mnuHelpSeparator
+         // 
+         this.mnuHelpSeparator.Index = 3;
+         this.mnuHelpSeparator.Text = "-";
+         // 
          // mnuHelpAbout
          // 
-         this.mnuHelpAbout.Index = 0;
+         this.mnuHelpAbout.Index = 4;
          this.mnuHelpAbout.Text = "&About";
          this.mnuHelpAbout.Click += new System.EventHandler(this.mnuHelpAbout_Click);
          // 
@@ -580,12 +623,6 @@ namespace SGDK2
          this.sbMain.Size = new System.Drawing.Size(800, 20);
          this.sbMain.TabIndex = 8;
          // 
-         // mnuNewBlankProject
-         // 
-         this.mnuNewBlankProject.Index = 0;
-         this.mnuNewBlankProject.Text = "<Blan&k>";
-         this.mnuNewBlankProject.Click += new System.EventHandler(this.mnuFileNewPrj_Click);
-         // 
          // frmMain
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -603,7 +640,7 @@ namespace SGDK2
          this.ResumeLayout(false);
 
       }
-		#endregion
+      #endregion
 
       #region Private methods
       private void InitializeTree()
@@ -613,52 +650,52 @@ namespace SGDK2
          ndRoot.Tag = "Project";
          m_TreeNodes = new System.Collections.Specialized.HybridDictionary();
          tvwMain.Nodes.Add(ndRoot);
-         TreeNode ndFolder = new TreeNode("Graphic Sheets", 1, 1);
+         TreeNode ndFolder = new TreeNode("Graphic Sheets", 25, 25);
          ndFolder.Tag = "GS";
          m_TreeNodes.Add("GS", ndFolder);
          ndRoot.Nodes.Add(ndFolder);
 
-         ndFolder = new TreeNode("Framesets", 1, 1);
+         ndFolder = new TreeNode("Framesets", 26, 26);
          ndFolder.Tag = "FS";
          m_TreeNodes.Add("FS", ndFolder);
          ndRoot.Nodes.Add(ndFolder);
 
-         ndFolder = new TreeNode("Tilesets", 1, 1);
+         ndFolder = new TreeNode("Tilesets", 27, 27);
          ndFolder.Tag = "TS";
          m_TreeNodes.Add("TS", ndFolder);
          ndRoot.Nodes.Add(ndFolder);
 
-         ndFolder = new TreeNode("Tile Categories", 1, 1);
+         ndFolder = new TreeNode("Tile Categories", 30, 30);
          ndFolder.Tag = "TC";
          m_TreeNodes.Add("TC", ndFolder);
          ndRoot.Nodes.Add(ndFolder);
 
-         ndFolder = new TreeNode("Counters", 1, 1);
+         ndFolder = new TreeNode("Counters", 28, 28);
          ndFolder.Tag = "CR";
          m_TreeNodes.Add("CR", ndFolder);
          ndRoot.Nodes.Add(ndFolder);
 
-         ndFolder = new TreeNode("Maps", 1, 1);
+         ndFolder = new TreeNode("Maps", 29, 29);
          ndFolder.Tag = "MP";
          m_TreeNodes.Add("MP", ndFolder);
          ndRoot.Nodes.Add(ndFolder);
 
-         ndFolder = new TreeNode("Solidity", 1, 1);
+         ndFolder = new TreeNode("Solidity", 31, 31);
          ndFolder.Tag = "SY";
          m_TreeNodes.Add("SY", ndFolder);
          ndRoot.Nodes.Add(ndFolder);
 
-         ndFolder = new TreeNode("Sprite Definitions", 1, 1);
+         ndFolder = new TreeNode("Sprite Definitions", 32, 32);
          ndFolder.Tag = "SD";
          m_TreeNodes.Add("SD", ndFolder);
          ndRoot.Nodes.Add(ndFolder);
 
-         ndFolder = new TreeNode("Sprite Categories", 1, 1);
+         ndFolder = new TreeNode("Sprite Categories", 33, 33);
          ndFolder.Tag = "SC";
          m_TreeNodes.Add("SC", ndFolder);
          ndRoot.Nodes.Add(ndFolder);
 
-         ndFolder = new TreeNode("SourceCode", 1, 1);
+         ndFolder = new TreeNode("SourceCode", 34, 34);
          ndFolder.Tag = "CD";
          m_TreeNodes.Add("CD", ndFolder);
          ndRoot.Nodes.Add(ndFolder);
@@ -933,7 +970,7 @@ namespace SGDK2
             case "GS":
                if (Key == "GS")
                {
-                  MessageBox.Show(this, "A specific graphic sheet must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  SetTempStatusMessage("A specific graphic sheet must be selected to edit.");
                   return;
                }
                frmGfxSheet.Edit(this, ProjectData.GetGraphicSheet(KeyParts[0]));
@@ -944,7 +981,7 @@ namespace SGDK2
             case "FS":
                if (Key == "FS")
                {
-                  MessageBox.Show(this, "A specific Frameset must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  SetTempStatusMessage("A specific Frameset must be selected to edit.");
                   return;
                }
                frmFrameEdit.Edit(this, ProjectData.GetFrameSet(KeyParts[0]));
@@ -952,7 +989,7 @@ namespace SGDK2
             case "TS":
                if (Key == "TS")
                {
-                  MessageBox.Show(this, "A specific Tileset must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  SetTempStatusMessage("A specific Tileset must be selected to edit.");
                   return;
                }
                frmTileEdit.Edit(this, ProjectData.GetTileSet(KeyParts[0]));
@@ -960,7 +997,7 @@ namespace SGDK2
             case "TC":
                if (Key == "TC")
                {
-                  MessageBox.Show(this, "A specific Tile Category must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  SetTempStatusMessage("A specific Tile Category must be selected to edit.");
                   return;
                }
                if (KeyParts.Length <= 1)
@@ -971,7 +1008,7 @@ namespace SGDK2
             case "CR":
                if (Key == "CR")
                {
-                  MessageBox.Show(this, "A specific Counter must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  SetTempStatusMessage("A specific Counter must be selected to edit.");
                   return;
                }
                frmCounterEdit.Edit(this, ProjectData.GetCounter(KeyParts[0]));
@@ -979,7 +1016,7 @@ namespace SGDK2
             case "SD":
                if (Key == "SD")
                {
-                  MessageBox.Show(this, "A specific Sprite Definition must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  SetTempStatusMessage("A specific Sprite Definition must be selected to edit.");
                   return;
                }
                frmSpriteDefinition.Edit(this, ProjectData.GetSpriteDefinition(KeyParts[0]));
@@ -987,7 +1024,7 @@ namespace SGDK2
             case "SY":
                if (Key == "SY")
                {
-                  MessageBox.Show(this, "A specific Solidity must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  SetTempStatusMessage("A specific Solidity must be selected to edit.");
                   return;
                }
                frmSolidity.Edit(this, ProjectData.GetSolidity(KeyParts[0]));
@@ -995,7 +1032,7 @@ namespace SGDK2
             case "MP":
                if (Key == "MP")
                {
-                  MessageBox.Show(this, "A specific Map must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  SetTempStatusMessage("A specific Map must be selected to edit.");
                   return;
                }
                frmMapManager.Edit(this, ProjectData.GetMap(KeyParts[0]));
@@ -1003,7 +1040,7 @@ namespace SGDK2
             case "LR":
                if (KeyParts.Length <= 1)
                {
-                  MessageBox.Show(this, "A specific Layer must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  SetTempStatusMessage("A specific Layer must be selected to edit.");
                   return;
                }
                frmLayerManager.Edit(this, ProjectData.GetLayer(KeyParts[0], KeyParts[1]));
@@ -1014,7 +1051,7 @@ namespace SGDK2
             case "PL":
                if (KeyParts.Length <= 2)
                {
-                  MessageBox.Show(this, "A specific Plan must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  SetTempStatusMessage("A specific Plan must be selected to edit.");
                   return;
                }
                frmPlanEdit.Edit(this, ProjectData.GetSpritePlan(KeyParts[0], KeyParts[1], KeyParts[2]));
@@ -1022,7 +1059,7 @@ namespace SGDK2
             case "SC":
                if (Key == "SC")
                {
-                  MessageBox.Show(this, "A specific Sprite Category must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  SetTempStatusMessage("A specific Sprite Category must be selected to edit.");
                   return;
                }
                frmSpriteCategory.Edit(this, ProjectData.GetSpriteCategory(KeyParts[0]));
@@ -1030,7 +1067,7 @@ namespace SGDK2
             case "CD":
                if (Key == "CD")
                {
-                  MessageBox.Show(this, "A specific Code object must be selected to edit.", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  SetTempStatusMessage("A specific Code object must be selected to edit.");
                   return;
                }
                ProjectDataset.SourceCodeRow row = ProjectData.GetSourceCode(KeyParts[KeyParts.Length - 1]);
@@ -1039,7 +1076,7 @@ namespace SGDK2
                frmCodeEditor.Edit(this, row);
                break;
             default:
-               MessageBox.Show(this, "Cannot display editor for the selected type", "Edit Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+               SetTempStatusMessage("Cannot display editor for the selected type");
                return;
          }
       }
@@ -1421,6 +1458,11 @@ namespace SGDK2
             current = di.FullName;
          }
       }
+      private void SetTempStatusMessage(string status)
+      {
+         sbMain.Text = status;
+         errorStatusTime = DateTime.Now;
+      }
       #endregion
 
       #region Public Methods
@@ -1551,6 +1593,7 @@ namespace SGDK2
             {
                ((MdiClient)c).Paint += new PaintEventHandler(MdiClient_OnPaint);
                ((MdiClient)c).SizeChanged += new EventHandler(MdiClient_SizeChanged);
+               ((MdiClient)c).MouseMove += new MouseEventHandler(Mdi_MouseMove);
                break;
             }
 
@@ -2717,6 +2760,29 @@ namespace SGDK2
       private void MdiClient_SizeChanged(object sender, EventArgs e)
       {
          ((MdiClient)sender).Invalidate();
+      }
+
+      private void Mdi_MouseMove(object sender, MouseEventArgs e)
+      {
+         if (DateTime.Now.Subtract(errorStatusTime).TotalSeconds > 5)
+         {
+            sbMain.Text = SGDK2IDE.TopStatusMessage;
+         }
+      }
+
+      private void mnuHelpContents_Click(object sender, System.EventArgs e)
+      {
+         Help.ShowHelp(this, SGDK2IDE.g_HelpProvider.HelpNamespace, HelpNavigator.TableOfContents);
+      }
+
+      private void mnuHelpIndex_Click(object sender, System.EventArgs e)
+      {
+         Help.ShowHelpIndex(this, SGDK2IDE.g_HelpProvider.HelpNamespace);
+      }
+
+      private void mnuHelpSearch_Click(object sender, System.EventArgs e)
+      {
+         Help.ShowHelp(this, SGDK2IDE.g_HelpProvider.HelpNamespace, HelpNavigator.Find, "");
       }
       #endregion
    }

@@ -320,6 +320,14 @@ namespace SGDK2
             mainWindow.Cursor = Cursors.Default;
       }
 
+      public static string TopStatusMessage
+      {
+         get
+         {
+            return (string)statusStack.Peek();
+         }
+      }
+
       public static System.Xml.XmlDocument LoadUserSettings()
       {
          System.Xml.XmlDocument doc = new System.Xml.XmlDocument();

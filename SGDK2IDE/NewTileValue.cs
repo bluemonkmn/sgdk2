@@ -15,6 +15,8 @@ namespace SGDK2
 	/// </summary>
 	public class frmNewTileValue : System.Windows.Forms.Form
 	{
+      private static int previousSelection = -1;
+
       private System.Windows.Forms.Label lblPrompt;
       private System.Windows.Forms.Label lblTileValue;
       private System.Windows.Forms.Button btnOK;
@@ -271,6 +273,23 @@ namespace SGDK2
             MessageBox.Show(frm, "Add some frames to the frameset first.", "Specify New Tile Value", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             return -1;
          }
+
+         switch(previousSelection)
+         {
+            case 0:
+               frm.rdoUnmapped.Checked = true;
+               break;
+            case 1:
+               frm.rdoUndefined.Checked = true;
+               break;
+            case 2:
+               frm.rdoEnd.Checked = true;
+               break;
+            case 3:
+               frm.rdoCustom.Checked = true;
+               break;
+         }
+
          int lastFrame = frames[frames.Length-1].FrameValue;
          if ((tiles.Length == 0) || (tiles[0].TileValue > 0))
             frm.txtUnmapped.Text = "0";
@@ -324,11 +343,20 @@ namespace SGDK2
             if (DialogResult.OK == frm.ShowDialog(owner))
             {
                if (frm.rdoUnmapped.Checked)
+               {
+                  previousSelection = 0;
                   return int.Parse(frm.txtUnmapped.Text);
+               }
                else if (frm.rdoUndefined.Checked)
+               {
+                  previousSelection = 1;
                   return int.Parse(frm.txtUndefined.Text);
+               }
                else if (frm.rdoEnd.Checked)
+               {
+                  previousSelection = 2;
                   return int.Parse(frm.txtEnd.Text);
+               }
                else
                {
                   int result = (int)frm.updTileValue.Value;
@@ -339,7 +367,10 @@ namespace SGDK2
                   if (i<tiles.Length)
                      MessageBox.Show(owner, "Tile index " + result.ToString() + " has already been mapped.  You must enter a tile index that has not been explicitly mapped by this Tileset.", "Specify New Tile Value", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                   else
+                  {
+                     previousSelection = 3;
                      return result;
+                  }
                }
             }
             else

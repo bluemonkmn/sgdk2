@@ -52,9 +52,9 @@
          are in the individual rule functions that a plan can use. For more information
          about details of the individual rule functions that a plan can use, see:</p>
       <h3><a href="ms-its:SGDK2 Coding Reference.chm::/default.html">Coding Reference</a></h3>
-      <p>For detailed documentation about understanding and using the individual plan 
-         rule functions, please refer to the <a href="Rules.html">documentation on defining 
-            rules</a>.</p>
+      <p>The root page of the coding reference summarizes the process of using the individual
+         rule functions. The remainder of the reference contains detailed descriptions of
+         individual functions.</p>
       <h2>Defining Plans</h2>
       <h3>Name</h3>
       <p class="SubPara">A plan name must be unique among all plans on the same layer. 
@@ -246,7 +246,7 @@
                (for example, the end of an "If" block as well as another "If" block containing 
                that). That's the purpose of the "End" rule type. It's the only rule type that 
                doesn't perfom any action in itself (there's no rule function associated with 
-               it). It just ends a block of nested statements that eas started by an "If", 
+               it). It just ends a block of nested statements that was started by an "If", 
                "ElseIf" or "While".</td>
          </tr>
          <tr>
@@ -276,7 +276,7 @@
          function associated with the rule. Here you can select one of the many 
          functions available to define plan behavior, including functions defined 
          yourself by editing files in the "Source Code" folder of the project. For more 
-         details about defining your own rule functions, see the <a href="CodingReference.html">
+         details about defining your own rule functions, see the <a href="ms-its:SGDK2 Coding Reference.chm::/default.html">
             coding reference</a> . A number of pre-defined functions exist to perform 
          simple comparisons, calculations and copying of values:</p>
       <table id="Table4" class="SubPara" cellspacing="1" cellpadding="1" border="1" summary="First column lists a pre-defined function name, second column lists its description">
@@ -345,8 +345,8 @@
          dropdown lists. The box immediately below the rule function box will also 
          display a brief description of what the function is and how to use it. 
          Furthermore, if the function can output a number, the "Output to" box will open 
-         up and allow you to select a counter or plan parameter in which to store the 
-         result.</p>
+         up and allow you to select a counter, plan parameter or sprite parameter in which
+         to store the result.</p>
       <p class="SubPara">If there is an error compiling the project or processing the 
          function name (it's possible to type an arbitrary name into the function field 
          in case you want to call an undocumented function) then the description field 
@@ -498,7 +498,7 @@
                list). Some rules may want to alter a parameter value that is passed in 
                (receive the parameter "by reference" so it can be changed). In these cases the 
                values in the list are preceded by "ref" indicating that the variable that is 
-               provided may have a different value afterwards (failing to pass a a variable by 
+               provided may have a different value afterwards (failing to pass a variable by 
                reference where a reference is required will result in an error.) Counters 
                cannot be provided to a parameter requiring a reference to an integer, but 
                another version of the rule function may be available that accepts a counter, 

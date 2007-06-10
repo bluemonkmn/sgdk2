@@ -127,7 +127,7 @@
       <p class="SubPara">After using the irregular selection, rectangular selection, 
          select all, or color wand commands, you can cut the selection to remove it from 
          the image (erase it) and optionally paste it elsewhere. The clipped image is 
-         stored in teh system clipboard so it can be pasted into other applications. 
+         stored in the system clipboard so it can be pasted into other applications. 
          However, support for alpha transparency is limited. If you use the Cut command 
          without any active selection, the entire image will be copied, but nothing will 
          be deleted.</p>
@@ -215,6 +215,12 @@
          with using this tool, only the selected area will be affected, otherwise the 
          entire image will be affected. Note the alpha level of each pixel remains the 
          same. No noise will appear in transparent areas.</p>
+      <p class="SubPara">Noise is applied using the following logic: Pick a random number
+         between negative N and positive N where N is the value entered when prompted;
+         then add this value to the red channel of a pixel, ensuring that the result
+         remains in the range 0-255. The process is repeated for the green and blue
+         channels of the pixel and then the pixel is updated (using the original alpha
+         value). That, then is repeated for every pixel in the selected area.</p>
       <h3>Selection Highlight</h3>
       <p class="SubPara">By default, any selection made in the editor is represented by 
          highlighting it in blue. If the default selection color of blue is too 
@@ -231,19 +237,22 @@
          image are transparent versus a particular (opaque) color. If it's hard to 
          determine which pixels are transparent with the default backdrop, you can 
          change to a variety of other backdrops. Generally you want to use light 
-         backdrops with dark images and darg backdrops with light images in order to 
+         backdrops with dark images and dark backdrops with light images in order to 
          contrast the transparent pixels from the opaque pixels.</p>
       <h3><a id="Grid" name="Grid">Grid</a></h3>
-      <p class="SubPara">Turns on a grid of white lines delineating the edges of the 
-         pixels. This is only applicable for magnifications of 4x4 or higher.</p>
+      <p class="SubPara">Turns on a grid of lines delineating the edges of the 
+         pixels. This is only applicable for magnifications of 4x4 or higher. The
+         lines are white when using a dark backdrop or black when using a light
+         backdrop.</p>
       <h2>Tools Menu</h2>
       <h3><a id="FreeDraw" name="FreeDraw">Freehand Drawing</a></h3>
       <p class="SubPara">Works like a paint brush or a pencil. Just drag strokes out in 
          the editor. Note that you can use this with the "Filled Shapes" and "Gradient 
          Fills" options to draw an irregular filled shape freehand.</p>
       <h3><a id="FreehandLines" name="FreehandLines">Freehand Lines</a></h3>
-      <p class="SubPara">Draw straight lines or edges. Click one then move the mouse to 
-         another location to draw a straight line between the two points. Move again and 
+      <p class="SubPara">Draw straight lines or edges. Click once, then move the mouse to 
+         another location and click again to draw a straight line between the two points.
+         Move again and 
          click again to draw a series of connected lines. Right-click to finish. Use 
          this with the "Filled Shapes" and "Gradient Fills" options if you want to draw 
          shapes with straight edges that are filled with a solid or gradient fill. 
@@ -381,7 +390,7 @@
          comfortable writing C# code and recompiling SGDK2IDE.exe (with MakeSGDK2.bat) 
          you can change the existing tools or create your own custom tools. The code is 
          in the source file named CustTool.cs. To create a new custom tool, follow the 
-         example of the existing toold and remember to check a number of areas:</p>
+         example of the existing tools and remember to check a number of areas:</p>
       <ol class="SubList">
          <li>
             Increase the CustomToolCount constant defined at the top.</li>
@@ -472,7 +481,7 @@
          larger portion of it. Air brush and smooth are good examples.</p>
       <h2>Screen Controls</h2>
       <h3><a id="MagnifiedView" name="MagnifiedView">Magnified View</a></h3>
-      <p class="SubPara">This are is where your main editing takes place. It shows a 
+      <p class="SubPara">This area is where your main editing takes place. It shows a 
          magnified view of the graphic you are currently editing in memory. Changes made 
          here are not permanent until you store them back into the graphic sheet with 
          the Cell Manager.</p>
@@ -499,7 +508,7 @@
          saturation, value and alpha, you can type exact numbers into these boxes. The 
          result changes the current color just like clicking the color wheel and sliders 
          would. You can also see the numeric components of the currently selected color 
-         reflected here while using teh color wheel and sliders. Each component must be 
+         reflected here while using the color wheel and sliders. Each component must be 
          a value from 0 to 255.</p>
       <h3><a id="LineColor" name="LineColor">Line Color</a></h3>
       <p class="SubPara">When the line color button is pressed it means that selecting a 
@@ -518,10 +527,10 @@
          pressed and you want to select a new solid color. The current solid color is 
          displayed next to the solid color button, and generally determines the color 
          for solid filled areas drawn by various tools. Some tools may automatically 
-         press or un-press the solid color button if it is ittelevant or exclusively 
+         press or un-press the solid color button if it is irrelevant or exclusively 
          relevant to the selected tool.</p>
       <h3><a id="ColoringMode" name="ColoringMode">Coloring Mode</a></h3>
-      <p class="SubPara">Normally, when draw with a transparent or partially transparent 
+      <p class="SubPara">Normally, when drawing with a transparent or partially transparent 
          color, it is merged with the colors underneath it using the "Overlay" mode 
          (unless you are using the flood fill tool). So a half-transparent red pixel 
          drawn over a blue pixel will leave half the blue in the original pixel and add 

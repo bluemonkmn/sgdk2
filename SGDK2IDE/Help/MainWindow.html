@@ -7,7 +7,7 @@
       <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5">
       <link href="SGDK2Help.css" type="text/css" rel="stylesheet">
       <style> th {background-color:lightgrey}
-	td {background-color:linen}
+	td {background-color:linen; vertical-align:top}
       </style>
    </head>
    <body>
@@ -43,12 +43,12 @@
          <li>
          Select the item you want to edit and select "Properties" from the view menu.
          <li>
-            Right-click in the item you want to edit and select "Edit" from teh pop-up 
+            Right-click in the item you want to edit and select "Edit" from the pop-up 
             menu.</li>
       </ul>
       <p>To delete an item, select it, and then select "Delete Object" from the file 
          menu, or right-click on it and select "Delete" from the pop-up menu. Notice 
-         that the pop-up menu and file menu also provide and "Import From..." command. 
+         that the pop-up menu and file menu also provide an "Import From..." command. 
          Similar to the new command, you can also create new objects by importing them 
          from external .SGDK2 files (make sure to choose the import command from the 
          correct folder). The "Import From..." command can be used to import Sprite 
@@ -122,14 +122,15 @@
                   <td>Run Project in Debug Mode</td>
                   <td>This performs the same acton as "Run Project", but turns on a debug switch in 
                      the code that affects a few things. First of all, any validations that are 
-                     performed only in debug mode will display messages is the validation fails. The 
+                     performed only in debug mode will display messages if the validation fails. The 
                      most common example of this is trying to perform some action with an inactive 
                      sprite. Messages about this problem will only appear in debug mode. Another 
                      effect is an FPS (frames per second) will be displayed in the top left corner 
                      of the display while the game is running. Furthermore any debug messages that 
                      are output by the <a href="ms-its:SGDK2 Coding Reference.chm::/GeneralRules.LogDebugLabel.html">
                         LogDebugLabel</a> and <a href="ms-its:SGDK2 Coding Reference.chm::/GeneralRules.LogDebugValue.html">
-                        LogDebugValue</a> functions. You can also add your own debug code that only 
+                        LogDebugValue</a> functions only operate in debug mode. You can also add your
+                     own debug code that only 
                      executes when the debug switch is on by using the #if DEBUG" precompiler 
                      statement and/or the [System.Diagnostics.Conditional("DEBUG")] attribute, both 
                      of which are demonstrated in GameForm.cs in the Source Code folder of the 
@@ -149,7 +150,7 @@
                      code to a functional state. One way that the built-in code can diverge is by 
                      manual editing. If you edit the code badly and can't restore it to a functional 
                      state, you may want to reset it. Another way is if a new version of SGDK2 is 
-                     released that has different built-in code that is not compatible with oilder 
+                     released that has different built-in code that is not compatible with older 
                      built-in code. Resetting the older project to use the newer built-in code may 
                      be the easiest way to upgrade the project, but it would also lose any 
                      customizations that were made to the built-in code.</td>

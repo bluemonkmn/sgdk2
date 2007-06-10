@@ -1373,7 +1373,6 @@ namespace SGDK2
                   if (m_SourceCode.CustomObjectData[i] != identity[i])
                   {
                      identical = false;
-                     System.Diagnostics.Debug.WriteLine(editString.Substring(i,100));
                      break;
                   }
             }

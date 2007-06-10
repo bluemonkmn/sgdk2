@@ -32,8 +32,8 @@ namespace SGDK2
       private System.Windows.Forms.StatusBarPanel sbpSize;
       private System.Windows.Forms.StatusBarPanel sbpIndex;
       private System.Windows.Forms.StatusBarPanel sbpMain;
-      #endregion
       private System.Windows.Forms.Panel pnlButtons;
+      #endregion
 
       #region Initialization and Clean-up
 		/// <summary>
@@ -313,6 +313,15 @@ namespace SGDK2
       {
          if (ParentEditor.HighlightBrush != null)
             e.Graphics.FillRectangle(ParentEditor.HighlightBrush, SelectedRectangle);
+         using (System.Drawing.Pen selRectPen = new Pen(Color.White))
+         {
+            selRectPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Custom;
+            selRectPen.DashPattern = new float[] {3.0f, 3.0f};
+            e.Graphics.DrawRectangle(selRectPen, SelectedRectangle);
+            selRectPen.Color = Color.Black;
+            selRectPen.DashOffset = 3;
+            e.Graphics.DrawRectangle(selRectPen, SelectedRectangle);
+         }
       }
 
       private void btnStoreCell_Click(object sender, System.EventArgs e)

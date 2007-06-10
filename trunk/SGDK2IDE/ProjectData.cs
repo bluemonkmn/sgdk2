@@ -2541,13 +2541,19 @@ namespace SGDK2
       {
          return m_dsPrj.CategoryFrame.FindByTilesetCategoryTileValueFrame(Tileset, Category, TileValue, FrameValue);
       }
-      public static void DeleteCategoryFrameRow(string Tileset, string Category, int TileValue, short FrameValue)
+      public static bool DeleteCategoryFrameRow(string Tileset, string Category, int TileValue, short FrameValue)
       {
          ProjectDataset.CategoryFrameRow deleteRow = m_dsPrj.CategoryFrame.FindByTilesetCategoryTileValueFrame(Tileset, Category, TileValue, FrameValue);
          if (deleteRow.CategoryTileRowParent.GetCategoryFrameRows().Length <= 1)
+         {
             deleteRow.CategoryTileRowParent.Delete();
+            return true;
+         }
          else
+         {
             deleteRow.Delete();
+            return false;
+         }
       }
       #endregion
 

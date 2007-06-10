@@ -20,6 +20,7 @@ namespace SGDK2
       ProjectDataset.TilesetRow m_Tileset = null;
       ProjectDataset.TileRow m_Tile = null;
       bool m_isLoading = false;
+      TileCache tileCache;
       #endregion
 
       #region Control Members
@@ -105,6 +106,8 @@ namespace SGDK2
          txtTilesetName.Text = sName;
          nudTileWidth.Value = m_Tileset.TileWidth;
          nudTileHeight.Value = m_Tileset.TileHeight;
+         AdjustItemHeight();
+         tileCache = new TileCache(m_Tileset);
          FillFramesets();
          FillCounters();
 
@@ -125,7 +128,9 @@ namespace SGDK2
          txtTilesetName.Text = drTileset.Name;
          nudTileWidth.Value = m_Tileset.TileWidth;
          nudTileHeight.Value = m_Tileset.TileHeight;
+         AdjustItemHeight();
          TileFrames.Frameset = drTileset.FramesetRow;
+         tileCache = new TileCache(m_Tileset);
          FillFramesets();
          FillCounters();
 
@@ -181,6 +186,7 @@ namespace SGDK2
          this.mnuDeleteTile = new System.Windows.Forms.MenuItem();
          this.mnuDeleteFrames = new System.Windows.Forms.MenuItem();
          this.mnuAddFrames = new System.Windows.Forms.MenuItem();
+         this.mnuPreviewAnimation = new System.Windows.Forms.MenuItem();
          this.ttTileset = new System.Windows.Forms.ToolTip(this.components);
          this.cboFrameCounter = new System.Windows.Forms.ComboBox();
          this.updRepeatCount = new System.Windows.Forms.NumericUpDown();
@@ -204,7 +210,6 @@ namespace SGDK2
          this.sbpFrameIndex = new System.Windows.Forms.StatusBarPanel();
          this.sbpCellIndex = new System.Windows.Forms.StatusBarPanel();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
-         this.mnuPreviewAnimation = new System.Windows.Forms.MenuItem();
          this.pnlTileHeader.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.nudTileHeight)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.nudTileWidth)).BeginInit();
@@ -357,7 +362,7 @@ namespace SGDK2
          this.tbMappedTiles.Dock = System.Windows.Forms.DockStyle.None;
          this.tbMappedTiles.DropDownArrows = true;
          this.tbMappedTiles.ImageList = this.imlTileset;
-         this.tbMappedTiles.Location = new System.Drawing.Point(208, 48);
+         this.tbMappedTiles.Location = new System.Drawing.Point(272, 48);
          this.tbMappedTiles.Name = "tbMappedTiles";
          this.tbMappedTiles.ShowToolTips = true;
          this.tbMappedTiles.Size = new System.Drawing.Size(72, 24);
@@ -388,15 +393,19 @@ namespace SGDK2
          // 
          // cboMappedTiles
          // 
-         this.cboMappedTiles.DisplayMember = "TileValue";
+         this.cboMappedTiles.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
          this.cboMappedTiles.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+         this.cboMappedTiles.IntegralHeight = false;
          this.cboMappedTiles.Location = new System.Drawing.Point(104, 48);
+         this.cboMappedTiles.MaxDropDownItems = 20;
          this.cboMappedTiles.Name = "cboMappedTiles";
-         this.cboMappedTiles.Size = new System.Drawing.Size(104, 21);
+         this.cboMappedTiles.Size = new System.Drawing.Size(168, 21);
          this.cboMappedTiles.TabIndex = 6;
          this.ttTileset.SetToolTip(this.cboMappedTiles, "Specifies which tile index is being re-mapped/animated");
          this.cboMappedTiles.ValueMember = "TileValue";
          this.cboMappedTiles.SelectedIndexChanged += new System.EventHandler(this.cboMappedTiles_SelectedIndexChanged);
+         this.cboMappedTiles.MeasureItem += new System.Windows.Forms.MeasureItemEventHandler(this.cboMappedTiles_MeasureItem);
+         this.cboMappedTiles.DrawItem += new System.Windows.Forms.DrawItemEventHandler(this.cboMappedTiles_DrawItem);
          // 
          // lblCustomizeTile
          // 
@@ -459,6 +468,12 @@ namespace SGDK2
          this.mnuAddFrames.Shortcut = System.Windows.Forms.Shortcut.CtrlA;
          this.mnuAddFrames.Text = "&Add Selected Frames to Tile";
          this.mnuAddFrames.Click += new System.EventHandler(this.mnuAddFrames_Click);
+         // 
+         // mnuPreviewAnimation
+         // 
+         this.mnuPreviewAnimation.Index = 4;
+         this.mnuPreviewAnimation.Text = "&Preview Tile Animation";
+         this.mnuPreviewAnimation.Click += new System.EventHandler(this.mnuPreviewAnimation_Click);
          // 
          // cboFrameCounter
          // 
@@ -691,12 +706,6 @@ namespace SGDK2
          this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
          this.dataMonitor.CounterRowChanged += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowChanged);
          // 
-         // mnuPreviewAnimation
-         // 
-         this.mnuPreviewAnimation.Index = 4;
-         this.mnuPreviewAnimation.Text = "&Preview Tile Animation";
-         this.mnuPreviewAnimation.Click += new System.EventHandler(this.mnuPreviewAnimation_Click);
-         // 
          // frmTileEdit
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -787,7 +796,67 @@ namespace SGDK2
             TileFrames.FramesToDisplay.Remove(tf);
          }
 
+         tileCache.RefreshTile(GetCurrentTile());
          TileFrames.Invalidate();
+      }
+
+      private Rectangle GetBounds(int tileIndex)
+      {
+         ProjectDataset.TileRow tile = (ProjectDataset.TileRow)cboMappedTiles.Items[tileIndex];
+         ProjectDataset.TileFrameRow[] frames = tile.GetTileFrameRows();
+         int[] subframes = tileCache[tile.TileValue];
+         Rectangle rcMax = Rectangle.Empty;
+         for (int i=0; i < subframes.Length; i++)
+         {
+            ProjectDataset.FrameRow frame = ProjectData.GetFrame(tile.TilesetRow.Frameset, subframes[i]);
+            Bitmap bmp = ProjectData.GetGraphicSheetImage(frame.GraphicSheet, false);
+            using (System.Drawing.Drawing2D.Matrix mtx = new System.Drawing.Drawing2D.Matrix(
+                      frame.m11, frame.m12, frame.m21, frame.m22, frame.dx, frame.dy))
+            {
+               ProjectDataset.GraphicSheetRow gfxRow = ProjectData.GetGraphicSheet(frame.GraphicSheet);
+               Point[] corners = new Point[]
+               {
+                  new Point(0, 0),
+                  new Point(gfxRow.CellWidth, 0),
+                  new Point(gfxRow.CellWidth, gfxRow.CellHeight),
+                  new Point(0, gfxRow.CellHeight)
+               };
+               mtx.TransformPoints(corners);
+               if (rcMax.IsEmpty)
+                  rcMax = new Rectangle(corners[0].X, corners[0].Y, 0, 0);
+               foreach (Point pt in corners)
+               {
+                  if (pt.X < rcMax.X)
+                  {
+                     rcMax.Width = rcMax.Left + rcMax.Width - pt.X;
+                     rcMax.X = pt.X;
+                  }
+                  if (pt.Y < rcMax.Y)
+                  {
+                     rcMax.Height = rcMax.Top + rcMax.Height - pt.Y;
+                     rcMax.Y = pt.Y;
+                  }
+                  if (pt.X - rcMax.Left > rcMax.Width)
+                     rcMax.Width = pt.X - rcMax.Left;
+                  if (pt.Y - rcMax.Top > rcMax.Height)
+                     rcMax.Height = pt.Y - rcMax.Top;
+               }
+            }
+         }
+         return rcMax;
+      }
+
+      private void AdjustItemHeight()
+      {
+         if (m_Tileset.TileHeight > 15)
+            if (m_Tileset.TileHeight < 96)
+               cboMappedTiles.ItemHeight = m_Tileset.TileHeight;
+            else
+               cboMappedTiles.ItemHeight = 96;
+         else
+            cboMappedTiles.ItemHeight = 15;
+
+         pnlTileHeader.Height = cboMappedTiles.Bottom + 2;
       }
       #endregion
 
@@ -879,6 +948,7 @@ namespace SGDK2
                   TileFrames.FramesToDisplay.Insert(nCellIndex++, new TileFrame(tfr));
                }
             }
+            tileCache.RefreshTile(tr);
          }
          catch (System.Exception ex)
          {
@@ -922,6 +992,7 @@ namespace SGDK2
          }
          if (cboMappedTiles.SelectedItem != m_Tile)
             m_Tile = null;
+         tileCache = new TileCache(m_Tileset);
       }
 
       private void tbMappedTiles_ButtonClick(object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e)
@@ -938,6 +1009,7 @@ namespace SGDK2
                   ProjectData.InsertFrame(trNew, 0, nNewVal, 1);
                cboMappedTiles.Items.Add(trNew);
                cboMappedTiles.SelectedItem = trNew;
+               tileCache = new TileCache(trNew.TilesetRow);
             }
             else if (e.Button == tbbDeleteTile)
             {
@@ -1109,7 +1181,8 @@ namespace SGDK2
             ProjectData.InsertFrame(trNew, 0, nNewVal, 1);
          }
          cboMappedTiles.Items.Add(trNew);
-         cboMappedTiles.SelectedItem = trNew;      
+         cboMappedTiles.SelectedItem = trNew;
+         tileCache = new TileCache(trNew.TilesetRow);
       }
 
       private void mnuAddFrames_Click(object sender, System.EventArgs e)
@@ -1126,6 +1199,7 @@ namespace SGDK2
                TileFrames.FramesToDisplay.Insert(InsertPosition, new TileFrame(
                   ProjectData.InsertFrame(tr, InsertPosition, fr.FrameValue, (short)updRepeatCount.Value)));
             }
+            tileCache.RefreshTile(tr);
             TileFrames.CurrentCellIndex++;
             TileFrames.Invalidate();
          }
@@ -1176,10 +1250,11 @@ namespace SGDK2
             if (!m_isLoading && (TileFrames.CurrentCellIndex >= 0))
             {
                foreach(TileFrame tf in TileFrames.FramesToDisplay)
-               if (tf.IsSelected && (tf.Row.Duration != (short)updRepeatCount.Value))
-               {
-                  tf.Row.Duration = (short)updRepeatCount.Value;
-               }
+                  if (tf.IsSelected && (tf.Row.Duration != (short)updRepeatCount.Value))
+                  {
+                     tf.Row.Duration = (short)updRepeatCount.Value;
+                  }
+               tileCache.RefreshTile(GetCurrentTile());
             }
          }
          catch (System.Exception ex)
@@ -1221,6 +1296,7 @@ namespace SGDK2
       private void nudTileHeight_ValueChanged(object sender, System.EventArgs e)
       {
          m_Tileset.TileHeight = System.Convert.ToInt16(nudTileHeight.Value);
+         AdjustItemHeight();
       }
 
       private void AvailableFrames_CurrentCellChanged(object sender, System.EventArgs e)
@@ -1255,6 +1331,78 @@ namespace SGDK2
          {
             MessageBox.Show(this, ex.Message, "Preview Animation", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             ProjectData.RejectChanges();
+         }
+      }
+
+      private void cboMappedTiles_MeasureItem(object sender, System.Windows.Forms.MeasureItemEventArgs e)
+      {
+         if (e.Index >= 0)
+         {
+            Rectangle rcMax = GetBounds(e.Index);
+            SizeF numberSize = e.Graphics.MeasureString(e.Index.ToString(), cboMappedTiles.Font);
+            e.ItemWidth = (int)(rcMax.Width + numberSize.Width + 2);
+            e.ItemHeight = (int)(Math.Max(rcMax.Height, numberSize.Height));
+         }
+         else
+         {
+            e.ItemWidth = 0;
+            e.ItemHeight = 0;
+         }
+      }
+
+      private void cboMappedTiles_DrawItem(object sender, System.Windows.Forms.DrawItemEventArgs e)
+      {
+         System.Drawing.StringFormat sf = new System.Drawing.StringFormat(System.Drawing.StringFormatFlags.NoWrap);
+         sf.LineAlignment = System.Drawing.StringAlignment.Center;
+         if (0 != (e.State & DrawItemState.Selected))
+         {
+            e.Graphics.FillRectangle(SystemBrushes.Highlight, e.Bounds);
+         }
+         else
+         {
+            e.Graphics.FillRectangle(SystemBrushes.Window, e.Bounds);
+         }
+         if (0 != (e.State & DrawItemState.Focus))
+         {
+            using (Pen penFocus = new Pen(Color.White))
+            {
+               Rectangle focusRect = new Rectangle(e.Bounds.X, e.Bounds.Y, e.Bounds.Width-1, e.Bounds.Height-1);
+               penFocus.DashStyle = System.Drawing.Drawing2D.DashStyle.Dot;
+               e.Graphics.DrawRectangle(penFocus, focusRect);
+               penFocus.DashOffset = 1;
+               penFocus.Color = Color.Black;
+               e.Graphics.DrawRectangle(penFocus, focusRect);
+            }
+         }
+         if (e.Index < 0)
+         {
+            return;
+         }
+         SizeF tileIndexSize = e.Graphics.MeasureString(e.Index.ToString(), cboMappedTiles.Font);
+         tileIndexSize.Width = (float)Math.Ceiling(tileIndexSize.Width);
+         sf.Alignment = System.Drawing.StringAlignment.Near;
+         e.Graphics.DrawString(e.Index.ToString(), cboMappedTiles.Font, SystemBrushes.WindowText, e.Bounds, sf);
+         ProjectDataset.TileRow tile = (ProjectDataset.TileRow)cboMappedTiles.Items[e.Index];
+         int[] subframes = tileCache[tile.TileValue];
+         Rectangle rcBounds = GetBounds(e.Index);
+         for (int i=0; i < subframes.Length; i++)
+         {
+            ProjectDataset.FrameRow frame = ProjectData.GetFrame(tile.TilesetRow.Frameset, subframes[i]);
+            Bitmap bmp = ProjectData.GetGraphicSheetImage(frame.GraphicSheet, false);
+            using (System.Drawing.Drawing2D.Matrix mtx = new System.Drawing.Drawing2D.Matrix(
+               frame.m11, frame.m12, frame.m21, frame.m22, frame.dx, frame.dy))
+            {
+               mtx.Translate(e.Bounds.X-rcBounds.X+tileIndexSize.Width + 2, e.Bounds.Y-rcBounds.Y, System.Drawing.Drawing2D.MatrixOrder.Append);
+               e.Graphics.MultiplyTransform(mtx);
+               ProjectDataset.GraphicSheetRow gfxRow = ProjectData.GetGraphicSheet(frame.GraphicSheet);
+               Rectangle rcSrc = new Rectangle(
+                  (frame.CellIndex % gfxRow.Columns) * gfxRow.CellWidth,
+                  ((int)(frame.CellIndex / gfxRow.Columns)) * gfxRow.CellHeight,
+                  gfxRow.CellWidth, gfxRow.CellHeight);
+               e.Graphics.DrawImage(bmp, 0, 0, rcSrc, GraphicsUnit.Pixel);
+               mtx.Invert();
+               e.Graphics.MultiplyTransform(mtx);
+            }
          }
       }
       #endregion

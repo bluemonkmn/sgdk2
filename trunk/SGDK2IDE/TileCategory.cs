@@ -189,6 +189,8 @@ namespace SGDK2
          this.TileFrames = new SGDK2.GraphicBrowser();
          this.TilesetTiles = new SGDK2.GraphicBrowser();
          this.pnlParams = new System.Windows.Forms.Panel();
+         this.txtTileset = new System.Windows.Forms.TextBox();
+         this.lblTileset = new System.Windows.Forms.Label();
          this.txtName = new System.Windows.Forms.TextBox();
          this.lblName = new System.Windows.Forms.Label();
          this.splitterCategory = new System.Windows.Forms.Splitter();
@@ -206,8 +208,6 @@ namespace SGDK2
          this.stpTileIndex = new System.Windows.Forms.StatusBarPanel();
          this.stpFrameIndexLabel = new System.Windows.Forms.StatusBarPanel();
          this.stpFrameIndex = new System.Windows.Forms.StatusBarPanel();
-         this.lblTileset = new System.Windows.Forms.Label();
-         this.txtTileset = new System.Windows.Forms.TextBox();
          this.pnlParams.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.stpTileIndexLabel)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.stpTileIndex)).BeginInit();
@@ -268,6 +268,26 @@ namespace SGDK2
          this.pnlParams.Size = new System.Drawing.Size(392, 32);
          this.pnlParams.TabIndex = 0;
          // 
+         // txtTileset
+         // 
+         this.txtTileset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+         this.txtTileset.Location = new System.Drawing.Point(248, 8);
+         this.txtTileset.Name = "txtTileset";
+         this.txtTileset.ReadOnly = true;
+         this.txtTileset.Size = new System.Drawing.Size(136, 20);
+         this.txtTileset.TabIndex = 4;
+         this.txtTileset.Text = "";
+         // 
+         // lblTileset
+         // 
+         this.lblTileset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+         this.lblTileset.Location = new System.Drawing.Point(200, 8);
+         this.lblTileset.Name = "lblTileset";
+         this.lblTileset.Size = new System.Drawing.Size(48, 20);
+         this.lblTileset.TabIndex = 3;
+         this.lblTileset.Text = "Tileset:";
+         this.lblTileset.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+         // 
          // txtName
          // 
          this.txtName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -314,6 +334,7 @@ namespace SGDK2
          // mnuRemove
          // 
          this.mnuRemove.Index = 0;
+         this.mnuRemove.Shortcut = System.Windows.Forms.Shortcut.Del;
          this.mnuRemove.Text = "&Remove from category";
          this.mnuRemove.Click += new System.EventHandler(this.mnuRemove_Click);
          // 
@@ -326,15 +347,15 @@ namespace SGDK2
          // dataMonitor
          // 
          this.dataMonitor.TileFrameRowDeleting += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
+         this.dataMonitor.TileFrameRowChanged += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
          this.dataMonitor.TileRowDeleted += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowChanged);
          this.dataMonitor.CategoryFrameRowDeleting += new SGDK2.ProjectDataset.CategoryFrameRowChangeEventHandler(this.dataMonitor_CategoryFrameRowDeleting);
-         this.dataMonitor.CategorizedTilesetRowDeleted += new SGDK2.ProjectDataset.CategorizedTilesetRowChangeEventHandler(dataMonitor_CategorizedTilesetRowDeleted);
          this.dataMonitor.CategoryFrameRowChanged += new SGDK2.ProjectDataset.CategoryFrameRowChangeEventHandler(this.dataMonitor_CategoryFrameRowChanged);
-         this.dataMonitor.TileFrameRowChanged += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
          this.dataMonitor.TileRowChanged += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowChanged);
          this.dataMonitor.CategoryTileRowChanged += new SGDK2.ProjectDataset.CategoryTileRowChangeEventHandler(this.dataMonitor_CategoryTileRowChanged);
          this.dataMonitor.CategoryTileRowDeleting += new SGDK2.ProjectDataset.CategoryTileRowChangeEventHandler(this.dataMonitor_CategoryTileRowDeleting);
          this.dataMonitor.TileRowDeleting += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowChanged);
+         this.dataMonitor.CategorizedTilesetRowDeleted += new SGDK2.ProjectDataset.CategorizedTilesetRowChangeEventHandler(this.dataMonitor_CategorizedTilesetRowDeleted);
          this.dataMonitor.TileFrameRowDeleted += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
          this.dataMonitor.CategoryFrameRowDeleted += new SGDK2.ProjectDataset.CategoryFrameRowChangeEventHandler(this.dataMonitor_CategoryFrameRowDeleted);
          this.dataMonitor.CategoryTileRowDeleted += new SGDK2.ProjectDataset.CategoryTileRowChangeEventHandler(this.dataMonitor_CategoryTileRowDeleted);
@@ -364,7 +385,7 @@ namespace SGDK2
          // 
          this.CategoryFrames.AllowDrop = true;
          this.CategoryFrames.BorderStyle = SGDK2.DragPanelBorderStyle.FixedInset;
-         this.CategoryFrames.CellPadding = new System.Drawing.Size(0, 0);
+         this.CategoryFrames.CellPadding = new System.Drawing.Size(2, 2);
          this.CategoryFrames.CellSize = new System.Drawing.Size(0, 0);
          this.CategoryFrames.CurrentCellIndex = -1;
          this.CategoryFrames.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -430,26 +451,6 @@ namespace SGDK2
          this.stpFrameIndex.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
          this.stpFrameIndex.Text = "N/A";
          this.stpFrameIndex.Width = 33;
-         // 
-         // lblTileset
-         // 
-         this.lblTileset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-         this.lblTileset.Location = new System.Drawing.Point(200, 8);
-         this.lblTileset.Name = "lblTileset";
-         this.lblTileset.Size = new System.Drawing.Size(48, 20);
-         this.lblTileset.TabIndex = 3;
-         this.lblTileset.Text = "Tileset:";
-         this.lblTileset.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-         // 
-         // txtTileset
-         // 
-         this.txtTileset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-         this.txtTileset.Location = new System.Drawing.Point(248, 8);
-         this.txtTileset.Name = "txtTileset";
-         this.txtTileset.ReadOnly = true;
-         this.txtTileset.Size = new System.Drawing.Size(136, 20);
-         this.txtTileset.TabIndex = 4;
-         this.txtTileset.Text = "";
          // 
          // frmTileCategory
          // 
@@ -546,15 +547,16 @@ namespace SGDK2
 
       private void RemoveSelectionFromCategory()
       {
-         for (int i = 0; i < CategoryFrames.CellCount; i++)
+         for (int i = 0; i < CategoryFrames.CellCount;)
          {
             if (CategoryFrames.Selected[i])
             {
                if (((TileProvider)m_CategoryProvider[i]).IsFrame)
                {
-                  ProjectData.DeleteCategoryFrameRow(m_Category.TilesetRow.Name, m_Category.Name,
+                  if (!ProjectData.DeleteCategoryFrameRow(m_Category.TilesetRow.Name, m_Category.Name,
                      ((TileProvider)m_CategoryProvider[i]).TileIndex, 
-                     ((TileProvider)m_CategoryProvider[i]).TileFrameIndex);
+                     ((TileProvider)m_CategoryProvider[i]).TileFrameIndex))
+                     i++;
                }
                else
                {
@@ -562,6 +564,8 @@ namespace SGDK2
                      ((TileProvider)m_CategoryProvider[i]).TileIndex).Delete();
                }
             }
+            else
+               i++;
          }
       }
 
@@ -624,12 +628,14 @@ namespace SGDK2
 
       private void mnuRemove_Click(object sender, System.EventArgs e)
       {
-         if (CategoryFrames.GetSelectedCellCount() == 0)
+         int count = CategoryFrames.GetSelectedCellCount();
+         if (count == 0)
          {
             MessageBox.Show(this, "Category tiles must be selected to remove tiles from the category", "Remove Tiles From Category", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             return;
          }
-         RemoveSelectionFromCategory();
+         if (MessageBox.Show(this, "Remove " + count.ToString() + " tiles from this category?", "Confirm Remove", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            RemoveSelectionFromCategory();
       }
 
       private void mnuAdd_Click(object sender, System.EventArgs e)
@@ -691,7 +697,10 @@ namespace SGDK2
                if (tr.TilesetRow == this.m_Category.TilesetRow)
                {
                   if (tr.TileValue >= m_Tiles.Count)
+                  {
                      m_Tiles = new TileCache(tr.TilesetRow);
+                     m_TileProvider.Add(new TileProvider(m_Tiles, tr.TileValue));
+                  }
                   else
                      m_Tiles.RefreshTile(tr);
                   TilesetTiles.Invalidate();

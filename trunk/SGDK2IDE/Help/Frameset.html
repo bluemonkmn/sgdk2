@@ -46,7 +46,8 @@
          name. In the panel below the name, is a list of all the frames. If there are 
          different size frames or frames that are offset differently from the origin, 
          the space allocated for each frame will be larger than the graphics in the 
-         frame itself. The properties of the selected are displayed at the bottom and 
+         frame itself. The properties of the selected frame or frames are displayed at
+         the bottom and 
          can be edited directly. These properties include all the information about the 
          frame, which means you can also change the transformation matrix directly on 
          this tab if you know which numbers to put where. The "Frame Editor" tab 
@@ -56,8 +57,9 @@
       <ul class="SubList">
          <li>
             <strong>ModuleateAlpha</strong> - Affects how transparently the frame is drawn. 
-            A value of 0 results in an invisible frame, a value of 255 results in an opaque 
-            frame, and a value of 128 results in a 50% transparent frame.</li>
+            A value of 0 results in an invisible frame, a value of 255 results in the frame
+            being drawn with its original tranlucency (as defined by the graphic cell), and
+            a value of 128 results in a 50% transparent frame.</li>
          <li>
             <strong>ModulateBlue</strong> - Affects how much of the graphic cell's blue is 
             drawn. A value of 0 removes all blue from the image (blue becomes black, white 
@@ -82,7 +84,7 @@
             frameset.</li>
          <li>
             <strong>dx</strong> - Represents the part of the transformation matrix that 
-            determines how for the graphic is offset horizontally when drawn.</li>
+            determines how far the graphic is offset horizontally when drawn.</li>
          <li>
             <strong>dy</strong> - Represents the part of the transformation matrix that 
             determines how far the graphic is offset vertically when drawn.</li>
@@ -101,7 +103,7 @@
          <li>
             <strong>CellIndex</strong> - This represents the index of the cell in the 
             graphic sheet on which the frame is based. Changing this will cause the 
-            selected frame apply all the same transformations to a different image in the 
+            selected frame to apply all the same transformations to a different image in the 
             graphic sheet.</li>
          <li>
             <strong>GraphicSheet</strong> - This represents the graphic sheet from which 
@@ -117,7 +119,7 @@
       <p class="SubPara"><strong>Notes:</strong></p>
       <ul class="SubList">
          <li>
-            Changing CellIndex, to a number beyond the number of cells in the selected 
+            Changing CellIndex to a number beyond the number of cells in the selected 
             graphic sheet will result in an error.</li>
          <li>
             Changing GraphicSheet to a sheet that doesn't have cells numbering up to 
@@ -164,7 +166,7 @@
          rotation is correct before proceeding with other transformations. This is done 
          because scaling and translation do not always behave intuitively when they are 
          being applied at the same time as rotation, therefore the rotation is applied 
-         before any other types of pperations are introduced.</p>
+         before any other types of operations are introduced.</p>
       <h3>Scaling</h3>
       <p class="SubPara">Below the rotation controls you can manually enter a precice 
          scaling value. Negative values for "X Scale" will flip the image horizontally 

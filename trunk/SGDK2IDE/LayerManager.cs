@@ -456,6 +456,7 @@ namespace SGDK2
                   DataObject.m_drLayer.Tiles = GetTilesForCurrentParams();
                   ProjectData.AddLayerRow(DataObject.m_drLayer);
                   btnOK.Text = "Update";
+                  frmMapEditor.Edit(MdiParent, DataObject.m_drLayer);
                }
                catch (ConstraintException)
                {

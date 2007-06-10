@@ -55,7 +55,8 @@ namespace SGDK2
          m_FrameRow = frame;
       }
 
-      [Category("Matrix")]
+      [Category("Matrix"),
+      Description("Corresponds to the first column of the first row in the transformation matrix, which affects horizontal scaling")]
       public float m11
       {
          get
@@ -67,7 +68,8 @@ namespace SGDK2
             m_FrameRow.m11 = value;
          }
       }
-      [Category("Matrix")]
+      [Category("Matrix"),
+      Description("Corresponds to the second column of the first row in the transformation matrix, which affects vertical shearing")]
       public float m12
       {
          get
@@ -80,7 +82,8 @@ namespace SGDK2
          }
       }
 
-      [Category("Matrix")]
+      [Category("Matrix"),
+      Description("Corresponds to the first column of the second row in the transformation matrix, which affects horizontal shearing")]
       public float m21
       {
          get
@@ -93,7 +96,8 @@ namespace SGDK2
          }
       }
 
-      [Category("Matrix")]
+      [Category("Matrix"),
+      Description("Corresponds to the second column of the second row in the transformation matrix, which affects vertical scaling")]
       public float m22
       {
          get
@@ -106,7 +110,8 @@ namespace SGDK2
          }
       }
 
-      [Category("Matrix")]
+      [Category("Matrix"),
+      Description("Corresponds to the first column of the third row in the transformation matrix, which affects horizontal offset")]
       public float dx
       {
          get
@@ -119,7 +124,8 @@ namespace SGDK2
          }
       }
 
-      [Category("Matrix")]
+      [Category("Matrix"),
+      Description("Corresponds to the second column of the third row in the transformation matrix, which affects vertical offset")]
       public float dy
       {
          get

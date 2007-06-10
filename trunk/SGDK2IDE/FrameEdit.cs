@@ -564,7 +564,6 @@ namespace SGDK2
          // 
          this.FrameProperties.CommandsVisibleIfAvailable = true;
          this.FrameProperties.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.FrameProperties.HelpVisible = false;
          this.FrameProperties.LargeButtons = false;
          this.FrameProperties.LineColor = System.Drawing.SystemColors.ScrollBar;
          this.FrameProperties.Location = new System.Drawing.Point(0, 247);
@@ -1804,7 +1803,10 @@ namespace SGDK2
          }
          else if (mnuContext.SourceControl == FrameBrowser)
          {
-            foreach(ProjectDataset.FrameRow fr in FrameBrowser.GetSelectedFrames())
+            ProjectDataset.FrameRow[] frameList = FrameBrowser.GetSelectedFrames();
+            if (frameList == null)
+               return;
+            foreach(ProjectDataset.FrameRow fr in frameList)
             {
                if (m_CurrentTransform != null)
                   m_CurrentTransform.Dispose();

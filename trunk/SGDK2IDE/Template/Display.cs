@@ -333,7 +333,7 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
 
    #region Public members
    /// <summary>
-   /// Defines how the edges of teh display appear when embedded in a window.
+   /// Defines how the edges of the display appear when embedded in a window.
    /// </summary>
    public BorderStyle BorderStyle
    {

@@ -31,6 +31,7 @@ namespace SGDK2
       private bool m_ReflectingSelection = false;
       private bool m_UpdatingList = false;
       private Point m_LayerMouseCoord = Point.Empty;
+      private Point m_SnappedMouseCoord = Point.Empty;
       private Point m_DragStart = Point.Empty;
       private int m_DeletedKey = -1;
       private bool m_DangerWillRobinson = false;
@@ -464,6 +465,7 @@ namespace SGDK2
          this.lstAvailableSprites.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
          this.lstAvailableSprites.Size = new System.Drawing.Size(168, 253);
          this.lstAvailableSprites.TabIndex = 6;
+         this.lstAvailableSprites.DoubleClick += new System.EventHandler(this.lstAvailableSprites_DoubleClick);
          this.lstAvailableSprites.Enter += new System.EventHandler(this.lstAvailableSprites_Enter);
          this.lstAvailableSprites.SelectedIndexChanged += new System.EventHandler(this.lstAvailableSprites_SelectedIndexChanged);
          // 
@@ -617,6 +619,7 @@ namespace SGDK2
          this.lstPlans.Leave += new System.EventHandler(this.lstPlans_Leave);
          this.lstPlans.Enter += new System.EventHandler(this.lstPlans_Enter);
          this.lstPlans.SelectedIndexChanged += new System.EventHandler(this.lstPlans_SelectedIndexChanged);
+         this.lstPlans.DoubleClick += new EventHandler(lstPlans_DoubleClick);
          // 
          // rdoShowAllPlans
          // 
@@ -719,6 +722,7 @@ namespace SGDK2
          this.lstPlanCoords.Leave += new System.EventHandler(this.lstPlanCoords_Leave);
          this.lstPlanCoords.Enter += new System.EventHandler(this.lstPlanCoords_Enter);
          this.lstPlanCoords.SelectedIndexChanged += new System.EventHandler(this.lstPlanCoords_SelectedIndexChanged);
+         this.lstPlanCoords.DoubleClick += new EventHandler(lstPlanCoords_DoubleClick);
          // 
          // rdoAppendCoord
          // 
@@ -913,7 +917,30 @@ namespace SGDK2
                return ((TileProvider)TileSelector.FramesToDisplay[TileSelector.CurrentCellIndex]).TileIndex;
             return TileSelector.CurrentCellIndex;
          }
+         set
+         {
+            for (int i=0; i<TileSelector.FramesToDisplay.Count; i++)
+            {
+               if (((TileProvider)TileSelector.FramesToDisplay[i]).TileIndex == value)
+               {
+                  if (TileSelector.CurrentCellIndex != i)
+                  {
+                     TileSelector.CurrentCellIndex = i;
+                     TileSelector.ScrollCellIntoView(i);
+                  }
+                  return;
+               }
+            }
+
+            cboCategory.SelectedIndex = 0;
+            if ((TileSelector.CellCount > value) && (TileSelector.CurrentCellIndex != value))
+            {
+               TileSelector.CurrentCellIndex = value;
+               TileSelector.ScrollCellIntoView(value);
+            }
+         }
       }
+
       private Point TileFromLayerPoint(Point ptLayer)
       {
          ProjectDataset.TilesetRow tsr = m_Layers[m_nCurLayer].LayerRow.TilesetRow;
@@ -1147,9 +1174,9 @@ namespace SGDK2
             ptCur.Offset(ptLyr.X, ptLyr.Y);
             points.Add(ptCur);
          }
-         if (bIncludeMouse && !m_LayerMouseCoord.IsEmpty)
+         if (bIncludeMouse && !m_SnappedMouseCoord.IsEmpty)
          {
-            ptCur = m_LayerMouseCoord;
+            ptCur = m_SnappedMouseCoord;
             ptCur.Offset(ptLyr.X, ptLyr.Y);
             points.Add(ptCur);
          }
@@ -1565,14 +1592,46 @@ namespace SGDK2
          if ((m_RefreshSpriteTimer == null) || (!m_RefreshSpriteTimer.Enabled))
             m_Layers[m_nCurLayer].InjectCachedSprites();
          Point oldCoord = m_LayerMouseCoord;
+
+         // Auto-Scroll
+         if (0 != (int)(e.Button & MouseButtons.Left))
+         {
+            Point newPos = new Point(-MapDisplay.AutoScrollPosition.X, -MapDisplay.AutoScrollPosition.Y);
+            bool bMove = false;
+            if (e.X < 32)
+            {
+               newPos.X -= 32;
+               bMove = true;
+            }
+            if (e.X > MapDisplay.ClientSize.Width - 32)
+            {
+               newPos.X += 32;
+               bMove = true;
+            }
+            if (e.Y < 32)
+            {
+               newPos.Y -= 32;
+               bMove = true;
+            }
+            if (e.Y > MapDisplay.ClientSize.Height - 32)
+            {
+               newPos.Y += 32;
+               bMove = true;
+            }
+            if (bMove)
+               MapDisplay.AutoScrollPosition = newPos;
+         }
+
          m_LayerMouseCoord = new Point(e.X - m_Layers[m_nCurLayer].CurrentPosition.X, e.Y - m_Layers[m_nCurLayer].CurrentPosition.Y);
          Point TilePos = TileFromLayerPoint(m_LayerMouseCoord);
          if (mnuSnapToTiles.Checked)
          {
             ProjectDataset.TilesetRow tsr = m_Layers[m_nCurLayer].LayerRow.TilesetRow;
-            m_LayerMouseCoord.X = TilePos.X * tsr.TileWidth;
-            m_LayerMouseCoord.Y = TilePos.Y * tsr.TileHeight;
+            m_SnappedMouseCoord.X = TilePos.X * tsr.TileWidth;
+            m_SnappedMouseCoord.Y = TilePos.Y * tsr.TileHeight;
          }
+         else
+            m_SnappedMouseCoord = m_LayerMouseCoord;
          sbpPixelCoord.Text = "Pixel X,Y: " + m_LayerMouseCoord.X.ToString() + "," + m_LayerMouseCoord.Y.ToString();
          if ((TilePos.X >= 0) && (TilePos.Y >= 0) && (TilePos.X < m_Layers[m_nCurLayer].VirtualColumns) && (TilePos.Y < m_Layers[m_nCurLayer].VirtualRows))
          {
@@ -1588,13 +1647,18 @@ namespace SGDK2
             sbpSelTile.Text = "Selected Tile: " + CurrentTile.ToString();
          else
             sbpSelTile.Text = "Selected Tile: N/A";
+         
          switch(GetCurrentMode())
          {
             case CursorMode.PlaceTile:
                int nSel = CurrentTile;
                if ((TilePos.X >= 0) && (TilePos.Y >= 0) && (TilePos.X < m_Layers[m_nCurLayer].VirtualColumns) && (TilePos.Y < m_Layers[m_nCurLayer].VirtualRows))
                {
-                  if (0 != (e.Button & MouseButtons.Left))
+                  if (0 != (int)(e.Button & MouseButtons.Right))
+                  {
+                     CurrentTile = m_Layers[m_nCurLayer][TilePos.X, TilePos.Y];
+                  }
+                  else if (0 != (e.Button & MouseButtons.Left))
                   {
                      // Dataset doesn't recognize that data changed without BeginEdit, apparently.
                      m_Layers[m_nCurLayer].LayerRow.BeginEdit();
@@ -1611,10 +1675,10 @@ namespace SGDK2
             {
                SpriteProvider sp = (SpriteProvider)m_SpriteProvider[SpriteSelector.CurrentCellIndex];
                int nCount = sp.GetSubFrameCount();
-               if ((sp.X != m_LayerMouseCoord.X) || (sp.Y != m_LayerMouseCoord.Y))
+               if ((sp.X != m_SnappedMouseCoord.X) || (sp.Y != m_SnappedMouseCoord.Y))
                {
-                  sp.X = m_LayerMouseCoord.X;
-                  sp.Y = m_LayerMouseCoord.Y;
+                  sp.X = m_SnappedMouseCoord.X;
+                  sp.Y = m_SnappedMouseCoord.Y;
                   grdSprite.Refresh();
                }
                for(int i = 0; i<nCount; i++)
@@ -1642,8 +1706,11 @@ namespace SGDK2
                {
                   foreach (SpriteProvider sp in sprites)
                   {
-                     sp.X += m_LayerMouseCoord.X - oldCoord.X;
-                     sp.Y += m_LayerMouseCoord.Y - oldCoord.Y;
+                     if ((oldCoord.X != m_LayerMouseCoord.X) || (oldCoord.Y != m_LayerMouseCoord.Y))
+                     {
+                        sp.X += m_LayerMouseCoord.X - oldCoord.X;
+                        sp.Y += m_LayerMouseCoord.Y - oldCoord.Y;
+                     }
                   }
                   QueueRefreshProperties();
                }
@@ -1675,9 +1742,11 @@ namespace SGDK2
             if (mnuSnapToTiles.Checked)
             {
                ProjectDataset.TilesetRow tsr = m_Layers[m_nCurLayer].LayerRow.TilesetRow;
-               m_LayerMouseCoord.X = TilePos.X * tsr.TileWidth;
-               m_LayerMouseCoord.Y = TilePos.Y * tsr.TileHeight;
+               m_SnappedMouseCoord.X = TilePos.X * tsr.TileWidth;
+               m_SnappedMouseCoord.Y = TilePos.Y * tsr.TileHeight;
             }
+            else
+               m_SnappedMouseCoord = m_LayerMouseCoord;
 
             MapDisplay.Focus();
 
@@ -1687,10 +1756,17 @@ namespace SGDK2
                   int nSel = CurrentTile;
                   if ((TilePos.X < m_Layers[m_nCurLayer].VirtualColumns) && (TilePos.Y < m_Layers[m_nCurLayer].VirtualRows))
                   {
-                     // Dataset doesn't recognize that data changed without BeginEdit, apparently.
-                     m_Layers[m_nCurLayer].LayerRow.BeginEdit();
-                     m_Layers[m_nCurLayer][TilePos.X, TilePos.Y] = nSel;
-                     m_Layers[m_nCurLayer].LayerRow.EndEdit();
+                     if (e.Button == MouseButtons.Left)
+                     {
+                        // Dataset doesn't recognize that data changed without BeginEdit, apparently.
+                        m_Layers[m_nCurLayer].LayerRow.BeginEdit();
+                        m_Layers[m_nCurLayer][TilePos.X, TilePos.Y] = nSel;
+                        m_Layers[m_nCurLayer].LayerRow.EndEdit();
+                     }
+                     else if (e.Button == MouseButtons.Right)
+                     {
+                        CurrentTile = m_Layers[m_nCurLayer][TilePos.X, TilePos.Y];
+                     }
                   }
                   break;
                case CursorMode.PlaceSprite:
@@ -1762,7 +1838,7 @@ namespace SGDK2
                   if (lstPlans.SelectedIndices.Count == 1)
                      lstPlanCoords.Items.Add(new CoordProvider(
                         ProjectData.AppendPlanCoordinate((ProjectDataset.SpritePlanRow)lstPlans.SelectedItem,
-                        m_LayerMouseCoord.X, m_LayerMouseCoord.Y, 0)));
+                        m_SnappedMouseCoord.X, m_SnappedMouseCoord.Y, 0)));
                   break;
                case CursorMode.SelectCoordinate:
                   ProjectDataset.CoordinateRow drCoord = GetCoordAtPoint(m_LayerMouseCoord);
@@ -1952,7 +2028,7 @@ namespace SGDK2
                      layerOutline.DashPattern = dashPattern;
                      for (int i=0; i<m_Layers.Length; i++)
                      {
-                        if ((i != m_nCurLayer) && (mnuLayers.MenuItems[i].Checked))
+                        if (mnuLayers.MenuItems[i].Checked)
                         {
                            Layer lyr = m_Layers[i];
                            ProjectDataset.TilesetRow tsr = lyr.LayerRow.TilesetRow;
@@ -2113,6 +2189,7 @@ namespace SGDK2
          m_Layers[m_nCurLayer].ClearInjections();
          m_Layers[m_nCurLayer].InjectCachedSprites();
          m_LayerMouseCoord = Point.Empty;
+         m_SnappedMouseCoord = Point.Empty;
          MapDisplay.Invalidate();
       }
 
@@ -2422,6 +2499,21 @@ namespace SGDK2
       {
          mnuViewLayerEdges.Checked = !mnuViewLayerEdges.Checked;
          MapDisplay.Invalidate();
+      }
+
+      private void lstAvailableSprites_DoubleClick(object sender, System.EventArgs e)
+      {
+         LocateSelectedObject();
+      }
+
+      private void lstPlans_DoubleClick(object sender, EventArgs e)
+      {
+         LocateSelectedObject();
+      }
+
+      private void lstPlanCoords_DoubleClick(object sender, EventArgs e)
+      {
+         LocateSelectedObject();
       }
    }
    #endregion

@@ -133,6 +133,7 @@ namespace SGDK2
       private bool m_active;
       private string m_Solidity;
       private int m_color;
+      private static int defaultPriority = 1;
 
       private static SpriteConverter m_converter = new SpriteConverter();
 
@@ -140,6 +141,7 @@ namespace SGDK2
       {
          m_Sprite = sprite;
          m_State = state;
+         m_priority = int.MinValue;
          m_Frame = frame;
          m_ParameterValues = new int[m_Sprite.ParamNames.Count];
          m_color = color;
@@ -264,14 +266,22 @@ namespace SGDK2
             if (m_SpriteRow != null)
                return m_SpriteRow.Priority;
             else
-               return m_priority;
+            {
+               if (m_priority == int.MinValue)
+                  return defaultPriority;
+               else
+                  return m_priority;
+            }
          }
          set
          {
             if (m_SpriteRow != null)
                m_SpriteRow.Priority = value;
             else
+            {
                m_priority = value;
+               defaultPriority = value;
+            }
          }
       }
 

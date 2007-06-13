@@ -447,6 +447,16 @@ namespace SGDK2
                if (DialogResult.OK != MessageBox.Show(this, "Setting the BackgroundTile property will clear the entire layer to the specified tile, erasing all tiles.", "Update Layer", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2))
                   return false;
             }
+
+            foreach (ProjectDataset.LayerRow lr in DataObject.m_drLayer.MapRow.GetLayerRows())
+            {
+               if (lr != DataObject.m_drLayer && lr.ZIndex == DataObject.m_drLayer.ZIndex)
+               {
+                  if (DialogResult.OK != MessageBox.Show(this, "Another layer with the same ZIndex value already exists. This may cause an unexpected sequencing of the layers.", "Update Layer", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation))
+                     return false;
+               }
+            }
+
             DataObject.m_drLayer.EndEdit();
 
             if (DataObject.m_drLayer.RowState == DataRowState.Detached)

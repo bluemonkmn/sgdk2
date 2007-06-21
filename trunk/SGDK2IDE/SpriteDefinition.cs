@@ -14,8 +14,8 @@ namespace SGDK2
 	/// <summary>
 	/// Summary description for SpriteDefinition.
 	/// </summary>
-	public class frmSpriteDefinition : System.Windows.Forms.Form
-	{
+   public class frmSpriteDefinition : System.Windows.Forms.Form
+   {
       #region Embedded Classes
       class SpriteFrame : IProvideFrame
       {
@@ -178,12 +178,12 @@ namespace SGDK2
       #endregion
 
       #region Initialization and Clean-up
-		public frmSpriteDefinition()
-		{
-			//
-			// Required for Windows Form Designer support
-			//
-			InitializeComponent();
+      public frmSpriteDefinition()
+      {
+         //
+         // Required for Windows Form Designer support
+         //
+         InitializeComponent();
 
          SGDK2IDE.LoadFormSettings(this);
 
@@ -222,29 +222,29 @@ namespace SGDK2
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
-		/// <summary>
-		/// Clean up any resources being used.
-		/// </summary>
-		protected override void Dispose( bool disposing )
-		{
-			if( disposing )
-			{
-				if(components != null)
-				{
-					components.Dispose();
-				}
-			}
-			base.Dispose( disposing );
-		}
+      /// <summary>
+      /// Clean up any resources being used.
+      /// </summary>
+      protected override void Dispose( bool disposing )
+      {
+         if( disposing )
+         {
+            if(components != null)
+            {
+               components.Dispose();
+            }
+         }
+         base.Dispose( disposing );
+      }
       #endregion
 
-		#region Windows Form Designer generated code
-		/// <summary>
-		/// Required method for Designer support - do not modify
-		/// the contents of this method with the code editor.
-		/// </summary>
-		private void InitializeComponent()
-		{
+      #region Windows Form Designer generated code
+      /// <summary>
+      /// Required method for Designer support - do not modify
+      /// the contents of this method with the code editor.
+      /// </summary>
+      private void InitializeComponent()
+      {
          this.components = new System.ComponentModel.Container();
          System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(frmSpriteDefinition));
          this.tabSpriteDefinition = new System.Windows.Forms.TabControl();
@@ -1228,7 +1228,7 @@ namespace SGDK2
          this.ResumeLayout(false);
 
       }
-		#endregion
+      #endregion
 
       #region Private Methods
       private void LoadFunctions(bool onlyBools, bool forceRefresh)
@@ -1384,7 +1384,7 @@ namespace SGDK2
       private void FillStates()
       {
          lstSpriteStates.Items.Clear();
-         foreach(ProjectDataset.SpriteStateRow sr in m_SpriteDef.GetSpriteStateRows())
+         foreach(ProjectDataset.SpriteStateRow sr in ProjectData.GetSortedSpriteStates(m_SpriteDef))
          {
             lstSpriteStates.Items.Add(sr);
          }
@@ -1559,7 +1559,7 @@ namespace SGDK2
                   if ((pi.Type.Name == typeof(System.Single).Name) || 
                      (pi.Type.Name == typeof(System.Double).Name) ||
                      (targetType == pi.Type.FullName))
-                  cboTarget.Items.Add(pi.Name);
+                     cboTarget.Items.Add(pi.Name);
                }
                else if (!forOutput && ((pi.Flags & RemotingServices.MemberFlags.CanRead) != 0))
                {
@@ -1909,6 +1909,13 @@ namespace SGDK2
          return (String.Compare(ruleType, "If", true) == 0) ||
             (String.Compare(ruleType, "ElseIf", true) == 0) ||
             (String.Compare(ruleType, "While", true) == 0);
+      }
+      private void SuspendSelection(bool suspend)
+      {
+         if (suspend)
+            lstSpriteStates.SelectedIndexChanged -= new System.EventHandler(this.lstSpriteStates_SelectedIndexChanged);
+         else
+            lstSpriteStates.SelectedIndexChanged += new System.EventHandler(this.lstSpriteStates_SelectedIndexChanged);
       }
       #endregion
 
@@ -2293,9 +2300,11 @@ namespace SGDK2
          if (selIdx > 0)
          {
             ProjectDataset.SpriteStateRow move = GetCurrentState();
+            SuspendSelection(true);
             lstSpriteStates.SelectedIndex = -1;
             ProjectData.MoveSpriteState(move, false);
             lstSpriteStates.SelectedIndex = selIdx - 1;
+            SuspendSelection(false);
          }
       }
 
@@ -2311,9 +2320,11 @@ namespace SGDK2
          if (selIdx < lstSpriteStates.Items.Count - 1)
          {
             ProjectDataset.SpriteStateRow move = GetCurrentState();
+            SuspendSelection(true);
             lstSpriteStates.SelectedIndex = -1;
             ProjectData.MoveSpriteState(move, true);
             lstSpriteStates.SelectedIndex = selIdx + 1;
+            SuspendSelection(false);
          }
       }
 

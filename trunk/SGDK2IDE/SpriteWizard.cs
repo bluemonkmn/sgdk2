@@ -1151,7 +1151,7 @@ namespace SGDK2
                   dsSource.EnforceConstraints = true;
                }
                ProjectData.SpriteDefinition.Rows.Add(src.ItemArray);
-               foreach(ProjectDataset.SpriteStateRow state in src.GetSpriteStateRows())
+               foreach(ProjectDataset.SpriteStateRow state in ProjectData.GetSortedSpriteStates(src))
                {
                   ProjectData.SpriteState.Rows.Add(state.ItemArray);
                   foreach(ProjectDataset.SpriteFrameRow frame in state.GetSpriteFrameRows())

@@ -53,6 +53,7 @@ namespace SGDK2
       private DateTime DragScrollTime = DateTime.MinValue;
       private FrameList m_FramesToDisplay = null;
       private bool m_bIsOrdered;
+      private bool m_CellBorders = false;
 
       ProjectDataset.GraphicSheetRowChangeEventHandler m_RowChangeEvent = null;
       ProjectDataset.FrameRowChangeEventHandler m_FrameChangingEvent = null;
@@ -277,6 +278,19 @@ namespace SGDK2
          set
          {
             m_LargestCell = new Rectangle(0, 0, value.Width, value.Height);
+            Invalidate();
+         }
+      }
+
+      public bool CellBorders
+      {
+         get
+         {
+            return m_CellBorders;
+         }
+         set
+         {
+            m_CellBorders = value;
             Invalidate();
          }
       }
@@ -934,6 +948,18 @@ namespace SGDK2
                   if (Selected[nCell] || ((m_DragSel != null) && (m_DragSel.Length > nCell) && m_DragSel[nCell]))
                   {
                      gfxOut.FillRectangle(SelectedBrush, rcSelRect);
+                  }
+
+                  if (m_CellBorders)
+                  {
+                     using (Pen outlinePen = new Pen(SystemColors.WindowText))
+                     {
+                        outlinePen.DashStyle = DashStyle.Dash;
+                        gfxOut.PixelOffsetMode = PixelOffsetMode.Default;
+                        gfxOut.SmoothingMode = SmoothingMode.HighQuality;
+                        gfxOut.DrawRectangle(outlinePen, nX + AutoScrollPosition.X - 1,
+                           nY + AutoScrollPosition.Y - 1, CellSize.Width + 1, CellSize.Height + 1);
+                     }
                   }
 
                   if ((m_Frameset == null) && ((m_FramesToDisplay == null) || !m_FramesToDisplay.ProvidesGraphics))

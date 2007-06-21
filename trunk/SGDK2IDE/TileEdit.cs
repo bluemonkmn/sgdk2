@@ -71,6 +71,9 @@ namespace SGDK2
       private System.Windows.Forms.ContextMenu mnuFramesetContext;
       private System.Windows.Forms.MenuItem mnuCAddFrames;
       private System.Windows.Forms.MenuItem mnuPreviewAnimation;
+      private System.Windows.Forms.MenuItem mnuView;
+      private System.Windows.Forms.MenuItem mnuFrameBorders;
+      private System.Windows.Forms.MenuItem mnuTileBorders;
       private DataChangeNotifier dataMonitor;
       #endregion
 
@@ -210,6 +213,9 @@ namespace SGDK2
          this.sbpFrameIndex = new System.Windows.Forms.StatusBarPanel();
          this.sbpCellIndex = new System.Windows.Forms.StatusBarPanel();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
+         this.mnuView = new System.Windows.Forms.MenuItem();
+         this.mnuFrameBorders = new System.Windows.Forms.MenuItem();
+         this.mnuTileBorders = new System.Windows.Forms.MenuItem();
          this.pnlTileHeader.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.nudTileHeight)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.nudTileWidth)).BeginInit();
@@ -393,6 +399,7 @@ namespace SGDK2
          // 
          // cboMappedTiles
          // 
+         this.cboMappedTiles.DisplayMember = "TileValue";
          this.cboMappedTiles.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawVariable;
          this.cboMappedTiles.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
          this.cboMappedTiles.IntegralHeight = false;
@@ -428,11 +435,12 @@ namespace SGDK2
          // mnuTileset
          // 
          this.mnuTileset.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                   this.mnuView,
                                                                                    this.mnuInsert});
          // 
          // mnuInsert
          // 
-         this.mnuInsert.Index = 0;
+         this.mnuInsert.Index = 1;
          this.mnuInsert.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
                                                                                   this.mnuInsertNewTile,
                                                                                   this.mnuDeleteTile,
@@ -510,6 +518,7 @@ namespace SGDK2
          // AvailableFrames
          // 
          this.AvailableFrames.BorderStyle = SGDK2.DragPanelBorderStyle.FixedInset;
+         this.AvailableFrames.CellBorders = false;
          this.AvailableFrames.CellPadding = new System.Drawing.Size(6, 6);
          this.AvailableFrames.CellSize = new System.Drawing.Size(0, 0);
          this.AvailableFrames.ContextMenu = this.mnuFramesetContext;
@@ -565,6 +574,7 @@ namespace SGDK2
          // 
          this.TileFrames.AllowDrop = true;
          this.TileFrames.BorderStyle = SGDK2.DragPanelBorderStyle.FixedInset;
+         this.TileFrames.CellBorders = false;
          this.TileFrames.CellPadding = new System.Drawing.Size(6, 6);
          this.TileFrames.CellSize = new System.Drawing.Size(0, 0);
          this.TileFrames.CurrentCellIndex = -1;
@@ -705,6 +715,28 @@ namespace SGDK2
          this.dataMonitor.FramesetRowDeleted += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.dataMonitor_FramesetRowDeleted);
          this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
          this.dataMonitor.CounterRowChanged += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowChanged);
+         // 
+         // mnuView
+         // 
+         this.mnuView.Index = 0;
+         this.mnuView.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                this.mnuFrameBorders,
+                                                                                this.mnuTileBorders});
+         this.mnuView.MergeOrder = 1;
+         this.mnuView.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
+         this.mnuView.Text = "&View";
+         // 
+         // mnuFrameBorders
+         // 
+         this.mnuFrameBorders.Index = 0;
+         this.mnuFrameBorders.Text = "Frame &Borders";
+         this.mnuFrameBorders.Click += new System.EventHandler(this.mnuFrameBorders_Click);
+         // 
+         // mnuTileBorders
+         // 
+         this.mnuTileBorders.Index = 1;
+         this.mnuTileBorders.Text = "&Tile Borders";
+         this.mnuTileBorders.Click += new System.EventHandler(this.mnuTileBorders_Click);
          // 
          // frmTileEdit
          // 
@@ -1404,6 +1436,16 @@ namespace SGDK2
                e.Graphics.MultiplyTransform(mtx);
             }
          }
+      }
+
+      private void mnuFrameBorders_Click(object sender, System.EventArgs e)
+      {
+         AvailableFrames.CellBorders = mnuFrameBorders.Checked = !mnuFrameBorders.Checked;
+      }
+
+      private void mnuTileBorders_Click(object sender, System.EventArgs e)
+      {
+         TileFrames.CellBorders = mnuTileBorders.Checked = !mnuTileBorders.Checked;
       }
       #endregion
 

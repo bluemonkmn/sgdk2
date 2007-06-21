@@ -25,11 +25,11 @@ namespace SGDK2
       private string m_strProjectPath;
       private Hashtable m_AffectedNodeKeys = new Hashtable();
       System.Collections.ArrayList m_mruMenuItems = new ArrayList();
-      private System.Collections.Hashtable m_NewMenuToTemplateMap = new Hashtable();
+      private System.Collections.Hashtable m_MenuToTemplateMap = new Hashtable();
       private DateTime errorStatusTime = DateTime.MinValue;
       #endregion
 
-      #region Windows Form Designer Memebers
+      #region Windows Form Designer Members
       public System.Windows.Forms.ToolBar tbrMain;
       private System.Windows.Forms.TreeView tvwMain;
       private System.Windows.Forms.Splitter splitterMDI;
@@ -81,6 +81,7 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuHelpIndex;
       private System.Windows.Forms.MenuItem mnuHelpSearch;
       private System.Windows.Forms.MenuItem mnuHelpSeparator;
+      private System.Windows.Forms.MenuItem mnuResetBlankProject;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -170,6 +171,7 @@ namespace SGDK2
          this.lblProjectTree = new System.Windows.Forms.Label();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.sbMain = new System.Windows.Forms.StatusBar();
+         this.mnuResetBlankProject = new System.Windows.Forms.MenuItem();
          this.pnlProjectTree.SuspendLayout();
          this.SuspendLayout();
          // 
@@ -411,6 +413,8 @@ namespace SGDK2
          // mnuFileResetCode
          // 
          this.mnuFileResetCode.Index = 11;
+         this.mnuFileResetCode.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                         this.mnuResetBlankProject});
          this.mnuFileResetCode.MergeOrder = 23;
          this.mnuFileResetCode.Text = "R&eset Source Code";
          this.mnuFileResetCode.Click += new System.EventHandler(this.mnuFileResetCode_Click);
@@ -622,6 +626,11 @@ namespace SGDK2
          this.sbMain.Name = "sbMain";
          this.sbMain.Size = new System.Drawing.Size(800, 20);
          this.sbMain.TabIndex = 8;
+         // 
+         // mnuResetBlankProject
+         // 
+         this.mnuResetBlankProject.Index = 0;
+         this.mnuResetBlankProject.Text = "<Blan&k>";
          // 
          // frmMain
          // 
@@ -1091,6 +1100,8 @@ namespace SGDK2
       /// 2 = Message was displayed and user canceled delete operation</returns>
       private int ConfirmDeleteIntermediateFiles(System.Data.DataRow row, bool autoConfirm)
       {
+         if (m_strProjectPath == null)
+            return 0;
          string strFolder = GetProjectOutFolder();
          string codeFilename = CodeGenerator.GetIntermediateCodeFilename(strFolder, row);
          string resxFilename = CodeGenerator.GetIntermediateResxFilename(strFolder, row);
@@ -1442,6 +1453,8 @@ namespace SGDK2
       }
       private string GetProjectOutFolder()
       {
+         if (m_strProjectPath == null)
+            return null;
          return System.IO.Path.Combine(System.IO.Path.GetDirectoryName(m_strProjectPath), System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath));
       }      
       private string GetLibraryFolder()
@@ -1549,6 +1562,7 @@ namespace SGDK2
                System.IO.DirectoryInfo diTemplates = new System.IO.DirectoryInfo(
                   System.IO.Path.Combine(libFolder, @"Projects"));
                EventHandler newHandler = new EventHandler(mnuFileNewPrj_Click);
+               EventHandler resetHandler = new EventHandler(mnuFileResetCode_Click);
                foreach(System.IO.FileInfo fiTemplate in diTemplates.GetFiles("*.sgdk2"))
                {
                   using (System.IO.FileStream tplFile = new System.IO.FileStream(fiTemplate.FullName, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite))
@@ -1558,8 +1572,11 @@ namespace SGDK2
                      {
                         if (xml.Name == "Project")
                         {
-                           m_NewMenuToTemplateMap.Add(
+                           m_MenuToTemplateMap.Add(
                               mnuFileNewPrj.MenuItems.Add(xml.GetAttribute("TitleText"), newHandler),
+                              fiTemplate.FullName);
+                           m_MenuToTemplateMap.Add(
+                              mnuFileResetCode.MenuItems.Add(xml.GetAttribute("TitleText"), resetHandler),
                               fiTemplate.FullName);
                            break;
                         }
@@ -2384,8 +2401,8 @@ namespace SGDK2
       {
          try
          {
-            if (m_NewMenuToTemplateMap.ContainsKey(sender))
-               DoNewProject(m_NewMenuToTemplateMap[sender].ToString());
+            if (m_MenuToTemplateMap.ContainsKey(sender))
+               DoNewProject(m_MenuToTemplateMap[sender].ToString());
             else
                DoNewProject(null);
          }
@@ -2556,6 +2573,22 @@ namespace SGDK2
                   ProjectData.AddSourceCode(resourceName.Substring(15), stm.ReadToEnd(), null, false, null);
                stm.Close();
             }
+         }
+
+         if (m_MenuToTemplateMap.ContainsKey(sender))
+         {
+            DataSet template = new DataSet();
+            template.ReadXml(m_MenuToTemplateMap[sender].ToString());
+            ProjectData.EnforceConstraints = false;
+            foreach (DataRow drImport in template.Tables[ProjectData.SourceCode.TableName].Rows)
+            {
+               ProjectDataset.SourceCodeRow drReplace = ProjectData.GetSourceCode(drImport[ProjectData.SourceCode.NameColumn.ColumnName].ToString());
+
+               if (drReplace != null)
+                  ProjectData.DeleteSourceCode(drReplace);
+               ProjectData.SourceCode.Rows.Add(drImport.ItemArray);
+            }
+            ProjectData.EnforceConstraints = true;
          }
       }
 

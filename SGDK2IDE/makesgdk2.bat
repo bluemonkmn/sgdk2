@@ -41,6 +41,7 @@ echo >>Input.txt /res:SGDK2.frmMapManager.resources
 echo >>Input.txt /res:SGDK2.frmMapEditor.resources
 echo >>Input.txt /res:SGDK2.frmLayerManager.resources
 echo >>Input.txt /res:SGDK2.frmTileEdit.resources
+echo >>Input.txt /res:SGDK2.frmNewTileValue.resources
 echo >>Input.txt /res:SGDK2.frmSpriteDefinition.resources
 echo >>Input.txt /res:SGDK2.frmSolidity.resources
 echo >>Input.txt /res:SGDK2.frmTileCategory.resources
@@ -72,6 +73,7 @@ echo >>Input.txt /res:SGDK2.frmFrameRemappingWizard.resources
 echo >>Input.txt /res:SGDK2.frmRotateWizard.resources
 echo >>Input.txt /res:SGDK2.frmAnimPreview.resources
 echo >>Input.txt /res:SGDK2.frmSpecifyFlags.resources
+echo >>Input.txt /res:SGDK2.frmFrameTweening.resources
 echo >>Input.txt /res:Template\Display.cs,SGDK2.Template.Display.cs
 echo >>Input.txt /res:Template\Frame.cs,SGDK2.Template.Frame.cs
 echo >>Input.txt /res:Template\LayerBase.cs,SGDK2.Template.LayerBase.cs
@@ -156,6 +158,7 @@ echo >>Input.txt RotateWizard.cs
 echo >>Input.txt AnimPreview.cs
 echo >>Input.txt SpecifyFlags.cs
 echo >>Input.txt FrameConverter.cs
+echo >>Input.txt FrameTweening.cs
 csc /noconfig @Input.txt
 del Input.txt
 del *.resources

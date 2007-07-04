@@ -156,6 +156,7 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuView;
       private System.Windows.Forms.MenuItem mnuFrameBorders;
       private System.Windows.Forms.MenuItem mnuCellBorders;
+      private System.Windows.Forms.MenuItem mnuFrameTweening;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -281,6 +282,9 @@ namespace SGDK2
          this.ttFrameset = new System.Windows.Forms.ToolTip(this.components);
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.mnuFrameset = new System.Windows.Forms.MainMenu();
+         this.mnuView = new System.Windows.Forms.MenuItem();
+         this.mnuCellBorders = new System.Windows.Forms.MenuItem();
+         this.mnuFrameBorders = new System.Windows.Forms.MenuItem();
          this.mnuFramesetPop = new System.Windows.Forms.MenuItem();
          this.mnuAddCell = new System.Windows.Forms.MenuItem();
          this.mnuDeleteFrames = new System.Windows.Forms.MenuItem();
@@ -310,13 +314,11 @@ namespace SGDK2
          this.mnuFramesetSeparator = new System.Windows.Forms.MenuItem();
          this.mnuFrameRemappingWizard = new System.Windows.Forms.MenuItem();
          this.mnuFsEditGraphicCell = new System.Windows.Forms.MenuItem();
+         this.mnuFrameTweening = new System.Windows.Forms.MenuItem();
          this.tabFrameset = new System.Windows.Forms.TabControl();
          this.tpgFrameset = new System.Windows.Forms.TabPage();
          this.splitterGraphics = new System.Windows.Forms.Splitter();
          this.tpgFrameEditor = new System.Windows.Forms.TabPage();
-         this.mnuView = new System.Windows.Forms.MenuItem();
-         this.mnuFrameBorders = new System.Windows.Forms.MenuItem();
-         this.mnuCellBorders = new System.Windows.Forms.MenuItem();
          this.pnlFrames.SuspendLayout();
          this.pnlFrameAction.SuspendLayout();
          this.pnlTransform.SuspendLayout();
@@ -349,6 +351,7 @@ namespace SGDK2
          this.FrameBrowser.AllowDrop = true;
          this.FrameBrowser.AutoScroll = true;
          this.FrameBrowser.BorderStyle = SGDK2.DragPanelBorderStyle.FixedInset;
+         this.FrameBrowser.CellBorders = false;
          this.FrameBrowser.CellPadding = new System.Drawing.Size(3, 3);
          this.FrameBrowser.CellSize = new System.Drawing.Size(0, 0);
          this.FrameBrowser.ContextMenu = this.mnuContext;
@@ -862,6 +865,7 @@ namespace SGDK2
          // CellBrowser
          // 
          this.CellBrowser.BorderStyle = SGDK2.DragPanelBorderStyle.FixedInset;
+         this.CellBrowser.CellBorders = false;
          this.CellBrowser.CellPadding = new System.Drawing.Size(3, 3);
          this.CellBrowser.CellSize = new System.Drawing.Size(0, 0);
          this.CellBrowser.CurrentCellIndex = -1;
@@ -949,6 +953,28 @@ namespace SGDK2
                                                                                     this.mnuView,
                                                                                     this.mnuFramesetPop});
          // 
+         // mnuView
+         // 
+         this.mnuView.Index = 0;
+         this.mnuView.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                this.mnuCellBorders,
+                                                                                this.mnuFrameBorders});
+         this.mnuView.MergeOrder = 1;
+         this.mnuView.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
+         this.mnuView.Text = "&View";
+         // 
+         // mnuCellBorders
+         // 
+         this.mnuCellBorders.Index = 0;
+         this.mnuCellBorders.Text = "&Cell Borders";
+         this.mnuCellBorders.Click += new System.EventHandler(this.mnuCellBorders_Click);
+         // 
+         // mnuFrameBorders
+         // 
+         this.mnuFrameBorders.Index = 1;
+         this.mnuFrameBorders.Text = "Frame &Borders";
+         this.mnuFrameBorders.Click += new System.EventHandler(this.mnuFrameBorders_Click);
+         // 
          // mnuFramesetPop
          // 
          this.mnuFramesetPop.Index = 1;
@@ -958,6 +984,7 @@ namespace SGDK2
                                                                                        this.mnuFramesetTransform,
                                                                                        this.mnuFramesetSeparator,
                                                                                        this.mnuFrameRemappingWizard,
+                                                                                       this.mnuFrameTweening,
                                                                                        this.mnuFsEditGraphicCell});
          this.mnuFramesetPop.MergeOrder = 2;
          this.mnuFramesetPop.Text = "F&rameset";
@@ -1151,9 +1178,15 @@ namespace SGDK2
          // 
          // mnuFsEditGraphicCell
          // 
-         this.mnuFsEditGraphicCell.Index = 5;
+         this.mnuFsEditGraphicCell.Index = 6;
          this.mnuFsEditGraphicCell.Text = "Edit &Graphic Cell...";
          this.mnuFsEditGraphicCell.Click += new System.EventHandler(this.mnuGraphicEditor_Click);
+         // 
+         // mnuFrameTweening
+         // 
+         this.mnuFrameTweening.Index = 5;
+         this.mnuFrameTweening.Text = "Frame Tweening &Wizard...";
+         this.mnuFrameTweening.Click += new System.EventHandler(this.mnuFrameTweening_Click);
          // 
          // tabFrameset
          // 
@@ -1194,28 +1227,6 @@ namespace SGDK2
          this.tpgFrameEditor.Size = new System.Drawing.Size(456, 447);
          this.tpgFrameEditor.TabIndex = 1;
          this.tpgFrameEditor.Text = "Frame Editor";
-         // 
-         // mnuView
-         // 
-         this.mnuView.Index = 0;
-         this.mnuView.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                this.mnuCellBorders,
-                                                                                this.mnuFrameBorders});
-         this.mnuView.MergeOrder = 1;
-         this.mnuView.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
-         this.mnuView.Text = "&View";
-         // 
-         // mnuFrameBorders
-         // 
-         this.mnuFrameBorders.Index = 1;
-         this.mnuFrameBorders.Text = "Frame &Borders";
-         this.mnuFrameBorders.Click += new System.EventHandler(this.mnuFrameBorders_Click);
-         // 
-         // mnuCellBorders
-         // 
-         this.mnuCellBorders.Index = 0;
-         this.mnuCellBorders.Text = "&Cell Borders";
-         this.mnuCellBorders.Click += new System.EventHandler(this.mnuCellBorders_Click);
          // 
          // frmFrameEdit
          // 
@@ -1438,7 +1449,7 @@ namespace SGDK2
       private void LaunchFrameRemappingWizard()
       {
          using (frmFrameRemappingWizard frm = new frmFrameRemappingWizard(FrameBrowser.Frameset))
-            frm.ShowDialog();
+            frm.ShowDialog(this);
       }
       private void DeleteSelectedFrames()
       {
@@ -2260,6 +2271,12 @@ namespace SGDK2
       private void mnuFrameBorders_Click(object sender, System.EventArgs e)
       {
          FrameBrowser.CellBorders = mnuFrameBorders.Checked = !mnuFrameBorders.Checked;
+      }
+
+      private void mnuFrameTweening_Click(object sender, System.EventArgs e)
+      {
+         using (frmFrameTweening frm = new frmFrameTweening(FrameBrowser.Frameset))
+            frm.ShowDialog(this);
       }
       #endregion
    }

@@ -57,7 +57,7 @@ namespace SGDK2
          this.Parent = frmParent;
          Backdrop = ParentEditor.Backdrop;
          m_DataSource = drDataSource;
-         picSheet.Image  = ProjectData.GetGraphicSheetImage(drDataSource.Name, true);
+         picSheet.Image = (Bitmap)ProjectData.GetGraphicSheetImage(drDataSource.Name, true).Clone();
          picSheet.Size = picSheet.Image.Size;
          m_ChangeEvent = new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(DataSource_GraphicSheetRowChanged);
          ((ProjectDataset.GraphicSheetDataTable)drDataSource.Table).GraphicSheetRowChanged += m_ChangeEvent;
@@ -396,7 +396,8 @@ namespace SGDK2
             m_nEndSelectCell = m_nStartSelectCell;
          }
 
-         picSheet.Image = ProjectData.GetGraphicSheetImage(e.Row.Name, true);
+         picSheet.Image.Dispose();
+         picSheet.Image = (Bitmap)ProjectData.GetGraphicSheetImage(e.Row.Name, true).Clone();
          picSheet.Size = picSheet.Image.Size;
       }
       #endregion

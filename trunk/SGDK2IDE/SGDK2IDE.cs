@@ -411,6 +411,39 @@ namespace SGDK2
          }
          SaveUserSettings(doc);
       }
+      
+      public static System.Drawing.RectangleF GetRotatedBounds(int CellWidth, int CellHeight, System.Drawing.Drawing2D.Matrix m)
+      {
+         RectangleF bounds;
+         SizeF CellSize = new SizeF(CellWidth, CellHeight);
+         PointF[] ptsRect = new PointF[]
+            {
+               new PointF(0, 0),
+               new PointF(CellSize.Width, 0),
+               new PointF(CellSize.Width, CellSize.Height),
+               new PointF(0, CellSize.Height)
+            };
+         m.TransformPoints(ptsRect);
+         bounds = new RectangleF(ptsRect[0], new SizeF(0,0));
+         foreach (PointF pt in ptsRect)
+         {
+            if(pt.X < bounds.X)
+            {
+               bounds.Width += bounds.X - pt.X;
+               bounds.X = pt.X;
+            }
+            if(pt.Y < bounds.Y)
+            {
+               bounds.Height += bounds.Y - pt.Y;
+               bounds.Y = pt.Y;
+            }
+            if (pt.X > bounds.Right)
+               bounds.Width += pt.X - bounds.Right;
+            if (pt.Y > bounds.Bottom)
+               bounds.Height += pt.Y - bounds.Bottom;
+         }
+         return bounds;
+      }
       #endregion
    }
 }

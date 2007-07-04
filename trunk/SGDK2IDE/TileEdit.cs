@@ -1370,8 +1370,9 @@ namespace SGDK2
       {
          if (e.Index >= 0)
          {
+            int tileVal = ((ProjectDataset.TileRow)cboMappedTiles.Items[e.Index]).TileValue;
             Rectangle rcMax = GetBounds(e.Index);
-            SizeF numberSize = e.Graphics.MeasureString(e.Index.ToString(), cboMappedTiles.Font);
+            SizeF numberSize = e.Graphics.MeasureString(tileVal.ToString(), cboMappedTiles.Font);
             e.ItemWidth = (int)(rcMax.Width + numberSize.Width + 2);
             e.ItemHeight = (int)(Math.Max(rcMax.Height, numberSize.Height));
          }
@@ -1410,10 +1411,11 @@ namespace SGDK2
          {
             return;
          }
-         SizeF tileIndexSize = e.Graphics.MeasureString(e.Index.ToString(), cboMappedTiles.Font);
+         int tileVal = ((ProjectDataset.TileRow)cboMappedTiles.Items[e.Index]).TileValue;
+         SizeF tileIndexSize = e.Graphics.MeasureString(tileVal.ToString(), cboMappedTiles.Font);
          tileIndexSize.Width = (float)Math.Ceiling(tileIndexSize.Width);
          sf.Alignment = System.Drawing.StringAlignment.Near;
-         e.Graphics.DrawString(e.Index.ToString(), cboMappedTiles.Font, SystemBrushes.WindowText, e.Bounds, sf);
+         e.Graphics.DrawString(tileVal.ToString(), cboMappedTiles.Font, SystemBrushes.WindowText, e.Bounds, sf);
          ProjectDataset.TileRow tile = (ProjectDataset.TileRow)cboMappedTiles.Items[e.Index];
          int[] subframes = tileCache[tile.TileValue];
          Rectangle rcBounds = GetBounds(e.Index);

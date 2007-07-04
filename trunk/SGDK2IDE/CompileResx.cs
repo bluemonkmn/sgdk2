@@ -42,6 +42,9 @@ class CompileResx
          rd = new System.Resources.ResXResourceReader("TileEdit.resx");
          WriteResources(rd,"SGDK2.frmTileEdit.resources");
          rd.Close();
+         rd = new System.Resources.ResXResourceReader("NewTileValue.resx");
+         WriteResources(rd,"SGDK2.frmNewTileValue.resources");
+         rd.Close();
          rd = new System.Resources.ResXResourceReader("SpriteDefinition.resx");
          WriteResources(rd,"SGDK2.frmSpriteDefinition.resources");
          rd.Close();
@@ -137,6 +140,9 @@ class CompileResx
          rd.Close();
          rd = new System.Resources.ResXResourceReader("SpecifyFlags.resx");
          WriteResources(rd,"SGDK2.frmSpecifyFlags.resources");
+         rd.Close();
+         rd = new System.Resources.ResXResourceReader("FrameTweening.resx");
+         WriteResources(rd,"SGDK2.frmFrameTweening.resources");
          rd.Close();
       }
       public static void WriteResources(System.Resources.ResXResourceReader rd, string sFile)

@@ -316,6 +316,16 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "FrameTweening.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "FrameTweening.resx"
+                    DependentUpon = "FrameTweening.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "GfxEdit.cs"
                     SubType = "Form"
                     BuildAction = "Compile"

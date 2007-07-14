@@ -26,6 +26,89 @@ namespace SGDK2
       private static System.Collections.Specialized.HybridDictionary m_GraphicSheets = null;
       #endregion
 
+      [Serializable()]
+      public struct CopiedRule
+      {
+         public string Name;
+         public string Type;
+         public string Function;
+         public string Parameter1;
+         public string Parameter2;
+         public string Parameter3;
+         public string ResultParameter;
+         public bool EndIf;
+         public bool Suspended;
+         int source;
+
+         public CopiedRule(ProjectDataset.PlanRuleRow rule)
+         {
+            Name = rule.Name;
+            Type = rule.Type;
+            Function = rule.Function;
+            if (rule.IsParameter1Null())
+               Parameter1 = null;
+            else
+               Parameter1 = rule.Parameter1;
+            if (rule.IsParameter2Null())
+               Parameter2 = null;
+            else
+               Parameter2 = rule.Parameter2;
+            if (rule.IsParameter3Null())
+               Parameter3 = null;
+            else
+               Parameter3 = rule.Parameter3;
+            if (rule.IsResultParameterNull())
+               ResultParameter = null;
+            else
+               ResultParameter = rule.ResultParameter;
+            EndIf = rule.EndIf;
+            Suspended = rule.Suspended;
+            source = 0;
+         }
+
+         public CopiedRule(ProjectDataset.SpriteRuleRow rule)
+         {
+            Name = rule.Name;
+            Type = rule.Type;
+            Function = rule.Function;
+            if (rule.IsParameter1Null())
+               Parameter1 = null;
+            else
+               Parameter1 = rule.Parameter1;
+            if (rule.IsParameter2Null())
+               Parameter2 = null;
+            else
+               Parameter2 = rule.Parameter2;
+            if (rule.IsParameter3Null())
+               Parameter3 = null;
+            else
+               Parameter3 = rule.Parameter3;
+            if (rule.IsResultParameterNull())
+               ResultParameter = null;
+            else
+               ResultParameter = rule.ResultParameter;
+            EndIf = rule.EndIf;
+            Suspended = rule.Suspended;
+            source = 1;
+         }
+
+         public bool IsSpriteDefinitionRule
+         {
+            get
+            {
+               return (source == 1);
+            }
+         }
+
+         public bool IsPlanRule
+         {
+            get
+            {
+               return (source == 0);
+            }
+         }
+      }
+
       // There should be no instances of this class
       private ProjectData()
       {

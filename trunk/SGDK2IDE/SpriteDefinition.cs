@@ -174,6 +174,13 @@ namespace SGDK2
       private System.Windows.Forms.ToolBarButton tbbPreview;
       private System.Windows.Forms.ToolBarButton tbbStateSeparator2;
       private System.Windows.Forms.MenuItem mnuPreviewAnimation;
+      private System.Windows.Forms.MenuItem mnuCopyRules;
+      private System.Windows.Forms.MenuItem mnuCopyRuleChildren;
+      private System.Windows.Forms.MenuItem mnuCopyRuleOnly;
+      private System.Windows.Forms.MenuItem mnuCopyAllRules;
+      private System.Windows.Forms.MenuItem mnuPasteRules;
+      private System.Windows.Forms.MenuItem mnuPasteRuleAbove;
+      private System.Windows.Forms.MenuItem mnuPasteRuleBelow;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -328,6 +335,13 @@ namespace SGDK2
          this.mnuRemoveRule = new System.Windows.Forms.MenuItem();
          this.mnuMoveRuleUp = new System.Windows.Forms.MenuItem();
          this.mnuMoveRuleDown = new System.Windows.Forms.MenuItem();
+         this.mnuCopyRules = new System.Windows.Forms.MenuItem();
+         this.mnuCopyRuleChildren = new System.Windows.Forms.MenuItem();
+         this.mnuCopyRuleOnly = new System.Windows.Forms.MenuItem();
+         this.mnuCopyAllRules = new System.Windows.Forms.MenuItem();
+         this.mnuPasteRules = new System.Windows.Forms.MenuItem();
+         this.mnuPasteRuleAbove = new System.Windows.Forms.MenuItem();
+         this.mnuPasteRuleBelow = new System.Windows.Forms.MenuItem();
          this.mnuSpriteDefSeparator2 = new System.Windows.Forms.MenuItem();
          this.mnuExport = new System.Windows.Forms.MenuItem();
          this.mnuSpriteDefSeparator3 = new System.Windows.Forms.MenuItem();
@@ -380,6 +394,7 @@ namespace SGDK2
          // 
          this.AvailableFrames.AllowDrop = true;
          this.AvailableFrames.BorderStyle = SGDK2.DragPanelBorderStyle.FixedInset;
+         this.AvailableFrames.CellBorders = false;
          this.AvailableFrames.CellPadding = new System.Drawing.Size(0, 0);
          this.AvailableFrames.CellSize = new System.Drawing.Size(0, 0);
          this.AvailableFrames.CurrentCellIndex = -1;
@@ -427,6 +442,7 @@ namespace SGDK2
          // 
          this.StateFrames.AllowDrop = true;
          this.StateFrames.BorderStyle = SGDK2.DragPanelBorderStyle.FixedInset;
+         this.StateFrames.CellBorders = false;
          this.StateFrames.CellPadding = new System.Drawing.Size(0, 0);
          this.StateFrames.CellSize = new System.Drawing.Size(0, 0);
          this.StateFrames.CurrentCellIndex = -1;
@@ -749,10 +765,10 @@ namespace SGDK2
          this.tvwRules.Dock = System.Windows.Forms.DockStyle.Fill;
          this.tvwRules.HideSelection = false;
          this.tvwRules.ImageIndex = -1;
-         this.tvwRules.Location = new System.Drawing.Point(0, 25);
+         this.tvwRules.Location = new System.Drawing.Point(0, 40);
          this.tvwRules.Name = "tvwRules";
          this.tvwRules.SelectedImageIndex = -1;
-         this.tvwRules.Size = new System.Drawing.Size(187, 334);
+         this.tvwRules.Size = new System.Drawing.Size(187, 319);
          this.tvwRules.TabIndex = 0;
          this.tvwRules.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvwRules_AfterSelect);
          // 
@@ -770,7 +786,7 @@ namespace SGDK2
          this.tbrRules.Location = new System.Drawing.Point(0, 0);
          this.tbrRules.Name = "tbrRules";
          this.tbrRules.ShowToolTips = true;
-         this.tbrRules.Size = new System.Drawing.Size(187, 25);
+         this.tbrRules.Size = new System.Drawing.Size(187, 40);
          this.tbrRules.TabIndex = 28;
          this.tbrRules.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tbrRules_ButtonClick);
          // 
@@ -884,7 +900,7 @@ namespace SGDK2
          this.cboParam3.Enabled = false;
          this.cboParam3.Location = new System.Drawing.Point(128, 168);
          this.cboParam3.Name = "cboParam3";
-         this.cboParam3.Size = new System.Drawing.Size(229, 21);
+         this.cboParam3.Size = new System.Drawing.Size(229, 20);
          this.cboParam3.TabIndex = 22;
          this.cboParam3.Validated += new System.EventHandler(this.cboParam_Validated);
          this.cboParam3.SelectionChangeCommitted += new System.EventHandler(this.cboParam_SelectionChangeCommitted);
@@ -896,7 +912,7 @@ namespace SGDK2
          this.cboFunction.Enabled = false;
          this.cboFunction.Location = new System.Drawing.Point(128, 56);
          this.cboFunction.Name = "cboFunction";
-         this.cboFunction.Size = new System.Drawing.Size(229, 21);
+         this.cboFunction.Size = new System.Drawing.Size(229, 20);
          this.cboFunction.TabIndex = 16;
          this.cboFunction.Validated += new System.EventHandler(this.cboFunction_Validated);
          this.cboFunction.SelectedIndexChanged += new System.EventHandler(this.cboFunction_SelectedIndexChanged);
@@ -962,7 +978,7 @@ namespace SGDK2
          this.cboOutput.Enabled = false;
          this.cboOutput.Location = new System.Drawing.Point(128, 192);
          this.cboOutput.Name = "cboOutput";
-         this.cboOutput.Size = new System.Drawing.Size(229, 21);
+         this.cboOutput.Size = new System.Drawing.Size(229, 20);
          this.cboOutput.TabIndex = 24;
          this.cboOutput.Validated += new System.EventHandler(this.cboParam_Validated);
          // 
@@ -993,7 +1009,7 @@ namespace SGDK2
          this.cboParam2.Enabled = false;
          this.cboParam2.Location = new System.Drawing.Point(128, 144);
          this.cboParam2.Name = "cboParam2";
-         this.cboParam2.Size = new System.Drawing.Size(229, 21);
+         this.cboParam2.Size = new System.Drawing.Size(229, 20);
          this.cboParam2.TabIndex = 20;
          this.cboParam2.Validated += new System.EventHandler(this.cboParam_Validated);
          this.cboParam2.SelectionChangeCommitted += new System.EventHandler(this.cboParam_SelectionChangeCommitted);
@@ -1005,7 +1021,7 @@ namespace SGDK2
          this.cboParam1.Enabled = false;
          this.cboParam1.Location = new System.Drawing.Point(128, 120);
          this.cboParam1.Name = "cboParam1";
-         this.cboParam1.Size = new System.Drawing.Size(229, 21);
+         this.cboParam1.Size = new System.Drawing.Size(229, 20);
          this.cboParam1.TabIndex = 18;
          this.cboParam1.Validated += new System.EventHandler(this.cboParam_Validated);
          this.cboParam1.SelectionChangeCommitted += new System.EventHandler(this.cboParam_SelectionChangeCommitted);
@@ -1080,6 +1096,8 @@ namespace SGDK2
                                                                                             this.mnuRemoveRule,
                                                                                             this.mnuMoveRuleUp,
                                                                                             this.mnuMoveRuleDown,
+                                                                                            this.mnuCopyRules,
+                                                                                            this.mnuPasteRules,
                                                                                             this.mnuSpriteDefSeparator2,
                                                                                             this.mnuExport,
                                                                                             this.mnuSpriteDefSeparator3,
@@ -1161,25 +1179,73 @@ namespace SGDK2
          this.mnuMoveRuleDown.Text = "&Move Rule Down";
          this.mnuMoveRuleDown.Click += new System.EventHandler(this.OnMoveRuleDown);
          // 
+         // mnuCopyRules
+         // 
+         this.mnuCopyRules.Index = 12;
+         this.mnuCopyRules.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                     this.mnuCopyRuleChildren,
+                                                                                     this.mnuCopyRuleOnly,
+                                                                                     this.mnuCopyAllRules});
+         this.mnuCopyRules.Text = "&Copy Rule";
+         // 
+         // mnuCopyRuleChildren
+         // 
+         this.mnuCopyRuleChildren.Index = 0;
+         this.mnuCopyRuleChildren.Text = "&Copy Selected Rule Including Children";
+         this.mnuCopyRuleChildren.Click += new System.EventHandler(this.mnuCopyRules_Click);
+         // 
+         // mnuCopyRuleOnly
+         // 
+         this.mnuCopyRuleOnly.Index = 1;
+         this.mnuCopyRuleOnly.Text = "Copy &Selected Rule Only";
+         this.mnuCopyRuleOnly.Click += new System.EventHandler(this.mnuCopyRules_Click);
+         // 
+         // mnuCopyAllRules
+         // 
+         this.mnuCopyAllRules.Index = 2;
+         this.mnuCopyAllRules.Text = "Copy &All Rules";
+         this.mnuCopyAllRules.Click += new System.EventHandler(this.mnuCopyRules_Click);
+         // 
+         // mnuPasteRules
+         // 
+         this.mnuPasteRules.Enabled = false;
+         this.mnuPasteRules.Index = 13;
+         this.mnuPasteRules.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                      this.mnuPasteRuleAbove,
+                                                                                      this.mnuPasteRuleBelow});
+         this.mnuPasteRules.Text = "Past&e Rules";
+         // 
+         // mnuPasteRuleAbove
+         // 
+         this.mnuPasteRuleAbove.Index = 0;
+         this.mnuPasteRuleAbove.Text = "Paste &Above Selected Rule";
+         this.mnuPasteRuleAbove.Click += new System.EventHandler(this.mnuPasteRules_Click);
+         // 
+         // mnuPasteRuleBelow
+         // 
+         this.mnuPasteRuleBelow.Index = 1;
+         this.mnuPasteRuleBelow.Text = "Paste &Below Selected Rule";
+         this.mnuPasteRuleBelow.Click += new System.EventHandler(this.mnuPasteRules_Click);
+         // 
          // mnuSpriteDefSeparator2
          // 
-         this.mnuSpriteDefSeparator2.Index = 12;
+         this.mnuSpriteDefSeparator2.Index = 14;
          this.mnuSpriteDefSeparator2.Text = "-";
          // 
          // mnuExport
          // 
-         this.mnuExport.Index = 13;
+         this.mnuExport.Index = 15;
          this.mnuExport.Text = "E&xport to template...";
          this.mnuExport.Click += new System.EventHandler(this.mnuExport_Click);
          // 
          // mnuSpriteDefSeparator3
          // 
-         this.mnuSpriteDefSeparator3.Index = 14;
+         this.mnuSpriteDefSeparator3.Index = 16;
          this.mnuSpriteDefSeparator3.Text = "-";
          // 
          // mnuRotateWizard
          // 
-         this.mnuRotateWizard.Index = 15;
+         this.mnuRotateWizard.Index = 17;
          this.mnuRotateWizard.Text = "Ro&tating Sprite State Wizard";
          this.mnuRotateWizard.Click += new System.EventHandler(this.mnuRotateWizard_Click);
          // 
@@ -1857,11 +1923,6 @@ namespace SGDK2
          }
       }
 
-      private ProjectDataset.SpriteRuleRow GetNodeRow(TreeNode node)
-      {
-         return ProjectData.GetSpriteRule(m_SpriteDef, node.Text);
-      }
-
       private TreeNode GetNodeFromRow(ProjectDataset.SpriteRuleRow drRule)
       {
          return m_TreeNodes[drRule.Name] as TreeNode;
@@ -1917,6 +1978,85 @@ namespace SGDK2
          else
             lstSpriteStates.SelectedIndexChanged += new System.EventHandler(this.lstSpriteStates_SelectedIndexChanged);
       }
+
+      private void EnablePasteRules()
+      {
+         mnuPasteRules.Enabled = Clipboard.GetDataObject().GetDataPresent(typeof(ProjectData.CopiedRule[]));
+      }
+
+      private void CopyAllRules()
+      {
+         System.Collections.ArrayList result = new ArrayList();
+
+         foreach(TreeNode rule in tvwRules.Nodes)
+         {
+            result.AddRange(GetNodeWithChildList(rule));
+         }
+         Clipboard.SetDataObject((ProjectData.CopiedRule[])result.ToArray(typeof(ProjectData.CopiedRule)));
+      }
+
+      private void CopyRules(bool includeChildren)
+      {
+         ProjectDataset.SpriteRuleRow drRule = CurrentRule;
+         if (drRule == null)
+         {
+            MessageBox.Show(this, "Select a rule before selecting this command.", "Copy Rules", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
+         if (!includeChildren)
+         {
+            Clipboard.SetDataObject(new ProjectData.CopiedRule[] {new ProjectData.CopiedRule(drRule)});
+            return;
+         }
+         Clipboard.SetDataObject(GetNodeWithChildList(tvwRules.SelectedNode));
+      }
+
+      private ProjectData.CopiedRule[] GetNodeWithChildList(TreeNode parent)
+      {
+         System.Collections.ArrayList result = new ArrayList();
+         result.Add(new ProjectData.CopiedRule(ProjectData.GetSpriteRule(m_SpriteDef, parent.Text)));
+         foreach(TreeNode child in parent.Nodes)
+            result.AddRange(GetNodeWithChildList(child));
+         return (ProjectData.CopiedRule[])result.ToArray(typeof(ProjectData.CopiedRule));
+      }
+
+      private void PasteRules(bool after)
+      {
+         if (Clipboard.GetDataObject().GetDataPresent(typeof(ProjectData.CopiedRule[])))
+         {
+            int sequence;
+            if (CurrentRule == null)
+            {
+               sequence = -1;
+            }
+            else
+            {
+               sequence = CurrentRule.Sequence;
+               if (after)
+                  sequence++;
+            }
+            ProjectData.CopiedRule[] toPaste = (ProjectData.CopiedRule[])Clipboard.GetDataObject().GetData(typeof(ProjectData.CopiedRule[]));
+            if ((toPaste.Length > 0) && (!toPaste[0].IsSpriteDefinitionRule))
+            {
+               if (DialogResult.OK != MessageBox.Show(this, "The rules being pasted were copied from a plan. Plan rules may not be compatible with sprite definition rules, and may require corrections before they can function as such.", "Paste Rules", MessageBoxButtons.OKCancel, MessageBoxIcon.Information))
+                  return;
+            }
+            foreach(ProjectData.CopiedRule rule in toPaste)
+            {
+               string name = rule.Name;
+               int i = 0;
+               while (ProjectData.GetSpriteRule(m_SpriteDef, name) != null)
+               {
+                  name = rule.Name + (++i).ToString();
+               }
+               ProjectData.InsertSpriteRule(m_SpriteDef, name, rule.Type, sequence, rule.Function, rule.Parameter1, rule.Parameter2, rule.Parameter3, rule.ResultParameter, rule.EndIf, rule.Suspended);
+               if (sequence >= 0)
+                  sequence++;
+            }
+         }
+         else
+            EnablePasteRules();
+      }
       #endregion
 
       #region Public Static Members
@@ -1946,6 +2086,12 @@ namespace SGDK2
       {
          base.OnClosing (e);
          SGDK2IDE.SaveFormSettings(this);
+      }
+
+      protected override void OnActivated(EventArgs e)
+      {
+         base.OnActivated (e);
+         EnablePasteRules();
       }
       #endregion
 
@@ -2813,6 +2959,25 @@ namespace SGDK2
                   source.SelectedIndex = source.Items.Add(newValue);
             }
          }
+      }
+
+      private void mnuPasteRules_Click(object sender, System.EventArgs e)
+      {
+         if (sender == mnuPasteRuleAbove)
+            PasteRules(false);
+         else if (sender == mnuPasteRuleBelow)
+            PasteRules(true);
+      }
+
+      private void mnuCopyRules_Click(object sender, System.EventArgs e)
+      {
+         if (sender == mnuCopyAllRules)
+            CopyAllRules();
+         else if (sender == mnuCopyRuleOnly)
+            CopyRules(false);
+         else if (sender == mnuCopyRuleChildren)
+            CopyRules(true);
+         EnablePasteRules();
       }
       #endregion
    }

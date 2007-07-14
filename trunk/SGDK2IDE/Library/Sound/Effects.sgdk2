@@ -79,7 +79,7 @@
                 <xs:element name="Layer" minOccurs="0" maxOccurs="unbounded">
                   <xs:complexType>
                     <xs:sequence>
-                      <xs:element name="Tiles" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="12" />
+                      <xs:element name="Tiles" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="14" />
                       <xs:element name="Sprite" minOccurs="0" maxOccurs="unbounded">
                         <xs:complexType>
                           <xs:sequence>
@@ -143,9 +143,9 @@
                             </xs:element>
                             <xs:element name="PlanParameterValue" minOccurs="0" maxOccurs="unbounded">
                               <xs:complexType>
-                                <xs:attribute name="MapName" type="xs:string" use="required" />
-                                <xs:attribute name="LayerName" type="xs:string" use="required" />
-                                <xs:attribute name="PlanName" type="xs:string" use="required" />
+                                <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="PlanName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
                                 <xs:attribute name="Name" type="xs:string" use="required" />
                                 <xs:attribute name="Value" type="xs:string" />
                               </xs:complexType>
@@ -170,6 +170,8 @@
                     <xs:attribute name="ScrollRateY" type="xs:float" default="1" />
                     <xs:attribute name="ZIndex" type="xs:int" />
                     <xs:attribute name="Priority" type="xs:int" default="0" />
+                    <xs:attribute name="VirtualWidth" type="xs:int" default="0" />
+                    <xs:attribute name="VirtualHeight" type="xs:int" default="0" />
                   </xs:complexType>
                 </xs:element>
               </xs:sequence>
@@ -703,6 +705,12 @@ namespace CustomObjects
          ERRCHECK(system.playSound(FMOD.CHANNELINDEX.FREE, Sound.sound, false, ref Sound.channel));
          ERRCHECK(Sound.channel.setCallback(FMOD.CHANNEL_CALLBACKTYPE.END, updateCallback, 0));
          ERRCHECK(Sound.channel.setVolume(Sound.Volume));
+      }
+
+      [Description("Pause or resume an FMOD sound effect")]
+      public static void PauseSound([System.ComponentModel.Editor("CustomObject", "UITypeEditor")] CustomObjects.FMODBase Sound, bool Pause)
+      {
+         ERRCHECK(Sound.channel.setPaused(Pause));
       }
 
       private static FMOD.RESULT Channel_Callback(IntPtr channelraw, FMOD.CHANNEL_CALLBACKTYPE type, int command, uint commanddata1, uint commanddata2)

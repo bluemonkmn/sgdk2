@@ -75,6 +75,24 @@ namespace SGDK2
       private System.Windows.Forms.Label lblReview;
       private System.Windows.Forms.TextBox txtReview;
       private System.Windows.Forms.NumericUpDown nudFrameCount;
+      private System.Windows.Forms.Label lblSrcModulateRed;
+      private System.Windows.Forms.NumericUpDown nudSrcModulateRed;
+      private System.Windows.Forms.NumericUpDown nudSrcModulateGreen;
+      private System.Windows.Forms.Label lblSrcModulateGreen;
+      private System.Windows.Forms.NumericUpDown nudSrcModulateAlpha;
+      private System.Windows.Forms.Label lblSrcModulateAlpha;
+      private System.Windows.Forms.NumericUpDown nudSrcModulateBlue;
+      private System.Windows.Forms.Label lblSrcModulateBlue;
+      private System.Windows.Forms.Label lblEndModulateAlpha;
+      private System.Windows.Forms.NumericUpDown nudEndModulateBlue;
+      private System.Windows.Forms.Label lblEndModulateBlue;
+      private System.Windows.Forms.NumericUpDown nudEndModulateGreen;
+      private System.Windows.Forms.Label lblEndModulateGreen;
+      private System.Windows.Forms.NumericUpDown nudEndModulateRed;
+      private System.Windows.Forms.Label lblEndModulateRed;
+      private System.Windows.Forms.NumericUpDown nudEndModulateAlpha;
+      private System.Windows.Forms.Label lblEndColor;
+      private System.Windows.Forms.CheckBox chkColor;
 		private System.ComponentModel.IContainer components = null;
       #endregion
 
@@ -162,6 +180,24 @@ namespace SGDK2
          this.pnlReview = new System.Windows.Forms.Panel();
          this.txtReview = new System.Windows.Forms.TextBox();
          this.lblReview = new System.Windows.Forms.Label();
+         this.lblSrcModulateRed = new System.Windows.Forms.Label();
+         this.nudSrcModulateRed = new System.Windows.Forms.NumericUpDown();
+         this.nudSrcModulateGreen = new System.Windows.Forms.NumericUpDown();
+         this.lblSrcModulateGreen = new System.Windows.Forms.Label();
+         this.nudSrcModulateAlpha = new System.Windows.Forms.NumericUpDown();
+         this.lblSrcModulateAlpha = new System.Windows.Forms.Label();
+         this.nudSrcModulateBlue = new System.Windows.Forms.NumericUpDown();
+         this.lblSrcModulateBlue = new System.Windows.Forms.Label();
+         this.nudEndModulateAlpha = new System.Windows.Forms.NumericUpDown();
+         this.lblEndModulateAlpha = new System.Windows.Forms.Label();
+         this.nudEndModulateBlue = new System.Windows.Forms.NumericUpDown();
+         this.lblEndModulateBlue = new System.Windows.Forms.Label();
+         this.nudEndModulateGreen = new System.Windows.Forms.NumericUpDown();
+         this.lblEndModulateGreen = new System.Windows.Forms.Label();
+         this.nudEndModulateRed = new System.Windows.Forms.NumericUpDown();
+         this.lblEndModulateRed = new System.Windows.Forms.Label();
+         this.lblEndColor = new System.Windows.Forms.Label();
+         this.chkColor = new System.Windows.Forms.CheckBox();
          this.pnlMode.SuspendLayout();
          this.pnlFrameSource.SuspendLayout();
          this.pnlFrameRange.SuspendLayout();
@@ -172,6 +208,14 @@ namespace SGDK2
          this.pnlFrameCount.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.nudFrameCount)).BeginInit();
          this.pnlReview.SuspendLayout();
+         ((System.ComponentModel.ISupportInitialize)(this.nudSrcModulateRed)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.nudSrcModulateGreen)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.nudSrcModulateAlpha)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.nudSrcModulateBlue)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.nudEndModulateAlpha)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.nudEndModulateBlue)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.nudEndModulateGreen)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.nudEndModulateRed)).BeginInit();
          this.SuspendLayout();
          // 
          // pnlMode
@@ -224,7 +268,7 @@ namespace SGDK2
          this.pnlFrameSource.Controls.Add(this.lblFrameSource);
          this.pnlFrameSource.Location = new System.Drawing.Point(-10168, 42);
          this.pnlFrameSource.Name = "pnlFrameSource";
-         this.pnlFrameSource.Size = new System.Drawing.Size(285, 231);
+         this.pnlFrameSource.Size = new System.Drawing.Size(286, 231);
          this.pnlFrameSource.TabIndex = 7;
          // 
          // SourceCell
@@ -284,7 +328,7 @@ namespace SGDK2
          this.pnlFrameRange.Controls.Add(this.FrameSelection);
          this.pnlFrameRange.Location = new System.Drawing.Point(-10168, 42);
          this.pnlFrameRange.Name = "pnlFrameRange";
-         this.pnlFrameRange.Size = new System.Drawing.Size(285, 231);
+         this.pnlFrameRange.Size = new System.Drawing.Size(286, 231);
          this.pnlFrameRange.TabIndex = 8;
          // 
          // lblFrameRange
@@ -321,6 +365,15 @@ namespace SGDK2
          // 
          // pnlStartingParams
          // 
+         this.pnlStartingParams.Controls.Add(this.chkColor);
+         this.pnlStartingParams.Controls.Add(this.nudSrcModulateAlpha);
+         this.pnlStartingParams.Controls.Add(this.lblSrcModulateAlpha);
+         this.pnlStartingParams.Controls.Add(this.nudSrcModulateBlue);
+         this.pnlStartingParams.Controls.Add(this.lblSrcModulateBlue);
+         this.pnlStartingParams.Controls.Add(this.nudSrcModulateGreen);
+         this.pnlStartingParams.Controls.Add(this.lblSrcModulateGreen);
+         this.pnlStartingParams.Controls.Add(this.nudSrcModulateRed);
+         this.pnlStartingParams.Controls.Add(this.lblSrcModulateRed);
          this.pnlStartingParams.Controls.Add(this.txtSrcOffsetY);
          this.pnlStartingParams.Controls.Add(this.lblSrcOffsetY);
          this.pnlStartingParams.Controls.Add(this.txtSrcOffsetX);
@@ -336,7 +389,7 @@ namespace SGDK2
          this.pnlStartingParams.Controls.Add(this.lblStatingParameters);
          this.pnlStartingParams.Location = new System.Drawing.Point(-10168, 42);
          this.pnlStartingParams.Name = "pnlStartingParams";
-         this.pnlStartingParams.Size = new System.Drawing.Size(284, 231);
+         this.pnlStartingParams.Size = new System.Drawing.Size(285, 231);
          this.pnlStartingParams.TabIndex = 9;
          // 
          // txtSrcOffsetY
@@ -467,6 +520,15 @@ namespace SGDK2
          // 
          // pnlEndingParams
          // 
+         this.pnlEndingParams.Controls.Add(this.nudEndModulateAlpha);
+         this.pnlEndingParams.Controls.Add(this.lblEndModulateAlpha);
+         this.pnlEndingParams.Controls.Add(this.nudEndModulateBlue);
+         this.pnlEndingParams.Controls.Add(this.lblEndModulateBlue);
+         this.pnlEndingParams.Controls.Add(this.nudEndModulateGreen);
+         this.pnlEndingParams.Controls.Add(this.lblEndModulateGreen);
+         this.pnlEndingParams.Controls.Add(this.nudEndModulateRed);
+         this.pnlEndingParams.Controls.Add(this.lblEndModulateRed);
+         this.pnlEndingParams.Controls.Add(this.lblEndColor);
          this.pnlEndingParams.Controls.Add(this.txtEndOffsetY);
          this.pnlEndingParams.Controls.Add(this.lblEndOffsetY);
          this.pnlEndingParams.Controls.Add(this.txtEndOffsetX);
@@ -482,7 +544,7 @@ namespace SGDK2
          this.pnlEndingParams.Controls.Add(this.lblEndingParams);
          this.pnlEndingParams.Location = new System.Drawing.Point(-10168, 42);
          this.pnlEndingParams.Name = "pnlEndingParams";
-         this.pnlEndingParams.Size = new System.Drawing.Size(283, 231);
+         this.pnlEndingParams.Size = new System.Drawing.Size(284, 231);
          this.pnlEndingParams.TabIndex = 10;
          // 
          // txtEndOffsetY
@@ -618,7 +680,7 @@ namespace SGDK2
          this.pnlFrameCount.Controls.Add(this.lblFrameCount);
          this.pnlFrameCount.Location = new System.Drawing.Point(-10168, 42);
          this.pnlFrameCount.Name = "pnlFrameCount";
-         this.pnlFrameCount.Size = new System.Drawing.Size(282, 231);
+         this.pnlFrameCount.Size = new System.Drawing.Size(283, 231);
          this.pnlFrameCount.TabIndex = 11;
          // 
          // nudFrameCount
@@ -680,7 +742,7 @@ namespace SGDK2
          this.pnlReview.Controls.Add(this.lblReview);
          this.pnlReview.Location = new System.Drawing.Point(-10168, 42);
          this.pnlReview.Name = "pnlReview";
-         this.pnlReview.Size = new System.Drawing.Size(283, 231);
+         this.pnlReview.Size = new System.Drawing.Size(284, 231);
          this.pnlReview.TabIndex = 12;
          // 
          // txtReview
@@ -701,6 +763,248 @@ namespace SGDK2
          this.lblReview.Size = new System.Drawing.Size(264, 32);
          this.lblReview.TabIndex = 0;
          this.lblReview.Text = "The wizard if ready to perform the following actions:";
+         // 
+         // lblSrcModulateRed
+         // 
+         this.lblSrcModulateRed.Enabled = false;
+         this.lblSrcModulateRed.Location = new System.Drawing.Point(72, 136);
+         this.lblSrcModulateRed.Name = "lblSrcModulateRed";
+         this.lblSrcModulateRed.Size = new System.Drawing.Size(24, 20);
+         this.lblSrcModulateRed.TabIndex = 14;
+         this.lblSrcModulateRed.Text = "R:";
+         this.lblSrcModulateRed.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+         // 
+         // nudSrcModulateRed
+         // 
+         this.nudSrcModulateRed.Enabled = false;
+         this.nudSrcModulateRed.Location = new System.Drawing.Point(96, 136);
+         this.nudSrcModulateRed.Maximum = new System.Decimal(new int[] {
+                                                                          255,
+                                                                          0,
+                                                                          0,
+                                                                          0});
+         this.nudSrcModulateRed.Name = "nudSrcModulateRed";
+         this.nudSrcModulateRed.Size = new System.Drawing.Size(72, 20);
+         this.nudSrcModulateRed.TabIndex = 15;
+         this.nudSrcModulateRed.Value = new System.Decimal(new int[] {
+                                                                        255,
+                                                                        0,
+                                                                        0,
+                                                                        0});
+         // 
+         // nudSrcModulateGreen
+         // 
+         this.nudSrcModulateGreen.Enabled = false;
+         this.nudSrcModulateGreen.Location = new System.Drawing.Point(200, 136);
+         this.nudSrcModulateGreen.Maximum = new System.Decimal(new int[] {
+                                                                            255,
+                                                                            0,
+                                                                            0,
+                                                                            0});
+         this.nudSrcModulateGreen.Name = "nudSrcModulateGreen";
+         this.nudSrcModulateGreen.Size = new System.Drawing.Size(72, 20);
+         this.nudSrcModulateGreen.TabIndex = 17;
+         this.nudSrcModulateGreen.Value = new System.Decimal(new int[] {
+                                                                          255,
+                                                                          0,
+                                                                          0,
+                                                                          0});
+         // 
+         // lblSrcModulateGreen
+         // 
+         this.lblSrcModulateGreen.Enabled = false;
+         this.lblSrcModulateGreen.Location = new System.Drawing.Point(176, 136);
+         this.lblSrcModulateGreen.Name = "lblSrcModulateGreen";
+         this.lblSrcModulateGreen.Size = new System.Drawing.Size(24, 20);
+         this.lblSrcModulateGreen.TabIndex = 16;
+         this.lblSrcModulateGreen.Text = "G:";
+         this.lblSrcModulateGreen.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+         // 
+         // nudSrcModulateAlpha
+         // 
+         this.nudSrcModulateAlpha.Enabled = false;
+         this.nudSrcModulateAlpha.Location = new System.Drawing.Point(200, 160);
+         this.nudSrcModulateAlpha.Maximum = new System.Decimal(new int[] {
+                                                                            255,
+                                                                            0,
+                                                                            0,
+                                                                            0});
+         this.nudSrcModulateAlpha.Name = "nudSrcModulateAlpha";
+         this.nudSrcModulateAlpha.Size = new System.Drawing.Size(72, 20);
+         this.nudSrcModulateAlpha.TabIndex = 21;
+         this.nudSrcModulateAlpha.Value = new System.Decimal(new int[] {
+                                                                          255,
+                                                                          0,
+                                                                          0,
+                                                                          0});
+         // 
+         // lblSrcModulateAlpha
+         // 
+         this.lblSrcModulateAlpha.Enabled = false;
+         this.lblSrcModulateAlpha.Location = new System.Drawing.Point(176, 160);
+         this.lblSrcModulateAlpha.Name = "lblSrcModulateAlpha";
+         this.lblSrcModulateAlpha.Size = new System.Drawing.Size(24, 20);
+         this.lblSrcModulateAlpha.TabIndex = 20;
+         this.lblSrcModulateAlpha.Text = "A:";
+         this.lblSrcModulateAlpha.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+         // 
+         // nudSrcModulateBlue
+         // 
+         this.nudSrcModulateBlue.Enabled = false;
+         this.nudSrcModulateBlue.Location = new System.Drawing.Point(96, 160);
+         this.nudSrcModulateBlue.Maximum = new System.Decimal(new int[] {
+                                                                           255,
+                                                                           0,
+                                                                           0,
+                                                                           0});
+         this.nudSrcModulateBlue.Name = "nudSrcModulateBlue";
+         this.nudSrcModulateBlue.Size = new System.Drawing.Size(72, 20);
+         this.nudSrcModulateBlue.TabIndex = 19;
+         this.nudSrcModulateBlue.Value = new System.Decimal(new int[] {
+                                                                         255,
+                                                                         0,
+                                                                         0,
+                                                                         0});
+         // 
+         // lblSrcModulateBlue
+         // 
+         this.lblSrcModulateBlue.Enabled = false;
+         this.lblSrcModulateBlue.Location = new System.Drawing.Point(72, 160);
+         this.lblSrcModulateBlue.Name = "lblSrcModulateBlue";
+         this.lblSrcModulateBlue.Size = new System.Drawing.Size(24, 20);
+         this.lblSrcModulateBlue.TabIndex = 18;
+         this.lblSrcModulateBlue.Text = "B:";
+         this.lblSrcModulateBlue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+         // 
+         // nudEndModulateAlpha
+         // 
+         this.nudEndModulateAlpha.Enabled = false;
+         this.nudEndModulateAlpha.Location = new System.Drawing.Point(200, 160);
+         this.nudEndModulateAlpha.Maximum = new System.Decimal(new int[] {
+                                                                            255,
+                                                                            0,
+                                                                            0,
+                                                                            0});
+         this.nudEndModulateAlpha.Name = "nudEndModulateAlpha";
+         this.nudEndModulateAlpha.Size = new System.Drawing.Size(72, 20);
+         this.nudEndModulateAlpha.TabIndex = 30;
+         this.nudEndModulateAlpha.Value = new System.Decimal(new int[] {
+                                                                          255,
+                                                                          0,
+                                                                          0,
+                                                                          0});
+         // 
+         // lblEndModulateAlpha
+         // 
+         this.lblEndModulateAlpha.Enabled = false;
+         this.lblEndModulateAlpha.Location = new System.Drawing.Point(176, 160);
+         this.lblEndModulateAlpha.Name = "lblEndModulateAlpha";
+         this.lblEndModulateAlpha.Size = new System.Drawing.Size(24, 20);
+         this.lblEndModulateAlpha.TabIndex = 29;
+         this.lblEndModulateAlpha.Text = "A:";
+         this.lblEndModulateAlpha.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+         // 
+         // nudEndModulateBlue
+         // 
+         this.nudEndModulateBlue.Enabled = false;
+         this.nudEndModulateBlue.Location = new System.Drawing.Point(96, 160);
+         this.nudEndModulateBlue.Maximum = new System.Decimal(new int[] {
+                                                                           255,
+                                                                           0,
+                                                                           0,
+                                                                           0});
+         this.nudEndModulateBlue.Name = "nudEndModulateBlue";
+         this.nudEndModulateBlue.Size = new System.Drawing.Size(72, 20);
+         this.nudEndModulateBlue.TabIndex = 28;
+         this.nudEndModulateBlue.Value = new System.Decimal(new int[] {
+                                                                         255,
+                                                                         0,
+                                                                         0,
+                                                                         0});
+         // 
+         // lblEndModulateBlue
+         // 
+         this.lblEndModulateBlue.Enabled = false;
+         this.lblEndModulateBlue.Location = new System.Drawing.Point(72, 160);
+         this.lblEndModulateBlue.Name = "lblEndModulateBlue";
+         this.lblEndModulateBlue.Size = new System.Drawing.Size(24, 20);
+         this.lblEndModulateBlue.TabIndex = 27;
+         this.lblEndModulateBlue.Text = "B:";
+         this.lblEndModulateBlue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+         // 
+         // nudEndModulateGreen
+         // 
+         this.nudEndModulateGreen.Enabled = false;
+         this.nudEndModulateGreen.Location = new System.Drawing.Point(200, 136);
+         this.nudEndModulateGreen.Maximum = new System.Decimal(new int[] {
+                                                                            255,
+                                                                            0,
+                                                                            0,
+                                                                            0});
+         this.nudEndModulateGreen.Name = "nudEndModulateGreen";
+         this.nudEndModulateGreen.Size = new System.Drawing.Size(72, 20);
+         this.nudEndModulateGreen.TabIndex = 26;
+         this.nudEndModulateGreen.Value = new System.Decimal(new int[] {
+                                                                          255,
+                                                                          0,
+                                                                          0,
+                                                                          0});
+         // 
+         // lblEndModulateGreen
+         // 
+         this.lblEndModulateGreen.Enabled = false;
+         this.lblEndModulateGreen.Location = new System.Drawing.Point(176, 136);
+         this.lblEndModulateGreen.Name = "lblEndModulateGreen";
+         this.lblEndModulateGreen.Size = new System.Drawing.Size(24, 20);
+         this.lblEndModulateGreen.TabIndex = 25;
+         this.lblEndModulateGreen.Text = "G:";
+         this.lblEndModulateGreen.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+         // 
+         // nudEndModulateRed
+         // 
+         this.nudEndModulateRed.Enabled = false;
+         this.nudEndModulateRed.Location = new System.Drawing.Point(96, 136);
+         this.nudEndModulateRed.Maximum = new System.Decimal(new int[] {
+                                                                          255,
+                                                                          0,
+                                                                          0,
+                                                                          0});
+         this.nudEndModulateRed.Name = "nudEndModulateRed";
+         this.nudEndModulateRed.Size = new System.Drawing.Size(72, 20);
+         this.nudEndModulateRed.TabIndex = 24;
+         this.nudEndModulateRed.Value = new System.Decimal(new int[] {
+                                                                        255,
+                                                                        0,
+                                                                        0,
+                                                                        0});
+         // 
+         // lblEndModulateRed
+         // 
+         this.lblEndModulateRed.Enabled = false;
+         this.lblEndModulateRed.Location = new System.Drawing.Point(72, 136);
+         this.lblEndModulateRed.Name = "lblEndModulateRed";
+         this.lblEndModulateRed.Size = new System.Drawing.Size(24, 20);
+         this.lblEndModulateRed.TabIndex = 23;
+         this.lblEndModulateRed.Text = "R:";
+         this.lblEndModulateRed.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+         // 
+         // lblEndColor
+         // 
+         this.lblEndColor.Enabled = false;
+         this.lblEndColor.Location = new System.Drawing.Point(8, 136);
+         this.lblEndColor.Name = "lblEndColor";
+         this.lblEndColor.Size = new System.Drawing.Size(56, 16);
+         this.lblEndColor.TabIndex = 22;
+         this.lblEndColor.Text = "Color:";
+         // 
+         // chkColor
+         // 
+         this.chkColor.Location = new System.Drawing.Point(8, 136);
+         this.chkColor.Name = "chkColor";
+         this.chkColor.Size = new System.Drawing.Size(56, 16);
+         this.chkColor.TabIndex = 22;
+         this.chkColor.Text = "Color:";
+         this.chkColor.CheckedChanged += new System.EventHandler(this.chkColor_CheckedChanged);
          // 
          // frmFrameTweening
          // 
@@ -739,6 +1043,14 @@ namespace SGDK2
          this.pnlFrameCount.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.nudFrameCount)).EndInit();
          this.pnlReview.ResumeLayout(false);
+         ((System.ComponentModel.ISupportInitialize)(this.nudSrcModulateRed)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.nudSrcModulateGreen)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.nudSrcModulateAlpha)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.nudSrcModulateBlue)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.nudEndModulateAlpha)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.nudEndModulateBlue)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.nudEndModulateGreen)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.nudEndModulateRed)).EndInit();
          this.ResumeLayout(false);
 
       }
@@ -876,6 +1188,11 @@ namespace SGDK2
             float scaleY = (float)(m_SrcScaleY * (count - i - 1) + m_EndScaleY * i) / (count - 1);
             float offsetX = (float)(m_SrcOffsetX * (count - i - 1) + m_EndOffsetX * i) / (count - 1);
             float offsetY = (float)(m_SrcOffsetY * (count - i - 1) + m_EndOffsetY * i) / (count - 1);
+            byte red = (byte)((nudSrcModulateRed.Value * (count - i - 1) + nudEndModulateRed.Value * i) / (count - 1));
+            byte green = (byte)((nudSrcModulateGreen.Value * (count - i - 1) + nudEndModulateGreen.Value * i) / (count - 1));
+            byte blue = (byte)((nudSrcModulateBlue.Value * (count - i - 1) + nudEndModulateBlue.Value * i) / (count - 1));
+            byte alpha = (byte)((nudSrcModulateAlpha.Value * (count - i - 1) + nudEndModulateAlpha.Value * i) / (count - 1));
+            int modulate = BitConverter.ToInt32(new byte[] {blue, green, red, alpha}, 0);
 
             if (rdoAppend.Checked)
             {
@@ -891,6 +1208,8 @@ namespace SGDK2
                sb.AppendFormat("   Scaling X,Y: {0},{1}\r\n", scaleX, scaleY);
             if ((offsetX != 0) || (offsetY != 0))
                sb.AppendFormat("   Offset X,Y: {0}, {1}\r\n", offsetX, offsetY);
+            if (modulate != -1)
+               sb.AppendFormat("   Color modulation: {0}\r\n", modulate);
          }
 
          txtReview.Text = sb.ToString();
@@ -921,6 +1240,11 @@ namespace SGDK2
             float scaleY = (float)(m_SrcScaleY * (count - i - 1) + m_EndScaleY * i) / (count - 1);
             float offsetX = (float)(m_SrcOffsetX * (count - i - 1) + m_EndOffsetX * i) / (count - 1);
             float offsetY = (float)(m_SrcOffsetY * (count - i - 1) + m_EndOffsetY * i) / (count - 1);
+            byte red = (byte)((nudSrcModulateRed.Value * (count - i - 1) + nudEndModulateRed.Value * i) / (count - 1));
+            byte green = (byte)((nudSrcModulateGreen.Value * (count - i - 1) + nudEndModulateGreen.Value * i) / (count - 1));
+            byte blue = (byte)((nudSrcModulateBlue.Value * (count - i - 1) + nudEndModulateBlue.Value * i) / (count - 1));
+            byte alpha = (byte)((nudSrcModulateAlpha.Value * (count - i - 1) + nudEndModulateAlpha.Value * i) / (count - 1));
+            int modulate = BitConverter.ToInt32(new byte[] {blue, green, red, alpha}, 0);
 
             if (rdoAppend.Checked)
             {
@@ -935,6 +1259,8 @@ namespace SGDK2
                   ProjectData.AddFrameRow(m_frameset, i+lastFrame+1, gfx.Name, (short)SourceCell.GetFirstSelectedCell(),
                      mtx.Elements[0], mtx.Elements[1], mtx.Elements[2],
                      mtx.Elements[3], mtx.Elements[4], mtx.Elements[5], -1);
+                  if (chkColor.Checked)
+                     selFrames[i].color = modulate;
                }
             }
             else
@@ -960,10 +1286,22 @@ namespace SGDK2
                   selFrames[i].m22 = mtx.Elements[3];
                   selFrames[i].dx = mtx.Elements[4];
                   selFrames[i].dy = mtx.Elements[5];
+                  if (chkColor.Checked)
+                     selFrames[i].color = modulate;
                }
             }
          }
          return true;
+      }
+
+      private void chkColor_CheckedChanged(object sender, System.EventArgs e)
+      {
+         lblSrcModulateAlpha.Enabled = lblSrcModulateBlue.Enabled = lblSrcModulateGreen.Enabled =
+            lblSrcModulateRed.Enabled = nudSrcModulateAlpha.Enabled = nudSrcModulateBlue.Enabled =
+            nudSrcModulateGreen.Enabled = nudSrcModulateRed.Enabled = lblEndModulateAlpha.Enabled =
+            lblEndModulateBlue.Enabled = lblEndModulateGreen.Enabled = lblEndModulateRed.Enabled =
+            nudEndModulateAlpha.Enabled = nudEndModulateBlue.Enabled = nudEndModulateGreen.Enabled =
+            nudEndModulateRed.Enabled = lblEndColor.Enabled = chkColor.Checked;
       }
    }
 }

@@ -102,6 +102,13 @@ namespace SGDK2
       private System.Windows.Forms.TextBox txtPriority;
       private System.Windows.Forms.Label lblPriority;
       private System.Windows.Forms.Timer tmrPopulate;
+      private System.Windows.Forms.MenuItem mnuCopyRules;
+      private System.Windows.Forms.MenuItem mnuCopyChildren;
+      private System.Windows.Forms.MenuItem mnuCopySelected;
+      private System.Windows.Forms.MenuItem mnuCopyAll;
+      private System.Windows.Forms.MenuItem mnuPasteRules;
+      private System.Windows.Forms.MenuItem mnuPasteAbove;
+      private System.Windows.Forms.MenuItem mnuPasteBelow;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -211,6 +218,13 @@ namespace SGDK2
          this.mnuNewRule = new System.Windows.Forms.MenuItem();
          this.mnuDeleteRule = new System.Windows.Forms.MenuItem();
          this.tmrPopulate = new System.Windows.Forms.Timer(this.components);
+         this.mnuCopyRules = new System.Windows.Forms.MenuItem();
+         this.mnuCopyChildren = new System.Windows.Forms.MenuItem();
+         this.mnuCopySelected = new System.Windows.Forms.MenuItem();
+         this.mnuCopyAll = new System.Windows.Forms.MenuItem();
+         this.mnuPasteRules = new System.Windows.Forms.MenuItem();
+         this.mnuPasteAbove = new System.Windows.Forms.MenuItem();
+         this.mnuPasteBelow = new System.Windows.Forms.MenuItem();
          this.grpRules.SuspendLayout();
          this.pnlRule.SuspendLayout();
          this.pnlName.SuspendLayout();
@@ -461,7 +475,7 @@ namespace SGDK2
          this.cboParam3.TabIndex = 30;
          this.cboParam3.Validated += new System.EventHandler(this.cboParam_Validated);
          this.cboParam3.SelectedIndexChanged += new System.EventHandler(this.cboParam_SelectedIndexChanged);
-         this.cboParam3.SelectionChangeCommitted += new EventHandler(cboParam_SelectionChangeCommitted);
+         this.cboParam3.SelectionChangeCommitted += new System.EventHandler(this.cboParam_SelectionChangeCommitted);
          // 
          // cboRuleType
          // 
@@ -513,7 +527,7 @@ namespace SGDK2
          this.cboParam2.TabIndex = 28;
          this.cboParam2.Validated += new System.EventHandler(this.cboParam_Validated);
          this.cboParam2.SelectedIndexChanged += new System.EventHandler(this.cboParam_SelectedIndexChanged);
-         this.cboParam2.SelectionChangeCommitted += new EventHandler(cboParam_SelectionChangeCommitted);
+         this.cboParam2.SelectionChangeCommitted += new System.EventHandler(this.cboParam_SelectionChangeCommitted);
          // 
          // cboParam1
          // 
@@ -526,7 +540,7 @@ namespace SGDK2
          this.cboParam1.TabIndex = 26;
          this.cboParam1.Validated += new System.EventHandler(this.cboParam_Validated);
          this.cboParam1.SelectedIndexChanged += new System.EventHandler(this.cboParam_SelectedIndexChanged);
-         this.cboParam1.SelectionChangeCommitted += new EventHandler(cboParam_SelectionChangeCommitted);
+         this.cboParam1.SelectionChangeCommitted += new System.EventHandler(this.cboParam_SelectionChangeCommitted);
          // 
          // chkNot
          // 
@@ -605,7 +619,9 @@ namespace SGDK2
                                                                                 this.mnuMoveRuleUp,
                                                                                 this.mnuMoveRuleDown,
                                                                                 this.mnuNewRule,
-                                                                                this.mnuDeleteRule});
+                                                                                this.mnuDeleteRule,
+                                                                                this.mnuCopyRules,
+                                                                                this.mnuPasteRules});
          this.mnuPlan.Text = "&Plan";
          // 
          // mnuMoveRuleUp
@@ -635,6 +651,54 @@ namespace SGDK2
          // tmrPopulate
          // 
          this.tmrPopulate.Tick += new System.EventHandler(this.tmrPopulate_Tick);
+         // 
+         // mnuCopyRules
+         // 
+         this.mnuCopyRules.Index = 4;
+         this.mnuCopyRules.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                     this.mnuCopyChildren,
+                                                                                     this.mnuCopySelected,
+                                                                                     this.mnuCopyAll});
+         this.mnuCopyRules.Text = "&Copy Rules";
+         // 
+         // mnuCopyChildren
+         // 
+         this.mnuCopyChildren.Index = 0;
+         this.mnuCopyChildren.Text = "&Copy Selected Rule Including Children";
+         this.mnuCopyChildren.Click += new System.EventHandler(this.mnuCopyRules_Click);
+         // 
+         // mnuCopySelected
+         // 
+         this.mnuCopySelected.Index = 1;
+         this.mnuCopySelected.Text = "Copy &Selected Rule Only";
+         this.mnuCopySelected.Click += new System.EventHandler(this.mnuCopyRules_Click);
+         // 
+         // mnuCopyAll
+         // 
+         this.mnuCopyAll.Index = 2;
+         this.mnuCopyAll.Text = "Copy &All Rules";
+         this.mnuCopyAll.Click += new System.EventHandler(this.mnuCopyRules_Click);
+         // 
+         // mnuPasteRules
+         // 
+         this.mnuPasteRules.Enabled = false;
+         this.mnuPasteRules.Index = 5;
+         this.mnuPasteRules.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                      this.mnuPasteAbove,
+                                                                                      this.mnuPasteBelow});
+         this.mnuPasteRules.Text = "&Paste Rules";
+         // 
+         // mnuPasteAbove
+         // 
+         this.mnuPasteAbove.Index = 0;
+         this.mnuPasteAbove.Text = "Paste &Above Selected Rule";
+         this.mnuPasteAbove.Click += new System.EventHandler(this.mnuPasteRules_Click);
+         // 
+         // mnuPasteBelow
+         // 
+         this.mnuPasteBelow.Index = 1;
+         this.mnuPasteBelow.Text = "Paste &Below Selected Rule";
+         this.mnuPasteBelow.Click += new System.EventHandler(this.mnuPasteRules_Click);
          // 
          // frmPlanEdit
          // 
@@ -1295,6 +1359,85 @@ namespace SGDK2
             }
          }
       }
+
+      private void EnablePasteRules()
+      {
+         mnuPasteRules.Enabled = Clipboard.GetDataObject().GetDataPresent(typeof(ProjectData.CopiedRule[]));
+      }
+
+      private void CopyAllRules()
+      {
+         System.Collections.ArrayList result = new ArrayList();
+
+         foreach(TreeNode rule in tvwRules.Nodes)
+         {
+            result.AddRange(GetNodeWithChildList(rule));
+         }
+         Clipboard.SetDataObject((ProjectData.CopiedRule[])result.ToArray(typeof(ProjectData.CopiedRule)));
+      }
+
+      private void CopyRules(bool includeChildren)
+      {
+         ProjectDataset.PlanRuleRow drRule = CurrentRule;
+         if (drRule == null)
+         {
+            MessageBox.Show(this, "Select a rule before selecting this command.", "Copy Rules", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
+         if (!includeChildren)
+         {
+            Clipboard.SetDataObject(new ProjectData.CopiedRule[] {new ProjectData.CopiedRule(drRule)});
+            return;
+         }
+         Clipboard.SetDataObject(GetNodeWithChildList(tvwRules.SelectedNode));
+      }
+
+      private ProjectData.CopiedRule[] GetNodeWithChildList(TreeNode parent)
+      {
+         System.Collections.ArrayList result = new ArrayList();
+         result.Add(new ProjectData.CopiedRule(ProjectData.GetPlanRule(m_Plan, parent.Text)));
+         foreach(TreeNode child in parent.Nodes)
+            result.AddRange(GetNodeWithChildList(child));
+         return (ProjectData.CopiedRule[])result.ToArray(typeof(ProjectData.CopiedRule));
+      }
+
+      private void PasteRules(bool after)
+      {
+         if (Clipboard.GetDataObject().GetDataPresent(typeof(ProjectData.CopiedRule[])))
+         {
+            int sequence;
+            if (CurrentRule == null)
+            {
+               sequence = -1;
+            }
+            else
+            {
+               sequence = CurrentRule.Sequence;
+               if (after)
+                  sequence++;
+            }
+            ProjectData.CopiedRule[] toPaste = (ProjectData.CopiedRule[])Clipboard.GetDataObject().GetData(typeof(ProjectData.CopiedRule[]));
+            if ((toPaste.Length > 0) && (!toPaste[0].IsPlanRule))
+            {
+               if (DialogResult.OK != MessageBox.Show(this, "The rules being pasted were copied from a sprite definition. Sprite definition rules may not be compatible with plan rules, and may require corrections before they can function as such.", "Paste Rules", MessageBoxButtons.OKCancel, MessageBoxIcon.Information))
+                  return;
+            }
+            foreach(ProjectData.CopiedRule rule in toPaste)
+            {
+               string name = rule.Name;
+               int i = 0;
+               while (ProjectData.GetPlanRule(m_Plan, name) != null)
+               {
+                  name = rule.Name + (++i).ToString();
+               }
+               ProjectData.InsertPlanRule(m_Plan, name, rule.Type, sequence, rule.Function, rule.Parameter1, rule.Parameter2, rule.Parameter3, rule.ResultParameter, rule.EndIf, rule.Suspended);
+               if (sequence >= 0)
+                  sequence++;
+            }
+         }
+         else
+            EnablePasteRules();
+      }
       #endregion
 
       #region Public Static Members
@@ -1325,6 +1468,12 @@ namespace SGDK2
          base.OnClosing (e);
          SGDK2IDE.SaveFormSettings(this);
       }
+      protected override void OnActivated(EventArgs e)
+      {
+         base.OnActivated (e);
+         EnablePasteRules();
+      }
+
       #endregion
 
       #region Events Handlers
@@ -1692,6 +1841,25 @@ namespace SGDK2
       {
          tmrPopulate.Stop();
          PopulateRules();
+      }
+
+      private void mnuPasteRules_Click(object sender, System.EventArgs e)
+      {
+         if (sender == mnuPasteAbove)
+            PasteRules(false);
+         else if (sender == mnuPasteBelow)
+            PasteRules(true);
+      }
+
+      private void mnuCopyRules_Click(object sender, System.EventArgs e)
+      {
+         if (sender == mnuCopyAll)
+            CopyAllRules();
+         else if (sender == mnuCopySelected)
+            CopyRules(false);
+         else if (sender == mnuCopyChildren)
+            CopyRules(true);
+         EnablePasteRules();
       }
       #endregion
    }

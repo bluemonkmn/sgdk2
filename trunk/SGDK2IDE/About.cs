@@ -89,25 +89,25 @@ namespace SGDK2
          // 
          this.lblTitle.BackColor = System.Drawing.Color.Transparent;
          this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-         this.lblTitle.Location = new System.Drawing.Point(120, 8);
+         this.lblTitle.Location = new System.Drawing.Point(176, 8);
          this.lblTitle.Name = "lblTitle";
-         this.lblTitle.Size = new System.Drawing.Size(344, 32);
+         this.lblTitle.Size = new System.Drawing.Size(392, 32);
          this.lblTitle.TabIndex = 0;
          this.lblTitle.Text = "Scrolling Game Development Kit";
          // 
          // lblVersion
          // 
          this.lblVersion.BackColor = System.Drawing.Color.Transparent;
-         this.lblVersion.Location = new System.Drawing.Point(120, 40);
+         this.lblVersion.Location = new System.Drawing.Point(184, 40);
          this.lblVersion.Name = "lblVersion";
-         this.lblVersion.Size = new System.Drawing.Size(344, 16);
+         this.lblVersion.Size = new System.Drawing.Size(384, 16);
          this.lblVersion.TabIndex = 1;
          // 
          // btnClose
          // 
          this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
          this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-         this.btnClose.Location = new System.Drawing.Point(384, 312);
+         this.btnClose.Location = new System.Drawing.Point(488, 440);
          this.btnClose.Name = "btnClose";
          this.btnClose.Size = new System.Drawing.Size(72, 24);
          this.btnClose.TabIndex = 2;
@@ -116,16 +116,16 @@ namespace SGDK2
          // lblCopyright
          // 
          this.lblCopyright.BackColor = System.Drawing.Color.Transparent;
-         this.lblCopyright.Location = new System.Drawing.Point(120, 56);
+         this.lblCopyright.Location = new System.Drawing.Point(176, 56);
          this.lblCopyright.Name = "lblCopyright";
-         this.lblCopyright.Size = new System.Drawing.Size(344, 24);
+         this.lblCopyright.Size = new System.Drawing.Size(392, 24);
          this.lblCopyright.TabIndex = 3;
          // 
          // llbHomepage
          // 
          this.llbHomepage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
          this.llbHomepage.BackColor = System.Drawing.Color.Transparent;
-         this.llbHomepage.Location = new System.Drawing.Point(240, 272);
+         this.llbHomepage.Location = new System.Drawing.Point(296, 400);
          this.llbHomepage.Name = "llbHomepage";
          this.llbHomepage.Size = new System.Drawing.Size(224, 16);
          this.llbHomepage.TabIndex = 4;
@@ -137,7 +137,7 @@ namespace SGDK2
          // 
          this.lblHomepage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
          this.lblHomepage.BackColor = System.Drawing.Color.Transparent;
-         this.lblHomepage.Location = new System.Drawing.Point(120, 272);
+         this.lblHomepage.Location = new System.Drawing.Point(176, 400);
          this.lblHomepage.Name = "lblHomepage";
          this.lblHomepage.Size = new System.Drawing.Size(120, 16);
          this.lblHomepage.TabIndex = 5;
@@ -147,7 +147,7 @@ namespace SGDK2
          // 
          this.lblLicense.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
          this.lblLicense.BackColor = System.Drawing.Color.Transparent;
-         this.lblLicense.Location = new System.Drawing.Point(120, 288);
+         this.lblLicense.Location = new System.Drawing.Point(176, 416);
          this.lblLicense.Name = "lblLicense";
          this.lblLicense.Size = new System.Drawing.Size(120, 16);
          this.lblLicense.TabIndex = 6;
@@ -157,7 +157,7 @@ namespace SGDK2
          // 
          this.llbLicense.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
          this.llbLicense.BackColor = System.Drawing.Color.Transparent;
-         this.llbLicense.Location = new System.Drawing.Point(240, 288);
+         this.llbLicense.Location = new System.Drawing.Point(296, 416);
          this.llbLicense.Name = "llbLicense";
          this.llbLicense.Size = new System.Drawing.Size(224, 16);
          this.llbLicense.TabIndex = 7;
@@ -174,17 +174,17 @@ namespace SGDK2
          this.txtCredits.Multiline = true;
          this.txtCredits.Name = "txtCredits";
          this.txtCredits.ReadOnly = true;
-         this.txtCredits.Size = new System.Drawing.Size(328, 48);
+         this.txtCredits.Size = new System.Drawing.Size(368, 48);
          this.txtCredits.TabIndex = 8;
          this.txtCredits.Text = "Primary design and development: Benjamin Marty\r\nGraphics: Jeff Cruz\r\nAlpha testin" +
-            "g and design input: Seth Marty";
+            "g and design input: Seth Marty, Amy Batcher";
          // 
          // grpCredits
          // 
          this.grpCredits.Controls.Add(this.txtCredits);
-         this.grpCredits.Location = new System.Drawing.Point(120, 96);
+         this.grpCredits.Location = new System.Drawing.Point(176, 96);
          this.grpCredits.Name = "grpCredits";
-         this.grpCredits.Size = new System.Drawing.Size(344, 72);
+         this.grpCredits.Size = new System.Drawing.Size(384, 72);
          this.grpCredits.TabIndex = 9;
          this.grpCredits.TabStop = false;
          this.grpCredits.Text = "Credits";
@@ -192,9 +192,9 @@ namespace SGDK2
          // groupBox1
          // 
          this.groupBox1.Controls.Add(this.txtModules);
-         this.groupBox1.Location = new System.Drawing.Point(120, 176);
+         this.groupBox1.Location = new System.Drawing.Point(176, 176);
          this.groupBox1.Name = "groupBox1";
-         this.groupBox1.Size = new System.Drawing.Size(344, 88);
+         this.groupBox1.Size = new System.Drawing.Size(384, 216);
          this.groupBox1.TabIndex = 11;
          this.groupBox1.TabStop = false;
          this.groupBox1.Text = "Loaded Modules";
@@ -209,15 +209,15 @@ namespace SGDK2
          this.txtModules.Name = "txtModules";
          this.txtModules.ReadOnly = true;
          this.txtModules.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-         this.txtModules.Size = new System.Drawing.Size(328, 64);
+         this.txtModules.Size = new System.Drawing.Size(368, 192);
          this.txtModules.TabIndex = 0;
          this.txtModules.Text = "";
          // 
          // lblGPL
          // 
-         this.lblGPL.Location = new System.Drawing.Point(120, 72);
+         this.lblGPL.Location = new System.Drawing.Point(176, 72);
          this.lblGPL.Name = "lblGPL";
-         this.lblGPL.Size = new System.Drawing.Size(344, 16);
+         this.lblGPL.Size = new System.Drawing.Size(392, 16);
          this.lblGPL.TabIndex = 12;
          this.lblGPL.Text = "Distributed under the terms of the GPL license.";
          // 
@@ -227,7 +227,7 @@ namespace SGDK2
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
          this.BackColor = System.Drawing.SystemColors.Control;
          this.CancelButton = this.btnClose;
-         this.ClientSize = new System.Drawing.Size(474, 343);
+         this.ClientSize = new System.Drawing.Size(570, 471);
          this.Controls.Add(this.lblGPL);
          this.Controls.Add(this.groupBox1);
          this.Controls.Add(this.grpCredits);

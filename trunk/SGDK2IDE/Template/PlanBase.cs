@@ -172,13 +172,40 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    /// within the plan's rectangle.</returns>
    /// <remarks>Unlike <see cref="IsSpriteTouching"/>, this can only return true when the sprite
    /// and the plan's rectangle actually overlap because the point is inside the sprite's
-   /// rectangle, and must also be inside the plan's rectangle to return true.</remarks>
+   /// rectangle, and must also be inside the plan's rectangle to return true.
+   /// <seealso cref="GetSpriteWithin"/></remarks>
    [Description("Returns true if the specified part of the specified sprite is within the plan's rectangle")]
    public bool IsSpriteWithin(SpriteBase sprite, RelativePosition RelativePosition)
    {
       System.Drawing.Point rp = sprite.GetRelativePosition(RelativePosition);
       Rectangle targetRect = PlanRectangle;
       return targetRect.Contains(rp);
+   }
+
+   /// <summary>
+   /// Determines if the specified part of any sprite in the specified category is within the plan's rectangle.
+   /// </summary>
+   /// <param name="Sprites">Sprite collection to be checked</param>
+   /// <param name="RelativePosition">Specifies a point within each sprite to test</param>
+   /// <param name="Skip">Indicates the index to skip over. All sprite indexes up to and including
+   /// Skip will be skipped in teh search. This allows the function to be called repeatedly,
+   /// passing the previous return value as the Skip value to retrieve the next applicable sprite
+   /// index. Specify -1 to search all sprites in the collection.</param>
+   /// <returns>-1 if no sprite is found in the collection where the specified point of the sprite's
+   /// solidity rectangle is within the plan's rectangle. Otherwise the 0-based index of the
+   /// first matching sprite is returned.</returns>
+   /// <remarks>This is the same as performing <see cref="IsSpriteWithin"/> for each sprite
+   /// in a collection (beginning with the sprite whose index is after Skip).
+   /// <seealso cref="IsSpriteWithin"/></remarks>
+   [Description("Returns the index of the first sprite whose specified coordinate is within the plan's rectangle, or -1 if none exist. Indexes up through Skip will be ignored.")]
+   public int GetSpriteWithin(SpriteCollection Sprites, RelativePosition RelativePosition, int Skip)
+   {
+      for (int i=Skip+1; i < Sprites.Count; i++)
+      {
+         if (IsSpriteWithin(Sprites[i], RelativePosition))
+            return i;
+      }
+      return -1;
    }
 
    /// <summary>

@@ -415,6 +415,7 @@ namespace SGDK2
          // TileSelector
          // 
          this.TileSelector.BorderStyle = SGDK2.DragPanelBorderStyle.FixedInset;
+         this.TileSelector.CellBorders = false;
          this.TileSelector.CellPadding = new System.Drawing.Size(2, 2);
          this.TileSelector.CellSize = new System.Drawing.Size(0, 0);
          this.TileSelector.CurrentCellIndex = -1;
@@ -460,10 +461,10 @@ namespace SGDK2
          this.lstAvailableSprites.DisplayMember = "Name";
          this.lstAvailableSprites.Dock = System.Windows.Forms.DockStyle.Fill;
          this.lstAvailableSprites.IntegralHeight = false;
-         this.lstAvailableSprites.Location = new System.Drawing.Point(0, 77);
+         this.lstAvailableSprites.Location = new System.Drawing.Point(0, 78);
          this.lstAvailableSprites.Name = "lstAvailableSprites";
          this.lstAvailableSprites.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-         this.lstAvailableSprites.Size = new System.Drawing.Size(168, 253);
+         this.lstAvailableSprites.Size = new System.Drawing.Size(168, 252);
          this.lstAvailableSprites.TabIndex = 6;
          this.lstAvailableSprites.DoubleClick += new System.EventHandler(this.lstAvailableSprites_DoubleClick);
          this.lstAvailableSprites.Enter += new System.EventHandler(this.lstAvailableSprites_Enter);
@@ -472,6 +473,7 @@ namespace SGDK2
          // SpriteSelector
          // 
          this.SpriteSelector.BorderStyle = SGDK2.DragPanelBorderStyle.FixedInset;
+         this.SpriteSelector.CellBorders = false;
          this.SpriteSelector.CellPadding = new System.Drawing.Size(0, 0);
          this.SpriteSelector.CellSize = new System.Drawing.Size(0, 0);
          this.SpriteSelector.CurrentCellIndex = -1;
@@ -479,10 +481,10 @@ namespace SGDK2
          this.SpriteSelector.Frameset = null;
          this.SpriteSelector.FramesToDisplay = null;
          this.SpriteSelector.GraphicSheet = null;
-         this.SpriteSelector.Location = new System.Drawing.Point(0, 77);
+         this.SpriteSelector.Location = new System.Drawing.Point(0, 78);
          this.SpriteSelector.Name = "SpriteSelector";
          this.SpriteSelector.SheetImage = null;
-         this.SpriteSelector.Size = new System.Drawing.Size(168, 253);
+         this.SpriteSelector.Size = new System.Drawing.Size(168, 252);
          this.SpriteSelector.TabIndex = 2;
          this.SpriteSelector.Visible = false;
          this.SpriteSelector.CurrentCellChanged += new System.EventHandler(this.SpriteSelector_CurrentCellChanged);
@@ -502,7 +504,7 @@ namespace SGDK2
          this.cboSpriteCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
          this.cboSpriteCategory.Location = new System.Drawing.Point(0, 57);
          this.cboSpriteCategory.Name = "cboSpriteCategory";
-         this.cboSpriteCategory.Size = new System.Drawing.Size(168, 20);
+         this.cboSpriteCategory.Size = new System.Drawing.Size(168, 21);
          this.cboSpriteCategory.TabIndex = 1;
          this.cboSpriteCategory.Visible = false;
          this.cboSpriteCategory.SelectedIndexChanged += new System.EventHandler(this.cboSpriteCategory_SelectedIndexChanged);
@@ -511,12 +513,11 @@ namespace SGDK2
          // 
          this.grdSprite.CommandsVisibleIfAvailable = true;
          this.grdSprite.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.grdSprite.HelpVisible = false;
          this.grdSprite.LargeButtons = false;
          this.grdSprite.LineColor = System.Drawing.SystemColors.ScrollBar;
          this.grdSprite.Location = new System.Drawing.Point(0, 335);
          this.grdSprite.Name = "grdSprite";
-         this.grdSprite.Size = new System.Drawing.Size(168, 144);
+         this.grdSprite.Size = new System.Drawing.Size(168, 200);
          this.grdSprite.TabIndex = 0;
          this.grdSprite.Text = "PropertyGrid";
          this.grdSprite.ToolbarVisible = false;
@@ -616,10 +617,10 @@ namespace SGDK2
          this.lstPlans.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
          this.lstPlans.Size = new System.Drawing.Size(162, 121);
          this.lstPlans.TabIndex = 0;
+         this.lstPlans.DoubleClick += new System.EventHandler(this.lstPlans_DoubleClick);
          this.lstPlans.Leave += new System.EventHandler(this.lstPlans_Leave);
          this.lstPlans.Enter += new System.EventHandler(this.lstPlans_Enter);
          this.lstPlans.SelectedIndexChanged += new System.EventHandler(this.lstPlans_SelectedIndexChanged);
-         this.lstPlans.DoubleClick += new EventHandler(lstPlans_DoubleClick);
          // 
          // rdoShowAllPlans
          // 
@@ -719,10 +720,10 @@ namespace SGDK2
          this.lstPlanCoords.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
          this.lstPlanCoords.Size = new System.Drawing.Size(162, 69);
          this.lstPlanCoords.TabIndex = 17;
+         this.lstPlanCoords.DoubleClick += new System.EventHandler(this.lstPlanCoords_DoubleClick);
          this.lstPlanCoords.Leave += new System.EventHandler(this.lstPlanCoords_Leave);
          this.lstPlanCoords.Enter += new System.EventHandler(this.lstPlanCoords_Enter);
          this.lstPlanCoords.SelectedIndexChanged += new System.EventHandler(this.lstPlanCoords_SelectedIndexChanged);
-         this.lstPlanCoords.DoubleClick += new EventHandler(lstPlanCoords_DoubleClick);
          // 
          // rdoAppendCoord
          // 
@@ -997,7 +998,7 @@ namespace SGDK2
                {
                   if (drState[validState].GetSpriteFrameRows().Length > 0)
                   {
-                     SpriteProvider sp = new SpriteProvider(
+                     SpriteProvider sp = SpriteProvider.GetDefaultInstance(
                         m_SpriteCache[drDef.Name], drState[validState].Name, 0, -1);
                      string name;
                      int index = 1;

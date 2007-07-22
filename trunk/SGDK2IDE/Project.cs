@@ -163,6 +163,15 @@ namespace SGDK2
                project.Credits = string.Join("\r\n", value);
             }
          }
+
+         [Description("Path of the file containing the currently loaded project")]
+         public string Path
+         {
+            get
+            {
+               return SGDK2IDE.CurrentProjectFile;
+            }
+         }
       }
       #endregion
 

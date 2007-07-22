@@ -217,7 +217,6 @@ namespace SGDK2
          this.mnuMoveRuleDown = new System.Windows.Forms.MenuItem();
          this.mnuNewRule = new System.Windows.Forms.MenuItem();
          this.mnuDeleteRule = new System.Windows.Forms.MenuItem();
-         this.tmrPopulate = new System.Windows.Forms.Timer(this.components);
          this.mnuCopyRules = new System.Windows.Forms.MenuItem();
          this.mnuCopyChildren = new System.Windows.Forms.MenuItem();
          this.mnuCopySelected = new System.Windows.Forms.MenuItem();
@@ -225,6 +224,7 @@ namespace SGDK2
          this.mnuPasteRules = new System.Windows.Forms.MenuItem();
          this.mnuPasteAbove = new System.Windows.Forms.MenuItem();
          this.mnuPasteBelow = new System.Windows.Forms.MenuItem();
+         this.tmrPopulate = new System.Windows.Forms.Timer(this.components);
          this.grpRules.SuspendLayout();
          this.pnlRule.SuspendLayout();
          this.pnlName.SuspendLayout();
@@ -365,7 +365,7 @@ namespace SGDK2
          this.chkSuspended.Location = new System.Drawing.Point(8, 32);
          this.chkSuspended.Name = "chkSuspended";
          this.chkSuspended.Size = new System.Drawing.Size(344, 16);
-         this.chkSuspended.TabIndex = 38;
+         this.chkSuspended.TabIndex = 7;
          this.chkSuspended.Text = "Suspend this rule";
          this.chkSuspended.CheckedChanged += new System.EventHandler(this.chkSuspended_CheckedChanged);
          // 
@@ -381,7 +381,7 @@ namespace SGDK2
          this.txtHelpText.ReadOnly = true;
          this.txtHelpText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
          this.txtHelpText.Size = new System.Drawing.Size(344, 32);
-         this.txtHelpText.TabIndex = 37;
+         this.txtHelpText.TabIndex = 11;
          this.txtHelpText.Text = "";
          // 
          // txtErrors
@@ -395,7 +395,7 @@ namespace SGDK2
          this.txtErrors.ReadOnly = true;
          this.txtErrors.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
          this.txtErrors.Size = new System.Drawing.Size(344, 108);
-         this.txtErrors.TabIndex = 36;
+         this.txtErrors.TabIndex = 34;
          this.txtErrors.Text = "";
          this.txtErrors.Visible = false;
          // 
@@ -405,7 +405,7 @@ namespace SGDK2
          this.lblOutput.Location = new System.Drawing.Point(8, 192);
          this.lblOutput.Name = "lblOutput";
          this.lblOutput.Size = new System.Drawing.Size(128, 21);
-         this.lblOutput.TabIndex = 34;
+         this.lblOutput.TabIndex = 31;
          this.lblOutput.Text = "Output to:";
          this.lblOutput.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
          // 
@@ -417,7 +417,7 @@ namespace SGDK2
          this.cboOutput.Location = new System.Drawing.Point(136, 192);
          this.cboOutput.Name = "cboOutput";
          this.cboOutput.Size = new System.Drawing.Size(216, 21);
-         this.cboOutput.TabIndex = 35;
+         this.cboOutput.TabIndex = 32;
          this.cboOutput.Validated += new System.EventHandler(this.cboParam_Validated);
          this.cboOutput.SelectedIndexChanged += new System.EventHandler(this.cboParam_SelectedIndexChanged);
          // 
@@ -429,7 +429,7 @@ namespace SGDK2
          this.txtRuleName.Location = new System.Drawing.Point(96, 8);
          this.txtRuleName.Name = "txtRuleName";
          this.txtRuleName.Size = new System.Drawing.Size(256, 20);
-         this.txtRuleName.TabIndex = 33;
+         this.txtRuleName.TabIndex = 6;
          this.txtRuleName.Text = "";
          this.txtRuleName.Validating += new System.ComponentModel.CancelEventHandler(this.txtRuleName_Validating);
          this.txtRuleName.Validated += new System.EventHandler(this.txtRuleName_Validated);
@@ -440,7 +440,7 @@ namespace SGDK2
          this.lblRuleName.Location = new System.Drawing.Point(8, 8);
          this.lblRuleName.Name = "lblRuleName";
          this.lblRuleName.Size = new System.Drawing.Size(88, 20);
-         this.lblRuleName.TabIndex = 32;
+         this.lblRuleName.TabIndex = 5;
          this.lblRuleName.Text = "Rule Name:";
          this.lblRuleName.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
          // 
@@ -450,7 +450,7 @@ namespace SGDK2
          this.chkEndIf.Location = new System.Drawing.Point(8, 216);
          this.chkEndIf.Name = "chkEndIf";
          this.chkEndIf.Size = new System.Drawing.Size(120, 24);
-         this.chkEndIf.TabIndex = 31;
+         this.chkEndIf.TabIndex = 33;
          this.chkEndIf.Text = "End If/End While";
          this.chkEndIf.CheckedChanged += new System.EventHandler(this.chkEndIf_CheckedChanged);
          // 
@@ -493,7 +493,7 @@ namespace SGDK2
          this.cboRuleType.Location = new System.Drawing.Point(8, 56);
          this.cboRuleType.Name = "cboRuleType";
          this.cboRuleType.Size = new System.Drawing.Size(56, 21);
-         this.cboRuleType.TabIndex = 22;
+         this.cboRuleType.TabIndex = 8;
          this.cboRuleType.SelectedIndexChanged += new System.EventHandler(this.cboRuleType_SelectedIndexChanged);
          // 
          // lblParam2
@@ -548,7 +548,7 @@ namespace SGDK2
          this.chkNot.Location = new System.Drawing.Point(80, 56);
          this.chkNot.Name = "chkNot";
          this.chkNot.Size = new System.Drawing.Size(56, 21);
-         this.chkNot.TabIndex = 23;
+         this.chkNot.TabIndex = 9;
          this.chkNot.Text = "Not";
          this.chkNot.CheckedChanged += new System.EventHandler(this.chkNot_CheckedChanged);
          // 
@@ -560,7 +560,7 @@ namespace SGDK2
          this.cboFunction.Location = new System.Drawing.Point(136, 56);
          this.cboFunction.Name = "cboFunction";
          this.cboFunction.Size = new System.Drawing.Size(216, 21);
-         this.cboFunction.TabIndex = 24;
+         this.cboFunction.TabIndex = 10;
          this.cboFunction.Validated += new System.EventHandler(this.cboFunction_Validated);
          this.cboFunction.SelectedIndexChanged += new System.EventHandler(this.cboFunction_SelectedIndexChanged);
          // 
@@ -648,10 +648,6 @@ namespace SGDK2
          this.mnuDeleteRule.Text = "Dele&te Rule";
          this.mnuDeleteRule.Click += new System.EventHandler(this.OnDeleteRule);
          // 
-         // tmrPopulate
-         // 
-         this.tmrPopulate.Tick += new System.EventHandler(this.tmrPopulate_Tick);
-         // 
          // mnuCopyRules
          // 
          this.mnuCopyRules.Index = 4;
@@ -699,6 +695,10 @@ namespace SGDK2
          this.mnuPasteBelow.Index = 1;
          this.mnuPasteBelow.Text = "Paste &Below Selected Rule";
          this.mnuPasteBelow.Click += new System.EventHandler(this.mnuPasteRules_Click);
+         // 
+         // tmrPopulate
+         // 
+         this.tmrPopulate.Tick += new System.EventHandler(this.tmrPopulate_Tick);
          // 
          // frmPlanEdit
          // 

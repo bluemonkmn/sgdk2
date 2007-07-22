@@ -136,8 +136,9 @@ namespace SGDK2
       private static int defaultPriority = 1;
 
       private static SpriteConverter m_converter = new SpriteConverter();
+      private static Hashtable defaultInstances = new Hashtable();
 
-      public SpriteProvider(CachedSpriteDef sprite, string state, short frame, int color)
+      private SpriteProvider(CachedSpriteDef sprite, string state, short frame, int color)
       {
          m_Sprite = sprite;
          m_State = state;
@@ -157,6 +158,36 @@ namespace SGDK2
             m_ParameterRows[i] = ProjectData.GetSpriteParameterValueRow(row, parmrows[i].Name);
       }
 
+      public static SpriteProvider GetDefaultInstance(CachedSpriteDef sprite, string defaultState, short defaultFrame, int defaultColor)
+      {
+         if (!defaultInstances.ContainsKey(sprite.Name))
+            defaultInstances[sprite.Name] = new SpriteProvider(sprite, defaultState, defaultFrame, defaultColor);
+         SpriteProvider result = (SpriteProvider)defaultInstances[sprite.Name];
+         if (result.m_Sprite != sprite)
+         {
+            SpriteProvider newResult = new SpriteProvider(sprite, defaultState, defaultFrame, defaultColor);
+            newResult.m_active = result.Active;
+            newResult.m_color = result.Color;
+            newResult.m_dx = result.m_dx;
+            newResult.m_dy = result.m_dy;
+            newResult.m_Frame = result.m_Frame;
+            for(int i=0; i<newResult.ParameterNames.Count; i++)
+            {
+               int paramIdx = result.ParameterNames.IndexOf(newResult.ParameterNames[i]);
+               if (paramIdx >= 0)
+                  newResult.ParameterValues[i] = result.m_ParameterValues[paramIdx];
+            }
+            newResult.m_priority = result.m_priority;
+            newResult.m_Solidity = result.m_Solidity;
+            if (sprite.ContainsState(result.m_State) &&
+                sprite[result.m_State].frames.Length > 0)
+               newResult.m_State = result.m_State;
+            defaultInstances[sprite.Name] = result = newResult;
+         }
+         return result;
+      }
+
+      [Description("Name of the sprite definition on which this sprite is based")]
       public string DefinitionName
       {
          get
@@ -165,6 +196,7 @@ namespace SGDK2
          }
       }
 
+      [Description("Name of this sprite instance unique in its layer")]
       public string Name
       {
          get
@@ -187,6 +219,7 @@ namespace SGDK2
          }
       }
 
+      [Description("Horizontal pixel coordinate of the sprite within its layer")]
       public int X
       {
          get
@@ -205,6 +238,7 @@ namespace SGDK2
          }
       }
 
+      [Description("Vertical pixel coordinate of the sprite within its layer")]
       public int Y
       {
          get
@@ -223,6 +257,7 @@ namespace SGDK2
          }
       }
 
+      [Description("Horizontal velocity of the sprite in pixels per frame")]
       public float DX
       {
          get
@@ -241,6 +276,7 @@ namespace SGDK2
          }
       }
 
+      [Description("Vertical velocity of the sprite in pixels per frame")]
       public float DY
       {
          get
@@ -259,6 +295,7 @@ namespace SGDK2
          }
       }
 
+      [Description("When the sprite is drawn relative to tiles and other sprites. Higher priority numbers draw in front. Tiles are drawn according to layer's priority.")]
       public int Priority
       {
          get
@@ -303,6 +340,7 @@ namespace SGDK2
          }
       }
 
+      [Description("How much red is retained when this sprite instance is drawn. 0 = 0%, 255 = 100%")]
       public byte ModulateRed
       {
          get
@@ -321,6 +359,7 @@ namespace SGDK2
          }
       }
 
+      [Description("How much green is retained when this sprite instance is drawn. 0 = 0%, 255 = 100%")]
       public byte ModulateGreen
       {
          get
@@ -339,6 +378,7 @@ namespace SGDK2
          }
       }
 
+      [Description("How much blue is retained when this sprite instance is drawn. 0 = 0%, 255 = 100%")]
       public byte ModulateBlue
       {
          get
@@ -357,6 +397,7 @@ namespace SGDK2
          }
       }
       
+      [Description("Opacity of the sprite: 0 = invisible, 128 = translucent, 255 = opaque")]
       public byte ModulateAlpha
       {
          get
@@ -375,6 +416,7 @@ namespace SGDK2
          }
       }
       
+      [Description("Determines if this sprite instance is currently being drawn and its rules processed")]
       public bool Active
       {
          get
@@ -393,6 +435,7 @@ namespace SGDK2
          }
       }
 
+      [Description("Specifies which state the sprite instance is currently in")]
       public string CurrentStateName
       {
          get
@@ -418,6 +461,7 @@ namespace SGDK2
          }
       }
 
+      [Description("Determines which tiles and parts of tiles this sprite sees as solid")]
       public string Solidity
       {
          get
@@ -451,6 +495,7 @@ namespace SGDK2
          }
       }
 
+      [Description("Determines which animation frame from the sprite's current state is displayed. Affected by Repeat Count of the frames")]
       public short CurrentFrame
       {
          get

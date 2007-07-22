@@ -3097,6 +3097,26 @@ namespace SGDK2
             Microsoft.CSharp.CSharpCodeProvider codeProvider = new Microsoft.CSharp.CSharpCodeProvider();
             System.CodeDom.Compiler.ICodeCompiler compiler = codeProvider.CreateCompiler();
             System.CodeDom.Compiler.CompilerParameters compilerParams = new System.CodeDom.Compiler.CompilerParameters(new string[] {}, System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, "SGDK2Tmp.dll"));
+            int idx = 0;
+            string reason = string.Empty;
+            do
+            {
+               try
+               {
+                  using (System.IO.File.OpenWrite(compilerParams.OutputAssembly))
+                  {}
+                  break;
+               }
+               catch(System.Exception ex)
+               {
+                  compilerParams.OutputAssembly = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, "SGDK2Tm" + (++idx).ToString() + ".dll");
+                  reason = ex.Message;
+               }
+            } while(idx < 5);
+
+            if (idx >= 5)
+               return "Unable to write temporary assembly to " + System.Windows.Forms.Application.StartupPath + "\r\n" + reason;
+
             System.Reflection.Assembly asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Matrix));
             compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
             asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Device));

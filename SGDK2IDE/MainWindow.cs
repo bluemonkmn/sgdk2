@@ -27,6 +27,7 @@ namespace SGDK2
       System.Collections.ArrayList m_mruMenuItems = new ArrayList();
       private System.Collections.Hashtable m_MenuToTemplateMap = new Hashtable();
       private DateTime errorStatusTime = DateTime.MinValue;
+      const string rootNode = "Project";
       #endregion
 
       #region Windows Form Designer Members
@@ -151,6 +152,7 @@ namespace SGDK2
          this.mnuFileRunProject = new System.Windows.Forms.MenuItem();
          this.mnuFileRunProjectInDebugMode = new System.Windows.Forms.MenuItem();
          this.mnuFileResetCode = new System.Windows.Forms.MenuItem();
+         this.mnuResetBlankProject = new System.Windows.Forms.MenuItem();
          this.mnuFileGenerate = new System.Windows.Forms.MenuItem();
          this.mnuFileDeleteIntermediateFiles = new System.Windows.Forms.MenuItem();
          this.mnuFileDeleteOutputFiles = new System.Windows.Forms.MenuItem();
@@ -171,7 +173,6 @@ namespace SGDK2
          this.lblProjectTree = new System.Windows.Forms.Label();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.sbMain = new System.Windows.Forms.StatusBar();
-         this.mnuResetBlankProject = new System.Windows.Forms.MenuItem();
          this.pnlProjectTree.SuspendLayout();
          this.SuspendLayout();
          // 
@@ -417,7 +418,12 @@ namespace SGDK2
                                                                                          this.mnuResetBlankProject});
          this.mnuFileResetCode.MergeOrder = 23;
          this.mnuFileResetCode.Text = "R&eset Source Code";
-         this.mnuFileResetCode.Click += new System.EventHandler(this.mnuFileResetCode_Click);
+         // 
+         // mnuResetBlankProject
+         // 
+         this.mnuResetBlankProject.Index = 0;
+         this.mnuResetBlankProject.Text = "<Blan&k>";
+         this.mnuResetBlankProject.Click += new System.EventHandler(this.mnuFileResetCode_Click);
          // 
          // mnuFileGenerate
          // 
@@ -627,11 +633,6 @@ namespace SGDK2
          this.sbMain.Size = new System.Drawing.Size(800, 20);
          this.sbMain.TabIndex = 8;
          // 
-         // mnuResetBlankProject
-         // 
-         this.mnuResetBlankProject.Index = 0;
-         this.mnuResetBlankProject.Text = "<Blan&k>";
-         // 
          // frmMain
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
@@ -655,7 +656,7 @@ namespace SGDK2
       private void InitializeTree()
       {
          tvwMain.Nodes.Clear();
-         TreeNode ndRoot = new TreeNode("Project", 0, 0);
+         TreeNode ndRoot = new TreeNode(rootNode, 0, 0);
          ndRoot.Tag = "Project";
          m_TreeNodes = new System.Collections.Specialized.HybridDictionary();
          tvwMain.Nodes.Add(ndRoot);
@@ -809,6 +810,7 @@ namespace SGDK2
                tvwMain.CollapseAll();
                tvwMain.Nodes[0].Expand();
                m_strProjectPath = projectFile;
+               tvwMain.Nodes[0].Text = m_strProjectPath;
                mnuFileDeleteOutputFiles.Enabled = mnuFileDeleteIntermediateFiles.Enabled = true;
                AddMru(projectFile);
             }
@@ -2447,6 +2449,7 @@ namespace SGDK2
                ProjectData.WriteXml(fd.FileName);
                ProjectData.AcceptChanges();
                m_strProjectPath = fd.FileName;
+               tvwMain.Nodes[0].Text = m_strProjectPath;
                AddMru(m_strProjectPath);
                mnuFileDeleteOutputFiles.Enabled = mnuFileDeleteIntermediateFiles.Enabled = true;
             }

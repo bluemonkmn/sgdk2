@@ -224,6 +224,12 @@ public abstract class GeneralRules
          case SaveUnitInclusion.WhichMapIsCurrent:
             saveUnit.CurrentMapType = Project.GameWindow.CurrentMap.GetType();
             break;
+         case SaveUnitInclusion.WhichMapIsOverlaid:
+            if (Project.GameWindow.OverlayMap == null)
+               saveUnit.OverlayMapType = typeof(System.DBNull);
+            else
+               saveUnit.OverlayMapType = Project.GameWindow.OverlayMap.GetType();
+            break;
          case SaveUnitInclusion.PlayerOptions:
             saveUnit.PlayerOptions = Project.GameWindow.Players;
             break;
@@ -382,6 +388,7 @@ public abstract class GeneralRules
             IncludeInSaveUnit(SaveUnitInclusion.AllMaps);
             IncludeInSaveUnit(SaveUnitInclusion.AllCounters);
             IncludeInSaveUnit(SaveUnitInclusion.WhichMapIsCurrent);
+            IncludeInSaveUnit(SaveUnitInclusion.WhichMapIsOverlaid);
             IncludeInSaveUnit(SaveUnitInclusion.PlayerOptions);
          }
          System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
@@ -439,6 +446,15 @@ public abstract class GeneralRules
             Project.GameWindow.CurrentMap = Project.GameWindow.GetMap(unit.CurrentMapType);
          else
             Project.GameWindow.CurrentMap = Project.GameWindow.GetMap(Project.GameWindow.CurrentMap.GetType());
+         if (unit.OverlayMapType != null)
+         {
+            if (unit.OverlayMapType == typeof(System.DBNull))
+               Project.GameWindow.OverlayMap = null;
+            else
+               Project.GameWindow.OverlayMap = Project.GameWindow.GetMap(unit.OverlayMapType);
+         }
+         else if (Project.GameWindow.OverlayMap != null)
+            Project.GameWindow.OverlayMap = Project.GameWindow.GetMap(Project.GameWindow.OverlayMap.GetType());
          if (unit.PlayerOptions != null)
             Project.GameWindow.Players = unit.PlayerOptions;
          // Counters auto-magically take care of themselves via CounterRef
@@ -740,6 +756,60 @@ public abstract class GeneralRules
    {
       return 0 != (System.Windows.Forms.Control.MouseButtons & Button);
    }
+
+   #region Collections
+   private static SpriteBase selectedTarget;
+
+   /// <summary>
+   /// Selects a sprite within a collection, using a 0-based index, to be the target of <see cref="SetTargetParameter"/>.
+   /// </summary>
+   /// <param name="Sprites">Collection from which sprite is selected</param>
+   /// <param name="Index">0-based index within the collection of the sprite to be selected</param>
+   /// <returns>True if the specified index is within the bounds of the collection, False otherwise.</returns>
+   /// <remarks>If the Index is beyond the bounds of the collection, the target reference cleared.
+   /// This function is useful in conjunction with <see cref="SetTargetParameter"/> to set properties
+   /// of arbitrary sprites within a collection to trigger various behaviors based on their rules.
+   /// </remarks>
+   [Description("Selects a sprite within a collection, using a 0-based index, to be the target of SetTargetParameter.")]
+   public bool SelectTargetSprite(SpriteCollection Sprites, int Index)
+   {
+      if (Sprites.Count > Index)
+      {
+         selectedTarget = Sprites[Index];
+         return true;
+      }
+      else
+      {
+         selectedTarget = null;
+         return false;
+      }
+   }
+
+   /// <summary>
+   /// Set the value of a numeric property or parameter on a sprite selected with <see cref="SelectTargetSprite"/> to the specified value.
+   /// </summary>
+   /// <param name="ParameterName">Name of the parameter on the target sprite that will be affected.</param>
+   /// <param name="Value">Numeric value that will be assigned to the specified parameter</param>
+   /// <remarks>This is useful for a wide range of effects on sprites in collections. For example,
+   /// after determining that some sprite in a collection is within a plan using
+   /// <see cref="PlanBase.GetSpriteWithin"/>, you could use this to set some parameter on that
+   /// sprite to trigger its rules to react. Remember that ParameterName is provided as a string,
+   /// and must be quoted assuming the name is provided directly.</remarks>
+   [Description("Set the value of a numeric property or parameter (given its name as a string) on a sprite selected with SelectTargetSprite to the specified value.")]
+   public void SetTargetParameter(string ParameterName, int Value)
+   {
+      System.Reflection.PropertyInfo pi = selectedTarget.GetType().GetProperty(ParameterName);
+      if (pi == null)
+      {
+         System.Reflection.FieldInfo fi = selectedTarget.GetType().GetField(ParameterName);
+         Debug.Assert(fi != null, "Invalid property name in SetTargetParameter");
+         if (fi != null)
+            fi.SetValue(selectedTarget, Value);
+      }
+      else
+         pi.SetValue(selectedTarget, Value, null);
+   }
+   #endregion
 }
 
 /// <summary>
@@ -801,9 +871,17 @@ public enum SaveUnitInclusion
    /// <remarks>If this is not included, the current map will be the same map that was active
    /// before the game was loaded, which may be reset if that map was not included in the
    /// <see cref="SaveUnit"/>. The indicator is determined at the time that <see cref="GeneralRules.IncludeInSaveUnit"/>
-   /// is called, unlike all the other members which are stored at the time <see cref="GeneralRules.SaveGame"/>
+   /// is called, unlike most other members which are stored at the time <see cref="GeneralRules.SaveGame"/>
    /// is called.</remarks>
    WhichMapIsCurrent,
+   /// <summary>
+   /// Includes an indicator of which map was set as the overlay map when the game was saved.
+   /// </summary>
+   /// <remarks>If this is not included, the overlay map will remain unchanged when loading
+   /// the game stored in this save unit. The indicator is determined at the time that
+   /// <see cref="GeneralRules.IncludeInSaveUnit"/> is called, unlike most other members
+   /// which are stored at the time <see cref="GeneralRules.SaveGame"/> is called.</remarks>
+   WhichMapIsOverlaid,
    /// <summary>
    /// Includes player preferences that determine which input devices the players are using and
    /// the keyboad layout.
@@ -872,6 +950,11 @@ public class SaveUnit
    /// This indicator remembers which map was current, or is null if the indicator is not saved
    /// </summary>
    public System.Type CurrentMapType = null;
+   /// <summary>
+   /// This indicator remembers which map was used as an overlay.  It's null if the indicator is
+   /// not saved, and typeof(System.DBNull) if the overlay map is empty.
+   /// </summary>
+   public System.Type OverlayMapType = null;
    /// <summary>
    /// An array of <see cref="CounterRef"/> objects used to include counters in a <see cref="SaveUnit"/>
    /// </summary>

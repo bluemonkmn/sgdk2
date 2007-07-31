@@ -1,0 +1,747 @@
+<?xml version="1.0" standalone="yes"?>
+<ProjectDataset>
+  <xs:schema id="ProjectDataset" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xs:element name="ProjectDataset" msdata:IsDataSet="true">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="GraphicSheet">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Image" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="5" />
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Columns" type="xs:short" default="16" />
+              <xs:attribute name="Rows" type="xs:short" default="8" />
+              <xs:attribute name="CellWidth" msdata:Caption="Cell Width" type="xs:short" default="32" />
+              <xs:attribute name="CellHeight" msdata:Caption="Cell Height" type="xs:short" default="32" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Frameset">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Frame" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:attribute name="FrameValue" type="xs:int" use="required" />
+                    <xs:attribute name="GraphicSheet" type="xs:string" use="required" />
+                    <xs:attribute name="CellIndex" type="xs:short" use="required" />
+                    <xs:attribute name="m11" type="xs:float" default="1" />
+                    <xs:attribute name="m12" type="xs:float" default="0" />
+                    <xs:attribute name="m21" type="xs:float" default="0" />
+                    <xs:attribute name="m22" type="xs:float" default="1" />
+                    <xs:attribute name="dx" type="xs:float" default="0" />
+                    <xs:attribute name="dy" type="xs:float" default="0" />
+                    <xs:attribute name="Name" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="color" type="xs:int" default="-1" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Tileset">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Tile" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="TileFrame" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                          <xs:attribute name="Sequence" type="xs:short" use="required" />
+                          <xs:attribute name="FrameValue" type="xs:int" />
+                          <xs:attribute name="Duration" type="xs:short" />
+                          <xs:attribute name="Name" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="TileValue" type="xs:int" msdata:AllowDBNull="false" use="prohibited" />
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="TileValue" type="xs:int" use="required" />
+                    <xs:attribute name="Counter" type="xs:string" />
+                    <xs:attribute name="Name" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Frameset" type="xs:string" />
+              <xs:attribute name="TileWidth" type="xs:short" use="required" />
+              <xs:attribute name="TileHeight" type="xs:short" use="required" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Counter">
+            <xs:complexType>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Value" type="xs:int" />
+              <xs:attribute name="Max" type="xs:int" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Map">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Layer" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="Tiles" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="14" />
+                      <xs:element name="Sprite" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="ParameterValue" minOccurs="0" maxOccurs="unbounded">
+                              <xs:complexType>
+                                <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="SpriteName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="ParameterName" type="xs:string" use="required" />
+                                <xs:attribute name="Value" type="xs:int" />
+                                <xs:attribute name="DefinitionName" type="xs:string" use="prohibited" />
+                                <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                              </xs:complexType>
+                            </xs:element>
+                          </xs:sequence>
+                          <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="Name" type="xs:string" use="required" />
+                          <xs:attribute name="DefinitionName" type="xs:string" use="required" />
+                          <xs:attribute name="StateName" type="xs:string" />
+                          <xs:attribute name="CurrentFrame" type="xs:short" />
+                          <xs:attribute name="X" type="xs:int" />
+                          <xs:attribute name="Y" type="xs:int" />
+                          <xs:attribute name="DX" type="xs:float" />
+                          <xs:attribute name="DY" type="xs:float" />
+                          <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="Priority" type="xs:int" />
+                          <xs:attribute name="Active" type="xs:boolean" default="true" />
+                          <xs:attribute name="Solidity" type="xs:string" />
+                          <xs:attribute name="Color" type="xs:int" default="-1" />
+                        </xs:complexType>
+                      </xs:element>
+                      <xs:element name="SpritePlan" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="Coordinate" minOccurs="0" maxOccurs="unbounded">
+                              <xs:complexType>
+                                <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="PlanName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="Sequence" type="xs:short" use="required" />
+                                <xs:attribute name="X" type="xs:int" />
+                                <xs:attribute name="Y" type="xs:int" />
+                                <xs:attribute name="Weight" type="xs:int" />
+                              </xs:complexType>
+                            </xs:element>
+                            <xs:element name="PlanRule" minOccurs="0" maxOccurs="unbounded">
+                              <xs:complexType>
+                                <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="PlanName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="Name" type="xs:string" use="required" />
+                                <xs:attribute name="Sequence" type="xs:int" use="required" />
+                                <xs:attribute name="Type" type="xs:string" use="required" />
+                                <xs:attribute name="Function" type="xs:string" use="required" />
+                                <xs:attribute name="Parameter1" type="xs:string" />
+                                <xs:attribute name="Parameter2" type="xs:string" />
+                                <xs:attribute name="Parameter3" type="xs:string" />
+                                <xs:attribute name="ResultParameter" type="xs:string" />
+                                <xs:attribute name="EndIf" type="xs:boolean" default="false" />
+                                <xs:attribute name="Suspended" type="xs:boolean" default="false" />
+                              </xs:complexType>
+                            </xs:element>
+                            <xs:element name="PlanParameterValue" minOccurs="0" maxOccurs="unbounded">
+                              <xs:complexType>
+                                <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="PlanName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="Name" type="xs:string" use="required" />
+                                <xs:attribute name="Value" type="xs:string" />
+                              </xs:complexType>
+                            </xs:element>
+                          </xs:sequence>
+                          <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="Name" type="xs:string" use="required" />
+                          <xs:attribute name="Priority" type="xs:int" />
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="Name" type="xs:string" use="required" />
+                    <xs:attribute name="Width" type="xs:int" use="required" />
+                    <xs:attribute name="Height" type="xs:int" use="required" />
+                    <xs:attribute name="Tileset" type="xs:string" />
+                    <xs:attribute name="BytesPerTile" type="xs:unsignedByte" use="required" />
+                    <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="OffsetX" type="xs:int" default="0" />
+                    <xs:attribute name="OffsetY" type="xs:int" default="0" />
+                    <xs:attribute name="ScrollRateX" type="xs:float" default="1" />
+                    <xs:attribute name="ScrollRateY" type="xs:float" default="1" />
+                    <xs:attribute name="ZIndex" type="xs:int" />
+                    <xs:attribute name="Priority" type="xs:int" default="0" />
+                    <xs:attribute name="VirtualWidth" type="xs:int" default="0" />
+                    <xs:attribute name="VirtualHeight" type="xs:int" default="0" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="ScrollMarginLeft" type="xs:short" use="required" />
+              <xs:attribute name="ScrollMarginTop" type="xs:short" use="required" />
+              <xs:attribute name="ScrollMarginRight" type="xs:short" use="required" />
+              <xs:attribute name="ScrollMarginBottom" type="xs:short" use="required" />
+              <xs:attribute name="ScrollWidth" msdata:Caption="Scrollable pixel width of the map independent of its layers" type="xs:int" />
+              <xs:attribute name="ScrollHeight" msdata:Caption="Scrollable pixel height of the map independent of its layers" type="xs:int" />
+              <xs:attribute name="ViewLeft" type="xs:short" />
+              <xs:attribute name="ViewTop" type="xs:short" />
+              <xs:attribute name="ViewWidth" type="xs:short" />
+              <xs:attribute name="ViewHeight" type="xs:short" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="SpriteDefinition">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="SpriteRule" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:attribute name="DefinitionName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="Name" type="xs:string" use="required" />
+                    <xs:attribute name="Sequence" type="xs:int" use="required" />
+                    <xs:attribute name="Type" type="xs:string" use="required" />
+                    <xs:attribute name="Function" type="xs:string" use="required" />
+                    <xs:attribute name="Parameter1" type="xs:string" />
+                    <xs:attribute name="Parameter2" type="xs:string" />
+                    <xs:attribute name="Parameter3" type="xs:string" />
+                    <xs:attribute name="ResultParameter" type="xs:string" />
+                    <xs:attribute name="EndIf" type="xs:boolean" default="false" />
+                    <xs:attribute name="Suspended" type="xs:boolean" default="false" />
+                  </xs:complexType>
+                </xs:element>
+                <xs:element name="SpriteParameter" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:attribute name="DefinitionName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="Name" type="xs:string" use="required" />
+                  </xs:complexType>
+                </xs:element>
+                <xs:element name="SpriteState" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="SpriteFrame" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                          <xs:attribute name="DefinitionName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="StateName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="Sequence" type="xs:short" use="required" />
+                          <xs:attribute name="FrameValue" type="xs:int" />
+                          <xs:attribute name="Duration" type="xs:short" />
+                          <xs:attribute name="MaskAlphaLevel" type="xs:unsignedByte" default="0" />
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="DefinitionName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="Name" type="xs:string" use="required" />
+                    <xs:attribute name="FramesetName" type="xs:string" use="required" />
+                    <xs:attribute name="SolidWidth" type="xs:short" use="required" />
+                    <xs:attribute name="SolidHeight" type="xs:short" use="required" />
+                    <xs:attribute name="Sequence" type="xs:short" use="required" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="SpriteCategory">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="SpriteCategorySprite" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:attribute name="CategoryName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="DefinitionName" type="xs:string" use="required" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Solidity">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="SolidityShape" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:attribute name="SolidityName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="CategoryName" type="xs:string" use="required" />
+                    <xs:attribute name="ShapeName" type="xs:string" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="SourceCode">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Text" type="xs:string" minOccurs="0" msdata:Ordinal="3" />
+                <xs:element name="CustomObjectData" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="4" />
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="IsCustomObject" type="xs:boolean" default="false" />
+              <xs:attribute name="DependsOn" type="xs:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Project">
+            <xs:complexType>
+              <xs:attribute name="DisplayMode" type="xs:string" use="required" />
+              <xs:attribute name="Windowed" type="xs:boolean" use="required" />
+              <xs:attribute name="TitleText" type="xs:string" />
+              <xs:attribute name="StartMap" type="xs:string" />
+              <xs:attribute name="OverlayMap" type="xs:string" />
+              <xs:attribute name="MaxPlayers" type="xs:unsignedByte" default="1" />
+              <xs:attribute name="MaxViews" type="xs:unsignedByte" default="1" />
+              <xs:attribute name="Credits" type="xs:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="TileCategory">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="CategorizedTileset" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="CategoryTile" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="CategoryFrame" minOccurs="0" maxOccurs="unbounded">
+                              <xs:complexType>
+                                <xs:attribute name="Tileset" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="Category" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="TileValue" type="xs:int" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="Frame" type="xs:short" use="required" />
+                              </xs:complexType>
+                            </xs:element>
+                          </xs:sequence>
+                          <xs:attribute name="Tileset" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="Category" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="TileValue" type="xs:int" use="required" />
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="Tileset" type="xs:string" use="required" />
+                    <xs:attribute name="Name" type="xs:string" use="required" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+      <xs:unique name="GraphicSheetKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//GraphicSheet" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="FrameKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Frame" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@FrameValue" />
+      </xs:unique>
+      <xs:unique name="FramesetKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Frameset" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="TileFrameKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//TileFrame" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@TileValue" />
+        <xs:field xpath="@Sequence" />
+      </xs:unique>
+      <xs:unique name="TileKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Tile" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@TileValue" />
+      </xs:unique>
+      <xs:unique name="TilesetKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Tileset" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="CounterKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Counter" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="ParameterValueKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//ParameterValue" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@SpriteName" />
+        <xs:field xpath="@ParameterName" />
+        <xs:field xpath="@MapName" />
+      </xs:unique>
+      <xs:unique name="SpriteKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Sprite" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@MapName" />
+      </xs:unique>
+      <xs:unique name="SpriteKeyWithDefinition">
+        <xs:selector xpath=".//Sprite" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@MapName" />
+      </xs:unique>
+      <xs:unique name="CoordinateKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Coordinate" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+        <xs:field xpath="@Sequence" />
+      </xs:unique>
+      <xs:unique name="PlanRuleKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//PlanRule" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="PlanParameterValueKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//PlanParameterValue" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpritePlanKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpritePlan" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="LayerKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Layer" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="MapKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Map" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpriteRuleKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteRule" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpriteParameterKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteParameter" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpriteFrameKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteFrame" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@StateName" />
+        <xs:field xpath="@Sequence" />
+      </xs:unique>
+      <xs:unique name="SpriteStateKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteState" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpriteStateFramesetKey">
+        <xs:selector xpath=".//SpriteState" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@FramesetName" />
+      </xs:unique>
+      <xs:unique name="SpriteDefinitionKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteDefinition" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpriteCategorySpriteKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteCategorySprite" />
+        <xs:field xpath="@CategoryName" />
+        <xs:field xpath="@DefinitionName" />
+      </xs:unique>
+      <xs:unique name="SpriteCategoryKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteCategory" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SolidityShapeKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SolidityShape" />
+        <xs:field xpath="@SolidityName" />
+        <xs:field xpath="@CategoryName" />
+      </xs:unique>
+      <xs:unique name="SolidityKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Solidity" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SourceCodeKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SourceCode" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="CategoryFrameKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//CategoryFrame" />
+        <xs:field xpath="@Tileset" />
+        <xs:field xpath="@Category" />
+        <xs:field xpath="@TileValue" />
+        <xs:field xpath="@Frame" />
+      </xs:unique>
+      <xs:unique name="CategoryTileKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//CategoryTile" />
+        <xs:field xpath="@Tileset" />
+        <xs:field xpath="@Category" />
+        <xs:field xpath="@TileValue" />
+      </xs:unique>
+      <xs:unique name="CategorizedTilesetKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//CategorizedTileset" />
+        <xs:field xpath="@Tileset" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="CategoryKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//TileCategory" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:keyref name="TilesetCategory" refer="TilesetKey">
+        <xs:selector xpath=".//CategorizedTileset" />
+        <xs:field xpath="@Tileset" />
+      </xs:keyref>
+      <xs:keyref name="TileCategoryCategorizedTileset" refer="CategoryKey" msdata:IsNested="true">
+        <xs:selector xpath=".//CategorizedTileset" />
+        <xs:field xpath="@Name" />
+      </xs:keyref>
+      <xs:keyref name="CategoryCategoryTile" refer="CategorizedTilesetKey" msdata:IsNested="true">
+        <xs:selector xpath=".//CategoryTile" />
+        <xs:field xpath="@Tileset" />
+        <xs:field xpath="@Category" />
+      </xs:keyref>
+      <xs:keyref name="CategoryTileCategoryFrame" refer="CategoryTileKey" msdata:IsNested="true">
+        <xs:selector xpath=".//CategoryFrame" />
+        <xs:field xpath="@Tileset" />
+        <xs:field xpath="@Category" />
+        <xs:field xpath="@TileValue" />
+      </xs:keyref>
+      <xs:keyref name="MapProject" refer="MapKey" msdata:ConstraintOnly="true" msdata:DeleteRule="SetNull">
+        <xs:selector xpath=".//Project" />
+        <xs:field xpath="@StartMap" />
+      </xs:keyref>
+      <xs:keyref name="CategorySolidityShape" refer="CategoryKey">
+        <xs:selector xpath=".//SolidityShape" />
+        <xs:field xpath="@CategoryName" />
+      </xs:keyref>
+      <xs:keyref name="SoliditySolidityShape" refer="SolidityKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SolidityShape" />
+        <xs:field xpath="@SolidityName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteDefinitionCategory" refer="SpriteDefinitionKey">
+        <xs:selector xpath=".//SpriteCategorySprite" />
+        <xs:field xpath="@DefinitionName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteCategorySpriteCategorySprite" refer="SpriteCategoryKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpriteCategorySprite" />
+        <xs:field xpath="@CategoryName" />
+      </xs:keyref>
+      <xs:keyref name="FramesetSpriteState" refer="FramesetKey">
+        <xs:selector xpath=".//SpriteState" />
+        <xs:field xpath="@FramesetName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteDefinitionState" refer="SpriteDefinitionKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpriteState" />
+        <xs:field xpath="@DefinitionName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteStateFrame" refer="SpriteStateKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpriteFrame" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@StateName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteDefinitionSpriteParameter" refer="SpriteDefinitionKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpriteParameter" />
+        <xs:field xpath="@DefinitionName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteDefinitionSpriteRule" refer="SpriteDefinitionKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpriteRule" />
+        <xs:field xpath="@DefinitionName" />
+      </xs:keyref>
+      <xs:keyref name="TilesetLayer" refer="TilesetKey">
+        <xs:selector xpath=".//Layer" />
+        <xs:field xpath="@Tileset" />
+      </xs:keyref>
+      <xs:keyref name="MapLayer" refer="MapKey" msdata:IsNested="true">
+        <xs:selector xpath=".//Layer" />
+        <xs:field xpath="@MapName" />
+      </xs:keyref>
+      <xs:keyref name="LayerSpritePlan" refer="LayerKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpritePlan" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+      </xs:keyref>
+      <xs:keyref name="SpritePlanPlanParameterValue" refer="SpritePlanKey" msdata:IsNested="true">
+        <xs:selector xpath=".//PlanParameterValue" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+      </xs:keyref>
+      <xs:keyref name="SpritePlanPlanRule" refer="SpritePlanKey" msdata:IsNested="true">
+        <xs:selector xpath=".//PlanRule" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+      </xs:keyref>
+      <xs:keyref name="SpritePlanCoordinate" refer="SpritePlanKey" msdata:IsNested="true">
+        <xs:selector xpath=".//Coordinate" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteDefinitionSprite" refer="SpriteStateKey">
+        <xs:selector xpath=".//Sprite" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@StateName" />
+      </xs:keyref>
+      <xs:keyref name="LayerSprite" refer="LayerKey" msdata:IsNested="true">
+        <xs:selector xpath=".//Sprite" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteParameterParameterValue" refer="SpriteParameterKey">
+        <xs:selector xpath=".//ParameterValue" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@ParameterName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteParameterValue" refer="SpriteKeyWithDefinition" msdata:IsNested="true">
+        <xs:selector xpath=".//ParameterValue" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@SpriteName" />
+        <xs:field xpath="@MapName" />
+      </xs:keyref>
+      <xs:keyref name="FramesetTileset" refer="FramesetKey">
+        <xs:selector xpath=".//Tileset" />
+        <xs:field xpath="@Frameset" />
+      </xs:keyref>
+      <xs:keyref name="CounterTile" refer="CounterKey" msdata:DeleteRule="SetNull">
+        <xs:selector xpath=".//Tile" />
+        <xs:field xpath="@Counter" />
+      </xs:keyref>
+      <xs:keyref name="TilesetTile" refer="TilesetKey" msdata:IsNested="true">
+        <xs:selector xpath=".//Tile" />
+        <xs:field xpath="@Name" />
+      </xs:keyref>
+      <xs:keyref name="TileTileFrame" refer="TileKey" msdata:IsNested="true">
+        <xs:selector xpath=".//TileFrame" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@TileValue" />
+      </xs:keyref>
+      <xs:keyref name="GraphicSheetFrame" refer="GraphicSheetKey" msdata:ConstraintOnly="true" msdata:DeleteRule="None">
+        <xs:selector xpath=".//Frame" />
+        <xs:field xpath="@GraphicSheet" />
+      </xs:keyref>
+      <xs:keyref name="FramesetFrame" refer="FramesetKey" msdata:IsNested="true">
+        <xs:selector xpath=".//Frame" />
+        <xs:field xpath="@Name" />
+      </xs:keyref>
+    </xs:element>
+  </xs:schema>
+  <GraphicSheet Name="SHFLSprites" Columns="6" Rows="12" CellWidth="32" CellHeight="32">
+    <Image>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</Image>
+  </GraphicSheet>
+  <Frameset Name="SpriteFrames">
+    <Frame FrameValue="0" GraphicSheet="SHFLSprites" CellIndex="0" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="1" GraphicSheet="SHFLSprites" CellIndex="1" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="2" GraphicSheet="SHFLSprites" CellIndex="2" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="3" GraphicSheet="SHFLSprites" CellIndex="3" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="4" GraphicSheet="SHFLSprites" CellIndex="4" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="5" GraphicSheet="SHFLSprites" CellIndex="5" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="6" GraphicSheet="SHFLSprites" CellIndex="6" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="7" GraphicSheet="SHFLSprites" CellIndex="7" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="8" GraphicSheet="SHFLSprites" CellIndex="8" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="9" GraphicSheet="SHFLSprites" CellIndex="9" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="10" GraphicSheet="SHFLSprites" CellIndex="10" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="11" GraphicSheet="SHFLSprites" CellIndex="11" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="12" GraphicSheet="SHFLSprites" CellIndex="12" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="13" GraphicSheet="SHFLSprites" CellIndex="13" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="14" GraphicSheet="SHFLSprites" CellIndex="14" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="15" GraphicSheet="SHFLSprites" CellIndex="15" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="16" GraphicSheet="SHFLSprites" CellIndex="16" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="17" GraphicSheet="SHFLSprites" CellIndex="17" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="18" GraphicSheet="SHFLSprites" CellIndex="18" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="19" GraphicSheet="SHFLSprites" CellIndex="19" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="20" GraphicSheet="SHFLSprites" CellIndex="20" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="21" GraphicSheet="SHFLSprites" CellIndex="21" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="22" GraphicSheet="SHFLSprites" CellIndex="22" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="23" GraphicSheet="SHFLSprites" CellIndex="23" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="24" GraphicSheet="SHFLSprites" CellIndex="24" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="25" GraphicSheet="SHFLSprites" CellIndex="25" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="26" GraphicSheet="SHFLSprites" CellIndex="26" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="27" GraphicSheet="SHFLSprites" CellIndex="27" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="28" GraphicSheet="SHFLSprites" CellIndex="28" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="29" GraphicSheet="SHFLSprites" CellIndex="29" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="30" GraphicSheet="SHFLSprites" CellIndex="30" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="31" GraphicSheet="SHFLSprites" CellIndex="31" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="32" GraphicSheet="SHFLSprites" CellIndex="32" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="33" GraphicSheet="SHFLSprites" CellIndex="33" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="34" GraphicSheet="SHFLSprites" CellIndex="34" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="35" GraphicSheet="SHFLSprites" CellIndex="35" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="36" GraphicSheet="SHFLSprites" CellIndex="36" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="37" GraphicSheet="SHFLSprites" CellIndex="37" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="38" GraphicSheet="SHFLSprites" CellIndex="38" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="39" GraphicSheet="SHFLSprites" CellIndex="39" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="40" GraphicSheet="SHFLSprites" CellIndex="40" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="41" GraphicSheet="SHFLSprites" CellIndex="41" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="42" GraphicSheet="SHFLSprites" CellIndex="42" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="43" GraphicSheet="SHFLSprites" CellIndex="43" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="44" GraphicSheet="SHFLSprites" CellIndex="44" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="45" GraphicSheet="SHFLSprites" CellIndex="45" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="46" GraphicSheet="SHFLSprites" CellIndex="46" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="47" GraphicSheet="SHFLSprites" CellIndex="47" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="48" GraphicSheet="SHFLSprites" CellIndex="48" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="49" GraphicSheet="SHFLSprites" CellIndex="49" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="50" GraphicSheet="SHFLSprites" CellIndex="50" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="51" GraphicSheet="SHFLSprites" CellIndex="51" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="52" GraphicSheet="SHFLSprites" CellIndex="52" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="53" GraphicSheet="SHFLSprites" CellIndex="53" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="54" GraphicSheet="SHFLSprites" CellIndex="54" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="55" GraphicSheet="SHFLSprites" CellIndex="55" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="56" GraphicSheet="SHFLSprites" CellIndex="56" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="57" GraphicSheet="SHFLSprites" CellIndex="57" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="58" GraphicSheet="SHFLSprites" CellIndex="58" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="59" GraphicSheet="SHFLSprites" CellIndex="59" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="60" GraphicSheet="SHFLSprites" CellIndex="60" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="61" GraphicSheet="SHFLSprites" CellIndex="61" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="62" GraphicSheet="SHFLSprites" CellIndex="62" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="63" GraphicSheet="SHFLSprites" CellIndex="63" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="64" GraphicSheet="SHFLSprites" CellIndex="64" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="65" GraphicSheet="SHFLSprites" CellIndex="65" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+  </Frameset>
+  <SpriteDefinition Name="LeftRightJump">
+    <SpriteRule Name="Clear inputs" Sequence="1" Type="Do" Function="ClearInputs" Parameter1="true" EndIf="false" Suspended="false" />
+    <SpriteRule Name="If facing left" Sequence="2" Type="If" Function="IsInState" Parameter1="(int)State.Left" Parameter2="(int)State.Left" EndIf="false" Suspended="false" />
+    <SpriteRule Name="If blocked going left" Sequence="3" Type="If" Function="Blocked" Parameter1="SpriteBase.Direction.Left" EndIf="false" Suspended="false" />
+    <SpriteRule Name="And really can't move left" Sequence="4" Type="And" Function="&gt;=" Parameter1="dx" Parameter2="0" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Undo left" Sequence="5" Type="Do" Function="=" Parameter1="System.Math.Abs(dx)" ResultParameter="dx" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Turn right" Sequence="6" Type="Do" Function="SwitchToState" Parameter1="(int)State.Right" Parameter2="RelativePosition.BottomCenter" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Push right after turn" Sequence="7" Type="Do" Function="SetInputState" Parameter1="SpriteBase.InputBits.Right" Parameter2="true" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Else If unsupported center leftward" Sequence="8" Type="ElseIf" Function="!IsPointBlocked" Parameter1="RelativePosition.BottomCenter" Parameter2="SpriteBase.Direction.Down" Parameter3="SolidWidth/2+2" EndIf="false" Suspended="false" />
+    <SpriteRule Name="If can jump left" Sequence="9" Type="If" Function="Blocked" Parameter1="SpriteBase.Direction.Down" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Jump Left" Sequence="10" Type="Do" Function="=" Parameter1="-6" ResultParameter="dy" EndIf="true" Suspended="false" />
+    <SpriteRule Name="Else push left" Sequence="11" Type="Else" Function="SetInputState" Parameter1="SpriteBase.InputBits.Left" Parameter2="true" EndIf="true" Suspended="false" />
+    <SpriteRule Name="End blocked left" Sequence="12" Type="End" Function="End" EndIf="true" Suspended="false" />
+    <SpriteRule Name="Else If blocked going right" Sequence="13" Type="ElseIf" Function="Blocked" Parameter1="SpriteBase.Direction.Right" EndIf="false" Suspended="false" />
+    <SpriteRule Name="And really can't move right" Sequence="14" Type="And" Function="&lt;=" Parameter1="dx" Parameter2="0" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Undo right" Sequence="15" Type="Do" Function="=" Parameter1="-System.Math.Abs(dx)" ResultParameter="dx" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Turn left" Sequence="16" Type="Do" Function="SwitchToState" Parameter1="(int)State.Left" Parameter2="RelativePosition.BottomCenter" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Push left after turn" Sequence="17" Type="Do" Function="SetInputState" Parameter1="SpriteBase.InputBits.Left" Parameter2="true" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Else If unsupported center rightward" Sequence="18" Type="ElseIf" Function="!IsPointBlocked" Parameter1="RelativePosition.BottomCenter" Parameter2="SpriteBase.Direction.Down" Parameter3="SolidWidth/2+2" EndIf="false" Suspended="false" />
+    <SpriteRule Name="If can jump right" Sequence="19" Type="If" Function="Blocked" Parameter1="SpriteBase.Direction.Down" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Jump right" Sequence="20" Type="Do" Function="=" Parameter1="-6" ResultParameter="dy" EndIf="true" Suspended="false" />
+    <SpriteRule Name="Else push right" Sequence="21" Type="Else" Function="SetInputState" Parameter1="SpriteBase.InputBits.Right" Parameter2="true" EndIf="true" Suspended="false" />
+    <SpriteRule Name="End blocked right" Sequence="22" Type="End" Function="End" EndIf="true" Suspended="false" />
+    <SpriteRule Name="End if facing left/right" Sequence="23" Type="End" Function="End" EndIf="true" Suspended="false" />
+    <SpriteRule Name="Accelerate" Sequence="24" Type="Do" Function="AccelerateByInputs" Parameter1="3" Parameter2="3" Parameter3="true" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Gravity" Sequence="25" Type="Do" Function="AlterYVelocity" Parameter1=".3" EndIf="false" Suspended="false" />
+    <SpriteRule Name="React to solids" Sequence="26" Type="Do" Function="ReactToSolid" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Snap to ground" Sequence="27" Type="Do" Function="SnapToGround" Parameter1="5" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Animate" Sequence="28" Type="Do" Function="Animate" Parameter1="SpriteBase.SpriteAnimationType.ByHorizontalVelocity" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Move" Sequence="29" Type="Do" Function="MoveByVelocity" EndIf="false" Suspended="false" />
+    <SpriteState Name="Left" FramesetName="SpriteFrames" SolidWidth="32" SolidHeight="32" Sequence="1">
+      <SpriteFrame Sequence="0" FrameValue="54" Duration="10" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="55" Duration="10" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="56" Duration="10" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="57" Duration="10" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="4" FrameValue="58" Duration="10" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="5" FrameValue="59" Duration="10" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Right" FramesetName="SpriteFrames" SolidWidth="32" SolidHeight="32" Sequence="2">
+      <SpriteFrame Sequence="0" FrameValue="65" Duration="10" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="64" Duration="10" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="63" Duration="10" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="62" Duration="10" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="4" FrameValue="61" Duration="10" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="5" FrameValue="60" Duration="10" MaskAlphaLevel="0" />
+    </SpriteState>
+  </SpriteDefinition>
+  <Project DisplayMode="m640x480x24" Windowed="true" TitleText="Walks left or right, following slopes. If it hits a gap, sprite jumps. If it hits a wall, sprite turns around and repeats." MaxPlayers="1" MaxViews="1" Credits="" />
+</ProjectDataset>

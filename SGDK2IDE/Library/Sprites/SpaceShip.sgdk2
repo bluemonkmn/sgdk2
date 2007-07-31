@@ -1,0 +1,1812 @@
+<?xml version="1.0" standalone="yes"?>
+<ProjectDataset>
+  <xs:schema id="ProjectDataset" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop">
+    <xs:element name="ProjectDataset" msdata:IsDataSet="true" msprop:SchemaVersion="1">
+      <xs:complexType>
+        <xs:choice maxOccurs="unbounded">
+          <xs:element name="GraphicSheet">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Image" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="5" />
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Columns" type="xs:short" default="16" />
+              <xs:attribute name="Rows" type="xs:short" default="8" />
+              <xs:attribute name="CellWidth" msdata:Caption="Cell Width" type="xs:short" default="32" />
+              <xs:attribute name="CellHeight" msdata:Caption="Cell Height" type="xs:short" default="32" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Frameset">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Frame" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:attribute name="FrameValue" type="xs:int" use="required" />
+                    <xs:attribute name="GraphicSheet" type="xs:string" use="required" />
+                    <xs:attribute name="CellIndex" type="xs:short" use="required" />
+                    <xs:attribute name="m11" type="xs:float" default="1" />
+                    <xs:attribute name="m12" type="xs:float" default="0" />
+                    <xs:attribute name="m21" type="xs:float" default="0" />
+                    <xs:attribute name="m22" type="xs:float" default="1" />
+                    <xs:attribute name="dx" type="xs:float" default="0" />
+                    <xs:attribute name="dy" type="xs:float" default="0" />
+                    <xs:attribute name="Name" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="color" type="xs:int" default="-1" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Tileset">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Tile" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="TileFrame" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                          <xs:attribute name="Sequence" type="xs:short" use="required" />
+                          <xs:attribute name="FrameValue" type="xs:int" />
+                          <xs:attribute name="Duration" type="xs:short" />
+                          <xs:attribute name="Name" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="TileValue" type="xs:int" msdata:AllowDBNull="false" use="prohibited" />
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="TileValue" type="xs:int" use="required" />
+                    <xs:attribute name="Counter" type="xs:string" />
+                    <xs:attribute name="Name" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Frameset" type="xs:string" />
+              <xs:attribute name="TileWidth" type="xs:short" use="required" />
+              <xs:attribute name="TileHeight" type="xs:short" use="required" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Counter">
+            <xs:complexType>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Value" type="xs:int" />
+              <xs:attribute name="Max" type="xs:int" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Map">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Layer" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="Tiles" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="14" />
+                      <xs:element name="Sprite" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="ParameterValue" minOccurs="0" maxOccurs="unbounded">
+                              <xs:complexType>
+                                <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="SpriteName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="ParameterName" type="xs:string" use="required" />
+                                <xs:attribute name="Value" type="xs:int" />
+                                <xs:attribute name="DefinitionName" type="xs:string" use="prohibited" />
+                                <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                              </xs:complexType>
+                            </xs:element>
+                          </xs:sequence>
+                          <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="Name" type="xs:string" use="required" />
+                          <xs:attribute name="DefinitionName" type="xs:string" use="required" />
+                          <xs:attribute name="StateName" type="xs:string" />
+                          <xs:attribute name="CurrentFrame" type="xs:short" />
+                          <xs:attribute name="X" type="xs:int" />
+                          <xs:attribute name="Y" type="xs:int" />
+                          <xs:attribute name="DX" type="xs:float" />
+                          <xs:attribute name="DY" type="xs:float" />
+                          <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="Priority" type="xs:int" />
+                          <xs:attribute name="Active" type="xs:boolean" default="true" />
+                          <xs:attribute name="Solidity" type="xs:string" />
+                          <xs:attribute name="Color" type="xs:int" default="-1" />
+                        </xs:complexType>
+                      </xs:element>
+                      <xs:element name="SpritePlan" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="Coordinate" minOccurs="0" maxOccurs="unbounded">
+                              <xs:complexType>
+                                <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="PlanName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="Sequence" type="xs:short" use="required" />
+                                <xs:attribute name="X" type="xs:int" />
+                                <xs:attribute name="Y" type="xs:int" />
+                                <xs:attribute name="Weight" type="xs:int" />
+                              </xs:complexType>
+                            </xs:element>
+                            <xs:element name="PlanRule" minOccurs="0" maxOccurs="unbounded">
+                              <xs:complexType>
+                                <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="PlanName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="Name" type="xs:string" use="required" />
+                                <xs:attribute name="Sequence" type="xs:int" use="required" />
+                                <xs:attribute name="Type" type="xs:string" use="required" />
+                                <xs:attribute name="Function" type="xs:string" use="required" />
+                                <xs:attribute name="Parameter1" type="xs:string" />
+                                <xs:attribute name="Parameter2" type="xs:string" />
+                                <xs:attribute name="Parameter3" type="xs:string" />
+                                <xs:attribute name="ResultParameter" type="xs:string" />
+                                <xs:attribute name="EndIf" type="xs:boolean" default="false" />
+                                <xs:attribute name="Suspended" type="xs:boolean" default="false" />
+                              </xs:complexType>
+                            </xs:element>
+                            <xs:element name="PlanParameterValue" minOccurs="0" maxOccurs="unbounded">
+                              <xs:complexType>
+                                <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="PlanName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="Name" type="xs:string" use="required" />
+                                <xs:attribute name="Value" type="xs:string" />
+                              </xs:complexType>
+                            </xs:element>
+                          </xs:sequence>
+                          <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="Name" type="xs:string" use="required" />
+                          <xs:attribute name="Priority" type="xs:int" />
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="Name" type="xs:string" use="required" />
+                    <xs:attribute name="Width" type="xs:int" use="required" />
+                    <xs:attribute name="Height" type="xs:int" use="required" />
+                    <xs:attribute name="Tileset" type="xs:string" />
+                    <xs:attribute name="BytesPerTile" type="xs:unsignedByte" use="required" />
+                    <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="OffsetX" type="xs:int" default="0" />
+                    <xs:attribute name="OffsetY" type="xs:int" default="0" />
+                    <xs:attribute name="ScrollRateX" type="xs:float" default="1" />
+                    <xs:attribute name="ScrollRateY" type="xs:float" default="1" />
+                    <xs:attribute name="ZIndex" type="xs:int" />
+                    <xs:attribute name="Priority" type="xs:int" default="0" />
+                    <xs:attribute name="VirtualWidth" type="xs:int" default="0" />
+                    <xs:attribute name="VirtualHeight" type="xs:int" default="0" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="ScrollMarginLeft" type="xs:short" use="required" />
+              <xs:attribute name="ScrollMarginTop" type="xs:short" use="required" />
+              <xs:attribute name="ScrollMarginRight" type="xs:short" use="required" />
+              <xs:attribute name="ScrollMarginBottom" type="xs:short" use="required" />
+              <xs:attribute name="ScrollWidth" msdata:Caption="Scrollable pixel width of the map independent of its layers" type="xs:int" />
+              <xs:attribute name="ScrollHeight" msdata:Caption="Scrollable pixel height of the map independent of its layers" type="xs:int" />
+              <xs:attribute name="ViewLeft" type="xs:short" />
+              <xs:attribute name="ViewTop" type="xs:short" />
+              <xs:attribute name="ViewWidth" type="xs:short" />
+              <xs:attribute name="ViewHeight" type="xs:short" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="SpriteDefinition">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="SpriteRule" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:attribute name="DefinitionName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="Name" type="xs:string" use="required" />
+                    <xs:attribute name="Sequence" type="xs:int" use="required" />
+                    <xs:attribute name="Type" type="xs:string" use="required" />
+                    <xs:attribute name="Function" type="xs:string" use="required" />
+                    <xs:attribute name="Parameter1" type="xs:string" />
+                    <xs:attribute name="Parameter2" type="xs:string" />
+                    <xs:attribute name="Parameter3" type="xs:string" />
+                    <xs:attribute name="ResultParameter" type="xs:string" />
+                    <xs:attribute name="EndIf" type="xs:boolean" default="false" />
+                    <xs:attribute name="Suspended" type="xs:boolean" default="false" />
+                  </xs:complexType>
+                </xs:element>
+                <xs:element name="SpriteParameter" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:attribute name="DefinitionName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="Name" type="xs:string" use="required" />
+                  </xs:complexType>
+                </xs:element>
+                <xs:element name="SpriteState" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="SpriteFrame" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                          <xs:attribute name="DefinitionName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="StateName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="Sequence" type="xs:short" use="required" />
+                          <xs:attribute name="FrameValue" type="xs:int" />
+                          <xs:attribute name="Duration" type="xs:short" />
+                          <xs:attribute name="MaskAlphaLevel" type="xs:unsignedByte" default="0" />
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="DefinitionName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="Name" type="xs:string" use="required" />
+                    <xs:attribute name="FramesetName" type="xs:string" use="required" />
+                    <xs:attribute name="SolidWidth" type="xs:short" use="required" />
+                    <xs:attribute name="SolidHeight" type="xs:short" use="required" />
+                    <xs:attribute name="Sequence" type="xs:short" use="required" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="SpriteCategory">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="SpriteCategorySprite" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:attribute name="CategoryName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="DefinitionName" type="xs:string" use="required" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Solidity">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="SolidityShape" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:attribute name="SolidityName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                    <xs:attribute name="CategoryName" type="xs:string" use="required" />
+                    <xs:attribute name="ShapeName" type="xs:string" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="SourceCode">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Text" type="xs:string" minOccurs="0" msdata:Ordinal="3" />
+                <xs:element name="CustomObjectData" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="4" />
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="IsCustomObject" type="xs:boolean" default="false" />
+              <xs:attribute name="DependsOn" type="xs:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Project">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Comments" type="xs:string" default="" msdata:Ordinal="8" />
+              </xs:sequence>
+              <xs:attribute name="DisplayMode" type="xs:string" use="required" />
+              <xs:attribute name="Windowed" type="xs:boolean" use="required" />
+              <xs:attribute name="TitleText" type="xs:string" />
+              <xs:attribute name="StartMap" type="xs:string" />
+              <xs:attribute name="OverlayMap" type="xs:string" />
+              <xs:attribute name="MaxPlayers" type="xs:unsignedByte" default="1" />
+              <xs:attribute name="MaxViews" type="xs:unsignedByte" default="1" />
+              <xs:attribute name="Credits" type="xs:string" />
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="TileCategory">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="CategorizedTileset" minOccurs="0" maxOccurs="unbounded">
+                  <xs:complexType>
+                    <xs:sequence>
+                      <xs:element name="CategoryTile" minOccurs="0" maxOccurs="unbounded">
+                        <xs:complexType>
+                          <xs:sequence>
+                            <xs:element name="CategoryFrame" minOccurs="0" maxOccurs="unbounded">
+                              <xs:complexType>
+                                <xs:attribute name="Tileset" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="Category" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="TileValue" type="xs:int" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="Frame" type="xs:short" use="required" />
+                              </xs:complexType>
+                            </xs:element>
+                          </xs:sequence>
+                          <xs:attribute name="Tileset" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="Category" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                          <xs:attribute name="TileValue" type="xs:int" use="required" />
+                        </xs:complexType>
+                      </xs:element>
+                    </xs:sequence>
+                    <xs:attribute name="Tileset" type="xs:string" use="required" />
+                    <xs:attribute name="Name" type="xs:string" use="required" />
+                  </xs:complexType>
+                </xs:element>
+              </xs:sequence>
+              <xs:attribute name="Name" type="xs:string" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:choice>
+      </xs:complexType>
+      <xs:unique name="GraphicSheetKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//GraphicSheet" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="FrameKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Frame" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@FrameValue" />
+      </xs:unique>
+      <xs:unique name="FramesetKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Frameset" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="TileFrameKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//TileFrame" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@TileValue" />
+        <xs:field xpath="@Sequence" />
+      </xs:unique>
+      <xs:unique name="TileKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Tile" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@TileValue" />
+      </xs:unique>
+      <xs:unique name="TilesetKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Tileset" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="CounterKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Counter" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="ParameterValueKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//ParameterValue" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@SpriteName" />
+        <xs:field xpath="@ParameterName" />
+        <xs:field xpath="@MapName" />
+      </xs:unique>
+      <xs:unique name="SpriteKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Sprite" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@MapName" />
+      </xs:unique>
+      <xs:unique name="SpriteKeyWithDefinition">
+        <xs:selector xpath=".//Sprite" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@MapName" />
+      </xs:unique>
+      <xs:unique name="CoordinateKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Coordinate" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+        <xs:field xpath="@Sequence" />
+      </xs:unique>
+      <xs:unique name="PlanRuleKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//PlanRule" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="PlanParameterValueKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//PlanParameterValue" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpritePlanKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpritePlan" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="LayerKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Layer" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="MapKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Map" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpriteRuleKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteRule" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpriteParameterKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteParameter" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpriteFrameKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteFrame" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@StateName" />
+        <xs:field xpath="@Sequence" />
+      </xs:unique>
+      <xs:unique name="SpriteStateKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteState" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpriteStateFramesetKey">
+        <xs:selector xpath=".//SpriteState" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@FramesetName" />
+      </xs:unique>
+      <xs:unique name="SpriteDefinitionKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteDefinition" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SpriteCategorySpriteKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteCategorySprite" />
+        <xs:field xpath="@CategoryName" />
+        <xs:field xpath="@DefinitionName" />
+      </xs:unique>
+      <xs:unique name="SpriteCategoryKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SpriteCategory" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SolidityShapeKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SolidityShape" />
+        <xs:field xpath="@SolidityName" />
+        <xs:field xpath="@CategoryName" />
+      </xs:unique>
+      <xs:unique name="SolidityKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//Solidity" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="SourceCodeKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//SourceCode" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="CategoryFrameKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//CategoryFrame" />
+        <xs:field xpath="@Tileset" />
+        <xs:field xpath="@Category" />
+        <xs:field xpath="@TileValue" />
+        <xs:field xpath="@Frame" />
+      </xs:unique>
+      <xs:unique name="CategoryTileKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//CategoryTile" />
+        <xs:field xpath="@Tileset" />
+        <xs:field xpath="@Category" />
+        <xs:field xpath="@TileValue" />
+      </xs:unique>
+      <xs:unique name="CategorizedTilesetKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//CategorizedTileset" />
+        <xs:field xpath="@Tileset" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:unique name="CategoryKey" msdata:PrimaryKey="true">
+        <xs:selector xpath=".//TileCategory" />
+        <xs:field xpath="@Name" />
+      </xs:unique>
+      <xs:keyref name="TilesetCategory" refer="TilesetKey">
+        <xs:selector xpath=".//CategorizedTileset" />
+        <xs:field xpath="@Tileset" />
+      </xs:keyref>
+      <xs:keyref name="TileCategoryCategorizedTileset" refer="CategoryKey" msdata:IsNested="true">
+        <xs:selector xpath=".//CategorizedTileset" />
+        <xs:field xpath="@Name" />
+      </xs:keyref>
+      <xs:keyref name="CategoryCategoryTile" refer="CategorizedTilesetKey" msdata:IsNested="true">
+        <xs:selector xpath=".//CategoryTile" />
+        <xs:field xpath="@Tileset" />
+        <xs:field xpath="@Category" />
+      </xs:keyref>
+      <xs:keyref name="CategoryTileCategoryFrame" refer="CategoryTileKey" msdata:IsNested="true">
+        <xs:selector xpath=".//CategoryFrame" />
+        <xs:field xpath="@Tileset" />
+        <xs:field xpath="@Category" />
+        <xs:field xpath="@TileValue" />
+      </xs:keyref>
+      <xs:keyref name="MapProject" refer="MapKey" msdata:ConstraintOnly="true" msdata:DeleteRule="SetNull">
+        <xs:selector xpath=".//Project" />
+        <xs:field xpath="@StartMap" />
+      </xs:keyref>
+      <xs:keyref name="CategorySolidityShape" refer="CategoryKey">
+        <xs:selector xpath=".//SolidityShape" />
+        <xs:field xpath="@CategoryName" />
+      </xs:keyref>
+      <xs:keyref name="SoliditySolidityShape" refer="SolidityKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SolidityShape" />
+        <xs:field xpath="@SolidityName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteDefinitionCategory" refer="SpriteDefinitionKey">
+        <xs:selector xpath=".//SpriteCategorySprite" />
+        <xs:field xpath="@DefinitionName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteCategorySpriteCategorySprite" refer="SpriteCategoryKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpriteCategorySprite" />
+        <xs:field xpath="@CategoryName" />
+      </xs:keyref>
+      <xs:keyref name="FramesetSpriteState" refer="FramesetKey">
+        <xs:selector xpath=".//SpriteState" />
+        <xs:field xpath="@FramesetName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteDefinitionState" refer="SpriteDefinitionKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpriteState" />
+        <xs:field xpath="@DefinitionName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteStateFrame" refer="SpriteStateKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpriteFrame" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@StateName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteDefinitionSpriteParameter" refer="SpriteDefinitionKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpriteParameter" />
+        <xs:field xpath="@DefinitionName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteDefinitionSpriteRule" refer="SpriteDefinitionKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpriteRule" />
+        <xs:field xpath="@DefinitionName" />
+      </xs:keyref>
+      <xs:keyref name="TilesetLayer" refer="TilesetKey">
+        <xs:selector xpath=".//Layer" />
+        <xs:field xpath="@Tileset" />
+      </xs:keyref>
+      <xs:keyref name="MapLayer" refer="MapKey" msdata:IsNested="true">
+        <xs:selector xpath=".//Layer" />
+        <xs:field xpath="@MapName" />
+      </xs:keyref>
+      <xs:keyref name="LayerSpritePlan" refer="LayerKey" msdata:IsNested="true">
+        <xs:selector xpath=".//SpritePlan" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+      </xs:keyref>
+      <xs:keyref name="SpritePlanPlanParameterValue" refer="SpritePlanKey" msdata:IsNested="true">
+        <xs:selector xpath=".//PlanParameterValue" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+      </xs:keyref>
+      <xs:keyref name="SpritePlanPlanRule" refer="SpritePlanKey" msdata:IsNested="true">
+        <xs:selector xpath=".//PlanRule" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+      </xs:keyref>
+      <xs:keyref name="SpritePlanCoordinate" refer="SpritePlanKey" msdata:IsNested="true">
+        <xs:selector xpath=".//Coordinate" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@PlanName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteDefinitionSprite" refer="SpriteStateKey">
+        <xs:selector xpath=".//Sprite" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@StateName" />
+      </xs:keyref>
+      <xs:keyref name="LayerSprite" refer="LayerKey" msdata:IsNested="true">
+        <xs:selector xpath=".//Sprite" />
+        <xs:field xpath="@MapName" />
+        <xs:field xpath="@LayerName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteParameterParameterValue" refer="SpriteParameterKey">
+        <xs:selector xpath=".//ParameterValue" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@ParameterName" />
+      </xs:keyref>
+      <xs:keyref name="SpriteParameterValue" refer="SpriteKeyWithDefinition" msdata:IsNested="true">
+        <xs:selector xpath=".//ParameterValue" />
+        <xs:field xpath="@DefinitionName" />
+        <xs:field xpath="@LayerName" />
+        <xs:field xpath="@SpriteName" />
+        <xs:field xpath="@MapName" />
+      </xs:keyref>
+      <xs:keyref name="FramesetTileset" refer="FramesetKey">
+        <xs:selector xpath=".//Tileset" />
+        <xs:field xpath="@Frameset" />
+      </xs:keyref>
+      <xs:keyref name="CounterTile" refer="CounterKey" msdata:DeleteRule="SetNull">
+        <xs:selector xpath=".//Tile" />
+        <xs:field xpath="@Counter" />
+      </xs:keyref>
+      <xs:keyref name="TilesetTile" refer="TilesetKey" msdata:IsNested="true">
+        <xs:selector xpath=".//Tile" />
+        <xs:field xpath="@Name" />
+      </xs:keyref>
+      <xs:keyref name="TileTileFrame" refer="TileKey" msdata:IsNested="true">
+        <xs:selector xpath=".//TileFrame" />
+        <xs:field xpath="@Name" />
+        <xs:field xpath="@TileValue" />
+      </xs:keyref>
+      <xs:keyref name="GraphicSheetFrame" refer="GraphicSheetKey" msdata:ConstraintOnly="true" msdata:DeleteRule="None">
+        <xs:selector xpath=".//Frame" />
+        <xs:field xpath="@GraphicSheet" />
+      </xs:keyref>
+      <xs:keyref name="FramesetFrame" refer="FramesetKey" msdata:IsNested="true">
+        <xs:selector xpath=".//Frame" />
+        <xs:field xpath="@Name" />
+      </xs:keyref>
+    </xs:element>
+  </xs:schema>
+  <GraphicSheet Name="Ship" Columns="2" Rows="1" CellWidth="32" CellHeight="32">
+    <Image>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</Image>
+  </GraphicSheet>
+  <GraphicSheet Name="ShipFire" Columns="2" Rows="2" CellWidth="32" CellHeight="56">
+    <Image>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</Image>
+  </GraphicSheet>
+  <Frameset Name="SpaceShip Frames">
+    <Frame FrameValue="0" GraphicSheet="Ship" CellIndex="0" m11="0" m12="1" m21="-1" m22="0" dx="32" dy="0" color="-1" />
+    <Frame FrameValue="1" GraphicSheet="Ship" CellIndex="0" m11="0.0872" m12="0.9962" m21="-0.9962" m22="0.0872" dx="30.5446" dy="-1.3336" color="-1" />
+    <Frame FrameValue="2" GraphicSheet="Ship" CellIndex="0" m11="0.1736" m12="0.9848" m21="-0.9848" m22="0.1736" dx="28.9786" dy="-2.5353" color="-1" />
+    <Frame FrameValue="3" GraphicSheet="Ship" CellIndex="0" m11="0.2588" m12="0.9659" m21="-0.9659" m22="0.2588" dx="27.3137" dy="-3.5959" color="-1" />
+    <Frame FrameValue="4" GraphicSheet="Ship" CellIndex="0" m11="0.342" m12="0.9397" m21="-0.9397" m22="0.342" dx="25.5628" dy="-4.5074" color="-1" />
+    <Frame FrameValue="5" GraphicSheet="Ship" CellIndex="0" m11="0.4226" m12="0.9063" m21="-0.9063" m22="0.4226" dx="23.739" dy="-5.2628" color="-1" />
+    <Frame FrameValue="6" GraphicSheet="Ship" CellIndex="0" m11="0.5" m12="0.866" m21="-0.866" m22="0.5" dx="21.8564" dy="-5.8564" color="-1" />
+    <Frame FrameValue="7" GraphicSheet="Ship" CellIndex="0" m11="0.5736" m12="0.8192" m21="-0.8192" m22="0.5736" dx="19.9292" dy="-6.2837" color="-1" />
+    <Frame FrameValue="8" GraphicSheet="Ship" CellIndex="0" m11="0.6428" m12="0.766" m21="-0.766" m22="0.6428" dx="17.9721" dy="-6.5413" color="-1" />
+    <Frame FrameValue="9" GraphicSheet="Ship" CellIndex="0" m11="0.7071" m12="0.7071" m21="-0.7071" m22="0.7071" dx="16" dy="-6.6274" color="-1" />
+    <Frame FrameValue="10" GraphicSheet="Ship" CellIndex="0" m11="0.766" m12="0.6428" m21="-0.6428" m22="0.766" dx="14.0279" dy="-6.5413" color="-1" />
+    <Frame FrameValue="11" GraphicSheet="Ship" CellIndex="0" m11="0.8192" m12="0.5736" m21="-0.5736" m22="0.8192" dx="12.0708" dy="-6.2837" color="-1" />
+    <Frame FrameValue="12" GraphicSheet="Ship" CellIndex="0" m11="0.866" m12="0.5" m21="-0.5" m22="0.866" dx="10.1436" dy="-5.8564" color="-1" />
+    <Frame FrameValue="13" GraphicSheet="Ship" CellIndex="0" m11="0.9063" m12="0.4226" m21="-0.4226" m22="0.9063" dx="8.261" dy="-5.2628" color="-1" />
+    <Frame FrameValue="14" GraphicSheet="Ship" CellIndex="0" m11="0.9397" m12="0.342" m21="-0.342" m22="0.9397" dx="6.4372" dy="-4.5074" color="-1" />
+    <Frame FrameValue="15" GraphicSheet="Ship" CellIndex="0" m11="0.9659" m12="0.2588" m21="-0.2588" m22="0.9659" dx="4.6863" dy="-3.5959" color="-1" />
+    <Frame FrameValue="16" GraphicSheet="Ship" CellIndex="0" m11="0.9848" m12="0.1736" m21="-0.1736" m22="0.9848" dx="3.0214" dy="-2.5353" color="-1" />
+    <Frame FrameValue="17" GraphicSheet="Ship" CellIndex="0" m11="0.9962" m12="0.0872" m21="-0.0872" m22="0.9962" dx="1.4554" dy="-1.3336" color="-1" />
+    <Frame FrameValue="18" GraphicSheet="Ship" CellIndex="0" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="19" GraphicSheet="Ship" CellIndex="0" m11="0.9962" m12="-0.0872" m21="0.0872" m22="0.9962" dx="-1.3336" dy="1.4554" color="-1" />
+    <Frame FrameValue="20" GraphicSheet="Ship" CellIndex="0" m11="0.9848" m12="-0.1736" m21="0.1736" m22="0.9848" dx="-2.5353" dy="3.0214" color="-1" />
+    <Frame FrameValue="21" GraphicSheet="Ship" CellIndex="0" m11="0.9659" m12="-0.2588" m21="0.2588" m22="0.9659" dx="-3.5959" dy="4.6863" color="-1" />
+    <Frame FrameValue="22" GraphicSheet="Ship" CellIndex="0" m11="0.9397" m12="-0.342" m21="0.342" m22="0.9397" dx="-4.5074" dy="6.4372" color="-1" />
+    <Frame FrameValue="23" GraphicSheet="Ship" CellIndex="0" m11="0.9063" m12="-0.4226" m21="0.4226" m22="0.9063" dx="-5.2628" dy="8.261" color="-1" />
+    <Frame FrameValue="24" GraphicSheet="Ship" CellIndex="0" m11="0.866" m12="-0.5" m21="0.5" m22="0.866" dx="-5.8564" dy="10.1436" color="-1" />
+    <Frame FrameValue="25" GraphicSheet="Ship" CellIndex="0" m11="0.8192" m12="-0.5736" m21="0.5736" m22="0.8192" dx="-6.2837" dy="12.0708" color="-1" />
+    <Frame FrameValue="26" GraphicSheet="Ship" CellIndex="0" m11="0.766" m12="-0.6428" m21="0.6428" m22="0.766" dx="-6.5413" dy="14.0279" color="-1" />
+    <Frame FrameValue="27" GraphicSheet="Ship" CellIndex="0" m11="0.7071" m12="-0.7071" m21="0.7071" m22="0.7071" dx="-6.6274" dy="16" color="-1" />
+    <Frame FrameValue="28" GraphicSheet="Ship" CellIndex="0" m11="0.6428" m12="-0.766" m21="0.766" m22="0.6428" dx="-6.5413" dy="17.9721" color="-1" />
+    <Frame FrameValue="29" GraphicSheet="Ship" CellIndex="0" m11="0.5736" m12="-0.8192" m21="0.8192" m22="0.5736" dx="-6.2837" dy="19.9292" color="-1" />
+    <Frame FrameValue="30" GraphicSheet="Ship" CellIndex="0" m11="0.5" m12="-0.866" m21="0.866" m22="0.5" dx="-5.8564" dy="21.8564" color="-1" />
+    <Frame FrameValue="31" GraphicSheet="Ship" CellIndex="0" m11="0.4226" m12="-0.9063" m21="0.9063" m22="0.4226" dx="-5.2628" dy="23.739" color="-1" />
+    <Frame FrameValue="32" GraphicSheet="Ship" CellIndex="0" m11="0.342" m12="-0.9397" m21="0.9397" m22="0.342" dx="-4.5074" dy="25.5628" color="-1" />
+    <Frame FrameValue="33" GraphicSheet="Ship" CellIndex="0" m11="0.2588" m12="-0.9659" m21="0.9659" m22="0.2588" dx="-3.5959" dy="27.3137" color="-1" />
+    <Frame FrameValue="34" GraphicSheet="Ship" CellIndex="0" m11="0.1736" m12="-0.9848" m21="0.9848" m22="0.1736" dx="-2.5353" dy="28.9786" color="-1" />
+    <Frame FrameValue="35" GraphicSheet="Ship" CellIndex="0" m11="0.0872" m12="-0.9962" m21="0.9962" m22="0.0872" dx="-1.3336" dy="30.5446" color="-1" />
+    <Frame FrameValue="36" GraphicSheet="Ship" CellIndex="0" m11="0" m12="-1" m21="1" m22="0" dx="0" dy="32" color="-1" />
+    <Frame FrameValue="37" GraphicSheet="Ship" CellIndex="0" m11="-0.0872" m12="-0.9962" m21="0.9962" m22="-0.0872" dx="1.4554" dy="33.3336" color="-1" />
+    <Frame FrameValue="38" GraphicSheet="Ship" CellIndex="0" m11="-0.1736" m12="-0.9848" m21="0.9848" m22="-0.1736" dx="3.0214" dy="34.5353" color="-1" />
+    <Frame FrameValue="39" GraphicSheet="Ship" CellIndex="0" m11="-0.2588" m12="-0.9659" m21="0.9659" m22="-0.2588" dx="4.6863" dy="35.5959" color="-1" />
+    <Frame FrameValue="40" GraphicSheet="Ship" CellIndex="0" m11="-0.342" m12="-0.9397" m21="0.9397" m22="-0.342" dx="6.4372" dy="36.5074" color="-1" />
+    <Frame FrameValue="41" GraphicSheet="Ship" CellIndex="0" m11="-0.4226" m12="-0.9063" m21="0.9063" m22="-0.4226" dx="8.261" dy="37.2628" color="-1" />
+    <Frame FrameValue="42" GraphicSheet="Ship" CellIndex="0" m11="-0.5" m12="-0.866" m21="0.866" m22="-0.5" dx="10.1436" dy="37.8564" color="-1" />
+    <Frame FrameValue="43" GraphicSheet="Ship" CellIndex="0" m11="-0.5736" m12="-0.8192" m21="0.8192" m22="-0.5736" dx="12.0708" dy="38.2837" color="-1" />
+    <Frame FrameValue="44" GraphicSheet="Ship" CellIndex="0" m11="-0.6428" m12="-0.766" m21="0.766" m22="-0.6428" dx="14.0279" dy="38.5413" color="-1" />
+    <Frame FrameValue="45" GraphicSheet="Ship" CellIndex="0" m11="-0.7071" m12="-0.7071" m21="0.7071" m22="-0.7071" dx="16" dy="38.6274" color="-1" />
+    <Frame FrameValue="46" GraphicSheet="Ship" CellIndex="0" m11="-0.766" m12="-0.6428" m21="0.6428" m22="-0.766" dx="17.9721" dy="38.5413" color="-1" />
+    <Frame FrameValue="47" GraphicSheet="Ship" CellIndex="0" m11="-0.8192" m12="-0.5736" m21="0.5736" m22="-0.8192" dx="19.9292" dy="38.2837" color="-1" />
+    <Frame FrameValue="48" GraphicSheet="Ship" CellIndex="0" m11="-0.866" m12="-0.5" m21="0.5" m22="-0.866" dx="21.8564" dy="37.8564" color="-1" />
+    <Frame FrameValue="49" GraphicSheet="Ship" CellIndex="0" m11="-0.9063" m12="-0.4226" m21="0.4226" m22="-0.9063" dx="23.739" dy="37.2628" color="-1" />
+    <Frame FrameValue="50" GraphicSheet="Ship" CellIndex="0" m11="-0.9397" m12="-0.342" m21="0.342" m22="-0.9397" dx="25.5628" dy="36.5074" color="-1" />
+    <Frame FrameValue="51" GraphicSheet="Ship" CellIndex="0" m11="-0.9659" m12="-0.2588" m21="0.2588" m22="-0.9659" dx="27.3137" dy="35.5959" color="-1" />
+    <Frame FrameValue="52" GraphicSheet="Ship" CellIndex="0" m11="-0.9848" m12="-0.1736" m21="0.1736" m22="-0.9848" dx="28.9786" dy="34.5353" color="-1" />
+    <Frame FrameValue="53" GraphicSheet="Ship" CellIndex="0" m11="-0.9962" m12="-0.0872" m21="0.0872" m22="-0.9962" dx="30.5446" dy="33.3336" color="-1" />
+    <Frame FrameValue="54" GraphicSheet="Ship" CellIndex="0" m11="-1" m12="0" m21="0" m22="-1" dx="32" dy="32" color="-1" />
+    <Frame FrameValue="55" GraphicSheet="Ship" CellIndex="0" m11="-0.9962" m12="0.0872" m21="-0.0872" m22="-0.9962" dx="33.3336" dy="30.5446" color="-1" />
+    <Frame FrameValue="56" GraphicSheet="Ship" CellIndex="0" m11="-0.9848" m12="0.1736" m21="-0.1736" m22="-0.9848" dx="34.5353" dy="28.9786" color="-1" />
+    <Frame FrameValue="57" GraphicSheet="Ship" CellIndex="0" m11="-0.9659" m12="0.2588" m21="-0.2588" m22="-0.9659" dx="35.5959" dy="27.3137" color="-1" />
+    <Frame FrameValue="58" GraphicSheet="Ship" CellIndex="0" m11="-0.9397" m12="0.342" m21="-0.342" m22="-0.9397" dx="36.5074" dy="25.5628" color="-1" />
+    <Frame FrameValue="59" GraphicSheet="Ship" CellIndex="0" m11="-0.9063" m12="0.4226" m21="-0.4226" m22="-0.9063" dx="37.2628" dy="23.739" color="-1" />
+    <Frame FrameValue="60" GraphicSheet="Ship" CellIndex="0" m11="-0.866" m12="0.5" m21="-0.5" m22="-0.866" dx="37.8564" dy="21.8564" color="-1" />
+    <Frame FrameValue="61" GraphicSheet="Ship" CellIndex="0" m11="-0.8192" m12="0.5736" m21="-0.5736" m22="-0.8192" dx="38.2837" dy="19.9292" color="-1" />
+    <Frame FrameValue="62" GraphicSheet="Ship" CellIndex="0" m11="-0.766" m12="0.6428" m21="-0.6428" m22="-0.766" dx="38.5413" dy="17.9721" color="-1" />
+    <Frame FrameValue="63" GraphicSheet="Ship" CellIndex="0" m11="-0.7071" m12="0.7071" m21="-0.7071" m22="-0.7071" dx="38.6274" dy="16" color="-1" />
+    <Frame FrameValue="64" GraphicSheet="Ship" CellIndex="0" m11="-0.6428" m12="0.766" m21="-0.766" m22="-0.6428" dx="38.5413" dy="14.0279" color="-1" />
+    <Frame FrameValue="65" GraphicSheet="Ship" CellIndex="0" m11="-0.5736" m12="0.8192" m21="-0.8192" m22="-0.5736" dx="38.2837" dy="12.0708" color="-1" />
+    <Frame FrameValue="66" GraphicSheet="Ship" CellIndex="0" m11="-0.5" m12="0.866" m21="-0.866" m22="-0.5" dx="37.8564" dy="10.1436" color="-1" />
+    <Frame FrameValue="67" GraphicSheet="Ship" CellIndex="0" m11="-0.4226" m12="0.9063" m21="-0.9063" m22="-0.4226" dx="37.2628" dy="8.261" color="-1" />
+    <Frame FrameValue="68" GraphicSheet="Ship" CellIndex="0" m11="-0.342" m12="0.9397" m21="-0.9397" m22="-0.342" dx="36.5074" dy="6.4372" color="-1" />
+    <Frame FrameValue="69" GraphicSheet="Ship" CellIndex="0" m11="-0.2588" m12="0.9659" m21="-0.9659" m22="-0.2588" dx="35.5959" dy="4.6863" color="-1" />
+    <Frame FrameValue="70" GraphicSheet="Ship" CellIndex="0" m11="-0.1736" m12="0.9848" m21="-0.9848" m22="-0.1736" dx="34.5353" dy="3.0214" color="-1" />
+    <Frame FrameValue="71" GraphicSheet="Ship" CellIndex="0" m11="-0.0872" m12="0.9962" m21="-0.9962" m22="-0.0872" dx="33.3336" dy="1.4554" color="-1" />
+    <Frame FrameValue="72" GraphicSheet="Ship" CellIndex="1" m11="0" m12="1" m21="-1" m22="0" dx="32" dy="0" color="-1" />
+    <Frame FrameValue="73" GraphicSheet="Ship" CellIndex="1" m11="0.0872" m12="0.9962" m21="-0.9962" m22="0.0872" dx="30.5446" dy="-1.3336" color="-1" />
+    <Frame FrameValue="74" GraphicSheet="Ship" CellIndex="1" m11="0.1736" m12="0.9848" m21="-0.9848" m22="0.1736" dx="28.9786" dy="-2.5353" color="-1" />
+    <Frame FrameValue="75" GraphicSheet="Ship" CellIndex="1" m11="0.2588" m12="0.9659" m21="-0.9659" m22="0.2588" dx="27.3137" dy="-3.5959" color="-1" />
+    <Frame FrameValue="76" GraphicSheet="Ship" CellIndex="1" m11="0.342" m12="0.9397" m21="-0.9397" m22="0.342" dx="25.5628" dy="-4.5074" color="-1" />
+    <Frame FrameValue="77" GraphicSheet="Ship" CellIndex="1" m11="0.4226" m12="0.9063" m21="-0.9063" m22="0.4226" dx="23.739" dy="-5.2628" color="-1" />
+    <Frame FrameValue="78" GraphicSheet="Ship" CellIndex="1" m11="0.5" m12="0.866" m21="-0.866" m22="0.5" dx="21.8564" dy="-5.8564" color="-1" />
+    <Frame FrameValue="79" GraphicSheet="Ship" CellIndex="1" m11="0.5736" m12="0.8192" m21="-0.8192" m22="0.5736" dx="19.9292" dy="-6.2837" color="-1" />
+    <Frame FrameValue="80" GraphicSheet="Ship" CellIndex="1" m11="0.6428" m12="0.766" m21="-0.766" m22="0.6428" dx="17.9721" dy="-6.5413" color="-1" />
+    <Frame FrameValue="81" GraphicSheet="Ship" CellIndex="1" m11="0.7071" m12="0.7071" m21="-0.7071" m22="0.7071" dx="16" dy="-6.6274" color="-1" />
+    <Frame FrameValue="82" GraphicSheet="Ship" CellIndex="1" m11="0.766" m12="0.6428" m21="-0.6428" m22="0.766" dx="14.0279" dy="-6.5413" color="-1" />
+    <Frame FrameValue="83" GraphicSheet="Ship" CellIndex="1" m11="0.8192" m12="0.5736" m21="-0.5736" m22="0.8192" dx="12.0708" dy="-6.2837" color="-1" />
+    <Frame FrameValue="84" GraphicSheet="Ship" CellIndex="1" m11="0.866" m12="0.5" m21="-0.5" m22="0.866" dx="10.1436" dy="-5.8564" color="-1" />
+    <Frame FrameValue="85" GraphicSheet="Ship" CellIndex="1" m11="0.9063" m12="0.4226" m21="-0.4226" m22="0.9063" dx="8.261" dy="-5.2628" color="-1" />
+    <Frame FrameValue="86" GraphicSheet="Ship" CellIndex="1" m11="0.9397" m12="0.342" m21="-0.342" m22="0.9397" dx="6.4372" dy="-4.5074" color="-1" />
+    <Frame FrameValue="87" GraphicSheet="Ship" CellIndex="1" m11="0.9659" m12="0.2588" m21="-0.2588" m22="0.9659" dx="4.6863" dy="-3.5959" color="-1" />
+    <Frame FrameValue="88" GraphicSheet="Ship" CellIndex="1" m11="0.9848" m12="0.1736" m21="-0.1736" m22="0.9848" dx="3.0214" dy="-2.5353" color="-1" />
+    <Frame FrameValue="89" GraphicSheet="Ship" CellIndex="1" m11="0.9962" m12="0.0872" m21="-0.0872" m22="0.9962" dx="1.4554" dy="-1.3336" color="-1" />
+    <Frame FrameValue="90" GraphicSheet="Ship" CellIndex="1" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="91" GraphicSheet="Ship" CellIndex="1" m11="0.9962" m12="-0.0872" m21="0.0872" m22="0.9962" dx="-1.3336" dy="1.4554" color="-1" />
+    <Frame FrameValue="92" GraphicSheet="Ship" CellIndex="1" m11="0.9848" m12="-0.1736" m21="0.1736" m22="0.9848" dx="-2.5353" dy="3.0214" color="-1" />
+    <Frame FrameValue="93" GraphicSheet="Ship" CellIndex="1" m11="0.9659" m12="-0.2588" m21="0.2588" m22="0.9659" dx="-3.5959" dy="4.6863" color="-1" />
+    <Frame FrameValue="94" GraphicSheet="Ship" CellIndex="1" m11="0.9397" m12="-0.342" m21="0.342" m22="0.9397" dx="-4.5074" dy="6.4372" color="-1" />
+    <Frame FrameValue="95" GraphicSheet="Ship" CellIndex="1" m11="0.9063" m12="-0.4226" m21="0.4226" m22="0.9063" dx="-5.2628" dy="8.261" color="-1" />
+    <Frame FrameValue="96" GraphicSheet="Ship" CellIndex="1" m11="0.866" m12="-0.5" m21="0.5" m22="0.866" dx="-5.8564" dy="10.1436" color="-1" />
+    <Frame FrameValue="97" GraphicSheet="Ship" CellIndex="1" m11="0.8192" m12="-0.5736" m21="0.5736" m22="0.8192" dx="-6.2837" dy="12.0708" color="-1" />
+    <Frame FrameValue="98" GraphicSheet="Ship" CellIndex="1" m11="0.766" m12="-0.6428" m21="0.6428" m22="0.766" dx="-6.5413" dy="14.0279" color="-1" />
+    <Frame FrameValue="99" GraphicSheet="Ship" CellIndex="1" m11="0.7071" m12="-0.7071" m21="0.7071" m22="0.7071" dx="-6.6274" dy="16" color="-1" />
+    <Frame FrameValue="100" GraphicSheet="Ship" CellIndex="1" m11="0.6428" m12="-0.766" m21="0.766" m22="0.6428" dx="-6.5413" dy="17.9721" color="-1" />
+    <Frame FrameValue="101" GraphicSheet="Ship" CellIndex="1" m11="0.5736" m12="-0.8192" m21="0.8192" m22="0.5736" dx="-6.2837" dy="19.9292" color="-1" />
+    <Frame FrameValue="102" GraphicSheet="Ship" CellIndex="1" m11="0.5" m12="-0.866" m21="0.866" m22="0.5" dx="-5.8564" dy="21.8564" color="-1" />
+    <Frame FrameValue="103" GraphicSheet="Ship" CellIndex="1" m11="0.4226" m12="-0.9063" m21="0.9063" m22="0.4226" dx="-5.2628" dy="23.739" color="-1" />
+    <Frame FrameValue="104" GraphicSheet="Ship" CellIndex="1" m11="0.342" m12="-0.9397" m21="0.9397" m22="0.342" dx="-4.5074" dy="25.5628" color="-1" />
+    <Frame FrameValue="105" GraphicSheet="Ship" CellIndex="1" m11="0.2588" m12="-0.9659" m21="0.9659" m22="0.2588" dx="-3.5959" dy="27.3137" color="-1" />
+    <Frame FrameValue="106" GraphicSheet="Ship" CellIndex="1" m11="0.1736" m12="-0.9848" m21="0.9848" m22="0.1736" dx="-2.5353" dy="28.9786" color="-1" />
+    <Frame FrameValue="107" GraphicSheet="Ship" CellIndex="1" m11="0.0872" m12="-0.9962" m21="0.9962" m22="0.0872" dx="-1.3336" dy="30.5446" color="-1" />
+    <Frame FrameValue="108" GraphicSheet="Ship" CellIndex="1" m11="0" m12="-1" m21="1" m22="0" dx="0" dy="32" color="-1" />
+    <Frame FrameValue="109" GraphicSheet="Ship" CellIndex="1" m11="-0.0872" m12="-0.9962" m21="0.9962" m22="-0.0872" dx="1.4554" dy="33.3336" color="-1" />
+    <Frame FrameValue="110" GraphicSheet="Ship" CellIndex="1" m11="-0.1736" m12="-0.9848" m21="0.9848" m22="-0.1736" dx="3.0214" dy="34.5353" color="-1" />
+    <Frame FrameValue="111" GraphicSheet="Ship" CellIndex="1" m11="-0.2588" m12="-0.9659" m21="0.9659" m22="-0.2588" dx="4.6863" dy="35.5959" color="-1" />
+    <Frame FrameValue="112" GraphicSheet="Ship" CellIndex="1" m11="-0.342" m12="-0.9397" m21="0.9397" m22="-0.342" dx="6.4372" dy="36.5074" color="-1" />
+    <Frame FrameValue="113" GraphicSheet="Ship" CellIndex="1" m11="-0.4226" m12="-0.9063" m21="0.9063" m22="-0.4226" dx="8.261" dy="37.2628" color="-1" />
+    <Frame FrameValue="114" GraphicSheet="Ship" CellIndex="1" m11="-0.5" m12="-0.866" m21="0.866" m22="-0.5" dx="10.1436" dy="37.8564" color="-1" />
+    <Frame FrameValue="115" GraphicSheet="Ship" CellIndex="1" m11="-0.5736" m12="-0.8192" m21="0.8192" m22="-0.5736" dx="12.0708" dy="38.2837" color="-1" />
+    <Frame FrameValue="116" GraphicSheet="Ship" CellIndex="1" m11="-0.6428" m12="-0.766" m21="0.766" m22="-0.6428" dx="14.0279" dy="38.5413" color="-1" />
+    <Frame FrameValue="117" GraphicSheet="Ship" CellIndex="1" m11="-0.7071" m12="-0.7071" m21="0.7071" m22="-0.7071" dx="16" dy="38.6274" color="-1" />
+    <Frame FrameValue="118" GraphicSheet="Ship" CellIndex="1" m11="-0.766" m12="-0.6428" m21="0.6428" m22="-0.766" dx="17.9721" dy="38.5413" color="-1" />
+    <Frame FrameValue="119" GraphicSheet="Ship" CellIndex="1" m11="-0.8192" m12="-0.5736" m21="0.5736" m22="-0.8192" dx="19.9292" dy="38.2837" color="-1" />
+    <Frame FrameValue="120" GraphicSheet="Ship" CellIndex="1" m11="-0.866" m12="-0.5" m21="0.5" m22="-0.866" dx="21.8564" dy="37.8564" color="-1" />
+    <Frame FrameValue="121" GraphicSheet="Ship" CellIndex="1" m11="-0.9063" m12="-0.4226" m21="0.4226" m22="-0.9063" dx="23.739" dy="37.2628" color="-1" />
+    <Frame FrameValue="122" GraphicSheet="Ship" CellIndex="1" m11="-0.9397" m12="-0.342" m21="0.342" m22="-0.9397" dx="25.5628" dy="36.5074" color="-1" />
+    <Frame FrameValue="123" GraphicSheet="Ship" CellIndex="1" m11="-0.9659" m12="-0.2588" m21="0.2588" m22="-0.9659" dx="27.3137" dy="35.5959" color="-1" />
+    <Frame FrameValue="124" GraphicSheet="Ship" CellIndex="1" m11="-0.9848" m12="-0.1736" m21="0.1736" m22="-0.9848" dx="28.9786" dy="34.5353" color="-1" />
+    <Frame FrameValue="125" GraphicSheet="Ship" CellIndex="1" m11="-0.9962" m12="-0.0872" m21="0.0872" m22="-0.9962" dx="30.5446" dy="33.3336" color="-1" />
+    <Frame FrameValue="126" GraphicSheet="Ship" CellIndex="1" m11="-1" m12="0" m21="0" m22="-1" dx="32" dy="32" color="-1" />
+    <Frame FrameValue="127" GraphicSheet="Ship" CellIndex="1" m11="-0.9962" m12="0.0872" m21="-0.0872" m22="-0.9962" dx="33.3336" dy="30.5446" color="-1" />
+    <Frame FrameValue="128" GraphicSheet="Ship" CellIndex="1" m11="-0.9848" m12="0.1736" m21="-0.1736" m22="-0.9848" dx="34.5353" dy="28.9786" color="-1" />
+    <Frame FrameValue="129" GraphicSheet="Ship" CellIndex="1" m11="-0.9659" m12="0.2588" m21="-0.2588" m22="-0.9659" dx="35.5959" dy="27.3137" color="-1" />
+    <Frame FrameValue="130" GraphicSheet="Ship" CellIndex="1" m11="-0.9397" m12="0.342" m21="-0.342" m22="-0.9397" dx="36.5074" dy="25.5628" color="-1" />
+    <Frame FrameValue="131" GraphicSheet="Ship" CellIndex="1" m11="-0.9063" m12="0.4226" m21="-0.4226" m22="-0.9063" dx="37.2628" dy="23.739" color="-1" />
+    <Frame FrameValue="132" GraphicSheet="Ship" CellIndex="1" m11="-0.866" m12="0.5" m21="-0.5" m22="-0.866" dx="37.8564" dy="21.8564" color="-1" />
+    <Frame FrameValue="133" GraphicSheet="Ship" CellIndex="1" m11="-0.8192" m12="0.5736" m21="-0.5736" m22="-0.8192" dx="38.2837" dy="19.9292" color="-1" />
+    <Frame FrameValue="134" GraphicSheet="Ship" CellIndex="1" m11="-0.766" m12="0.6428" m21="-0.6428" m22="-0.766" dx="38.5413" dy="17.9721" color="-1" />
+    <Frame FrameValue="135" GraphicSheet="Ship" CellIndex="1" m11="-0.7071" m12="0.7071" m21="-0.7071" m22="-0.7071" dx="38.6274" dy="16" color="-1" />
+    <Frame FrameValue="136" GraphicSheet="Ship" CellIndex="1" m11="-0.6428" m12="0.766" m21="-0.766" m22="-0.6428" dx="38.5413" dy="14.0279" color="-1" />
+    <Frame FrameValue="137" GraphicSheet="Ship" CellIndex="1" m11="-0.5736" m12="0.8192" m21="-0.8192" m22="-0.5736" dx="38.2837" dy="12.0708" color="-1" />
+    <Frame FrameValue="138" GraphicSheet="Ship" CellIndex="1" m11="-0.5" m12="0.866" m21="-0.866" m22="-0.5" dx="37.8564" dy="10.1436" color="-1" />
+    <Frame FrameValue="139" GraphicSheet="Ship" CellIndex="1" m11="-0.4226" m12="0.9063" m21="-0.9063" m22="-0.4226" dx="37.2628" dy="8.261" color="-1" />
+    <Frame FrameValue="140" GraphicSheet="Ship" CellIndex="1" m11="-0.342" m12="0.9397" m21="-0.9397" m22="-0.342" dx="36.5074" dy="6.4372" color="-1" />
+    <Frame FrameValue="141" GraphicSheet="Ship" CellIndex="1" m11="-0.2588" m12="0.9659" m21="-0.9659" m22="-0.2588" dx="35.5959" dy="4.6863" color="-1" />
+    <Frame FrameValue="142" GraphicSheet="Ship" CellIndex="1" m11="-0.1736" m12="0.9848" m21="-0.9848" m22="-0.1736" dx="34.5353" dy="3.0214" color="-1" />
+    <Frame FrameValue="143" GraphicSheet="Ship" CellIndex="1" m11="-0.0872" m12="0.9962" m21="-0.9962" m22="-0.0872" dx="33.3336" dy="1.4554" color="-1" />
+    <Frame FrameValue="144" GraphicSheet="ShipFire" CellIndex="0" m11="0" m12="1" m21="-1" m22="0" dx="32" dy="0" color="-1" />
+    <Frame FrameValue="145" GraphicSheet="ShipFire" CellIndex="0" m11="0.0872" m12="0.9962" m21="-0.9962" m22="0.0872" dx="30.5446" dy="-1.3336" color="-1" />
+    <Frame FrameValue="146" GraphicSheet="ShipFire" CellIndex="0" m11="0.1736" m12="0.9848" m21="-0.9848" m22="0.1736" dx="28.9786" dy="-2.5353" color="-1" />
+    <Frame FrameValue="147" GraphicSheet="ShipFire" CellIndex="0" m11="0.2588" m12="0.9659" m21="-0.9659" m22="0.2588" dx="27.3137" dy="-3.5959" color="-1" />
+    <Frame FrameValue="148" GraphicSheet="ShipFire" CellIndex="0" m11="0.342" m12="0.9397" m21="-0.9397" m22="0.342" dx="25.5628" dy="-4.5074" color="-1" />
+    <Frame FrameValue="149" GraphicSheet="ShipFire" CellIndex="0" m11="0.4226" m12="0.9063" m21="-0.9063" m22="0.4226" dx="23.739" dy="-5.2628" color="-1" />
+    <Frame FrameValue="150" GraphicSheet="ShipFire" CellIndex="0" m11="0.5" m12="0.866" m21="-0.866" m22="0.5" dx="21.8564" dy="-5.8564" color="-1" />
+    <Frame FrameValue="151" GraphicSheet="ShipFire" CellIndex="0" m11="0.5736" m12="0.8192" m21="-0.8192" m22="0.5736" dx="19.9292" dy="-6.2837" color="-1" />
+    <Frame FrameValue="152" GraphicSheet="ShipFire" CellIndex="0" m11="0.6428" m12="0.766" m21="-0.766" m22="0.6428" dx="17.9721" dy="-6.5413" color="-1" />
+    <Frame FrameValue="153" GraphicSheet="ShipFire" CellIndex="0" m11="0.7071" m12="0.7071" m21="-0.7071" m22="0.7071" dx="16" dy="-6.6274" color="-1" />
+    <Frame FrameValue="154" GraphicSheet="ShipFire" CellIndex="0" m11="0.766" m12="0.6428" m21="-0.6428" m22="0.766" dx="14.0279" dy="-6.5413" color="-1" />
+    <Frame FrameValue="155" GraphicSheet="ShipFire" CellIndex="0" m11="0.8192" m12="0.5736" m21="-0.5736" m22="0.8192" dx="12.0708" dy="-6.2837" color="-1" />
+    <Frame FrameValue="156" GraphicSheet="ShipFire" CellIndex="0" m11="0.866" m12="0.5" m21="-0.5" m22="0.866" dx="10.1436" dy="-5.8564" color="-1" />
+    <Frame FrameValue="157" GraphicSheet="ShipFire" CellIndex="0" m11="0.9063" m12="0.4226" m21="-0.4226" m22="0.9063" dx="8.261" dy="-5.2628" color="-1" />
+    <Frame FrameValue="158" GraphicSheet="ShipFire" CellIndex="0" m11="0.9397" m12="0.342" m21="-0.342" m22="0.9397" dx="6.4372" dy="-4.5074" color="-1" />
+    <Frame FrameValue="159" GraphicSheet="ShipFire" CellIndex="0" m11="0.9659" m12="0.2588" m21="-0.2588" m22="0.9659" dx="4.6863" dy="-3.5959" color="-1" />
+    <Frame FrameValue="160" GraphicSheet="ShipFire" CellIndex="0" m11="0.9848" m12="0.1736" m21="-0.1736" m22="0.9848" dx="3.0214" dy="-2.5353" color="-1" />
+    <Frame FrameValue="161" GraphicSheet="ShipFire" CellIndex="0" m11="0.9962" m12="0.0872" m21="-0.0872" m22="0.9962" dx="1.4554" dy="-1.3336" color="-1" />
+    <Frame FrameValue="162" GraphicSheet="ShipFire" CellIndex="0" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="163" GraphicSheet="ShipFire" CellIndex="0" m11="0.9962" m12="-0.0872" m21="0.0872" m22="0.9962" dx="-1.3336" dy="1.4554" color="-1" />
+    <Frame FrameValue="164" GraphicSheet="ShipFire" CellIndex="0" m11="0.9848" m12="-0.1736" m21="0.1736" m22="0.9848" dx="-2.5353" dy="3.0214" color="-1" />
+    <Frame FrameValue="165" GraphicSheet="ShipFire" CellIndex="0" m11="0.9659" m12="-0.2588" m21="0.2588" m22="0.9659" dx="-3.5959" dy="4.6863" color="-1" />
+    <Frame FrameValue="166" GraphicSheet="ShipFire" CellIndex="0" m11="0.9397" m12="-0.342" m21="0.342" m22="0.9397" dx="-4.5074" dy="6.4372" color="-1" />
+    <Frame FrameValue="167" GraphicSheet="ShipFire" CellIndex="0" m11="0.9063" m12="-0.4226" m21="0.4226" m22="0.9063" dx="-5.2628" dy="8.261" color="-1" />
+    <Frame FrameValue="168" GraphicSheet="ShipFire" CellIndex="0" m11="0.866" m12="-0.5" m21="0.5" m22="0.866" dx="-5.8564" dy="10.1436" color="-1" />
+    <Frame FrameValue="169" GraphicSheet="ShipFire" CellIndex="0" m11="0.8192" m12="-0.5736" m21="0.5736" m22="0.8192" dx="-6.2837" dy="12.0708" color="-1" />
+    <Frame FrameValue="170" GraphicSheet="ShipFire" CellIndex="0" m11="0.766" m12="-0.6428" m21="0.6428" m22="0.766" dx="-6.5413" dy="14.0279" color="-1" />
+    <Frame FrameValue="171" GraphicSheet="ShipFire" CellIndex="0" m11="0.7071" m12="-0.7071" m21="0.7071" m22="0.7071" dx="-6.6274" dy="16" color="-1" />
+    <Frame FrameValue="172" GraphicSheet="ShipFire" CellIndex="0" m11="0.6428" m12="-0.766" m21="0.766" m22="0.6428" dx="-6.5413" dy="17.9721" color="-1" />
+    <Frame FrameValue="173" GraphicSheet="ShipFire" CellIndex="0" m11="0.5736" m12="-0.8192" m21="0.8192" m22="0.5736" dx="-6.2837" dy="19.9292" color="-1" />
+    <Frame FrameValue="174" GraphicSheet="ShipFire" CellIndex="0" m11="0.5" m12="-0.866" m21="0.866" m22="0.5" dx="-5.8564" dy="21.8564" color="-1" />
+    <Frame FrameValue="175" GraphicSheet="ShipFire" CellIndex="0" m11="0.4226" m12="-0.9063" m21="0.9063" m22="0.4226" dx="-5.2628" dy="23.739" color="-1" />
+    <Frame FrameValue="176" GraphicSheet="ShipFire" CellIndex="0" m11="0.342" m12="-0.9397" m21="0.9397" m22="0.342" dx="-4.5074" dy="25.5628" color="-1" />
+    <Frame FrameValue="177" GraphicSheet="ShipFire" CellIndex="0" m11="0.2588" m12="-0.9659" m21="0.9659" m22="0.2588" dx="-3.5959" dy="27.3137" color="-1" />
+    <Frame FrameValue="178" GraphicSheet="ShipFire" CellIndex="0" m11="0.1736" m12="-0.9848" m21="0.9848" m22="0.1736" dx="-2.5353" dy="28.9786" color="-1" />
+    <Frame FrameValue="179" GraphicSheet="ShipFire" CellIndex="0" m11="0.0872" m12="-0.9962" m21="0.9962" m22="0.0872" dx="-1.3336" dy="30.5446" color="-1" />
+    <Frame FrameValue="180" GraphicSheet="ShipFire" CellIndex="0" m11="0" m12="-1" m21="1" m22="0" dx="0" dy="32" color="-1" />
+    <Frame FrameValue="181" GraphicSheet="ShipFire" CellIndex="0" m11="-0.0872" m12="-0.9962" m21="0.9962" m22="-0.0872" dx="1.4554" dy="33.3336" color="-1" />
+    <Frame FrameValue="182" GraphicSheet="ShipFire" CellIndex="0" m11="-0.1736" m12="-0.9848" m21="0.9848" m22="-0.1736" dx="3.0214" dy="34.5353" color="-1" />
+    <Frame FrameValue="183" GraphicSheet="ShipFire" CellIndex="0" m11="-0.2588" m12="-0.9659" m21="0.9659" m22="-0.2588" dx="4.6863" dy="35.5959" color="-1" />
+    <Frame FrameValue="184" GraphicSheet="ShipFire" CellIndex="0" m11="-0.342" m12="-0.9397" m21="0.9397" m22="-0.342" dx="6.4372" dy="36.5074" color="-1" />
+    <Frame FrameValue="185" GraphicSheet="ShipFire" CellIndex="0" m11="-0.4226" m12="-0.9063" m21="0.9063" m22="-0.4226" dx="8.261" dy="37.2628" color="-1" />
+    <Frame FrameValue="186" GraphicSheet="ShipFire" CellIndex="0" m11="-0.5" m12="-0.866" m21="0.866" m22="-0.5" dx="10.1436" dy="37.8564" color="-1" />
+    <Frame FrameValue="187" GraphicSheet="ShipFire" CellIndex="0" m11="-0.5736" m12="-0.8192" m21="0.8192" m22="-0.5736" dx="12.0708" dy="38.2837" color="-1" />
+    <Frame FrameValue="188" GraphicSheet="ShipFire" CellIndex="0" m11="-0.6428" m12="-0.766" m21="0.766" m22="-0.6428" dx="14.0279" dy="38.5413" color="-1" />
+    <Frame FrameValue="189" GraphicSheet="ShipFire" CellIndex="0" m11="-0.7071" m12="-0.7071" m21="0.7071" m22="-0.7071" dx="16" dy="38.6274" color="-1" />
+    <Frame FrameValue="190" GraphicSheet="ShipFire" CellIndex="0" m11="-0.766" m12="-0.6428" m21="0.6428" m22="-0.766" dx="17.9721" dy="38.5413" color="-1" />
+    <Frame FrameValue="191" GraphicSheet="ShipFire" CellIndex="0" m11="-0.8192" m12="-0.5736" m21="0.5736" m22="-0.8192" dx="19.9292" dy="38.2837" color="-1" />
+    <Frame FrameValue="192" GraphicSheet="ShipFire" CellIndex="0" m11="-0.866" m12="-0.5" m21="0.5" m22="-0.866" dx="21.8564" dy="37.8564" color="-1" />
+    <Frame FrameValue="193" GraphicSheet="ShipFire" CellIndex="0" m11="-0.9063" m12="-0.4226" m21="0.4226" m22="-0.9063" dx="23.739" dy="37.2628" color="-1" />
+    <Frame FrameValue="194" GraphicSheet="ShipFire" CellIndex="0" m11="-0.9397" m12="-0.342" m21="0.342" m22="-0.9397" dx="25.5628" dy="36.5074" color="-1" />
+    <Frame FrameValue="195" GraphicSheet="ShipFire" CellIndex="0" m11="-0.9659" m12="-0.2588" m21="0.2588" m22="-0.9659" dx="27.3137" dy="35.5959" color="-1" />
+    <Frame FrameValue="196" GraphicSheet="ShipFire" CellIndex="0" m11="-0.9848" m12="-0.1736" m21="0.1736" m22="-0.9848" dx="28.9786" dy="34.5353" color="-1" />
+    <Frame FrameValue="197" GraphicSheet="ShipFire" CellIndex="0" m11="-0.9962" m12="-0.0872" m21="0.0872" m22="-0.9962" dx="30.5446" dy="33.3336" color="-1" />
+    <Frame FrameValue="198" GraphicSheet="ShipFire" CellIndex="0" m11="-1" m12="0" m21="0" m22="-1" dx="32" dy="32" color="-1" />
+    <Frame FrameValue="199" GraphicSheet="ShipFire" CellIndex="0" m11="-0.9962" m12="0.0872" m21="-0.0872" m22="-0.9962" dx="33.3336" dy="30.5446" color="-1" />
+    <Frame FrameValue="200" GraphicSheet="ShipFire" CellIndex="0" m11="-0.9848" m12="0.1736" m21="-0.1736" m22="-0.9848" dx="34.5353" dy="28.9786" color="-1" />
+    <Frame FrameValue="201" GraphicSheet="ShipFire" CellIndex="0" m11="-0.9659" m12="0.2588" m21="-0.2588" m22="-0.9659" dx="35.5959" dy="27.3137" color="-1" />
+    <Frame FrameValue="202" GraphicSheet="ShipFire" CellIndex="0" m11="-0.9397" m12="0.342" m21="-0.342" m22="-0.9397" dx="36.5074" dy="25.5628" color="-1" />
+    <Frame FrameValue="203" GraphicSheet="ShipFire" CellIndex="0" m11="-0.9063" m12="0.4226" m21="-0.4226" m22="-0.9063" dx="37.2628" dy="23.739" color="-1" />
+    <Frame FrameValue="204" GraphicSheet="ShipFire" CellIndex="0" m11="-0.866" m12="0.5" m21="-0.5" m22="-0.866" dx="37.8564" dy="21.8564" color="-1" />
+    <Frame FrameValue="205" GraphicSheet="ShipFire" CellIndex="0" m11="-0.8192" m12="0.5736" m21="-0.5736" m22="-0.8192" dx="38.2837" dy="19.9292" color="-1" />
+    <Frame FrameValue="206" GraphicSheet="ShipFire" CellIndex="0" m11="-0.766" m12="0.6428" m21="-0.6428" m22="-0.766" dx="38.5413" dy="17.9721" color="-1" />
+    <Frame FrameValue="207" GraphicSheet="ShipFire" CellIndex="0" m11="-0.7071" m12="0.7071" m21="-0.7071" m22="-0.7071" dx="38.6274" dy="16" color="-1" />
+    <Frame FrameValue="208" GraphicSheet="ShipFire" CellIndex="0" m11="-0.6428" m12="0.766" m21="-0.766" m22="-0.6428" dx="38.5413" dy="14.0279" color="-1" />
+    <Frame FrameValue="209" GraphicSheet="ShipFire" CellIndex="0" m11="-0.5736" m12="0.8192" m21="-0.8192" m22="-0.5736" dx="38.2837" dy="12.0708" color="-1" />
+    <Frame FrameValue="210" GraphicSheet="ShipFire" CellIndex="0" m11="-0.5" m12="0.866" m21="-0.866" m22="-0.5" dx="37.8564" dy="10.1436" color="-1" />
+    <Frame FrameValue="211" GraphicSheet="ShipFire" CellIndex="0" m11="-0.4226" m12="0.9063" m21="-0.9063" m22="-0.4226" dx="37.2628" dy="8.261" color="-1" />
+    <Frame FrameValue="212" GraphicSheet="ShipFire" CellIndex="0" m11="-0.342" m12="0.9397" m21="-0.9397" m22="-0.342" dx="36.5074" dy="6.4372" color="-1" />
+    <Frame FrameValue="213" GraphicSheet="ShipFire" CellIndex="0" m11="-0.2588" m12="0.9659" m21="-0.9659" m22="-0.2588" dx="35.5959" dy="4.6863" color="-1" />
+    <Frame FrameValue="214" GraphicSheet="ShipFire" CellIndex="0" m11="-0.1736" m12="0.9848" m21="-0.9848" m22="-0.1736" dx="34.5353" dy="3.0214" color="-1" />
+    <Frame FrameValue="215" GraphicSheet="ShipFire" CellIndex="0" m11="-0.0872" m12="0.9962" m21="-0.9962" m22="-0.0872" dx="33.3336" dy="1.4554" color="-1" />
+    <Frame FrameValue="216" GraphicSheet="ShipFire" CellIndex="2" m11="0" m12="1" m21="-1" m22="0" dx="32" dy="0" color="-1" />
+    <Frame FrameValue="217" GraphicSheet="ShipFire" CellIndex="2" m11="0.0872" m12="0.9962" m21="-0.9962" m22="0.0872" dx="30.5446" dy="-1.3336" color="-1" />
+    <Frame FrameValue="218" GraphicSheet="ShipFire" CellIndex="2" m11="0.1736" m12="0.9848" m21="-0.9848" m22="0.1736" dx="28.9786" dy="-2.5353" color="-1" />
+    <Frame FrameValue="219" GraphicSheet="ShipFire" CellIndex="2" m11="0.2588" m12="0.9659" m21="-0.9659" m22="0.2588" dx="27.3137" dy="-3.5959" color="-1" />
+    <Frame FrameValue="220" GraphicSheet="ShipFire" CellIndex="2" m11="0.342" m12="0.9397" m21="-0.9397" m22="0.342" dx="25.5628" dy="-4.5074" color="-1" />
+    <Frame FrameValue="221" GraphicSheet="ShipFire" CellIndex="2" m11="0.4226" m12="0.9063" m21="-0.9063" m22="0.4226" dx="23.739" dy="-5.2628" color="-1" />
+    <Frame FrameValue="222" GraphicSheet="ShipFire" CellIndex="2" m11="0.5" m12="0.866" m21="-0.866" m22="0.5" dx="21.8564" dy="-5.8564" color="-1" />
+    <Frame FrameValue="223" GraphicSheet="ShipFire" CellIndex="2" m11="0.5736" m12="0.8192" m21="-0.8192" m22="0.5736" dx="19.9292" dy="-6.2837" color="-1" />
+    <Frame FrameValue="224" GraphicSheet="ShipFire" CellIndex="2" m11="0.6428" m12="0.766" m21="-0.766" m22="0.6428" dx="17.9721" dy="-6.5413" color="-1" />
+    <Frame FrameValue="225" GraphicSheet="ShipFire" CellIndex="2" m11="0.7071" m12="0.7071" m21="-0.7071" m22="0.7071" dx="16" dy="-6.6274" color="-1" />
+    <Frame FrameValue="226" GraphicSheet="ShipFire" CellIndex="2" m11="0.766" m12="0.6428" m21="-0.6428" m22="0.766" dx="14.0279" dy="-6.5413" color="-1" />
+    <Frame FrameValue="227" GraphicSheet="ShipFire" CellIndex="2" m11="0.8192" m12="0.5736" m21="-0.5736" m22="0.8192" dx="12.0708" dy="-6.2837" color="-1" />
+    <Frame FrameValue="228" GraphicSheet="ShipFire" CellIndex="2" m11="0.866" m12="0.5" m21="-0.5" m22="0.866" dx="10.1436" dy="-5.8564" color="-1" />
+    <Frame FrameValue="229" GraphicSheet="ShipFire" CellIndex="2" m11="0.9063" m12="0.4226" m21="-0.4226" m22="0.9063" dx="8.261" dy="-5.2628" color="-1" />
+    <Frame FrameValue="230" GraphicSheet="ShipFire" CellIndex="2" m11="0.9397" m12="0.342" m21="-0.342" m22="0.9397" dx="6.4372" dy="-4.5074" color="-1" />
+    <Frame FrameValue="231" GraphicSheet="ShipFire" CellIndex="2" m11="0.9659" m12="0.2588" m21="-0.2588" m22="0.9659" dx="4.6863" dy="-3.5959" color="-1" />
+    <Frame FrameValue="232" GraphicSheet="ShipFire" CellIndex="2" m11="0.9848" m12="0.1736" m21="-0.1736" m22="0.9848" dx="3.0214" dy="-2.5353" color="-1" />
+    <Frame FrameValue="233" GraphicSheet="ShipFire" CellIndex="2" m11="0.9962" m12="0.0872" m21="-0.0872" m22="0.9962" dx="1.4554" dy="-1.3336" color="-1" />
+    <Frame FrameValue="234" GraphicSheet="ShipFire" CellIndex="2" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="235" GraphicSheet="ShipFire" CellIndex="2" m11="0.9962" m12="-0.0872" m21="0.0872" m22="0.9962" dx="-1.3336" dy="1.4554" color="-1" />
+    <Frame FrameValue="236" GraphicSheet="ShipFire" CellIndex="2" m11="0.9848" m12="-0.1736" m21="0.1736" m22="0.9848" dx="-2.5353" dy="3.0214" color="-1" />
+    <Frame FrameValue="237" GraphicSheet="ShipFire" CellIndex="2" m11="0.9659" m12="-0.2588" m21="0.2588" m22="0.9659" dx="-3.5959" dy="4.6863" color="-1" />
+    <Frame FrameValue="238" GraphicSheet="ShipFire" CellIndex="2" m11="0.9397" m12="-0.342" m21="0.342" m22="0.9397" dx="-4.5074" dy="6.4372" color="-1" />
+    <Frame FrameValue="239" GraphicSheet="ShipFire" CellIndex="2" m11="0.9063" m12="-0.4226" m21="0.4226" m22="0.9063" dx="-5.2628" dy="8.261" color="-1" />
+    <Frame FrameValue="240" GraphicSheet="ShipFire" CellIndex="2" m11="0.866" m12="-0.5" m21="0.5" m22="0.866" dx="-5.8564" dy="10.1436" color="-1" />
+    <Frame FrameValue="241" GraphicSheet="ShipFire" CellIndex="2" m11="0.8192" m12="-0.5736" m21="0.5736" m22="0.8192" dx="-6.2837" dy="12.0708" color="-1" />
+    <Frame FrameValue="242" GraphicSheet="ShipFire" CellIndex="2" m11="0.766" m12="-0.6428" m21="0.6428" m22="0.766" dx="-6.5413" dy="14.0279" color="-1" />
+    <Frame FrameValue="243" GraphicSheet="ShipFire" CellIndex="2" m11="0.7071" m12="-0.7071" m21="0.7071" m22="0.7071" dx="-6.6274" dy="16" color="-1" />
+    <Frame FrameValue="244" GraphicSheet="ShipFire" CellIndex="2" m11="0.6428" m12="-0.766" m21="0.766" m22="0.6428" dx="-6.5413" dy="17.9721" color="-1" />
+    <Frame FrameValue="245" GraphicSheet="ShipFire" CellIndex="2" m11="0.5736" m12="-0.8192" m21="0.8192" m22="0.5736" dx="-6.2837" dy="19.9292" color="-1" />
+    <Frame FrameValue="246" GraphicSheet="ShipFire" CellIndex="2" m11="0.5" m12="-0.866" m21="0.866" m22="0.5" dx="-5.8564" dy="21.8564" color="-1" />
+    <Frame FrameValue="247" GraphicSheet="ShipFire" CellIndex="2" m11="0.4226" m12="-0.9063" m21="0.9063" m22="0.4226" dx="-5.2628" dy="23.739" color="-1" />
+    <Frame FrameValue="248" GraphicSheet="ShipFire" CellIndex="2" m11="0.342" m12="-0.9397" m21="0.9397" m22="0.342" dx="-4.5074" dy="25.5628" color="-1" />
+    <Frame FrameValue="249" GraphicSheet="ShipFire" CellIndex="2" m11="0.2588" m12="-0.9659" m21="0.9659" m22="0.2588" dx="-3.5959" dy="27.3137" color="-1" />
+    <Frame FrameValue="250" GraphicSheet="ShipFire" CellIndex="2" m11="0.1736" m12="-0.9848" m21="0.9848" m22="0.1736" dx="-2.5353" dy="28.9786" color="-1" />
+    <Frame FrameValue="251" GraphicSheet="ShipFire" CellIndex="2" m11="0.0872" m12="-0.9962" m21="0.9962" m22="0.0872" dx="-1.3336" dy="30.5446" color="-1" />
+    <Frame FrameValue="252" GraphicSheet="ShipFire" CellIndex="2" m11="0" m12="-1" m21="1" m22="0" dx="0" dy="32" color="-1" />
+    <Frame FrameValue="253" GraphicSheet="ShipFire" CellIndex="2" m11="-0.0872" m12="-0.9962" m21="0.9962" m22="-0.0872" dx="1.4554" dy="33.3336" color="-1" />
+    <Frame FrameValue="254" GraphicSheet="ShipFire" CellIndex="2" m11="-0.1736" m12="-0.9848" m21="0.9848" m22="-0.1736" dx="3.0214" dy="34.5353" color="-1" />
+    <Frame FrameValue="255" GraphicSheet="ShipFire" CellIndex="2" m11="-0.2588" m12="-0.9659" m21="0.9659" m22="-0.2588" dx="4.6863" dy="35.5959" color="-1" />
+    <Frame FrameValue="256" GraphicSheet="ShipFire" CellIndex="2" m11="-0.342" m12="-0.9397" m21="0.9397" m22="-0.342" dx="6.4372" dy="36.5074" color="-1" />
+    <Frame FrameValue="257" GraphicSheet="ShipFire" CellIndex="2" m11="-0.4226" m12="-0.9063" m21="0.9063" m22="-0.4226" dx="8.261" dy="37.2628" color="-1" />
+    <Frame FrameValue="258" GraphicSheet="ShipFire" CellIndex="2" m11="-0.5" m12="-0.866" m21="0.866" m22="-0.5" dx="10.1436" dy="37.8564" color="-1" />
+    <Frame FrameValue="259" GraphicSheet="ShipFire" CellIndex="2" m11="-0.5736" m12="-0.8192" m21="0.8192" m22="-0.5736" dx="12.0708" dy="38.2837" color="-1" />
+    <Frame FrameValue="260" GraphicSheet="ShipFire" CellIndex="2" m11="-0.6428" m12="-0.766" m21="0.766" m22="-0.6428" dx="14.0279" dy="38.5413" color="-1" />
+    <Frame FrameValue="261" GraphicSheet="ShipFire" CellIndex="2" m11="-0.7071" m12="-0.7071" m21="0.7071" m22="-0.7071" dx="16" dy="38.6274" color="-1" />
+    <Frame FrameValue="262" GraphicSheet="ShipFire" CellIndex="2" m11="-0.766" m12="-0.6428" m21="0.6428" m22="-0.766" dx="17.9721" dy="38.5413" color="-1" />
+    <Frame FrameValue="263" GraphicSheet="ShipFire" CellIndex="2" m11="-0.8192" m12="-0.5736" m21="0.5736" m22="-0.8192" dx="19.9292" dy="38.2837" color="-1" />
+    <Frame FrameValue="264" GraphicSheet="ShipFire" CellIndex="2" m11="-0.866" m12="-0.5" m21="0.5" m22="-0.866" dx="21.8564" dy="37.8564" color="-1" />
+    <Frame FrameValue="265" GraphicSheet="ShipFire" CellIndex="2" m11="-0.9063" m12="-0.4226" m21="0.4226" m22="-0.9063" dx="23.739" dy="37.2628" color="-1" />
+    <Frame FrameValue="266" GraphicSheet="ShipFire" CellIndex="2" m11="-0.9397" m12="-0.342" m21="0.342" m22="-0.9397" dx="25.5628" dy="36.5074" color="-1" />
+    <Frame FrameValue="267" GraphicSheet="ShipFire" CellIndex="2" m11="-0.9659" m12="-0.2588" m21="0.2588" m22="-0.9659" dx="27.3137" dy="35.5959" color="-1" />
+    <Frame FrameValue="268" GraphicSheet="ShipFire" CellIndex="2" m11="-0.9848" m12="-0.1736" m21="0.1736" m22="-0.9848" dx="28.9786" dy="34.5353" color="-1" />
+    <Frame FrameValue="269" GraphicSheet="ShipFire" CellIndex="2" m11="-0.9962" m12="-0.0872" m21="0.0872" m22="-0.9962" dx="30.5446" dy="33.3336" color="-1" />
+    <Frame FrameValue="270" GraphicSheet="ShipFire" CellIndex="2" m11="-1" m12="0" m21="0" m22="-1" dx="32" dy="32" color="-1" />
+    <Frame FrameValue="271" GraphicSheet="ShipFire" CellIndex="2" m11="-0.9962" m12="0.0872" m21="-0.0872" m22="-0.9962" dx="33.3336" dy="30.5446" color="-1" />
+    <Frame FrameValue="272" GraphicSheet="ShipFire" CellIndex="2" m11="-0.9848" m12="0.1736" m21="-0.1736" m22="-0.9848" dx="34.5353" dy="28.9786" color="-1" />
+    <Frame FrameValue="273" GraphicSheet="ShipFire" CellIndex="2" m11="-0.9659" m12="0.2588" m21="-0.2588" m22="-0.9659" dx="35.5959" dy="27.3137" color="-1" />
+    <Frame FrameValue="274" GraphicSheet="ShipFire" CellIndex="2" m11="-0.9397" m12="0.342" m21="-0.342" m22="-0.9397" dx="36.5074" dy="25.5628" color="-1" />
+    <Frame FrameValue="275" GraphicSheet="ShipFire" CellIndex="2" m11="-0.9063" m12="0.4226" m21="-0.4226" m22="-0.9063" dx="37.2628" dy="23.739" color="-1" />
+    <Frame FrameValue="276" GraphicSheet="ShipFire" CellIndex="2" m11="-0.866" m12="0.5" m21="-0.5" m22="-0.866" dx="37.8564" dy="21.8564" color="-1" />
+    <Frame FrameValue="277" GraphicSheet="ShipFire" CellIndex="2" m11="-0.8192" m12="0.5736" m21="-0.5736" m22="-0.8192" dx="38.2837" dy="19.9292" color="-1" />
+    <Frame FrameValue="278" GraphicSheet="ShipFire" CellIndex="2" m11="-0.766" m12="0.6428" m21="-0.6428" m22="-0.766" dx="38.5413" dy="17.9721" color="-1" />
+    <Frame FrameValue="279" GraphicSheet="ShipFire" CellIndex="2" m11="-0.7071" m12="0.7071" m21="-0.7071" m22="-0.7071" dx="38.6274" dy="16" color="-1" />
+    <Frame FrameValue="280" GraphicSheet="ShipFire" CellIndex="2" m11="-0.6428" m12="0.766" m21="-0.766" m22="-0.6428" dx="38.5413" dy="14.0279" color="-1" />
+    <Frame FrameValue="281" GraphicSheet="ShipFire" CellIndex="2" m11="-0.5736" m12="0.8192" m21="-0.8192" m22="-0.5736" dx="38.2837" dy="12.0708" color="-1" />
+    <Frame FrameValue="282" GraphicSheet="ShipFire" CellIndex="2" m11="-0.5" m12="0.866" m21="-0.866" m22="-0.5" dx="37.8564" dy="10.1436" color="-1" />
+    <Frame FrameValue="283" GraphicSheet="ShipFire" CellIndex="2" m11="-0.4226" m12="0.9063" m21="-0.9063" m22="-0.4226" dx="37.2628" dy="8.261" color="-1" />
+    <Frame FrameValue="284" GraphicSheet="ShipFire" CellIndex="2" m11="-0.342" m12="0.9397" m21="-0.9397" m22="-0.342" dx="36.5074" dy="6.4372" color="-1" />
+    <Frame FrameValue="285" GraphicSheet="ShipFire" CellIndex="2" m11="-0.2588" m12="0.9659" m21="-0.9659" m22="-0.2588" dx="35.5959" dy="4.6863" color="-1" />
+    <Frame FrameValue="286" GraphicSheet="ShipFire" CellIndex="2" m11="-0.1736" m12="0.9848" m21="-0.9848" m22="-0.1736" dx="34.5353" dy="3.0214" color="-1" />
+    <Frame FrameValue="287" GraphicSheet="ShipFire" CellIndex="2" m11="-0.0872" m12="0.9962" m21="-0.9962" m22="-0.0872" dx="33.3336" dy="1.4554" color="-1" />
+    <Frame FrameValue="288" GraphicSheet="ShipFire" CellIndex="1" m11="0" m12="1" m21="-1" m22="0" dx="32" dy="0" color="-1" />
+    <Frame FrameValue="289" GraphicSheet="ShipFire" CellIndex="1" m11="0.0872" m12="0.9962" m21="-0.9962" m22="0.0872" dx="30.5446" dy="-1.3336" color="-1" />
+    <Frame FrameValue="290" GraphicSheet="ShipFire" CellIndex="1" m11="0.1736" m12="0.9848" m21="-0.9848" m22="0.1736" dx="28.9786" dy="-2.5353" color="-1" />
+    <Frame FrameValue="291" GraphicSheet="ShipFire" CellIndex="1" m11="0.2588" m12="0.9659" m21="-0.9659" m22="0.2588" dx="27.3137" dy="-3.5959" color="-1" />
+    <Frame FrameValue="292" GraphicSheet="ShipFire" CellIndex="1" m11="0.342" m12="0.9397" m21="-0.9397" m22="0.342" dx="25.5628" dy="-4.5074" color="-1" />
+    <Frame FrameValue="293" GraphicSheet="ShipFire" CellIndex="1" m11="0.4226" m12="0.9063" m21="-0.9063" m22="0.4226" dx="23.739" dy="-5.2628" color="-1" />
+    <Frame FrameValue="294" GraphicSheet="ShipFire" CellIndex="1" m11="0.5" m12="0.866" m21="-0.866" m22="0.5" dx="21.8564" dy="-5.8564" color="-1" />
+    <Frame FrameValue="295" GraphicSheet="ShipFire" CellIndex="1" m11="0.5736" m12="0.8192" m21="-0.8192" m22="0.5736" dx="19.9292" dy="-6.2837" color="-1" />
+    <Frame FrameValue="296" GraphicSheet="ShipFire" CellIndex="1" m11="0.6428" m12="0.766" m21="-0.766" m22="0.6428" dx="17.9721" dy="-6.5413" color="-1" />
+    <Frame FrameValue="297" GraphicSheet="ShipFire" CellIndex="1" m11="0.7071" m12="0.7071" m21="-0.7071" m22="0.7071" dx="16" dy="-6.6274" color="-1" />
+    <Frame FrameValue="298" GraphicSheet="ShipFire" CellIndex="1" m11="0.766" m12="0.6428" m21="-0.6428" m22="0.766" dx="14.0279" dy="-6.5413" color="-1" />
+    <Frame FrameValue="299" GraphicSheet="ShipFire" CellIndex="1" m11="0.8192" m12="0.5736" m21="-0.5736" m22="0.8192" dx="12.0708" dy="-6.2837" color="-1" />
+    <Frame FrameValue="300" GraphicSheet="ShipFire" CellIndex="1" m11="0.866" m12="0.5" m21="-0.5" m22="0.866" dx="10.1436" dy="-5.8564" color="-1" />
+    <Frame FrameValue="301" GraphicSheet="ShipFire" CellIndex="1" m11="0.9063" m12="0.4226" m21="-0.4226" m22="0.9063" dx="8.261" dy="-5.2628" color="-1" />
+    <Frame FrameValue="302" GraphicSheet="ShipFire" CellIndex="1" m11="0.9397" m12="0.342" m21="-0.342" m22="0.9397" dx="6.4372" dy="-4.5074" color="-1" />
+    <Frame FrameValue="303" GraphicSheet="ShipFire" CellIndex="1" m11="0.9659" m12="0.2588" m21="-0.2588" m22="0.9659" dx="4.6863" dy="-3.5959" color="-1" />
+    <Frame FrameValue="304" GraphicSheet="ShipFire" CellIndex="1" m11="0.9848" m12="0.1736" m21="-0.1736" m22="0.9848" dx="3.0214" dy="-2.5353" color="-1" />
+    <Frame FrameValue="305" GraphicSheet="ShipFire" CellIndex="1" m11="0.9962" m12="0.0872" m21="-0.0872" m22="0.9962" dx="1.4554" dy="-1.3336" color="-1" />
+    <Frame FrameValue="306" GraphicSheet="ShipFire" CellIndex="1" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="307" GraphicSheet="ShipFire" CellIndex="1" m11="0.9962" m12="-0.0872" m21="0.0872" m22="0.9962" dx="-1.3336" dy="1.4554" color="-1" />
+    <Frame FrameValue="308" GraphicSheet="ShipFire" CellIndex="1" m11="0.9848" m12="-0.1736" m21="0.1736" m22="0.9848" dx="-2.5353" dy="3.0214" color="-1" />
+    <Frame FrameValue="309" GraphicSheet="ShipFire" CellIndex="1" m11="0.9659" m12="-0.2588" m21="0.2588" m22="0.9659" dx="-3.5959" dy="4.6863" color="-1" />
+    <Frame FrameValue="310" GraphicSheet="ShipFire" CellIndex="1" m11="0.9397" m12="-0.342" m21="0.342" m22="0.9397" dx="-4.5074" dy="6.4372" color="-1" />
+    <Frame FrameValue="311" GraphicSheet="ShipFire" CellIndex="1" m11="0.9063" m12="-0.4226" m21="0.4226" m22="0.9063" dx="-5.2628" dy="8.261" color="-1" />
+    <Frame FrameValue="312" GraphicSheet="ShipFire" CellIndex="1" m11="0.866" m12="-0.5" m21="0.5" m22="0.866" dx="-5.8564" dy="10.1436" color="-1" />
+    <Frame FrameValue="313" GraphicSheet="ShipFire" CellIndex="1" m11="0.8192" m12="-0.5736" m21="0.5736" m22="0.8192" dx="-6.2837" dy="12.0708" color="-1" />
+    <Frame FrameValue="314" GraphicSheet="ShipFire" CellIndex="1" m11="0.766" m12="-0.6428" m21="0.6428" m22="0.766" dx="-6.5413" dy="14.0279" color="-1" />
+    <Frame FrameValue="315" GraphicSheet="ShipFire" CellIndex="1" m11="0.7071" m12="-0.7071" m21="0.7071" m22="0.7071" dx="-6.6274" dy="16" color="-1" />
+    <Frame FrameValue="316" GraphicSheet="ShipFire" CellIndex="1" m11="0.6428" m12="-0.766" m21="0.766" m22="0.6428" dx="-6.5413" dy="17.9721" color="-1" />
+    <Frame FrameValue="317" GraphicSheet="ShipFire" CellIndex="1" m11="0.5736" m12="-0.8192" m21="0.8192" m22="0.5736" dx="-6.2837" dy="19.9292" color="-1" />
+    <Frame FrameValue="318" GraphicSheet="ShipFire" CellIndex="1" m11="0.5" m12="-0.866" m21="0.866" m22="0.5" dx="-5.8564" dy="21.8564" color="-1" />
+    <Frame FrameValue="319" GraphicSheet="ShipFire" CellIndex="1" m11="0.4226" m12="-0.9063" m21="0.9063" m22="0.4226" dx="-5.2628" dy="23.739" color="-1" />
+    <Frame FrameValue="320" GraphicSheet="ShipFire" CellIndex="1" m11="0.342" m12="-0.9397" m21="0.9397" m22="0.342" dx="-4.5074" dy="25.5628" color="-1" />
+    <Frame FrameValue="321" GraphicSheet="ShipFire" CellIndex="1" m11="0.2588" m12="-0.9659" m21="0.9659" m22="0.2588" dx="-3.5959" dy="27.3137" color="-1" />
+    <Frame FrameValue="322" GraphicSheet="ShipFire" CellIndex="1" m11="0.1736" m12="-0.9848" m21="0.9848" m22="0.1736" dx="-2.5353" dy="28.9786" color="-1" />
+    <Frame FrameValue="323" GraphicSheet="ShipFire" CellIndex="1" m11="0.0872" m12="-0.9962" m21="0.9962" m22="0.0872" dx="-1.3336" dy="30.5446" color="-1" />
+    <Frame FrameValue="324" GraphicSheet="ShipFire" CellIndex="1" m11="0" m12="-1" m21="1" m22="0" dx="0" dy="32" color="-1" />
+    <Frame FrameValue="325" GraphicSheet="ShipFire" CellIndex="1" m11="-0.0872" m12="-0.9962" m21="0.9962" m22="-0.0872" dx="1.4554" dy="33.3336" color="-1" />
+    <Frame FrameValue="326" GraphicSheet="ShipFire" CellIndex="1" m11="-0.1736" m12="-0.9848" m21="0.9848" m22="-0.1736" dx="3.0214" dy="34.5353" color="-1" />
+    <Frame FrameValue="327" GraphicSheet="ShipFire" CellIndex="1" m11="-0.2588" m12="-0.9659" m21="0.9659" m22="-0.2588" dx="4.6863" dy="35.5959" color="-1" />
+    <Frame FrameValue="328" GraphicSheet="ShipFire" CellIndex="1" m11="-0.342" m12="-0.9397" m21="0.9397" m22="-0.342" dx="6.4372" dy="36.5074" color="-1" />
+    <Frame FrameValue="329" GraphicSheet="ShipFire" CellIndex="1" m11="-0.4226" m12="-0.9063" m21="0.9063" m22="-0.4226" dx="8.261" dy="37.2628" color="-1" />
+    <Frame FrameValue="330" GraphicSheet="ShipFire" CellIndex="1" m11="-0.5" m12="-0.866" m21="0.866" m22="-0.5" dx="10.1436" dy="37.8564" color="-1" />
+    <Frame FrameValue="331" GraphicSheet="ShipFire" CellIndex="1" m11="-0.5736" m12="-0.8192" m21="0.8192" m22="-0.5736" dx="12.0708" dy="38.2837" color="-1" />
+    <Frame FrameValue="332" GraphicSheet="ShipFire" CellIndex="1" m11="-0.6428" m12="-0.766" m21="0.766" m22="-0.6428" dx="14.0279" dy="38.5413" color="-1" />
+    <Frame FrameValue="333" GraphicSheet="ShipFire" CellIndex="1" m11="-0.7071" m12="-0.7071" m21="0.7071" m22="-0.7071" dx="16" dy="38.6274" color="-1" />
+    <Frame FrameValue="334" GraphicSheet="ShipFire" CellIndex="1" m11="-0.766" m12="-0.6428" m21="0.6428" m22="-0.766" dx="17.9721" dy="38.5413" color="-1" />
+    <Frame FrameValue="335" GraphicSheet="ShipFire" CellIndex="1" m11="-0.8192" m12="-0.5736" m21="0.5736" m22="-0.8192" dx="19.9292" dy="38.2837" color="-1" />
+    <Frame FrameValue="336" GraphicSheet="ShipFire" CellIndex="1" m11="-0.866" m12="-0.5" m21="0.5" m22="-0.866" dx="21.8564" dy="37.8564" color="-1" />
+    <Frame FrameValue="337" GraphicSheet="ShipFire" CellIndex="1" m11="-0.9063" m12="-0.4226" m21="0.4226" m22="-0.9063" dx="23.739" dy="37.2628" color="-1" />
+    <Frame FrameValue="338" GraphicSheet="ShipFire" CellIndex="1" m11="-0.9397" m12="-0.342" m21="0.342" m22="-0.9397" dx="25.5628" dy="36.5074" color="-1" />
+    <Frame FrameValue="339" GraphicSheet="ShipFire" CellIndex="1" m11="-0.9659" m12="-0.2588" m21="0.2588" m22="-0.9659" dx="27.3137" dy="35.5959" color="-1" />
+    <Frame FrameValue="340" GraphicSheet="ShipFire" CellIndex="1" m11="-0.9848" m12="-0.1736" m21="0.1736" m22="-0.9848" dx="28.9786" dy="34.5353" color="-1" />
+    <Frame FrameValue="341" GraphicSheet="ShipFire" CellIndex="1" m11="-0.9962" m12="-0.0872" m21="0.0872" m22="-0.9962" dx="30.5446" dy="33.3336" color="-1" />
+    <Frame FrameValue="342" GraphicSheet="ShipFire" CellIndex="1" m11="-1" m12="0" m21="0" m22="-1" dx="32" dy="32" color="-1" />
+    <Frame FrameValue="343" GraphicSheet="ShipFire" CellIndex="1" m11="-0.9962" m12="0.0872" m21="-0.0872" m22="-0.9962" dx="33.3336" dy="30.5446" color="-1" />
+    <Frame FrameValue="344" GraphicSheet="ShipFire" CellIndex="1" m11="-0.9848" m12="0.1736" m21="-0.1736" m22="-0.9848" dx="34.5353" dy="28.9786" color="-1" />
+    <Frame FrameValue="345" GraphicSheet="ShipFire" CellIndex="1" m11="-0.9659" m12="0.2588" m21="-0.2588" m22="-0.9659" dx="35.5959" dy="27.3137" color="-1" />
+    <Frame FrameValue="346" GraphicSheet="ShipFire" CellIndex="1" m11="-0.9397" m12="0.342" m21="-0.342" m22="-0.9397" dx="36.5074" dy="25.5628" color="-1" />
+    <Frame FrameValue="347" GraphicSheet="ShipFire" CellIndex="1" m11="-0.9063" m12="0.4226" m21="-0.4226" m22="-0.9063" dx="37.2628" dy="23.739" color="-1" />
+    <Frame FrameValue="348" GraphicSheet="ShipFire" CellIndex="1" m11="-0.866" m12="0.5" m21="-0.5" m22="-0.866" dx="37.8564" dy="21.8564" color="-1" />
+    <Frame FrameValue="349" GraphicSheet="ShipFire" CellIndex="1" m11="-0.8192" m12="0.5736" m21="-0.5736" m22="-0.8192" dx="38.2837" dy="19.9292" color="-1" />
+    <Frame FrameValue="350" GraphicSheet="ShipFire" CellIndex="1" m11="-0.766" m12="0.6428" m21="-0.6428" m22="-0.766" dx="38.5413" dy="17.9721" color="-1" />
+    <Frame FrameValue="351" GraphicSheet="ShipFire" CellIndex="1" m11="-0.7071" m12="0.7071" m21="-0.7071" m22="-0.7071" dx="38.6274" dy="16" color="-1" />
+    <Frame FrameValue="352" GraphicSheet="ShipFire" CellIndex="1" m11="-0.6428" m12="0.766" m21="-0.766" m22="-0.6428" dx="38.5413" dy="14.0279" color="-1" />
+    <Frame FrameValue="353" GraphicSheet="ShipFire" CellIndex="1" m11="-0.5736" m12="0.8192" m21="-0.8192" m22="-0.5736" dx="38.2837" dy="12.0708" color="-1" />
+    <Frame FrameValue="354" GraphicSheet="ShipFire" CellIndex="1" m11="-0.5" m12="0.866" m21="-0.866" m22="-0.5" dx="37.8564" dy="10.1436" color="-1" />
+    <Frame FrameValue="355" GraphicSheet="ShipFire" CellIndex="1" m11="-0.4226" m12="0.9063" m21="-0.9063" m22="-0.4226" dx="37.2628" dy="8.261" color="-1" />
+    <Frame FrameValue="356" GraphicSheet="ShipFire" CellIndex="1" m11="-0.342" m12="0.9397" m21="-0.9397" m22="-0.342" dx="36.5074" dy="6.4372" color="-1" />
+    <Frame FrameValue="357" GraphicSheet="ShipFire" CellIndex="1" m11="-0.2588" m12="0.9659" m21="-0.9659" m22="-0.2588" dx="35.5959" dy="4.6863" color="-1" />
+    <Frame FrameValue="358" GraphicSheet="ShipFire" CellIndex="1" m11="-0.1736" m12="0.9848" m21="-0.9848" m22="-0.1736" dx="34.5353" dy="3.0214" color="-1" />
+    <Frame FrameValue="359" GraphicSheet="ShipFire" CellIndex="1" m11="-0.0872" m12="0.9962" m21="-0.9962" m22="-0.0872" dx="33.3336" dy="1.4554" color="-1" />
+    <Frame FrameValue="360" GraphicSheet="ShipFire" CellIndex="3" m11="0" m12="1" m21="-1" m22="0" dx="32" dy="0" color="-1" />
+    <Frame FrameValue="361" GraphicSheet="ShipFire" CellIndex="3" m11="0.0872" m12="0.9962" m21="-0.9962" m22="0.0872" dx="30.5446" dy="-1.3336" color="-1" />
+    <Frame FrameValue="362" GraphicSheet="ShipFire" CellIndex="3" m11="0.1736" m12="0.9848" m21="-0.9848" m22="0.1736" dx="28.9786" dy="-2.5353" color="-1" />
+    <Frame FrameValue="363" GraphicSheet="ShipFire" CellIndex="3" m11="0.2588" m12="0.9659" m21="-0.9659" m22="0.2588" dx="27.3137" dy="-3.5959" color="-1" />
+    <Frame FrameValue="364" GraphicSheet="ShipFire" CellIndex="3" m11="0.342" m12="0.9397" m21="-0.9397" m22="0.342" dx="25.5628" dy="-4.5074" color="-1" />
+    <Frame FrameValue="365" GraphicSheet="ShipFire" CellIndex="3" m11="0.4226" m12="0.9063" m21="-0.9063" m22="0.4226" dx="23.739" dy="-5.2628" color="-1" />
+    <Frame FrameValue="366" GraphicSheet="ShipFire" CellIndex="3" m11="0.5" m12="0.866" m21="-0.866" m22="0.5" dx="21.8564" dy="-5.8564" color="-1" />
+    <Frame FrameValue="367" GraphicSheet="ShipFire" CellIndex="3" m11="0.5736" m12="0.8192" m21="-0.8192" m22="0.5736" dx="19.9292" dy="-6.2837" color="-1" />
+    <Frame FrameValue="368" GraphicSheet="ShipFire" CellIndex="3" m11="0.6428" m12="0.766" m21="-0.766" m22="0.6428" dx="17.9721" dy="-6.5413" color="-1" />
+    <Frame FrameValue="369" GraphicSheet="ShipFire" CellIndex="3" m11="0.7071" m12="0.7071" m21="-0.7071" m22="0.7071" dx="16" dy="-6.6274" color="-1" />
+    <Frame FrameValue="370" GraphicSheet="ShipFire" CellIndex="3" m11="0.766" m12="0.6428" m21="-0.6428" m22="0.766" dx="14.0279" dy="-6.5413" color="-1" />
+    <Frame FrameValue="371" GraphicSheet="ShipFire" CellIndex="3" m11="0.8192" m12="0.5736" m21="-0.5736" m22="0.8192" dx="12.0708" dy="-6.2837" color="-1" />
+    <Frame FrameValue="372" GraphicSheet="ShipFire" CellIndex="3" m11="0.866" m12="0.5" m21="-0.5" m22="0.866" dx="10.1436" dy="-5.8564" color="-1" />
+    <Frame FrameValue="373" GraphicSheet="ShipFire" CellIndex="3" m11="0.9063" m12="0.4226" m21="-0.4226" m22="0.9063" dx="8.261" dy="-5.2628" color="-1" />
+    <Frame FrameValue="374" GraphicSheet="ShipFire" CellIndex="3" m11="0.9397" m12="0.342" m21="-0.342" m22="0.9397" dx="6.4372" dy="-4.5074" color="-1" />
+    <Frame FrameValue="375" GraphicSheet="ShipFire" CellIndex="3" m11="0.9659" m12="0.2588" m21="-0.2588" m22="0.9659" dx="4.6863" dy="-3.5959" color="-1" />
+    <Frame FrameValue="376" GraphicSheet="ShipFire" CellIndex="3" m11="0.9848" m12="0.1736" m21="-0.1736" m22="0.9848" dx="3.0214" dy="-2.5353" color="-1" />
+    <Frame FrameValue="377" GraphicSheet="ShipFire" CellIndex="3" m11="0.9962" m12="0.0872" m21="-0.0872" m22="0.9962" dx="1.4554" dy="-1.3336" color="-1" />
+    <Frame FrameValue="378" GraphicSheet="ShipFire" CellIndex="3" m11="1" m12="0" m21="0" m22="1" dx="0" dy="0" color="-1" />
+    <Frame FrameValue="379" GraphicSheet="ShipFire" CellIndex="3" m11="0.9962" m12="-0.0872" m21="0.0872" m22="0.9962" dx="-1.3336" dy="1.4554" color="-1" />
+    <Frame FrameValue="380" GraphicSheet="ShipFire" CellIndex="3" m11="0.9848" m12="-0.1736" m21="0.1736" m22="0.9848" dx="-2.5353" dy="3.0214" color="-1" />
+    <Frame FrameValue="381" GraphicSheet="ShipFire" CellIndex="3" m11="0.9659" m12="-0.2588" m21="0.2588" m22="0.9659" dx="-3.5959" dy="4.6863" color="-1" />
+    <Frame FrameValue="382" GraphicSheet="ShipFire" CellIndex="3" m11="0.9397" m12="-0.342" m21="0.342" m22="0.9397" dx="-4.5074" dy="6.4372" color="-1" />
+    <Frame FrameValue="383" GraphicSheet="ShipFire" CellIndex="3" m11="0.9063" m12="-0.4226" m21="0.4226" m22="0.9063" dx="-5.2628" dy="8.261" color="-1" />
+    <Frame FrameValue="384" GraphicSheet="ShipFire" CellIndex="3" m11="0.866" m12="-0.5" m21="0.5" m22="0.866" dx="-5.8564" dy="10.1436" color="-1" />
+    <Frame FrameValue="385" GraphicSheet="ShipFire" CellIndex="3" m11="0.8192" m12="-0.5736" m21="0.5736" m22="0.8192" dx="-6.2837" dy="12.0708" color="-1" />
+    <Frame FrameValue="386" GraphicSheet="ShipFire" CellIndex="3" m11="0.766" m12="-0.6428" m21="0.6428" m22="0.766" dx="-6.5413" dy="14.0279" color="-1" />
+    <Frame FrameValue="387" GraphicSheet="ShipFire" CellIndex="3" m11="0.7071" m12="-0.7071" m21="0.7071" m22="0.7071" dx="-6.6274" dy="16" color="-1" />
+    <Frame FrameValue="388" GraphicSheet="ShipFire" CellIndex="3" m11="0.6428" m12="-0.766" m21="0.766" m22="0.6428" dx="-6.5413" dy="17.9721" color="-1" />
+    <Frame FrameValue="389" GraphicSheet="ShipFire" CellIndex="3" m11="0.5736" m12="-0.8192" m21="0.8192" m22="0.5736" dx="-6.2837" dy="19.9292" color="-1" />
+    <Frame FrameValue="390" GraphicSheet="ShipFire" CellIndex="3" m11="0.5" m12="-0.866" m21="0.866" m22="0.5" dx="-5.8564" dy="21.8564" color="-1" />
+    <Frame FrameValue="391" GraphicSheet="ShipFire" CellIndex="3" m11="0.4226" m12="-0.9063" m21="0.9063" m22="0.4226" dx="-5.2628" dy="23.739" color="-1" />
+    <Frame FrameValue="392" GraphicSheet="ShipFire" CellIndex="3" m11="0.342" m12="-0.9397" m21="0.9397" m22="0.342" dx="-4.5074" dy="25.5628" color="-1" />
+    <Frame FrameValue="393" GraphicSheet="ShipFire" CellIndex="3" m11="0.2588" m12="-0.9659" m21="0.9659" m22="0.2588" dx="-3.5959" dy="27.3137" color="-1" />
+    <Frame FrameValue="394" GraphicSheet="ShipFire" CellIndex="3" m11="0.1736" m12="-0.9848" m21="0.9848" m22="0.1736" dx="-2.5353" dy="28.9786" color="-1" />
+    <Frame FrameValue="395" GraphicSheet="ShipFire" CellIndex="3" m11="0.0872" m12="-0.9962" m21="0.9962" m22="0.0872" dx="-1.3336" dy="30.5446" color="-1" />
+    <Frame FrameValue="396" GraphicSheet="ShipFire" CellIndex="3" m11="0" m12="-1" m21="1" m22="0" dx="0" dy="32" color="-1" />
+    <Frame FrameValue="397" GraphicSheet="ShipFire" CellIndex="3" m11="-0.0872" m12="-0.9962" m21="0.9962" m22="-0.0872" dx="1.4554" dy="33.3336" color="-1" />
+    <Frame FrameValue="398" GraphicSheet="ShipFire" CellIndex="3" m11="-0.1736" m12="-0.9848" m21="0.9848" m22="-0.1736" dx="3.0214" dy="34.5353" color="-1" />
+    <Frame FrameValue="399" GraphicSheet="ShipFire" CellIndex="3" m11="-0.2588" m12="-0.9659" m21="0.9659" m22="-0.2588" dx="4.6863" dy="35.5959" color="-1" />
+    <Frame FrameValue="400" GraphicSheet="ShipFire" CellIndex="3" m11="-0.342" m12="-0.9397" m21="0.9397" m22="-0.342" dx="6.4372" dy="36.5074" color="-1" />
+    <Frame FrameValue="401" GraphicSheet="ShipFire" CellIndex="3" m11="-0.4226" m12="-0.9063" m21="0.9063" m22="-0.4226" dx="8.261" dy="37.2628" color="-1" />
+    <Frame FrameValue="402" GraphicSheet="ShipFire" CellIndex="3" m11="-0.5" m12="-0.866" m21="0.866" m22="-0.5" dx="10.1436" dy="37.8564" color="-1" />
+    <Frame FrameValue="403" GraphicSheet="ShipFire" CellIndex="3" m11="-0.5736" m12="-0.8192" m21="0.8192" m22="-0.5736" dx="12.0708" dy="38.2837" color="-1" />
+    <Frame FrameValue="404" GraphicSheet="ShipFire" CellIndex="3" m11="-0.6428" m12="-0.766" m21="0.766" m22="-0.6428" dx="14.0279" dy="38.5413" color="-1" />
+    <Frame FrameValue="405" GraphicSheet="ShipFire" CellIndex="3" m11="-0.7071" m12="-0.7071" m21="0.7071" m22="-0.7071" dx="16" dy="38.6274" color="-1" />
+    <Frame FrameValue="406" GraphicSheet="ShipFire" CellIndex="3" m11="-0.766" m12="-0.6428" m21="0.6428" m22="-0.766" dx="17.9721" dy="38.5413" color="-1" />
+    <Frame FrameValue="407" GraphicSheet="ShipFire" CellIndex="3" m11="-0.8192" m12="-0.5736" m21="0.5736" m22="-0.8192" dx="19.9292" dy="38.2837" color="-1" />
+    <Frame FrameValue="408" GraphicSheet="ShipFire" CellIndex="3" m11="-0.866" m12="-0.5" m21="0.5" m22="-0.866" dx="21.8564" dy="37.8564" color="-1" />
+    <Frame FrameValue="409" GraphicSheet="ShipFire" CellIndex="3" m11="-0.9063" m12="-0.4226" m21="0.4226" m22="-0.9063" dx="23.739" dy="37.2628" color="-1" />
+    <Frame FrameValue="410" GraphicSheet="ShipFire" CellIndex="3" m11="-0.9397" m12="-0.342" m21="0.342" m22="-0.9397" dx="25.5628" dy="36.5074" color="-1" />
+    <Frame FrameValue="411" GraphicSheet="ShipFire" CellIndex="3" m11="-0.9659" m12="-0.2588" m21="0.2588" m22="-0.9659" dx="27.3137" dy="35.5959" color="-1" />
+    <Frame FrameValue="412" GraphicSheet="ShipFire" CellIndex="3" m11="-0.9848" m12="-0.1736" m21="0.1736" m22="-0.9848" dx="28.9786" dy="34.5353" color="-1" />
+    <Frame FrameValue="413" GraphicSheet="ShipFire" CellIndex="3" m11="-0.9962" m12="-0.0872" m21="0.0872" m22="-0.9962" dx="30.5446" dy="33.3336" color="-1" />
+    <Frame FrameValue="414" GraphicSheet="ShipFire" CellIndex="3" m11="-1" m12="0" m21="0" m22="-1" dx="32" dy="32" color="-1" />
+    <Frame FrameValue="415" GraphicSheet="ShipFire" CellIndex="3" m11="-0.9962" m12="0.0872" m21="-0.0872" m22="-0.9962" dx="33.3336" dy="30.5446" color="-1" />
+    <Frame FrameValue="416" GraphicSheet="ShipFire" CellIndex="3" m11="-0.9848" m12="0.1736" m21="-0.1736" m22="-0.9848" dx="34.5353" dy="28.9786" color="-1" />
+    <Frame FrameValue="417" GraphicSheet="ShipFire" CellIndex="3" m11="-0.9659" m12="0.2588" m21="-0.2588" m22="-0.9659" dx="35.5959" dy="27.3137" color="-1" />
+    <Frame FrameValue="418" GraphicSheet="ShipFire" CellIndex="3" m11="-0.9397" m12="0.342" m21="-0.342" m22="-0.9397" dx="36.5074" dy="25.5628" color="-1" />
+    <Frame FrameValue="419" GraphicSheet="ShipFire" CellIndex="3" m11="-0.9063" m12="0.4226" m21="-0.4226" m22="-0.9063" dx="37.2628" dy="23.739" color="-1" />
+    <Frame FrameValue="420" GraphicSheet="ShipFire" CellIndex="3" m11="-0.866" m12="0.5" m21="-0.5" m22="-0.866" dx="37.8564" dy="21.8564" color="-1" />
+    <Frame FrameValue="421" GraphicSheet="ShipFire" CellIndex="3" m11="-0.8192" m12="0.5736" m21="-0.5736" m22="-0.8192" dx="38.2837" dy="19.9292" color="-1" />
+    <Frame FrameValue="422" GraphicSheet="ShipFire" CellIndex="3" m11="-0.766" m12="0.6428" m21="-0.6428" m22="-0.766" dx="38.5413" dy="17.9721" color="-1" />
+    <Frame FrameValue="423" GraphicSheet="ShipFire" CellIndex="3" m11="-0.7071" m12="0.7071" m21="-0.7071" m22="-0.7071" dx="38.6274" dy="16" color="-1" />
+    <Frame FrameValue="424" GraphicSheet="ShipFire" CellIndex="3" m11="-0.6428" m12="0.766" m21="-0.766" m22="-0.6428" dx="38.5413" dy="14.0279" color="-1" />
+    <Frame FrameValue="425" GraphicSheet="ShipFire" CellIndex="3" m11="-0.5736" m12="0.8192" m21="-0.8192" m22="-0.5736" dx="38.2837" dy="12.0708" color="-1" />
+    <Frame FrameValue="426" GraphicSheet="ShipFire" CellIndex="3" m11="-0.5" m12="0.866" m21="-0.866" m22="-0.5" dx="37.8564" dy="10.1436" color="-1" />
+    <Frame FrameValue="427" GraphicSheet="ShipFire" CellIndex="3" m11="-0.4226" m12="0.9063" m21="-0.9063" m22="-0.4226" dx="37.2628" dy="8.261" color="-1" />
+    <Frame FrameValue="428" GraphicSheet="ShipFire" CellIndex="3" m11="-0.342" m12="0.9397" m21="-0.9397" m22="-0.342" dx="36.5074" dy="6.4372" color="-1" />
+    <Frame FrameValue="429" GraphicSheet="ShipFire" CellIndex="3" m11="-0.2588" m12="0.9659" m21="-0.9659" m22="-0.2588" dx="35.5959" dy="4.6863" color="-1" />
+    <Frame FrameValue="430" GraphicSheet="ShipFire" CellIndex="3" m11="-0.1736" m12="0.9848" m21="-0.9848" m22="-0.1736" dx="34.5353" dy="3.0214" color="-1" />
+    <Frame FrameValue="431" GraphicSheet="ShipFire" CellIndex="3" m11="-0.0872" m12="0.9962" m21="-0.9962" m22="-0.0872" dx="33.3336" dy="1.4554" color="-1" />
+  </Frameset>
+  <SpriteDefinition Name="SpaceShip">
+    <SpriteRule Name="If pressing left" Sequence="1" Type="If" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Left" Parameter2="false" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Turn left" Sequence="2" Type="Do" Function="CalculateRotatedState" Parameter1="(int)State.Drift0" Parameter2="72" Parameter3="state+1" ResultParameter="state" EndIf="true" Suspended="false" />
+    <SpriteRule Name="If pressing right" Sequence="3" Type="If" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Right" Parameter2="false" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Turn right" Sequence="4" Type="Do" Function="CalculateRotatedState" Parameter1="(int)State.Drift0" Parameter2="72" Parameter3="state-1" ResultParameter="state" EndIf="true" Suspended="false" />
+    <SpriteRule Name="If acceleration requested" Sequence="5" Type="If" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Up" Parameter2="false" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Do polar acceleration" Sequence="6" Type="Do" Function="PolarAccelerate" Parameter1="5" Parameter2="(int)State.Drift0" Parameter3="72" EndIf="false" Suspended="false" />
+    <SpriteRule Name="If currently drifting" Sequence="7" Type="If" Function="IsInState" Parameter1="(int)State.Drift0" Parameter2="(int)State.Drift355" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Switch to accelerating state" Sequence="8" Type="Do" Function="SwitchToState" Parameter1="state + (int)State.Accel0" Parameter2="RelativePosition.CenterMiddle" EndIf="true" Suspended="false" />
+    <SpriteRule Name="Else if accelerating (and acceleration not requested)" Sequence="9" Type="ElseIf" Function="IsInState" Parameter1="(int)State.Accel0" Parameter2="(int)State.Accel355" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Switch to drifting state" Sequence="10" Type="Do" Function="SwitchToState" Parameter1="state % 72" Parameter2="RelativePosition.CenterMiddle" EndIf="true" Suspended="false" />
+    <SpriteRule Name="End if acceleration requested" Sequence="11" Type="End" Function="End" EndIf="true" Suspended="false" />
+    <SpriteRule Name="Limit velocity" Sequence="12" Type="Do" Function="LimitVelocity" Parameter1="8" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Gravity" Sequence="13" Type="Do" Function="AlterYVelocity" Parameter1=".2" EndIf="false" Suspended="false" />
+    <SpriteRule Name="React to solidity" Sequence="14" Type="Do" Function="ReactToSolid" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Animate" Sequence="15" Type="Do" Function="Animate" Parameter1="SpriteBase.SpriteAnimationType.ByFrame" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Move by velocity" Sequence="16" Type="Do" Function="MoveByVelocity" EndIf="false" Suspended="false" />
+    <SpriteState Name="Drift0" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="1">
+      <SpriteFrame Sequence="0" FrameValue="0" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="72" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift5" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="2">
+      <SpriteFrame Sequence="0" FrameValue="1" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="73" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift10" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="3">
+      <SpriteFrame Sequence="0" FrameValue="2" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="74" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift15" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="4">
+      <SpriteFrame Sequence="0" FrameValue="3" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="75" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift20" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="5">
+      <SpriteFrame Sequence="0" FrameValue="4" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="76" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift25" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="6">
+      <SpriteFrame Sequence="0" FrameValue="5" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="77" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift30" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="7">
+      <SpriteFrame Sequence="0" FrameValue="6" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="78" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift35" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="8">
+      <SpriteFrame Sequence="0" FrameValue="7" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="79" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift40" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="9">
+      <SpriteFrame Sequence="0" FrameValue="8" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="80" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift45" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="10">
+      <SpriteFrame Sequence="0" FrameValue="9" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="81" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift50" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="11">
+      <SpriteFrame Sequence="0" FrameValue="10" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="82" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift55" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="12">
+      <SpriteFrame Sequence="0" FrameValue="11" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="83" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift60" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="13">
+      <SpriteFrame Sequence="0" FrameValue="12" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="84" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift65" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="14">
+      <SpriteFrame Sequence="0" FrameValue="13" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="85" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift70" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="15">
+      <SpriteFrame Sequence="0" FrameValue="14" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="86" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift75" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="16">
+      <SpriteFrame Sequence="0" FrameValue="15" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="87" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift80" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="17">
+      <SpriteFrame Sequence="0" FrameValue="16" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="88" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift85" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="18">
+      <SpriteFrame Sequence="0" FrameValue="17" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="89" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift90" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="19">
+      <SpriteFrame Sequence="0" FrameValue="18" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="90" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift95" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="20">
+      <SpriteFrame Sequence="0" FrameValue="19" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="91" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift100" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="21">
+      <SpriteFrame Sequence="0" FrameValue="20" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="92" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift105" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="22">
+      <SpriteFrame Sequence="0" FrameValue="21" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="93" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift110" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="23">
+      <SpriteFrame Sequence="0" FrameValue="22" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="94" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift115" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="24">
+      <SpriteFrame Sequence="0" FrameValue="23" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="95" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift120" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="25">
+      <SpriteFrame Sequence="0" FrameValue="24" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="96" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift125" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="26">
+      <SpriteFrame Sequence="0" FrameValue="25" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="97" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift130" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="27">
+      <SpriteFrame Sequence="0" FrameValue="26" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="98" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift135" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="28">
+      <SpriteFrame Sequence="0" FrameValue="27" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="99" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift140" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="29">
+      <SpriteFrame Sequence="0" FrameValue="28" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="100" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift145" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="30">
+      <SpriteFrame Sequence="0" FrameValue="29" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="101" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift150" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="31">
+      <SpriteFrame Sequence="0" FrameValue="30" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="102" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift155" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="32">
+      <SpriteFrame Sequence="0" FrameValue="31" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="103" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift160" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="33">
+      <SpriteFrame Sequence="0" FrameValue="32" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="104" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift165" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="34">
+      <SpriteFrame Sequence="0" FrameValue="33" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="105" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift170" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="35">
+      <SpriteFrame Sequence="0" FrameValue="34" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="106" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift175" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="36">
+      <SpriteFrame Sequence="0" FrameValue="35" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="107" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift180" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="37">
+      <SpriteFrame Sequence="0" FrameValue="36" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="108" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift185" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="38">
+      <SpriteFrame Sequence="0" FrameValue="37" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="109" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift190" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="39">
+      <SpriteFrame Sequence="0" FrameValue="38" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="110" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift195" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="40">
+      <SpriteFrame Sequence="0" FrameValue="39" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="111" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift200" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="41">
+      <SpriteFrame Sequence="0" FrameValue="40" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="112" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift205" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="42">
+      <SpriteFrame Sequence="0" FrameValue="41" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="113" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift210" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="43">
+      <SpriteFrame Sequence="0" FrameValue="42" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="114" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift215" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="44">
+      <SpriteFrame Sequence="0" FrameValue="43" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="115" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift220" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="45">
+      <SpriteFrame Sequence="0" FrameValue="44" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="116" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift225" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="46">
+      <SpriteFrame Sequence="0" FrameValue="45" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="117" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift230" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="47">
+      <SpriteFrame Sequence="0" FrameValue="46" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="118" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift235" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="48">
+      <SpriteFrame Sequence="0" FrameValue="47" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="119" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift240" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="49">
+      <SpriteFrame Sequence="0" FrameValue="48" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="120" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift245" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="50">
+      <SpriteFrame Sequence="0" FrameValue="49" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="121" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift250" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="51">
+      <SpriteFrame Sequence="0" FrameValue="50" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="122" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift255" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="52">
+      <SpriteFrame Sequence="0" FrameValue="51" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="123" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift260" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="53">
+      <SpriteFrame Sequence="0" FrameValue="52" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="124" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift265" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="54">
+      <SpriteFrame Sequence="0" FrameValue="53" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="125" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift270" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="55">
+      <SpriteFrame Sequence="0" FrameValue="54" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="126" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift275" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="56">
+      <SpriteFrame Sequence="0" FrameValue="55" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="127" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift280" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="57">
+      <SpriteFrame Sequence="0" FrameValue="56" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="128" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift285" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="58">
+      <SpriteFrame Sequence="0" FrameValue="57" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="129" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift290" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="59">
+      <SpriteFrame Sequence="0" FrameValue="58" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="130" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift295" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="60">
+      <SpriteFrame Sequence="0" FrameValue="59" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="131" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift300" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="61">
+      <SpriteFrame Sequence="0" FrameValue="60" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="132" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift305" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="62">
+      <SpriteFrame Sequence="0" FrameValue="61" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="133" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift310" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="63">
+      <SpriteFrame Sequence="0" FrameValue="62" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="134" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift315" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="64">
+      <SpriteFrame Sequence="0" FrameValue="63" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="135" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift320" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="65">
+      <SpriteFrame Sequence="0" FrameValue="64" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="136" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift325" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="66">
+      <SpriteFrame Sequence="0" FrameValue="65" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="137" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift330" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="67">
+      <SpriteFrame Sequence="0" FrameValue="66" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="138" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift335" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="68">
+      <SpriteFrame Sequence="0" FrameValue="67" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="139" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift340" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="69">
+      <SpriteFrame Sequence="0" FrameValue="68" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="140" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift345" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="70">
+      <SpriteFrame Sequence="0" FrameValue="69" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="141" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift350" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="71">
+      <SpriteFrame Sequence="0" FrameValue="70" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="142" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Drift355" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="72">
+      <SpriteFrame Sequence="0" FrameValue="71" Duration="30" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="143" Duration="30" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel0" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="73">
+      <SpriteFrame Sequence="0" FrameValue="144" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="216" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="288" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="360" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel5" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="74">
+      <SpriteFrame Sequence="0" FrameValue="145" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="217" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="289" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="361" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel10" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="75">
+      <SpriteFrame Sequence="0" FrameValue="146" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="218" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="290" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="362" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel15" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="76">
+      <SpriteFrame Sequence="0" FrameValue="147" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="219" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="291" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="363" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel20" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="77">
+      <SpriteFrame Sequence="0" FrameValue="148" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="220" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="292" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="364" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel25" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="78">
+      <SpriteFrame Sequence="0" FrameValue="149" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="221" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="293" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="365" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel30" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="79">
+      <SpriteFrame Sequence="0" FrameValue="150" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="222" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="294" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="366" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel35" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="80">
+      <SpriteFrame Sequence="0" FrameValue="151" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="223" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="295" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="367" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel40" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="81">
+      <SpriteFrame Sequence="0" FrameValue="152" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="224" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="296" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="368" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel45" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="82">
+      <SpriteFrame Sequence="0" FrameValue="153" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="225" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="297" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="369" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel50" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="83">
+      <SpriteFrame Sequence="0" FrameValue="154" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="226" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="298" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="370" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel55" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="84">
+      <SpriteFrame Sequence="0" FrameValue="155" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="227" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="299" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="371" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel60" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="85">
+      <SpriteFrame Sequence="0" FrameValue="156" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="228" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="300" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="372" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel65" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="86">
+      <SpriteFrame Sequence="0" FrameValue="157" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="229" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="301" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="373" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel70" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="87">
+      <SpriteFrame Sequence="0" FrameValue="158" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="230" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="302" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="374" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel75" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="88">
+      <SpriteFrame Sequence="0" FrameValue="159" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="231" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="303" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="375" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel80" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="89">
+      <SpriteFrame Sequence="0" FrameValue="160" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="232" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="304" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="376" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel85" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="90">
+      <SpriteFrame Sequence="0" FrameValue="161" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="233" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="305" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="377" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel90" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="91">
+      <SpriteFrame Sequence="0" FrameValue="162" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="234" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="306" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="378" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel95" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="92">
+      <SpriteFrame Sequence="0" FrameValue="163" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="235" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="307" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="379" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel100" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="93">
+      <SpriteFrame Sequence="0" FrameValue="164" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="236" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="308" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="380" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel105" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="94">
+      <SpriteFrame Sequence="0" FrameValue="165" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="237" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="309" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="381" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel110" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="95">
+      <SpriteFrame Sequence="0" FrameValue="166" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="238" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="310" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="382" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel115" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="96">
+      <SpriteFrame Sequence="0" FrameValue="167" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="239" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="311" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="383" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel120" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="97">
+      <SpriteFrame Sequence="0" FrameValue="168" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="240" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="312" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="384" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel125" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="98">
+      <SpriteFrame Sequence="0" FrameValue="169" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="241" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="313" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="385" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel130" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="99">
+      <SpriteFrame Sequence="0" FrameValue="170" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="242" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="314" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="386" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel135" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="100">
+      <SpriteFrame Sequence="0" FrameValue="171" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="243" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="315" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="387" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel140" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="101">
+      <SpriteFrame Sequence="0" FrameValue="172" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="244" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="316" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="388" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel145" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="102">
+      <SpriteFrame Sequence="0" FrameValue="173" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="245" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="317" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="389" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel150" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="103">
+      <SpriteFrame Sequence="0" FrameValue="174" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="246" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="318" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="390" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel155" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="104">
+      <SpriteFrame Sequence="0" FrameValue="175" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="247" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="319" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="391" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel160" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="105">
+      <SpriteFrame Sequence="0" FrameValue="176" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="248" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="320" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="392" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel165" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="106">
+      <SpriteFrame Sequence="0" FrameValue="177" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="249" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="321" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="393" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel170" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="107">
+      <SpriteFrame Sequence="0" FrameValue="178" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="250" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="322" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="394" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel175" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="108">
+      <SpriteFrame Sequence="0" FrameValue="179" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="251" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="323" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="395" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel180" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="109">
+      <SpriteFrame Sequence="0" FrameValue="180" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="252" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="324" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="396" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel185" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="110">
+      <SpriteFrame Sequence="0" FrameValue="181" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="253" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="325" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="397" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel190" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="111">
+      <SpriteFrame Sequence="0" FrameValue="182" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="254" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="326" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="398" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel195" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="112">
+      <SpriteFrame Sequence="0" FrameValue="183" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="255" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="327" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="399" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel200" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="113">
+      <SpriteFrame Sequence="0" FrameValue="184" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="256" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="328" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="400" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel205" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="114">
+      <SpriteFrame Sequence="0" FrameValue="185" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="257" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="329" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="401" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel210" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="115">
+      <SpriteFrame Sequence="0" FrameValue="186" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="258" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="330" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="402" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel215" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="116">
+      <SpriteFrame Sequence="0" FrameValue="187" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="259" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="331" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="403" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel220" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="117">
+      <SpriteFrame Sequence="0" FrameValue="188" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="260" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="332" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="404" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel225" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="118">
+      <SpriteFrame Sequence="0" FrameValue="189" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="261" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="333" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="405" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel230" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="119">
+      <SpriteFrame Sequence="0" FrameValue="190" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="262" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="334" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="406" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel235" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="120">
+      <SpriteFrame Sequence="0" FrameValue="191" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="263" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="335" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="407" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel240" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="121">
+      <SpriteFrame Sequence="0" FrameValue="192" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="264" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="336" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="408" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel245" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="122">
+      <SpriteFrame Sequence="0" FrameValue="193" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="265" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="337" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="409" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel250" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="123">
+      <SpriteFrame Sequence="0" FrameValue="194" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="266" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="338" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="410" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel255" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="124">
+      <SpriteFrame Sequence="0" FrameValue="195" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="267" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="339" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="411" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel260" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="125">
+      <SpriteFrame Sequence="0" FrameValue="196" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="268" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="340" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="412" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel265" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="126">
+      <SpriteFrame Sequence="0" FrameValue="197" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="269" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="341" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="413" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel270" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="127">
+      <SpriteFrame Sequence="0" FrameValue="198" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="270" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="342" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="414" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel275" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="128">
+      <SpriteFrame Sequence="0" FrameValue="199" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="271" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="343" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="415" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel280" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="129">
+      <SpriteFrame Sequence="0" FrameValue="200" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="272" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="344" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="416" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel285" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="130">
+      <SpriteFrame Sequence="0" FrameValue="201" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="273" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="345" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="417" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel290" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="131">
+      <SpriteFrame Sequence="0" FrameValue="202" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="274" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="346" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="418" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel295" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="132">
+      <SpriteFrame Sequence="0" FrameValue="203" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="275" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="347" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="419" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel300" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="133">
+      <SpriteFrame Sequence="0" FrameValue="204" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="276" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="348" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="420" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel305" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="134">
+      <SpriteFrame Sequence="0" FrameValue="205" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="277" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="349" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="421" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel310" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="135">
+      <SpriteFrame Sequence="0" FrameValue="206" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="278" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="350" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="422" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel315" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="136">
+      <SpriteFrame Sequence="0" FrameValue="207" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="279" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="351" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="423" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel320" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="137">
+      <SpriteFrame Sequence="0" FrameValue="208" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="280" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="352" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="424" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel325" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="138">
+      <SpriteFrame Sequence="0" FrameValue="209" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="281" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="353" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="425" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel330" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="139">
+      <SpriteFrame Sequence="0" FrameValue="210" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="282" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="354" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="426" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel335" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="140">
+      <SpriteFrame Sequence="0" FrameValue="211" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="283" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="355" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="427" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel340" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="141">
+      <SpriteFrame Sequence="0" FrameValue="212" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="284" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="356" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="428" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel345" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="142">
+      <SpriteFrame Sequence="0" FrameValue="213" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="285" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="357" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="429" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel350" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="143">
+      <SpriteFrame Sequence="0" FrameValue="214" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="286" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="358" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="430" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+    <SpriteState Name="Accel355" FramesetName="SpaceShip Frames" SolidWidth="32" SolidHeight="32" Sequence="144">
+      <SpriteFrame Sequence="0" FrameValue="215" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="1" FrameValue="287" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="2" FrameValue="359" Duration="15" MaskAlphaLevel="0" />
+      <SpriteFrame Sequence="3" FrameValue="431" Duration="15" MaskAlphaLevel="0" />
+    </SpriteState>
+  </SpriteDefinition>
+  <Project DisplayMode="m640x480x24" Windowed="true" TitleText="Rotating space ship with gravity. 72 animated rotating states for drifting and 72 more for accelerating." MaxPlayers="1" MaxViews="1" Credits="">
+    <Comments />
+  </Project>
+</ProjectDataset>

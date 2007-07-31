@@ -977,7 +977,7 @@ namespace SGDK2
 
          if (category == null)
          {
-            DefinitionsInCategory = ProjectData.SpriteDefinition;
+            DefinitionsInCategory = ProjectData.SpriteDefinition.Select(string.Empty, string.Empty, DataViewRowState.CurrentRows);
          }
          else
          {

@@ -1088,6 +1088,28 @@ public abstract class SpriteBase : GeneralRules
    }
 
    /// <summary>
+   /// Return a state that is in the same group of states as the sprite's current state,
+   /// but possibly pointing a different direction.
+   /// </summary>
+   /// <param name="FirstState">Represents the beginning of this sprite's rotating states.
+   /// This will usually be the sprite's first state, but can be something else if the sprite
+   /// has other states before the first rotating state.</param>
+   /// <param name="StateCount">Number of states in each rotation</param>
+   /// <param name="NewState">Specifies the new state. The state group which this value specifies
+   /// is ignored; only the offset into the group is used.</param>
+   /// <returns>New state value  that represents the state in the same group as the sprite's
+   /// current state, but rotated according to NewState.</returns>
+   /// <remarks>This is commonly used in calculating a new state when left or right is
+   /// pressed on a rotating sprite, to ensure that pressing left and right don't
+   /// cause the sprite to change to a different group of states.</remarks>
+   [Description("Return a state that is in the same group of states as the sprite's current state, but possibly pointing a different direction.")]
+   public int CalculateRotatedState([Editor("SpriteState", "UITypeEditor")] int FirstState, int StateCount, int NewState)
+   {
+      Debug.Assert(this.isActive, "Attempted to execute CalculateRotatedState on an inactive sprite");
+      return (NewState + StateCount - FirstState) % StateCount + FirstState + (int)((state - FirstState) / StateCount) * StateCount;
+   }
+
+   /// <summary>
    /// Switch the sprite to the the specified state, ensuring that the sprite doesn't hit a solid.
    /// </summary>
    /// <param name="State">State to which the sprite will be switched</param>
@@ -1787,6 +1809,32 @@ public abstract class SpriteBase : GeneralRules
          case Direction.Left:
             SolidPixelHeight = SolidHeight + (int)Math.Ceiling(y) - PixelY;
             return layer.GetRightSolidPixel(new System.Drawing.Rectangle(PixelX - 1, PixelY, 1, SolidPixelHeight), m_solidity) != int.MinValue;
+      }
+      return false;
+   }
+
+   /// <summary>
+   /// Determines if the specified point within a sprite is blocked from moving in a particular direction by the specified number of pixels.
+   /// </summary>
+   /// <param name="TestPoint">Point within the sprite from which the test is performed</param>
+   /// <param name="Direction">Direction relative to TestPoint which will be tested for solidity</param>
+   /// <param name="Distance">How many pixels to check for solidity from the test point</param>
+   /// <returns>True if there is solidity within Distance pixels of TestPoint, false otherwise.</returns>
+   [Description("Determines if the specified point within a sprite is blocked from moving in a particular direction by the specified number of pixels.")]
+   public bool IsPointBlocked(RelativePosition TestPoint, Direction Direction, int Distance)
+   {
+      Debug.Assert(this.isActive, "Attempted to execute IsPointBlocked on an inactive sprite");
+      System.Drawing.Point ptRelative = GetRelativePosition(TestPoint);
+      switch(Direction)
+      {
+         case Direction.Up:
+            return layer.GetBottomSolidPixel(new System.Drawing.Rectangle(ptRelative.X, ptRelative.Y - Distance, 1, Distance), m_solidity) != int.MinValue;
+         case Direction.Right:
+            return layer.GetLeftSolidPixel(new System.Drawing.Rectangle(ptRelative.X+1, ptRelative.Y, Distance, 1), m_solidity) != int.MinValue;
+         case Direction.Down:
+            return layer.GetTopSolidPixel(new System.Drawing.Rectangle(ptRelative.X, ptRelative.Y+1, 1, Distance), m_solidity) != int.MinValue;
+         case Direction.Left:
+            return layer.GetRightSolidPixel(new System.Drawing.Rectangle(ptRelative.X - Distance, ptRelative.Y, Distance, 1), m_solidity) != int.MinValue;
       }
       return false;
    }

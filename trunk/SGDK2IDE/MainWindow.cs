@@ -83,6 +83,11 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuHelpSearch;
       private System.Windows.Forms.MenuItem mnuHelpSeparator;
       private System.Windows.Forms.MenuItem mnuResetBlankProject;
+      private System.Windows.Forms.ToolBarButton tbbRun;
+      private System.Windows.Forms.ContextMenu mnuRunBar;
+      private System.Windows.Forms.MenuItem mnuRunDebugButton;
+      private System.Windows.Forms.MenuItem mnuRunButton;
+      private System.Windows.Forms.ToolBarButton tbbSave;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -125,6 +130,10 @@ namespace SGDK2
          this.tbbShowTree = new System.Windows.Forms.ToolBarButton();
          this.tbsTree = new System.Windows.Forms.ToolBarButton();
          this.tbbOpen = new System.Windows.Forms.ToolBarButton();
+         this.tbbRun = new System.Windows.Forms.ToolBarButton();
+         this.mnuRunBar = new System.Windows.Forms.ContextMenu();
+         this.mnuRunDebugButton = new System.Windows.Forms.MenuItem();
+         this.mnuRunButton = new System.Windows.Forms.MenuItem();
          this.tbbFileSep = new System.Windows.Forms.ToolBarButton();
          this.tbbNew = new System.Windows.Forms.ToolBarButton();
          this.tbbDelete = new System.Windows.Forms.ToolBarButton();
@@ -173,6 +182,7 @@ namespace SGDK2
          this.lblProjectTree = new System.Windows.Forms.Label();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.sbMain = new System.Windows.Forms.StatusBar();
+         this.tbbSave = new System.Windows.Forms.ToolBarButton();
          this.pnlProjectTree.SuspendLayout();
          this.SuspendLayout();
          // 
@@ -182,6 +192,8 @@ namespace SGDK2
                                                                                    this.tbbShowTree,
                                                                                    this.tbsTree,
                                                                                    this.tbbOpen,
+                                                                                   this.tbbSave,
+                                                                                   this.tbbRun,
                                                                                    this.tbbFileSep,
                                                                                    this.tbbNew,
                                                                                    this.tbbDelete,
@@ -210,6 +222,31 @@ namespace SGDK2
          // 
          this.tbbOpen.ImageIndex = 6;
          this.tbbOpen.ToolTipText = "Open an existing project";
+         // 
+         // tbbRun
+         // 
+         this.tbbRun.DropDownMenu = this.mnuRunBar;
+         this.tbbRun.ImageIndex = 35;
+         this.tbbRun.Style = System.Windows.Forms.ToolBarButtonStyle.DropDownButton;
+         this.tbbRun.ToolTipText = "Run project in debug mode";
+         // 
+         // mnuRunBar
+         // 
+         this.mnuRunBar.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                  this.mnuRunDebugButton,
+                                                                                  this.mnuRunButton});
+         // 
+         // mnuRunDebugButton
+         // 
+         this.mnuRunDebugButton.Index = 0;
+         this.mnuRunDebugButton.Text = "Debug";
+         this.mnuRunDebugButton.Click += new System.EventHandler(this.mnuFileRunProjectInDebugMode_Click);
+         // 
+         // mnuRunButton
+         // 
+         this.mnuRunButton.Index = 1;
+         this.mnuRunButton.Text = "Run";
+         this.mnuRunButton.Click += new System.EventHandler(this.mnuFileRunProject_Click);
          // 
          // tbbFileSep
          // 
@@ -632,6 +669,11 @@ namespace SGDK2
          this.sbMain.Name = "sbMain";
          this.sbMain.Size = new System.Drawing.Size(800, 20);
          this.sbMain.TabIndex = 8;
+         // 
+         // tbbSave
+         // 
+         this.tbbSave.ImageIndex = 5;
+         this.tbbSave.ToolTipText = "Save the current project";
          // 
          // frmMain
          // 
@@ -2325,6 +2367,10 @@ namespace SGDK2
             mnuFileOpenPrj_Click(tbbOpen, e);
          else if (e.Button == tbbDelete)
             mnuFileDeleteObj_Click(tbbDelete, e);
+         else if (e.Button == tbbRun)
+            mnuFileRunProjectInDebugMode_Click(tbbRun, e);
+         else if (e.Button == tbbSave)
+            mnuFileSavePrj_Click(tbbSave, e);
       }
 
       private void mnuFileExit_Click(object sender, System.EventArgs e)
@@ -2821,5 +2867,6 @@ namespace SGDK2
          Help.ShowHelp(this, SGDK2IDE.g_HelpProvider.HelpNamespace, HelpNavigator.Find, "");
       }
       #endregion
+
    }
 }

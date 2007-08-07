@@ -1584,6 +1584,8 @@ public abstract class SpriteBase : GeneralRules
    public bool ReactToSolid()
    {
       Debug.Assert(this.isActive, "Attempted to execute ReactToSolid on an inactive sprite");
+      if (m_solidity == null)
+         throw new System.ApplicationException("Attempted to execute ReactToSolid on sprite without solidity defined");
       bool hit = false;
       double dyOrig = dy;
 
@@ -2187,7 +2189,8 @@ public abstract class SpriteBase : GeneralRules
    /// <para>Because the sprite instances being created are not activations of already
    /// existing instances (as is the case with <see cref="TileActivateSprite"/>), there
    /// is no need for a parameter to reset all the sprite's parameters. All parameters of
-   /// a newly created sprite instance are always initialized to zero.</para>
+   /// a newly created sprite instance are always initialized to zero. The solidity is copied
+   /// from the sprite definition that created the sprite.</para>
    /// <para>New sprite instances will not refer to any solidity, and will begin in the first
    /// frame of the first state, but you can use rules to affect <see cref="GeneralRules.lastCreatedSprite"/>
    /// to set values of the new sprite, or define rules on the created sprite type to make it
@@ -2206,7 +2209,7 @@ public abstract class SpriteBase : GeneralRules
       TouchedTile tt = (TouchedTile)TouchedTiles[TouchingIndex];
       lastCreatedSprite = (SpriteBase)constructor.Invoke(new object[]
       {
-         layer, tt.x * layer.Tileset.TileWidth, tt.y * layer.Tileset.TileHeight, 0, 0, 0, 0, true, layer.ParentMap.Display, null, -1, true
+         layer, tt.x * layer.Tileset.TileWidth, tt.y * layer.Tileset.TileHeight, 0, 0, 0, 0, true, layer.ParentMap.Display, m_solidity, -1, true
       });
    }
 
@@ -2239,7 +2242,7 @@ public abstract class SpriteBase : GeneralRules
 
       lastCreatedSprite = (SpriteBase)constructor.Invoke(new object[]
       {
-         layer, 0, 0, 0, 0, 0, 0, true, layer.ParentMap.Display, null, -1, true
+         layer, 0, 0, 0, 0, 0, 0, true, layer.ParentMap.Display, m_solidity, -1, true
       });
 
       System.Drawing.Point ptLocation = GetRelativePosition(Location);

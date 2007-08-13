@@ -49,8 +49,11 @@ namespace SGDK2
 
       #region Non-Control members
       Matrix m_CurrentTransform = new Matrix();
+      Matrix m_BGTransform = null;
       int m_CurrentColor = -1;
+      int m_BGFrameColor = -1;
       Bitmap m_CurrentImage = null;
+      Bitmap m_BackgroundImage = null;
       DateTime dtLastPaintError = DateTime.MinValue;
       MouseZone m_DragType = MouseZone.Outside;
       Point m_DragStart = Point.Empty;
@@ -157,6 +160,9 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuFrameBorders;
       private System.Windows.Forms.MenuItem mnuCellBorders;
       private System.Windows.Forms.MenuItem mnuFrameTweening;
+      private SGDK2.GraphicBrowser BGFrameSelector;
+      private System.Windows.Forms.MenuItem mnuBackgroundFrame;
+      private System.Windows.Forms.MenuItem mnuFrameSizingBorder;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -178,6 +184,7 @@ namespace SGDK2
          while(ProjectData.GetFrameSet(sName) != null);
 
          FrameBrowser.Frameset = ProjectData.AddFramesetRow(sName);
+         BGFrameSelector.Frameset = FrameBrowser.Frameset;
          txtFramesetName.Text = sName;
       }
 
@@ -192,6 +199,7 @@ namespace SGDK2
 
          txtFramesetName.Text = dr.Name;
          FrameBrowser.Frameset = dr;
+         BGFrameSelector.Frameset = dr;
       }
 
       /// <summary>
@@ -205,6 +213,11 @@ namespace SGDK2
             {
                m_CurrentTransform.Dispose();
                m_CurrentTransform = null;
+            }
+            if (m_BGTransform != null)
+            {
+               m_BGTransform.Dispose();
+               m_BGTransform = null;
             }
             if(components != null)
 				{
@@ -255,6 +268,7 @@ namespace SGDK2
          this.lblFramesetName = new System.Windows.Forms.Label();
          this.FrameProperties = new System.Windows.Forms.PropertyGrid();
          this.pnlTransform = new System.Windows.Forms.Panel();
+         this.BGFrameSelector = new SGDK2.GraphicBrowser();
          this.lblDegrees = new System.Windows.Forms.Label();
          this.btnCancel = new System.Windows.Forms.Button();
          this.nudYScale = new System.Windows.Forms.NumericUpDown();
@@ -285,6 +299,7 @@ namespace SGDK2
          this.mnuView = new System.Windows.Forms.MenuItem();
          this.mnuCellBorders = new System.Windows.Forms.MenuItem();
          this.mnuFrameBorders = new System.Windows.Forms.MenuItem();
+         this.mnuBackgroundFrame = new System.Windows.Forms.MenuItem();
          this.mnuFramesetPop = new System.Windows.Forms.MenuItem();
          this.mnuAddCell = new System.Windows.Forms.MenuItem();
          this.mnuDeleteFrames = new System.Windows.Forms.MenuItem();
@@ -313,12 +328,13 @@ namespace SGDK2
          this.mnuXReset = new System.Windows.Forms.MenuItem();
          this.mnuFramesetSeparator = new System.Windows.Forms.MenuItem();
          this.mnuFrameRemappingWizard = new System.Windows.Forms.MenuItem();
-         this.mnuFsEditGraphicCell = new System.Windows.Forms.MenuItem();
          this.mnuFrameTweening = new System.Windows.Forms.MenuItem();
+         this.mnuFsEditGraphicCell = new System.Windows.Forms.MenuItem();
          this.tabFrameset = new System.Windows.Forms.TabControl();
          this.tpgFrameset = new System.Windows.Forms.TabPage();
          this.splitterGraphics = new System.Windows.Forms.Splitter();
          this.tpgFrameEditor = new System.Windows.Forms.TabPage();
+         this.mnuFrameSizingBorder = new System.Windows.Forms.MenuItem();
          this.pnlFrames.SuspendLayout();
          this.pnlFrameAction.SuspendLayout();
          this.pnlTransform.SuspendLayout();
@@ -591,6 +607,7 @@ namespace SGDK2
          this.pnlTransform.AllowDrop = true;
          this.pnlTransform.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
          this.pnlTransform.ContextMenu = this.mnuContext;
+         this.pnlTransform.Controls.Add(this.BGFrameSelector);
          this.pnlTransform.Controls.Add(this.lblDegrees);
          this.pnlTransform.Controls.Add(this.btnCancel);
          this.pnlTransform.Controls.Add(this.nudYScale);
@@ -617,6 +634,25 @@ namespace SGDK2
          this.pnlTransform.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlTransform_Paint);
          this.pnlTransform.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnlTransform_MouseMove);
          this.pnlTransform.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pnlTransform_MouseDown);
+         // 
+         // BGFrameSelector
+         // 
+         this.BGFrameSelector.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+         this.BGFrameSelector.BorderStyle = SGDK2.DragPanelBorderStyle.Sizable;
+         this.BGFrameSelector.CellBorders = false;
+         this.BGFrameSelector.CellPadding = new System.Drawing.Size(0, 0);
+         this.BGFrameSelector.CellSize = new System.Drawing.Size(0, 0);
+         this.BGFrameSelector.CurrentCellIndex = -1;
+         this.BGFrameSelector.Frameset = null;
+         this.BGFrameSelector.FramesToDisplay = null;
+         this.BGFrameSelector.GraphicSheet = null;
+         this.BGFrameSelector.Location = new System.Drawing.Point(72, 192);
+         this.BGFrameSelector.Name = "BGFrameSelector";
+         this.BGFrameSelector.SheetImage = null;
+         this.BGFrameSelector.Size = new System.Drawing.Size(368, 112);
+         this.BGFrameSelector.TabIndex = 16;
+         this.BGFrameSelector.Text = "Background Frame";
+         this.BGFrameSelector.CurrentCellChanged += new System.EventHandler(this.BGFrameSelector_CurrentCellChanged);
          // 
          // lblDegrees
          // 
@@ -958,7 +994,9 @@ namespace SGDK2
          this.mnuView.Index = 0;
          this.mnuView.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
                                                                                 this.mnuCellBorders,
-                                                                                this.mnuFrameBorders});
+                                                                                this.mnuFrameBorders,
+                                                                                this.mnuBackgroundFrame,
+                                                                                this.mnuFrameSizingBorder});
          this.mnuView.MergeOrder = 1;
          this.mnuView.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
          this.mnuView.Text = "&View";
@@ -972,8 +1010,15 @@ namespace SGDK2
          // mnuFrameBorders
          // 
          this.mnuFrameBorders.Index = 1;
-         this.mnuFrameBorders.Text = "Frame &Borders";
+         this.mnuFrameBorders.Text = "&Frame Borders";
          this.mnuFrameBorders.Click += new System.EventHandler(this.mnuFrameBorders_Click);
+         // 
+         // mnuBackgroundFrame
+         // 
+         this.mnuBackgroundFrame.Checked = true;
+         this.mnuBackgroundFrame.Index = 2;
+         this.mnuBackgroundFrame.Text = "&Background Frame";
+         this.mnuBackgroundFrame.Click += new System.EventHandler(this.mnuBackgroundFrame_Click);
          // 
          // mnuFramesetPop
          // 
@@ -1176,17 +1221,17 @@ namespace SGDK2
          this.mnuFrameRemappingWizard.Text = "&Frame Remapping Wizard...";
          this.mnuFrameRemappingWizard.Click += new System.EventHandler(this.mnuFrameRemappingWizard_Click);
          // 
-         // mnuFsEditGraphicCell
-         // 
-         this.mnuFsEditGraphicCell.Index = 6;
-         this.mnuFsEditGraphicCell.Text = "Edit &Graphic Cell...";
-         this.mnuFsEditGraphicCell.Click += new System.EventHandler(this.mnuGraphicEditor_Click);
-         // 
          // mnuFrameTweening
          // 
          this.mnuFrameTweening.Index = 5;
          this.mnuFrameTweening.Text = "Frame Tweening &Wizard...";
          this.mnuFrameTweening.Click += new System.EventHandler(this.mnuFrameTweening_Click);
+         // 
+         // mnuFsEditGraphicCell
+         // 
+         this.mnuFsEditGraphicCell.Index = 6;
+         this.mnuFsEditGraphicCell.Text = "Edit &Graphic Cell...";
+         this.mnuFsEditGraphicCell.Click += new System.EventHandler(this.mnuGraphicEditor_Click);
          // 
          // tabFrameset
          // 
@@ -1227,6 +1272,13 @@ namespace SGDK2
          this.tpgFrameEditor.Size = new System.Drawing.Size(456, 447);
          this.tpgFrameEditor.TabIndex = 1;
          this.tpgFrameEditor.Text = "Frame Editor";
+         // 
+         // mnuFrameSizingBorder
+         // 
+         this.mnuFrameSizingBorder.Checked = true;
+         this.mnuFrameSizingBorder.Index = 3;
+         this.mnuFrameSizingBorder.Text = "Frame &Sizing Border";
+         this.mnuFrameSizingBorder.Click += new System.EventHandler(this.mnuFrameSizingBorder_Click);
          // 
          // frmFrameEdit
          // 
@@ -1718,54 +1770,92 @@ namespace SGDK2
          try
          {
             e.Graphics.PixelOffsetMode = PixelOffsetMode.Half;
-            Matrix PaintTransform = m_CurrentTransform.Clone();
-            Matrix CtlTransform = GetTransform();
-            PaintTransform.Multiply(CtlTransform, MatrixOrder.Append);
-            CtlTransform.Dispose();
-            e.Graphics.Transform = PaintTransform;
-            e.Graphics.TranslateTransform(m_ptCenter.X, m_ptCenter.Y, MatrixOrder.Append);
-            if (m_CurrentColor != -1)
+            if (m_BackgroundImage != null)
             {
-               byte[] clr = BitConverter.GetBytes(m_CurrentColor);
-               System.Drawing.Imaging.ColorMatrix cm = new System.Drawing.Imaging.ColorMatrix(
-                  new float[][]
+               using (Matrix BGTransform = m_BGTransform.Clone())
                {
-                  new float[] {(float)clr[2]/255.0f, 0, 0, 0, 0},
-                  new float[] {0, (float)clr[1]/255.0f, 0, 0, 0},
-                  new float[] {0, 0, (float)clr[0]/255.0f, 0, 0},
-                  new float[] {0, 0, 0, (float)clr[3]/255.0f, 0},
-                  new float[] {0, 0, 0, 0, 1}
-               });
-               using (System.Drawing.Imaging.ImageAttributes attr = new System.Drawing.Imaging.ImageAttributes())
-               {
-                  attr.SetColorMatrices(cm, cm);
-                  e.Graphics.DrawImage(m_CurrentImage,
-                     new Rectangle(0,0,m_CurrentImage.Width,m_CurrentImage.Height),
-                     0,0,m_CurrentImage.Width,m_CurrentImage.Height,
-                     System.Drawing.GraphicsUnit.Pixel, attr);
+                  e.Graphics.Transform = BGTransform;
+                  e.Graphics.TranslateTransform(m_ptCenter.X, m_ptCenter.Y, MatrixOrder.Append);
+                  if (m_CurrentColor != -1)
+                  {
+                     byte[] clr = BitConverter.GetBytes(m_BGFrameColor);
+                     System.Drawing.Imaging.ColorMatrix cm = new System.Drawing.Imaging.ColorMatrix(
+                        new float[][]
+                     {
+                        new float[] {(float)clr[2]/255.0f, 0, 0, 0, 0},
+                        new float[] {0, (float)clr[1]/255.0f, 0, 0, 0},
+                        new float[] {0, 0, (float)clr[0]/255.0f, 0, 0},
+                        new float[] {0, 0, 0, (float)clr[3]/255.0f, 0},
+                        new float[] {0, 0, 0, 0, 1}
+                     });
+                     using (System.Drawing.Imaging.ImageAttributes attr = new System.Drawing.Imaging.ImageAttributes())
+                     {
+                        attr.SetColorMatrices(cm, cm);
+                        e.Graphics.DrawImage(m_BackgroundImage,
+                           new Rectangle(0,0,m_BackgroundImage.Width,m_BackgroundImage.Height),
+                           0,0,m_BackgroundImage.Width,m_BackgroundImage.Height,
+                           System.Drawing.GraphicsUnit.Pixel, attr);
+                     }
+                  }
+                  else
+                  {
+                     e.Graphics.DrawImage(m_BackgroundImage, 0, 0);
+                  }
                }
             }
-            else
+            using (Matrix PaintTransform = m_CurrentTransform.Clone())
             {
-               e.Graphics.DrawImage(m_CurrentImage, 0, 0);
-            }
+               using (Matrix CtlTransform = GetTransform())
+               {
+                  PaintTransform.Multiply(CtlTransform, MatrixOrder.Append);
+               }
+               e.Graphics.Transform = PaintTransform;
+               e.Graphics.TranslateTransform(m_ptCenter.X, m_ptCenter.Y, MatrixOrder.Append);
+               if (m_CurrentColor != -1)
+               {
+                  byte[] clr = BitConverter.GetBytes(m_CurrentColor);
+                  System.Drawing.Imaging.ColorMatrix cm = new System.Drawing.Imaging.ColorMatrix(
+                     new float[][]
+                  {
+                     new float[] {(float)clr[2]/255.0f, 0, 0, 0, 0},
+                     new float[] {0, (float)clr[1]/255.0f, 0, 0, 0},
+                     new float[] {0, 0, (float)clr[0]/255.0f, 0, 0},
+                     new float[] {0, 0, 0, (float)clr[3]/255.0f, 0},
+                     new float[] {0, 0, 0, 0, 1}
+                  });
+                  using (System.Drawing.Imaging.ImageAttributes attr = new System.Drawing.Imaging.ImageAttributes())
+                  {
+                     attr.SetColorMatrices(cm, cm);
+                     e.Graphics.DrawImage(m_CurrentImage,
+                        new Rectangle(0,0,m_CurrentImage.Width,m_CurrentImage.Height),
+                        0,0,m_CurrentImage.Width,m_CurrentImage.Height,
+                        System.Drawing.GraphicsUnit.Pixel, attr);
+                  }
+               }
+               else
+               {
+                  e.Graphics.DrawImage(m_CurrentImage, 0, 0);
+               }
             
-            e.Graphics.ResetTransform();
-            e.Graphics.TranslateTransform(m_ptCenter.X, m_ptCenter.Y, MatrixOrder.Append);
-            e.Graphics.PixelOffsetMode = PixelOffsetMode.Default;
-            Rectangle rcBounds = Rectangle.Round(GetTransformedBounds(PaintTransform, m_CurrentImage.Size));
-            Rectangle rcBoundsOuter= rcBounds;
-            rcBoundsOuter.Inflate(5,5);
-            ControlPaint.DrawSelectionFrame(e.Graphics, false, rcBoundsOuter, rcBounds, pnlTransform.BackColor);
-            ControlPaint.DrawGrabHandle(e.Graphics, GetGrabHandleRect(GrabHandlePosition.TopLeft), true, true);
-            ControlPaint.DrawGrabHandle(e.Graphics, GetGrabHandleRect(GrabHandlePosition.TopCenter), false, true);
-            ControlPaint.DrawGrabHandle(e.Graphics, GetGrabHandleRect(GrabHandlePosition.TopRight), false, true);
-            ControlPaint.DrawGrabHandle(e.Graphics, GetGrabHandleRect(GrabHandlePosition.MiddleLeft), false, true);
-            ControlPaint.DrawGrabHandle(e.Graphics, GetGrabHandleRect(GrabHandlePosition.MiddleRight), false, true);
-            ControlPaint.DrawGrabHandle(e.Graphics, GetGrabHandleRect(GrabHandlePosition.BottomLeft), false, true);
-            ControlPaint.DrawGrabHandle(e.Graphics, GetGrabHandleRect(GrabHandlePosition.BottomCenter), false, true);
-            ControlPaint.DrawGrabHandle(e.Graphics, GetGrabHandleRect(GrabHandlePosition.BottomRight), false, true);
-            PaintTransform.Dispose();
+               e.Graphics.ResetTransform();
+               e.Graphics.TranslateTransform(m_ptCenter.X, m_ptCenter.Y, MatrixOrder.Append);
+               e.Graphics.PixelOffsetMode = PixelOffsetMode.Default;
+               if (mnuFrameSizingBorder.Checked)
+               {
+                  Rectangle rcBounds = Rectangle.Round(GetTransformedBounds(PaintTransform, m_CurrentImage.Size));
+                  Rectangle rcBoundsOuter = rcBounds;
+                  rcBoundsOuter.Inflate(5,5);
+                  ControlPaint.DrawSelectionFrame(e.Graphics, false, rcBoundsOuter, rcBounds, pnlTransform.BackColor);
+                  ControlPaint.DrawGrabHandle(e.Graphics, GetGrabHandleRect(GrabHandlePosition.TopLeft), true, true);
+                  ControlPaint.DrawGrabHandle(e.Graphics, GetGrabHandleRect(GrabHandlePosition.TopCenter), false, true);
+                  ControlPaint.DrawGrabHandle(e.Graphics, GetGrabHandleRect(GrabHandlePosition.TopRight), false, true);
+                  ControlPaint.DrawGrabHandle(e.Graphics, GetGrabHandleRect(GrabHandlePosition.MiddleLeft), false, true);
+                  ControlPaint.DrawGrabHandle(e.Graphics, GetGrabHandleRect(GrabHandlePosition.MiddleRight), false, true);
+                  ControlPaint.DrawGrabHandle(e.Graphics, GetGrabHandleRect(GrabHandlePosition.BottomLeft), false, true);
+                  ControlPaint.DrawGrabHandle(e.Graphics, GetGrabHandleRect(GrabHandlePosition.BottomCenter), false, true);
+                  ControlPaint.DrawGrabHandle(e.Graphics, GetGrabHandleRect(GrabHandlePosition.BottomRight), false, true);
+               }
+            }
          }
          catch (Exception ex)
          {
@@ -2208,6 +2298,9 @@ namespace SGDK2
          if (m_CurrentTransform != null)
             m_CurrentTransform.Dispose();
          m_CurrentTransform = null;
+         if (m_BGTransform != null)
+            m_BGTransform.Dispose();
+         m_BGTransform = null;
          ResetControls();
          editingFrame = false;
          tabFrameset.SelectedTab = tpgFrameset;
@@ -2270,13 +2363,50 @@ namespace SGDK2
 
       private void mnuFrameBorders_Click(object sender, System.EventArgs e)
       {
-         FrameBrowser.CellBorders = mnuFrameBorders.Checked = !mnuFrameBorders.Checked;
+         FrameBrowser.CellBorders = BGFrameSelector.CellBorders = mnuFrameBorders.Checked = !mnuFrameBorders.Checked;
       }
 
       private void mnuFrameTweening_Click(object sender, System.EventArgs e)
       {
          using (frmFrameTweening frm = new frmFrameTweening(FrameBrowser.Frameset))
             frm.ShowDialog(this);
+      }
+
+      private void mnuBackgroundFrame_Click(object sender, System.EventArgs e)
+      {
+         if (mnuBackgroundFrame.Checked)
+            BGFrameSelector.CurrentCellIndex = -1;
+         mnuBackgroundFrame.Checked = !mnuBackgroundFrame.Checked;
+         BGFrameSelector.Visible = mnuBackgroundFrame.Checked;
+      }
+
+      private void BGFrameSelector_CurrentCellChanged(object sender, System.EventArgs e)
+      {
+         if (m_BackgroundImage != null)
+            m_BackgroundImage.Dispose();
+         if (BGFrameSelector.CurrentCellIndex >= 0)
+         {
+            ProjectDataset.FrameRow fr = BGFrameSelector.GetSelectedFrames()[0];
+            m_BackgroundImage = BGFrameSelector.GetCellImageData(BGFrameSelector.CurrentCellIndex);
+            if (m_BGTransform != null)
+               m_BGTransform.Dispose();
+            m_BGTransform = new Matrix(fr.m11, fr.m12, fr.m21, fr.m22, fr.dx, fr.dy);
+            m_BGFrameColor = fr.color;
+         }
+         else
+         {
+            m_BackgroundImage = null;
+            if (m_BGTransform != null)
+               m_BGTransform.Dispose();
+            m_BGTransform = null;
+         }
+         pnlTransform.Invalidate();
+      }
+
+      private void mnuFrameSizingBorder_Click(object sender, System.EventArgs e)
+      {
+         mnuFrameSizingBorder.Checked = !mnuFrameSizingBorder.Checked;
+         pnlTransform.Invalidate();
       }
       #endregion
    }

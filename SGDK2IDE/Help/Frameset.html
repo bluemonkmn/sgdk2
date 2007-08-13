@@ -134,7 +134,7 @@
       </ul>
       <p class="SubPara">See information about menu commands below for more information 
          about mass-changing/copying frames with the Frame Remapping wizard.</p>
-      <h2>Frame Editor Tab</h2>
+      <h2><a name="FrameEditTab">Frame Editor Tab</a></h2>
       <p>The frame editor tab allows you to visually manipulate the shape and 
          orientation of a graphic cell and update a frameset frame with the results. If 
          you select a graphic cell on the left half of the Frameset tab before switching 
@@ -179,6 +179,13 @@
          offsets to move the frames position relative to its origin. These numbers are 
          measured in pixels. Entering fractional values will cause the frame to draw 
          anti-aliased "between" pixel positions.</p>
+      <h3>Background Frame</h3>
+      <p class="SubPara">When the "Background Frame" item in the view menu is checked, a
+      floating window containing all the frameset's frames is visible on this tab. Selecting
+      a frame from this window will display that frame according to its defined position
+      along with the frame being edited in the frame editor. This can be useful for positioning
+      a frame relative to another existing frame.  To hide the background frame, un-check the
+      "Background Frame" item in the view menu.</p>
       <h3>Reset</h3>
       <p class="SubPara">This button will clear all matrix transformations applied to 
          the frame. Note that this does not just reset the image to the state it was in 
@@ -198,6 +205,10 @@
       <p class="SubPara">Displays dashed borders around the graphics in the Graphic Sheet pane on the left to clarify the size of each graphic cell and the position of the graphics within it.</p>
       <h3>Frame Borders</h3>
       <p class="SubPara">Displays dashed borders around the graphics in the Frameset pane on the right to clarify the size of each frame and the position of the graphics within it.</p>
+      <h3>Background Frame</h3>
+      <p class="SubPara">Shows or hides the floating "Background Frame" window on the <a href="#FrameEditTab">Frame Editing Tab</a>, as well as any currently active background frame selection.</p>
+      <h3>Frame Sizing Border</h3>
+      <p class="SubPara">Shows or hides the sizable border drawn around the frame in the <a href="#FrameEditTab">Frame Editing Tab</a>. The frame is still sizable and movable, but the border is hidden, allowing better visibility of the background frame.</p>
       <h2>Frameset Menu</h2>
       <h3>Add Selected Cells to Frameset</h3>
       <p class="SubPara">Add the cells currently selected in the graphic sheet pane of 

@@ -1375,7 +1375,7 @@ namespace SGDK2
             }
 
             bSeparatorAbove = bSeparatorBelow = true;
-            for (nMaxX = nMinX; nMaxX < Image.Width - 1; nMaxX++)
+            for (nMaxX = nMinX; nMaxX < Image.Width; nMaxX++)
             {
                if (ptCur.Y > 0)
                {
@@ -1405,6 +1405,8 @@ namespace SGDK2
                   else
                      bSeparatorBelow = true;
                }
+               if (nMaxX == Image.Width-1)
+                  break;
                if (!IsPointFloodable(StartColor, EndColor, FloodImage.GetPixel(nMaxX+1, ptCur.Y)))
                   break;
             }

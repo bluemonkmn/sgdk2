@@ -33,6 +33,7 @@ namespace SGDK2
       private bool m_bEndThread;
       private bool m_DangerWillRobinson;
       private Color m_Background;
+      int m_fpsValue = 60;
       #endregion
 
       #region Form Designer Members
@@ -259,8 +260,7 @@ namespace SGDK2
          while(!m_bEndThread)
          {
             long frameStart = 0;
-            if (!trbFPS.IsDisposed)
-               fps = trbFPS.Value;
+            fps = m_fpsValue;
             if (fps <=0)
                fps = 60;
             QueryPerformanceCounter(ref frameStart);
@@ -510,6 +510,7 @@ namespace SGDK2
       private void trbFPS_ValueChanged(object sender, System.EventArgs e)
       {
          lblFPS.Text = "FPS: " + trbFPS.Value.ToString();
+         m_fpsValue = trbFPS.Value;
       }
 
       private void cboColor_SelectedIndexChanged(object sender, System.EventArgs e)

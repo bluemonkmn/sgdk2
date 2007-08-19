@@ -24,10 +24,6 @@
 				<param name="Local" value="Introduction.html">
 				</OBJECT>
 			<LI> <OBJECT type="text/sitemap">
-				<param name="Name" value="Tutorial 1">
-				<param name="Local" value="Tutorial1.html">
-				</OBJECT>
-			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Main Window">
 				<param name="Local" value="MainWindow.html">
 				</OBJECT>
@@ -104,6 +100,20 @@
 			<LI> <OBJECT type="text/sitemap">
 				<param name="Name" value="Frequently Asked Questions">
 				<param name="Local" value="FAQ.html">
+				</OBJECT>
+		</UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Tutorials">
+			<param name="ImageNumber" value="1">
+			</OBJECT>
+		<UL>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Functional Game without Importing">
+				<param name="Local" value="Tutorial1.html">
+				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Multi-player Game from Template">
+				<param name="Local" value="Tutorial2.html">
 				</OBJECT>
 		</UL>
 	</UL>

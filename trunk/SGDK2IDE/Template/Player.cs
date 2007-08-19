@@ -355,6 +355,13 @@ public class KeyboardPlayer : IPlayer
 public class ControllerPlayer : IPlayer
 {
    public int deviceNumber;
+   /// <summary>
+   /// Array of 4 integers mapping controller button numbers to player button inputs.
+   /// </summary>
+   /// <remarks>The array element at index 0 contains index of the button on the controller
+   /// that is mapped to player button number 1. Element 1 is the index for button 2 and
+   /// so forth.</remarks>
+   public int[] buttonMap;
 
    /// <summary>
    /// Constructs a player object that links input from the specified game controller device
@@ -364,6 +371,7 @@ public class ControllerPlayer : IPlayer
    public ControllerPlayer(int deviceNumber)
    {
       this.deviceNumber = deviceNumber;
+      buttonMap = new int[4] {0, 1, 2, 3};
    }
 
    #region IPlayer Members
@@ -419,7 +427,7 @@ public class ControllerPlayer : IPlayer
    {
       get
       {
-         return Project.GameWindow.GetControllerState(deviceNumber).GetButtons()[0] != 0;
+         return Project.GameWindow.GetControllerState(deviceNumber).GetButtons()[buttonMap[0]] != 0;
       }
    }
 
@@ -430,7 +438,7 @@ public class ControllerPlayer : IPlayer
    {
       get
       {
-         return Project.GameWindow.GetControllerState(deviceNumber).GetButtons()[1] != 0;
+         return Project.GameWindow.GetControllerState(deviceNumber).GetButtons()[buttonMap[1]] != 0;
       }
    }
 
@@ -441,7 +449,7 @@ public class ControllerPlayer : IPlayer
    {
       get
       {
-         return Project.GameWindow.GetControllerState(deviceNumber).GetButtons()[2] != 0;
+         return Project.GameWindow.GetControllerState(deviceNumber).GetButtons()[buttonMap[2]] != 0;
       }
    }
 
@@ -452,7 +460,7 @@ public class ControllerPlayer : IPlayer
    {
       get
       {
-         return Project.GameWindow.GetControllerState(deviceNumber).GetButtons()[3] != 0;
+         return Project.GameWindow.GetControllerState(deviceNumber).GetButtons()[buttonMap[3]] != 0;
       }
    }
 

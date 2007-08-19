@@ -548,6 +548,7 @@ public class GameForm : Form
    {
       frmControls frm = new frmControls();
       frm.ShowDialog();
+      frm.Dispose();
    }
 
    private void mnuHelpAbout_Click(object sender, System.EventArgs e)

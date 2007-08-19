@@ -1,6 +1,6 @@
 <project SchemaVersion="1.3">
     <assemblies>
-        <assembly location="..\Library\Projects\Default\Default.exe" documentation="..\Library\Projects\Default\Default.xml" />
+        <assembly location="..\..\..\..\Desktop\SGDK2\Default\Default.exe" documentation="..\..\..\..\Desktop\SGDK2\Default\Default.xml" />
     </assemblies>
     <documenters>
         <documenter name="JavaDoc">

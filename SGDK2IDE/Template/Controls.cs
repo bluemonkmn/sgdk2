@@ -13,6 +13,14 @@ using System.Windows.Forms;
 /// </summary>
 public class frmControls : System.Windows.Forms.Form
 {
+   #region Non-control members
+   private System.Threading.Thread readControllerThread = null;
+   private bool bExitControllerThread = false;
+   private delegate void ControllerButtonPressedDelegate(int button);
+   private byte[] pressedButtons = null;
+   private System.Windows.Forms.TextBox txtCurJButton = null;
+   #endregion
+
    #region Windows Form Designer Members
    private System.Windows.Forms.Label lblController;
    private System.Windows.Forms.ComboBox cboController;
@@ -36,6 +44,15 @@ public class frmControls : System.Windows.Forms.Form
    private System.Windows.Forms.Label lblUp;
    private System.Windows.Forms.ComboBox cboPlayer;
    private System.Windows.Forms.Label lblPlayer;
+   private System.Windows.Forms.TextBox txtJButton4;
+   private System.Windows.Forms.TextBox txtJButton3;
+   private System.Windows.Forms.TextBox txtJButton2;
+   private System.Windows.Forms.TextBox txtJButton1;
+   private System.Windows.Forms.Label lblJButton4;
+   private System.Windows.Forms.Label lblJButton3;
+   private System.Windows.Forms.Label lblJButton2;
+   private System.Windows.Forms.Label lblJButton1;
+   private System.Windows.Forms.Label label1;
 
    /// <summary>
    /// Required designer variable.
@@ -79,6 +96,7 @@ public class frmControls : System.Windows.Forms.Form
          }
       }
       base.Dispose( disposing );
+      EndControllerThread();
    }
 
    #region Windows Form Designer generated code
@@ -106,6 +124,15 @@ public class frmControls : System.Windows.Forms.Form
       this.lblUp = new System.Windows.Forms.Label();
       this.cboPlayer = new System.Windows.Forms.ComboBox();
       this.lblPlayer = new System.Windows.Forms.Label();
+      this.txtJButton4 = new System.Windows.Forms.TextBox();
+      this.txtJButton3 = new System.Windows.Forms.TextBox();
+      this.txtJButton2 = new System.Windows.Forms.TextBox();
+      this.txtJButton1 = new System.Windows.Forms.TextBox();
+      this.lblJButton4 = new System.Windows.Forms.Label();
+      this.lblJButton3 = new System.Windows.Forms.Label();
+      this.lblJButton2 = new System.Windows.Forms.Label();
+      this.lblJButton1 = new System.Windows.Forms.Label();
+      this.label1 = new System.Windows.Forms.Label();
       this.SuspendLayout();
       // 
       // lblController
@@ -353,14 +380,122 @@ public class frmControls : System.Windows.Forms.Form
       this.lblPlayer.Text = "Player:";
       this.lblPlayer.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
       // 
+      // txtJButton4
+      // 
+      this.txtJButton4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.txtJButton4.Enabled = false;
+      this.txtJButton4.Location = new System.Drawing.Point(224, 232);
+      this.txtJButton4.Name = "txtJButton4";
+      this.txtJButton4.ReadOnly = true;
+      this.txtJButton4.Size = new System.Drawing.Size(64, 20);
+      this.txtJButton4.TabIndex = 51;
+      this.txtJButton4.Text = "";
+      this.txtJButton4.Leave += new System.EventHandler(this.txtJButton_Leave);
+      this.txtJButton4.Enter += new System.EventHandler(this.txtJButton_Enter);
+      // 
+      // txtJButton3
+      // 
+      this.txtJButton3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.txtJButton3.Enabled = false;
+      this.txtJButton3.Location = new System.Drawing.Point(224, 208);
+      this.txtJButton3.Name = "txtJButton3";
+      this.txtJButton3.ReadOnly = true;
+      this.txtJButton3.Size = new System.Drawing.Size(64, 20);
+      this.txtJButton3.TabIndex = 49;
+      this.txtJButton3.Text = "";
+      this.txtJButton3.Leave += new System.EventHandler(this.txtJButton_Leave);
+      this.txtJButton3.Enter += new System.EventHandler(this.txtJButton_Enter);
+      // 
+      // txtJButton2
+      // 
+      this.txtJButton2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.txtJButton2.Enabled = false;
+      this.txtJButton2.Location = new System.Drawing.Point(88, 232);
+      this.txtJButton2.Name = "txtJButton2";
+      this.txtJButton2.ReadOnly = true;
+      this.txtJButton2.Size = new System.Drawing.Size(64, 20);
+      this.txtJButton2.TabIndex = 47;
+      this.txtJButton2.Text = "";
+      this.txtJButton2.Leave += new System.EventHandler(this.txtJButton_Leave);
+      this.txtJButton2.Enter += new System.EventHandler(this.txtJButton_Enter);
+      // 
+      // txtJButton1
+      // 
+      this.txtJButton1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.txtJButton1.Enabled = false;
+      this.txtJButton1.Location = new System.Drawing.Point(88, 208);
+      this.txtJButton1.Name = "txtJButton1";
+      this.txtJButton1.ReadOnly = true;
+      this.txtJButton1.Size = new System.Drawing.Size(64, 20);
+      this.txtJButton1.TabIndex = 45;
+      this.txtJButton1.Text = "";
+      this.txtJButton1.Leave += new System.EventHandler(this.txtJButton_Leave);
+      this.txtJButton1.Enter += new System.EventHandler(this.txtJButton_Enter);
+      // 
+      // lblJButton4
+      // 
+      this.lblJButton4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.lblJButton4.Enabled = false;
+      this.lblJButton4.Location = new System.Drawing.Point(160, 232);
+      this.lblJButton4.Name = "lblJButton4";
+      this.lblJButton4.Size = new System.Drawing.Size(64, 20);
+      this.lblJButton4.TabIndex = 50;
+      this.lblJButton4.Text = "Button 4:";
+      this.lblJButton4.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // lblJButton3
+      // 
+      this.lblJButton3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.lblJButton3.Enabled = false;
+      this.lblJButton3.Location = new System.Drawing.Point(160, 208);
+      this.lblJButton3.Name = "lblJButton3";
+      this.lblJButton3.Size = new System.Drawing.Size(64, 20);
+      this.lblJButton3.TabIndex = 48;
+      this.lblJButton3.Text = "Button 3:";
+      this.lblJButton3.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // lblJButton2
+      // 
+      this.lblJButton2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.lblJButton2.Enabled = false;
+      this.lblJButton2.Location = new System.Drawing.Point(24, 232);
+      this.lblJButton2.Name = "lblJButton2";
+      this.lblJButton2.Size = new System.Drawing.Size(64, 20);
+      this.lblJButton2.TabIndex = 46;
+      this.lblJButton2.Text = "Button 2:";
+      this.lblJButton2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // lblJButton1
+      // 
+      this.lblJButton1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+      this.lblJButton1.Enabled = false;
+      this.lblJButton1.Location = new System.Drawing.Point(24, 208);
+      this.lblJButton1.Name = "lblJButton1";
+      this.lblJButton1.Size = new System.Drawing.Size(64, 20);
+      this.lblJButton1.TabIndex = 44;
+      this.lblJButton1.Text = "Button 1:";
+      this.lblJButton1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+      // 
+      // label1
+      // 
+      this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+         | System.Windows.Forms.AnchorStyles.Right)));
+      this.label1.Location = new System.Drawing.Point(8, 264);
+      this.label1.Name = "label1";
+      this.label1.Size = new System.Drawing.Size(288, 32);
+      this.label1.TabIndex = 52;
+      this.label1.Text = "To change button configuration, click on a box and press the key/button to map to" +
+         " that button.";
+      // 
       // frmControls
       // 
       this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-      this.ClientSize = new System.Drawing.Size(298, 215);
-      this.Controls.Add(this.lblController);
-      this.Controls.Add(this.cboController);
-      this.Controls.Add(this.rdoController);
-      this.Controls.Add(this.rdoKeyboard);
+      this.ClientSize = new System.Drawing.Size(298, 295);
+      this.Controls.Add(this.label1);
+      this.Controls.Add(this.txtJButton4);
+      this.Controls.Add(this.txtJButton3);
+      this.Controls.Add(this.txtJButton2);
+      this.Controls.Add(this.txtJButton1);
       this.Controls.Add(this.txtButton4);
       this.Controls.Add(this.txtButton3);
       this.Controls.Add(this.txtButton2);
@@ -369,6 +504,14 @@ public class frmControls : System.Windows.Forms.Form
       this.Controls.Add(this.txtRight);
       this.Controls.Add(this.txtLeft);
       this.Controls.Add(this.txtUp);
+      this.Controls.Add(this.lblJButton4);
+      this.Controls.Add(this.lblJButton3);
+      this.Controls.Add(this.lblJButton2);
+      this.Controls.Add(this.lblJButton1);
+      this.Controls.Add(this.lblController);
+      this.Controls.Add(this.cboController);
+      this.Controls.Add(this.rdoController);
+      this.Controls.Add(this.rdoKeyboard);
       this.Controls.Add(this.lblButton4);
       this.Controls.Add(this.lblButton3);
       this.Controls.Add(this.lblButton2);
@@ -403,6 +546,10 @@ public class frmControls : System.Windows.Forms.Form
             sender == rdoKeyboard;
 
          lblController.Enabled = cboController.Enabled = 
+            lblJButton1.Enabled = txtJButton1.Enabled =
+            lblJButton2.Enabled = txtJButton2.Enabled =
+            lblJButton3.Enabled = txtJButton3.Enabled =
+            lblJButton4.Enabled = txtJButton4.Enabled =
             (sender != rdoKeyboard);
 
          if (sender == rdoKeyboard)
@@ -481,12 +628,84 @@ public class frmControls : System.Windows.Forms.Form
       else
       {
          rdoController.Checked = true;
-         int devNum = ((ControllerPlayer)Project.GameWindow.Players[SelectedPlayer]).deviceNumber;
+         ControllerPlayer player = ((ControllerPlayer)Project.GameWindow.Players[SelectedPlayer]);
+         int devNum = player.deviceNumber;
          if (cboController.Items.Count > devNum)
+         {
             cboController.SelectedIndex = devNum;
+            txtJButton1.Text = player.buttonMap[0].ToString();
+            txtJButton2.Text = player.buttonMap[1].ToString();
+            txtJButton3.Text = player.buttonMap[2].ToString();
+            txtJButton4.Text = player.buttonMap[3].ToString();
+         }
          else
             cboController.SelectedIndex = -1;
       }
+   }
+
+   private void ControllerButtonPressed(int button)
+   {
+      ControllerPlayer plr = (ControllerPlayer)Project.GameWindow.Players[SelectedPlayer];
+      if (txtCurJButton == txtJButton1)
+         plr.buttonMap[0] = button;
+      else if (txtCurJButton == txtJButton2)
+         plr.buttonMap[1] = button;
+      else if (txtCurJButton == txtJButton3)
+         plr.buttonMap[2] = button;
+      else if (txtCurJButton == txtJButton4)
+         plr.buttonMap[3] = button;
+      if (txtCurJButton != null)
+         txtCurJButton.Text = button.ToString();
+   }
+
+   private void ReadControllerLoop()
+   {
+      ControllerButtonPressedDelegate cbp = new ControllerButtonPressedDelegate(ControllerButtonPressed);
+      while(!bExitControllerThread)
+      {
+         Project.GameWindow.ReadControllers();
+         byte[] buttons = ((Microsoft.DirectX.DirectInput.JoystickState)
+            Project.GameWindow.GetControllerState(((ControllerPlayer)Project.GameWindow.Players[
+            SelectedPlayer]).deviceNumber)).GetButtons();
+         for(int button=0; button<buttons.Length; button++)
+         {
+            if ((pressedButtons != null) && (pressedButtons[button] == 0) && (buttons[button] != 0))
+               this.Invoke(cbp, new object[] {button});
+         }
+         pressedButtons = buttons;
+         System.Threading.Thread.Sleep(0);
+      }
+   }
+
+   private void BeginControllerThread()
+   {
+      EndControllerThread();
+      System.Threading.ThreadStart ts = new System.Threading.ThreadStart(ReadControllerLoop);
+      readControllerThread = new System.Threading.Thread(ts);
+      readControllerThread.Start();
+   }
+
+   private void EndControllerThread()
+   {
+      if (readControllerThread != null)
+      {
+         bExitControllerThread = true;
+         readControllerThread.Join();
+      }
+      readControllerThread = null;
+      bExitControllerThread = false;
+   }
+
+   private void txtJButton_Enter(object sender, System.EventArgs e)
+   {
+      txtCurJButton = (System.Windows.Forms.TextBox)sender;
+      BeginControllerThread();
+   }
+
+   private void txtJButton_Leave(object sender, System.EventArgs e)
+   {
+      txtCurJButton = null;
+      EndControllerThread();
    }
 }
 

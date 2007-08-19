@@ -1057,7 +1057,7 @@ namespace SGDK2
          if (result < 0)
             result = rtfCode.Find(m_frmFindReplace.FindString, m_frmFindReplace.Options);
          if (result < 0)
-            MessageBox.Show(this, "The specified text was found anywhere in " + m_SourceCode.Name, "Find Text", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(this, "The specified text was not found anywhere in " + m_SourceCode.Name, "Find Text", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
          UpdateStatus();
       }
@@ -1101,7 +1101,7 @@ namespace SGDK2
             result = rtfCode.Find(m_frmFindReplace.FindString, start, m_frmFindReplace.Options);
          }
          if (replacements == 0)
-            MessageBox.Show(this, "The specified text was found anywhere in " + m_SourceCode.Name, "Find Text", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(this, "The specified text was not found anywhere in " + m_SourceCode.Name, "Find Text", MessageBoxButtons.OK, MessageBoxIcon.Information);
          else
             MessageBox.Show(this, "Replaced " + replacements.ToString() + " occurrences.", "Replace All", MessageBoxButtons.OK, MessageBoxIcon.Information);
 

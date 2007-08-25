@@ -1674,7 +1674,14 @@ namespace SGDK2
          if (e.Action == DataRowAction.Add)
             cboGraphicSheet.Items.Add(e.Row);
          else if (e.Action == DataRowAction.Delete)
+         {
             cboGraphicSheet.Items.Remove(e.Row);
+            if (CellBrowser.GraphicSheet == e.Row)
+            {
+               CellBrowser.GraphicSheet = null;
+               CellBrowser.Invalidate();
+            }
+         }
       }
 
       private void cboGraphicSheet_SelectedIndexChanged(object sender, System.EventArgs e)

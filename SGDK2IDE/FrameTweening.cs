@@ -1179,7 +1179,11 @@ namespace SGDK2
          System.Text.StringBuilder sb = new System.Text.StringBuilder();
          
          ProjectDataset.FrameRow[] totalFrames = ProjectData.GetSortedFrameRows(m_frameset);
-         int lastFrame = totalFrames[totalFrames.Length-1].FrameValue;
+         int lastFrame;
+         if (totalFrames.Length == 0)
+            lastFrame = -1;
+         else
+            lastFrame = totalFrames[totalFrames.Length-1].FrameValue;
 
          for (int i=0; i < count; i++)
          {
@@ -1229,7 +1233,11 @@ namespace SGDK2
          }
 
          ProjectDataset.FrameRow[] totalFrames = ProjectData.GetSortedFrameRows(m_frameset);
-         int lastFrame = totalFrames[totalFrames.Length-1].FrameValue;
+         int lastFrame;
+         if (totalFrames.Length == 0)
+            lastFrame = -1;
+         else
+            lastFrame = totalFrames[totalFrames.Length-1].FrameValue;
 
          ProjectDataset.GraphicSheetRow gfx = (ProjectDataset.GraphicSheetRow)cboGraphicSheet.SelectedItem;
 
@@ -1253,9 +1261,9 @@ namespace SGDK2
                   if (rotation != 0)
                      mtx.RotateAt(rotation, new PointF(gfx.CellWidth / 2.0f, gfx.CellHeight / 2.0f));
                   if ((scaleX != 1) || (scaleY != 1))
-                     mtx.Scale(scaleX, scaleY);
+                     mtx.Scale(scaleX, scaleY, System.Drawing.Drawing2D.MatrixOrder.Append);
                   if ((offsetX != 0) || (offsetY != 0))
-                     mtx.Translate(offsetX, offsetY);
+                     mtx.Translate(offsetX, offsetY, System.Drawing.Drawing2D.MatrixOrder.Append);
                   ProjectData.AddFrameRow(m_frameset, i+lastFrame+1, gfx.Name, (short)SourceCell.GetFirstSelectedCell(),
                      mtx.Elements[0], mtx.Elements[1], mtx.Elements[2],
                      mtx.Elements[3], mtx.Elements[4], mtx.Elements[5], -1);

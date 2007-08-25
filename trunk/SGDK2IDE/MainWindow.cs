@@ -130,6 +130,7 @@ namespace SGDK2
          this.tbbShowTree = new System.Windows.Forms.ToolBarButton();
          this.tbsTree = new System.Windows.Forms.ToolBarButton();
          this.tbbOpen = new System.Windows.Forms.ToolBarButton();
+         this.tbbSave = new System.Windows.Forms.ToolBarButton();
          this.tbbRun = new System.Windows.Forms.ToolBarButton();
          this.mnuRunBar = new System.Windows.Forms.ContextMenu();
          this.mnuRunDebugButton = new System.Windows.Forms.MenuItem();
@@ -182,7 +183,6 @@ namespace SGDK2
          this.lblProjectTree = new System.Windows.Forms.Label();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.sbMain = new System.Windows.Forms.StatusBar();
-         this.tbbSave = new System.Windows.Forms.ToolBarButton();
          this.pnlProjectTree.SuspendLayout();
          this.SuspendLayout();
          // 
@@ -222,6 +222,11 @@ namespace SGDK2
          // 
          this.tbbOpen.ImageIndex = 6;
          this.tbbOpen.ToolTipText = "Open an existing project";
+         // 
+         // tbbSave
+         // 
+         this.tbbSave.ImageIndex = 5;
+         this.tbbSave.ToolTipText = "Save the current project";
          // 
          // tbbRun
          // 
@@ -669,11 +674,6 @@ namespace SGDK2
          this.sbMain.Name = "sbMain";
          this.sbMain.Size = new System.Drawing.Size(800, 20);
          this.sbMain.TabIndex = 8;
-         // 
-         // tbbSave
-         // 
-         this.tbbSave.ImageIndex = 5;
-         this.tbbSave.ToolTipText = "Save the current project";
          // 
          // frmMain
          // 

@@ -144,6 +144,9 @@ class CompileResx
          rd = new System.Resources.ResXResourceReader("FrameTweening.resx");
          WriteResources(rd,"SGDK2.frmFrameTweening.resources");
          rd.Close();
+         rd = new System.Resources.ResXResourceReader("SwitchableMessage.resx");
+         WriteResources(rd,"SGDK2.frmSwitchableMessage.resources");
+         rd.Close();
       }
       public static void WriteResources(System.Resources.ResXResourceReader rd, string sFile)
       {

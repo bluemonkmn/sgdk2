@@ -7184,6 +7184,7 @@ namespace FMOD
     <Text>// file version 1 (distributed with initial alpha release)
 // last change: call system.update in the OnFrameStart event handler
 // Customized version for demo project -- added spectrum analyzer.
+// Imported PauseSound from file version 2.
 
 using System;
 using System.ComponentModel;
@@ -7248,6 +7249,12 @@ namespace CustomObjects
          ERRCHECK(system.playSound(FMOD.CHANNELINDEX.FREE, Sound.sound, false, ref Sound.channel));
          ERRCHECK(Sound.channel.setCallback(FMOD.CHANNEL_CALLBACKTYPE.END, updateCallback, 0));
          ERRCHECK(Sound.channel.setVolume(Sound.Volume));
+      }
+
+      [Description("Pause or resume an FMOD sound effect")]
+      public static void PauseSound([System.ComponentModel.Editor("CustomObject", "UITypeEditor")] CustomObjects.FMODBase Sound, bool Pause)
+      {
+         ERRCHECK(Sound.channel.setPaused(Pause));
       }
 
       private static FMOD.RESULT Channel_Callback(IntPtr channelraw, FMOD.CHANNEL_CALLBACKTYPE type, int command, uint commanddata1, uint commanddata2)

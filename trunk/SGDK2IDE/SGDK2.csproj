@@ -666,6 +666,16 @@
                     BuildAction = "EmbeddedResource"
                 />
                 <File
+                    RelPath = "SwitchableMessage.cs"
+                    SubType = "Form"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "SwitchableMessage.resx"
+                    DependentUpon = "SwitchableMessage.cs"
+                    BuildAction = "EmbeddedResource"
+                />
+                <File
                     RelPath = "TileCache.cs"
                     SubType = "Code"
                     BuildAction = "Compile"

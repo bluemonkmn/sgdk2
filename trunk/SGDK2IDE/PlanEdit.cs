@@ -941,6 +941,17 @@ namespace SGDK2
          }
       }
 
+      private void FillComboWithSpriteInstances(ComboBox cboTarget)
+      {
+         foreach(ProjectDataset.SpriteRow drSprite in ProjectData.GetSortedSpriteRows(m_Plan.LayerRowParent))
+         {
+            cboTarget.Items.Add(new SpriteCodeRef(drSprite));
+         }
+         foreach (RemotingServices.RemotePropertyInfo pi in m_PlanProperties)
+            if (pi.Type.Name == CodeGenerator.SpriteBaseClass)
+               cboTarget.Items.Add(CodeGenerator.NameToVariable(pi.Name));
+      }
+
       private void FillComboWithSpriteCollections(ComboBox cboTarget)
       {
          foreach(DataRowView drv in ProjectData.SpriteCategory.DefaultView)
@@ -1030,10 +1041,7 @@ namespace SGDK2
          }
          else if (string.Compare(param.Type.Name, CodeGenerator.SpriteBaseClass) == 0)
          {
-            foreach(ProjectDataset.SpriteRow drSprite in ProjectData.GetSortedSpriteRows(m_Plan.LayerRowParent))
-            {
-               cboParameter.Items.Add(new SpriteCodeRef(drSprite));
-            }
+            FillComboWithSpriteInstances(cboParameter);
          }
          else if (string.Compare(param.Type.Name, CodeGenerator.SpriteCollectionClassName) == 0)
          {

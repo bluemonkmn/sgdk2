@@ -74,6 +74,7 @@ echo >>Input.txt /res:SGDK2.frmRotateWizard.resources
 echo >>Input.txt /res:SGDK2.frmAnimPreview.resources
 echo >>Input.txt /res:SGDK2.frmSpecifyFlags.resources
 echo >>Input.txt /res:SGDK2.frmFrameTweening.resources
+echo >>Input.txt /res:SGDK2.frmSwitchableMessage.resources
 echo >>Input.txt /res:Template\Display.cs,SGDK2.Template.Display.cs
 echo >>Input.txt /res:Template\Frame.cs,SGDK2.Template.Frame.cs
 echo >>Input.txt /res:Template\LayerBase.cs,SGDK2.Template.LayerBase.cs
@@ -159,6 +160,7 @@ echo >>Input.txt AnimPreview.cs
 echo >>Input.txt SpecifyFlags.cs
 echo >>Input.txt FrameConverter.cs
 echo >>Input.txt FrameTweening.cs
+echo >>Input.txt SwitchableMessage.cs
 csc /noconfig @Input.txt
 del Input.txt
 del *.resources

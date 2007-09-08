@@ -115,6 +115,10 @@
 				<param name="Name" value="Multi-player Game from Template">
 				<param name="Local" value="Tutorial2.html">
 				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Creating New Tiles and Shapes">
+				<param name="Local" value="Tutorial3.html">
+				</OBJECT>
 		</UL>
 	</UL>
 	<OBJECT type="text/sitemap">

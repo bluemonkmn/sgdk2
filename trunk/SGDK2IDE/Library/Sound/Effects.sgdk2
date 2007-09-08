@@ -639,8 +639,8 @@
     <Text>~import fmod.cs</Text>
   </SourceCode>
   <SourceCode Name="fmodbase.cs" IsCustomObject="true" DependsOn="fmod.cs">
-    <Text>// file version 1 (distributed with initial alpha release)
-// last change: call system.update in the OnFrameStart event handler
+    <Text>// File version 2 (distributed with initial beta release)
+// Last change: Add PauseSound function
 
 using System;
 using System.ComponentModel;
@@ -819,7 +819,6 @@ namespace CustomObjects
       }
    }
 }
-
 </Text>
   </SourceCode>
   <SourceCode Name="Boing.cs" IsCustomObject="true" DependsOn="fmodbase.cs">

@@ -88,6 +88,9 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuRunDebugButton;
       private System.Windows.Forms.MenuItem mnuRunButton;
       private System.Windows.Forms.ToolBarButton tbbSave;
+      private System.Windows.Forms.MenuItem mnuTools;
+      private System.Windows.Forms.MenuItem mnuToolsReset;
+      internal System.Windows.Forms.Timer tmrInitComplete;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -172,6 +175,8 @@ namespace SGDK2
          this.mnuView = new System.Windows.Forms.MenuItem();
          this.mnuEditProperties = new System.Windows.Forms.MenuItem();
          this.mnuViewChanges = new System.Windows.Forms.MenuItem();
+         this.mnuTools = new System.Windows.Forms.MenuItem();
+         this.mnuToolsReset = new System.Windows.Forms.MenuItem();
          this.mnuWindows = new System.Windows.Forms.MenuItem();
          this.mnuHelp = new System.Windows.Forms.MenuItem();
          this.mnuHelpContents = new System.Windows.Forms.MenuItem();
@@ -183,6 +188,7 @@ namespace SGDK2
          this.lblProjectTree = new System.Windows.Forms.Label();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.sbMain = new System.Windows.Forms.StatusBar();
+         this.tmrInitComplete = new System.Windows.Forms.Timer(this.components);
          this.pnlProjectTree.SuspendLayout();
          this.SuspendLayout();
          // 
@@ -341,6 +347,7 @@ namespace SGDK2
          this.mnuMain.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
                                                                                 this.mnuFile,
                                                                                 this.mnuView,
+                                                                                this.mnuTools,
                                                                                 this.mnuWindows,
                                                                                 this.mnuHelp});
          // 
@@ -533,9 +540,24 @@ namespace SGDK2
          this.mnuViewChanges.Text = "&Unsaved Changes";
          this.mnuViewChanges.Click += new System.EventHandler(this.mnuViewChanges_Click);
          // 
+         // mnuTools
+         // 
+         this.mnuTools.Index = 2;
+         this.mnuTools.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+                                                                                 this.mnuToolsReset});
+         this.mnuTools.MergeOrder = 3;
+         this.mnuTools.MergeType = System.Windows.Forms.MenuMerge.Replace;
+         this.mnuTools.Text = "&Tools";
+         // 
+         // mnuToolsReset
+         // 
+         this.mnuToolsReset.Index = 0;
+         this.mnuToolsReset.Text = "Reset Optional Messages...";
+         this.mnuToolsReset.Click += new System.EventHandler(this.mnuToolsReset_Click);
+         // 
          // mnuWindows
          // 
-         this.mnuWindows.Index = 2;
+         this.mnuWindows.Index = 3;
          this.mnuWindows.MdiList = true;
          this.mnuWindows.MergeOrder = 4;
          this.mnuWindows.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
@@ -543,7 +565,7 @@ namespace SGDK2
          // 
          // mnuHelp
          // 
-         this.mnuHelp.Index = 3;
+         this.mnuHelp.Index = 4;
          this.mnuHelp.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
                                                                                 this.mnuHelpContents,
                                                                                 this.mnuHelpIndex,
@@ -674,6 +696,10 @@ namespace SGDK2
          this.sbMain.Name = "sbMain";
          this.sbMain.Size = new System.Drawing.Size(800, 20);
          this.sbMain.TabIndex = 8;
+         // 
+         // tmrInitComplete
+         // 
+         this.tmrInitComplete.Tick += new System.EventHandler(this.tmrInitComplete_Tick);
          // 
          // frmMain
          // 
@@ -855,6 +881,11 @@ namespace SGDK2
                tvwMain.Nodes[0].Text = m_strProjectPath;
                mnuFileDeleteOutputFiles.Enabled = mnuFileDeleteIntermediateFiles.Enabled = true;
                AddMru(projectFile);
+
+               if (ProjectData.SourceCode.Rows.Count < 15)
+               {
+                  frmSwitchableMessage.GetResult("LoadTemplateWarning", DialogResult.OK, "This project appears to be a template (because it doesn't have all the built-in Source Code required for a runnable project). Note that a template project is only a partial project and cannot be compiled and run directly.", "Template Loaded", MessageBoxButtons.OK, this);
+               }
             }
          }
          finally
@@ -1641,7 +1672,10 @@ namespace SGDK2
          else
             try
             {
-               DoOpenProject(SGDK2IDE.g_CommandLine.ProjectFile);
+               if (SGDK2IDE.g_CommandLine.LoadAsTemplate)
+                  DoNewProject(SGDK2IDE.g_CommandLine.ProjectFile);
+               else
+                  DoOpenProject(SGDK2IDE.g_CommandLine.ProjectFile);
             }
             catch (System.Exception ex)
             {
@@ -1657,7 +1691,6 @@ namespace SGDK2
                ((MdiClient)c).MouseMove += new MouseEventHandler(Mdi_MouseMove);
                break;
             }
-
          SGDK2IDE.PushStatus("Ready", false);
       }
       #endregion
@@ -2866,7 +2899,21 @@ namespace SGDK2
       {
          Help.ShowHelp(this, SGDK2IDE.g_HelpProvider.HelpNamespace, HelpNavigator.Find, "");
       }
-      #endregion
 
+      private void mnuToolsReset_Click(object sender, System.EventArgs e)
+      {
+         if (DialogResult.OK == MessageBox.Show(this, "This will re-enable (turn on) the display of messages that have been turned off with the \"Don't display this message again\" checkbox.", "Reset Optional Messages", MessageBoxButtons.OKCancel, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1))
+            SGDK2IDE.ResetUserOptions();
+      }
+
+      private void tmrInitComplete_Tick(object sender, System.EventArgs e)
+      {
+         tmrInitComplete.Enabled = false;
+         if (DialogResult.Yes == frmSwitchableMessage.GetResult("NewUserHelp", DialogResult.Cancel, "If you are new to SGDK2, you should know that pressing the F1 will usually display a page with detailed help for the currently displayed task.  To get started, you may also want to browse the tutorials and other documentation.  Do you want to display the documentation now?", "Suggestions", MessageBoxButtons.YesNo, this))
+         {
+            Help.ShowHelp(this, SGDK2IDE.g_HelpProvider.HelpNamespace, HelpNavigator.TableOfContents);
+         }      
+      }
+      #endregion
    }
 }

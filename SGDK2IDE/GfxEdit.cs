@@ -1348,6 +1348,7 @@ namespace SGDK2
                                                                                  this.mnuToolSep2,
                                                                                  this.mnuPen});
          this.mnuTools.MergeOrder = 3;
+         this.mnuTools.MergeType = System.Windows.Forms.MenuMerge.Replace;
          this.mnuTools.Text = "&Tools";
          // 
          // mnuToolFreeDraw

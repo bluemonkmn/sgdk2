@@ -1602,6 +1602,14 @@ namespace SGDK2
                ((ProjectDataset.CounterRow)drv.Row).Name));
       }
 
+      private void FillComboWithSpriteInstances(ComboBox cboTarget)
+      {
+         cboTarget.Items.Add("this");
+         foreach (RemotingServices.RemotePropertyInfo pi in m_SpriteProperties)
+            if (pi.Type.Name == CodeGenerator.SpriteBaseClass)
+               cboTarget.Items.Add(CodeGenerator.NameToVariable(pi.Name));
+      }
+
       private void FillComboWithSolidity(ComboBox cboTarget)
       {
          foreach (DataRowView drv in ProjectData.Solidity.DefaultView)
@@ -1767,7 +1775,7 @@ namespace SGDK2
          }
          else if((string.Compare(param.Type.Name, "SpriteBase") == 0) || (param.Type.FullName.EndsWith("Sprites." + m_SpriteDef.Name)))
          {
-            cboParameter.Items.Add("this");
+            FillComboWithSpriteInstances(cboParameter);
          }
          else if(string.Compare(param.Type.Name, "Solidity") == 0)
          {

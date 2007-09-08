@@ -19,6 +19,7 @@ public class frmControls : System.Windows.Forms.Form
    private delegate void ControllerButtonPressedDelegate(int button);
    private byte[] pressedButtons = null;
    private System.Windows.Forms.TextBox txtCurJButton = null;
+   private bool bLoading = false;
    #endregion
 
    #region Windows Form Designer Members
@@ -552,10 +553,13 @@ public class frmControls : System.Windows.Forms.Form
             lblJButton4.Enabled = txtJButton4.Enabled =
             (sender != rdoKeyboard);
 
-         if (sender == rdoKeyboard)
-            Project.GameWindow.Players[SelectedPlayer] = new KeyboardPlayer(SelectedPlayer);
-         else
-            Project.GameWindow.Players[SelectedPlayer] = new ControllerPlayer(SelectedPlayer % cboController.Items.Count);
+         if (!bLoading)
+         {
+            if (sender == rdoKeyboard)
+               Project.GameWindow.Players[SelectedPlayer] = new KeyboardPlayer(SelectedPlayer);
+            else
+               Project.GameWindow.Players[SelectedPlayer] = new ControllerPlayer(SelectedPlayer % cboController.Items.Count);
+         }
 
          LoadCurrentControls();
       }
@@ -614,6 +618,7 @@ public class frmControls : System.Windows.Forms.Form
    {
       if (Project.GameWindow.Players[SelectedPlayer] is KeyboardPlayer)
       {
+         bLoading = true;
          KeyboardPlayer player = (KeyboardPlayer)Project.GameWindow.Players[SelectedPlayer];
          rdoKeyboard.Checked = true;
          txtUp.Text = System.Enum.Format(typeof(Microsoft.DirectX.DirectInput.Key), player.key_up, "g");
@@ -624,9 +629,11 @@ public class frmControls : System.Windows.Forms.Form
          txtButton2.Text = System.Enum.Format(typeof(Microsoft.DirectX.DirectInput.Key), player.key_button2, "g");
          txtButton3.Text = System.Enum.Format(typeof(Microsoft.DirectX.DirectInput.Key), player.key_button3, "g");
          txtButton4.Text = System.Enum.Format(typeof(Microsoft.DirectX.DirectInput.Key), player.key_button4, "g");
+         bLoading = false;
       }
       else
       {
+         bLoading = true;
          rdoController.Checked = true;
          ControllerPlayer player = ((ControllerPlayer)Project.GameWindow.Players[SelectedPlayer]);
          int devNum = player.deviceNumber;
@@ -640,6 +647,7 @@ public class frmControls : System.Windows.Forms.Form
          }
          else
             cboController.SelectedIndex = -1;
+         bLoading = false;
       }
    }
 

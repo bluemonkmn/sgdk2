@@ -25,6 +25,7 @@ namespace SGDK2
       public class CommandLineArgs
       {
          public string ProjectFile = null;
+         public bool LoadAsTemplate = false;
 
          public CommandLineArgs()
          {
@@ -55,7 +56,9 @@ namespace SGDK2
             return result;
          g_Resources = new ResourceManager("SGDK2.SGDK2IDE", Assembly.GetExecutingAssembly());
          CreateFileAssociation();
-         new frmSplashForm(GetSplashImage()).Show();
+         frmSplashForm frmSp = new frmSplashForm(GetSplashImage());
+         frmSp.Closed += new EventHandler(frmSplash_Closed);
+         frmSp.Show();
          try
          {
             g_HelpProvider = new System.Windows.Forms.HelpProvider();
@@ -224,6 +227,9 @@ namespace SGDK2
             {
                switch(args[idx].Substring(1))
                {
+                  case "t":
+                     g_CommandLine.LoadAsTemplate = true;
+                     break;
                   default:
                      CommandLineError(args[idx] + " is not a recognized command line switch");
                      return 1;
@@ -337,8 +343,9 @@ namespace SGDK2
          {
             doc.Load(prefsFile);
             Int32.Parse(((System.Xml.XmlElement)doc.SelectSingleNode("/SGDK2Prefs/MRUList")).GetAttribute("maxCount"));
-            if (doc.SelectSingleNode("/SGDK2Prefs/Windows") is System.Xml.XmlElement)
-               success = true;
+            if ((doc.SelectSingleNode("/SGDK2Prefs/Windows") is System.Xml.XmlElement) &&
+               (doc.SelectSingleNode("/SGDK2Prefs/UserOptions") is System.Xml.XmlElement))
+               success = true;               
             else
                success = false;
          }
@@ -355,6 +362,7 @@ namespace SGDK2
             mruList.SetAttribute("maxCount", "5");
             sgdk2Prefs.AppendChild(mruList);
             sgdk2Prefs.AppendChild(doc.CreateElement("Windows"));
+            sgdk2Prefs.AppendChild(doc.CreateElement("UserOptions"));
          }
          return doc;
       }
@@ -412,6 +420,38 @@ namespace SGDK2
          SaveUserSettings(doc);
       }
       
+      public static string GetUserOption(string name)
+      {
+         System.Xml.XmlDocument doc = LoadUserSettings();
+         System.Xml.XmlElement option = doc.SelectSingleNode("//UserOptions/" + name) as System.Xml.XmlElement;
+         if (option != null)
+            return option.InnerText;
+         return null;
+      }
+
+      public static void SetUserOption(string name, string value)
+      {
+         System.Xml.XmlDocument doc = LoadUserSettings();
+         System.Xml.XmlElement option = doc.SelectSingleNode("//UserOptions/" + name) as System.Xml.XmlElement;
+         if (option != null)
+            option.InnerText = value;
+         else
+         {
+            System.Xml.XmlElement elem = doc.CreateElement(name);
+            elem.InnerText = value;
+            doc.SelectSingleNode("//UserOptions").AppendChild(elem);
+         }
+         SaveUserSettings(doc);
+      }
+
+      public static void ResetUserOptions()
+      {
+         System.Xml.XmlDocument doc = LoadUserSettings();
+         System.Xml.XmlElement option = doc.SelectSingleNode("//UserOptions") as System.Xml.XmlElement;
+         option.RemoveAll();
+         SaveUserSettings(doc);
+      }
+
       public static System.Drawing.RectangleF GetRotatedBounds(int CellWidth, int CellHeight, System.Drawing.Drawing2D.Matrix m)
       {
          RectangleF bounds;
@@ -445,5 +485,10 @@ namespace SGDK2
          return bounds;
       }
       #endregion
+
+      private static void frmSplash_Closed(object sender, EventArgs e)
+      {
+         mainWindow.tmrInitComplete.Enabled = true;
+      }
    }
 }

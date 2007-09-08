@@ -183,7 +183,7 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    }
 
    /// <summary>
-   /// Determines if the specified part of any sprite in the specified category is within the plan's rectangle.
+   /// Determines if the specified part of any active sprite in the specified category is within the plan's rectangle.
    /// </summary>
    /// <param name="Sprites">Sprite collection to be checked</param>
    /// <param name="RelativePosition">Specifies a point within each sprite to test</param>
@@ -191,18 +191,18 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    /// Skip will be skipped in teh search. This allows the function to be called repeatedly,
    /// passing the previous return value as the Skip value to retrieve the next applicable sprite
    /// index. Specify -1 to search all sprites in the collection.</param>
-   /// <returns>-1 if no sprite is found in the collection where the specified point of the sprite's
+   /// <returns>-1 if no active sprite is found in the collection where the specified point of the sprite's
    /// solidity rectangle is within the plan's rectangle. Otherwise the 0-based index of the
    /// first matching sprite is returned.</returns>
-   /// <remarks>This is the same as performing <see cref="IsSpriteWithin"/> for each sprite
+   /// <remarks>This is the same as performing <see cref="IsSpriteWithin"/> for each active sprite
    /// in a collection (beginning with the sprite whose index is after Skip).
    /// <seealso cref="IsSpriteWithin"/></remarks>
-   [Description("Returns the index of the first sprite whose specified coordinate is within the plan's rectangle, or -1 if none exist. Indexes up through Skip will be ignored.")]
+   [Description("Returns the index of the first active sprite whose specified coordinate is within the plan's rectangle, or -1 if none exist. Indexes up through Skip will be ignored.")]
    public int GetSpriteWithin(SpriteCollection Sprites, RelativePosition RelativePosition, int Skip)
    {
       for (int i=Skip+1; i < Sprites.Count; i++)
       {
-         if (IsSpriteWithin(Sprites[i], RelativePosition))
+         if (Sprites[i].isActive && (IsSpriteWithin(Sprites[i], RelativePosition)))
             return i;
       }
       return -1;
@@ -1181,6 +1181,52 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    {
       Target.MapMouseToSprite(InstantMove);
    }
+
+   /// <summary>
+   /// If any sprite in the specified category is within the bounds of this plan or
+   /// the Target plan, and is pressing the specified Trigger, transport it to the
+   /// other plan.
+   /// </summary>
+   /// <param name="Target">Specifies the plan representing the other end of this doorway</param>
+   /// <param name="Sprites">Specifies a category of sprites that can activate this doorway</param>
+   /// <param name="Trigger">Specifies which input bit on the sprite will cause the
+   /// sprite to activate the doorway and be transported to the other end.</param>
+   /// <returns>If any sprites were transported, the index within the collection of the first
+   /// sprite that was transported, otherwise -1</returns>
+   /// <remarks>This function handles both eneds of a doorway and will allow a sprite to travel
+   /// from this end to the Target plan or vice versa when the conditions are met. In order for
+   /// the conditions to be met, the center of the sprite must be within the bounds of this
+   /// plan rectangle or the Target plan rectangle, and all the specified Trigger inputs must
+   /// be on, and must not have been in the same state before (this prevents the sprite from
+   /// flipping repeatedly between both ends of the doorway). If the conditions are met,
+   /// the sprite will be transported such that the bottom center of the sprite will match up
+   /// with the opposite plan rectangle's bottom center.</remarks>
+   [Description("If any sprite in the specified category is within the bounds of this plan or the Target plan, and is pressing the specified Trigger, transport it to the other plan.")]
+   public int Door(PlanBase Target, SpriteCollection Sprites, SpriteBase.InputBits Trigger)
+   {
+      int result = -1;
+      for (int i=0; i<Sprites.Count; i++)
+      {
+         if (Sprites[i].isActive)
+         {
+            PlanBase outDoor;
+            if (IsSpriteWithin(Sprites[i], RelativePosition.CenterMiddle))
+               outDoor = Target;
+            else if (Target.IsSpriteWithin(Sprites[i], RelativePosition.CenterMiddle))
+               outDoor = this;
+            else
+               continue;
+            if (((Trigger & Sprites[i].inputs) == Trigger) &&
+               ((Sprites[i].inputs & Trigger) != (Sprites[i].oldinputs & Trigger)))
+            {
+               result = i;
+               TransportToPlan(Sprites[i], outDoor, RelativePosition.BottomCenter);
+            }
+         }
+      }
+      return result;
+   }
+
    #region IEnumerable Members
 
    /// <summary>

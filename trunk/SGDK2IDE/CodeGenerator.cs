@@ -3292,6 +3292,24 @@ namespace SGDK2
                compilerParams.CompilerOptions = "/define:DEBUG /target:winexe" + resourceSwitches;
             else
                compilerParams.CompilerOptions = " /target:winexe" + resourceSwitches;
+
+            string iconFile = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, "Prj.ico");
+            while(true)
+            {
+               if (System.IO.File.Exists(iconFile))
+               {
+                  compilerParams.CompilerOptions += " /win32icon:\"" + iconFile + "\"";
+                  break;
+               }
+               else
+               {
+                  System.IO.DirectoryInfo parentDir = System.IO.Directory.GetParent(System.IO.Path.GetDirectoryName(iconFile));
+                  if (parentDir == null)
+                     break;
+                  iconFile = System.IO.Path.Combine(parentDir.FullName, System.IO.Path.GetFileName(iconFile));
+               }
+            }
+
             System.CodeDom.Compiler.CompilerResults results = compiler.CompileAssemblyFromFileBatch(compilerParams, fileList);
             if (results.Errors.Count > 0)
             {

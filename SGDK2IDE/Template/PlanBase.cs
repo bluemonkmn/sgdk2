@@ -1193,11 +1193,11 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
    /// sprite to activate the doorway and be transported to the other end.</param>
    /// <returns>If any sprites were transported, the index within the collection of the first
    /// sprite that was transported, otherwise -1</returns>
-   /// <remarks>This function handles both eneds of a doorway and will allow a sprite to travel
+   /// <remarks>This function handles both ends of a doorway and will allow a sprite to travel
    /// from this end to the Target plan or vice versa when the conditions are met. In order for
    /// the conditions to be met, the center of the sprite must be within the bounds of this
-   /// plan rectangle or the Target plan rectangle, and all the specified Trigger inputs must
-   /// be on, and must not have been in the same state before (this prevents the sprite from
+   /// plan rectangle or the Target plan rectangle, and (all) the specified Trigger input(s) must
+   /// be on/pressed, and must not have been in the same state before (this prevents the sprite from
    /// flipping repeatedly between both ends of the doorway). If the conditions are met,
    /// the sprite will be transported such that the bottom center of the sprite will match up
    /// with the opposite plan rectangle's bottom center.</remarks>

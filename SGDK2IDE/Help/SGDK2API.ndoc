@@ -29,7 +29,6 @@
             <property name="AdditionalContentResourceDirectory" value=".\RefImages\" />
             <property name="DocumentProtected" value="False" />
             <property name="FeedbackEmailAddress" value="bluemonkmn@users.sourceforge.net" />
-            <property name="Preliminary" value="True" />
             <property name="IncludeDefaultThreadSafety" value="False" />
             <property name="CleanIntermediates" value="True" />
         </documenter>

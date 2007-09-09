@@ -117,80 +117,82 @@ namespace SGDK2
          string sval = SGDK2IDE.GetUserOption(switchName);
          if ((sval == null) || (sval != "0"))
          {
-            frmSwitchableMessage frm = new frmSwitchableMessage();
-            frm.lblMessage.Text = message;
-            frm.Text = title;
-            switch(buttons)
+            using (frmSwitchableMessage frm = new frmSwitchableMessage())
             {
-               case MessageBoxButtons.OK:
-                  frm.btn3.DialogResult = DialogResult.OK;
-                  frm.AcceptButton = frm.btn3;
-                  frm.btn3.Text = "OK";
-                  break;
-               case MessageBoxButtons.OKCancel:
-                  frm.btn2.DialogResult = DialogResult.OK;
-                  frm.AcceptButton = frm.btn2;
-                  frm.btn2.Text = "OK";
-                  frm.btn2.Visible = true;
-                  frm.btn3.DialogResult = DialogResult.Cancel;
-                  frm.btn3.Text = "Cancel";
-                  frm.CancelButton = frm.btn3;
-                  break;
-               case MessageBoxButtons.RetryCancel:
-                  frm.btn2.DialogResult = DialogResult.Retry;
-                  frm.AcceptButton = frm.btn2;
-                  frm.btn2.Text = "Retry";
-                  frm.btn2.Visible = true;
-                  frm.btn3.DialogResult = DialogResult.Cancel;
-                  frm.btn3.Text = "Cancel";
-                  frm.CancelButton = frm.btn3;
-                  break;
-               case MessageBoxButtons.YesNo:
-                  frm.btn2.DialogResult = DialogResult.Yes;
-                  frm.btn2.Text = "Yes";
-                  frm.btn2.Visible = true;
-                  frm.btn3.DialogResult = DialogResult.No;
-                  frm.btn3.Text = "No";
-                  if (defaultResult == DialogResult.Yes)
-                     frm.AcceptButton = frm.btn2;
-                  else if (defaultResult == DialogResult.No)
+               frm.lblMessage.Text = message;
+               frm.Text = title;
+               switch(buttons)
+               {
+                  case MessageBoxButtons.OK:
+                     frm.btn3.DialogResult = DialogResult.OK;
                      frm.AcceptButton = frm.btn3;
-                  break;
-               case MessageBoxButtons.YesNoCancel:
-                  frm.btn1.DialogResult = DialogResult.Yes;
-                  frm.btn1.Text = "Yes";
-                  frm.btn1.Visible = true;
-                  frm.btn2.DialogResult = DialogResult.No;
-                  frm.btn2.Text = "No";
-                  frm.btn2.Visible = true;
-                  frm.btn3.DialogResult = DialogResult.Cancel;
-                  frm.btn3.Text = "Cancel";
-                  frm.CancelButton = frm.btn3;
-                  if (defaultResult == DialogResult.Yes)
-                     frm.AcceptButton = frm.btn1;
-                  else if (defaultResult == DialogResult.No)
+                     frm.btn3.Text = "OK";
+                     break;
+                  case MessageBoxButtons.OKCancel:
+                     frm.btn2.DialogResult = DialogResult.OK;
                      frm.AcceptButton = frm.btn2;
-                  break;
-               case MessageBoxButtons.AbortRetryIgnore:
-                  frm.btn1.DialogResult = DialogResult.Abort;
-                  frm.btn1.Text = "Abort";
-                  frm.btn1.Visible = true;
-                  frm.btn2.DialogResult = DialogResult.Retry;
-                  frm.btn2.Text = "Retry";
-                  frm.btn2.Visible = true;
-                  frm.btn3.DialogResult = DialogResult.Ignore;
-                  frm.btn3.Text = "Ignore";
-                  frm.CancelButton = frm.btn1;
-                  if (defaultResult == DialogResult.Retry)
+                     frm.btn2.Text = "OK";
+                     frm.btn2.Visible = true;
+                     frm.btn3.DialogResult = DialogResult.Cancel;
+                     frm.btn3.Text = "Cancel";
+                     frm.CancelButton = frm.btn3;
+                     break;
+                  case MessageBoxButtons.RetryCancel:
+                     frm.btn2.DialogResult = DialogResult.Retry;
                      frm.AcceptButton = frm.btn2;
-                  else if (defaultResult == DialogResult.Ignore)
-                     frm.AcceptButton = frm.btn3;
-                  break;
+                     frm.btn2.Text = "Retry";
+                     frm.btn2.Visible = true;
+                     frm.btn3.DialogResult = DialogResult.Cancel;
+                     frm.btn3.Text = "Cancel";
+                     frm.CancelButton = frm.btn3;
+                     break;
+                  case MessageBoxButtons.YesNo:
+                     frm.btn2.DialogResult = DialogResult.Yes;
+                     frm.btn2.Text = "Yes";
+                     frm.btn2.Visible = true;
+                     frm.btn3.DialogResult = DialogResult.No;
+                     frm.btn3.Text = "No";
+                     if (defaultResult == DialogResult.Yes)
+                        frm.AcceptButton = frm.btn2;
+                     else if (defaultResult == DialogResult.No)
+                        frm.AcceptButton = frm.btn3;
+                     break;
+                  case MessageBoxButtons.YesNoCancel:
+                     frm.btn1.DialogResult = DialogResult.Yes;
+                     frm.btn1.Text = "Yes";
+                     frm.btn1.Visible = true;
+                     frm.btn2.DialogResult = DialogResult.No;
+                     frm.btn2.Text = "No";
+                     frm.btn2.Visible = true;
+                     frm.btn3.DialogResult = DialogResult.Cancel;
+                     frm.btn3.Text = "Cancel";
+                     frm.CancelButton = frm.btn3;
+                     if (defaultResult == DialogResult.Yes)
+                        frm.AcceptButton = frm.btn1;
+                     else if (defaultResult == DialogResult.No)
+                        frm.AcceptButton = frm.btn2;
+                     break;
+                  case MessageBoxButtons.AbortRetryIgnore:
+                     frm.btn1.DialogResult = DialogResult.Abort;
+                     frm.btn1.Text = "Abort";
+                     frm.btn1.Visible = true;
+                     frm.btn2.DialogResult = DialogResult.Retry;
+                     frm.btn2.Text = "Retry";
+                     frm.btn2.Visible = true;
+                     frm.btn3.DialogResult = DialogResult.Ignore;
+                     frm.btn3.Text = "Ignore";
+                     frm.CancelButton = frm.btn1;
+                     if (defaultResult == DialogResult.Retry)
+                        frm.AcceptButton = frm.btn2;
+                     else if (defaultResult == DialogResult.Ignore)
+                        frm.AcceptButton = frm.btn3;
+                     break;
+               }
+               DialogResult result = frm.ShowDialog(owner);
+               if (frm.chkSwitch.Checked)
+                  SGDK2IDE.SetUserOption(switchName, "0");
+               return result;
             }
-            DialogResult result = frm.ShowDialog(owner);
-            if (frm.chkSwitch.Checked)
-               SGDK2IDE.SetUserOption(switchName, "0");
-            return result;
          }
          else
             return defaultResult;

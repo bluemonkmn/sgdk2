@@ -2477,12 +2477,12 @@
     <SpriteRule Name="If player 1" Sequence="41" Type="If" Function="==" Parameter1="ViewNum" Parameter2="0" EndIf="false" Suspended="false" />
     <SpriteRule Name="Scroll into view" Sequence="39" Type="Do" Function="ScrollSpriteIntoView" Parameter1="true" EndIf="false" Suspended="false" />
     <SpriteRule Name="Activate player's view" Sequence="38" Type="Do" Function="=" Parameter1="ViewNum" ResultParameter="CurrentView" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Player 1 take grapes" Sequence="42" Type="Do" Function="TileTake" Parameter1="55" Parameter2="Counter.Player_1_grapes" ResultParameter="TempNum" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Else player 2 take grapes" Sequence="55" Type="Else" Function="TileTake" Parameter1="55" Parameter2="Counter.Player_2_grapes" ResultParameter="TempNum" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Player 1 take cherries" Sequence="49" Type="Do" Function="TileTake" Parameter1="54" Parameter2="Counter.Player_1_cherries" ResultParameter="TempNum" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Player 1 take ice cream" Sequence="54" Type="Do" Function="TileTake" Parameter1="56" Parameter2="Counter.Player_1_ice_cream" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Player 2 take cherries" Sequence="62" Type="Do" Function="TileTake" Parameter1="54" Parameter2="Counter.Player_2_cherries" ResultParameter="TempNum" EndIf="false" Suspended="false" />
-    <SpriteRule Name="Player 2 take ice cream" Sequence="69" Type="Do" Function="TileTake" Parameter1="56" Parameter2="Counter.Player_2_ice_cream" EndIf="true" Suspended="false" />
+    <SpriteRule Name="Player 1 take grapes" Sequence="42" Type="Do" Function="TileTake" Parameter1="55" Parameter2="Counter.Player_1_grapes" Parameter3="0" ResultParameter="TempNum" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Else player 2 take grapes" Sequence="55" Type="Else" Function="TileTake" Parameter1="55" Parameter2="Counter.Player_2_grapes" Parameter3="0" ResultParameter="TempNum" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Player 1 take cherries" Sequence="49" Type="Do" Function="TileTake" Parameter1="54" Parameter2="Counter.Player_1_cherries" Parameter3="0" ResultParameter="TempNum" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Player 1 take ice cream" Sequence="54" Type="Do" Function="TileTake" Parameter1="56" Parameter2="Counter.Player_1_ice_cream" Parameter3="0" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Player 2 take cherries" Sequence="62" Type="Do" Function="TileTake" Parameter1="54" Parameter2="Counter.Player_2_cherries" Parameter3="0" ResultParameter="TempNum" EndIf="false" Suspended="false" />
+    <SpriteRule Name="Player 2 take ice cream" Sequence="69" Type="Do" Function="TileTake" Parameter1="56" Parameter2="Counter.Player_2_ice_cream" Parameter3="0" EndIf="true" Suspended="false" />
     <SpriteRule Name="Get player 1 grape points" Sequence="43" Type="If" Function="&gt;" Parameter1="TempNum" Parameter2="0" EndIf="false" Suspended="false" />
     <SpriteRule Name="Show player 1 grape points" Sequence="45" Type="Do" Function="TileActivateSprite" Parameter1="0" Parameter2="ParentLayer.m_SpriteCategories.Points" Parameter3="true" ResultParameter="TempNum" EndIf="false" Suspended="false" />
     <SpriteRule Name="Switch player 1 grape points to 1000" Sequence="47" Type="Do" Function="SetCategorySpriteState" Parameter1="ParentLayer.m_SpriteCategories.Points" Parameter2="TempNum" Parameter3="1" EndIf="true" Suspended="false" />

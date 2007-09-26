@@ -1972,17 +1972,19 @@ public abstract class SpriteBase : GeneralRules
    /// <param name="TileValue">Index of the tile to look for.</param>
    /// <param name="Counter">Counter to be checked and incremented when the specified tile is found.
    /// If the counter's maximum value has been reached, the tile will not be taken.</param>
+   /// <param name="NewValue">Specified the tile value with which the touched tile will
+   /// be replaced if the counter has not hit its maximum.</param>
    /// <returns>The number of tiles affected.</returns>
    /// <remarks><para>This function will search through all tiles that have been touched (collected
    /// by <see cref="TouchTiles"/>, and for each tile that it finds that matches the specified
    /// <paramref name="TileValue" />, it will check <paramref name="Counter" />, and, if it
    /// has not yet reached the maximum value, increment the counter and replace the tile with
-   /// tile number 0.</para><para>
+   /// the tile number specified by NewValue.</para><para>
    /// Only unprocessed tiles are considered. Once this function (or similar functions)
    /// affects the tile, it is marked as processed. It is only marked as processed if
    /// it is affected (if the counter changes).</para></remarks>
-   [Description("When the sprite is touching the specified tile, and the specified counter is not maxed, clear the tile value to 0 and increment the specified counter/parameter. Returns the number of tiles affected. (Must run TouchTiles first.)")]
-   public int TileTake(int TileValue,  Counter Counter)
+   [Description("When the sprite is touching the specified tile, and the specified counter is not maxed, change/clear the tile value to NewValue and increment the specified counter/parameter. Returns the number of tiles affected. (Must run TouchTiles first.)")]
+   public int TileTake(int TileValue,  Counter Counter, int NewValue)
    {
       Debug.Assert(this.isActive, "Attempted to execute TileTake on an inactive sprite");
 
@@ -1999,10 +2001,12 @@ public abstract class SpriteBase : GeneralRules
             if (Counter.CurrentValue < Counter.MaxValue)
             {
                Counter.CurrentValue++;
-               layer[tt.x, tt.y] = tt.tileValue = 0;
+               layer[tt.x, tt.y] = tt.tileValue = NewValue;
                tt.processed = true;
                result++;
             }
+            else
+               break;
          }
       }
       return result;
@@ -2025,7 +2029,7 @@ public abstract class SpriteBase : GeneralRules
    /// <para>Only unprocessed tiles are considered. Once this function (or similar functions)
    /// affects the tile, it is marked as processed. It is only marked as processed if
    /// it is affected (if the counter changes).</para></remarks>
-   [Description("When the sprite is touching the specified tile, and the specified counter is greater than 0, decrement the counter and clear the tile value to 0. Returns the number of tiles affected. (Must run TouchTiles first.)")]
+   [Description("When the sprite is touching the specified tile, and the specified counter is greater than 0, decrement the counter and clear the tile value to NewValue. Returns the number of tiles affected. (Must run TouchTiles first.)")]
    public int TileUseUp(int TileValue,  Counter Counter, int NewValue)
    {
       Debug.Assert(this.isActive, "Attempted to execute TileUseUp on an inactive sprite");
@@ -2047,6 +2051,8 @@ public abstract class SpriteBase : GeneralRules
                tt.processed = true;
                result++;
             }
+            else
+               break;
          }
       }
       return result;

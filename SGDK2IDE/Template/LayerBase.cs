@@ -740,7 +740,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
    {
       int topTile = (testArea.Top + m_Tileset.TileHeight) / m_Tileset.TileHeight - 1;
       int bottomTile = (int)((testArea.Top + testArea.Height - 1) / m_Tileset.TileHeight);
-      int leftTile = (testArea.Left + m_Tileset.TileHeight) / m_Tileset.TileWidth - 1;
+      int leftTile = (testArea.Left + m_Tileset.TileWidth) / m_Tileset.TileWidth - 1;
       int rightTile = (int)((testArea.Left + testArea.Width - 1) / m_Tileset.TileWidth);
       bool outOfBounds = false;
       if ((topTile < 0) || (topTile >= VirtualRows) || (bottomTile < 0) || (bottomTile >= VirtualRows)
@@ -824,7 +824,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
    {
       int topTile = (testArea.Top + m_Tileset.TileHeight) / m_Tileset.TileHeight - 1;
       int bottomTile = (int)((testArea.Top + testArea.Height - 1) / m_Tileset.TileHeight);
-      int leftTile = (testArea.Left + m_Tileset.TileHeight) / m_Tileset.TileWidth - 1;
+      int leftTile = (testArea.Left + m_Tileset.TileWidth) / m_Tileset.TileWidth - 1;
       int rightTile = (int)((testArea.Left + testArea.Width - 1) / m_Tileset.TileWidth);
       bool outOfBounds = false;
       if ((topTile < 0) || (topTile >= VirtualRows) || (bottomTile < 0) || (bottomTile >= VirtualRows)
@@ -908,7 +908,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
    {
       int topTile = (testArea.Top + m_Tileset.TileHeight) / m_Tileset.TileHeight - 1;
       int bottomTile = (int)((testArea.Top + testArea.Height - 1) / m_Tileset.TileHeight);
-      int leftTile = (testArea.Left + m_Tileset.TileHeight) / m_Tileset.TileWidth - 1;
+      int leftTile = (testArea.Left + m_Tileset.TileWidth) / m_Tileset.TileWidth - 1;
       int rightTile = (int)((testArea.Left + testArea.Width - 1) / m_Tileset.TileWidth);
       bool outOfBounds = false;
       if ((topTile < 0) || (topTile >= VirtualRows) || (bottomTile < 0) || (bottomTile >= VirtualRows)
@@ -992,7 +992,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
    {
       int topTile = (testArea.Top + m_Tileset.TileHeight) / m_Tileset.TileHeight - 1;
       int bottomTile = (int)((testArea.Top + testArea.Height - 1) / m_Tileset.TileHeight);
-      int leftTile = (testArea.Left + m_Tileset.TileHeight) / m_Tileset.TileWidth - 1;
+      int leftTile = (testArea.Left + m_Tileset.TileWidth) / m_Tileset.TileWidth - 1;
       int rightTile = (int)((testArea.Left + testArea.Width - 1) / m_Tileset.TileWidth);
       bool outOfBounds = false;
       if ((topTile < 0) || (topTile >= VirtualRows) || (bottomTile < 0) || (bottomTile >= VirtualRows)

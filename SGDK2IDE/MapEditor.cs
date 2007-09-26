@@ -2273,7 +2273,7 @@ namespace SGDK2
       {
          if (e.Action == DataRowAction.Change)
          {
-            if (e.Row.HasVersion(DataRowVersion.Current) && (e.Row[ProjectData.SpritePlan.NameColumn, DataRowVersion.Current].ToString().CompareTo(e.Row.Name) != 0))
+            if ((e.Row.LayerRowParent == m_Layers[m_nCurLayer].LayerRow) && e.Row.HasVersion(DataRowVersion.Current) && (e.Row[ProjectData.SpritePlan.NameColumn, DataRowVersion.Current].ToString().CompareTo(e.Row.Name) != 0))
             {
                m_UpdatingList = true;
                lstPlans.Items[lstPlans.Items.IndexOf(e.Row)] = e.Row;

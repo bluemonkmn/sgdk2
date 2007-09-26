@@ -1539,7 +1539,13 @@ namespace SGDK2
             return;
 
          foreach (ProjectDataset.FrameRow fr in deleteFrames)
+         {
             ProjectData.DeleteFrame(fr);
+            if (fr == m_FrameEditorSource)
+            {
+               m_FrameEditorSource = null;
+            }
+         }
       }
 
       private void AddSelectedCells()
@@ -2291,6 +2297,8 @@ namespace SGDK2
                else
                   editingFrame = false;
             }
+            if (!editingFrame && (BGFrameSelector.CurrentCellIndex >=0))
+               BGFrameSelector.CurrentCellIndex = -1;
          }
       }
 

@@ -1433,9 +1433,26 @@ namespace SGDK2
                   (frame.CellIndex % gfxRow.Columns) * gfxRow.CellWidth,
                   ((int)(frame.CellIndex / gfxRow.Columns)) * gfxRow.CellHeight,
                   gfxRow.CellWidth, gfxRow.CellHeight);
-               e.Graphics.DrawImage(bmp, 0, 0, rcSrc, GraphicsUnit.Pixel);
-               mtx.Invert();
-               e.Graphics.MultiplyTransform(mtx);
+               Rectangle dest = rcSrc;
+               dest.X = 0;
+               dest.Y = 0;
+               byte[] clr = BitConverter.GetBytes(frame.color);
+               System.Drawing.Imaging.ColorMatrix cm = new System.Drawing.Imaging.ColorMatrix(
+                  new float[][]
+                              {
+                                 new float[] {(float)clr[2]/255.0f, 0, 0, 0, 0},
+                                 new float[] {0, (float)clr[1]/255.0f, 0, 0, 0},
+                                 new float[] {0, 0, (float)clr[0]/255.0f, 0, 0},
+                                 new float[] {0, 0, 0, (float)clr[3]/255.0f, 0},
+                                 new float[] {0, 0, 0, 0, 1}
+                              });
+               using (System.Drawing.Imaging.ImageAttributes ia = new System.Drawing.Imaging.ImageAttributes())
+               {
+                  ia.SetColorMatrix(cm);
+                  e.Graphics.DrawImage(bmp, dest, rcSrc.X, rcSrc.Y, rcSrc.Width, rcSrc.Height, GraphicsUnit.Pixel, ia);
+                  mtx.Invert();
+                  e.Graphics.MultiplyTransform(mtx);
+               }
             }
          }
       }

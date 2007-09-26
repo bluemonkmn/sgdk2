@@ -1512,7 +1512,7 @@ namespace SGDK2
       private void RemoveMru(string path)
       {
          System.Xml.XmlDocument doc = SGDK2IDE.LoadUserSettings();
-         System.Xml.XmlElement elem = (System.Xml.XmlElement)doc.SelectSingleNode("//MRUList/Entry[@Path='" + path.Replace("'","&apos;") + "']");
+         System.Xml.XmlElement elem = (System.Xml.XmlElement)doc.SelectSingleNode("//MRUList/Entry[@Path=\"" + path.Replace("\"","&quot;") + "\"]");
          elem.ParentNode.RemoveChild(elem);
          SGDK2IDE.SaveUserSettings(doc);
          for (int i=0; i < m_mruMenuItems.Count; i++)

@@ -172,6 +172,8 @@ namespace SGDK2
             }
             if (m_d3d != null)
             {
+               m_d3d.GetRenderTarget(0).Dispose();
+               m_d3d.GetBackBuffer(0, 0, BackBufferType.Mono).Dispose();
                m_d3d.Dispose();
                m_d3d = null;
             }

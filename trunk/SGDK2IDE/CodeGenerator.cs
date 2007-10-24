@@ -898,7 +898,17 @@ namespace SGDK2
          indexer.Parameters.Add(new CodeParameterDeclarationExpression(typeof(int), "index"));
          indexer.HasSet=false;
          indexer.HasGet=true;
-         indexer.GetStatements.Add(new CodeMethodReturnStatement(new CodeArrayIndexerExpression(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), "m_arFrames"), new CodeArgumentReferenceExpression("index"))));
+         indexer.GetStatements.Add(new CodeMethodReturnStatement(
+            new CodeArrayIndexerExpression(
+            new CodeFieldReferenceExpression(
+            new CodeThisReferenceExpression(), "m_arFrames"),
+            new CodeBinaryOperatorExpression(
+            new CodeArgumentReferenceExpression("index"),
+            CodeBinaryOperatorType.Modulus,
+            new CodePropertyReferenceExpression(
+            new CodeFieldReferenceExpression(
+            new CodeThisReferenceExpression(), "m_arFrames"),
+            "Length")))));
          framesetClassDecl.Members.Add(indexer);
          indexer.Comments.Add(
             new CodeCommentStatement("<summary>Return the <see cref=\"" + FrameClass + "\"/> object defining the frame at the specified 0-based index within this frameset</summary>", true));

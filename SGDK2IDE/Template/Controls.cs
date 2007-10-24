@@ -72,7 +72,7 @@ public class frmControls : System.Windows.Forms.Form
       {
          lblPlayer.Hide();
          cboPlayer.Hide();
-         this.ClientSize = new System.Drawing.Size(298, 185);
+         this.ClientSize = new System.Drawing.Size(298, 270);
       }
 
       for(int i = 0; i < Project.GameWindow.ControllerCount; i++)

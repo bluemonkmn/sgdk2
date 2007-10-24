@@ -547,7 +547,7 @@ namespace SGDK2
 
       private void RemoveSelectionFromCategory()
       {
-         for (int i = 0; i < CategoryFrames.CellCount;)
+         for (int i = CategoryFrames.CellCount - 1; i > 0; i--)
          {
             if (CategoryFrames.Selected[i])
             {
@@ -564,8 +564,6 @@ namespace SGDK2
                      ((TileProvider)m_CategoryProvider[i]).TileIndex).Delete();
                }
             }
-            else
-               i++;
          }
       }
 

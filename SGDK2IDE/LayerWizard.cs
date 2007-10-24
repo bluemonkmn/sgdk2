@@ -850,13 +850,33 @@ namespace SGDK2
 
          if (ZReindexRequired)
          {
-            int targetIdx;
-            for (targetIdx=Array.IndexOf(lrs, m_Layer); (targetIdx>0) &&
-               (lrs[targetIdx-1].ZIndex >= nudZIndex.Value); targetIdx--)
-               lrs[targetIdx] = lrs[targetIdx-1];
-            lrs[targetIdx] = m_Layer;
-            for (int i=0; i<lrs.Length; i++)
-               lrs[i].ZIndex = i;
+            int targetIdx = Array.IndexOf(lrs, m_Layer);
+            if (targetIdx < 0)
+            {
+               targetIdx = (int)nudZIndex.Value;
+               for (int i=0; i<lrs.Length; i++)
+                  if (i < targetIdx)
+                     lrs[i].ZIndex = i;
+                  else
+                     lrs[i].ZIndex = i + 1;
+               m_Layer.ZIndex = targetIdx;
+            }
+            else
+            {
+               if (targetIdx > nudZIndex.Value)
+               {
+                  for (; (targetIdx>0) && (lrs[targetIdx-1].ZIndex >= nudZIndex.Value); targetIdx--)
+                     lrs[targetIdx] = lrs[targetIdx-1];
+               }
+               else
+               {
+                  for (; (targetIdx<lrs.Length-1) && (lrs[targetIdx+1].ZIndex < nudZIndex.Value); targetIdx++)
+                     lrs[targetIdx] = lrs[targetIdx+1];
+               }
+               lrs[targetIdx] = m_Layer;
+               for (int i=0; i<lrs.Length; i++)
+                  lrs[i].ZIndex = i;
+            }
          }
          else
             m_Layer.ZIndex = (int)nudZIndex.Value;

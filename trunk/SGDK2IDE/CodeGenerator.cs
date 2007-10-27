@@ -3021,7 +3021,12 @@ namespace SGDK2
          }
          else if (System.IO.File.Exists(fileName))
             return fileName;
-         result = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, System.IO.Path.GetFileName(fileName));
+         string parentDir = System.Windows.Forms.Application.StartupPath;
+         do
+         {
+            result = System.IO.Path.Combine(parentDir, System.IO.Path.GetFileName(fileName));
+         } while (!System.IO.File.Exists(result) && (null != (System.IO.Directory.GetParent(parentDir))) && (null != (parentDir=System.IO.Directory.GetParent(parentDir).FullName)));
+
          if (System.IO.File.Exists(result))
             return result;
          return fileName;

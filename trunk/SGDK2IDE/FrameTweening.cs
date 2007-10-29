@@ -1266,9 +1266,7 @@ namespace SGDK2
                      mtx.Translate(offsetX, offsetY, System.Drawing.Drawing2D.MatrixOrder.Append);
                   ProjectData.AddFrameRow(m_frameset, i+lastFrame+1, gfx.Name, (short)SourceCell.GetFirstSelectedCell(),
                      mtx.Elements[0], mtx.Elements[1], mtx.Elements[2],
-                     mtx.Elements[3], mtx.Elements[4], mtx.Elements[5], -1);
-                  if (chkColor.Checked)
-                     selFrames[i].color = modulate;
+                     mtx.Elements[3], mtx.Elements[4], mtx.Elements[5], modulate);
                }
             }
             else

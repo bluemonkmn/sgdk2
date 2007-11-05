@@ -61,13 +61,16 @@ public class SpriteState
       m_Frameset = frameset;
       m_LocalBounds = localBounds;
       m_frames = frames;
-      m_frameIndexMap = new short[m_frames[m_frames.Length - 1].m_nAccumulatedDuration];
-      short frameIndex = 0;
-      for (int frameValue=0; frameValue<m_frameIndexMap.Length; frameValue++)
+      if (m_frames.Length > 0)
       {
-         if (m_frames[frameIndex].m_nAccumulatedDuration <= frameValue)
-            frameIndex++;
-         m_frameIndexMap[frameValue] = frameIndex;
+         m_frameIndexMap = new short[m_frames[m_frames.Length - 1].m_nAccumulatedDuration];
+         short frameIndex = 0;
+         for (int frameValue=0; frameValue<m_frameIndexMap.Length; frameValue++)
+         {
+            if (m_frames[frameIndex].m_nAccumulatedDuration <= frameValue)
+               frameIndex++;
+            m_frameIndexMap[frameValue] = frameIndex;
+         }
       }
    }
 

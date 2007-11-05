@@ -335,9 +335,29 @@ namespace SGDK2
          }
          else
          {
-            e.Graphics.ResetTransform();
-            e.Graphics.TranslateTransform(m_ptDragStart.X, m_ptDragStart.Y);
-            ControlPaint.DrawGrid(e.Graphics, picImport.ClientRectangle, new Size(m_cellWidth, m_cellHeight), ((Bitmap)picImport.Image).GetPixel(m_ptDragStart.X, m_ptDragStart.Y));
+            using (Pen gridPen = new Pen(Color.White))
+            {
+               gridPen.DashStyle = System.Drawing.Drawing2D.DashStyle.Custom;
+               gridPen.DashPattern = new float[] {1,3};
+               for (int y=m_ptDragStart.Y; y<picImport.ClientRectangle.Height; y += m_cellHeight)
+               {
+                  gridPen.DashOffset=0;
+                  gridPen.Color = Color.White;
+                  e.Graphics.DrawLine(gridPen, m_ptDragStart.X, y, picImport.ClientSize.Width-1, y);
+                  gridPen.DashOffset=2;
+                  gridPen.Color = Color.Black;
+                  e.Graphics.DrawLine(gridPen, m_ptDragStart.X, y, picImport.ClientSize.Width-1, y);
+               }
+               for (int x=m_ptDragStart.X; x<picImport.ClientRectangle.Width; x += m_cellWidth)
+               {
+                  gridPen.DashOffset=0;
+                  gridPen.Color = Color.White;
+                  e.Graphics.DrawLine(gridPen, x, m_ptDragStart.Y, x, picImport.ClientSize.Height-1);
+                  gridPen.DashOffset=2;
+                  gridPen.Color = Color.Black;
+                  e.Graphics.DrawLine(gridPen, x, m_ptDragStart.Y, x, picImport.ClientSize.Height-1);
+               }
+            }
          }
       }
 

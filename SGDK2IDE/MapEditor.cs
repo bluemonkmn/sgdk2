@@ -1250,7 +1250,7 @@ namespace SGDK2
          }
       }
 
-      private void DrawPasteRect(CursorMode mode)
+      private void DrawPasteRect(CursorMode mode, bool persist)
       {
          int[,] tiles = (int[,])(Clipboard.GetDataObject().GetData(typeof(int[,])));
          Point StartPos = TileFromLayerPoint(m_LayerMouseCoord);
@@ -1287,10 +1287,10 @@ namespace SGDK2
                            goto case CursorMode.Paste;
                         break;
                      case CursorMode.Paste:
-                        m_Layers[m_nCurLayer][TilePos.X, TilePos.Y] = nSel;
-                        break;
-                     default:
-                        m_Layers[m_nCurLayer].InjectTile(TilePos.X, TilePos.Y, nSel);
+                        if (persist)
+                           m_Layers[m_nCurLayer][TilePos.X, TilePos.Y] = nSel;
+                        else
+                           m_Layers[m_nCurLayer].InjectTile(TilePos.X, TilePos.Y, nSel);
                         break;
                   }
                }
@@ -1725,10 +1725,10 @@ namespace SGDK2
                }
             }
                break;
-            case CursorMode.Paste:
             case CursorMode.PasteTransparent:
+            case CursorMode.Paste:
                if (Clipboard.GetDataObject().GetDataPresent(typeof(int[,])))
-                  DrawPasteRect((0 != (e.Button & MouseButtons.Left))?GetCurrentMode():CursorMode.None);
+                  DrawPasteRect(GetCurrentMode(), (0 != (e.Button & MouseButtons.Left)));
                break;
          }
          MapDisplay.Invalidate();
@@ -1867,10 +1867,10 @@ namespace SGDK2
                case CursorMode.Copy:
                   m_DragStart = m_LayerMouseCoord;
                   break;
-               case CursorMode.Paste:
                case CursorMode.PasteTransparent:
+               case CursorMode.Paste:
                   if (Clipboard.GetDataObject().GetDataPresent(typeof(int[,])))
-                     DrawPasteRect(GetCurrentMode());
+                     DrawPasteRect(GetCurrentMode(), true);
                   break;
             }
          }

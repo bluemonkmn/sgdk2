@@ -56,6 +56,27 @@ namespace SGDK2
 
          #endregion
       }
+
+      private class PointComparer : System.Collections.IComparer
+      {
+         public readonly static PointComparer Value = new PointComparer();
+
+         #region IComparer Members
+         public int Compare(object x, object y)
+         {
+            if (((Point)y).Y > ((Point)x).Y)
+               return 1;
+            else if (((Point)y).Y < ((Point)x).Y)
+               return -1;
+            else if (((Point)y).X > ((Point)x).X)
+               return 1;
+            else if (((Point)y).X < ((Point)x).X)
+               return -1;
+            else
+               return 0;
+         }
+         #endregion
+      }
       #endregion
 
       #region Fields
@@ -69,6 +90,7 @@ namespace SGDK2
       FrameCache m_FrameCache;
       System.Collections.ArrayList m_InjectedFrames = null;
       System.Collections.ArrayList m_CachedSprites = null;
+      System.Collections.ArrayList m_SuspendedTiles = null;
       #endregion
 
       private Layer()
@@ -303,11 +325,21 @@ namespace SGDK2
                }
             }
 
+            Point[] suspendedTiles = null;
+
+            if (m_SuspendedTiles != null)
+            {
+               m_SuspendedTiles.Sort(PointComparer.Value);
+               suspendedTiles = (Point[])(m_SuspendedTiles.ToArray(typeof(Point)));
+            }
+
             for (int x = nStartCol; x <= EndCol; x++)
             {
                int[] SubFrames = m_TileCache[this[x,y]];
                for (int nFrame = 0; nFrame < SubFrames.Length; nFrame++)
                {
+                  if ((suspendedTiles != null) && (Array.BinarySearch(suspendedTiles, new Point(x,y), PointComparer.Value) >= 0))
+                     continue;
                   FrameCache.Frame f = m_FrameCache[SubFrames[nFrame]%m_FrameCache.Count];
                   if ((currentTextureRef == null) || (currentTextureRef != f.GraphicSheetTexture))
                      Device.SetTexture(0, (currentTextureRef = f.GraphicSheetTexture).Texture);
@@ -371,11 +403,17 @@ namespace SGDK2
          int[] SubFrames = m_TileCache[nTileValue];
          for (int nFrame = 0; nFrame < SubFrames.Length; nFrame++)
             InjectFrame(nCol * nWidth, nRow * nHeight, Priority, m_FrameCache[SubFrames[nFrame]]);
+         if (m_SuspendedTiles == null)
+         {
+            m_SuspendedTiles = new System.Collections.ArrayList();
+         }
+         m_SuspendedTiles.Add(new Point(nCol, nRow));
       }
 
       public void ClearInjections()
       {
          m_InjectedFrames = null;
+         m_SuspendedTiles = null;
       }
 
       public void InjectCachedSprites()

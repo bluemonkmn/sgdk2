@@ -21,6 +21,7 @@ namespace SGDK2
       private bool m_bIsDragging = false;
       private int m_cellWidth;
       private int m_cellHeight;
+      private static string m_lastFileName = null;
 
       private System.Windows.Forms.PictureBox picImport;
       private System.Windows.Forms.StatusBar status;
@@ -41,11 +42,16 @@ namespace SGDK2
             "Portable Network Graphics (*.png)|*.png|Jpeg (*.jpg)|*.jpg|Gif (*.gif)|*.gif";
          dlgImportFrom.Title = "Specify Source Image";
 
+         if (m_lastFileName != null)
+            dlgImportFrom.FileName = m_lastFileName;
+
          if (DialogResult.OK != dlgImportFrom.ShowDialog(parent))
          {
             dlgImportFrom.Dispose();
             return null;
          }
+
+         m_lastFileName = dlgImportFrom.FileName;
 
          Bitmap sourceImage = (Bitmap)System.Drawing.Bitmap.FromFile(dlgImportFrom.FileName);
          try

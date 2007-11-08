@@ -149,6 +149,9 @@ namespace SGDK2
          this.dtGraphicNames = new System.Data.DataTable();
          this.dcOldGSName = new System.Data.DataColumn();
          this.dcNewGSName = new System.Data.DataColumn();
+         this.dtCounterNames = new System.Data.DataTable();
+         this.dcOldCtrName = new System.Data.DataColumn();
+         this.dcNewCtrName = new System.Data.DataColumn();
          this.pnlMergeFramesets = new System.Windows.Forms.Panel();
          this.grdFramesets = new System.Windows.Forms.DataGrid();
          this.dvFramesetNames = new System.Data.DataView();
@@ -160,6 +163,11 @@ namespace SGDK2
          this.pnlMergeGraphics = new System.Windows.Forms.Panel();
          this.grdGraphicNames = new System.Windows.Forms.DataGrid();
          this.dvGraphicNames = new System.Data.DataView();
+         this.counterGridStyle = new System.Windows.Forms.DataGridTableStyle();
+         this.grdMergeCounters = new System.Windows.Forms.DataGrid();
+         this.dvCounterNames = new System.Data.DataView();
+         this.colCounterSource = new System.Windows.Forms.DataGridTextBoxColumn();
+         this.colCounterTarget = new System.Windows.Forms.DataGridTextBoxColumn();
          this.lblMergeGraphics = new System.Windows.Forms.Label();
          this.MergeGraphics = new SGDK2.frmWizardBase.StepInfo();
          this.pnlReview = new System.Windows.Forms.Panel();
@@ -168,14 +176,6 @@ namespace SGDK2
          this.Review = new SGDK2.frmWizardBase.StepInfo();
          this.MergeCounters = new SGDK2.frmWizardBase.StepInfo();
          this.pnlMergeCounters = new System.Windows.Forms.Panel();
-         this.dtCounterNames = new System.Data.DataTable();
-         this.dcOldCtrName = new System.Data.DataColumn();
-         this.dcNewCtrName = new System.Data.DataColumn();
-         this.dvCounterNames = new System.Data.DataView();
-         this.counterGridStyle = new System.Windows.Forms.DataGridTableStyle();
-         this.colCounterSource = new System.Windows.Forms.DataGridTextBoxColumn();
-         this.colCounterTarget = new System.Windows.Forms.DataGridTextBoxColumn();
-         this.grdMergeCounters = new System.Windows.Forms.DataGrid();
          this.lblMergeCounters = new System.Windows.Forms.Label();
          this.pnlSpecifyFile.SuspendLayout();
          this.pnlSpecifyTileset.SuspendLayout();
@@ -186,17 +186,17 @@ namespace SGDK2
          ((System.ComponentModel.ISupportInitialize)(this.dsMapping)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.dtFramesetNames)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.dtGraphicNames)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.dtCounterNames)).BeginInit();
          this.pnlMergeFramesets.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.grdFramesets)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.dvFramesetNames)).BeginInit();
          this.pnlMergeGraphics.SuspendLayout();
          ((System.ComponentModel.ISupportInitialize)(this.grdGraphicNames)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.dvGraphicNames)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.grdMergeCounters)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.dvCounterNames)).BeginInit();
          this.pnlReview.SuspendLayout();
          this.pnlMergeCounters.SuspendLayout();
-         ((System.ComponentModel.ISupportInitialize)(this.dtCounterNames)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.dvCounterNames)).BeginInit();
-         ((System.ComponentModel.ISupportInitialize)(this.grdMergeCounters)).BeginInit();
          this.SuspendLayout();
          // 
          // pnlSpecifyFile
@@ -289,7 +289,7 @@ namespace SGDK2
          this.pnlSpecifyTileset.Controls.Add(this.lblSpecifyTileset);
          this.pnlSpecifyTileset.Location = new System.Drawing.Point(-10168, 42);
          this.pnlSpecifyTileset.Name = "pnlSpecifyTileset";
-         this.pnlSpecifyTileset.Size = new System.Drawing.Size(289, 231);
+         this.pnlSpecifyTileset.Size = new System.Drawing.Size(290, 231);
          this.pnlSpecifyTileset.TabIndex = 7;
          // 
          // btnDeselectAllTilesets
@@ -299,6 +299,7 @@ namespace SGDK2
          this.btnDeselectAllTilesets.Size = new System.Drawing.Size(88, 24);
          this.btnDeselectAllTilesets.TabIndex = 3;
          this.btnDeselectAllTilesets.Text = "Select N&one";
+         this.btnDeselectAllTilesets.Click += new System.EventHandler(this.btnDeselectAllTilesets_Click);
          // 
          // btnSelectAllTilesets
          // 
@@ -307,6 +308,7 @@ namespace SGDK2
          this.btnSelectAllTilesets.Size = new System.Drawing.Size(88, 24);
          this.btnSelectAllTilesets.TabIndex = 2;
          this.btnSelectAllTilesets.Text = "Select &All";
+         this.btnSelectAllTilesets.Click += new System.EventHandler(this.btnSelectAllTilesets_Click);
          // 
          // chlSelectTilesets
          // 
@@ -321,7 +323,7 @@ namespace SGDK2
          this.lblSpecifyTileset.Dock = System.Windows.Forms.DockStyle.Top;
          this.lblSpecifyTileset.Location = new System.Drawing.Point(0, 0);
          this.lblSpecifyTileset.Name = "lblSpecifyTileset";
-         this.lblSpecifyTileset.Size = new System.Drawing.Size(289, 48);
+         this.lblSpecifyTileset.Size = new System.Drawing.Size(290, 48);
          this.lblSpecifyTileset.TabIndex = 0;
          this.lblSpecifyTileset.Text = "The specified import source contains multiple tilesets.  Select one or more tiles" +
             "ets that you want to import.";
@@ -340,7 +342,7 @@ namespace SGDK2
          this.pnlUniqueNames.Controls.Add(this.lblUniqueNames);
          this.pnlUniqueNames.Location = new System.Drawing.Point(-10168, 42);
          this.pnlUniqueNames.Name = "pnlUniqueNames";
-         this.pnlUniqueNames.Size = new System.Drawing.Size(286, 231);
+         this.pnlUniqueNames.Size = new System.Drawing.Size(287, 231);
          this.pnlUniqueNames.TabIndex = 8;
          // 
          // grdNameMap
@@ -353,7 +355,7 @@ namespace SGDK2
          this.grdNameMap.Location = new System.Drawing.Point(0, 56);
          this.grdNameMap.Name = "grdNameMap";
          this.grdNameMap.RowHeadersVisible = false;
-         this.grdNameMap.Size = new System.Drawing.Size(286, 175);
+         this.grdNameMap.Size = new System.Drawing.Size(287, 175);
          this.grdNameMap.TabIndex = 1;
          this.grdNameMap.TableStyles.AddRange(new System.Windows.Forms.DataGridTableStyle[] {
                                                                                                this.gridStyle});
@@ -420,7 +422,7 @@ namespace SGDK2
          this.lblUniqueNames.Dock = System.Windows.Forms.DockStyle.Top;
          this.lblUniqueNames.Location = new System.Drawing.Point(0, 0);
          this.lblUniqueNames.Name = "lblUniqueNames";
-         this.lblUniqueNames.Size = new System.Drawing.Size(286, 56);
+         this.lblUniqueNames.Size = new System.Drawing.Size(287, 56);
          this.lblUniqueNames.TabIndex = 0;
          this.lblUniqueNames.Text = "Imported tileset names are duplicates of tileset names that already exist in the " +
             "project.  Specify unique names for the imported tilesets.";
@@ -487,13 +489,35 @@ namespace SGDK2
          // 
          this.dcNewGSName.ColumnName = "New Name";
          // 
+         // dtCounterNames
+         // 
+         this.dtCounterNames.Columns.AddRange(new System.Data.DataColumn[] {
+                                                                              this.dcOldCtrName,
+                                                                              this.dcNewCtrName});
+         this.dtCounterNames.Constraints.AddRange(new System.Data.Constraint[] {
+                                                                                  new System.Data.UniqueConstraint("Constraint1", new string[] {
+                                                                                                                                                  "Old Name"}, true)});
+         this.dtCounterNames.PrimaryKey = new System.Data.DataColumn[] {
+                                                                          this.dcOldCtrName};
+         this.dtCounterNames.TableName = "CounterNames";
+         // 
+         // dcOldCtrName
+         // 
+         this.dcOldCtrName.AllowDBNull = false;
+         this.dcOldCtrName.ColumnName = "Old Name";
+         this.dcOldCtrName.ReadOnly = true;
+         // 
+         // dcNewCtrName
+         // 
+         this.dcNewCtrName.ColumnName = "New Name";
+         // 
          // pnlMergeFramesets
          // 
          this.pnlMergeFramesets.Controls.Add(this.grdFramesets);
          this.pnlMergeFramesets.Controls.Add(this.lblMergeFramesets);
          this.pnlMergeFramesets.Location = new System.Drawing.Point(-10168, 42);
          this.pnlMergeFramesets.Name = "pnlMergeFramesets";
-         this.pnlMergeFramesets.Size = new System.Drawing.Size(283, 231);
+         this.pnlMergeFramesets.Size = new System.Drawing.Size(284, 231);
          this.pnlMergeFramesets.TabIndex = 9;
          // 
          // grdFramesets
@@ -506,7 +530,7 @@ namespace SGDK2
          this.grdFramesets.Location = new System.Drawing.Point(0, 104);
          this.grdFramesets.Name = "grdFramesets";
          this.grdFramesets.RowHeadersVisible = false;
-         this.grdFramesets.Size = new System.Drawing.Size(283, 127);
+         this.grdFramesets.Size = new System.Drawing.Size(284, 127);
          this.grdFramesets.TabIndex = 1;
          this.grdFramesets.TableStyles.AddRange(new System.Windows.Forms.DataGridTableStyle[] {
                                                                                                  this.framesetTableStyle});
@@ -551,7 +575,7 @@ namespace SGDK2
          this.lblMergeFramesets.Dock = System.Windows.Forms.DockStyle.Top;
          this.lblMergeFramesets.Location = new System.Drawing.Point(0, 0);
          this.lblMergeFramesets.Name = "lblMergeFramesets";
-         this.lblMergeFramesets.Size = new System.Drawing.Size(283, 104);
+         this.lblMergeFramesets.Size = new System.Drawing.Size(284, 104);
          this.lblMergeFramesets.TabIndex = 0;
          this.lblMergeFramesets.Text = @"Some imported frameset names match those of existing framesets in the project.  When this occurs, and an adequate number of frames exist in the existing frameset, you can choose whether to use the existing frameset or import the tileset's frameset as a new object.  To use the existing frameset, leave the new name the same as the original.";
          // 
@@ -569,7 +593,7 @@ namespace SGDK2
          this.pnlMergeGraphics.Controls.Add(this.lblMergeGraphics);
          this.pnlMergeGraphics.Location = new System.Drawing.Point(-10168, 42);
          this.pnlMergeGraphics.Name = "pnlMergeGraphics";
-         this.pnlMergeGraphics.Size = new System.Drawing.Size(283, 231);
+         this.pnlMergeGraphics.Size = new System.Drawing.Size(284, 231);
          this.pnlMergeGraphics.TabIndex = 10;
          // 
          // grdGraphicNames
@@ -581,7 +605,7 @@ namespace SGDK2
          this.grdGraphicNames.HeaderForeColor = System.Drawing.SystemColors.ControlText;
          this.grdGraphicNames.Location = new System.Drawing.Point(0, 88);
          this.grdGraphicNames.Name = "grdGraphicNames";
-         this.grdGraphicNames.Size = new System.Drawing.Size(283, 143);
+         this.grdGraphicNames.Size = new System.Drawing.Size(284, 143);
          this.grdGraphicNames.TabIndex = 1;
          this.grdGraphicNames.TableStyles.AddRange(new System.Windows.Forms.DataGridTableStyle[] {
                                                                                                     this.counterGridStyle});
@@ -592,12 +616,61 @@ namespace SGDK2
          this.dvGraphicNames.AllowNew = false;
          this.dvGraphicNames.Table = this.dtGraphicNames;
          // 
+         // counterGridStyle
+         // 
+         this.counterGridStyle.DataGrid = this.grdMergeCounters;
+         this.counterGridStyle.GridColumnStyles.AddRange(new System.Windows.Forms.DataGridColumnStyle[] {
+                                                                                                           this.colCounterSource,
+                                                                                                           this.colCounterTarget});
+         this.counterGridStyle.HeaderForeColor = System.Drawing.SystemColors.ControlText;
+         this.counterGridStyle.MappingName = "CounterNames";
+         this.counterGridStyle.RowHeadersVisible = false;
+         // 
+         // grdMergeCounters
+         // 
+         this.grdMergeCounters.CaptionVisible = false;
+         this.grdMergeCounters.DataMember = "";
+         this.grdMergeCounters.DataSource = this.dvCounterNames;
+         this.grdMergeCounters.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.grdMergeCounters.HeaderForeColor = System.Drawing.SystemColors.ControlText;
+         this.grdMergeCounters.Location = new System.Drawing.Point(0, 64);
+         this.grdMergeCounters.Name = "grdMergeCounters";
+         this.grdMergeCounters.Size = new System.Drawing.Size(281, 167);
+         this.grdMergeCounters.TabIndex = 3;
+         this.grdMergeCounters.TableStyles.AddRange(new System.Windows.Forms.DataGridTableStyle[] {
+                                                                                                     this.counterGridStyle});
+         // 
+         // dvCounterNames
+         // 
+         this.dvCounterNames.AllowDelete = false;
+         this.dvCounterNames.AllowNew = false;
+         this.dvCounterNames.Table = this.dtCounterNames;
+         // 
+         // colCounterSource
+         // 
+         this.colCounterSource.Format = "";
+         this.colCounterSource.FormatInfo = null;
+         this.colCounterSource.HeaderText = "Old (Source) Name";
+         this.colCounterSource.MappingName = "Old Name";
+         this.colCounterSource.NullText = "";
+         this.colCounterSource.ReadOnly = true;
+         this.colCounterSource.Width = 136;
+         // 
+         // colCounterTarget
+         // 
+         this.colCounterTarget.Format = "";
+         this.colCounterTarget.FormatInfo = null;
+         this.colCounterTarget.HeaderText = "New (Target) Name";
+         this.colCounterTarget.MappingName = "New Name";
+         this.colCounterTarget.NullText = "";
+         this.colCounterTarget.Width = 136;
+         // 
          // lblMergeGraphics
          // 
          this.lblMergeGraphics.Dock = System.Windows.Forms.DockStyle.Top;
          this.lblMergeGraphics.Location = new System.Drawing.Point(0, 0);
          this.lblMergeGraphics.Name = "lblMergeGraphics";
-         this.lblMergeGraphics.Size = new System.Drawing.Size(283, 88);
+         this.lblMergeGraphics.Size = new System.Drawing.Size(284, 88);
          this.lblMergeGraphics.TabIndex = 0;
          this.lblMergeGraphics.Text = @"Some Graphic Sheets in the source file use the same name as existing Graphic Sheets in the project.  You may choose to import the graphics from the source file under a new name, or, if the existing Graphic Sheet has enough cells, use the existing sheet by leaving the name identical.";
          // 
@@ -615,7 +688,7 @@ namespace SGDK2
          this.pnlReview.Controls.Add(this.lblReview);
          this.pnlReview.Location = new System.Drawing.Point(-10168, 42);
          this.pnlReview.Name = "pnlReview";
-         this.pnlReview.Size = new System.Drawing.Size(283, 231);
+         this.pnlReview.Size = new System.Drawing.Size(284, 231);
          this.pnlReview.TabIndex = 11;
          // 
          // txtReview
@@ -626,7 +699,7 @@ namespace SGDK2
          this.txtReview.Name = "txtReview";
          this.txtReview.ReadOnly = true;
          this.txtReview.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-         this.txtReview.Size = new System.Drawing.Size(283, 175);
+         this.txtReview.Size = new System.Drawing.Size(284, 175);
          this.txtReview.TabIndex = 1;
          this.txtReview.Text = "";
          // 
@@ -635,7 +708,7 @@ namespace SGDK2
          this.lblReview.Dock = System.Windows.Forms.DockStyle.Top;
          this.lblReview.Location = new System.Drawing.Point(0, 0);
          this.lblReview.Name = "lblReview";
-         this.lblReview.Size = new System.Drawing.Size(283, 56);
+         this.lblReview.Size = new System.Drawing.Size(284, 56);
          this.lblReview.TabIndex = 0;
          this.lblReview.Text = "The Tileset Import Wizard has all the information needed to import the requested " +
             "Tilesets.  The following actions will occur when you click Finish...";
@@ -661,86 +734,15 @@ namespace SGDK2
          this.pnlMergeCounters.Controls.Add(this.lblMergeCounters);
          this.pnlMergeCounters.Location = new System.Drawing.Point(-10168, 42);
          this.pnlMergeCounters.Name = "pnlMergeCounters";
-         this.pnlMergeCounters.Size = new System.Drawing.Size(280, 231);
+         this.pnlMergeCounters.Size = new System.Drawing.Size(281, 231);
          this.pnlMergeCounters.TabIndex = 12;
-         // 
-         // dtCounterNames
-         // 
-         this.dtCounterNames.Columns.AddRange(new System.Data.DataColumn[] {
-                                                                              this.dcOldCtrName,
-                                                                              this.dcNewCtrName});
-         this.dtCounterNames.Constraints.AddRange(new System.Data.Constraint[] {
-                                                                                  new System.Data.UniqueConstraint("Constraint1", new string[] {
-                                                                                                                                                  "Old Name"}, true)});
-         this.dtCounterNames.PrimaryKey = new System.Data.DataColumn[] {
-                                                                          this.dcOldCtrName};
-         this.dtCounterNames.TableName = "CounterNames";
-         // 
-         // dcOldCtrName
-         // 
-         this.dcOldCtrName.AllowDBNull = false;
-         this.dcOldCtrName.ColumnName = "Old Name";
-         this.dcOldCtrName.ReadOnly = true;
-         // 
-         // dcNewCtrName
-         // 
-         this.dcNewCtrName.ColumnName = "New Name";
-         // 
-         // dvCounterNames
-         // 
-         this.dvCounterNames.AllowDelete = false;
-         this.dvCounterNames.AllowNew = false;
-         this.dvCounterNames.Table = this.dtCounterNames;
-         // 
-         // counterGridStyle
-         // 
-         this.counterGridStyle.DataGrid = this.grdMergeCounters;
-         this.counterGridStyle.GridColumnStyles.AddRange(new System.Windows.Forms.DataGridColumnStyle[] {
-                                                                                                           this.colCounterSource,
-                                                                                                           this.colCounterTarget});
-         this.counterGridStyle.HeaderForeColor = System.Drawing.SystemColors.ControlText;
-         this.counterGridStyle.MappingName = "CounterNames";
-         this.counterGridStyle.RowHeadersVisible = false;
-         // 
-         // colCounterSource
-         // 
-         this.colCounterSource.Format = "";
-         this.colCounterSource.FormatInfo = null;
-         this.colCounterSource.HeaderText = "Old (Source) Name";
-         this.colCounterSource.MappingName = "Old Name";
-         this.colCounterSource.NullText = "";
-         this.colCounterSource.ReadOnly = true;
-         this.colCounterSource.Width = 136;
-         // 
-         // colCounterTarget
-         // 
-         this.colCounterTarget.Format = "";
-         this.colCounterTarget.FormatInfo = null;
-         this.colCounterTarget.HeaderText = "New (Target) Name";
-         this.colCounterTarget.MappingName = "New Name";
-         this.colCounterTarget.NullText = "";
-         this.colCounterTarget.Width = 136;
-         // 
-         // grdMergeCounters
-         // 
-         this.grdMergeCounters.CaptionVisible = false;
-         this.grdMergeCounters.DataMember = "";
-         this.grdMergeCounters.DataSource = this.dvCounterNames;
-         this.grdMergeCounters.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.grdMergeCounters.HeaderForeColor = System.Drawing.SystemColors.ControlText;
-         this.grdMergeCounters.Location = new System.Drawing.Point(0, 64);
-         this.grdMergeCounters.Name = "grdMergeCounters";
-         this.grdMergeCounters.Size = new System.Drawing.Size(280, 167);
-         this.grdMergeCounters.TabIndex = 3;
-         this.grdMergeCounters.TableStyles.AddRange(new System.Windows.Forms.DataGridTableStyle[] {
-                                                                                                     this.counterGridStyle});
          // 
          // lblMergeCounters
          // 
          this.lblMergeCounters.Dock = System.Windows.Forms.DockStyle.Top;
          this.lblMergeCounters.Location = new System.Drawing.Point(0, 0);
          this.lblMergeCounters.Name = "lblMergeCounters";
-         this.lblMergeCounters.Size = new System.Drawing.Size(280, 64);
+         this.lblMergeCounters.Size = new System.Drawing.Size(281, 64);
          this.lblMergeCounters.TabIndex = 2;
          this.lblMergeCounters.Text = "Some imported tilesets refer to counters.  You may choose to import the counters " +
             "from the source file under a new name, or use an existing counter by specifying " +
@@ -782,17 +784,17 @@ namespace SGDK2
          ((System.ComponentModel.ISupportInitialize)(this.dsMapping)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.dtFramesetNames)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.dtGraphicNames)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.dtCounterNames)).EndInit();
          this.pnlMergeFramesets.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.grdFramesets)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.dvFramesetNames)).EndInit();
          this.pnlMergeGraphics.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.grdGraphicNames)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.dvGraphicNames)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.grdMergeCounters)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.dvCounterNames)).EndInit();
          this.pnlReview.ResumeLayout(false);
          this.pnlMergeCounters.ResumeLayout(false);
-         ((System.ComponentModel.ISupportInitialize)(this.dtCounterNames)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.dvCounterNames)).EndInit();
-         ((System.ComponentModel.ISupportInitialize)(this.grdMergeCounters)).EndInit();
          this.ResumeLayout(false);
 
       }

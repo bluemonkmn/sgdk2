@@ -1442,6 +1442,23 @@ namespace SGDK2
          return Double.TryParse(s, System.Globalization.NumberStyles.Number, System.Globalization.NumberFormatInfo.CurrentInfo, out result);
       }
 
+      private bool TransformIsIdentity()
+      {
+         Double dblParse;
+         if (Double.TryParse(txtRotate.Text, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.CurrentCulture, out dblParse) && (dblParse != 0))
+            return false;
+         if (nudXScale.Value != 1)
+            return false;
+         if (nudYScale.Value != 1)
+            return false;
+         if (nudXOffset.Value != 0)
+            return false;
+         if (nudYOffset.Value != 0)
+            return false;
+
+         return true;
+      }
+   
       private Matrix GetTransform()
       {
          Double dblParse;
@@ -1559,6 +1576,17 @@ namespace SGDK2
             }
          }
          FrameBrowser.Invalidate();
+      }
+
+      private bool IsMatrixEqual(ProjectDataset.FrameRow fr, Matrix transform)
+      {
+         if (fr.m11 != transform.Elements[0]) return false;
+         if (fr.m12 != transform.Elements[1]) return false;
+         if (fr.m21 != transform.Elements[2]) return false;
+         if (fr.m22 != transform.Elements[3]) return false;
+         if (fr.dx != transform.Elements[4]) return false;
+         if (fr.dy != transform.Elements[5]) return false;
+         return true;
       }
 
       private void CopyTransformToFrameRow(ProjectDataset.FrameRow fr, Matrix transform)
@@ -2278,7 +2306,9 @@ namespace SGDK2
                         break;
                   }
                }
-               else if (m_FrameEditorSource is ProjectDataset.FrameRow)
+               else if ((m_FrameEditorSource is ProjectDataset.FrameRow) &&
+                  (!IsMatrixEqual((ProjectDataset.FrameRow)m_FrameEditorSource, m_CurrentTransform) ||
+                  !TransformIsIdentity()))
                {
                   switch (MessageBox.Show(this, "Do you want to update the frame?", "Unsaved Changes Exist", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question))
                   {

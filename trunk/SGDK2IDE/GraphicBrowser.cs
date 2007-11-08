@@ -1259,7 +1259,7 @@ namespace SGDK2
             Point ptNew = AutoScrollPosition;
             m_FrameDrawSize = Size.Empty;
             bool updateRequired = false;
-            if (rcInsert.Bottom > ClientRectangle.Bottom)
+            if ((rcInsert.Bottom > ClientRectangle.Bottom) && (rcInsert.Top > ClientRectangle.Top))
             {
                ptNew.Y = -ptNew.Y + rcInsert.Bottom - ClientRectangle.Bottom;
                updateRequired = true;

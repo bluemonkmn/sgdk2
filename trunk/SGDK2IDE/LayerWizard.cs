@@ -208,7 +208,7 @@ namespace SGDK2
          this.pnlTileset.Controls.Add(this.lblTilesetInfo);
          this.pnlTileset.Location = new System.Drawing.Point(168, 42);
          this.pnlTileset.Name = "pnlTileset";
-         this.pnlTileset.Size = new System.Drawing.Size(288, 231);
+         this.pnlTileset.Size = new System.Drawing.Size(289, 231);
          this.pnlTileset.TabIndex = 6;
          this.pnlTileset.Visible = false;
          // 
@@ -223,6 +223,7 @@ namespace SGDK2
          // PreviewTiles
          // 
          this.PreviewTiles.BorderStyle = SGDK2.DragPanelBorderStyle.FixedInset;
+         this.PreviewTiles.CellBorders = false;
          this.PreviewTiles.CellPadding = new System.Drawing.Size(1, 1);
          this.PreviewTiles.CellSize = new System.Drawing.Size(0, 0);
          this.PreviewTiles.CurrentCellIndex = -1;
@@ -278,7 +279,7 @@ namespace SGDK2
          this.pnlBytesPerTile.Controls.Add(this.lblBytesPerTileInfo);
          this.pnlBytesPerTile.Location = new System.Drawing.Point(-10168, 42);
          this.pnlBytesPerTile.Name = "pnlBytesPerTile";
-         this.pnlBytesPerTile.Size = new System.Drawing.Size(292, 231);
+         this.pnlBytesPerTile.Size = new System.Drawing.Size(294, 231);
          this.pnlBytesPerTile.TabIndex = 7;
          this.pnlBytesPerTile.Visible = false;
          // 
@@ -324,13 +325,14 @@ namespace SGDK2
          this.pnlBackgroundTile.Controls.Add(this.lblBackgroundTileInfo);
          this.pnlBackgroundTile.Location = new System.Drawing.Point(-10168, 42);
          this.pnlBackgroundTile.Name = "pnlBackgroundTile";
-         this.pnlBackgroundTile.Size = new System.Drawing.Size(292, 231);
+         this.pnlBackgroundTile.Size = new System.Drawing.Size(294, 231);
          this.pnlBackgroundTile.TabIndex = 8;
          this.pnlBackgroundTile.Visible = false;
          // 
          // BackgroundTileSelector
          // 
          this.BackgroundTileSelector.BorderStyle = SGDK2.DragPanelBorderStyle.FixedInset;
+         this.BackgroundTileSelector.CellBorders = false;
          this.BackgroundTileSelector.CellPadding = new System.Drawing.Size(1, 1);
          this.BackgroundTileSelector.CellSize = new System.Drawing.Size(0, 0);
          this.BackgroundTileSelector.CurrentCellIndex = -1;
@@ -377,7 +379,7 @@ namespace SGDK2
          this.pnlOffset.Controls.Add(this.lblOffset);
          this.pnlOffset.Location = new System.Drawing.Point(-10168, 42);
          this.pnlOffset.Name = "pnlOffset";
-         this.pnlOffset.Size = new System.Drawing.Size(286, 231);
+         this.pnlOffset.Size = new System.Drawing.Size(287, 231);
          this.pnlOffset.TabIndex = 9;
          this.pnlOffset.Visible = false;
          // 
@@ -385,9 +387,9 @@ namespace SGDK2
          // 
          this.lblOffsetInfo.Location = new System.Drawing.Point(8, 8);
          this.lblOffsetInfo.Name = "lblOffsetInfo";
-         this.lblOffsetInfo.Size = new System.Drawing.Size(264, 16);
+         this.lblOffsetInfo.Size = new System.Drawing.Size(264, 24);
          this.lblOffsetInfo.TabIndex = 1;
-         this.lblOffsetInfo.Text = "The layer can be positioned within the map.";
+         this.lblOffsetInfo.Text = "***";
          // 
          // offsetDisplay
          // 
@@ -408,7 +410,7 @@ namespace SGDK2
          this.lblOffset.Dock = System.Windows.Forms.DockStyle.Bottom;
          this.lblOffset.Location = new System.Drawing.Point(0, 207);
          this.lblOffset.Name = "lblOffset";
-         this.lblOffset.Size = new System.Drawing.Size(286, 24);
+         this.lblOffset.Size = new System.Drawing.Size(287, 24);
          this.lblOffset.TabIndex = 2;
          this.lblOffset.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
          // 
@@ -417,6 +419,7 @@ namespace SGDK2
          this.Offset.StepControl = this.pnlOffset;
          this.Offset.TitleText = "Offset";
          this.Offset.InitFunction += new System.EventHandler(this.Offset_InitFunction);
+         this.Offset.IsApplicableFunction += new SGDK2.frmWizardBase.ValidateFunctionEvent(this.Offset_IsApplicableFunction);
          // 
          // pnlScrollRate
          // 
@@ -427,7 +430,7 @@ namespace SGDK2
          this.pnlScrollRate.Controls.Add(this.lblScrollRateInfo);
          this.pnlScrollRate.Location = new System.Drawing.Point(-10168, 42);
          this.pnlScrollRate.Name = "pnlScrollRate";
-         this.pnlScrollRate.Size = new System.Drawing.Size(292, 231);
+         this.pnlScrollRate.Size = new System.Drawing.Size(294, 231);
          this.pnlScrollRate.TabIndex = 10;
          this.pnlScrollRate.Visible = false;
          // 
@@ -490,7 +493,7 @@ namespace SGDK2
          this.pnlPriority.Controls.Add(this.lblPriorityInfo);
          this.pnlPriority.Location = new System.Drawing.Point(-10168, 42);
          this.pnlPriority.Name = "pnlPriority";
-         this.pnlPriority.Size = new System.Drawing.Size(290, 231);
+         this.pnlPriority.Size = new System.Drawing.Size(292, 231);
          this.pnlPriority.TabIndex = 11;
          this.pnlPriority.Visible = false;
          // 
@@ -570,7 +573,7 @@ namespace SGDK2
          this.pnlSize.Controls.Add(this.lblSizeInfo);
          this.pnlSize.Location = new System.Drawing.Point(-10168, 42);
          this.pnlSize.Name = "pnlSize";
-         this.pnlSize.Size = new System.Drawing.Size(289, 231);
+         this.pnlSize.Size = new System.Drawing.Size(291, 231);
          this.pnlSize.TabIndex = 12;
          this.pnlSize.Visible = false;
          // 
@@ -650,7 +653,7 @@ namespace SGDK2
          this.pnlReview.Controls.Add(this.lblReview);
          this.pnlReview.Location = new System.Drawing.Point(-10168, 42);
          this.pnlReview.Name = "pnlReview";
-         this.pnlReview.Size = new System.Drawing.Size(285, 231);
+         this.pnlReview.Size = new System.Drawing.Size(287, 231);
          this.pnlReview.TabIndex = 13;
          // 
          // txtReview
@@ -698,7 +701,7 @@ namespace SGDK2
          this.pnlVirtualSize.Controls.Add(this.lblVirtualSizePrompt);
          this.pnlVirtualSize.Location = new System.Drawing.Point(-10168, 42);
          this.pnlVirtualSize.Name = "pnlVirtualSize";
-         this.pnlVirtualSize.Size = new System.Drawing.Size(280, 231);
+         this.pnlVirtualSize.Size = new System.Drawing.Size(282, 231);
          this.pnlVirtualSize.TabIndex = 14;
          // 
          // txtVirtualColumns
@@ -1017,10 +1020,16 @@ namespace SGDK2
          return true;
       }
 
+      private bool Offset_IsApplicableFunction(SGDK2.frmWizardBase.StepInfo sender)
+      {
+         return !m_Layer.IsTilesNull();
+      }
+
       private void Offset_InitFunction(object sender, System.EventArgs e)
       {
          ProjectDataset.LayerRow[] lrs = ProjectData.GetSortedLayers(m_Layer.MapRow);
          m_Layers = new Layer[lrs.Length];
+         m_nCurLayer = -1;
          for(int i=0; i<lrs.Length; i++)
          {
             m_Layers[i] = new Layer(lrs[i], offsetDisplay);
@@ -1029,7 +1038,23 @@ namespace SGDK2
          }
          if (m_RememberedOffset == Point.Empty)
             m_RememberedOffset = m_ProposedOffset = new Point(m_Layer.OffsetX, m_Layer.OffsetY);
-      }
+
+         const string baseText = "The layer can be positioned within the map.";
+         if ((m_nScrollRateX != 1) || (m_nScrollRateY != 1))
+         {
+            lblOffsetInfo.Text = baseText + "\r\nNOTE: Because this layer's scroll rate is not 1x1, the position reflected in this preview may be inaccurate if scrolled.";
+            lblOffsetInfo.Height = 56;
+            offsetDisplay.Top = 64;
+            offsetDisplay.Height = 144;
+         }
+         else
+         {
+            lblOffsetInfo.Text = baseText;
+            lblOffsetInfo.Height = 16;
+            offsetDisplay.Top = 24;
+            offsetDisplay.Height = 184;
+         }
+   }
 
       private void offsetDisplay_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
       {

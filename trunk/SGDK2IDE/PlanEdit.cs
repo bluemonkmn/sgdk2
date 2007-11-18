@@ -943,6 +943,7 @@ namespace SGDK2
 
       private void FillComboWithSpriteInstances(ComboBox cboTarget)
       {
+         cboTarget.Items.Add("lastCreatedSprite");
          foreach(ProjectDataset.SpriteRow drSprite in ProjectData.GetSortedSpriteRows(m_Plan.LayerRowParent))
          {
             cboTarget.Items.Add(new SpriteCodeRef(drSprite));

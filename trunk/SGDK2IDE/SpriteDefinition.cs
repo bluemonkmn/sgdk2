@@ -1605,6 +1605,7 @@ namespace SGDK2
       private void FillComboWithSpriteInstances(ComboBox cboTarget)
       {
          cboTarget.Items.Add("this");
+         cboTarget.Items.Add("lastCreatedSprite");
          foreach (RemotingServices.RemotePropertyInfo pi in m_SpriteProperties)
             if (pi.Type.Name == CodeGenerator.SpriteBaseClass)
                cboTarget.Items.Add(CodeGenerator.NameToVariable(pi.Name));

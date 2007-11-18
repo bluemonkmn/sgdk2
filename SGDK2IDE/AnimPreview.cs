@@ -33,6 +33,7 @@ namespace SGDK2
       private bool m_bEndThread;
       private bool m_DangerWillRobinson;
       private Color m_Background;
+      private bool m_bForceRedraw = false;
       int m_fpsValue = 60;
       #endregion
 
@@ -265,14 +266,14 @@ namespace SGDK2
                fps = 60;
             QueryPerformanceCounter(ref frameStart);
             long timeIndex = (long)((frameStart-m_startTime) * fps / freq);
-            if (oldTimeIndex != timeIndex)
+            if ((oldTimeIndex != timeIndex) || m_bForceRedraw)
             {
                int realIndex;
                if (m_TileRow != null)
                   realIndex = m_TileCache.GetIndexFromCounterValue(tileValue, (int)timeIndex);
                else
                   realIndex = m_SpriteCache.GetIndexFromSequenceNumber(spriteName, (int)timeIndex);
-               if (oldRealIndex != realIndex)
+               if ((oldRealIndex != realIndex) || m_bForceRedraw)
                {
                   // Perform UI work on UI thread.  This ensures that the UI thread doesn't
                   // do something nasty to the display object while we're using it.
@@ -294,6 +295,7 @@ namespace SGDK2
                   oldRealIndex = realIndex;
                }
                oldTimeIndex = timeIndex;
+               m_bForceRedraw = false;
             }
             long usedTime = 0;
             QueryPerformanceCounter(ref usedTime);
@@ -376,6 +378,12 @@ namespace SGDK2
       {
          base.OnClosed (e);
          EndAnimationThread();
+      }
+
+      protected override void OnResize(EventArgs e)
+      {
+         base.OnResize (e);
+         m_bForceRedraw = true;
       }
 
       private void QueueReset()
@@ -516,12 +524,19 @@ namespace SGDK2
       private void cboColor_SelectedIndexChanged(object sender, System.EventArgs e)
       {
          m_Background = Color.FromName(cboColor.Text);
+         m_bForceRedraw = true;
       }
 
       private void dataMonitor_GraphicSheetRowChanged(object sender, SGDK2.ProjectDataset.GraphicSheetRowChangeEvent e)
       {
          if (e.Action == System.Data.DataRowAction.Change)
             display.DisposeAllTextures();
+      }
+
+      public void UpdateTile(ProjectDataset.TileRow drTile)
+      {
+         m_TileRow = drTile;
+         QueueReset();
       }
    }
 }

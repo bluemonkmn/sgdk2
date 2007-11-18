@@ -21,6 +21,7 @@ namespace SGDK2
       ProjectDataset.TileRow m_Tile = null;
       bool m_isLoading = false;
       TileCache tileCache;
+      frmAnimPreview m_CurrentPreview = null;
       #endregion
 
       #region Control Members
@@ -404,7 +405,7 @@ namespace SGDK2
          this.cboMappedTiles.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
          this.cboMappedTiles.IntegralHeight = false;
          this.cboMappedTiles.Location = new System.Drawing.Point(104, 48);
-         this.cboMappedTiles.MaxDropDownItems = 20;
+         this.cboMappedTiles.MaxDropDownItems = 8;
          this.cboMappedTiles.Name = "cboMappedTiles";
          this.cboMappedTiles.Size = new System.Drawing.Size(168, 21);
          this.cboMappedTiles.TabIndex = 6;
@@ -1056,9 +1057,10 @@ namespace SGDK2
             }
             else if (e.Button == tbbPreview)
             {
-               frmAnimPreview frm = new frmAnimPreview(GetCurrentTile());
-               frm.Owner = this;
-               frm.Show();
+               m_CurrentPreview = new frmAnimPreview(GetCurrentTile());
+               m_CurrentPreview.Owner = this;
+               m_CurrentPreview.Closed += new EventHandler(frmAnimPreview_Closed);
+               m_CurrentPreview.Show();
             }
          }
          catch (System.Exception ex)
@@ -1099,6 +1101,8 @@ namespace SGDK2
          {
             m_Tile = (ProjectDataset.TileRow)cboMappedTiles.SelectedItem;
             tbbDeleteTile.Enabled = mnuDeleteTile.Enabled = true;
+            if (m_CurrentPreview != null)
+               m_CurrentPreview.UpdateTile(m_Tile);
          }
          TileFrames.Frameset = m_Tileset.FramesetRow;
          TileFrames.FramesToDisplay = new FrameList();
@@ -1355,9 +1359,10 @@ namespace SGDK2
       {
          try
          {
-            frmAnimPreview frm = new frmAnimPreview(GetCurrentTile());
-            frm.Owner = this;
-            frm.Show();
+            m_CurrentPreview = new frmAnimPreview(GetCurrentTile());
+            m_CurrentPreview.Owner = this;
+            m_CurrentPreview.Closed += new EventHandler(frmAnimPreview_Closed);
+            m_CurrentPreview.Show();
          }
          catch (System.Exception ex)
          {
@@ -1375,6 +1380,10 @@ namespace SGDK2
             SizeF numberSize = e.Graphics.MeasureString(tileVal.ToString(), cboMappedTiles.Font);
             e.ItemWidth = (int)(rcMax.Width + numberSize.Width + 2);
             e.ItemHeight = (int)(Math.Max(rcMax.Height, numberSize.Height));
+            if (e.ItemWidth > 128)
+               e.ItemWidth = 128;
+            if (e.ItemHeight > 64)
+               e.ItemHeight=64;
          }
          else
          {
@@ -1395,6 +1404,7 @@ namespace SGDK2
          {
             e.Graphics.FillRectangle(SystemBrushes.Window, e.Bounds);
          }
+         e.Graphics.SetClip(e.Bounds);
          if (0 != (e.State & DrawItemState.Focus))
          {
             using (Pen penFocus = new Pen(Color.White))
@@ -1518,6 +1528,12 @@ namespace SGDK2
                return row;
             }
          }
+      }
+
+      private void frmAnimPreview_Closed(object sender, EventArgs e)
+      {
+         if (m_CurrentPreview == sender)
+            m_CurrentPreview = null;
       }
    }
 }

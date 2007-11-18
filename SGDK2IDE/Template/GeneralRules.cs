@@ -24,7 +24,7 @@ public abstract class GeneralRules
    /// that was just created. It can't be used to set parameters on the sprite that are
    /// specific to that sprite type unless it is cast to the correct type (which is not
    /// supported in the interface for defining rules). That should be done from within
-   /// the sprite's rules by checking for a specific parameter value (like "IsInisialized")
+   /// the sprite's rules by checking for a specific parameter value (like "IsInitialized")
    /// being 0 or 1, for example.</remarks>
    public static SpriteBase lastCreatedSprite;
 
@@ -783,6 +783,15 @@ public abstract class GeneralRules
          selectedTarget = null;
          return false;
       }
+   }
+
+   /// <summary>
+   /// Selects the most recently created sprite to be the target of <see cref="SetTargetParameter"/>.
+   /// </summary>
+   [Description("Selects the most recently created sprite to be the target of SetTargetParameter.")]
+   public void SelectLastCreatedSprite()
+   {
+      selectedTarget = lastCreatedSprite;
    }
 
    /// <summary>

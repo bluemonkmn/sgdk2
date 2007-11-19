@@ -343,6 +343,7 @@ namespace SGDK2
       {
          if (System.IO.File.Exists(txtImportSource.Text))
          {
+            txtSourceDetails.Text = string.Empty;
             try
             {
                System.IO.TextReader tr = new System.IO.StreamReader(txtImportSource.Text);

@@ -849,6 +849,7 @@ namespace SGDK2
       {
          if (System.IO.File.Exists(txtSourceFile.Text))
          {
+            txtComment.Text = string.Empty;
             try
             {
                System.IO.TextReader tr = new System.IO.StreamReader(txtSourceFile.Text);

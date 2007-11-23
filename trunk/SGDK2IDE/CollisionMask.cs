@@ -245,8 +245,8 @@ namespace SGDK2
                               else
                               {
                                  arbt[rowIdx * bmpSingle.Width + pixIdx] |=
-                                    (rowIdx >= -rcBound.X) && (rowIdx < -rcBound.X + drSpriteState.SolidHeight) &&
-                                    (pixIdx >= -rcBound.Y) && (pixIdx < -rcBound.Y + drSpriteState.SolidWidth);
+                                    (rowIdx >= -rcBound.Y) && (rowIdx < -rcBound.Y + drSpriteState.SolidHeight) &&
+                                    (pixIdx >= -rcBound.X) && (pixIdx < -rcBound.X + drSpriteState.SolidWidth);
                               }
                            }
                         }

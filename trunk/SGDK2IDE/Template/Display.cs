@@ -132,8 +132,10 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
    private Sprite m_Sprite = null;
    private Font m_Font = null;
    private Line m_Line = null;
+   private Surface targetSurface = null;
    private string fontName = null;
    private int fontSize = 0;
+
    #endregion
 
    #region Initialization and clean-up
@@ -726,6 +728,21 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
          if ((m_Line == null) && (m_d3d != null))
             m_Line = new Microsoft.DirectX.Direct3D.Line(m_d3d);
          return m_Line;
+      }
+   }
+
+   /// <summary>
+   /// Return DirectX rendering target surface
+   /// </summary>
+   /// <remarks>Apparent memory leak in managed D3D requires minimizing number of
+   /// references to GetRenderTarget or program hangs on close.</remarks>
+   public Surface TargetSurface
+   {
+      get
+      {
+         if (targetSurface == null)
+            targetSurface = m_d3d.GetRenderTarget(0);
+         return targetSurface;
       }
    }
    #endregion

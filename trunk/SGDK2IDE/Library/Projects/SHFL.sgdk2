@@ -7645,7 +7645,8 @@ namespace CustomObjects
              (rectMessage.X + rectMessage.Width &lt;= disp.DisplayRectangle.Width) &amp;&amp;
              (rectMessage.Y + rectMessage.Height &lt;= disp.DisplayRectangle.Height))
          {
-            disp.Device.ColorFill(disp.Device.GetRenderTarget(0), rectMessage, Color.DarkBlue);
+            disp.Device.ColorFill(disp.TargetSurface, rectMessage, Color.DarkBlue);
+            disp.Sprite.Transform = Microsoft.DirectX.Matrix.Identity;
             disp.D3DFont.DrawText(disp.Sprite, message, rectText, DrawTextFormat.Left | DrawTextFormat.WordBreak, Color.White);
             disp.D3DLine.Antialias = true;
             disp.D3DLine.Width = 2.5f;

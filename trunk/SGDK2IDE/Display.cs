@@ -122,6 +122,7 @@ namespace SGDK2
       private Sprite m_Sprite = null;
       private Font m_Font = null;
       private Line m_Line = null;
+      private Surface targetSurface = null;
       #endregion
 
       #region Initialization and clean-up
@@ -172,8 +173,6 @@ namespace SGDK2
             }
             if (m_d3d != null)
             {
-               m_d3d.GetRenderTarget(0).Dispose();
-               m_d3d.GetBackBuffer(0, 0, BackBufferType.Mono).Dispose();
                m_d3d.Dispose();
                m_d3d = null;
             }
@@ -656,6 +655,21 @@ namespace SGDK2
             if ((m_Line == null) && (m_d3d != null))
                m_Line = new Microsoft.DirectX.Direct3D.Line(m_d3d);
             return m_Line;
+         }
+      }
+      
+      /// <summary>
+      /// Return target surface
+      /// </summary>
+      /// <remarks>Apparent memory leak in managed D3D requires minimizing number of
+      /// references to GetRenderTarget or program hangs on close.</remarks>
+      public Surface TargetSurface
+      {
+         get
+         {
+            if (targetSurface == null)
+               targetSurface = m_d3d.GetRenderTarget(0);
+            return targetSurface;
          }
       }
       #endregion

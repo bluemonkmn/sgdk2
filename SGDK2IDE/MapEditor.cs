@@ -2016,7 +2016,7 @@ namespace SGDK2
                   m_Layers[i].Draw(MapDisplay, MapDisplay.ClientSize);
             }
             MapDisplay.Device.EndScene();
-            Surface sfc = MapDisplay.Device.GetRenderTarget(0);
+            Surface sfc = MapDisplay.TargetSurface;
             Graphics gfxDx = sfc.GetGraphics();
             try
             {

@@ -79,7 +79,7 @@
                 <xs:element name="Layer" minOccurs="0" maxOccurs="unbounded">
                   <xs:complexType>
                     <xs:sequence>
-                      <xs:element name="Tiles" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="12" />
+                      <xs:element name="Tiles" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="14" />
                       <xs:element name="Sprite" minOccurs="0" maxOccurs="unbounded">
                         <xs:complexType>
                           <xs:sequence>
@@ -143,9 +143,9 @@
                             </xs:element>
                             <xs:element name="PlanParameterValue" minOccurs="0" maxOccurs="unbounded">
                               <xs:complexType>
-                                <xs:attribute name="MapName" type="xs:string" use="required" />
-                                <xs:attribute name="LayerName" type="xs:string" use="required" />
-                                <xs:attribute name="PlanName" type="xs:string" use="required" />
+                                <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="LayerName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
+                                <xs:attribute name="PlanName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
                                 <xs:attribute name="Name" type="xs:string" use="required" />
                                 <xs:attribute name="Value" type="xs:string" />
                               </xs:complexType>
@@ -170,6 +170,8 @@
                     <xs:attribute name="ScrollRateY" type="xs:float" default="1" />
                     <xs:attribute name="ZIndex" type="xs:int" />
                     <xs:attribute name="Priority" type="xs:int" default="0" />
+                    <xs:attribute name="VirtualWidth" type="xs:int" default="0" />
+                    <xs:attribute name="VirtualHeight" type="xs:int" default="0" />
                   </xs:complexType>
                 </xs:element>
               </xs:sequence>
@@ -707,7 +709,8 @@ namespace CustomObjects
              (rectMessage.X + rectMessage.Width &lt;= disp.DisplayRectangle.Width) &amp;&amp;
              (rectMessage.Y + rectMessage.Height &lt;= disp.DisplayRectangle.Height))
          {
-            disp.Device.ColorFill(disp.Device.GetRenderTarget(0), rectMessage, Color.DarkBlue);
+            disp.Device.ColorFill(disp.TargetSurface, rectMessage, Color.DarkBlue);
+            disp.Sprite.Transform = Microsoft.DirectX.Matrix.Identity;
             disp.D3DFont.DrawText(disp.Sprite, message, rectText, DrawTextFormat.Left | DrawTextFormat.WordBreak, Color.White);
             disp.D3DLine.Antialias = true;
             disp.D3DLine.Width = 2.5f;

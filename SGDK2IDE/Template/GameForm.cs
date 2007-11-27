@@ -574,7 +574,8 @@ public class GameForm : Form
    /// <param name="ex">Refers to the exception that was received at the top level</param>
    public static void HandleException(System.Exception ex)
    {
-      Project.GameWindow.Close();
+      if (Project.GameWindow != null)
+         Project.GameWindow.Close();
       MessageBox.Show("A fatal error occurred initializing or running the game:\r\n" + ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
    }
 }

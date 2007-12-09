@@ -181,6 +181,10 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuPasteRules;
       private System.Windows.Forms.MenuItem mnuPasteRuleAbove;
       private System.Windows.Forms.MenuItem mnuPasteRuleBelow;
+      private System.Windows.Forms.ImageList imlTree;
+      private System.Windows.Forms.ToolBarButton tbbRuleSeparator2;
+      private System.Windows.Forms.ToolBarButton tbbToggleSuspend;
+      private System.Windows.Forms.MenuItem mnuToggleSuspend;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -293,12 +297,15 @@ namespace SGDK2
          this.grdParameters = new System.Windows.Forms.DataGrid();
          this.tabRules = new System.Windows.Forms.TabPage();
          this.tvwRules = new System.Windows.Forms.TreeView();
+         this.imlTree = new System.Windows.Forms.ImageList(this.components);
          this.tbrRules = new System.Windows.Forms.ToolBar();
          this.tbbNewRule = new System.Windows.Forms.ToolBarButton();
          this.tbbDeleteRule = new System.Windows.Forms.ToolBarButton();
          this.tbbRuleSeparator = new System.Windows.Forms.ToolBarButton();
          this.tbbMoveRuleUp = new System.Windows.Forms.ToolBarButton();
          this.tbbMoveRuleDown = new System.Windows.Forms.ToolBarButton();
+         this.tbbRuleSeparator2 = new System.Windows.Forms.ToolBarButton();
+         this.tbbToggleSuspend = new System.Windows.Forms.ToolBarButton();
          this.RuleSplitter = new System.Windows.Forms.Splitter();
          this.pnlRules = new System.Windows.Forms.Panel();
          this.chkSuspended = new System.Windows.Forms.CheckBox();
@@ -342,6 +349,7 @@ namespace SGDK2
          this.mnuPasteRules = new System.Windows.Forms.MenuItem();
          this.mnuPasteRuleAbove = new System.Windows.Forms.MenuItem();
          this.mnuPasteRuleBelow = new System.Windows.Forms.MenuItem();
+         this.mnuToggleSuspend = new System.Windows.Forms.MenuItem();
          this.mnuSpriteDefSeparator2 = new System.Windows.Forms.MenuItem();
          this.mnuExport = new System.Windows.Forms.MenuItem();
          this.mnuSpriteDefSeparator3 = new System.Windows.Forms.MenuItem();
@@ -764,13 +772,18 @@ namespace SGDK2
          // 
          this.tvwRules.Dock = System.Windows.Forms.DockStyle.Fill;
          this.tvwRules.HideSelection = false;
-         this.tvwRules.ImageIndex = -1;
+         this.tvwRules.ImageList = this.imlTree;
          this.tvwRules.Location = new System.Drawing.Point(0, 25);
          this.tvwRules.Name = "tvwRules";
-         this.tvwRules.SelectedImageIndex = -1;
          this.tvwRules.Size = new System.Drawing.Size(187, 334);
          this.tvwRules.TabIndex = 0;
          this.tvwRules.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvwRules_AfterSelect);
+         // 
+         // imlTree
+         // 
+         this.imlTree.ImageSize = new System.Drawing.Size(15, 15);
+         this.imlTree.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imlTree.ImageStream")));
+         this.imlTree.TransparentColor = System.Drawing.Color.Magenta;
          // 
          // tbrRules
          // 
@@ -779,7 +792,9 @@ namespace SGDK2
                                                                                     this.tbbDeleteRule,
                                                                                     this.tbbRuleSeparator,
                                                                                     this.tbbMoveRuleUp,
-                                                                                    this.tbbMoveRuleDown});
+                                                                                    this.tbbMoveRuleDown,
+                                                                                    this.tbbRuleSeparator2,
+                                                                                    this.tbbToggleSuspend});
          this.tbrRules.Divider = false;
          this.tbrRules.DropDownArrows = true;
          this.tbrRules.ImageList = this.imlSpriteDefinition;
@@ -813,6 +828,15 @@ namespace SGDK2
          // 
          this.tbbMoveRuleDown.ImageIndex = 3;
          this.tbbMoveRuleDown.ToolTipText = "Move selected rule down";
+         // 
+         // tbbRuleSeparator2
+         // 
+         this.tbbRuleSeparator2.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+         // 
+         // tbbToggleSuspend
+         // 
+         this.tbbToggleSuspend.ImageIndex = 5;
+         this.tbbToggleSuspend.ToolTipText = "Toggle suspend for this rule and all children";
          // 
          // RuleSplitter
          // 
@@ -1098,6 +1122,7 @@ namespace SGDK2
                                                                                             this.mnuMoveRuleDown,
                                                                                             this.mnuCopyRules,
                                                                                             this.mnuPasteRules,
+                                                                                            this.mnuToggleSuspend,
                                                                                             this.mnuSpriteDefSeparator2,
                                                                                             this.mnuExport,
                                                                                             this.mnuSpriteDefSeparator3,
@@ -1227,25 +1252,31 @@ namespace SGDK2
          this.mnuPasteRuleBelow.Text = "Paste &Below Selected Rule";
          this.mnuPasteRuleBelow.Click += new System.EventHandler(this.mnuPasteRules_Click);
          // 
+         // mnuToggleSuspend
+         // 
+         this.mnuToggleSuspend.Index = 14;
+         this.mnuToggleSuspend.Text = "To&ggle Suspend for This and Child Rules";
+         this.mnuToggleSuspend.Click += new System.EventHandler(this.OnToggleSuspend);
+         // 
          // mnuSpriteDefSeparator2
          // 
-         this.mnuSpriteDefSeparator2.Index = 14;
+         this.mnuSpriteDefSeparator2.Index = 15;
          this.mnuSpriteDefSeparator2.Text = "-";
          // 
          // mnuExport
          // 
-         this.mnuExport.Index = 15;
+         this.mnuExport.Index = 16;
          this.mnuExport.Text = "E&xport to template...";
          this.mnuExport.Click += new System.EventHandler(this.mnuExport_Click);
          // 
          // mnuSpriteDefSeparator3
          // 
-         this.mnuSpriteDefSeparator3.Index = 16;
+         this.mnuSpriteDefSeparator3.Index = 17;
          this.mnuSpriteDefSeparator3.Text = "-";
          // 
          // mnuRotateWizard
          // 
-         this.mnuRotateWizard.Index = 17;
+         this.mnuRotateWizard.Index = 18;
          this.mnuRotateWizard.Text = "Ro&tating Sprite State Wizard";
          this.mnuRotateWizard.Click += new System.EventHandler(this.mnuRotateWizard_Click);
          // 
@@ -1898,12 +1929,14 @@ namespace SGDK2
             if (parentNode == null)
             {
                parentNode = tvwRules.Nodes.Add(drRule.Name);
+               parentNode.ImageIndex = parentNode.SelectedImageIndex = GetRuleImage(drRule);
                m_TreeNodes[drRule.Name] = parentNode;
                if (!DoesRuleTypeNest(drRule.Type))
                   parentNode = null;
                continue;
             }
             TreeNode curNode = parentNode.Nodes.Add(drRule.Name);
+            curNode.ImageIndex = curNode.SelectedImageIndex = GetRuleImage(drRule);
             m_TreeNodes[drRule.Name] = curNode;
             if (DoesRuleTypeNest(drRule.Type))
             {
@@ -1920,6 +1953,46 @@ namespace SGDK2
          }
          else if (cur != null)
             tvwRules.SelectedNode = GetNodeFromRow(cur);
+      }
+
+      private int GetRuleImage(ProjectDataset.SpriteRuleRow drRule)
+      {
+         int result;
+
+         switch(drRule.Type)
+         {
+            case "Do":
+               result = 0;
+               break;
+            case "If":
+               result = 1;
+               break;
+            case "Else":
+               result = 2;
+               break;
+            case "End":
+               result = 3;
+               break;
+            case "ElseIf":
+               result = 4;
+               break;
+            case "While":
+               result = 5;
+               break;
+            case "And":
+               result = 6;
+               break;
+            case "Or":
+               result = 7;
+               break;
+            default:
+               return -1;
+         }
+
+         if (drRule.Suspended)
+            return result + 8;
+         else
+            return result;
       }
 
       private ProjectDataset.SpriteRuleRow CurrentRule
@@ -2635,6 +2708,29 @@ namespace SGDK2
          // Force control to pick up new value
          decimal dummy = ((NumericUpDown)sender).Value;      
       } 
+      
+      private void OnToggleSuspend(object sender, System.EventArgs e)
+      {
+         if (!Validate())
+            return;
+         if (tvwRules.SelectedNode == null)
+         {
+            MessageBox.Show(this, "Select a rule first.", "Toggle Suspend for This and Children", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
+         ToggleSuspend(tvwRules.SelectedNode, !CurrentRule.Suspended);
+         LoadRule(CurrentRule);
+      }
+
+      private void ToggleSuspend(TreeNode node, bool suspend)
+      {
+         ProjectDataset.SpriteRuleRow drRule = ProjectData.GetSpriteRule(m_SpriteDef, node.Text);
+         drRule.Suspended = suspend;
+         node.ImageIndex = node.SelectedImageIndex = GetRuleImage(drRule);
+         foreach(TreeNode child in node.Nodes)
+            ToggleSuspend(child, suspend);
+      }
+
       private void OnAddRule(object sender, System.EventArgs e)
       {
          if (!Validate())
@@ -2708,6 +2804,8 @@ namespace SGDK2
             OnMoveRuleUp(tbbMoveRuleUp, e);
          if (e.Button == tbbMoveRuleDown)
             OnMoveRuleDown(tbbMoveRuleDown, e);
+         if (e.Button == tbbToggleSuspend)
+            OnToggleSuspend(tbbToggleSuspend, e);
       }
 
       private void dataMonitor_SpriteRuleRowChanging(object sender, SGDK2.ProjectDataset.SpriteRuleRowChangeEvent e)
@@ -2771,7 +2869,11 @@ namespace SGDK2
          if (m_Loading)
             return;
          if (CurrentRule != null)
+         {
             CurrentRule.Suspended = chkSuspended.Checked;
+            tvwRules.SelectedNode.ImageIndex =
+               tvwRules.SelectedNode.SelectedImageIndex = GetRuleImage(CurrentRule);
+         }
       }
 
       private void tvwRules_AfterSelect(object sender, System.Windows.Forms.TreeViewEventArgs e)

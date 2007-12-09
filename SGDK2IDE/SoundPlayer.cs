@@ -83,7 +83,7 @@ namespace SGDK2
          // 
          // btnPlay
          // 
-         this.btnPlay.Location = new System.Drawing.Point(8, 88);
+         this.btnPlay.Location = new System.Drawing.Point(8, 96);
          this.btnPlay.Name = "btnPlay";
          this.btnPlay.Size = new System.Drawing.Size(80, 24);
          this.btnPlay.TabIndex = 0;
@@ -99,7 +99,7 @@ namespace SGDK2
          // 
          // btnStop
          // 
-         this.btnStop.Location = new System.Drawing.Point(96, 88);
+         this.btnStop.Location = new System.Drawing.Point(96, 96);
          this.btnStop.Name = "btnStop";
          this.btnStop.Size = new System.Drawing.Size(80, 24);
          this.btnStop.TabIndex = 2;
@@ -109,7 +109,7 @@ namespace SGDK2
          // btnClose
          // 
          this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-         this.btnClose.Location = new System.Drawing.Point(184, 88);
+         this.btnClose.Location = new System.Drawing.Point(184, 96);
          this.btnClose.Name = "btnClose";
          this.btnClose.Size = new System.Drawing.Size(88, 24);
          this.btnClose.TabIndex = 3;
@@ -133,7 +133,7 @@ namespace SGDK2
          this.trbVolume.Location = new System.Drawing.Point(112, 48);
          this.trbVolume.Maximum = 100;
          this.trbVolume.Name = "trbVolume";
-         this.trbVolume.Size = new System.Drawing.Size(160, 34);
+         this.trbVolume.Size = new System.Drawing.Size(160, 45);
          this.trbVolume.TabIndex = 5;
          this.trbVolume.TickFrequency = 5;
          this.trbVolume.Value = 100;
@@ -152,7 +152,7 @@ namespace SGDK2
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
          this.CancelButton = this.btnClose;
-         this.ClientSize = new System.Drawing.Size(282, 119);
+         this.ClientSize = new System.Drawing.Size(282, 128);
          this.Controls.Add(this.lblVolume);
          this.Controls.Add(this.trbVolume);
          this.Controls.Add(this.lblStatus);

@@ -132,7 +132,7 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
    private Sprite m_Sprite = null;
    private Font m_Font = null;
    private Line m_Line = null;
-   private Surface targetSurface = null;
+   private Surface m_targetSurface = null;
    private string fontName = null;
    private int fontSize = 0;
 
@@ -183,6 +183,11 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
          {
             m_Line.Dispose();
             m_Line = null;
+         }
+         if (m_targetSurface != null)
+         {
+            m_targetSurface.Dispose();
+            m_targetSurface = null;
          }
          if (m_d3d != null)
          {
@@ -274,6 +279,11 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
             m_Line.Dispose();
             m_Line = null;
          }
+         if (m_targetSurface != null)
+         {
+            m_targetSurface.Dispose();
+            m_targetSurface = null;
+         }
          if (m_d3d != null)
          {
             m_d3d.Dispose();
@@ -301,6 +311,11 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
          {
             m_Line.Dispose();
             m_Line = null;
+         }
+         if (m_targetSurface != null)
+         {
+            m_targetSurface.Dispose();
+            m_targetSurface = null;
          }
          m_d3d.Reset(m_pp);
       }
@@ -425,6 +440,11 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
             {
                m_Line.Dispose();
                m_Line = null;
+            }
+            if (m_targetSurface != null)
+            {
+               m_targetSurface.Dispose();
+               m_targetSurface = null;
             }
             if (m_d3d != null)
             {
@@ -615,6 +635,11 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
                m_Line.Dispose();
                m_Line = null;
             }
+            if (m_targetSurface != null)
+            {
+               m_targetSurface.Dispose();
+               m_targetSurface = null;
+            }
             m_d3d.Reset(m_pp);
          }
       }
@@ -640,6 +665,11 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
       {
          m_Line.Dispose();
          m_Line = null;
+      }
+      if (m_targetSurface != null)
+      {
+         m_targetSurface.Dispose();
+         m_targetSurface = null;
       }
       if (m_d3d != null)
          m_d3d.Dispose();
@@ -740,9 +770,9 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
    {
       get
       {
-         if (targetSurface == null)
-            targetSurface = m_d3d.GetRenderTarget(0);
-         return targetSurface;
+         if ((m_targetSurface == null) && (m_d3d != null))
+            m_targetSurface = m_d3d.GetRenderTarget(0);
+         return m_targetSurface;
       }
    }
    #endregion

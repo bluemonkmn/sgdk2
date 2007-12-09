@@ -122,7 +122,7 @@ namespace SGDK2
       private Sprite m_Sprite = null;
       private Font m_Font = null;
       private Line m_Line = null;
-      private Surface targetSurface = null;
+      private Surface m_targetSurface = null;
       #endregion
 
       #region Initialization and clean-up
@@ -170,6 +170,11 @@ namespace SGDK2
             {
                m_Line.Dispose();
                m_Line = null;
+            }
+            if (m_targetSurface != null)
+            {
+               m_targetSurface.Dispose();
+               m_targetSurface = null;
             }
             if (m_d3d != null)
             {
@@ -261,6 +266,11 @@ namespace SGDK2
                m_Line.Dispose();
                m_Line = null;
             }
+            if (m_targetSurface != null)
+            {
+               m_targetSurface.Dispose();
+               m_targetSurface = null;
+            }
             if (m_d3d != null)
             {
                m_d3d.Dispose();
@@ -288,6 +298,11 @@ namespace SGDK2
             {
                m_Line.Dispose();
                m_Line = null;
+            }
+            if (m_targetSurface != null)
+            {
+               m_targetSurface.Dispose();
+               m_targetSurface = null;
             }
             m_d3d.Reset(m_pp);
          }
@@ -396,6 +411,11 @@ namespace SGDK2
                {
                   m_Line.Dispose();
                   m_Line = null;
+               }
+               if (m_targetSurface != null)
+               {
+                  m_targetSurface.Dispose();
+                  m_targetSurface = null;
                }
                if (m_d3d != null)
                {
@@ -580,6 +600,11 @@ namespace SGDK2
                   m_Line.Dispose();
                   m_Line = null;
                }
+               if (m_targetSurface != null)
+               {
+                  m_targetSurface.Dispose();
+                  m_targetSurface = null;
+               }
                m_d3d.Reset(m_pp);
             }
          }
@@ -602,6 +627,11 @@ namespace SGDK2
          {
             m_Line.Dispose();
             m_Line = null;
+         }
+         if (m_targetSurface != null)
+         {
+            m_targetSurface.Dispose();
+            m_targetSurface = null;
          }
          if (m_d3d != null)
             m_d3d.Dispose();
@@ -667,9 +697,9 @@ namespace SGDK2
       {
          get
          {
-            if (targetSurface == null)
-               targetSurface = m_d3d.GetRenderTarget(0);
-            return targetSurface;
+            if ((m_targetSurface == null) && (m_d3d != null))
+               m_targetSurface = m_d3d.GetRenderTarget(0);
+            return m_targetSurface;
          }
       }
       #endregion

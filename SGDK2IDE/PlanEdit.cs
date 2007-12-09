@@ -109,6 +109,10 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuPasteRules;
       private System.Windows.Forms.MenuItem mnuPasteAbove;
       private System.Windows.Forms.MenuItem mnuPasteBelow;
+      private System.Windows.Forms.ImageList imlTree;
+      private System.Windows.Forms.ToolBarButton tbbSep2;
+      private System.Windows.Forms.ToolBarButton tbbToggleSuspend;
+      private System.Windows.Forms.MenuItem mnuToggleSuspend;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -181,12 +185,15 @@ namespace SGDK2
          this.txtName = new System.Windows.Forms.TextBox();
          this.grpRules = new System.Windows.Forms.GroupBox();
          this.tvwRules = new System.Windows.Forms.TreeView();
+         this.imlTree = new System.Windows.Forms.ImageList(this.components);
          this.tbRules = new System.Windows.Forms.ToolBar();
          this.tbbNewRule = new System.Windows.Forms.ToolBarButton();
          this.tbbDeleteRule = new System.Windows.Forms.ToolBarButton();
          this.tbbSep = new System.Windows.Forms.ToolBarButton();
          this.tbbMoveUp = new System.Windows.Forms.ToolBarButton();
          this.tbbMoveDown = new System.Windows.Forms.ToolBarButton();
+         this.tbbSep2 = new System.Windows.Forms.ToolBarButton();
+         this.tbbToggleSuspend = new System.Windows.Forms.ToolBarButton();
          this.imlPlan = new System.Windows.Forms.ImageList(this.components);
          this.splitterRules = new System.Windows.Forms.Splitter();
          this.pnlRule = new System.Windows.Forms.Panel();
@@ -224,6 +231,7 @@ namespace SGDK2
          this.mnuPasteRules = new System.Windows.Forms.MenuItem();
          this.mnuPasteAbove = new System.Windows.Forms.MenuItem();
          this.mnuPasteBelow = new System.Windows.Forms.MenuItem();
+         this.mnuToggleSuspend = new System.Windows.Forms.MenuItem();
          this.tmrPopulate = new System.Windows.Forms.Timer(this.components);
          this.grpRules.SuspendLayout();
          this.pnlRule.SuspendLayout();
@@ -269,13 +277,18 @@ namespace SGDK2
          // 
          this.tvwRules.Dock = System.Windows.Forms.DockStyle.Fill;
          this.tvwRules.HideSelection = false;
-         this.tvwRules.ImageIndex = -1;
+         this.tvwRules.ImageList = this.imlTree;
          this.tvwRules.Location = new System.Drawing.Point(3, 41);
          this.tvwRules.Name = "tvwRules";
-         this.tvwRules.SelectedImageIndex = -1;
          this.tvwRules.Size = new System.Drawing.Size(165, 341);
          this.tvwRules.TabIndex = 0;
          this.tvwRules.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvwRules_AfterSelect);
+         // 
+         // imlTree
+         // 
+         this.imlTree.ImageSize = new System.Drawing.Size(15, 15);
+         this.imlTree.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imlTree.ImageStream")));
+         this.imlTree.TransparentColor = System.Drawing.Color.Magenta;
          // 
          // tbRules
          // 
@@ -284,7 +297,9 @@ namespace SGDK2
                                                                                    this.tbbDeleteRule,
                                                                                    this.tbbSep,
                                                                                    this.tbbMoveUp,
-                                                                                   this.tbbMoveDown});
+                                                                                   this.tbbMoveDown,
+                                                                                   this.tbbSep2,
+                                                                                   this.tbbToggleSuspend});
          this.tbRules.Divider = false;
          this.tbRules.DropDownArrows = true;
          this.tbRules.ImageList = this.imlPlan;
@@ -318,6 +333,15 @@ namespace SGDK2
          // 
          this.tbbMoveDown.ImageIndex = 3;
          this.tbbMoveDown.ToolTipText = "Move selected rule down";
+         // 
+         // tbbSep2
+         // 
+         this.tbbSep2.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+         // 
+         // tbbToggleSuspend
+         // 
+         this.tbbToggleSuspend.ImageIndex = 4;
+         this.tbbToggleSuspend.ToolTipText = "Toggle suspend for this rule and its children";
          // 
          // imlPlan
          // 
@@ -621,7 +645,8 @@ namespace SGDK2
                                                                                 this.mnuNewRule,
                                                                                 this.mnuDeleteRule,
                                                                                 this.mnuCopyRules,
-                                                                                this.mnuPasteRules});
+                                                                                this.mnuPasteRules,
+                                                                                this.mnuToggleSuspend});
          this.mnuPlan.Text = "&Plan";
          // 
          // mnuMoveRuleUp
@@ -695,6 +720,12 @@ namespace SGDK2
          this.mnuPasteBelow.Index = 1;
          this.mnuPasteBelow.Text = "Paste &Below Selected Rule";
          this.mnuPasteBelow.Click += new System.EventHandler(this.mnuPasteRules_Click);
+         // 
+         // mnuToggleSuspend
+         // 
+         this.mnuToggleSuspend.Index = 6;
+         this.mnuToggleSuspend.Text = "Toggle &Suspend for This and Children";
+         this.mnuToggleSuspend.Click += new System.EventHandler(this.OnToggleSuspend);
          // 
          // tmrPopulate
          // 
@@ -1246,12 +1277,14 @@ namespace SGDK2
             if (parentNode == null)
             {
                parentNode = tvwRules.Nodes.Add(drRule.Name);
+               parentNode.ImageIndex = parentNode.SelectedImageIndex = GetRuleImage(drRule);
                m_TreeNodes[drRule.Name] = parentNode;
                if (!DoesRuleTypeNest(drRule.Type))
                   parentNode = null;
                continue;
             }
             TreeNode curNode = parentNode.Nodes.Add(drRule.Name);
+            curNode.ImageIndex = curNode.SelectedImageIndex = GetRuleImage(drRule);
             m_TreeNodes[drRule.Name] = curNode;
             if (DoesRuleTypeNest(drRule.Type))
             {
@@ -1269,6 +1302,46 @@ namespace SGDK2
          }
          else if (cur != null)
             tvwRules.SelectedNode = GetNodeFromRow(cur);
+      }
+
+      private int GetRuleImage(ProjectDataset.PlanRuleRow drPlan)
+      {
+         int result;
+
+         switch(drPlan.Type)
+         {
+            case "Do":
+               result = 0;
+               break;
+            case "If":
+               result = 1;
+               break;
+            case "Else":
+               result = 2;
+               break;
+            case "End":
+               result = 3;
+               break;
+            case "ElseIf":
+               result = 4;
+               break;
+            case "While":
+               result = 5;
+               break;
+            case "And":
+               result = 6;
+               break;
+            case "Or":
+               result = 7;
+               break;
+            default:
+               return -1;
+         }
+
+         if (drPlan.Suspended)
+            return result + 8;
+         else
+            return result;
       }
 
       private ProjectDataset.PlanRuleRow GetNodeRow(TreeNode node)
@@ -1595,6 +1668,10 @@ namespace SGDK2
          {
             OnMoveRuleDown(this, e);
          }
+         else if (e.Button == tbbToggleSuspend)
+         {
+            OnToggleSuspend(this, e);
+         }
       }
 
       private void dataMonitor_PlanRuleRowChanging(object sender, SGDK2.ProjectDataset.PlanRuleRowChangeEvent e)
@@ -1719,7 +1796,11 @@ namespace SGDK2
          if (m_Loading)
             return;
          if (CurrentRule != null)
+         {
             CurrentRule.Suspended = chkSuspended.Checked;
+            tvwRules.SelectedNode.ImageIndex =
+               tvwRules.SelectedNode.SelectedImageIndex = GetRuleImage(CurrentRule);
+         }
       }
 
       private void OnMoveRuleUp(object sender, System.EventArgs e)
@@ -1744,6 +1825,28 @@ namespace SGDK2
             return;
          }
          ProjectData.MovePlanRule(CurrentRule, true);      
+      }
+
+      private void OnToggleSuspend(object sender, System.EventArgs e)
+      {
+         if (!Validate())
+            return;
+         if (tvwRules.SelectedNode == null)
+         {
+            MessageBox.Show(this, "Select a rule first.", "Toggle Suspend for This and Children", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
+         ToggleSuspend(tvwRules.SelectedNode, !CurrentRule.Suspended);
+         LoadRule(CurrentRule);
+      }
+
+      private void ToggleSuspend(TreeNode node, bool suspend)
+      {
+         ProjectDataset.PlanRuleRow drPlan = ProjectData.GetPlanRule(m_Plan, node.Text);
+         drPlan.Suspended = suspend;
+         node.ImageIndex = node.SelectedImageIndex = GetRuleImage(drPlan);
+         foreach(TreeNode child in node.Nodes)
+            ToggleSuspend(child, suspend);
       }
 
       private void OnAddRule(object sender, System.EventArgs e)

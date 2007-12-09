@@ -505,7 +505,10 @@ namespace SGDK2
                   ProjectDataset.SourceCodeRow existing = ProjectData.GetSourceCode(item);
                   ProjectData.ReencapsulateSourceCode(txtImportSource.Text, drCode);
                   if (existing != null)
+                  {
+                     frmCodeEditor.CloseIfEditing(Owner, existing);
                      existing.ItemArray = drCode.ItemArray;
+                  }
                   else
                      ProjectData.SourceCode.Rows.Add(drCode.ItemArray);
                   if (drCode.Name.EndsWith(".dll"))

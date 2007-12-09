@@ -1023,6 +1023,21 @@ namespace SGDK2
          frmNew.MdiParent = MdiParent;
          frmNew.Show();
       }
+
+      public static void CloseIfEditing(Form MdiParent, ProjectDataset.SourceCodeRow CloseRow)
+      {
+         foreach(Form frm in MdiParent.MdiChildren)
+         {
+            frmCodeEditor f = frm as frmCodeEditor;
+            if (f != null)
+            {
+               if (f.m_SourceCode == CloseRow)
+               {
+                  f.Close();
+               }
+            }
+         }
+      }
       #endregion
 
       #region Public Methods

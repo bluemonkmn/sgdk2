@@ -107,6 +107,8 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuEditUndo;
       private System.Windows.Forms.MenuItem mnuEditRedo;
       private System.Windows.Forms.MenuItem mnuEditSeparator;
+      private System.Windows.Forms.MenuItem mnuExportEmbeddedData;
+      private System.Windows.Forms.SaveFileDialog dlgExportEmbeddedData;
       private System.Windows.Forms.MenuItem mnuDataPlay;
       private struct POINT
       {
@@ -202,6 +204,9 @@ namespace SGDK2
          this.mnuFileSeparator = new System.Windows.Forms.MenuItem();
          this.mnuFileRename = new System.Windows.Forms.MenuItem();
          this.mnuEdit = new System.Windows.Forms.MenuItem();
+         this.mnuEditUndo = new System.Windows.Forms.MenuItem();
+         this.mnuEditRedo = new System.Windows.Forms.MenuItem();
+         this.mnuEditSeparator = new System.Windows.Forms.MenuItem();
          this.mnuEditFind = new System.Windows.Forms.MenuItem();
          this.mnuFindNext = new System.Windows.Forms.MenuItem();
          this.mnuEditReplace = new System.Windows.Forms.MenuItem();
@@ -211,11 +216,10 @@ namespace SGDK2
          this.mnuDataEdit = new System.Windows.Forms.MenuItem();
          this.mnuDataClear = new System.Windows.Forms.MenuItem();
          this.mnuDataPlay = new System.Windows.Forms.MenuItem();
+         this.mnuExportEmbeddedData = new System.Windows.Forms.MenuItem();
          this.tmrInvalidateStatus = new System.Windows.Forms.Timer(this.components);
          this.dlgEmbeddedFile = new System.Windows.Forms.OpenFileDialog();
-         this.mnuEditUndo = new System.Windows.Forms.MenuItem();
-         this.mnuEditRedo = new System.Windows.Forms.MenuItem();
-         this.mnuEditSeparator = new System.Windows.Forms.MenuItem();
+         this.dlgExportEmbeddedData = new System.Windows.Forms.SaveFileDialog();
          ((System.ComponentModel.ISupportInitialize)(this.sbpStatus)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpCAPS)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpInsert)).BeginInit();
@@ -345,6 +349,25 @@ namespace SGDK2
                                                                                 this.mnuEditGoto});
          this.mnuEdit.Text = "&Edit";
          // 
+         // mnuEditUndo
+         // 
+         this.mnuEditUndo.Index = 0;
+         this.mnuEditUndo.Shortcut = System.Windows.Forms.Shortcut.CtrlZ;
+         this.mnuEditUndo.Text = "&Undo";
+         this.mnuEditUndo.Click += new System.EventHandler(this.rtfCode_OnUndo);
+         // 
+         // mnuEditRedo
+         // 
+         this.mnuEditRedo.Index = 1;
+         this.mnuEditRedo.Shortcut = System.Windows.Forms.Shortcut.CtrlY;
+         this.mnuEditRedo.Text = "Re&do";
+         this.mnuEditRedo.Click += new System.EventHandler(this.rtfCode_OnRedo);
+         // 
+         // mnuEditSeparator
+         // 
+         this.mnuEditSeparator.Index = 2;
+         this.mnuEditSeparator.Text = "-";
+         // 
          // mnuEditFind
          // 
          this.mnuEditFind.Index = 3;
@@ -380,7 +403,8 @@ namespace SGDK2
                                                                                         this.mnuDataLoad,
                                                                                         this.mnuDataEdit,
                                                                                         this.mnuDataClear,
-                                                                                        this.mnuDataPlay});
+                                                                                        this.mnuDataPlay,
+                                                                                        this.mnuExportEmbeddedData});
          this.mnuEmbeddedData.MergeOrder = 2;
          this.mnuEmbeddedData.Text = "Embedded &Data";
          this.mnuEmbeddedData.Visible = false;
@@ -410,6 +434,13 @@ namespace SGDK2
          this.mnuDataPlay.Text = "&Play with FMOD";
          this.mnuDataPlay.Click += new System.EventHandler(this.mnuDataPlay_Click);
          // 
+         // mnuExportEmbeddedData
+         // 
+         this.mnuExportEmbeddedData.Enabled = false;
+         this.mnuExportEmbeddedData.Index = 4;
+         this.mnuExportEmbeddedData.Text = "E&xport to File";
+         this.mnuExportEmbeddedData.Click += new System.EventHandler(this.mnuExportEmbeddedData_Click);
+         // 
          // tmrInvalidateStatus
          // 
          this.tmrInvalidateStatus.Tick += new System.EventHandler(this.tmrInvalidateStatus_Tick);
@@ -417,27 +448,16 @@ namespace SGDK2
          // dlgEmbeddedFile
          // 
          this.dlgEmbeddedFile.AddExtension = false;
-         this.dlgEmbeddedFile.Filter = "All Files (*.*)|*.*";
+         this.dlgEmbeddedFile.Filter = "FMOD Supported Sounds|*.MOD;*.MID;*.MP3;*.OGG;*.WAV;*.WMA|Mod files (*.MOD)|*.MOD" +
+            "|MIDI files (*.MID)|*.MID|MP3 files (*.MP3)|*.MP3|OGG files (*.OGG)|*.OGG|WAV fi" +
+            "les (*.WAV)|*.WAV|Windows Media Audio (*.WMA)|*.WMA|All files (*.*)|*.*";
          this.dlgEmbeddedFile.Title = "Select File To Embed";
          // 
-         // mnuEditUndo
+         // dlgExportEmbeddedData
          // 
-         this.mnuEditUndo.Index = 0;
-         this.mnuEditUndo.Shortcut = System.Windows.Forms.Shortcut.CtrlZ;
-         this.mnuEditUndo.Text = "&Undo";
-         this.mnuEditUndo.Click += new System.EventHandler(this.rtfCode_OnUndo);
-         // 
-         // mnuEditRedo
-         // 
-         this.mnuEditRedo.Index = 1;
-         this.mnuEditRedo.Shortcut = System.Windows.Forms.Shortcut.CtrlY;
-         this.mnuEditRedo.Text = "Re&do";
-         this.mnuEditRedo.Click += new System.EventHandler(this.rtfCode_OnRedo);
-         // 
-         // mnuEditSeparator
-         // 
-         this.mnuEditSeparator.Index = 2;
-         this.mnuEditSeparator.Text = "-";
+         this.dlgExportEmbeddedData.AddExtension = false;
+         this.dlgExportEmbeddedData.Filter = "All files (*.*)|*.*";
+         this.dlgExportEmbeddedData.Title = "Specify Export File Name";
          // 
          // frmCodeEditor
          // 
@@ -994,11 +1014,13 @@ namespace SGDK2
          {
             mnuDataClear.Text = "&Clear (No Data)";
             mnuDataClear.Enabled = false;
+            mnuExportEmbeddedData.Enabled = false;
          }
          else
          {
             mnuDataClear.Text = "&Clear (" + ProjectData.GetCustomObjectDataSize(m_SourceCode) + ")";
             mnuDataClear.Enabled = true;
+            mnuExportEmbeddedData.Enabled = true;
          }
       }
       #endregion
@@ -1528,6 +1550,21 @@ namespace SGDK2
          rtfCode.Visible = true;
 
          UndoUnit.Push(ref undoStack, undo);
+      }
+
+      private void mnuExportEmbeddedData_Click(object sender, System.EventArgs e)
+      {
+         if (m_SourceCode.IsCustomObjectDataNull())
+         {
+            MessageBox.Show(this, "No embedded data exists", "Export Embedded Data to File", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
+         if (DialogResult.OK == dlgExportEmbeddedData.ShowDialog(this))
+         {
+            System.IO.FileStream stm = new System.IO.FileStream(dlgExportEmbeddedData.FileName, System.IO.FileMode.Create);
+            stm.Write(m_SourceCode.CustomObjectData, 0, m_SourceCode.CustomObjectData.Length);
+            stm.Close();
+         }
       }
       #endregion
    }

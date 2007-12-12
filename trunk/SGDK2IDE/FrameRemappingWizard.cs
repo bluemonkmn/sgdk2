@@ -648,7 +648,8 @@ namespace SGDK2
                else
                {
                   allFrames = ProjectData.GetSortedFrameRows(drTarget);
-                  lastFrameIndex = allFrames[allFrames.Length-1].FrameValue;
+                  if (allFrames.Length > 0)
+                     lastFrameIndex = allFrames[allFrames.Length-1].FrameValue;
                }
             }
             foreach(ProjectDataset.FrameRow source in SourceFrames.GetSelectedFrames())

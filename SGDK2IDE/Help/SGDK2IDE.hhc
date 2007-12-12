@@ -123,6 +123,10 @@
 				<param name="Name" value="Sound and Music">
 				<param name="Local" value="Tutorial4.html">
 				</OBJECT>
+			<LI> <OBJECT type="text/sitemap">
+				<param name="Name" value="Importing Sprites">
+				<param name="Local" value="Tutorial5.html">
+				</OBJECT>
 		</UL>
 	</UL>
 	<OBJECT type="text/sitemap">

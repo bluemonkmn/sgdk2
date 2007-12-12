@@ -113,6 +113,13 @@
             available in a sprite definition are available for plans. The sub-items in this
             menu allow you to paste the copied rules either before or after the selected rule.
             If no rule is selected, they will be pasted at the end of the list.</li>
+         <li class="SubPara">
+            Toggle Suspend for This and Child Rules: This will toggle the state of the
+            &quot;Suspend this rule&quot; checkbox for the current rule, and set all the
+            child rules' state to be the same. Normally, toggling the checkbox affects
+            only the current rule, but it often doesn't make sense to turn off a parent
+            rule without also turning off all the children, so this toggle can come in
+            handy for disabling (or re-enabling) entire branches of rules.</li>
       </ul>
       <h3>Rule List</h3>
       <p class="SubPara">This displays a list of rules associated with the current plan 
@@ -184,7 +191,8 @@
       <p class="SubPara"><strong>Note:</strong> It is strongly recommended when 
          suspending a rule that contains nested rules, all the nested rules also be 
          suspended. Unexpected behavior may occur if a rule is suspended without 
-         suspending all of the rules nested within it.</p>
+         suspending all of the rules nested within it. See the &quot;Toggle Suspend
+         for This and Child Rules&quot; command above.</p>
       <h3>Rule Type</h3>
       <p class="SubPara">There are 8 fundamental classes of rules that can be defined 
          using the first dropdown list. If the descriptions of these types seem 

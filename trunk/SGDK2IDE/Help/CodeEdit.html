@@ -117,6 +117,15 @@
       <p class="SubPara">Operating on the assumption that much of the binary data 
          embedded represents sounds, this command will try to play the binary data as a 
          sound using the FMOD library</p>
+      <h3>Export to File</h3>
+      <p class="SubPara">If data has been embedded into an SGDK2 file, and you no longer
+         have the original file from which it was embedded, you can use this command to
+         write the binary data to a file. This might be handy if you want to do more
+         editing on the data in an external editor. The catch is that you have to know
+         and remember the type of the file because the export feature does not know
+         what extension to append to it. You have to specify the correct extension
+         manually when exporting the file. The exported file retains no connection to
+         the SGDK2 file, and must be re-embedded after editing.</p>
       <h2>Sound Effects Sample</h2>
       <p>Below is some sample code that resembles the code that most sound effects or 
          pieces of music use. It relies on fmodbase.cs and its dependencies, so it 

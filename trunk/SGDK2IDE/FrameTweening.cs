@@ -102,7 +102,13 @@ namespace SGDK2
 			InitializeComponent();
 
 			m_frameset = frameset;
-		}
+         txtSrcScaleY.Text = (1.0).ToString("0.0");
+         txtSrcScaleX.Text = (1.0).ToString("0.0");
+         txtEndScaleY.Text = (1.0).ToString("0.0");
+         txtEndScaleX.Text = (1.0).ToString("0.0");
+         txtSrcOffsetY.Text = (0.0).ToString("0.0");
+         txtSrcOffsetX.Text = (0.0).ToString("0.0");
+      }
 
 		/// <summary>
 		/// Clean up any resources being used.
@@ -398,7 +404,6 @@ namespace SGDK2
          this.txtSrcOffsetY.Name = "txtSrcOffsetY";
          this.txtSrcOffsetY.Size = new System.Drawing.Size(72, 20);
          this.txtSrcOffsetY.TabIndex = 12;
-         this.txtSrcOffsetY.Text = "0.0";
          // 
          // lblSrcOffsetY
          // 
@@ -415,7 +420,6 @@ namespace SGDK2
          this.txtSrcOffsetX.Name = "txtSrcOffsetX";
          this.txtSrcOffsetX.Size = new System.Drawing.Size(72, 20);
          this.txtSrcOffsetX.TabIndex = 10;
-         this.txtSrcOffsetX.Text = "0.0";
          // 
          // lblSrcOffsetX
          // 
@@ -441,7 +445,6 @@ namespace SGDK2
          this.txtSrcScaleY.Name = "txtSrcScaleY";
          this.txtSrcScaleY.Size = new System.Drawing.Size(72, 20);
          this.txtSrcScaleY.TabIndex = 7;
-         this.txtSrcScaleY.Text = "1.0";
          // 
          // lblSrcScaleY
          // 
@@ -458,7 +461,6 @@ namespace SGDK2
          this.txtSrcScaleX.Name = "txtSrcScaleX";
          this.txtSrcScaleX.Size = new System.Drawing.Size(72, 20);
          this.txtSrcScaleX.TabIndex = 5;
-         this.txtSrcScaleX.Text = "1.0";
          // 
          // lblSrcScaleX
          // 
@@ -596,7 +598,6 @@ namespace SGDK2
          this.txtEndScaleY.Name = "txtEndScaleY";
          this.txtEndScaleY.Size = new System.Drawing.Size(72, 20);
          this.txtEndScaleY.TabIndex = 7;
-         this.txtEndScaleY.Text = "1.0";
          // 
          // lblEndScaleY
          // 
@@ -613,7 +614,6 @@ namespace SGDK2
          this.txtEndScaleX.Name = "txtEndScaleX";
          this.txtEndScaleX.Size = new System.Drawing.Size(72, 20);
          this.txtEndScaleX.TabIndex = 5;
-         this.txtEndScaleX.Text = "1.0";
          // 
          // lblEndScaleX
          // 

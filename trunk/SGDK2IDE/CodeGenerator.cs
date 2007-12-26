@@ -247,8 +247,7 @@ namespace SGDK2
 
          public object CreateInstanceAndUnwrap(string typeName, object[] constructorParams)
          {
-            string asmName = System.IO.Path.GetFileNameWithoutExtension(m_assemblyFile);
-            return m_tempDomain.CreateInstanceAndUnwrap(asmName, typeName, false,
+            return m_tempDomain.CreateInstanceFromAndUnwrap(m_assemblyFile, typeName, false,
                System.Reflection.BindingFlags.CreateInstance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance,
                null, constructorParams, null, null, null);
          }
@@ -3111,7 +3110,7 @@ namespace SGDK2
          
             Microsoft.CSharp.CSharpCodeProvider codeProvider = new Microsoft.CSharp.CSharpCodeProvider();
             System.CodeDom.Compiler.ICodeCompiler compiler = codeProvider.CreateCompiler();
-            System.CodeDom.Compiler.CompilerParameters compilerParams = new System.CodeDom.Compiler.CompilerParameters(new string[] {}, System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, "SGDK2Tmp.dll"));
+            System.CodeDom.Compiler.CompilerParameters compilerParams = new System.CodeDom.Compiler.CompilerParameters(new string[] {}, System.IO.Path.Combine(System.IO.Path.GetTempPath(), "SGDK2Tmp.dll"));
             int idx = 0;
             string reason = string.Empty;
             do
@@ -3124,7 +3123,7 @@ namespace SGDK2
                }
                catch(System.Exception ex)
                {
-                  compilerParams.OutputAssembly = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, "SGDK2Tm" + (++idx).ToString() + ".dll");
+                  compilerParams.OutputAssembly = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "SGDK2Tm" + (++idx).ToString() + ".dll");
                   reason = ex.Message;
                }
             } while(idx < 5);

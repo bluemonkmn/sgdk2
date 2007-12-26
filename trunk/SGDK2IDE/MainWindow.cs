@@ -813,9 +813,15 @@ namespace SGDK2
             if (System.IO.Path.IsPathRooted(template))
                templateFile = template;
             else
-               templateFile = System.IO.Path.Combine(
-                  System.IO.Path.Combine(GetLibraryFolder(),
-                  @"Projects"), template + ".sgdk2");
+            {
+               string libFolder = GetLibraryFolder();
+               if (libFolder != null)
+                  templateFile = System.IO.Path.Combine(
+                     System.IO.Path.Combine(libFolder,
+                     @"Projects"), template + ".sgdk2");
+               else
+                  templateFile = String.Empty;
+            }
          }
          if ((templateFile.Length <= 0) || !System.IO.File.Exists(templateFile))
          {

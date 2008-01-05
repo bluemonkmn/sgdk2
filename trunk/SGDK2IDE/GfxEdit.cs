@@ -1108,6 +1108,7 @@ namespace SGDK2
          // 
          this.mnuEditVOffset.Index = 15;
          this.mnuEditVOffset.Text = "Vertical &Offset && Wrap";
+         this.mnuEditVOffset.Click += new System.EventHandler(this.mnuEditOffset_Click);
          // 
          // mnuEditTilePreview
          // 
@@ -1418,6 +1419,7 @@ namespace SGDK2
          this.mnuToolGradientFill.Index = 9;
          this.mnuToolGradientFill.RadioCheck = true;
          this.mnuToolGradientFill.Text = "Gradient Fill";
+         this.mnuToolGradientFill.Click += new System.EventHandler(this.mnuTool_Click);
          // 
          // mnuToolFloodFill
          // 
@@ -1509,6 +1511,7 @@ namespace SGDK2
          // 
          this.mnuToolGradientFills.Index = 23;
          this.mnuToolGradientFills.Text = "Gradient Fills";
+         this.mnuToolGradientFills.Click += new System.EventHandler(this.mnuTool_Click);
          // 
          // mnuToolLock
          // 

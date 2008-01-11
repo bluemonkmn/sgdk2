@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <title>Scrolling Game Development Kit 2 - Graphic Sheet Properties</title>
+      <meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1" />
+      <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5" />
+      <link href="SGDK2Help.css" type="text/css" rel="stylesheet" />
+   </head>
+   <body>
+      <h1>Graphic Sheet Properties</h1>
+      <p>A graphic sheet is an array of graphic "cells" all the same size, stored in a 
+         single image with a fixed number of rows and columns. Almost all graphics in a 
+         game are based on the graphics defined in a graphic sheet. The only readily 
+         apparent exceptions would be some of the text (in cases where text drawing 
+         functions are used instead of drawing the text into graphic cells) and the 
+         window frame and secondary windows (options and about dialogs) when playing the 
+         game in windowed mode.</p>
+      <p>Before graphics can be edited, some parameters must be provided about the 
+         layout of the graphics so the environment knows, for example, how large they 
+         will be. This window is used to supply these parameters before proceeding to 
+         the <a href="GfxEdit.html">graphics editor</a>. These parameters can also be 
+         updated later, but be careful when doing so because this can drastically affect 
+         the graphics.</p>
+      <h2>Properties</h2>
+      <p>The properties of the graphic sheet are edited in the main grid area of the 
+         window.</p>
+      <h3>BackgroundColor</h3>
+      <p class="SubPara">This defines a solid color that will initially fill all the 
+         graphics. For graphics that will be used on the background layer, an opaque 
+         color should be chosen. For graphics that will be used in a foreground layer, 
+         especially sprites, choosing "Transparent" from the "Web" tab of the dropdown 
+         is probably best. If the dropdown does not display the desired color, the color 
+         can also be specified by typing a comma-separated list of values to specify the 
+         Alpha, Red, Green and Blue components of the color respectively. For example, 
+         to specify a half-transparent red color, enter "128,255,0,0" into this control.</p>
+      <h3>Name</h3>
+      <p class="SubPara">The name of a graphic sheet must be unique among all graphic 
+         sheets in the project. Names must begin with a letter and contain only letters, 
+         digits and spaces.</p>
+      <h3>CellHeight, CellWidth</h3>
+      <p class="SubPara">These properties define the size of each cell in the sheet. The 
+         size is specified in pixels. The size of the overall sheet can be calculated by 
+         multiplying this size by the number of rows and columns (there is no padding 
+         between graphics). Changing these values on an existing graphic sheet 
+         (containing graphics) is not advised except to correct an alignment problem 
+         with an imported graphic sheet image because changing this value does not move 
+         or change any of the graphics, so the divisions between the tiles will all be 
+         shifted and will likely no longer line up with the graphics on the sheet.</p>
+      <h3>Columns, Rows</h3>
+      <p class="SubPara">These properties define how many rows and columns of graphic 
+         cells are in the graphic sheet. Multiplying these together will result in the 
+         overall number of cells. If this result is greater than 255, and you want to 
+         use each graphic as a separate tile, the layers that use the tileset based on 
+         this graphic sheet will need to specify more than 1 byte per tile. Use care 
+         when changing these values on an existing graphic sheet. If the number of rows 
+         or columns is reduced, the sheet is simply cropped and any graphics in the 
+         removed rows and columns will be lost. And if the number of columns is changed 
+         on a graphic sheet that is already being referenced by a frameset, the graphics 
+         referenced by the frameset may be thrown off because of the changed indexing. 
+         The graphic cells are indexed in order from the top left corner of the sheet, 
+         across all the columns of the first row and then down to the next row. So take, 
+         for example, a frameset frame that refers to cell index 5 in a graphic sheet 
+         that has 2 rows and 3 columns (each 32x32 pixels). That corresponds to the 
+         graphic in the third column of the second row of the sheet (the last cell). 
+         Then assume that a new column is added to the graphic sheet. None of the 
+         graphics are moved; the sheet image is just widened by 32 pixels. Now cell 
+         index number 5 refers to the second column of the second row, which is a 
+         different image. So it's best to settle on a reasonable number of columns for a 
+         graphic sheet, and if cells need to be added or if the size needs to be 
+         reduced, add and remove rows, not columns.
+      </p>
+      <h2>Commands</h2>
+      <p>All the commands available in this window are represented as buttons along the 
+         side.</p>
+      <h3>Add/Update</h3>
+      <p class="SubPara">Depending on whether a new graphic sheet is being added or an 
+         existing one updated, this button will read "Add" or "Update". The changes are 
+         not committed to the project until this button is clicked.</p>
+      <h3>Export</h3>
+      <p class="SubPara">This will export the graphic sheet in SGDK2 format for use in 
+         an SGDK2 graphics library or for use in other projects. (SGDK2 format is simply 
+         a project file format. The format is exactly the same as that of a project, but 
+         only the exported data is included rather than all the components required to 
+         make a compilable project.) The credits from the current project are exported 
+         into the graphic sheet file, so make sure they are appropriate to the graphic 
+         sheet being exported. Any project that imports the exported graphic sheet will 
+         also import the credits associated with it and merge them with the project's 
+         credits.</p>
+      <h3>Decapsulate</h3>
+      <p class="SubPara">This is an advanced feature and should not be commonly used in 
+         projects. Decapsulating a graphic sheet will save the image as an independent 
+         file and temporarily store only a reference to that file within the project. 
+         The purpose of this feature is to allow a single copy of a graphic sheet to be 
+         referenced by multiple separate template files. Without this feature, each 
+         template would have to embed its own copy of the graphic sheet's image, which 
+         could result in lots of unnecessary overhead. When a graphic sheet is imported 
+         into another project, it is re-encapsulated (a copy of the decapsulated image 
+         is embedded in the project that imported the graphic sheet). Furthermore, if 
+         any modifications are made to a graphic sheet that has been decapsulated, the 
+         modified image is re-embedded into the project and there is no longer a 
+         reference to the external file. The path to the decapsulated graphic sheet is 
+         relative to the location of the SGDK2 file containing it. A graphic sheet 
+         cannot be decapsulated until the graphic sheet has been added to the project, 
+         and the project containing it has been saved.</p>
+      <h3>Cancel</h3>
+      <p class="SubPara">Any un-commited changes are discarded and the window is closed. 
+         If a graphic sheet was being added, it is discarded and no new graphic sheet 
+         will exist in the project.</p>
+   </body>
+</html>

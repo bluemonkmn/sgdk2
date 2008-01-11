@@ -1,0 +1,138 @@
+<!DOCTYPE HTML PUBLIC>
+<html>
+   <head>
+      <title>Scrolling Game Development Kit 2 - Sprite Import Tutorial</title>
+      <meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema" />
+      <link rel="stylesheet" href="SGDK2Help.css" />
+   </head>
+   <body>
+      <h1>Tutorial 5 - Importing Sprites</h1>
+      <p>While a comprehensive tutorial for defining sprites is impractical due to the
+      variety of sprites types and rules available, users should be aware of the
+      import feature in SGDK2.  In version 1 of the Scrolling Game Development Kit, some
+      pre-defined sprite behaviors were hard-coded into the engine which made defining
+      sprites easy, but severely limited the variety of sprites that could be created
+      without scripting. In version 2, there is no hard-coded behavior for sprites in
+      the engine, but users are free to import these behaviors from external sprite
+      templates.  A few are delivered with the initial installation, but more are also
+      available from the <a href="http://sgdk2.enigmadream.com/">SGDK2 project
+      listing</a>.  There are a number of advantages to this method of defining
+      sprites:</p>
+      <ul>
+      <li>The set of sprite behaviors delivered with the engine does not define
+      the entire set of sprite behaviors that can easily be created and added to
+      your project.</li>
+      <li>Any user is free to design and distribute sophisticated sprite behaviors
+      that any other user can use instead of only the author defining the built-in
+      behaviors.</li>
+      <li>Customizing the existing sprite behaviors is much more practical.</li>
+      <li>Defining a completely new custom behavior is easier and will yield a
+      sprite that looks and works just as well as any pre-defined sprite
+      behavior.</li>
+      </ul>
+      <p>So to clarify, there are two ways to add a sprite to your project. You
+      can create one from scratch, manually defining the states and rules that
+      define the sprite's appearance and behavior, or you can import and
+      customize a sprite from a pre-existing template.  This tutorial will explain
+      the process of importing a sprite.</p>
+      <h2>Add a Cannon to the Sample Project</h2>
+      <p>One of the sprite templates delivered with the program is a cannon.
+      The steps below explain how to import and use the cannon sprite.</p>
+      <ol>
+      <li>Select the sample project from the File-&gt;New menu to get a
+      functioning sample project to start with.</li>
+      <li>Select the &quot;Sprite Definitions&quot; folder in the project tree.</li>
+      <li>Select &quot;Import From...&quot; from the File menu or the context
+      menu displayed by the right-mouse button.</li>
+      <li>Click the &quot;...&quot; button to browse for an SGDK2 file to import.</li>
+      <li>Locate the &quot;Library&quot; folder in the directory where SGDK2
+      is installed, and open the &quot;Sprites&quot; folder contained in
+      there.</li>
+      <li>Select &quot;Cannon.sgdk2&quot; and click the Open button.</li>
+      <li>Click the Next button.</li>
+      <li>Confirm that both &quot;Cannon&quot; and &quot;CannonBall&quot;
+      are checked and click Next.</li>
+      <li>If your project already has a sprite whose name conflicts with the
+      imported sprite, or has graphic sheets or framesets that conflict with
+      those for the imported sprite, you will be given the opportunity to
+      rename these components at this phase of the import. This allows you
+      to import the same sprite multiple times and customize each copy
+      differently, for example.  Since this tutorial is based on the sample
+      project, you will not see any of these steps this time around.</li>
+      <li>Click Finish and notice that 2 sprite definitions and the
+      associated graphic sheets and framesets were imported.</li>
+      <li>Expand the Maps folder, then Level 1, then Layers, then Main and
+      select Editor.</li>
+      <li>Double-click Editor or select &quot;Edit&quot; from the context menu
+      displayed by the right mouse button.</li>
+      <li>Switch to the Sprites tab.</li>
+      <li>Select &quot;Add Sprites&quot;.</li>
+      <li>Select &quot;&lt;All&gt;&quot; from the dropdown list.</li>
+      <li>Select the sprite that looks like a cannon pointing upwards.</li>
+      <li>From the &quot;CurrentState&quot; property in the property grid
+      below, select &quot;DownRight&quot;.</li>
+      <li>For the &quot;Solidity&quot; property, select
+      &quot;Standard&quot;. <b>Note:</b> the <a href=
+      "ms-its:SGDK2 Coding Reference.chm::/SpriteBase.AddSpriteHere.html">AddSpriteHere</a>
+      rule used by the
+      Cannon sprite assigns the same solidity to the created sprite as the
+      sprite that caused the sprite to be created. So in order for the cannon
+      balls to treat walls as solid, we must set the proper solidity on the
+      cannon.</li>
+      <li>Select Snap to Tiles from the edit menu.</li>
+      <li>Move the mouse to tile 9,13 (see the status bar for tile position)
+      and left click to add the cannon to the map.</li>
+      </ol>
+      <h2>Make the Cannon Fire</h2>
+      <p>The cannon sprite has a Fire parameter which should be set to 1
+      in order to fire the cannon.  It will automatically reset to 0 when
+      firing is complete. Let's fire the cannon when the player
+      sprite enters a rectangle near the front of the cannon.</p>
+      <ol>
+      <li>Switch to the Plans tab.</li>
+      <li>Add a new plan and name it FireCannon.</li>
+      <li>Add two coordinates to the plan to define its rectangle from tile
+      10,14 to tile 15,19.</li>
+      <li>Select &quot;Selected Plan Details&quot; from the Edit menu.</li>
+      <li>Add a new rule named &quot;Is player near cannon&quot;.</li>
+      <li>Select &quot;If&quot; as the rule type
+      <li>Select &quot;IsSpriteWithin&quot; as the rule function.</li>
+      <li>Select &quot;m_ParentLayer.m_Player_1&quot; for the sprite
+      parameter, and &quot;RelativePosition.CenterMiddle&quot; for
+      RelativePosition.</li>
+      <li>Add a new rule named &quot;Fire cannon&quot;.</li>
+      <li>Select &quot;=&quot; as the rule function.</li>
+      <li>Specify 1 for the Value parameter.</li>
+      <li>Select &lt;Select sprite parameter...&gt; from the Output to
+      dropdown list.</li>
+      <li>In the pop-up window, select Cannon 1 as the sprite, and
+      Fire as the parameter.</li>
+      <li>Save the project and run it.  Notice how the cannon fires when
+      the player gets near.  The cannon balls should stop when they hit
+      the wall.</li>
+      </ol>
+      <p><b>Note</b> that because sprites rely on source code to operate, and
+      some sprites may be rather sophisticated, it's possible that some sprites
+      may be developed that require custom Source Code objects to also be imported
+      in order to function (or even if a sprite has sound effects, for example, it
+      may refer to Source Code objects). So in addition to importing the sprite
+      definition, some sprites may require you to also import an associated
+      Source Code object.  Keep your eyes open on the first step of the import
+      wizard to see if any mention of a Source Code object is made in the
+      sprite's description.  The source code object might be delivered
+      in the same SGDK2 file, and could be imported by using the Import From
+      command on the Source Code folder.  Or it might be delivered as a separate
+      file along with the sprite's SGDK2 file (which will make the need for
+      the extra import obvious). In either case, the source code must be
+      imported separately.<p>
+      <p>If you would like to deliver your own sprite definitions as importable
+      objects, check out the &quot;Export to template...&quot; command in the
+      Sprite Definition menu of the Sprite Definition editor. This command will
+      not handle the exporting of custom code objects, but it will collect all
+      of the other objects on which the sprite depends into a single SGDK2 file
+      (graphic sheets, framesets) without including the extraneous source code
+      that template files don't require. If you then want to include a
+      custom source code object, you can open the file for editing in the IDE
+      and add/import the custom source code object(s) manually.<p>
+   </body>
+</html>

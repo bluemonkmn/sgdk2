@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Scrolling Game Development Kit 2 - Counters</title>
+  <meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1" />
+  <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5" />
+  <link href="SGDK2Help.css" type="text/css" rel="stylesheet" />
+</head>
+
+<body>
+  <h1>Edit Counters</h1>
+
+  <p>Counters are globally accessible named variables. All counters can only contain integer values between 0 and 2,000,000,000. They are useful for things such as tracking player inventory, completion of game events, the passage of time or linking with tile animation. Note that sprite definitions can have their own parameters, so if you want to track values associated with a particular sprite, you should consider a sprite parameter instead.</p>
+
+  <p>A counter definition includes a maximum value to ensure that a counter can never exceed a specified bound. This also allows the value to be passed to rules without having to provide a maximum value as a separate parameter.</p>
+
+  <h2>Name</h2>
+
+  <p>The counter name must be unique among all counter names in the project. Names must begin with a letter and contain only letters, digits and spaces.</p>
+
+  <h2>Maximum</h2>
+
+  <p>This can be a value from 1 to 2,000,000,000. The counter will not be able to exceed the specified maximum. The maximum can be used with certain rules such as those that draw inventory items, for example, where the ratio of the current value to the maximum determines how much of an inventory bar is filled.</p>
+
+  <h2>Value</h2>
+
+  <p>The initial value of the counter when the game begins is determined by this setting. The value must be between 0 and the specified maximum (inclusive).</p>
+</body>
+</html>

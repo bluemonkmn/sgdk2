@@ -1,0 +1,44 @@
+[OPTIONS]
+Compatibility=1.1 or later
+Compiled file=SGDK2IDE.chm
+Contents file=SGDK2IDE.hhc
+Default topic=Introduction.html
+Display compile progress=No
+Full-text search=Yes
+Index file=SGDK2IDE.hhk
+Language=0x409 English (United States)
+Title=Scrolling Game Development Kit 2 Help
+
+
+[FILES]
+Introduction.html
+Tutorial1.html
+GfxEdit.html
+Frameset.html
+TileCategories.html
+TileEdit.html
+EditCounters.html
+LayerManager.html
+MapEditor.html
+MapManager.html
+PlanEdit.html
+Solidity.html
+SpriteCategory.html
+SpriteDefinition.html
+SpriteParam.html
+SpriteRule.html
+CodeEdit.html
+GfxSheet.html
+ProjectProperties.html
+MainWindow.html
+FAQ.html
+Tutorial2.html
+Tutorial3.html
+Tutorial4.html
+Tutorial5.html
+
+[MERGE FILES]
+SGDK2 Coding Reference.chm
+
+[INFOTYPES]
+

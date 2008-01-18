@@ -547,16 +547,15 @@ namespace SGDK2
 
       private void RemoveSelectionFromCategory()
       {
-         for (int i = CategoryFrames.CellCount - 1; i > 0; i--)
+         for (int i = CategoryFrames.CellCount - 1; i >= 0; i--)
          {
             if (CategoryFrames.Selected[i])
             {
                if (((TileProvider)m_CategoryProvider[i]).IsFrame)
                {
-                  if (!ProjectData.DeleteCategoryFrameRow(m_Category.TilesetRow.Name, m_Category.Name,
-                     ((TileProvider)m_CategoryProvider[i]).TileIndex, 
-                     ((TileProvider)m_CategoryProvider[i]).TileFrameIndex))
-                     i++;
+                  ProjectData.DeleteCategoryFrameRow(m_Category.TilesetRow.Name, m_Category.Name,
+                     ((TileProvider)m_CategoryProvider[i]).TileIndex,
+                     ((TileProvider)m_CategoryProvider[i]).TileFrameIndex);
                }
                else
                {

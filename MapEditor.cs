@@ -8,8 +8,6 @@ using System.Drawing;
 using System.Collections;
 using System.ComponentModel;
 using System.Windows.Forms;
-using Microsoft.DirectX.Direct3D;
-using Microsoft.DirectX;
 using System.Data;
 
 namespace SGDK2
@@ -274,7 +272,6 @@ namespace SGDK2
          this.MapDisplay.Name = "MapDisplay";
          this.MapDisplay.Size = new System.Drawing.Size(483, 505);
          this.MapDisplay.TabIndex = 10;
-         this.MapDisplay.Windowed = true;
          this.MapDisplay.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MapDisplay_MouseUp);
          this.MapDisplay.Paint += new System.Windows.Forms.PaintEventHandler(this.MapDisplay_Paint);
          this.MapDisplay.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MapDisplay_MouseMove);
@@ -1118,22 +1115,10 @@ namespace SGDK2
             return CursorMode.None;
       }
 
-      private void DrawSpriteSelection(Graphics gfx, SpriteProvider sp)
+      private void DrawSpriteSelection(SpriteProvider sp)
       {
          Rectangle inner = sp.Bounds;
-         Point ptOffset = m_Layers[m_nCurLayer].CurrentPosition;
-         inner.Offset(ptOffset.X, ptOffset.Y);
-         Rectangle outer = inner;
-         outer.Inflate(4,4);
-         using (System.Drawing.Region rgn = new Region(outer))
-         {
-            rgn.Exclude(inner);
-            using(Brush brSel = new System.Drawing.Drawing2D.HatchBrush(
-                     System.Drawing.Drawing2D.HatchStyle.Percent25, Color.DarkBlue, Color.Wheat))
-            {
-               gfx.FillRegion(brSel, rgn);
-            }
-         }
+         MapDisplay.DrawShadedRectFrame(inner, 4, Color.Black, Color.White);
       }
 
       private void ReflectSelection(SpriteProvider[] selSprites)
@@ -1162,13 +1147,12 @@ namespace SGDK2
          m_ReflectingSelection = false;
       }
 
-      private void DrawPath(ProjectDataset.SpritePlanRow PathPlan, System.Drawing.Graphics gfx, bool bIncludeMouse)
+      private void DrawPath(ProjectDataset.SpritePlanRow PathPlan, bool bIncludeMouse)
       {
          ProjectDataset.CoordinateRow[] coords = ProjectData.GetSortedCoordinates(PathPlan);
          System.Collections.ArrayList points = new ArrayList();
          System.Drawing.Point ptLyr = m_Layers[m_nCurLayer].CurrentPosition;
          System.Drawing.Point ptCur;
-         gfx.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
          for(int i=0; i<coords.Length; i++)
          {
             ptCur = new Point(coords[i].X, coords[i].Y);
@@ -1190,45 +1174,29 @@ namespace SGDK2
                System.Drawing.Point[] pts = (System.Drawing.Point[])points.ToArray(typeof(System.Drawing.Point));
                Rectangle DrawRect = new Rectangle(Math.Min(pts[0].X, pts[1].X), Math.Min(pts[0].Y, pts[1].Y),
                   Math.Abs(pts[0].X - pts[1].X), Math.Abs(pts[0].Y - pts[1].Y));
-               using(System.Drawing.Brush RectBrush = new SolidBrush(System.Drawing.Color.FromArgb(96, 0, 0, 255)))
-               {
-                  gfx.FillRectangle(RectBrush, DrawRect);
-                  gfx.DrawRectangle(System.Drawing.Pens.White, DrawRect);
-               }
+               MapDisplay.SetColor(Color.FromArgb(96, 0, 0, 255));
+               MapDisplay.FillRectangle(DrawRect);
+               MapDisplay.SetColor(Color.White);
+               MapDisplay.DrawRectangle(DrawRect, 0);
             }
 
-            System.Drawing.Pen pen = new Pen(System.Drawing.Color.Black, 6);
-            pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
-            pen.LineJoin = System.Drawing.Drawing2D.LineJoin.Round;
-            pen.StartCap = System.Drawing.Drawing2D.LineCap.RoundAnchor;
-            pen.EndCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor;
-            pen.CompoundArray = new float[] {0,.2f, .8f, 1f};
-            try
-            {
-               gfx.DrawLines(pen, (System.Drawing.Point[])points.ToArray(typeof(System.Drawing.Point)));
-               pen.Dispose();
-               pen = new Pen(System.Drawing.Color.White, 6);
-               pen.StartCap = System.Drawing.Drawing2D.LineCap.RoundAnchor;
-               pen.EndCap = System.Drawing.Drawing2D.LineCap.ArrowAnchor;
-               pen.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
-               pen.LineJoin = System.Drawing.Drawing2D.LineJoin.Round;
-               pen.CompoundArray = new float[] {.2f, .8f};
-               gfx.DrawLines(pen, (System.Drawing.Point[])points.ToArray(typeof(System.Drawing.Point)));
-            }
-            finally
-            {
-               pen.Dispose();
-            }
+            MapDisplay.BeginLine(5f, unchecked((short)(0xff00)), true);
+            for (int i = 0; i < points.Count-1; i++)
+               MapDisplay.LineTo(((Point)(points[i])).X, ((Point)(points[i])).Y);
+            MapDisplay.ArrowTo(((Point)(points[points.Count - 1])).X, ((Point)(points[points.Count - 1])).Y);
          }
          else if (points.Count == 1)
          {
-            ptCur = (System.Drawing.Point)points[0];
-            gfx.FillEllipse(System.Drawing.Brushes.White, ptCur.X - 4, ptCur.Y - 4, 8, 8);
-            gfx.DrawEllipse(System.Drawing.Pens.Black, ptCur.X - 4, ptCur.Y - 4, 8, 8);
+            MapDisplay.PointSize = 6;
+            MapDisplay.SetColor(Color.Black);
+            MapDisplay.DrawPoint((System.Drawing.Point)points[0]);
+            MapDisplay.PointSize = 4;
+            MapDisplay.SetColor(Color.White);
+            MapDisplay.DrawPoint((System.Drawing.Point)points[0]);
          }
       }
 
-      private void DrawCopyRect(Graphics gfx)
+      private void DrawCopyRect()
       {
          ProjectDataset.TilesetRow tsr = m_Layers[m_nCurLayer].LayerRow.TilesetRow;
          Point TilePos;
@@ -1243,11 +1211,10 @@ namespace SGDK2
             return;
          Rectangle DrawRect = new Rectangle(CopyStart,  CopySize);
          DrawRect.Offset(m_Layers[m_nCurLayer].CurrentPosition.X, m_Layers[m_nCurLayer].CurrentPosition.Y);
-         using(System.Drawing.Brush RectBrush = new SolidBrush(System.Drawing.Color.FromArgb(96, 0, 0, 255)))
-         {
-            gfx.FillRectangle(RectBrush, DrawRect);
-            gfx.DrawRectangle(System.Drawing.Pens.White, DrawRect);
-         }
+         MapDisplay.SetColor(Color.FromArgb(96, 0, 0, 255));
+         MapDisplay.FillRectangle(DrawRect);
+         MapDisplay.SetColor(Color.White);
+         MapDisplay.DrawRectangle(DrawRect, 0);
       }
 
       private void DrawPasteRect(CursorMode mode, bool persist)
@@ -1299,12 +1266,16 @@ namespace SGDK2
             m_Layers[m_nCurLayer].LayerRow.EndEdit();
       }
 
-      private void DrawSelectedCoord(Graphics gfx, CoordProvider coord)
+      private void DrawSelectedCoord(CoordProvider coord)
       {
-         RectangleF rcCoord = new RectangleF(coord.X - 3.5f, coord.Y - 3.5f, 7f, 7f);
-         rcCoord.Offset(m_Layers[m_nCurLayer].CurrentPosition);
-         gfx.FillEllipse(Brushes.Red, rcCoord);
-         gfx.DrawEllipse(Pens.Black, rcCoord);
+         MapDisplay.SetColor(Color.Black);
+         MapDisplay.PointSize = 6;
+         Point ptCur = new Point(coord.X, coord.Y);
+         ptCur.Offset(m_Layers[m_nCurLayer].CurrentPosition);
+         MapDisplay.DrawPoint(ptCur);
+         MapDisplay.SetColor(Color.Red);
+         MapDisplay.PointSize = 4;
+         MapDisplay.DrawPoint(ptCur);
       }
 
       private ProjectDataset.CoordinateRow GetCoordAtPoint(Point ptNear)
@@ -1986,12 +1957,11 @@ namespace SGDK2
 
          try
          {
+            MapDisplay.MakeCurrent();
             Size ScrollBounds = GetScrollBounds();
             if (ScrollBounds != MapDisplay.AutoScrollMinSize)
                MapDisplay.AutoScrollMinSize = ScrollBounds;
-            MapDisplay.Device.Clear(ClearFlags.Target, 0, 1.0f, 0);
-            MapDisplay.Device.BeginScene();
-            for (int i=0; i<m_Layers.Length; i++)
+            for (int i = 0; i < m_Layers.Length; i++)
             {
                if (i == m_nCurLayer)
                   m_Layers[i].CurrentPosition = MapDisplay.AutoScrollPosition;
@@ -2015,90 +1985,73 @@ namespace SGDK2
                if (mnuLayers.MenuItems[i].Checked)
                   m_Layers[i].Draw(MapDisplay, MapDisplay.ClientSize);
             }
-            MapDisplay.Device.EndScene();
-            Surface sfc = MapDisplay.TargetSurface;
-            Graphics gfxDx = sfc.GetGraphics();
-            try
+            if (mnuViewLayerEdges.Checked)
             {
-               if (mnuViewLayerEdges.Checked)
+               for (int i = 0; i < m_Layers.Length; i++)
                {
-                  float[] dashPattern = {4f, 4f};
-                  using (Pen layerOutline = new Pen(Color.Black))
+                  if (mnuLayers.MenuItems[i].Checked)
                   {
-                     layerOutline.DashStyle = System.Drawing.Drawing2D.DashStyle.Dash;
-                     layerOutline.DashPattern = dashPattern;
-                     for (int i=0; i<m_Layers.Length; i++)
-                     {
-                        if (mnuLayers.MenuItems[i].Checked)
-                        {
-                           Layer lyr = m_Layers[i];
-                           ProjectDataset.TilesetRow tsr = lyr.LayerRow.TilesetRow;
-                           Rectangle rcLayer = new Rectangle(lyr.CurrentPosition,
-                              new Size(lyr.VirtualColumns * tsr.TileWidth,
-                              lyr.VirtualRows * tsr.TileHeight));
-                           gfxDx.DrawRectangle(layerOutline, rcLayer);
-                           layerOutline.Color = Color.White;
-                           layerOutline.DashOffset = 4;
-                           gfxDx.DrawRectangle(layerOutline, rcLayer);
-                           layerOutline.Color = Color.Black;
-                           layerOutline.DashOffset = 0;
-                        }
-                     }
+                     Layer lyr = m_Layers[i];
+                     ProjectDataset.TilesetRow tsr = lyr.LayerRow.TilesetRow;
+                     Rectangle rcLayer = new Rectangle(lyr.CurrentPosition,
+                        new Size(lyr.VirtualColumns * tsr.TileWidth,
+                        lyr.VirtualRows * tsr.TileHeight));
+                     MapDisplay.SetColor(Color.White);
+                     MapDisplay.DrawRectangle(rcLayer, unchecked((short)0xFF00));
+                     MapDisplay.SetColor(Color.Black);
+                     MapDisplay.DrawRectangle(rcLayer, unchecked((short)0x00FF));
                   }
                }
-               switch(GetCurrentMode())
-               {
-                  case CursorMode.SelectSprite:
-                     if (grdSprite.SelectedObjects is SpriteProvider[])
+            }
+            switch (GetCurrentMode())
+            {
+               case CursorMode.SelectSprite:
+                  if (grdSprite.SelectedObjects is SpriteProvider[])
+                  {
+                     foreach (SpriteProvider sp in grdSprite.SelectedObjects)
                      {
-                        foreach(SpriteProvider sp in grdSprite.SelectedObjects)
-                        {
-                           DrawSpriteSelection(gfxDx, sp);
-                        }
-                     } 
-                     else if(grdSprite.SelectedObject is SpriteProvider)
-                     {
-                        SpriteProvider sp = (SpriteProvider)grdSprite.SelectedObject;
-                        if (sp.IsDataRow)
-                        {
-                           DrawSpriteSelection(gfxDx, sp);
-                        }
+                        DrawSpriteSelection(sp);
                      }
-                     break;
-                  case CursorMode.AddCoordinate:
-                  case CursorMode.SelectCoordinate:
+                  }
+                  else if (grdSprite.SelectedObject is SpriteProvider)
+                  {
+                     SpriteProvider sp = (SpriteProvider)grdSprite.SelectedObject;
+                     if (sp.IsDataRow)
+                     {
+                        DrawSpriteSelection(sp);
+                     }
+                  }
+                  break;
+               case CursorMode.AddCoordinate:
+               case CursorMode.SelectCoordinate:
                   {
                      bool bIncludeMouse = false;
                      if ((lstPlans.SelectedIndices.Count == 1) && (GetCurrentMode() == CursorMode.AddCoordinate))
                         bIncludeMouse = true;
 
                      if (rdoShowAllPlans.Checked)
-                        foreach(ProjectDataset.SpritePlanRow plan in ProjectData.GetSortedSpritePlans(m_Layers[m_nCurLayer].LayerRow))
-                           DrawPath(plan, gfxDx, bIncludeMouse && (plan == lstPlans.SelectedItem));
+                        foreach (ProjectDataset.SpritePlanRow plan in ProjectData.GetSortedSpritePlans(m_Layers[m_nCurLayer].LayerRow))
+                           DrawPath(plan, bIncludeMouse && (plan == lstPlans.SelectedItem));
                      else
-                        foreach(ProjectDataset.SpritePlanRow plan in lstPlans.SelectedItems)
-                           DrawPath(plan, gfxDx, bIncludeMouse);
+                        foreach (ProjectDataset.SpritePlanRow plan in lstPlans.SelectedItems)
+                           DrawPath(plan, bIncludeMouse);
                      if (grdPlan.SelectedObjects is CoordProvider[])
-                        foreach(CoordProvider coord in grdPlan.SelectedObjects)
-                           DrawSelectedCoord(gfxDx, coord);
+                        foreach (CoordProvider coord in grdPlan.SelectedObjects)
+                           DrawSelectedCoord(coord);
                      else if (grdPlan.SelectedObject is CoordProvider)
-                        DrawSelectedCoord(gfxDx, (CoordProvider)grdPlan.SelectedObject);
+                        DrawSelectedCoord((CoordProvider)grdPlan.SelectedObject);
                   }
-                     break;
-                  case CursorMode.Copy:
-                     if (!m_LayerMouseCoord.IsEmpty)
-                        DrawCopyRect(gfxDx);
-                     break;
-               }
-            }
-            finally
-            {
-               sfc.ReleaseGraphics();
+                  break;
+               case CursorMode.Copy:
+                  if (!m_LayerMouseCoord.IsEmpty)
+                     DrawCopyRect();
+                  break;
             }
 
-            MapDisplay.Device.Present();
+            MapDisplay.Flush();
+            MapDisplay.SwapBuffers();
          }
-         catch(System.Exception ex)
+         catch (System.Exception ex)
          {
             MessageBox.Show(MdiParent, "An error occurred while drawing the display in the map editor. This might happen if too many displays are active. In order to attempt to avoid fatal errors and data loss, the display handling in this map editor window will be disabled and you should close it yourself. Details:\r\n" + ex.ToString(), "Map Editor Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             m_DangerWillRobinson = true;

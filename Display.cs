@@ -4,10 +4,11 @@
  */
 
 using System;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
 using System.Windows.Forms;
 using System.Collections;
+using OpenTK;
+using OpenTK.OpenGL;
+using OpenTK.OpenGL.Enums;
 
 namespace SGDK2
 {
@@ -25,49 +26,24 @@ namespace SGDK2
       m1280x1024x24
    }
 
+   public enum DisplayOperation
+   {
+      None=0,
+      DrawFrames,
+      DrawLines,
+      DrawPoints
+   }
+
    /// <summary>
    /// Manages the display device on which real-time game graphics are drawn
    /// </summary>
-   public class Display : ScrollableControl
+   public class Display : GLControl
    {
-      #region Win32 API Constants
-      public const int WS_EX_CLIENTEDGE = unchecked((int)0x00000200);
-      public const int WS_BORDER = unchecked((int)0x00800000);
-      #endregion
-
-      #region Events
-      public event EventHandler WindowedChanged;
-      #endregion
-
       #region Embedded Classes
-      private class CoverWindow : Form
-      {
-         public Display m_LinkedControl;
-
-         public CoverWindow(Display LinkedControl)
-         {
-            m_LinkedControl = LinkedControl;
-            FormBorderStyle = FormBorderStyle.None;
-            System.Drawing.Size sz = Display.GetScreenSize(LinkedControl.GameDisplayMode);
-            SetBounds(0,0,sz.Width,sz.Height);
-            ShowInTaskbar = false;
-            Show();
-         }
-
-         protected override void OnMouseMove(MouseEventArgs e)
-         {
-            m_LinkedControl.OnMouseMove(e);
-         }
-         protected override void OnKeyDown(KeyEventArgs e)
-         {
-            m_LinkedControl.OnKeyDown(e);
-         }
-      }
-
       public class TextureRef : IDisposable
       {
          private string m_Name;
-         private Texture m_Texture = null;
+         private int m_Texture = 0;
          private Display m_Display;
       
          public TextureRef(Display Disp, string Name)
@@ -84,17 +60,14 @@ namespace SGDK2
             }
          }
 
-         public void Reset()
-         {
-            m_Texture = null;
-         }
-
-         public Texture Texture
+         public int Texture
          {
             get
             {
-               if (m_Texture == null)
+               if (m_Texture == 0)
+               {
                   m_Texture = m_Display.GetTexture(m_Name);
+               }
                return m_Texture;
             }
          }
@@ -102,10 +75,14 @@ namespace SGDK2
          #region IDisposable Members
          public void Dispose()
          {
-            if (m_Texture != null)
+            if (m_Texture != 0)
             {
-               m_Texture.Dispose();
-               m_Texture = null;
+               if (m_Display.Context != null)
+               {
+                  m_Display.MakeCurrent();
+                  GL.DeleteTextures(1, ref m_Texture);
+               }
+               m_Texture = 0;
             }
          }
          #endregion
@@ -113,16 +90,29 @@ namespace SGDK2
       #endregion
 
       #region Fields
-      private System.Collections.Specialized.HybridDictionary m_TextureRefs = null;
-      private Device m_d3d = null;
-      private PresentParameters m_pp;
+      private System.Collections.Generic.Dictionary<string, WeakReference> m_TextureRefs = null;
       private GameDisplayMode m_GameDisplayMode;
-      private BorderStyle m_BorderStyle;
-      private CoverWindow m_CoverWindow = null;
-      private Sprite m_Sprite = null;
-      private Font m_Font = null;
-      private Line m_Line = null;
-      private Surface m_targetSurface = null;
+      private DisplayOperation m_currentOp;
+      private TextureRef m_currentTexture = null;
+      private bool scaleNativeSize = false;
+      private static byte[] shadedStipple = new byte[] {
+         0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+         0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+         0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+         0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+         0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+         0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+         0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+         0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+         0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+         0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+         0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+         0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+         0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+         0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+         0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+         0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA};
+      private System.Drawing.Point endPoint = System.Drawing.Point.Empty;
       #endregion
 
       #region Initialization and clean-up
@@ -130,24 +120,8 @@ namespace SGDK2
       {
       }
 
-      public Display(GameDisplayMode mode, bool windowed)
+      public Display(GameDisplayMode mode, bool windowed) : base(CreateDisplayMode(mode, windowed))
       {
-         this.SetStyle(ControlStyles.ResizeRedraw, true);
-         this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
-         this.SetStyle(ControlStyles.UserPaint, true);
-         this.SetStyle(ControlStyles.Opaque, true);
-
-         m_pp = new PresentParameters();
-         m_pp.Windowed = windowed;
-         m_pp.SwapEffect = SwapEffect.Discard;
-         // Allow GetGraphics
-         m_pp.PresentFlag = PresentFlag.LockableBackBuffer;
-         MakeValidPresentParameters(mode, m_pp);
-         if (!windowed)
-         {
-            m_CoverWindow = new CoverWindow(this);
-            Recreate();
-         }
          m_GameDisplayMode = mode;
       }
 
@@ -156,208 +130,62 @@ namespace SGDK2
          if (disposing)
          {
             DisposeAllTextures();
-            if (m_Sprite != null)
-            {
-               m_Sprite.Dispose();
-               m_Sprite = null;
-            }
-            if (m_Font != null)
-            {
-               m_Font.Dispose();
-               m_Font = null;
-            }
-            if (m_Line != null)
-            {
-               m_Line.Dispose();
-               m_Line = null;
-            }
-            if (m_targetSurface != null)
-            {
-               m_targetSurface.Dispose();
-               m_targetSurface = null;
-            }
-            if (m_d3d != null)
-            {
-               m_d3d.Dispose();
-               m_d3d = null;
-            }
-            if (m_CoverWindow != null)
-            {
-               m_CoverWindow.m_LinkedControl = null;
-               m_CoverWindow.Close();
-               m_CoverWindow.Dispose();
-               m_CoverWindow = null;
-            }
          }
          base.Dispose (disposing);
       }
       #endregion
 
       #region Overrides
-      protected override void OnCreateControl()
-      {
-         m_pp.DeviceWindow = this;
-         m_pp.SwapEffect = SwapEffect.Discard;
-
-         try
-         {
-            if (m_d3d == null)
-            {
-               Recreate();
-            }
-         }
-         catch(Exception ex)
-         {
-            MessageBox.Show(this, "Error creating display device: " + ex.ToString(), "Error Creating Device", MessageBoxButtons.OK, MessageBoxIcon.Error);
-         }
-
-         base.OnCreateControl ();
-      }
-
-      protected override void OnKeyDown(KeyEventArgs e)
-      {
-         if ((e.KeyCode == Keys.Enter) && e.Alt)
-            Windowed = !Windowed;
-         base.OnKeyDown (e);
-      }
-
-      protected override CreateParams CreateParams
-      {
-         get
-         {
-            CreateParams cp = base.CreateParams;
-            cp.ExStyle &= ~WS_EX_CLIENTEDGE;
-            cp.Style &= ~WS_BORDER;
-
-            if (!m_pp.Windowed)
-               return cp;
-
-            switch (m_BorderStyle)
-            {
-               case BorderStyle.Fixed3D:
-                  cp.ExStyle |= WS_EX_CLIENTEDGE;
-                  break;
-               case BorderStyle.FixedSingle:
-                  cp.Style |= WS_BORDER;
-                  break;
-            }
-
-            return cp;
-         }
-      }
-
       protected override void OnResize(EventArgs e)
       {
-         if (this.Size.IsEmpty)
+         base.OnResize(e);
+         GL.Viewport(0, 0, ClientSize.Width, ClientSize.Height);
+         GL.MatrixMode(MatrixMode.Projection);
+         GL.LoadIdentity();
+         if (scaleNativeSize)
          {
-            DisposeAllTextures();
-            if (m_Sprite != null)
-            {
-               m_Sprite.Dispose();
-               m_Sprite = null;
-            }
-            if (m_Font != null)
-            {
-               m_Font.Dispose();
-               m_Font = null;
-            }
-            if (m_Line != null)
-            {
-               m_Line.Dispose();
-               m_Line = null;
-            }
-            if (m_targetSurface != null)
-            {
-               m_targetSurface.Dispose();
-               m_targetSurface = null;
-            }
-            if (m_d3d != null)
-            {
-               m_d3d.Dispose();
-               m_d3d = null;
-            }
+            var nativeSize = GetScreenSize(m_GameDisplayMode);
+            GL.Ortho(0, nativeSize.Width, nativeSize.Height, 0, -1, 1);
          }
-         else if ((m_d3d == null) && Created)
+         else
          {
-            Recreate();
+            GL.Ortho(0, ClientSize.Width, ClientSize.Height, 0, -1, 1);
          }
-         else if ((m_d3d != null) && (m_pp != null) && (m_pp.Windowed))
-         {
-            m_pp.BackBufferHeight = m_pp.BackBufferWidth = 0;
-            if (m_Sprite != null)
-            {
-               m_Sprite.Dispose();
-               m_Sprite = null;
-            }
-            if (m_Font != null)
-            {
-               m_Font.Dispose();
-               m_Font = null;
-            }
-            if (m_Line != null)
-            {
-               m_Line.Dispose();
-               m_Line = null;
-            }
-            if (m_targetSurface != null)
-            {
-               m_targetSurface.Dispose();
-               m_targetSurface = null;
-            }
-            m_d3d.Reset(m_pp);
-         }
-         base.OnResize (e);
       }
-
-      protected override void OnPaint(PaintEventArgs e)
-      {
-         if ((m_d3d == null) || (m_d3d.Disposed))
-            return;
-         int coop;
-         if (!m_d3d.CheckCooperativeLevel(out coop))
-         {
-            Microsoft.DirectX.Direct3D.ResultCode coopStatus = (Microsoft.DirectX.Direct3D.ResultCode)System.Enum.Parse(typeof(Microsoft.DirectX.Direct3D.ResultCode), coop.ToString());
-            if (coopStatus == Microsoft.DirectX.Direct3D.ResultCode.DeviceNotReset)
-               Recreate();
-            else
-               return;
-         }
-         base.OnPaint (e);
-      }
-
       #endregion
 
       #region Private members
-      private Texture GetTexture(string Name)
+      private int GetTexture(string Name)
       {
-         return Texture.FromBitmap(m_d3d,
-            (System.Drawing.Bitmap)ProjectData.GetGraphicSheetImage(Name, false), 0, Pool.Managed);
+         int texture;
+         GL.GenTextures(1, out texture);
+         GL.BindTexture(TextureTarget.TextureRectangleNv, texture);
+         GL.TexParameter(TextureTarget.TextureRectangleNv, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+         GL.TexParameter(TextureTarget.TextureRectangleNv, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+         System.Drawing.Bitmap bmpTexture = (System.Drawing.Bitmap)ProjectData.GetGraphicSheetImage(Name, false);
+         var bits = bmpTexture.LockBits(new System.Drawing.Rectangle(0, 0, bmpTexture.Width, bmpTexture.Height),
+            System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+         try
+         {
+            GL.TexImage2D(TextureTarget.TextureRectangleNv, 0, PixelInternalFormat.Rgba, bmpTexture.Width, bmpTexture.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, bits.Scan0);
+         }
+         finally
+         {
+            bmpTexture.UnlockBits(bits);
+         }
+         return texture;
       }
-
       #endregion
 
       #region Public members
-      public BorderStyle BorderStyle
-      {
-         get
-         {
-            return m_BorderStyle;
-         }
-         set
-         {
-            m_BorderStyle = value;
-            UpdateStyles();
-         }
-      }
-
       public TextureRef GetTextureRef(string Name)
       {
          if (m_TextureRefs == null)
-            m_TextureRefs = new System.Collections.Specialized.HybridDictionary();
+            m_TextureRefs = new System.Collections.Generic.Dictionary<string, WeakReference>();
 
-         if (m_TextureRefs.Contains(Name))
+         if (m_TextureRefs.ContainsKey(Name))
          {
-            WeakReference wr = (WeakReference)m_TextureRefs[Name];
+            WeakReference wr = m_TextureRefs[Name];
             if (wr.IsAlive)
                return (TextureRef)wr.Target;
          }
@@ -371,90 +199,11 @@ namespace SGDK2
       {
          if (m_TextureRefs != null)
          {
-            foreach (DictionaryEntry de in m_TextureRefs)
+            foreach (var de in m_TextureRefs)
             {
-               if (((WeakReference)de.Value).IsAlive)
-                  ((TextureRef)((WeakReference)de.Value).Target).Dispose();
+               if (de.Value.IsAlive)
+                  ((TextureRef)(de.Value).Target).Dispose();
             }
-         }
-      }
-
-      public Device Device
-      {
-         get
-         {
-            return m_d3d;
-         }
-      }
-
-      public bool Windowed
-      {
-         set
-         {
-            if ((DesignMode) && (!value))
-               throw new InvalidOperationException("Cannot use full screen in design mode");
-
-            if (value != m_pp.Windowed)
-            {
-               DisposeAllTextures();
-               if (m_Sprite != null)
-               {
-                  m_Sprite.Dispose();
-                  m_Sprite = null;
-               }
-               if (m_Font != null)
-               {
-                  m_Font.Dispose();
-                  m_Font = null;
-               }
-               if (m_Line != null)
-               {
-                  m_Line.Dispose();
-                  m_Line = null;
-               }
-               if (m_targetSurface != null)
-               {
-                  m_targetSurface.Dispose();
-                  m_targetSurface = null;
-               }
-               if (m_d3d != null)
-               {
-                  m_d3d.Dispose();
-                  m_d3d = null;
-               }
-            }
-            else
-               return;
-
-            m_pp.Windowed = value;
-            m_pp.SwapEffect = SwapEffect.Discard;
-
-            if (value)
-            {
-               m_pp.DeviceWindow = this;
-               MakeValidPresentParameters(GameDisplayMode, m_pp);
-               if (m_CoverWindow != null)
-               {
-                  m_CoverWindow.m_LinkedControl = null;
-                  m_CoverWindow.Close();
-                  m_CoverWindow.Dispose();
-                  m_CoverWindow = null;
-               }
-               Recreate();
-            }
-            else
-            {
-               m_CoverWindow = new CoverWindow(this);
-               m_pp.DeviceWindow = m_CoverWindow;
-               MakeValidPresentParameters(GameDisplayMode, m_pp);
-               Recreate();
-            }
-            if (WindowedChanged != null)
-               WindowedChanged(this, null);
-         }
-         get
-         {
-            return m_pp.Windowed;
          }
       }
 
@@ -492,84 +241,28 @@ namespace SGDK2
       /// </summary>
       /// <param name="mode">Game requested display mode</param>
       /// <param name="pp">Object to finish populating</param>
-      public static void MakeValidPresentParameters(GameDisplayMode mode, PresentParameters pp)
+      public static DisplayMode CreateDisplayMode(GameDisplayMode mode, bool windowed) 
       {
-         if (pp.Windowed)
+         var screenSize = GetScreenSize(mode);
+         int depth;
+
+         // TODO: Check for hardware support
+/*         if (!Manager.CheckDeviceType(Manager.Adapters.Default.Adapter, DeviceType.Hardware, Manager.Adapters.Default.CurrentDisplayMode.Format, pp.BackBufferFormat, pp.Windowed))
+            throw new ApplicationException("No hardware support for windowed mode on default display adapter");*/
+         switch (mode)
          {
-            pp.BackBufferFormat = Format.Unknown;
-            pp.BackBufferWidth = pp.BackBufferHeight = 0;
-            pp.FullScreenRefreshRateInHz = 0;
-
-            if (!Manager.CheckDeviceType(Manager.Adapters.Default.Adapter, DeviceType.Hardware, Manager.Adapters.Default.CurrentDisplayMode.Format, pp.BackBufferFormat, pp.Windowed))
-               throw new ApplicationException("No hardware support for windowed mode on default display adapter");
+            case GameDisplayMode.m320x240x16:
+            case GameDisplayMode.m640x480x16:
+            case GameDisplayMode.m800x600x16:
+            case GameDisplayMode.m1024x768x16:
+            case GameDisplayMode.m1280x1024x16:
+               depth = 16;
+               break;
+            default:
+               depth = 24;
+               break;
          }
-         else
-         {
-            foreach(DisplayMode dm in Manager.Adapters.Default.SupportedDisplayModes)
-            {
-               System.Drawing.Size s = GetScreenSize(mode);
-               if ((dm.Width != s.Width) || (dm.Height != s.Height))
-                  continue;
-
-               switch (mode)
-               {
-                  case GameDisplayMode.m320x240x16:
-                  case GameDisplayMode.m640x480x16:
-                  case GameDisplayMode.m800x600x16:
-                  case GameDisplayMode.m1024x768x16:
-                  case GameDisplayMode.m1280x1024x16:
-                  switch (dm.Format)
-                  {
-                     case Format.A4R4G4B4:
-                     case Format.A1R5G5B5:
-                     case Format.R5G6B5:
-                     case Format.X1R5G5B5:
-                     case Format.X4R4G4B4:
-                        // These are OK 16-bit formats. Break out of the switch and proceed
-                        break;
-                     default:
-                        // Not a 16-bit format, continue to the next mode
-                        continue;
-                  }
-                     break;
-                  default:
-                  switch (dm.Format)
-                  {
-                     case Format.A2B10G10R10:
-                     case Format.A2R10G10B10:
-                     case Format.A8B8G8R8:
-                     case Format.A8R8G8B8:
-                     case Format.R8G8B8:
-                     case Format.X8B8G8R8:
-                     case Format.X8R8G8B8:
-                        // These are OK 32-bit formats. Break out of the switch and proceed
-                        break;
-                     default:
-                        // Not a 32-bit format, continue to the next mode
-                        continue;
-                  }
-                     break;
-               }
-
-               if (Manager.CheckDeviceType(Manager.Adapters.Default.Adapter, DeviceType.Hardware, dm.Format, dm.Format, pp.Windowed))
-               {
-                  // This can improve performance in some cases, but I have not
-                  // observed much difference in my testing.
-                  //m_pp.BackBufferCount = 2; 
-                  pp.BackBufferWidth = dm.Width;
-                  pp.BackBufferHeight = dm.Height;
-                  pp.BackBufferFormat = dm.Format;
-                  if (dm.RefreshRate > pp.FullScreenRefreshRateInHz)
-                     pp.FullScreenRefreshRateInHz = dm.RefreshRate;
-               }
-            }
-            if (pp.FullScreenRefreshRateInHz == 0)
-               throw new ApplicationException("Current display does not support mode " + mode.ToString() +".");
-         }
-
-         string errMsg = ValidateAdapter(Manager.Adapters.Default);
-         if (errMsg != null)
-            throw new ApplicationException("Default display adapter is inadequate: " + errMsg);
+         return new DisplayMode(screenSize.Width, screenSize.Height, 0, depth, !windowed);
       }
 
       public GameDisplayMode GameDisplayMode
@@ -581,133 +274,258 @@ namespace SGDK2
          set
          {
             m_GameDisplayMode = value;
-            ClientSize = GetScreenSize(value);
-            if (!m_pp.Windowed)
-            {
-               MakeValidPresentParameters(m_GameDisplayMode, m_pp);
-               if (m_Sprite != null)
-               {
-                  m_Sprite.Dispose();
-                  m_Sprite = null;
-               }
-               if (m_Font != null)
-               {
-                  m_Font.Dispose();
-                  m_Font = null;
-               }
-               if (m_Line != null)
-               {
-                  m_Line.Dispose();
-                  m_Line = null;
-               }
-               if (m_targetSurface != null)
-               {
-                  m_targetSurface.Dispose();
-                  m_targetSurface = null;
-               }
-               m_d3d.Reset(m_pp);
-            }
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.LoadIdentity();
+            var naturalSize = GetScreenSize(value);
+            GL.Ortho(0, naturalSize.Width, naturalSize.Height, 0, -1, 1);
          }
       }
 
-      public void Recreate()
+      public void DrawFrame(TextureRef texture, System.Drawing.Rectangle sourceRect, System.Drawing.Point[] corners, int offsetX, int offsetY)
       {
-         DisposeAllTextures();
-         if (m_Sprite != null)
+         if ((m_currentOp != DisplayOperation.DrawFrames) ||
+             (m_currentTexture != texture))
          {
-            m_Sprite.Dispose();
-            m_Sprite = null;
+            if (m_currentOp != DisplayOperation.None)
+               GL.End();
+            else
+            {
+               GL.TexEnv(TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (float)TextureEnvMode.Modulate);
+               GL.Enable(EnableCap.Blend);
+               GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+               GL.Enable((EnableCap)NvTextureRectangle.TextureRectangleNv);
+               GL.Disable(EnableCap.DepthTest);
+               GL.Disable(EnableCap.Lighting);
+               GL.Disable(EnableCap.Dither);
+            }
+            GL.BindTexture(TextureTarget.TextureRectangleNv, texture.Texture);
+            GL.Begin(BeginMode.Quads);
+            m_currentOp = DisplayOperation.DrawFrames;
+            m_currentTexture = texture;
          }
-         if (m_Font != null)
+         GL.TexCoord2(sourceRect.Left, sourceRect.Top);
+         GL.Vertex2(corners[0].X + offsetX, corners[0].Y + offsetY);
+         GL.TexCoord2(sourceRect.Left, sourceRect.Top + sourceRect.Height - 1);
+         GL.Vertex2(corners[1].X + offsetX, corners[1].Y + offsetY);
+         GL.TexCoord2(sourceRect.Left + sourceRect.Width - 1, sourceRect.Top + sourceRect.Height - 1);
+         GL.Vertex2(corners[2].X + offsetX, corners[2].Y + offsetY);
+         GL.TexCoord2(sourceRect.Left + sourceRect.Width - 1, sourceRect.Top);
+         GL.Vertex2(corners[3].X + offsetX, corners[3].Y + offsetY);
+      }
+
+      public void Flush()
+      {
+         if (m_currentOp != DisplayOperation.None)
          {
-            m_Font.Dispose();
-            m_Font = null;
+            GL.End();
+            m_currentOp = DisplayOperation.None;
          }
-         if (m_Line != null)
+      }
+
+      public void BeginLine(float width, short pattern, bool antiAlias)
+      {
+         if (m_currentTexture != null)
+            GL.BindTexture(TextureTarget.TextureRectangleNv, 0);
+         if (m_currentOp != DisplayOperation.None)
+            GL.End();
+         if (antiAlias)
          {
-            m_Line.Dispose();
-            m_Line = null;
+            GL.Enable(EnableCap.LineSmooth);
+            GL.Hint(HintTarget.LineSmoothHint, HintMode.Nicest);
          }
-         if (m_targetSurface != null)
-         {
-            m_targetSurface.Dispose();
-            m_targetSurface = null;
-         }
-         if (m_d3d != null)
-            m_d3d.Dispose();
-         if (Windowed || (m_CoverWindow == null))
-            m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, this, CreateFlags.SoftwareVertexProcessing, m_pp);
          else
-            m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, m_CoverWindow, CreateFlags.SoftwareVertexProcessing, m_pp);
-         m_d3d.DeviceReset += new EventHandler(d3d_DeviceReset);
-      }
-
-      private static string ValidateAdapter(AdapterInformation adapter)
-      {
-         Caps caps = Manager.GetDeviceCaps(adapter.Adapter, DeviceType.Hardware);
-         if (!caps.PrimitiveMiscCaps.SupportsBlendOperation)
-            return "Inadequate hardware support for alpha blending";
-         if (!caps.TextureCaps.SupportsAlpha)
-            return "Hardware does not support textures with alpha";
-         if (!caps.RasterCaps.SupportsScissorTest)
-            return "No hardware support for clipping";
-         if (!caps.TextureOperationCaps.SupportsModulate)
-            return "No hardware support for color modulation";
-         return null;
-      }
-
-      public Sprite Sprite
-      {
-         get
          {
-            if ((m_Sprite == null) && (m_d3d != null))
-               m_Sprite = new Sprite(m_d3d);
-            return m_Sprite;
+            GL.Disable(EnableCap.LineSmooth);
+         }
+         GL.LineWidth(width);
+
+         if ((pattern != unchecked((short)(0xffff))) && (pattern != 0))
+         {
+            GL.Enable(EnableCap.LineStipple);
+            GL.LineStipple(1, pattern);
+         }
+            else
+         {
+            GL.Disable(EnableCap.LineStipple);
+         }
+         GL.Begin(BeginMode.Lines);
+         m_currentOp = DisplayOperation.DrawLines;
+      }
+
+      public void LineTo(int x, int y)
+      {
+         if (m_currentOp != DisplayOperation.DrawLines)
+         {
+            if (m_currentOp != DisplayOperation.None)
+               GL.End();
+            BeginLine(1, 0, false);
+         }
+         GL.Vertex2(x, y);
+         endPoint = new System.Drawing.Point(x,y);
+      }
+
+      public void ArrowTo(int x, int y)
+      {
+         if (m_currentOp != DisplayOperation.DrawLines)
+         {
+            if (m_currentOp != DisplayOperation.None)
+               GL.End();
+            BeginLine(1, 0, true);
+            GL.Vertex2(endPoint.X, endPoint.Y);
+         }
+         int dx = (x - endPoint.X);
+         int dy = (y - endPoint.Y);
+         float len = (float)Math.Sqrt(dx * dx + dy * dy);
+         if (len > 1)
+         {
+            float ndx = dx * 7 / len;
+            float ndy = dy * 7 / len;
+            float x1 = x - ndx;
+            float y1 = y - ndy;
+            GL.Vertex2(x1, y1);
+            GL.End();
+
+            m_currentOp = DisplayOperation.None;
+
+            GL.Enable(EnableCap.PolygonSmooth);
+            GL.Hint(HintTarget.PolygonSmoothHint, HintMode.Nicest);
+            GL.Begin(BeginMode.Triangles);
+            GL.Vertex2(x1 - ndy / 2, y1 + ndx / 2);
+            GL.Vertex2(x1 + ndx, y1 + ndy);
+            GL.Vertex2(x1 + ndy / 2, y1 - ndx / 2);
+            GL.End();
+         }
+         else
+            LineTo(x, y);
+      }
+
+      public void DrawRectangle(System.Drawing.Rectangle rect, short pattern)
+      {
+         if (m_currentOp != DisplayOperation.None)
+         {
+            GL.End();
+            m_currentOp = DisplayOperation.None;
+         }
+         if ((pattern == 0) || (pattern == unchecked((short)(0xffff))))
+            GL.Disable(EnableCap.LineStipple);
+         else
+         {
+            GL.Enable(EnableCap.LineStipple);
+            GL.LineStipple(1, pattern);
+         }
+         GL.Disable(EnableCap.LineSmooth);
+         GL.LineWidth(1);
+         if (m_currentTexture != null)
+         {
+            m_currentTexture = null;
+            GL.BindTexture(TextureTarget.TextureRectangleNv, 0);
+         }
+         GL.Begin(BeginMode.LineLoop);
+         GL.Vertex2(rect.X, rect.Y);
+         GL.Vertex2(rect.X, rect.Y + rect.Height - 1);
+         GL.Vertex2(rect.X + rect.Width - 1, rect.Y + rect.Height - 1);
+         GL.Vertex2(rect.X + rect.Width - 1, rect.Y);
+         GL.End();
+      }
+
+      public void FillRectangle(System.Drawing.Rectangle rect)
+      {
+         if (m_currentOp != DisplayOperation.None)
+            GL.End();
+         m_currentOp = DisplayOperation.None;
+         if (m_currentTexture != null)
+         {
+            m_currentTexture = null;
+            GL.BindTexture(TextureTarget.TextureRectangleNv, 0);
+         }
+         GL.Begin(BeginMode.Quads);
+         GL.Vertex2(rect.X, rect.Y);
+         GL.Vertex2(rect.X, rect.Y + rect.Height - 1);
+         GL.Vertex2(rect.X + rect.Width - 1, rect.Y + rect.Height - 1);
+         GL.Vertex2(rect.X + rect.Width - 1, rect.Y);
+         GL.End();
+      }
+
+      public int PointSize
+      {
+         set
+         {
+            if (m_currentOp != DisplayOperation.None)
+               GL.End();
+            m_currentOp = DisplayOperation.None;
+            GL.PointSize(value);
          }
       }
 
-      public Font D3DFont
+      public void DrawPoint(System.Drawing.Point location)
       {
-         get
+         if (m_currentOp != DisplayOperation.DrawPoints)
          {
-            if ((m_Font == null) && (m_d3d != null))
-            {
-               m_Font = new Microsoft.DirectX.Direct3D.Font(m_d3d, Font);
-            }
-            return m_Font;
+            if (m_currentOp != DisplayOperation.None)
+               GL.End();
+            GL.Hint(HintTarget.PointSmoothHint, HintMode.Nicest);
+            GL.Enable(EnableCap.PointSmooth);
+            GL.Begin(BeginMode.Points);
+            m_currentOp = DisplayOperation.DrawPoints;
+         }
+         if (m_currentTexture != null)
+         {
+            m_currentTexture = null;
+            GL.BindTexture(TextureTarget.TextureRectangleNv, 0);
          }
       }
 
-      public Line D3DLine
+      public void SetColor(System.Drawing.Color color)
       {
-         get
-         {
-            if ((m_Line == null) && (m_d3d != null))
-               m_Line = new Microsoft.DirectX.Direct3D.Line(m_d3d);
-            return m_Line;
-         }
+         //GL.Color4(color.R, color.G, color.B, color.A);
       }
-      
-      /// <summary>
-      /// Return target surface
-      /// </summary>
-      /// <remarks>Apparent memory leak in managed D3D requires minimizing number of
-      /// references to GetRenderTarget or program hangs on close.</remarks>
-      public Surface TargetSurface
-      {
-         get
-         {
-            if ((m_targetSurface == null) && (m_d3d != null))
-               m_targetSurface = m_d3d.GetRenderTarget(0);
-            return m_targetSurface;
-         }
-      }
-      #endregion
 
-      #region Event Handlers
-      private void d3d_DeviceReset(object sender, EventArgs e)
+      public void SetColor(int color)
       {
-         DisposeAllTextures();
+         //GL.Color4(ref color);
+      }
+
+      public void DrawShadedRectFrame(System.Drawing.Rectangle inner, int thickness, System.Drawing.Color color1, System.Drawing.Color color2)
+      {
+         if (m_currentOp != DisplayOperation.None)
+            GL.End();
+         m_currentOp = DisplayOperation.None;
+         if (m_currentTexture != null)
+         {
+            m_currentTexture = null;
+            GL.BindTexture(TextureTarget.TextureRectangleNv, 0);
+         }
+         GL.Disable(EnableCap.PolygonStipple);
+         SetColor(color1);
+         GL.Begin(BeginMode.QuadStrip);
+         SendRectFramePoints(inner, thickness);
+         GL.End();
+         GL.Enable(EnableCap.PolygonStipple);
+         GL.PolygonStipple(shadedStipple);
+         SetColor(color2);
+         GL.Begin(BeginMode.QuadStrip);
+         SendRectFramePoints(inner, thickness);
+         GL.End();
+         GL.Disable(EnableCap.PolygonStipple);
+      }
+
+      private void SendRectFramePoints(System.Drawing.Rectangle inner, int thickness)
+      {
+         GL.Vertex2(inner.X - thickness, inner.Y - thickness);
+         GL.Vertex2(inner.X - 1, inner.Y - 1);
+         GL.Vertex2(inner.X - thickness, inner.Y + inner.Height + thickness - 1);
+         GL.Vertex2(inner.X - 1, inner.Y + Height);
+         GL.Vertex2(inner.X + inner.Width + thickness - 1, inner.Y + inner.Height + thickness - 1);
+         GL.Vertex2(inner.X + inner.Width, inner.Y + inner.Height);
+         GL.Vertex2(inner.X + inner.Width + thickness - 1, inner.Y - thickness);
+         GL.Vertex2(inner.X + inner.Width, inner.Y - 1);
+         GL.Vertex2(inner.X - thickness, inner.Y - thickness);
+         GL.Vertex2(inner.X - 1, inner.Y - 1);
+      }
+
+      public void Clear()
+      {
+         GL.Clear(ClearBufferMask.AccumBufferBit | ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
       }
       #endregion
    }

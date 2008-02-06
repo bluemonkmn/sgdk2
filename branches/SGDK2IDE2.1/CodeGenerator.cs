@@ -483,9 +483,7 @@ namespace SGDK2
          }
          System.Reflection.Assembly asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Matrix));
          fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)));
-         asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Device));
-         fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)));
-         asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Sprite));
+         asmRef = System.Reflection.Assembly.GetAssembly(typeof(OpenTK.OpenGL.GL));
          fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)));
          asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.DirectInput.KeyboardState));
          fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)));
@@ -2903,8 +2901,7 @@ namespace SGDK2
          foreach(string refName in new string[]
             {
                "microsoft.directx",
-               "microsoft.directx.direct3d",
-               "microsoft.directx.direct3dx",
+               "OpenTK.OpenGL.GL",
                "microsoft.directx.directinput",
                "System.Drawing",
                "System.Windows.Forms",
@@ -3133,9 +3130,7 @@ namespace SGDK2
 
             System.Reflection.Assembly asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Matrix));
             compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
-            asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Device));
-            compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
-            asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Sprite));
+            asmRef = System.Reflection.Assembly.GetAssembly(typeof(OpenTK.OpenGL.GL));
             compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
             asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.DirectInput.KeyboardState));
             compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
@@ -3242,10 +3237,7 @@ namespace SGDK2
             System.Reflection.Assembly asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Matrix));
             System.IO.File.Copy(asmRef.GetFiles()[0].Name, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)), true);
             compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
-            asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Device));
-            System.IO.File.Copy(asmRef.GetFiles()[0].Name, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)), true);
-            compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
-            asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Sprite));
+            asmRef = System.Reflection.Assembly.GetAssembly(typeof(OpenTK.OpenGL.GL));
             System.IO.File.Copy(asmRef.GetFiles()[0].Name, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)), true);
             compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
             asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.DirectInput.KeyboardState));

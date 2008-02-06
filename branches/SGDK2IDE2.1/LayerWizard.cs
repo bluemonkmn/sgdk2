@@ -399,7 +399,6 @@ namespace SGDK2
          this.offsetDisplay.Name = "offsetDisplay";
          this.offsetDisplay.Size = new System.Drawing.Size(280, 176);
          this.offsetDisplay.TabIndex = 0;
-         this.offsetDisplay.Windowed = true;
          this.offsetDisplay.Paint += new System.Windows.Forms.PaintEventHandler(this.offsetDisplay_Paint);
          this.offsetDisplay.MouseMove += new System.Windows.Forms.MouseEventHandler(this.offsetDisplay_MouseMove);
          this.offsetDisplay.MouseLeave += new System.EventHandler(this.offsetDisplay_MouseLeave);
@@ -1063,8 +1062,8 @@ namespace SGDK2
          Size ScrollBounds = new Size(m_Layer.MapRow.ScrollWidth, m_Layer.MapRow.ScrollHeight);
          if (ScrollBounds != offsetDisplay.AutoScrollMinSize)
             offsetDisplay.AutoScrollMinSize = ScrollBounds;
-         offsetDisplay.Device.Clear(Microsoft.DirectX.Direct3D.ClearFlags.Target, 0, 1.0f, 0);
-         offsetDisplay.Device.BeginScene();
+         offsetDisplay.MakeCurrent();
+         offsetDisplay.Clear();
          for (int i=0; i<m_Layers.Length; i++)
          {
             Layer DrawLayer = m_Layers[i];
@@ -1074,8 +1073,7 @@ namespace SGDK2
                DrawLayer.Move(offsetDisplay.AutoScrollPosition.X, offsetDisplay.AutoScrollPosition.Y);
             m_Layers[i].Draw(offsetDisplay, offsetDisplay.ClientSize);
          }
-         offsetDisplay.Device.EndScene();
-         offsetDisplay.Device.Present();
+         offsetDisplay.SwapBuffers();
       }
 
       private void offsetDisplay_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)

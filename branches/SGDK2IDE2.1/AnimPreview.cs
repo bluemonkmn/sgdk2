@@ -31,7 +31,6 @@ namespace SGDK2
       private System.Threading.Thread m_AnimateThread;
       private long m_startTime;
       private bool m_bEndThread;
-      private bool m_DangerWillRobinson;
       private Color m_Background;
       private bool m_bForceRedraw = false;
       int m_fpsValue = 60;
@@ -60,7 +59,6 @@ namespace SGDK2
          System.Threading.ThreadStart start = new System.Threading.ThreadStart(Animate);
          m_bEndThread = false;
          m_AnimateThread = new System.Threading.Thread(start);
-         m_DangerWillRobinson = false;
          cboColor.SelectedIndex=0;
       }
 
@@ -128,8 +126,6 @@ namespace SGDK2
          this.display.Name = "display";
          this.display.Size = new System.Drawing.Size(160, 94);
          this.display.TabIndex = 0;
-         this.display.Windowed = true;
-         this.display.Paint += new System.Windows.Forms.PaintEventHandler(this.display_Paint);
          // 
          // dataMonitor
          // 
@@ -317,10 +313,8 @@ namespace SGDK2
          {
             if (m_bEndThread)
                return;
-            display.Device.BeginScene();
-            Microsoft.DirectX.Direct3D.Sprite sprite = display.Sprite;
-            sprite.Begin(Microsoft.DirectX.Direct3D.SpriteFlags.AlphaBlend);
-            display.Device.Clear(Microsoft.DirectX.Direct3D.ClearFlags.Target, m_Background, 0, 0);
+            display.MakeCurrent();
+            display.Clear();
             Rectangle bounds;
             if (m_TileRow != null)
             {
@@ -329,13 +323,11 @@ namespace SGDK2
                for (int i=0; i<sf.Length; i++)
                {
                   int fi = sf[i];
-                  sprite.Transform = Microsoft.DirectX.Matrix.Multiply(
-                     m_FrameCache[fi].Transform, Microsoft.DirectX.Matrix.Translation(
+                  display.SetColor(m_FrameCache[fi].Color);
+                  display.DrawFrame(m_FrameCache[fi].GraphicSheetTexture,
+                     m_FrameCache[fi].SourceRect, m_FrameCache[fi].corners,
                      (display.ClientSize.Width - bounds.Width) / 2,
-                     (display.ClientSize.Height - bounds.Height) / 2, 0));
-                  sprite.Draw(m_FrameCache[fi].GraphicSheetTexture.Texture,
-                     m_FrameCache[fi].SourceRect, Microsoft.DirectX.Vector3.Empty,
-                     Microsoft.DirectX.Vector3.Empty, m_FrameCache[fi].Color);
+                     (display.ClientSize.Height - bounds.Height) / 2);
                }
             }
             else
@@ -346,18 +338,15 @@ namespace SGDK2
                for (int i=0; i<sf.Length; i++)
                {
                   int fi = sf[i];
-                  sprite.Transform = Microsoft.DirectX.Matrix.Multiply(
-                     si.frameset[fi].Transform, Microsoft.DirectX.Matrix.Translation(
+                  display.SetColor(si.frameset[fi].Color);
+                  display.DrawFrame(si.frameset[fi].GraphicSheetTexture,
+                     si.frameset[fi].SourceRect, si.frameset[fi].corners,
                      (display.ClientSize.Width - bounds.Width) / 2,
-                     (display.ClientSize.Height - bounds.Height) / 2, 0));
-                  sprite.Draw(si.frameset[fi].GraphicSheetTexture.Texture,
-                     si.frameset[fi].SourceRect, Microsoft.DirectX.Vector3.Empty,
-                     Microsoft.DirectX.Vector3.Empty, si.frameset[fi].Color);
+                     (display.ClientSize.Height - bounds.Height) / 2);
                }
             }
-            sprite.End();
-            display.Device.EndScene();
-            display.Device.Present();
+            display.Flush();
+            display.SwapBuffers();
          }
          catch(System.Exception ex)
          {
@@ -487,30 +476,6 @@ namespace SGDK2
             if (e.Action == System.Data.DataRowAction.Change)
             {
                QueueReset();
-            }
-         }
-      }
-
-      private void display_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
-      {
-         try
-         {
-            if (!m_DangerWillRobinson && (display.Device != null) && (!display.Device.Disposed))
-            {
-               display.Device.Present();
-            }
-         }
-         catch (System.Exception ex)
-         {
-            try
-            {
-               m_DangerWillRobinson = true;
-               m_bEndThread = true;
-               m_AnimateThread = null;
-               MessageBox.Show(MdiParent, "An error occurred trying to draw the animation preview display. This may be a result of another error that would appear in a separate pop-up. In order to tiptoe through this problem, the animation window will deactivate the animation, but leave the window open.  It is recommended that you close the animation window yourself, and hopefully we can avoid an unexpected termination or loss/corruption of data.  Error details:\r\n" + ex.ToString(), "Animation Preview", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-            }
-            catch (System.Exception)
-            {
             }
          }
       }

@@ -497,16 +497,7 @@ namespace SGDK2
                      continue;
 
                   ProjectDataset.GraphicSheetRow drG = gfx.GetGraphicSheet(nSubFrame);
-                  Point[] ptCorners = new Point[]
-                  {
-                     new Point(0,0),
-                     new Point(drG.CellWidth, 0),
-                     new Point(0, drG.CellHeight),
-                     new Point(drG.CellWidth, drG.CellHeight)
-                  };
-                  Matrix m = gfx.CreateMatrix(nSubFrame);
-                  m.TransformPoints(ptCorners);
-                  m.Dispose();
+                  Point[] ptCorners = gfx.GetTransformedCorners(nSubFrame);
                   foreach (Point pt in ptCorners)
                   {
                      if (pt.X < rcMax.X)
@@ -986,7 +977,7 @@ namespace SGDK2
                            nFrameToDisplay = FramesToDisplay[nCell].FrameIndexes[nCompositeFrameStep];
 
                         Rectangle rcCell;
-                        Matrix m;
+                        Point[] corners;
                         int color;
                         if ((FramesToDisplay != null) && (FramesToDisplay.ProvidesGraphics))
                         {
@@ -999,7 +990,11 @@ namespace SGDK2
                               nCols = bmpImage.Width / drGfx.CellWidth;
                            }
                            rcCell = p.GetRectangle(nCompositeFrameStep);
-                           m = p.CreateMatrix(nCompositeFrameStep);
+                           corners = new Point[3];
+                           Point[] ccwCorners = p.GetTransformedCorners(nCompositeFrameStep);
+                           corners[0] = ccwCorners[0];
+                           corners[1] = ccwCorners[3];
+                           corners[2] = ccwCorners[1];
                            color = p.Color;
                         }
                         else
@@ -1012,18 +1007,24 @@ namespace SGDK2
                            }
                            rcCell = new Rectangle((Frames[nFrameToDisplay].CellIndex % nCols) * drGfx.CellWidth,
                               (Frames[nFrameToDisplay].CellIndex / nCols) * drGfx.CellHeight, drGfx.CellWidth, drGfx.CellHeight);
-                           m = new System.Drawing.Drawing2D.Matrix(
+                           using (System.Drawing.Drawing2D.Matrix m = new System.Drawing.Drawing2D.Matrix(
                               Frames[nFrameToDisplay].m11, Frames[nFrameToDisplay].m12, Frames[nFrameToDisplay].m21,
-                              Frames[nFrameToDisplay].m22, Frames[nFrameToDisplay].dx, Frames[nFrameToDisplay].dy);
+                              Frames[nFrameToDisplay].m22, Frames[nFrameToDisplay].dx, Frames[nFrameToDisplay].dy))
+                           {
+                              // Assumes that the image is a parallelogram
+                              corners = new Point[] {
+                                 new Point(0, 0),
+                                 new Point(rcCell.Width, 0),
+                                 new Point(0, rcCell.Height)};
+                              m.TransformPoints(corners);
+                           }
                            color = Frames[nFrameToDisplay].color;
                         }
-                        gfxOut.Transform = m;
-                        m.Dispose();
+                        for (int cornerIdx = 0; cornerIdx < corners.Length; cornerIdx++)
+                           corners[cornerIdx].Offset(
+                              nX + AutoScrollPosition.X - m_LargestCell.X,
+                              nY + AutoScrollPosition.Y - m_LargestCell.Y);
                         gfxOut.PixelOffsetMode = PixelOffsetMode.Half;
-                        gfxOut.TranslateTransform(
-                           nX + AutoScrollPosition.X - m_LargestCell.X,
-                           nY + AutoScrollPosition.Y - m_LargestCell.Y,
-                           System.Drawing.Drawing2D.MatrixOrder.Append);
                         if (color != -1)
                         {
                            byte[] clr = BitConverter.GetBytes(color);
@@ -1039,15 +1040,12 @@ namespace SGDK2
                            using (System.Drawing.Imaging.ImageAttributes attr = new System.Drawing.Imaging.ImageAttributes())
                            {
                               attr.SetColorMatrices(cm, cm);
-                              gfxOut.DrawImage(bmpImage,
-                                 new Rectangle(0,0,rcCell.Width,rcCell.Height),
-                                 rcCell.Left,rcCell.Top,rcCell.Width,rcCell.Height,
+                              gfxOut.DrawImage(bmpImage, corners, rcCell,
                                  System.Drawing.GraphicsUnit.Pixel, attr);
                            }
                         }
                         else
-                           gfxOut.DrawImage(bmpImage, 0, 0, rcCell, GraphicsUnit.Pixel);
-                        gfxOut.ResetTransform();
+                           gfxOut.DrawImage(bmpImage, corners, rcCell, GraphicsUnit.Pixel);
                      }
                   }
                   if ((Selected[nCell]) || ((m_DragSel != null) &&
@@ -1590,7 +1588,7 @@ namespace SGDK2
    {
       ProjectDataset.GraphicSheetRow GetGraphicSheet(int subFrame);
       Rectangle GetRectangle(int subFrame);
-      System.Drawing.Drawing2D.Matrix CreateMatrix(int subFrame);
+      Point[] GetTransformedCorners(int subFrame);
       int Color
       {
          get;

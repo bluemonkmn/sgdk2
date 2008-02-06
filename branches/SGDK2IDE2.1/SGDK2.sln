@@ -1,29 +1,25 @@
-Microsoft Visual Studio Solution File, Format Version 8.00
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual C# Express 2008
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SGDK2", "SGDK2.csproj", "{A1F1DF5A-C16F-4439-BC2B-E99FE2904941}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reflect", "Reflect\Reflect.csproj", "{C8D38510-B197-47A1-9CE0-C2ED6187278E}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
 EndProject
 Global
-	GlobalSection(SolutionConfiguration) = preSolution
-		Debug = Debug
-		Release = Release
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(ProjectConfiguration) = postSolution
-		{A1F1DF5A-C16F-4439-BC2B-E99FE2904941}.Debug.ActiveCfg = Debug|.NET
-		{A1F1DF5A-C16F-4439-BC2B-E99FE2904941}.Debug.Build.0 = Debug|.NET
-		{A1F1DF5A-C16F-4439-BC2B-E99FE2904941}.Release.ActiveCfg = Release|.NET
-		{A1F1DF5A-C16F-4439-BC2B-E99FE2904941}.Release.Build.0 = Release|.NET
-		{C8D38510-B197-47A1-9CE0-C2ED6187278E}.Debug.ActiveCfg = Debug|.NET
-		{C8D38510-B197-47A1-9CE0-C2ED6187278E}.Debug.Build.0 = Debug|.NET
-		{C8D38510-B197-47A1-9CE0-C2ED6187278E}.Release.ActiveCfg = Release|.NET
-		{C8D38510-B197-47A1-9CE0-C2ED6187278E}.Release.Build.0 = Release|.NET
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A1F1DF5A-C16F-4439-BC2B-E99FE2904941}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1F1DF5A-C16F-4439-BC2B-E99FE2904941}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1F1DF5A-C16F-4439-BC2B-E99FE2904941}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1F1DF5A-C16F-4439-BC2B-E99FE2904941}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8D38510-B197-47A1-9CE0-C2ED6187278E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8D38510-B197-47A1-9CE0-C2ED6187278E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8D38510-B197-47A1-9CE0-C2ED6187278E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8D38510-B197-47A1-9CE0-C2ED6187278E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-	EndGlobalSection
-	GlobalSection(ExtensibilityAddIns) = postSolution
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

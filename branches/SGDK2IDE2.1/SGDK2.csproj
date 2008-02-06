@@ -1,837 +1,648 @@
-<VisualStudioProject>
-    <CSHARP
-        ProjectType = "Local"
-        ProductVersion = "7.10.3077"
-        SchemaVersion = "2.0"
-        ProjectGuid = "{A1F1DF5A-C16F-4439-BC2B-E99FE2904941}"
-    >
-        <Build>
-            <Settings
-                ApplicationIcon = "App.ico"
-                AssemblyKeyContainerName = ""
-                AssemblyName = "SGDK2IDE"
-                AssemblyOriginatorKeyFile = ""
-                DefaultClientScript = "JScript"
-                DefaultHTMLPageLayout = "Grid"
-                DefaultTargetSchema = "IE50"
-                DelaySign = "false"
-                OutputType = "WinExe"
-                PreBuildEvent = ""
-                PostBuildEvent = ""
-                RootNamespace = "SGDK2"
-                RunPostBuildEvent = "OnBuildSuccess"
-                StartupObject = ""
-            >
-                <Config
-                    Name = "Debug"
-                    AllowUnsafeBlocks = "false"
-                    BaseAddress = "285212672"
-                    CheckForOverflowUnderflow = "false"
-                    ConfigurationOverrideFile = ""
-                    DefineConstants = "DEBUG;TRACE"
-                    DocumentationFile = ""
-                    DebugSymbols = "true"
-                    FileAlignment = "4096"
-                    IncrementalBuild = "false"
-                    NoStdLib = "false"
-                    NoWarn = ""
-                    Optimize = "false"
-                    OutputPath = "bin\Debug\"
-                    RegisterForComInterop = "false"
-                    RemoveIntegerChecks = "false"
-                    TreatWarningsAsErrors = "false"
-                    WarningLevel = "4"
-                />
-                <Config
-                    Name = "Release"
-                    AllowUnsafeBlocks = "false"
-                    BaseAddress = "285212672"
-                    CheckForOverflowUnderflow = "false"
-                    ConfigurationOverrideFile = ""
-                    DefineConstants = "TRACE"
-                    DocumentationFile = ""
-                    DebugSymbols = "false"
-                    FileAlignment = "4096"
-                    IncrementalBuild = "false"
-                    NoStdLib = "false"
-                    NoWarn = ""
-                    Optimize = "true"
-                    OutputPath = "bin\Release\"
-                    RegisterForComInterop = "false"
-                    RemoveIntegerChecks = "false"
-                    TreatWarningsAsErrors = "false"
-                    WarningLevel = "4"
-                />
-            </Settings>
-            <References>
-                <Reference
-                    Name = "System"
-                    AssemblyName = "System"
-                    HintPath = "..\..\..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.dll"
-                />
-                <Reference
-                    Name = "System.Data"
-                    AssemblyName = "System.Data"
-                    HintPath = "..\..\..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Data.dll"
-                />
-                <Reference
-                    Name = "System.Drawing"
-                    AssemblyName = "System.Drawing"
-                    HintPath = "..\..\..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Drawing.dll"
-                />
-                <Reference
-                    Name = "System.Windows.Forms"
-                    AssemblyName = "System.Windows.Forms"
-                    HintPath = "..\..\..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.Windows.Forms.dll"
-                />
-                <Reference
-                    Name = "System.XML"
-                    AssemblyName = "System.Xml"
-                    HintPath = "..\..\..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\System.XML.dll"
-                />
-                <Reference
-                    Name = "Microsoft.DirectX.Direct3DX"
-                    AssemblyName = "Microsoft.DirectX.Direct3DX"
-                    HintPath = "..\..\..\..\..\WINDOWS\Microsoft.NET\DirectX for Managed Code\1.0.2911.0\Microsoft.DirectX.Direct3DX.dll"
-                    AssemblyFolderKey = "hklm\dn\dx_1.0.2911.0"
-                    Private = "False"
-                />
-                <Reference
-                    Name = "Microsoft.DirectX.DirectInput"
-                    AssemblyName = "Microsoft.DirectX.DirectInput"
-                    HintPath = "..\..\..\..\..\WINDOWS\Microsoft.NET\DirectX for Managed Code\1.0.2902.0\Microsoft.DirectX.DirectInput.dll"
-                    AssemblyFolderKey = "hklm\dn\dx_1.0.2902.0"
-                    Private = "False"
-                />
-                <Reference
-                    Name = "Microsoft.DirectX.Direct3D"
-                    AssemblyName = "Microsoft.DirectX.Direct3D"
-                    HintPath = "..\..\..\..\..\WINDOWS\Microsoft.NET\DirectX for Managed Code\1.0.2902.0\Microsoft.DirectX.Direct3D.dll"
-                    AssemblyFolderKey = "hklm\dn\dx_1.0.2902.0"
-                    Private = "False"
-                />
-                <Reference
-                    Name = "Microsoft.DirectX"
-                    AssemblyName = "Microsoft.DirectX"
-                    HintPath = "..\..\..\..\..\WINDOWS\Microsoft.NET\DirectX for Managed Code\1.0.2902.0\Microsoft.DirectX.dll"
-                    AssemblyFolderKey = "hklm\dn\dx_1.0.2902.0"
-                    Private = "False"
-                />
-                <Reference
-                    Name = "Reflect"
-                    Project = "{C8D38510-B197-47A1-9CE0-C2ED6187278E}"
-                    Package = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}"
-                />
-                <Reference
-                    Name = "Microsoft.VisualC"
-                    AssemblyName = "Microsoft.VisualC"
-                    HintPath = "..\..\..\..\..\WINDOWS\Microsoft.NET\Framework\v1.1.4322\Microsoft.VisualC.dll"
-                />
-            </References>
-        </Build>
-        <Files>
-            <Include>
-                <File
-                    RelPath = "About.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "About.resx"
-                    DependentUpon = "About.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "AnimPreview.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "AnimPreview.resx"
-                    DependentUpon = "AnimPreview.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "App.ico"
-                    BuildAction = "Content"
-                />
-                <File
-                    RelPath = "AssemblyInfo.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "CellMgr.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "CellMgr.resx"
-                    DependentUpon = "CellMgr.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "CodeEditor.cs"
-                    SubType = "Component"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "CodeEditor.resx"
-                    DependentUpon = "CodeEditor.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "CodeGenerator.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "CodeImport.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "CodeImport.resx"
-                    DependentUpon = "CodeImport.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "CollisionMask.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "CollisionMask.resx"
-                    DependentUpon = "CollisionMask.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "ColorSel.cs"
-                    SubType = "UserControl"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "ColorSel.resx"
-                    DependentUpon = "ColorSel.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "CounterEdit.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "CounterEdit.resx"
-                    DependentUpon = "CounterEdit.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "CustomObjectData.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "CustomObjectData.resx"
-                    DependentUpon = "CustomObjectData.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "CustTool.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "DataChangeNotifier.cs"
-                    SubType = "Component"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "DataGridComboBox.cs"
-                    SubType = "Component"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Display.cs"
-                    SubType = "Component"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "DragPanel.cs"
-                    SubType = "Component"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "FindReplace.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "FindReplace.resx"
-                    DependentUpon = "FindReplace.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "fmod.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "FrameCache.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "FrameConverter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "FrameEdit.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "FrameEdit.resx"
-                    DependentUpon = "FrameEdit.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "FrameRemappingWizard.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "FrameRemappingWizard.resx"
-                    DependentUpon = "FrameRemappingWizard.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "FramesetImport.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "FramesetImport.resx"
-                    DependentUpon = "FramesetImport.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "FrameTweening.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "FrameTweening.resx"
-                    DependentUpon = "FrameTweening.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "GfxEdit.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "GfxEdit.resx"
-                    DependentUpon = "GfxEdit.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "GfxPane.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "GfxPane.resx"
-                    DependentUpon = "GfxPane.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "GfxSheet.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "GfxSheet.resx"
-                    DependentUpon = "GfxSheet.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "GfxSheetImport.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "GfxSheetImport.resx"
-                    DependentUpon = "GfxSheetImport.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "GraphicBrowser.cs"
-                    SubType = "Component"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "GraphicBrowser.resx"
-                    DependentUpon = "GraphicBrowser.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "HueMapParams.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "HueMapParams.resx"
-                    DependentUpon = "HueMapParams.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "ImportGraphics.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "ImportGraphics.resx"
-                    DependentUpon = "ImportGraphics.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "InputBox.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "InputBox.resx"
-                    DependentUpon = "InputBox.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "Layer.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "LayerManager.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "LayerManager.resx"
-                    DependentUpon = "LayerManager.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "LayerWizard.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "LayerWizard.resx"
-                    DependentUpon = "LayerWizard.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "LogView.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "LogView.resx"
-                    DependentUpon = "LogView.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "MainWindow.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "MainWindow.resx"
-                    DependentUpon = "MainWindow.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "MapEditor.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "MapEditor.resx"
-                    DependentUpon = "MapEditor.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "MapManager.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "MapManager.resx"
-                    DependentUpon = "MapManager.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "MapScrollWizard.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "MapScrollWizard.resx"
-                    DependentUpon = "MapScrollWizard.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "NewTileValue.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "NewTileValue.resx"
-                    DependentUpon = "NewTileValue.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "PlanConverter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "PlanEdit.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "PlanEdit.resx"
-                    DependentUpon = "PlanEdit.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "Project.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Project.resx"
-                    DependentUpon = "Project.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "ProjectData.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "ProjectDataset.xsd"
-                    BuildAction = "Content"
-                    Generator = "MSDataSetGenerator"
-                    LastGenOutput = "ProjectDataset.cs"
-                    CustomToolNamespace = "SGDK2"
-                />
-                <File
-                    RelPath = "ProjectDataset.cs"
-                    DependentUpon = "ProjectDataset.xsd"
-                    SubType = "code"
-                    BuildAction = "Compile"
-                    DesignTime = "True"
-                    AutoGen = "True"
-                />
-                <File
-                    RelPath = "ProjectDataset.xsx"
-                    DependentUpon = "ProjectDataset.xsd"
-                    BuildAction = "None"
-                />
-                <File
-                    RelPath = "RemoteReflector.cs"
-                    SubType = "Code"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "RotateWizard.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "RotateWizard.resx"
-                    DependentUpon = "RotateWizard.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "SelectSpriteParameter.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "SelectSpriteParameter.resx"
-                    DependentUpon = "SelectSpriteParameter.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "SelectTileset.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "SelectTileset.resx"
-                    DependentUpon = "SelectTileset.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "SGDK2IDE.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "SGDK2IDE.resx"
-                    BuildAction = "EmbeddedResource"
-                    CustomToolNamespace = "SGDK2"
-                />
-                <File
-                    RelPath = "Solidity.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "Solidity.resx"
-                    DependentUpon = "Solidity.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "SoundPlayer.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "SoundPlayer.resx"
-                    DependentUpon = "SoundPlayer.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "SpecifyFlags.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "SpecifyFlags.resx"
-                    DependentUpon = "SpecifyFlags.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "SplashForm.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "SplashForm.resx"
-                    DependentUpon = "SplashForm.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "SpriteCache.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "SpriteCategories.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "SpriteCategories.resx"
-                    DependentUpon = "SpriteCategories.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "SpriteConverter.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "SpriteDefinition.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "SpriteDefinition.resx"
-                    DependentUpon = "SpriteDefinition.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "SpriteWizard.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "SpriteWizard.resx"
-                    DependentUpon = "SpriteWizard.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "SwitchableMessage.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "SwitchableMessage.resx"
-                    DependentUpon = "SwitchableMessage.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "TileCache.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "TileCategory.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "TileCategory.resx"
-                    DependentUpon = "TileCategory.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "TileCategoryName.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "TileCategoryName.resx"
-                    DependentUpon = "TileCategoryName.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "TileEdit.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "TileEdit.resx"
-                    DependentUpon = "TileEdit.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "TilesetImport.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "TilesetImport.resx"
-                    DependentUpon = "TilesetImport.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "UnsavedChanges.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "UnsavedChanges.resx"
-                    DependentUpon = "UnsavedChanges.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "WizardBase.cs"
-                    SubType = "Form"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "WizardBase.resx"
-                    DependentUpon = "WizardBase.cs"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "Template\About.cs"
-                    SubType = "Form"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "Template\CollisionMask.cs"
-                    SubType = "Code"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "Template\Controls.cs"
-                    SubType = "Form"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "Template\Display.cs"
-                    SubType = "Component"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "Template\Frame.cs"
-                    SubType = "Code"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "Template\GameForm.cs"
-                    SubType = "Form"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "Template\GeneralRules.cs"
-                    SubType = "Code"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "Template\LayerBase.cs"
-                    SubType = "Code"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "Template\MapBase.cs"
-                    SubType = "Code"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "Template\PlanBase.cs"
-                    SubType = "Code"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "Template\Player.cs"
-                    SubType = "Code"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "Template\Project.cs"
-                    SubType = "Code"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "Template\SpriteBase.cs"
-                    SubType = "Code"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "Template\SpriteCollection.cs"
-                    SubType = "Code"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "Template\SpriteState.cs"
-                    SubType = "Code"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "Template\Tile.cs"
-                    SubType = "Code"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "Template\TileCategoryMembership.cs"
-                    SubType = "Code"
-                    BuildAction = "EmbeddedResource"
-                />
-                <File
-                    RelPath = "Template\TileShapes.cs"
-                    SubType = "Code"
-                    BuildAction = "EmbeddedResource"
-                />
-            </Include>
-        </Files>
-    </CSHARP>
-</VisualStudioProject>
-
+﻿<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectType>Local</ProjectType>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A1F1DF5A-C16F-4439-BC2B-E99FE2904941}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ApplicationIcon>App.ico</ApplicationIcon>
+    <AssemblyKeyContainerName>
+    </AssemblyKeyContainerName>
+    <AssemblyName>SGDK2IDE</AssemblyName>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>WinExe</OutputType>
+    <RootNamespace>SGDK2</RootNamespace>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <StartupObject>SGDK2.SGDK2IDE</StartupObject>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>0.0</OldToolsVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>true</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>false</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <BaseAddress>285212672</BaseAddress>
+    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
+    <ConfigurationOverrideFile>
+    </ConfigurationOverrideFile>
+    <DefineConstants>TRACE</DefineConstants>
+    <DocumentationFile>
+    </DocumentationFile>
+    <DebugSymbols>false</DebugSymbols>
+    <FileAlignment>4096</FileAlignment>
+    <NoStdLib>false</NoStdLib>
+    <NoWarn>
+    </NoWarn>
+    <Optimize>true</Optimize>
+    <RegisterForComInterop>false</RegisterForComInterop>
+    <RemoveIntegerChecks>false</RemoveIntegerChecks>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.DirectX">
+      <Name>Microsoft.DirectX</Name>
+      <HintPath>..\..\..\..\..\..\WINDOWS\Microsoft.NET\DirectX for Managed Code\1.0.2902.0\Microsoft.DirectX.dll</HintPath>
+      <AssemblyFolderKey>hklm\dn\dx_1.0.2902.0</AssemblyFolderKey>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.DirectX.DirectInput">
+      <Name>Microsoft.DirectX.DirectInput</Name>
+      <HintPath>..\..\..\..\..\WINDOWS\Microsoft.NET\DirectX for Managed Code\1.0.2902.0\Microsoft.DirectX.DirectInput.dll</HintPath>
+      <AssemblyFolderKey>hklm\dn\dx_1.0.2902.0</AssemblyFolderKey>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualC">
+      <Name>Microsoft.VisualC</Name>
+    </Reference>
+    <Reference Include="OpenTK, Version=0.9.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\OpenTK\Libraries\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="System">
+      <Name>System</Name>
+    </Reference>
+    <Reference Include="System.Core">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Data">
+      <Name>System.Data</Name>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <RequiredTargetFramework>3.5</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="System.Drawing">
+      <Name>System.Drawing</Name>
+    </Reference>
+    <Reference Include="System.Windows.Forms">
+      <Name>System.Windows.Forms</Name>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Name>System.XML</Name>
+    </Reference>
+    <ProjectReference Include="Reflect\Reflect.csproj">
+      <Name>Reflect</Name>
+      <Project>{C8D38510-B197-47A1-9CE0-C2ED6187278E}</Project>
+      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="About.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AnimPreview.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CellMgr.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CodeEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CodeGenerator.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CodeImport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CollisionMask.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ColorSel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CounterEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustomObjectData.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CustTool.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DataChangeNotifier.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="DataGridComboBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Display.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DragPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="FindReplace.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="fmod.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FrameCache.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FrameConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="FrameEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrameRemappingWizard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FramesetImport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrameTweening.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GfxEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GfxPane.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GfxSheet.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GfxSheetImport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GraphicBrowser.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="HueMapParams.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ImportGraphics.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InputBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Layer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="LayerManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LayerWizard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LogView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MapEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MapManager.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MapScrollWizard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewTileValue.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PlanConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PlanEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Project.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProjectData.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ProjectDataset.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ProjectDataset.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="RotateWizard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SelectSpriteParameter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SelectTileset.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SGDK2IDE.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Solidity.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SoundPlayer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SpecifyFlags.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SplashForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SpriteCache.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SpriteCategories.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SpriteConverter.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SpriteDefinition.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SpriteWizard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SwitchableMessage.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TileCache.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TileCategory.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TileCategoryName.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TileEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TilesetImport.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UnsavedChanges.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="WizardBase.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <EmbeddedResource Include="About.resx">
+      <DependentUpon>About.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AnimPreview.resx">
+      <DependentUpon>AnimPreview.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CellMgr.resx">
+      <DependentUpon>CellMgr.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CodeEditor.resx">
+      <DependentUpon>CodeEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CodeImport.resx">
+      <DependentUpon>CodeImport.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CollisionMask.resx">
+      <DependentUpon>CollisionMask.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ColorSel.resx">
+      <DependentUpon>ColorSel.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CounterEdit.resx">
+      <DependentUpon>CounterEdit.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomObjectData.resx">
+      <DependentUpon>CustomObjectData.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FindReplace.resx">
+      <DependentUpon>FindReplace.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrameEdit.resx">
+      <DependentUpon>FrameEdit.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrameRemappingWizard.resx">
+      <DependentUpon>FrameRemappingWizard.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FramesetImport.resx">
+      <DependentUpon>FramesetImport.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FrameTweening.resx">
+      <DependentUpon>FrameTweening.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GfxEdit.resx">
+      <DependentUpon>GfxEdit.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GfxPane.resx">
+      <DependentUpon>GfxPane.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GfxSheet.resx">
+      <DependentUpon>GfxSheet.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GfxSheetImport.resx">
+      <DependentUpon>GfxSheetImport.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GraphicBrowser.resx">
+      <DependentUpon>GraphicBrowser.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="HueMapParams.resx">
+      <DependentUpon>HueMapParams.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ImportGraphics.resx">
+      <DependentUpon>ImportGraphics.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InputBox.resx">
+      <DependentUpon>InputBox.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LayerManager.resx">
+      <DependentUpon>LayerManager.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LayerWizard.resx">
+      <DependentUpon>LayerWizard.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LogView.resx">
+      <DependentUpon>LogView.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainWindow.resx">
+      <DependentUpon>MainWindow.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MapEditor.resx">
+      <DependentUpon>MapEditor.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MapManager.resx">
+      <DependentUpon>MapManager.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MapScrollWizard.resx">
+      <DependentUpon>MapScrollWizard.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewTileValue.resx">
+      <DependentUpon>NewTileValue.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PlanEdit.resx">
+      <DependentUpon>PlanEdit.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Project.resx">
+      <DependentUpon>Project.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RemoteReflector.cs">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="RotateWizard.resx">
+      <DependentUpon>RotateWizard.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SelectSpriteParameter.resx">
+      <DependentUpon>SelectSpriteParameter.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SelectTileset.resx">
+      <DependentUpon>SelectTileset.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SGDK2IDE.resx">
+      <CustomToolNamespace>SGDK2</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Solidity.resx">
+      <DependentUpon>Solidity.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SoundPlayer.resx">
+      <DependentUpon>SoundPlayer.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SpecifyFlags.resx">
+      <DependentUpon>SpecifyFlags.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SplashForm.resx">
+      <DependentUpon>SplashForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SpriteCategories.resx">
+      <DependentUpon>SpriteCategories.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SpriteDefinition.resx">
+      <DependentUpon>SpriteDefinition.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SpriteWizard.resx">
+      <DependentUpon>SpriteWizard.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SwitchableMessage.resx">
+      <DependentUpon>SwitchableMessage.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Template\About.cs">
+      <SubType>Form</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Template\CollisionMask.cs">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Template\Controls.cs">
+      <SubType>Form</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Template\Display.cs">
+      <SubType>Component</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Template\Frame.cs">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Template\GameForm.cs">
+      <SubType>Form</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Template\GeneralRules.cs">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Template\LayerBase.cs">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Template\MapBase.cs">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Template\PlanBase.cs">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Template\Player.cs">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Template\Project.cs">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Template\SpriteBase.cs">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Template\SpriteCollection.cs">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Template\SpriteState.cs">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Template\Tile.cs">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Template\TileCategoryMembership.cs">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Template\TileShapes.cs">
+      <SubType>Code</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TileCategory.resx">
+      <DependentUpon>TileCategory.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TileCategoryName.resx">
+      <DependentUpon>TileCategoryName.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TileEdit.resx">
+      <DependentUpon>TileEdit.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TilesetImport.resx">
+      <DependentUpon>TilesetImport.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UnsavedChanges.resx">
+      <DependentUpon>UnsavedChanges.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="WizardBase.resx">
+      <DependentUpon>WizardBase.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Content Include="App.ico" />
+    <Content Include="ProjectDataset.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <CustomToolNamespace>SGDK2</CustomToolNamespace>
+      <LastGenOutput>ProjectDataset.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </Content>
+    <None Include="ProjectDataset.xsc">
+      <DependentUpon>ProjectDataset.xsd</DependentUpon>
+    </None>
+    <None Include="ProjectDataset.xss">
+      <DependentUpon>ProjectDataset.xsd</DependentUpon>
+    </None>
+    <None Include="ProjectDataset.xsx">
+      <DependentUpon>ProjectDataset.xsd</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+</Project>

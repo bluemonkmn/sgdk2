@@ -663,18 +663,10 @@ namespace SGDK2
          return m_Sprite[CurrentStateName].frameset[FrameIndexes[subFrame]].SourceRect;
       }
 
-      /// <summary>
-      /// Create a new GDI+ matrix object
-      /// </summary>
-      /// <param name="subFrame">Component of the frame whose matrix to create</param>
-      /// <returns>new matrix instance</returns>
-      /// <remarks>Caller must dispose of the returned object</remarks>
-      public System.Drawing.Drawing2D.Matrix CreateMatrix(int subFrame)
+      public Point[] GetTransformedCorners(int subFrame)
       {
-         Microsoft.DirectX.Matrix m3d = m_Sprite[CurrentStateName].frameset[FrameIndexes[subFrame]].Transform;
-         return new System.Drawing.Drawing2D.Matrix(m3d.M11, m3d.M12, m3d.M21, m3d.M22, m3d.M41, m3d.M42);
+         return m_Sprite[CurrentStateName].frameset[FrameIndexes[subFrame]].corners;
       }
-
       #endregion
 
       #region ICustomTypeDescriptor Members

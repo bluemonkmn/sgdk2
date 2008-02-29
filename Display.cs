@@ -4,14 +4,17 @@
  */
 
 using System;
-using System.Windows.Forms;
 using System.Collections;
 using OpenTK;
-using OpenTK.OpenGL;
-using OpenTK.OpenGL.Enums;
+using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL.Enums;
 
 namespace SGDK2
 {
+   /// <summary>
+   /// Specifies a size and color depth for a display.
+   /// </summary>
+   /// <remarks>Color depth only applies when the display is in full screen mode.</remarks>
    public enum GameDisplayMode
    {
       m320x240x16,
@@ -37,7 +40,8 @@ namespace SGDK2
    /// <summary>
    /// Manages the display device on which real-time game graphics are drawn
    /// </summary>
-   public class Display : GLControl
+   [Serializable()]
+   public class Display : GLControl, IDisposable
    {
       #region Embedded Classes
       public class TextureRef : IDisposable
@@ -79,7 +83,8 @@ namespace SGDK2
             {
                if (m_Display.Context != null)
                {
-                  m_Display.MakeCurrent();
+                  if (!m_Display.Context.IsCurrent)
+                     m_Display.MakeCurrent();
                   GL.DeleteTextures(1, ref m_Texture);
                }
                m_Texture = 0;
@@ -95,6 +100,12 @@ namespace SGDK2
       private DisplayOperation m_currentOp;
       private TextureRef m_currentTexture = null;
       private bool scaleNativeSize = false;
+      private OpenTK.Fonts.TextureFont m_GLFont = null;
+      private System.Drawing.Font m_SysFont = null;
+      private string fontName = null;
+      private int fontSize = 0;
+      public const TextureTarget texTarget = TextureTarget.TextureRectangleArb;
+      public const EnableCap texCap = (EnableCap)ArbTextureRectangle.TextureRectangleArb;
       private static byte[] shadedStipple = new byte[] {
          0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
          0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
@@ -113,6 +124,8 @@ namespace SGDK2
          0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
          0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA};
       private System.Drawing.Point endPoint = System.Drawing.Point.Empty;
+      private System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, OpenTK.Fonts.TextHandle>> m_cachedText = null;
+      public const int TextCacheSize = 5;
       #endregion
 
       #region Initialization and clean-up
@@ -130,6 +143,13 @@ namespace SGDK2
          if (disposing)
          {
             DisposeAllTextures();
+            if (m_GLFont != null)
+               m_GLFont.Dispose();
+            m_GLFont = null;
+            if (m_SysFont != null)
+               if (m_SysFont != System.Drawing.SystemFonts.DefaultFont)
+                  m_SysFont.Dispose();
+            m_SysFont = null;
          }
          base.Dispose (disposing);
       }
@@ -159,15 +179,15 @@ namespace SGDK2
       {
          int texture;
          GL.GenTextures(1, out texture);
-         GL.BindTexture(TextureTarget.TextureRectangleNv, texture);
-         GL.TexParameter(TextureTarget.TextureRectangleNv, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
-         GL.TexParameter(TextureTarget.TextureRectangleNv, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+         GL.BindTexture(texTarget, texture);
+         GL.TexParameter(texTarget, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+         GL.TexParameter(texTarget, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
          System.Drawing.Bitmap bmpTexture = (System.Drawing.Bitmap)ProjectData.GetGraphicSheetImage(Name, false);
          var bits = bmpTexture.LockBits(new System.Drawing.Rectangle(0, 0, bmpTexture.Width, bmpTexture.Height),
             System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
          try
          {
-            GL.TexImage2D(TextureTarget.TextureRectangleNv, 0, PixelInternalFormat.Rgba, bmpTexture.Width, bmpTexture.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, bits.Scan0);
+            GL.TexImage2D(texTarget, 0, PixelInternalFormat.Rgba8, bmpTexture.Width, bmpTexture.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, bits.Scan0);
          }
          finally
          {
@@ -178,6 +198,11 @@ namespace SGDK2
       #endregion
 
       #region Public members
+      /// <summary>
+      /// Retrieve a reference to a hardware-supported graphic sheet ("texture") given its name
+      /// </summary>
+      /// <param name="Name">The name of a graphic sheet defined by the game</param>
+      /// <returns>Object that manages graphics on the hardware for this graphic sheet</returns>
       public TextureRef GetTextureRef(string Name)
       {
          if (m_TextureRefs == null)
@@ -195,6 +220,9 @@ namespace SGDK2
          return tex;
       }
 
+      /// <summary>
+      /// Release resources used by all hardware copies of graphic sheets
+      /// </summary>
       public void DisposeAllTextures()
       {
          if (m_TextureRefs != null)
@@ -265,6 +293,12 @@ namespace SGDK2
          return new DisplayMode(screenSize.Width, screenSize.Height, 0, depth, !windowed);
       }
 
+      /// <summary>
+      /// Gets or sets the size/resolution and color depth of the display
+      /// </summary>
+      /// <remarks>If the display is windowed, this only affects the size. The color depth
+      /// will match that of the user's desktop. In full screen mode this affects the
+      /// resolution and color depth of the display.</remarks>
       public GameDisplayMode GameDisplayMode
       {
          get
@@ -281,6 +315,71 @@ namespace SGDK2
          }
       }
 
+      /// <summary>
+      /// Returns the GLFont object used for drawing text on this display.
+      /// </summary>
+      public OpenTK.Fonts.TextureFont GLFont
+      {
+         get
+         {
+            if (m_GLFont == null)
+            {
+               m_GLFont = new OpenTK.Fonts.TextureFont(SysFont);
+            }
+            return m_GLFont;
+         }
+      }
+
+      /// <summary>
+      /// Return the System level font on which the <see cref="GLFont"/> is based
+      /// </summary>
+      public System.Drawing.Font SysFont
+      {
+         get
+         {
+            if (m_SysFont == null)
+            {
+               if (fontName == null)
+                  m_SysFont = System.Drawing.SystemFonts.DefaultFont;
+               else
+                  m_SysFont = new System.Drawing.Font(fontName, fontSize, System.Drawing.GraphicsUnit.Pixel);
+            }
+            return m_SysFont;
+         }
+      }
+
+      /// <summary>
+      /// Change the font used for drawing text on the display.
+      /// </summary>
+      /// <param name="name">Specifies a font family name such as Arial</param>
+      /// <param name="size">Specifies the size of the font in pixels</param>
+      public void SetFont(string name, int size)
+      {
+         if (m_GLFont != null)
+         {
+            m_GLFont.Dispose();
+            m_GLFont = null;
+         }
+
+         if (m_SysFont != null)
+         {
+            if (m_SysFont != System.Drawing.SystemFonts.DefaultFont)
+               m_SysFont.Dispose();
+            m_SysFont = null;
+         }
+
+         fontName = name;
+         fontSize = size;
+      }
+
+      /// <summary>
+      /// Draw a rectangle from a texture on the display
+      /// </summary>
+      /// <param name="texture">Texture from which graphics are copied</param>
+      /// <param name="sourceRect">Specifies the source area of the copy</param>
+      /// <param name="corners">Specifies the corners (counter-clockwise) of the output quadrilateral</param>
+      /// <param name="offsetX">Specifies the horizontal (rightward) offset of the corners</param>
+      /// <param name="offsetY">Specifies the vertical (downward) offset of the corners</param>
       public void DrawFrame(TextureRef texture, System.Drawing.Rectangle sourceRect, System.Drawing.Point[] corners, int offsetX, int offsetY)
       {
          if ((m_currentOp != DisplayOperation.DrawFrames) ||
@@ -293,26 +392,29 @@ namespace SGDK2
                GL.TexEnv(TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (float)TextureEnvMode.Modulate);
                GL.Enable(EnableCap.Blend);
                GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-               GL.Enable((EnableCap)NvTextureRectangle.TextureRectangleNv);
+               GL.Enable(texCap);
                GL.Disable(EnableCap.DepthTest);
                GL.Disable(EnableCap.Lighting);
                GL.Disable(EnableCap.Dither);
             }
-            GL.BindTexture(TextureTarget.TextureRectangleNv, texture.Texture);
+            GL.BindTexture(texTarget, texture.Texture);
             GL.Begin(BeginMode.Quads);
             m_currentOp = DisplayOperation.DrawFrames;
             m_currentTexture = texture;
          }
          GL.TexCoord2(sourceRect.Left, sourceRect.Top);
          GL.Vertex2(corners[0].X + offsetX, corners[0].Y + offsetY);
-         GL.TexCoord2(sourceRect.Left, sourceRect.Top + sourceRect.Height - 1);
+         GL.TexCoord2(sourceRect.Left, sourceRect.Top + sourceRect.Height);
          GL.Vertex2(corners[1].X + offsetX, corners[1].Y + offsetY);
-         GL.TexCoord2(sourceRect.Left + sourceRect.Width - 1, sourceRect.Top + sourceRect.Height - 1);
+         GL.TexCoord2(sourceRect.Left + sourceRect.Width, sourceRect.Top + sourceRect.Height);
          GL.Vertex2(corners[2].X + offsetX, corners[2].Y + offsetY);
-         GL.TexCoord2(sourceRect.Left + sourceRect.Width - 1, sourceRect.Top);
+         GL.TexCoord2(sourceRect.Left + sourceRect.Width, sourceRect.Top);
          GL.Vertex2(corners[3].X + offsetX, corners[3].Y + offsetY);
       }
 
+      /// <summary>
+      /// Finishes any pending drawing operation on the display.
+      /// </summary>
       public void Flush()
       {
          if (m_currentOp != DisplayOperation.None)
@@ -322,12 +424,91 @@ namespace SGDK2
          }
       }
 
-      public void BeginLine(float width, short pattern, bool antiAlias)
+      /// <summary>
+      /// Draw series of connected lines connecting points ending in an arrow head.
+      /// </summary>
+      /// <param name="points">Points between which lines are drawn</param>
+      /// <param name="width">Width of the lines</param>
+      /// <param name="pattern">Bit pattern defining the line's dash style</param>
+      /// <param name="antiAlias">Determines whether or not the line should be anti-aliased</param>
+      /// <param name="arrowSize">The length of the arrow head in pixels</param>
+      /// <param name="arrowShorten">The number of pixels (beyond arrowSize) by which the last line is shortened, and the arrowhead pulled back.</param>
+      public void DrawArrow(System.Drawing.Point[] points, int width, short pattern, bool antiAlias, int arrowSize, int arrowShorten)
       {
-         if (m_currentTexture != null)
-            GL.BindTexture(TextureTarget.TextureRectangleNv, 0);
          if (m_currentOp != DisplayOperation.None)
             GL.End();
+         GL.Disable(texCap);
+         if (antiAlias)
+         {
+            GL.Enable(EnableCap.LineSmooth);
+            GL.Hint(HintTarget.LineSmoothHint, HintMode.Nicest);
+            GL.Enable(EnableCap.PolygonSmooth);
+            GL.Hint(HintTarget.PolygonSmoothHint, HintMode.Nicest);
+         }
+         else
+         {
+            GL.Disable(EnableCap.LineSmooth);
+            GL.Disable(EnableCap.PolygonSmooth);
+         }
+         GL.LineWidth(width);
+
+         if ((pattern != unchecked((short)(0xffff))) && (pattern != 0))
+         {
+            GL.Enable(EnableCap.LineStipple);
+            GL.LineStipple(1, pattern);
+         }
+         else
+         {
+            GL.Disable(EnableCap.LineStipple);
+         }
+         GL.Begin(BeginMode.LineStrip);
+         for (int i=0; i<points.Length - 1; i++)
+            GL.Vertex2(points[i].X, points[i].Y);
+         int x = points[points.Length - 1].X;
+         int y = points[points.Length - 1].Y;
+         int dx = x - points[points.Length - 2].X;
+         int dy = y - points[points.Length - 2].Y;
+         float len = (float)Math.Sqrt(dx * dx + dy * dy);
+         if (len > 1)
+         {
+            float ndx = dx * (arrowSize + arrowShorten) / len;
+            float ndy = dy * (arrowSize + arrowShorten) / len;
+            float x1 = x - ndx;
+            float y1 = y - ndy;
+            GL.Vertex2(x1, y1);
+            ndx = dx * arrowSize / len;
+            ndy = dy * arrowSize / len;
+            GL.End();
+
+            m_currentOp = DisplayOperation.None;
+
+            GL.Enable(EnableCap.PolygonSmooth);
+            GL.Hint(HintTarget.PolygonSmoothHint, HintMode.Nicest);
+            GL.Begin(BeginMode.Triangles);
+            GL.Vertex2(x1 - ndy / 2, y1 + ndx / 2);
+            GL.Vertex2(x1 + ndx, y1 + ndy);
+            GL.Vertex2(x1 + ndy / 2, y1 - ndx / 2);
+            GL.End();
+         }
+         else
+         {
+            GL.Vertex2(points[points.Length - 1].X, points[points.Length - 1].Y);
+            GL.End();
+         }
+         m_currentOp = DisplayOperation.None;
+      }
+
+      /// <summary>
+      /// Begins drawing a series of connected lines.
+      /// </summary>
+      /// <param name="width">Width of the lines.</param>
+      /// <param name="pattern">Bit pattern determining how/if the line is dashed.</param>
+      /// <param name="antiAlias">Determines if the lines are anti-aliased.</param>
+      public void BeginLine(float width, short pattern, bool antiAlias)
+      {
+         if (m_currentOp != DisplayOperation.None)
+            GL.End();
+         GL.Disable(texCap);
          if (antiAlias)
          {
             GL.Enable(EnableCap.LineSmooth);
@@ -344,14 +525,22 @@ namespace SGDK2
             GL.Enable(EnableCap.LineStipple);
             GL.LineStipple(1, pattern);
          }
-            else
+         else
          {
             GL.Disable(EnableCap.LineStipple);
          }
-         GL.Begin(BeginMode.Lines);
+         GL.Begin(BeginMode.LineStrip);
          m_currentOp = DisplayOperation.DrawLines;
       }
 
+      /// <summary>
+      /// Continues a line started with <see cref="BeginLine"/>.
+      /// </summary>
+      /// <param name="x">Horizontal coordinate within the display</param>
+      /// <param name="y">Vertical coordinate within the display</param>
+      /// <remarks>First first call to LineTo sets the beginning point
+      /// of the line. Coordinates are relative to the top left corner of
+      /// the display, not the layer or map.</remarks>
       public void LineTo(int x, int y)
       {
          if (m_currentOp != DisplayOperation.DrawLines)
@@ -364,7 +553,13 @@ namespace SGDK2
          endPoint = new System.Drawing.Point(x,y);
       }
 
-      public void ArrowTo(int x, int y)
+      /// <summary>
+      /// End a line begun with <see cref="BeginLine"/> with an arrowhead.
+      /// </summary>
+      /// <param name="x">Horizontal coordinate of the tip of the arrow head</param>
+      /// <param name="y">Vertical coordinate of the tip of the arrowhead</param>
+      /// <param name="ArrowSize">Length of the arrowhead</param>
+      public void ArrowTo(int x, int y, int ArrowSize)
       {
          if (m_currentOp != DisplayOperation.DrawLines)
          {
@@ -378,8 +573,8 @@ namespace SGDK2
          float len = (float)Math.Sqrt(dx * dx + dy * dy);
          if (len > 1)
          {
-            float ndx = dx * 7 / len;
-            float ndy = dy * 7 / len;
+            float ndx = dx * ArrowSize / len;
+            float ndy = dy * ArrowSize / len;
             float x1 = x - ndx;
             float y1 = y - ndy;
             GL.Vertex2(x1, y1);
@@ -399,6 +594,11 @@ namespace SGDK2
             LineTo(x, y);
       }
 
+      /// <summary>
+      /// Draw a rectangular outline on the display.
+      /// </summary>
+      /// <param name="rect">Rectangle relative to the top left corner of the display.</param>
+      /// <param name="pattern">Dash pattern applied to the lines forming the outline.</param>
       public void DrawRectangle(System.Drawing.Rectangle rect, short pattern)
       {
          if (m_currentOp != DisplayOperation.None)
@@ -415,11 +615,7 @@ namespace SGDK2
          }
          GL.Disable(EnableCap.LineSmooth);
          GL.LineWidth(1);
-         if (m_currentTexture != null)
-         {
-            m_currentTexture = null;
-            GL.BindTexture(TextureTarget.TextureRectangleNv, 0);
-         }
+         GL.Disable(texCap);
          GL.Begin(BeginMode.LineLoop);
          GL.Vertex2(rect.X, rect.Y);
          GL.Vertex2(rect.X, rect.Y + rect.Height - 1);
@@ -428,16 +624,20 @@ namespace SGDK2
          GL.End();
       }
 
+      /// <summary>
+      /// Fills a rectangular area with a solid color
+      /// </summary>
+      /// <param name="rect">Rectangular area to fill.</param>
+      /// <remarks>
+      /// <see cref="SetColor"/> determines the color with which to fill
+      /// the rectangle, and may be semi-translucent.
+      /// <seealso cref="SetColor"/></remarks>
       public void FillRectangle(System.Drawing.Rectangle rect)
       {
          if (m_currentOp != DisplayOperation.None)
             GL.End();
          m_currentOp = DisplayOperation.None;
-         if (m_currentTexture != null)
-         {
-            m_currentTexture = null;
-            GL.BindTexture(TextureTarget.TextureRectangleNv, 0);
-         }
+         GL.Disable(texCap);
          GL.Begin(BeginMode.Quads);
          GL.Vertex2(rect.X, rect.Y);
          GL.Vertex2(rect.X, rect.Y + rect.Height - 1);
@@ -446,6 +646,9 @@ namespace SGDK2
          GL.End();
       }
 
+      /// <summary>
+      /// Specifies the size of points drawn with <see cref="DrawPoint"/>.
+      /// </summary>
       public int PointSize
       {
          set
@@ -457,6 +660,10 @@ namespace SGDK2
          }
       }
 
+      /// <summary>
+      /// Draw a point in the display
+      /// </summary>
+      /// <param name="location">Coordinate relative to the top left corner of the display.</param>
       public void DrawPoint(System.Drawing.Point location)
       {
          if (m_currentOp != DisplayOperation.DrawPoints)
@@ -468,33 +675,42 @@ namespace SGDK2
             GL.Begin(BeginMode.Points);
             m_currentOp = DisplayOperation.DrawPoints;
          }
-         if (m_currentTexture != null)
-         {
-            m_currentTexture = null;
-            GL.BindTexture(TextureTarget.TextureRectangleNv, 0);
-         }
+         GL.Disable(texCap);
+         GL.Vertex2(location.X, location.Y);
       }
 
+      /// <summary>
+      /// Set the current color for drawing operations.
+      /// </summary>
+      /// <param name="color">Color to select.</param>
       public void SetColor(System.Drawing.Color color)
       {
-         //GL.Color4(color.R, color.G, color.B, color.A);
+         GL.Color4(color.R, color.G, color.B, color.A);
       }
 
+      /// <summary>
+      /// Set the current color for drawing operations.
+      /// </summary>
+      /// <param name="color">Color as an integer with bytes in ARGB order.</param>
       public void SetColor(int color)
       {
-         //GL.Color4(ref color);
+         var c = System.Drawing.Color.FromArgb(color);
+         SetColor(c);
       }
 
+      /// <summary>
+      /// Draw a shaded rectangular frame.
+      /// </summary>
+      /// <param name="inner">Inner, empty portion of the rectangle</param>
+      /// <param name="thickness">Thickness of the frame in pixels.</param>
+      /// <param name="color1">Background color</param>
+      /// <param name="color2">Foreground dither color</param>
       public void DrawShadedRectFrame(System.Drawing.Rectangle inner, int thickness, System.Drawing.Color color1, System.Drawing.Color color2)
       {
          if (m_currentOp != DisplayOperation.None)
             GL.End();
          m_currentOp = DisplayOperation.None;
-         if (m_currentTexture != null)
-         {
-            m_currentTexture = null;
-            GL.BindTexture(TextureTarget.TextureRectangleNv, 0);
-         }
+         GL.Disable(texCap);
          GL.Disable(EnableCap.PolygonStipple);
          SetColor(color1);
          GL.Begin(BeginMode.QuadStrip);
@@ -514,7 +730,7 @@ namespace SGDK2
          GL.Vertex2(inner.X - thickness, inner.Y - thickness);
          GL.Vertex2(inner.X - 1, inner.Y - 1);
          GL.Vertex2(inner.X - thickness, inner.Y + inner.Height + thickness - 1);
-         GL.Vertex2(inner.X - 1, inner.Y + Height);
+         GL.Vertex2(inner.X - 1, inner.Y + inner.Height);
          GL.Vertex2(inner.X + inner.Width + thickness - 1, inner.Y + inner.Height + thickness - 1);
          GL.Vertex2(inner.X + inner.Width, inner.Y + inner.Height);
          GL.Vertex2(inner.X + inner.Width + thickness - 1, inner.Y - thickness);
@@ -523,10 +739,51 @@ namespace SGDK2
          GL.Vertex2(inner.X - 1, inner.Y - 1);
       }
 
+      /// <summary>
+      /// Clear the display of all graphics.
+      /// </summary>
       public void Clear()
       {
          GL.Clear(ClearBufferMask.AccumBufferBit | ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
       }
+
+      /// <summary>
+      /// Draw text on the display
+      /// </summary>
+      /// <param name="text">Text to draw</param>
+      /// <param name="x">Horizontal location of upper left corner of text block</param>
+      /// <param name="y">Vertical location of upper left corner of text block</param>
+      /// <param name="width">Width of text block</param>
+      /// <param name="wordWrap">Specifies whether word-wrap will be applied</param>
+      /// <param name="alignment">Determines how text is aligned within the block.</param>
+      public void DrawText(string text, int x, int y, int width, bool wordWrap, System.Drawing.StringAlignment alignment)
+      {
+         if (m_currentOp != DisplayOperation.None)
+            GL.End();
+         GL.Disable(texCap);
+         OpenTK.Fonts.ITextPrinter tp = new OpenTK.Fonts.TextPrinter();
+         OpenTK.Fonts.TextHandle th = null;
+         if (m_cachedText != null)
+         {
+            foreach (var kvp in m_cachedText)
+               if (kvp.Key == text)
+                  th = kvp.Value;
+         }
+         if (th == null)
+         {
+            tp.Prepare(text, GLFont, out th/*, width, wordWrap, alignment*/);
+            if (m_cachedText == null)
+               m_cachedText = new System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, OpenTK.Fonts.TextHandle>>(TextCacheSize);
+            while (m_cachedText.Count+1 > TextCacheSize)
+               m_cachedText.Dequeue().Value.Dispose();
+            m_cachedText.Enqueue(new System.Collections.Generic.KeyValuePair<string, OpenTK.Fonts.TextHandle>(text, th));
+         }
+         tp.Begin();
+         GL.Translate(x, y, 0);
+         tp.Draw(th);
+         tp.End();
+      }
+
       #endregion
    }
 }

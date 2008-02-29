@@ -262,7 +262,7 @@ namespace SGDK2
       }
       #endregion
 
-      public System.CodeDom.Compiler.ICodeGenerator Generator = new Microsoft.CSharp.CSharpCodeProvider().CreateGenerator();
+      public Microsoft.CSharp.CSharpCodeProvider Generator = new Microsoft.CSharp.CSharpCodeProvider();
       public CodeGeneratorOptions GeneratorOptions = new CodeGeneratorOptions();
       public bool Debug = false;
       public CodeLevel GenerateLevel = CodeLevel.IncludeAll;
@@ -483,7 +483,7 @@ namespace SGDK2
          }
          System.Reflection.Assembly asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Matrix));
          fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)));
-         asmRef = System.Reflection.Assembly.GetAssembly(typeof(OpenTK.OpenGL.GL));
+         asmRef = System.Reflection.Assembly.GetAssembly(typeof(OpenTK.Graphics.OpenGL.GL));
          fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)));
          asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.DirectInput.KeyboardState));
          fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)));
@@ -3106,7 +3106,6 @@ namespace SGDK2
             readReflector.Close();
          
             Microsoft.CSharp.CSharpCodeProvider codeProvider = new Microsoft.CSharp.CSharpCodeProvider();
-            System.CodeDom.Compiler.ICodeCompiler compiler = codeProvider.CreateCompiler();
             System.CodeDom.Compiler.CompilerParameters compilerParams = new System.CodeDom.Compiler.CompilerParameters(new string[] {}, System.IO.Path.Combine(System.IO.Path.GetTempPath(), "SGDK2Tmp.dll"));
             int idx = 0;
             string reason = string.Empty;
@@ -3130,7 +3129,7 @@ namespace SGDK2
 
             System.Reflection.Assembly asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Matrix));
             compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
-            asmRef = System.Reflection.Assembly.GetAssembly(typeof(OpenTK.OpenGL.GL));
+            asmRef = System.Reflection.Assembly.GetAssembly(typeof(OpenTK.Graphics.OpenGL.GL));
             compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
             asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.DirectInput.KeyboardState));
             compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
@@ -3153,7 +3152,7 @@ namespace SGDK2
                }
             }
             compilerParams.GenerateExecutable = false;
-            System.CodeDom.Compiler.CompilerResults results = compiler.CompileAssemblyFromSourceBatch(compilerParams, code);
+            System.CodeDom.Compiler.CompilerResults results = codeProvider.CompileAssemblyFromSource(compilerParams, code);
             if (results.Errors.Count > 0)
             {
                System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -3232,12 +3231,11 @@ namespace SGDK2
             CompileResources(FolderName);
 
             Microsoft.CSharp.CSharpCodeProvider codeProvider = new Microsoft.CSharp.CSharpCodeProvider();
-            System.CodeDom.Compiler.ICodeCompiler compiler = codeProvider.CreateCompiler();
             System.CodeDom.Compiler.CompilerParameters compilerParams = new System.CodeDom.Compiler.CompilerParameters(new string[] {}, System.IO.Path.Combine(FolderName, ProjectName + ".exe"));
             System.Reflection.Assembly asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Matrix));
             System.IO.File.Copy(asmRef.GetFiles()[0].Name, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)), true);
             compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
-            asmRef = System.Reflection.Assembly.GetAssembly(typeof(OpenTK.OpenGL.GL));
+            asmRef = System.Reflection.Assembly.GetAssembly(typeof(OpenTK.Graphics.OpenGL.GL));
             System.IO.File.Copy(asmRef.GetFiles()[0].Name, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)), true);
             compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
             asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.DirectInput.KeyboardState));
@@ -3316,7 +3314,7 @@ namespace SGDK2
                }
             }
 
-            System.CodeDom.Compiler.CompilerResults results = compiler.CompileAssemblyFromFileBatch(compilerParams, fileList);
+            System.CodeDom.Compiler.CompilerResults results = codeProvider.CompileAssemblyFromSource(compilerParams, fileList);
             if (results.Errors.Count > 0)
             {
                System.Text.StringBuilder sb = new System.Text.StringBuilder();

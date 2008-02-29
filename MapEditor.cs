@@ -122,8 +122,6 @@ namespace SGDK2
 			//
 			InitializeComponent();
 
-         SGDK2IDE.LoadFormSettings(this);
-
          this.Text = "Edit Map Layer - " + Layer.Name;
 
          ProjectDataset.LayerRow[] lrs = ProjectData.GetSortedLayers(Layer.MapRow);
@@ -146,6 +144,12 @@ namespace SGDK2
 
          SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"MapEditor.html");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
+      }
+
+      protected override void OnLoad(EventArgs e)
+      {
+         base.OnLoad(e);
+         SGDK2IDE.LoadFormSettings(this);
       }
 
 		/// <summary>
@@ -1118,6 +1122,7 @@ namespace SGDK2
       private void DrawSpriteSelection(SpriteProvider sp)
       {
          Rectangle inner = sp.Bounds;
+         inner.Offset(m_Layers[m_nCurLayer].CurrentPosition);
          MapDisplay.DrawShadedRectFrame(inner, 4, Color.Black, Color.White);
       }
 
@@ -1150,7 +1155,7 @@ namespace SGDK2
       private void DrawPath(ProjectDataset.SpritePlanRow PathPlan, bool bIncludeMouse)
       {
          ProjectDataset.CoordinateRow[] coords = ProjectData.GetSortedCoordinates(PathPlan);
-         System.Collections.ArrayList points = new ArrayList();
+         var points = new System.Collections.Generic.List<Point>();
          System.Drawing.Point ptLyr = m_Layers[m_nCurLayer].CurrentPosition;
          System.Drawing.Point ptCur;
          for(int i=0; i<coords.Length; i++)
@@ -1171,7 +1176,7 @@ namespace SGDK2
             {
                // Regtangle is 1 pixel smaller than second coordinate dictates in order
                // to allow snap-to-tile feature to create rectangles that align to tile boundaries.
-               System.Drawing.Point[] pts = (System.Drawing.Point[])points.ToArray(typeof(System.Drawing.Point));
+               System.Drawing.Point[] pts = points.ToArray();
                Rectangle DrawRect = new Rectangle(Math.Min(pts[0].X, pts[1].X), Math.Min(pts[0].Y, pts[1].Y),
                   Math.Abs(pts[0].X - pts[1].X), Math.Abs(pts[0].Y - pts[1].Y));
                MapDisplay.SetColor(Color.FromArgb(96, 0, 0, 255));
@@ -1180,10 +1185,10 @@ namespace SGDK2
                MapDisplay.DrawRectangle(DrawRect, 0);
             }
 
-            MapDisplay.BeginLine(5f, unchecked((short)(0xff00)), true);
-            for (int i = 0; i < points.Count-1; i++)
-               MapDisplay.LineTo(((Point)(points[i])).X, ((Point)(points[i])).Y);
-            MapDisplay.ArrowTo(((Point)(points[points.Count - 1])).X, ((Point)(points[points.Count - 1])).Y);
+            MapDisplay.SetColor(Color.Black);
+            MapDisplay.DrawArrow(points.ToArray(), 5, unchecked((short)(0xff80)), true, 11, 0);
+            MapDisplay.SetColor(Color.White);
+            MapDisplay.DrawArrow(points.ToArray(), 3, unchecked((short)(0x7f00)), true, 8, 2);
          }
          else if (points.Count == 1)
          {
@@ -1958,6 +1963,7 @@ namespace SGDK2
          try
          {
             MapDisplay.MakeCurrent();
+
             Size ScrollBounds = GetScrollBounds();
             if (ScrollBounds != MapDisplay.AutoScrollMinSize)
                MapDisplay.AutoScrollMinSize = ScrollBounds;

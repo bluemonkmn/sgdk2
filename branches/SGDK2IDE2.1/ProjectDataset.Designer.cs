@@ -1685,7 +1685,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class GraphicSheetDataTable : global::System.Data.TypedTableBase<GraphicSheetRow> {
+        public partial class GraphicSheetDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnName;
             
@@ -1818,6 +1818,11 @@ namespace SGDK2 {
             public GraphicSheetRow FindByName(string Name) {
                 return ((GraphicSheetRow)(this.Rows.Find(new object[] {
                             Name})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -1994,7 +1999,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class FramesetDataTable : global::System.Data.TypedTableBase<FramesetRow> {
+        public partial class FramesetDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnName;
             
@@ -2077,6 +2082,11 @@ namespace SGDK2 {
             public FramesetRow FindByName(string Name) {
                 return ((FramesetRow)(this.Rows.Find(new object[] {
                             Name})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2228,7 +2238,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class FrameDataTable : global::System.Data.TypedTableBase<FrameRow> {
+        public partial class FrameDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnFrameValue;
             
@@ -2415,6 +2425,11 @@ namespace SGDK2 {
                 return ((FrameRow)(this.Rows.Find(new object[] {
                             Name,
                             FrameValue})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2616,7 +2631,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class TilesetDataTable : global::System.Data.TypedTableBase<TilesetRow> {
+        public partial class TilesetDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnName;
             
@@ -2732,6 +2747,11 @@ namespace SGDK2 {
             public TilesetRow FindByName(string Name) {
                 return ((TilesetRow)(this.Rows.Find(new object[] {
                             Name})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2897,7 +2917,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class TileDataTable : global::System.Data.TypedTableBase<TileRow> {
+        public partial class TileDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnTileValue;
             
@@ -3007,6 +3027,11 @@ namespace SGDK2 {
                 return ((TileRow)(this.Rows.Find(new object[] {
                             Name,
                             TileValue})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3167,7 +3192,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class TileFrameDataTable : global::System.Data.TypedTableBase<TileFrameRow> {
+        public partial class TileFrameDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnSequence;
             
@@ -3292,6 +3317,11 @@ namespace SGDK2 {
                             Name,
                             TileValue,
                             Sequence})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3462,7 +3492,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class CounterDataTable : global::System.Data.TypedTableBase<CounterRow> {
+        public partial class CounterDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnName;
             
@@ -3565,6 +3595,11 @@ namespace SGDK2 {
             public CounterRow FindByName(string Name) {
                 return ((CounterRow)(this.Rows.Find(new object[] {
                             Name})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3724,7 +3759,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class MapDataTable : global::System.Data.TypedTableBase<MapRow> {
+        public partial class MapDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnName;
             
@@ -3907,6 +3942,11 @@ namespace SGDK2 {
             public MapRow FindByName(string Name) {
                 return ((MapRow)(this.Rows.Find(new object[] {
                             Name})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -4104,7 +4144,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class LayerDataTable : global::System.Data.TypedTableBase<LayerRow> {
+        public partial class LayerDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnName;
             
@@ -4337,6 +4377,11 @@ namespace SGDK2 {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             public override global::System.Data.DataTable Clone() {
                 LayerDataTable cln = ((LayerDataTable)(base.Clone()));
                 cln.InitVars();
@@ -4551,7 +4596,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class SpriteDataTable : global::System.Data.TypedTableBase<SpriteRow> {
+        public partial class SpriteDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnLayerName;
             
@@ -4769,6 +4814,11 @@ namespace SGDK2 {
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             public override global::System.Data.DataTable Clone() {
                 SpriteDataTable cln = ((SpriteDataTable)(base.Clone()));
                 cln.InitVars();
@@ -4980,7 +5030,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class ParameterValueDataTable : global::System.Data.TypedTableBase<ParameterValueRow> {
+        public partial class ParameterValueDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnLayerName;
             
@@ -5116,6 +5166,11 @@ namespace SGDK2 {
                             SpriteName,
                             ParameterName,
                             MapName})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5292,7 +5347,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class SpritePlanDataTable : global::System.Data.TypedTableBase<SpritePlanRow> {
+        public partial class SpritePlanDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnMapName;
             
@@ -5407,6 +5462,11 @@ namespace SGDK2 {
                             MapName,
                             LayerName,
                             Name})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5573,7 +5633,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class CoordinateDataTable : global::System.Data.TypedTableBase<CoordinateRow> {
+        public partial class CoordinateDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnMapName;
             
@@ -5719,6 +5779,11 @@ namespace SGDK2 {
                             LayerName,
                             PlanName,
                             Sequence})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5899,7 +5964,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class PlanRuleDataTable : global::System.Data.TypedTableBase<PlanRuleRow> {
+        public partial class PlanRuleDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnMapName;
             
@@ -6105,6 +6170,11 @@ namespace SGDK2 {
                             LayerName,
                             PlanName,
                             Name})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -6314,7 +6384,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class PlanParameterValueDataTable : global::System.Data.TypedTableBase<PlanParameterValueRow> {
+        public partial class PlanParameterValueDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnMapName;
             
@@ -6440,6 +6510,11 @@ namespace SGDK2 {
                             LayerName,
                             PlanName,
                             Name})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -6612,7 +6687,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class SpriteDefinitionDataTable : global::System.Data.TypedTableBase<SpriteDefinitionRow> {
+        public partial class SpriteDefinitionDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnName;
             
@@ -6695,6 +6770,11 @@ namespace SGDK2 {
             public SpriteDefinitionRow FindByName(string Name) {
                 return ((SpriteDefinitionRow)(this.Rows.Find(new object[] {
                             Name})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -6846,7 +6926,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class SpriteRuleDataTable : global::System.Data.TypedTableBase<SpriteRuleRow> {
+        public partial class SpriteRuleDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnDefinitionName;
             
@@ -7033,6 +7113,11 @@ namespace SGDK2 {
                 return ((SpriteRuleRow)(this.Rows.Find(new object[] {
                             DefinitionName,
                             Name})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -7230,7 +7315,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class SpriteParameterDataTable : global::System.Data.TypedTableBase<SpriteParameterRow> {
+        public partial class SpriteParameterDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnDefinitionName;
             
@@ -7327,6 +7412,11 @@ namespace SGDK2 {
                 return ((SpriteParameterRow)(this.Rows.Find(new object[] {
                             DefinitionName,
                             Name})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -7483,7 +7573,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class SpriteStateDataTable : global::System.Data.TypedTableBase<SpriteStateRow> {
+        public partial class SpriteStateDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnDefinitionName;
             
@@ -7623,6 +7713,11 @@ namespace SGDK2 {
                 return ((SpriteStateRow)(this.Rows.Find(new object[] {
                             DefinitionName,
                             Name})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -7803,7 +7898,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class SpriteFrameDataTable : global::System.Data.TypedTableBase<SpriteFrameRow> {
+        public partial class SpriteFrameDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnDefinitionName;
             
@@ -7938,6 +8033,11 @@ namespace SGDK2 {
                             DefinitionName,
                             StateName,
                             Sequence})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -8113,7 +8213,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class SpriteCategoryDataTable : global::System.Data.TypedTableBase<SpriteCategoryRow> {
+        public partial class SpriteCategoryDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnName;
             
@@ -8196,6 +8296,11 @@ namespace SGDK2 {
             public SpriteCategoryRow FindByName(string Name) {
                 return ((SpriteCategoryRow)(this.Rows.Find(new object[] {
                             Name})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -8347,7 +8452,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class SpriteCategorySpriteDataTable : global::System.Data.TypedTableBase<SpriteCategorySpriteRow> {
+        public partial class SpriteCategorySpriteDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnCategoryName;
             
@@ -8447,6 +8552,11 @@ namespace SGDK2 {
                 return ((SpriteCategorySpriteRow)(this.Rows.Find(new object[] {
                             CategoryName,
                             DefinitionName})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -8603,7 +8713,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class SolidityDataTable : global::System.Data.TypedTableBase<SolidityRow> {
+        public partial class SolidityDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnName;
             
@@ -8686,6 +8796,11 @@ namespace SGDK2 {
             public SolidityRow FindByName(string Name) {
                 return ((SolidityRow)(this.Rows.Find(new object[] {
                             Name})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -8837,7 +8952,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class SolidityShapeDataTable : global::System.Data.TypedTableBase<SolidityShapeRow> {
+        public partial class SolidityShapeDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnSolidityName;
             
@@ -8947,6 +9062,11 @@ namespace SGDK2 {
                 return ((SolidityShapeRow)(this.Rows.Find(new object[] {
                             SolidityName,
                             CategoryName})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -9107,7 +9227,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class SourceCodeDataTable : global::System.Data.TypedTableBase<SourceCodeRow> {
+        public partial class SourceCodeDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnName;
             
@@ -9230,6 +9350,11 @@ namespace SGDK2 {
             public SourceCodeRow FindByName(string Name) {
                 return ((SourceCodeRow)(this.Rows.Find(new object[] {
                             Name})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -9396,7 +9521,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class ProjectDataTable : global::System.Data.TypedTableBase<ProjectRow> {
+        public partial class ProjectDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnDisplayMode;
             
@@ -9543,6 +9668,11 @@ namespace SGDK2 {
                 rowProjectRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowProjectRow);
                 return rowProjectRow;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -9722,7 +9852,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class TileCategoryDataTable : global::System.Data.TypedTableBase<TileCategoryRow> {
+        public partial class TileCategoryDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnName;
             
@@ -9805,6 +9935,11 @@ namespace SGDK2 {
             public TileCategoryRow FindByName(string Name) {
                 return ((TileCategoryRow)(this.Rows.Find(new object[] {
                             Name})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -9956,7 +10091,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class CategorizedTilesetDataTable : global::System.Data.TypedTableBase<CategorizedTilesetRow> {
+        public partial class CategorizedTilesetDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnTileset;
             
@@ -10056,6 +10191,11 @@ namespace SGDK2 {
                 return ((CategorizedTilesetRow)(this.Rows.Find(new object[] {
                             Tileset,
                             Name})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -10212,7 +10352,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class CategoryTileDataTable : global::System.Data.TypedTableBase<CategoryTileRow> {
+        public partial class CategoryTileDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnTileset;
             
@@ -10317,6 +10457,11 @@ namespace SGDK2 {
                             Tileset,
                             Category,
                             TileValue})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -10479,7 +10624,7 @@ namespace SGDK2 {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "2.0.0.0")]
         [global::System.Serializable()]
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
-        public partial class CategoryFrameDataTable : global::System.Data.TypedTableBase<CategoryFrameRow> {
+        public partial class CategoryFrameDataTable : global::System.Data.DataTable, global::System.Collections.IEnumerable {
             
             private global::System.Data.DataColumn columnTileset;
             
@@ -10595,6 +10740,11 @@ namespace SGDK2 {
                             Category,
                             TileValue,
                             Frame})));
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            public virtual global::System.Collections.IEnumerator GetEnumerator() {
+                return this.Rows.GetEnumerator();
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]

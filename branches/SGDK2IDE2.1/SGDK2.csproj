@@ -23,7 +23,7 @@
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>0.0</OldToolsVersion>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <PublishUrl>publish\</PublishUrl>
@@ -104,21 +104,11 @@
     <Reference Include="Microsoft.VisualC">
       <Name>Microsoft.VisualC</Name>
     </Reference>
-    <Reference Include="OpenTK, Version=0.9.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\OpenTK\Libraries\OpenTK.dll</HintPath>
-    </Reference>
     <Reference Include="System">
       <Name>System</Name>
     </Reference>
-    <Reference Include="System.Core">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
-    </Reference>
     <Reference Include="System.Data">
       <Name>System.Data</Name>
-    </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Drawing">
       <Name>System.Drawing</Name>
@@ -129,6 +119,10 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
+    <ProjectReference Include="..\OpenTK\Source\OpenTK\OpenTK.csproj">
+      <Project>{D81D5CB6-68F1-47C9-B19F-5539BD97E70E}</Project>
+      <Name>OpenTK</Name>
+    </ProjectReference>
     <ProjectReference Include="Reflect\Reflect.csproj">
       <Name>Reflect</Name>
       <Project>{C8D38510-B197-47A1-9CE0-C2ED6187278E}</Project>

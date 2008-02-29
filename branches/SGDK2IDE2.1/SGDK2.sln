@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SGDK2", "SGDK2.csproj", "{A
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reflect", "Reflect\Reflect.csproj", "{C8D38510-B197-47A1-9CE0-C2ED6187278E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenTK", "..\OpenTK\Source\OpenTK\OpenTK.csproj", "{D81D5CB6-68F1-47C9-B19F-5539BD97E70E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,6 +20,10 @@ Global
 		{C8D38510-B197-47A1-9CE0-C2ED6187278E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C8D38510-B197-47A1-9CE0-C2ED6187278E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C8D38510-B197-47A1-9CE0-C2ED6187278E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D81D5CB6-68F1-47C9-B19F-5539BD97E70E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D81D5CB6-68F1-47C9-B19F-5539BD97E70E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D81D5CB6-68F1-47C9-B19F-5539BD97E70E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D81D5CB6-68F1-47C9-B19F-5539BD97E70E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

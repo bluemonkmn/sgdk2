@@ -2202,21 +2202,21 @@
     <Layer Name="Letters" Width="25" Height="19" Tileset="LetterTiles" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="1" ScrollRateY="1" ZIndex="0" Priority="0" VirtualWidth="0" VirtualHeight="0">
       <Tiles>z8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8XFGhEjzwInHBgNJREezxMNGRHGxs/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Px8caESPPAyccGA0lER7PEw0ZEcjIz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/JyQ8bGiAVGiERzxMNGRHKys/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8vLHSEVIMzMz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pzw==</Tiles>
       <SpritePlan Name="Select Menu Items" Priority="1">
-        <PlanRule Name="If down is pressed" Sequence="1" Type="If" Function="IsKeyPressed" Parameter1="Microsoft.DirectX.DirectInput.Key.DownArrow" EndIf="false" Suspended="false" />
+        <PlanRule Name="If down is pressed" Sequence="1" Type="If" Function="IsKeyPressed" Parameter1="Key.Down" Parameter2="" EndIf="false" Suspended="false" />
         <PlanRule Name="If down key repeat check matches" Sequence="2" Type="If" Function="==" Parameter1="Counter.KeyRepeat.CurrentValue" Parameter2="0" EndIf="false" Suspended="false" />
         <PlanRule Name="If not on last menu item" Sequence="3" Type="If" Function="&lt;" Parameter1="Counter.MenuPointerIndex.CurrentValue" Parameter2="3" EndIf="false" Suspended="false" />
         <PlanRule Name="Go to next menu item" Sequence="4" Type="Do" Function="+" Parameter1="Counter.MenuPointerIndex.CurrentValue" Parameter2="1" ResultParameter="Counter.MenuPointerIndex.CurrentValue" EndIf="false" Suspended="false" />
         <PlanRule Name="Else if down key repeat time elapsed" Sequence="9" Type="ElseIf" Function="&gt;=" Parameter1="Counter.KeyRepeat.CurrentValue" Parameter2="15" EndIf="false" Suspended="false" />
         <PlanRule Name="Reset down key repeat" Sequence="10" Type="Do" Function="=" Parameter1="0" ResultParameter="Counter.KeyRepeat.CurrentValue" EndIf="false" Suspended="false" />
         <PlanRule Name="Else wait for down key repeat time to elapse" Sequence="11" Type="Else" Function="+" Parameter1="Counter.KeyRepeat.CurrentValue" Parameter2="1" ResultParameter="Counter.KeyRepeat.CurrentValue" EndIf="true" Suspended="false" />
-        <PlanRule Name="Else if up is pressed" Sequence="13" Type="ElseIf" Function="IsKeyPressed" Parameter1="Microsoft.DirectX.DirectInput.Key.Up" EndIf="false" Suspended="false" />
+        <PlanRule Name="Else if up is pressed" Sequence="13" Type="ElseIf" Function="IsKeyPressed" Parameter1="Key.Up" EndIf="false" Suspended="false" />
         <PlanRule Name="If up key repeat check matches" Sequence="14" Type="If" Function="==" Parameter1="Counter.KeyRepeat.CurrentValue" Parameter2="0" EndIf="false" Suspended="false" />
         <PlanRule Name="If not on first menu item" Sequence="15" Type="If" Function="&gt;" Parameter1="Counter.MenuPointerIndex.CurrentValue" Parameter2="0" EndIf="false" Suspended="false" />
         <PlanRule Name="Go to previous menu item" Sequence="16" Type="Do" Function="-" Parameter1="Counter.MenuPointerIndex.CurrentValue" Parameter2="1" ResultParameter="Counter.MenuPointerIndex.CurrentValue" EndIf="false" Suspended="false" />
         <PlanRule Name="Else if up key repeat time elapsed" Sequence="21" Type="ElseIf" Function="&gt;" Parameter1="Counter.KeyRepeat.CurrentValue" Parameter2="15" EndIf="false" Suspended="false" />
         <PlanRule Name="Reset up key repeat" Sequence="22" Type="Do" Function="=" Parameter1="0" ResultParameter="Counter.KeyRepeat.CurrentValue" EndIf="false" Suspended="false" />
         <PlanRule Name="Else wait for up key repeat time to elapse" Sequence="23" Type="Else" Function="+" Parameter1="Counter.KeyRepeat.CurrentValue" Parameter2="1" ResultParameter="Counter.KeyRepeat.CurrentValue" EndIf="true" Suspended="false" />
-        <PlanRule Name="Else if Return/Enter is pressed" Sequence="25" Type="ElseIf" Function="IsKeyPressed" Parameter1="Microsoft.DirectX.DirectInput.Key.Return" EndIf="true" Suspended="false" />
+        <PlanRule Name="Else if Return/Enter is pressed" Sequence="25" Type="ElseIf" Function="IsKeyPressed" Parameter1="Key.Enter" EndIf="true" Suspended="false" />
         <PlanRule Name="End down key repeat check" Sequence="12" Type="End" Function="End" EndIf="true" Suspended="false" />
         <PlanRule Name="Begin down key repeat" Sequence="8" Type="Do" Function="+" Parameter1="Counter.KeyRepeat.CurrentValue" Parameter2="1" ResultParameter="Counter.KeyRepeat.CurrentValue" EndIf="true" Suspended="false" />
         <PlanRule Name="End up key repeat" Sequence="24" Type="End" Function="End" EndIf="true" Suspended="false" />
@@ -2502,7 +2502,7 @@
     <SpriteRule Name="Switch player 2 cherry points to 100" Sequence="67" Type="Do" Function="SetCategorySpriteState" Parameter1="ParentLayer.m_SpriteCategories.Points" Parameter2="TempNum" Parameter3="0" EndIf="true" Suspended="false" />
     <SpriteRule Name="Add cherry points to player 2 score" Sequence="68" Type="Do" Function="+" Parameter1="Counter.Player_2_Score.CurrentValue" Parameter2="100" ResultParameter="Counter.Player_2_Score.CurrentValue" EndIf="true" Suspended="false" />
     <SpriteRule Name="End tile interactions" Sequence="70" Type="End" Function="End" EndIf="true" Suspended="false" />
-    <SpriteRule Name="If menu requested" Sequence="71" Type="If" Function="IsKeyPressed" Parameter1="Microsoft.DirectX.DirectInput.Key.Escape" EndIf="false" Suspended="false" />
+    <SpriteRule Name="If menu requested" Sequence="71" Type="If" Function="IsKeyPressed" Parameter1="Key.Escape" Parameter2="" EndIf="false" Suspended="false" />
     <SpriteRule Name="Go to menu" Sequence="74" Type="Do" Function="SwitchToMap" Parameter1="typeof(Menu_Map)" Parameter2="false" EndIf="true" Suspended="false" />
     <SpriteRule Name="Reset map's initialized flag" Sequence="73" Type="Do" Function="SetMapFlag" Parameter1="0" Parameter2="false" EndIf="false" Suspended="false" />
     <SpriteRule Name="React to springs" Sequence="35" Type="Do" Function="CustomObjects.TileSpecialization.ReactToSprings" Parameter1="this" EndIf="false" Suspended="false" />

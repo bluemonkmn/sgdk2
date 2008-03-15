@@ -13,13 +13,27 @@ using System.Windows.Forms;
 /// </summary>
 public class frmControls : System.Windows.Forms.Form
 {
+   #region Embedded Types
+   class KeyTextBox : TextBox
+   {
+      protected override void WndProc(ref Message m)
+      {
+         base.WndProc(ref m);
+         if (Parent is frmControls)
+            ((frmControls)Parent).ProcessMessage(this, m);
+      }
+   }
+   #endregion
+
    #region Non-control members
    private System.Threading.Thread readControllerThread = null;
    private bool bExitControllerThread = false;
-   private delegate void ControllerButtonPressedDelegate(int button);
-   private byte[] pressedButtons = null;
+   private delegate void ControllerButtonPressedDelegate(byte button);
+   private int pressedButtons = 0;
+   private int currentPlayer;
    private System.Windows.Forms.TextBox txtCurJButton = null;
    private bool bLoading = false;
+   private const int WM_KEYDOWN = 0x100;
    #endregion
 
    #region Windows Form Designer Members
@@ -27,21 +41,21 @@ public class frmControls : System.Windows.Forms.Form
    private System.Windows.Forms.ComboBox cboController;
    private System.Windows.Forms.RadioButton rdoController;
    private System.Windows.Forms.RadioButton rdoKeyboard;
-   private System.Windows.Forms.TextBox txtButton4;
+   private KeyTextBox txtButton4;
    private System.Windows.Forms.Label lblButton4;
-   private System.Windows.Forms.TextBox txtButton3;
+   private KeyTextBox txtButton3;
    private System.Windows.Forms.Label lblButton3;
-   private System.Windows.Forms.TextBox txtButton2;
+   private KeyTextBox txtButton2;
    private System.Windows.Forms.Label lblButton2;
-   private System.Windows.Forms.TextBox txtButton1;
+   private KeyTextBox txtButton1;
    private System.Windows.Forms.Label lblButton1;
-   private System.Windows.Forms.TextBox txtDown;
+   private KeyTextBox txtDown;
    private System.Windows.Forms.Label lblDown;
-   private System.Windows.Forms.TextBox txtRight;
+   private KeyTextBox txtRight;
    private System.Windows.Forms.Label lblRight;
-   private System.Windows.Forms.TextBox txtLeft;
+   private KeyTextBox txtLeft;
    private System.Windows.Forms.Label lblLeft;
-   private System.Windows.Forms.TextBox txtUp;
+   private KeyTextBox txtUp;
    private System.Windows.Forms.Label lblUp;
    private System.Windows.Forms.ComboBox cboPlayer;
    private System.Windows.Forms.Label lblPlayer;
@@ -107,21 +121,21 @@ public class frmControls : System.Windows.Forms.Form
       this.cboController = new System.Windows.Forms.ComboBox();
       this.rdoController = new System.Windows.Forms.RadioButton();
       this.rdoKeyboard = new System.Windows.Forms.RadioButton();
-      this.txtButton4 = new System.Windows.Forms.TextBox();
+      this.txtButton4 = new KeyTextBox();
       this.lblButton4 = new System.Windows.Forms.Label();
-      this.txtButton3 = new System.Windows.Forms.TextBox();
+      this.txtButton3 = new KeyTextBox();
       this.lblButton3 = new System.Windows.Forms.Label();
-      this.txtButton2 = new System.Windows.Forms.TextBox();
+      this.txtButton2 = new KeyTextBox();
       this.lblButton2 = new System.Windows.Forms.Label();
-      this.txtButton1 = new System.Windows.Forms.TextBox();
+      this.txtButton1 = new KeyTextBox();
       this.lblButton1 = new System.Windows.Forms.Label();
-      this.txtDown = new System.Windows.Forms.TextBox();
+      this.txtDown = new KeyTextBox();
       this.lblDown = new System.Windows.Forms.Label();
-      this.txtRight = new System.Windows.Forms.TextBox();
+      this.txtRight = new KeyTextBox();
       this.lblRight = new System.Windows.Forms.Label();
-      this.txtLeft = new System.Windows.Forms.TextBox();
+      this.txtLeft = new KeyTextBox();
       this.lblLeft = new System.Windows.Forms.Label();
-      this.txtUp = new System.Windows.Forms.TextBox();
+      this.txtUp = new KeyTextBox();
       this.lblUp = new System.Windows.Forms.Label();
       this.cboPlayer = new System.Windows.Forms.ComboBox();
       this.lblPlayer = new System.Windows.Forms.Label();
@@ -187,7 +201,6 @@ public class frmControls : System.Windows.Forms.Form
       this.txtButton4.Size = new System.Drawing.Size(64, 20);
       this.txtButton4.TabIndex = 39;
       this.txtButton4.Text = "";
-      this.txtButton4.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
       // 
       // lblButton4
       // 
@@ -210,7 +223,6 @@ public class frmControls : System.Windows.Forms.Form
       this.txtButton3.Size = new System.Drawing.Size(64, 20);
       this.txtButton3.TabIndex = 37;
       this.txtButton3.Text = "";
-      this.txtButton3.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
       // 
       // lblButton3
       // 
@@ -233,7 +245,6 @@ public class frmControls : System.Windows.Forms.Form
       this.txtButton2.Size = new System.Drawing.Size(64, 20);
       this.txtButton2.TabIndex = 35;
       this.txtButton2.Text = "";
-      this.txtButton2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
       // 
       // lblButton2
       // 
@@ -256,7 +267,6 @@ public class frmControls : System.Windows.Forms.Form
       this.txtButton1.Size = new System.Drawing.Size(64, 20);
       this.txtButton1.TabIndex = 33;
       this.txtButton1.Text = "";
-      this.txtButton1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
       // 
       // lblButton1
       // 
@@ -279,7 +289,6 @@ public class frmControls : System.Windows.Forms.Form
       this.txtDown.Size = new System.Drawing.Size(64, 20);
       this.txtDown.TabIndex = 31;
       this.txtDown.Text = "";
-      this.txtDown.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
       // 
       // lblDown
       // 
@@ -302,7 +311,6 @@ public class frmControls : System.Windows.Forms.Form
       this.txtRight.Size = new System.Drawing.Size(64, 20);
       this.txtRight.TabIndex = 29;
       this.txtRight.Text = "";
-      this.txtRight.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
       // 
       // lblRight
       // 
@@ -325,7 +333,6 @@ public class frmControls : System.Windows.Forms.Form
       this.txtLeft.Size = new System.Drawing.Size(64, 20);
       this.txtLeft.TabIndex = 27;
       this.txtLeft.Text = "";
-      this.txtLeft.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
       // 
       // lblLeft
       // 
@@ -348,7 +355,6 @@ public class frmControls : System.Windows.Forms.Form
       this.txtUp.Size = new System.Drawing.Size(64, 20);
       this.txtUp.TabIndex = 25;
       this.txtUp.Text = "";
-      this.txtUp.KeyDown += new System.Windows.Forms.KeyEventHandler(this.KeyBox_KeyDown);
       // 
       // lblUp
       // 
@@ -573,34 +579,31 @@ public class frmControls : System.Windows.Forms.Form
       }
    }
 
-   private void KeyBox_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
+   private void ProcessMessage(KeyTextBox sender, Message m)
    {
-      Microsoft.DirectX.DirectInput.Key[] pressed;
-      do
+      Project.GameWindow.KeyboardState.ProcessMessage(m);
+      if (m.Msg == WM_KEYDOWN)
       {
-         pressed = Project.GameWindow.GetPressedKeys();
-      } while(pressed.Length == 0);
-
-      ((TextBox)sender).Text = System.Enum.Format(typeof(
-         Microsoft.DirectX.DirectInput.Key), pressed[0], "g");
-
-      KeyboardPlayer player = (KeyboardPlayer)Project.GameWindow.Players[SelectedPlayer];
-      if (sender == txtUp)
-         player.key_up = pressed[0];
-      else if (sender == txtLeft)
-         player.key_left = pressed[0];
-      else if (sender == txtRight)
-         player.key_right = pressed[0];
-      else if (sender == txtDown)
-         player.key_down = pressed[0];
-      else if (sender == txtButton1)
-         player.key_button1 = pressed[0];
-      else if (sender == txtButton2)
-         player.key_button2 = pressed[0];
-      else if (sender == txtButton3)
-         player.key_button3 = pressed[0];
-      else if (sender == txtButton4)
-         player.key_button4 = pressed[0];
+         KeyboardState kbs = Project.GameWindow.KeyboardState;
+         sender.Text = System.Enum.Format(typeof(Key), kbs.GetFirstKey(), "g");
+         KeyboardPlayer player = (KeyboardPlayer)Project.GameWindow.Players[SelectedPlayer];
+         if (sender == txtUp)
+            player.key_up = kbs.GetFirstKey();
+         else if (sender == txtLeft)
+            player.key_left = kbs.GetFirstKey();
+         else if (sender == txtRight)
+            player.key_right = kbs.GetFirstKey();
+         else if (sender == txtDown)
+            player.key_down = kbs.GetFirstKey();
+         else if (sender == txtButton1)
+            player.key_button1 = kbs.GetFirstKey();
+         else if (sender == txtButton2)
+            player.key_button2 = kbs.GetFirstKey();
+         else if (sender == txtButton3)
+            player.key_button3 = kbs.GetFirstKey();
+         else if (sender == txtButton4)
+            player.key_button4 = kbs.GetFirstKey();
+      }
    }
 
    private void cboController_SelectedIndexChanged(object sender, System.EventArgs e)
@@ -611,6 +614,8 @@ public class frmControls : System.Windows.Forms.Form
 
    private void cboPlayer_SelectedIndexChanged(object sender, System.EventArgs e)
    {
+      // Required for cross-thread access
+      currentPlayer = SelectedPlayer;
       LoadCurrentControls();
    }
 
@@ -621,14 +626,14 @@ public class frmControls : System.Windows.Forms.Form
          bLoading = true;
          KeyboardPlayer player = (KeyboardPlayer)Project.GameWindow.Players[SelectedPlayer];
          rdoKeyboard.Checked = true;
-         txtUp.Text = System.Enum.Format(typeof(Microsoft.DirectX.DirectInput.Key), player.key_up, "g");
-         txtLeft.Text = System.Enum.Format(typeof(Microsoft.DirectX.DirectInput.Key), player.key_left, "g");
-         txtRight.Text = System.Enum.Format(typeof(Microsoft.DirectX.DirectInput.Key), player.key_right, "g");
-         txtDown.Text = System.Enum.Format(typeof(Microsoft.DirectX.DirectInput.Key), player.key_down, "g");
-         txtButton1.Text = System.Enum.Format(typeof(Microsoft.DirectX.DirectInput.Key), player.key_button1, "g");
-         txtButton2.Text = System.Enum.Format(typeof(Microsoft.DirectX.DirectInput.Key), player.key_button2, "g");
-         txtButton3.Text = System.Enum.Format(typeof(Microsoft.DirectX.DirectInput.Key), player.key_button3, "g");
-         txtButton4.Text = System.Enum.Format(typeof(Microsoft.DirectX.DirectInput.Key), player.key_button4, "g");
+         txtUp.Text = System.Enum.Format(typeof(Key), player.key_up, "g");
+         txtLeft.Text = System.Enum.Format(typeof(Key), player.key_left, "g");
+         txtRight.Text = System.Enum.Format(typeof(Key), player.key_right, "g");
+         txtDown.Text = System.Enum.Format(typeof(Key), player.key_down, "g");
+         txtButton1.Text = System.Enum.Format(typeof(Key), player.key_button1, "g");
+         txtButton2.Text = System.Enum.Format(typeof(Key), player.key_button2, "g");
+         txtButton3.Text = System.Enum.Format(typeof(Key), player.key_button3, "g");
+         txtButton4.Text = System.Enum.Format(typeof(Key), player.key_button4, "g");
          bLoading = false;
       }
       else
@@ -651,7 +656,7 @@ public class frmControls : System.Windows.Forms.Form
       }
    }
 
-   private void ControllerButtonPressed(int button)
+   private void ControllerButtonPressed(byte button)
    {
       ControllerPlayer plr = (ControllerPlayer)Project.GameWindow.Players[SelectedPlayer];
       if (txtCurJButton == txtJButton1)
@@ -669,18 +674,21 @@ public class frmControls : System.Windows.Forms.Form
    private void ReadControllerLoop()
    {
       ControllerButtonPressedDelegate cbp = new ControllerButtonPressedDelegate(ControllerButtonPressed);
-      while(!bExitControllerThread)
+      while (!bExitControllerThread)
       {
          Project.GameWindow.ReadControllers();
-         byte[] buttons = ((Microsoft.DirectX.DirectInput.JoystickState)
-            Project.GameWindow.GetControllerState(((ControllerPlayer)Project.GameWindow.Players[
-            SelectedPlayer]).deviceNumber)).GetButtons();
-         for(int button=0; button<buttons.Length; button++)
+         for (byte button = 0; button < 32; button++)
          {
-            if ((pressedButtons != null) && (pressedButtons[button] == 0) && (buttons[button] != 0))
-               this.Invoke(cbp, new object[] {button});
+            if (((pressedButtons & (1 << button)) == 0) &&
+               (Project.GameWindow.GetControllerState(((ControllerPlayer)Project.GameWindow.Players[
+            currentPlayer]).deviceNumber)[button]))
+            {
+               this.Invoke(cbp, new object[] { button });
+               pressedButtons |= (1 << button);
+            }
+            else
+               pressedButtons &= ~(1 << button);
          }
-         pressedButtons = buttons;
          System.Threading.Thread.Sleep(0);
       }
    }

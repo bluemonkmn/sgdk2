@@ -1,9 +1,9 @@
 <?xml version="1.0" standalone="yes"?>
 <ProjectDataset>
   <xs:schema id="ProjectDataset" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop">
-    <xs:element name="ProjectDataset" msdata:IsDataSet="true" msprop:SchemaVersion="1">
+    <xs:element name="ProjectDataset" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:SchemaVersion="1">
       <xs:complexType>
-        <xs:choice maxOccurs="unbounded">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="GraphicSheet">
             <xs:complexType>
               <xs:sequence>
@@ -7566,8 +7566,6 @@ namespace CustomObjects
   </SourceCode>
   <SourceCode Name="Message.cs" IsCustomObject="true" DependsOn="">
     <Text>using System.ComponentModel;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
 using System.Drawing;
 using System;
 
@@ -7602,7 +7600,7 @@ namespace CustomObjects
          Initialize();
          this.message = message;
          Display disp = Project.GameWindow.GameDisplay;
-         Rectangle rectText = disp.D3DFont.MeasureString(disp.Sprite, message, 0, Color.White);
+         Rectangle rectText = new Rectangle(0, 0, 160, 120);
          Rectangle container;
          this.options = options;
          if (PlayerIndex &lt;= 0)
@@ -7645,13 +7643,11 @@ namespace CustomObjects
              (rectMessage.X + rectMessage.Width &lt;= disp.DisplayRectangle.Width) &amp;&amp;
              (rectMessage.Y + rectMessage.Height &lt;= disp.DisplayRectangle.Height))
          {
-            disp.Device.ColorFill(disp.TargetSurface, rectMessage, Color.DarkBlue);
-            disp.Sprite.Transform = Microsoft.DirectX.Matrix.Identity;
-            disp.D3DFont.DrawText(disp.Sprite, message, rectText, DrawTextFormat.Left | DrawTextFormat.WordBreak, Color.White);
-            disp.D3DLine.Antialias = true;
-            disp.D3DLine.Width = 2.5f;
-            disp.D3DLine.Draw(new Vector2[] {new Vector2(rectMessage.X,rectMessage.Y), new Vector2(rectMessage.Right,rectMessage.Y), new Vector2(rectMessage.Right,rectMessage.Bottom), new Vector2(rectMessage.X,rectMessage.Bottom), new Vector2(rectMessage.X,rectMessage.Y)}, Color.Yellow.ToArgb());
-            disp.Sprite.Flush();
+            disp.SetColor(Color.DarkBlue);
+            disp.FillRectangle(rectMessage);
+            disp.DrawText(message, rectText.X, rectText.Y, rectText.Width, false, StringAlignment.Near);
+            disp.SetColor(Color.Yellow);
+            disp.DrawRectangle(rectMessage, 0);
          }
       }
 
@@ -7766,9 +7762,13 @@ namespace CustomObjects
          messageList.Clear();
       }
    }
-}
-
-</Text>
+}</Text>
+  </SourceCode>
+  <SourceCode Name="OpenTK.dll" IsCustomObject="true">
+    <Text>/*
+   Because this is a binary file, this text only
+   serves as a comment and will not be compiled.
+*/</Text>
   </SourceCode>
   <Project DisplayMode="m800x600x24" Windowed="true" TitleText="Scrolling Game Development Kit Sample Project" StartMap="Menu" OverlayMap="" MaxPlayers="2" MaxViews="2" Credits="SGDK2 Engine: http://sgdk2.sf.net&#xD;&#xA;Graphics: Jeff Cruz (jeffc@comdel.net)&#xD;&#xA;Sound/Music support provided by FMOD: http://www.fmod.org/&#xD;&#xA;Music: Ceekayed (sampo.narhi@gmail.com)&#xD;&#xA;Spectrum Analyzer Display: Seth Marty&#xD;&#xA;">
     <Comments />

@@ -2,11 +2,12 @@
  * Created using Scrolling Game Development Kit 2.0
  * See Project.cs for copyright/licensing details
  */
+
 using System;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
-using System.Windows.Forms;
 using System.Collections;
+using OpenTK;
+using OpenTK.Graphics.OpenGL;
+using OpenTK.Graphics.OpenGL.Enums;
 
 /// <summary>
 /// Specifies a size and color depth for a display.
@@ -26,60 +27,27 @@ public enum GameDisplayMode
    m1280x1024x24
 }
 
+public enum DisplayOperation
+{
+   None = 0,
+   DrawFrames,
+   DrawLines,
+   DrawPoints
+}
+
 /// <summary>
 /// Manages the display device on which real-time game graphics are drawn
 /// </summary>
 [Serializable()]
-public class Display : ScrollableControl, System.Runtime.Serialization.ISerializable
+public class Display : GLControl, IDisposable
 {
-   #region Win32 API Constants
-   public const int WS_EX_CLIENTEDGE = unchecked((int)0x00000200);
-   public const int WS_BORDER = unchecked((int)0x00800000);
-   #endregion
-
-   #region Events
-   public event EventHandler WindowedChanged;
-   #endregion
-
    #region Embedded Classes
-   private class CoverWindow : Form
-   {
-      public Display m_LinkedControl;
-
-      public CoverWindow(Display LinkedControl)
-      {
-         m_LinkedControl = LinkedControl;
-         FormBorderStyle = FormBorderStyle.None;
-         System.Drawing.Size sz = Display.GetScreenSize(LinkedControl.GameDisplayMode);
-         SetBounds(0,0,sz.Width,sz.Height);
-         ShowInTaskbar = false;
-         Show();
-      }
-
-      protected override void OnMouseMove(MouseEventArgs e)
-      {
-         m_LinkedControl.OnMouseMove(e);
-      }
-      protected override void OnKeyDown(KeyEventArgs e)
-      {
-         m_LinkedControl.OnKeyDown(e);
-      }
-   }
-
-   /// <summary>
-   /// Manages a reference to a graphic sheet ("texture") in the hardware.
-   /// </summary>
-   /// <remarks>This class tracks an instance of a Direct3D texture and provides
-   /// a layer of indirection, allowing a frameset to refer to a texture (via this
-   /// object) while the texture (and even the whole display) are destroyed and
-   /// re-created, without losing track of which graphics it is associated with.
-   /// </remarks>
    public class TextureRef : IDisposable
    {
       private string m_Name;
-      private Texture m_Texture = null;
+      private int m_Texture = 0;
       private Display m_Display;
-      
+
       public TextureRef(Display Disp, string Name)
       {
          m_Display = Disp;
@@ -94,17 +62,14 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
          }
       }
 
-      public void Reset()
-      {
-         m_Texture = null;
-      }
-
-      public Texture Texture
+      public int Texture
       {
          get
          {
-            if (m_Texture == null)
+            if (m_Texture == 0)
+            {
                m_Texture = m_Display.GetTexture(m_Name);
+            }
             return m_Texture;
          }
       }
@@ -112,10 +77,15 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
       #region IDisposable Members
       public void Dispose()
       {
-         if (m_Texture != null)
+         if (m_Texture != 0)
          {
-            m_Texture.Dispose();
-            m_Texture = null;
+            if (m_Display.Context != null)
+            {
+               if (!m_Display.Context.IsCurrent)
+                  m_Display.MakeCurrent();
+               GL.DeleteTextures(1, ref m_Texture);
+            }
+            m_Texture = 0;
          }
       }
       #endregion
@@ -123,44 +93,48 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
    #endregion
 
    #region Fields
-   private System.Collections.Specialized.HybridDictionary m_TextureRefs = null;
-   private Device m_d3d = null;
-   private PresentParameters m_pp;
+   private System.Collections.Generic.Dictionary<string, WeakReference> m_TextureRefs = null;
    private GameDisplayMode m_GameDisplayMode;
-   private BorderStyle m_BorderStyle;
-   private CoverWindow m_CoverWindow = null;
-   private Sprite m_Sprite = null;
-   private Font m_Font = null;
-   private Line m_Line = null;
-   private Surface m_targetSurface = null;
+   private DisplayOperation m_currentOp;
+   private TextureRef m_currentTexture = null;
+   private bool scaleNativeSize = false;
+   private OpenTK.Fonts.TextureFont m_GLFont = null;
+   private System.Drawing.Font m_SysFont = null;
    private string fontName = null;
    private int fontSize = 0;
-
+   public const TextureTarget texTarget = TextureTarget.TextureRectangleArb;
+   public const EnableCap texCap = (EnableCap)ArbTextureRectangle.TextureRectangleArb;
+   private static byte[] shadedStipple = new byte[] {
+      0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+      0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+      0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+      0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+      0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+      0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+      0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+      0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+      0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+      0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+      0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+      0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+      0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+      0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+      0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
+      0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA};
+   private System.Drawing.Point endPoint = System.Drawing.Point.Empty;
+   private System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, OpenTK.Fonts.TextHandle>> m_cachedText = null;
+   public const int TextCacheSize = 5;
    #endregion
 
    #region Initialization and clean-up
-   public Display() : this(GameDisplayMode.m640x480x24, true)
+   public Display()
+      : this(GameDisplayMode.m640x480x24, true)
    {
    }
 
    public Display(GameDisplayMode mode, bool windowed)
+      : base(CreateDisplayMode(mode, windowed))
    {
-      this.SetStyle(ControlStyles.ResizeRedraw, true);
-      this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
-      this.SetStyle(ControlStyles.UserPaint, true);
-      this.SetStyle(ControlStyles.Opaque, true);
-
-      m_pp = new PresentParameters();
-      m_pp.Windowed = windowed;
-      m_pp.SwapEffect = SwapEffect.Copy; // Allows ScissorTestEnable to work in full screen
-      // Allow GetGraphics
-      m_pp.PresentFlag = PresentFlag.LockableBackBuffer;
-      MakeValidPresentParameters(mode, m_pp);
-      if (!windowed)
-      {
-         m_CoverWindow = new CoverWindow(this);
-         Recreate();
-      }
       m_GameDisplayMode = mode;
    }
 
@@ -169,202 +143,65 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
       if (disposing)
       {
          DisposeAllTextures();
-         if (m_Sprite != null)
-         {
-            m_Sprite.Dispose();
-            m_Sprite = null;
-         }
-         if (m_Font != null)
-         {
-            m_Font.Dispose();
-            m_Font = null;
-         }
-         if (m_Line != null)
-         {
-            m_Line.Dispose();
-            m_Line = null;
-         }
-         if (m_targetSurface != null)
-         {
-            m_targetSurface.Dispose();
-            m_targetSurface = null;
-         }
-         if (m_d3d != null)
-         {
-            m_d3d.Dispose();
-            m_d3d = null;
-         }
-         if (m_CoverWindow != null)
-         {
-            m_CoverWindow.m_LinkedControl = null;
-            m_CoverWindow.Close();
-            m_CoverWindow.Dispose();
-            m_CoverWindow = null;
-         }
+         if (m_GLFont != null)
+            m_GLFont.Dispose();
+         m_GLFont = null;
+         if (m_SysFont != null)
+            if (m_SysFont != System.Drawing.SystemFonts.DefaultFont)
+               m_SysFont.Dispose();
+         m_SysFont = null;
       }
-      base.Dispose (disposing);
+      base.Dispose(disposing);
    }
    #endregion
 
    #region Overrides
-   protected override void OnCreateControl()
+   protected override bool IsInputKey(System.Windows.Forms.Keys keyData)
    {
-      m_pp.DeviceWindow = this;
-      m_pp.SwapEffect = SwapEffect.Copy; // Allows ScissorTestEnable to work in full screen
-
-      try
-      {
-         if (m_d3d == null)
-         {
-            Recreate();
-         }
-      }
-      catch(Exception ex)
-      {
-         MessageBox.Show(this, "Error creating display device: " + ex.ToString(), "Error Creating Device", MessageBoxButtons.OK, MessageBoxIcon.Error);
-      }
-
-      base.OnCreateControl ();
+      return true;
    }
-
-   protected override void OnKeyDown(KeyEventArgs e)
-   {
-      if ((e.KeyCode == Keys.Enter) && e.Alt)
-         Windowed = !Windowed;
-      base.OnKeyDown (e);
-   }
-
-   protected override CreateParams CreateParams
-   {
-      get
-      {
-         CreateParams cp = base.CreateParams;
-         cp.ExStyle &= ~WS_EX_CLIENTEDGE;
-         cp.Style &= ~WS_BORDER;
-
-         if (!m_pp.Windowed)
-            return cp;
-
-         switch (m_BorderStyle)
-         {
-            case BorderStyle.Fixed3D:
-               cp.ExStyle |= WS_EX_CLIENTEDGE;
-               break;
-            case BorderStyle.FixedSingle:
-               cp.Style |= WS_BORDER;
-               break;
-         }
-
-         return cp;
-      }
-   }
-
    protected override void OnResize(EventArgs e)
    {
-      if (this.Size.IsEmpty)
+      base.OnResize(e);
+      GL.Viewport(0, 0, ClientSize.Width, ClientSize.Height);
+      GL.MatrixMode(MatrixMode.Projection);
+      GL.LoadIdentity();
+      if (scaleNativeSize)
       {
-         DisposeAllTextures();
-         if (m_Sprite != null)
-         {
-            m_Sprite.Dispose();
-            m_Sprite = null;
-         }
-         if (m_Font != null)
-         {
-            m_Font.Dispose();
-            m_Font = null;
-         }
-         if (m_Line != null)
-         {
-            m_Line.Dispose();
-            m_Line = null;
-         }
-         if (m_targetSurface != null)
-         {
-            m_targetSurface.Dispose();
-            m_targetSurface = null;
-         }
-         if (m_d3d != null)
-         {
-            m_d3d.Dispose();
-            m_d3d = null;
-         }
+         System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode);
+         GL.Ortho(0, nativeSize.Width, nativeSize.Height, 0, -1, 1);
       }
-      else if ((m_d3d == null) && Created)
+      else
       {
-         Recreate();
+         GL.Ortho(0, ClientSize.Width, ClientSize.Height, 0, -1, 1);
       }
-      else if ((m_d3d != null) && (m_pp != null) && (m_pp.Windowed))
-      {
-         m_pp.BackBufferHeight = m_pp.BackBufferWidth = 0;
-         if (m_Sprite != null)
-         {
-            m_Sprite.Dispose();
-            m_Sprite = null;
-         }
-         if (m_Font != null)
-         {
-            m_Font.Dispose();
-            m_Font = null;
-         }
-         if (m_Line != null)
-         {
-            m_Line.Dispose();
-            m_Line = null;
-         }
-         if (m_targetSurface != null)
-         {
-            m_targetSurface.Dispose();
-            m_targetSurface = null;
-         }
-         m_d3d.Reset(m_pp);
-      }
-      base.OnResize (e);
-   }
-
-   protected override void OnPaint(PaintEventArgs e)
-   {
-      if ((m_d3d == null) || (m_d3d.Disposed))
-         return;
-      int coop;
-      if (!m_d3d.CheckCooperativeLevel(out coop))
-      {
-         Microsoft.DirectX.Direct3D.ResultCode coopStatus = (Microsoft.DirectX.Direct3D.ResultCode)System.Enum.Parse(typeof(Microsoft.DirectX.Direct3D.ResultCode), coop.ToString());
-         if (coopStatus == Microsoft.DirectX.Direct3D.ResultCode.DeviceNotReset)
-            Recreate();
-         else
-            return;
-      }
-      base.OnPaint (e);
    }
    #endregion
 
    #region Private members
-   private Texture GetTexture(string Name)
+   private int GetTexture(string Name)
    {
-      return Texture.FromBitmap(m_d3d,
-         (System.Drawing.Bitmap)Project.Resources.GetObject(Name), 0, Pool.Managed);
+      int texture;
+      GL.GenTextures(1, out texture);
+      GL.BindTexture(texTarget, texture);
+      GL.TexParameter(texTarget, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+      GL.TexParameter(texTarget, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+      System.Drawing.Bitmap bmpTexture = (System.Drawing.Bitmap)Project.Resources.GetObject(Name);
+      System.Drawing.Imaging.BitmapData bits = bmpTexture.LockBits(new System.Drawing.Rectangle(0, 0, bmpTexture.Width, bmpTexture.Height),
+         System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+      try
+      {
+         GL.TexImage2D(texTarget, 0, PixelInternalFormat.Rgba8, bmpTexture.Width, bmpTexture.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, bits.Scan0);
+      }
+      finally
+      {
+         bmpTexture.UnlockBits(bits);
+      }
+      return texture;
    }
-
    #endregion
 
    #region Public members
-   /// <summary>
-   /// Defines how the edges of the display appear when embedded in a window.
-   /// </summary>
-   public BorderStyle BorderStyle
-   {
-      get
-      {
-         return m_BorderStyle;
-      }
-      set
-      {
-         m_BorderStyle = value;
-         UpdateStyles();
-      }
-   }
-
    /// <summary>
    /// Retrieve a reference to a hardware-supported graphic sheet ("texture") given its name
    /// </summary>
@@ -373,11 +210,11 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
    public TextureRef GetTextureRef(string Name)
    {
       if (m_TextureRefs == null)
-         m_TextureRefs = new System.Collections.Specialized.HybridDictionary();
+         m_TextureRefs = new System.Collections.Generic.Dictionary<string, WeakReference>();
 
-      if (m_TextureRefs.Contains(Name))
+      if (m_TextureRefs.ContainsKey(Name))
       {
-         WeakReference wr = (WeakReference)m_TextureRefs[Name];
+         WeakReference wr = m_TextureRefs[Name];
          if (wr.IsAlive)
             return (TextureRef)wr.Target;
       }
@@ -394,96 +231,11 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
    {
       if (m_TextureRefs != null)
       {
-         foreach (DictionaryEntry de in m_TextureRefs)
+         foreach (System.Collections.Generic.KeyValuePair<string, WeakReference> de in m_TextureRefs)
          {
-            if (((WeakReference)de.Value).IsAlive)
-               ((TextureRef)((WeakReference)de.Value).Target).Dispose();
+            if (de.Value.IsAlive)
+               ((TextureRef)(de.Value).Target).Dispose();
          }
-      }
-   }
-
-   /// <summary>
-   /// Returns the Direct3D device supporting this display object
-   /// </summary>
-   public Device Device
-   {
-      get
-      {
-         return m_d3d;
-      }
-   }
-
-   /// <summary>
-   /// Gets or sets whether the display is running in windowed mode versus full screen mode.
-   /// </summary>
-   public bool Windowed
-   {
-      set
-      {
-         if ((DesignMode) && (!value))
-            throw new InvalidOperationException("Cannot use full screen in design mode");
-
-         if (value != m_pp.Windowed)
-         {
-            DisposeAllTextures();
-            if (m_Sprite != null)
-            {
-               m_Sprite.Dispose();
-               m_Sprite = null;
-            }
-            if (m_Font != null)
-            {
-               m_Font.Dispose();
-               m_Font = null;
-            }
-            if (m_Line != null)
-            {
-               m_Line.Dispose();
-               m_Line = null;
-            }
-            if (m_targetSurface != null)
-            {
-               m_targetSurface.Dispose();
-               m_targetSurface = null;
-            }
-            if (m_d3d != null)
-            {
-               m_d3d.Dispose();
-               m_d3d = null;
-            }
-         }
-         else
-            return;
-
-         m_pp.Windowed = value;
-         m_pp.SwapEffect = SwapEffect.Copy; // Allows ScissorTestEnable to work in full screen
-
-         if (value)
-         {
-            m_pp.DeviceWindow = this;
-            MakeValidPresentParameters(GameDisplayMode, m_pp);
-            if (m_CoverWindow != null)
-            {
-               m_CoverWindow.m_LinkedControl = null;
-               m_CoverWindow.Close();
-               m_CoverWindow.Dispose();
-               m_CoverWindow = null;
-            }
-            Recreate();
-         }
-         else
-         {
-            m_CoverWindow = new CoverWindow(this);
-            m_pp.DeviceWindow = m_CoverWindow;
-            MakeValidPresentParameters(GameDisplayMode, m_pp);
-            Recreate();
-         }
-         if (WindowedChanged != null)
-            WindowedChanged(this, null);
-      }
-      get
-      {
-         return m_pp.Windowed;
       }
    }
 
@@ -494,25 +246,25 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
    /// <returns>Width and height in pixels</returns>
    public static System.Drawing.Size GetScreenSize(GameDisplayMode mode)
    {
-      switch(mode)
+      switch (mode)
       {
          case GameDisplayMode.m320x240x16:
          case GameDisplayMode.m320x240x24:
-            return new System.Drawing.Size(320,240);
+            return new System.Drawing.Size(320, 240);
          case GameDisplayMode.m640x480x16:
          case GameDisplayMode.m640x480x24:
-            return new System.Drawing.Size(640,480);
+            return new System.Drawing.Size(640, 480);
          case GameDisplayMode.m800x600x16:
          case GameDisplayMode.m800x600x24:
-            return new System.Drawing.Size(800,600);
+            return new System.Drawing.Size(800, 600);
          case GameDisplayMode.m1024x768x16:
          case GameDisplayMode.m1024x768x24:
-            return new System.Drawing.Size(1024,768);
+            return new System.Drawing.Size(1024, 768);
          case GameDisplayMode.m1280x1024x16:
          case GameDisplayMode.m1280x1024x24:
-            return new System.Drawing.Size(1280,1024);
+            return new System.Drawing.Size(1280, 1024);
       }
-      return new System.Drawing.Size(0,0);
+      return new System.Drawing.Size(0, 0);
    }
 
    /// <summary>
@@ -521,84 +273,28 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
    /// </summary>
    /// <param name="mode">Game requested display mode</param>
    /// <param name="pp">Object to finish populating</param>
-   public static void MakeValidPresentParameters(GameDisplayMode mode, PresentParameters pp)
+   public static DisplayMode CreateDisplayMode(GameDisplayMode mode, bool windowed)
    {
-      if (pp.Windowed)
+      System.Drawing.Size screenSize = GetScreenSize(mode);
+      int depth;
+
+      // TODO: Check for hardware support
+      /*         if (!Manager.CheckDeviceType(Manager.Adapters.Default.Adapter, DeviceType.Hardware, Manager.Adapters.Default.CurrentDisplayMode.Format, pp.BackBufferFormat, pp.Windowed))
+                  throw new ApplicationException("No hardware support for windowed mode on default display adapter");*/
+      switch (mode)
       {
-         pp.BackBufferFormat = Format.Unknown;
-         pp.BackBufferWidth = pp.BackBufferHeight = 0;
-         pp.FullScreenRefreshRateInHz = 0;
-
-         if (!Manager.CheckDeviceType(Manager.Adapters.Default.Adapter, DeviceType.Hardware, Manager.Adapters.Default.CurrentDisplayMode.Format, pp.BackBufferFormat, pp.Windowed))
-            throw new ApplicationException("No hardware support for windowed mode on default display adapter");
+         case GameDisplayMode.m320x240x16:
+         case GameDisplayMode.m640x480x16:
+         case GameDisplayMode.m800x600x16:
+         case GameDisplayMode.m1024x768x16:
+         case GameDisplayMode.m1280x1024x16:
+            depth = 16;
+            break;
+         default:
+            depth = 24;
+            break;
       }
-      else
-      {
-         foreach(DisplayMode dm in Manager.Adapters.Default.SupportedDisplayModes)
-         {
-            System.Drawing.Size s = GetScreenSize(mode);
-            if ((dm.Width != s.Width) || (dm.Height != s.Height))
-               continue;
-
-            switch (mode)
-            {
-               case GameDisplayMode.m320x240x16:
-               case GameDisplayMode.m640x480x16:
-               case GameDisplayMode.m800x600x16:
-               case GameDisplayMode.m1024x768x16:
-               case GameDisplayMode.m1280x1024x16:
-               switch (dm.Format)
-               {
-                  case Format.A4R4G4B4:
-                  case Format.A1R5G5B5:
-                  case Format.R5G6B5:
-                  case Format.X1R5G5B5:
-                  case Format.X4R4G4B4:
-                     // These are OK 16-bit formats. Break out of the switch and proceed
-                     break;
-                  default:
-                     // Not a 16-bit format, continue to the next mode
-                     continue;
-               }
-                  break;
-               default:
-               switch (dm.Format)
-               {
-                  case Format.A2B10G10R10:
-                  case Format.A2R10G10B10:
-                  case Format.A8B8G8R8:
-                  case Format.A8R8G8B8:
-                  case Format.R8G8B8:
-                  case Format.X8B8G8R8:
-                  case Format.X8R8G8B8:
-                     // These are OK 32-bit formats. Break out of the switch and proceed
-                     break;
-                  default:
-                     // Not a 32-bit format, continue to the next mode
-                     continue;
-               }
-                  break;
-            }
-
-            if (Manager.CheckDeviceType(Manager.Adapters.Default.Adapter, DeviceType.Hardware, dm.Format, dm.Format, pp.Windowed))
-            {
-               // This can improve performance in some cases, but I have not
-               // observed much difference in my testing.
-               //m_pp.BackBufferCount = 2; 
-               pp.BackBufferWidth = dm.Width;
-               pp.BackBufferHeight = dm.Height;
-               pp.BackBufferFormat = dm.Format;
-               if (dm.RefreshRate > pp.FullScreenRefreshRateInHz)
-                  pp.FullScreenRefreshRateInHz = dm.RefreshRate;
-            }
-         }
-         if (pp.FullScreenRefreshRateInHz == 0)
-            throw new ApplicationException("Current display does not support mode " + mode.ToString() +".");
-      }
-
-      string errMsg = ValidateAdapter(Manager.Adapters.Default);
-      if (errMsg != null)
-         throw new ApplicationException("Default display adapter is inadequate: " + errMsg);
+      return new DisplayMode(screenSize.Width, screenSize.Height, 0, depth, !windowed);
    }
 
    /// <summary>
@@ -616,205 +312,503 @@ public class Display : ScrollableControl, System.Runtime.Serialization.ISerializ
       set
       {
          m_GameDisplayMode = value;
-         ClientSize = GetScreenSize(value);
-         if (!m_pp.Windowed)
+         GL.MatrixMode(MatrixMode.Projection);
+         GL.LoadIdentity();
+         System.Drawing.Size naturalSize = GetScreenSize(value);
+         GL.Ortho(0, naturalSize.Width, naturalSize.Height, 0, -1, 1);
+      }
+   }
+
+   /// <summary>
+   /// Returns the GLFont object used for drawing text on this display.
+   /// </summary>
+   public OpenTK.Fonts.TextureFont GLFont
+   {
+      get
+      {
+         if (m_GLFont == null)
          {
-            MakeValidPresentParameters(m_GameDisplayMode, m_pp);
-            if (m_Sprite != null)
-            {
-               m_Sprite.Dispose();
-               m_Sprite = null;
-            }
-            if (m_Font != null)
-            {
-               m_Font.Dispose();
-               m_Font = null;
-            }
-            if (m_Line != null)
-            {
-               m_Line.Dispose();
-               m_Line = null;
-            }
-            if (m_targetSurface != null)
-            {
-               m_targetSurface.Dispose();
-               m_targetSurface = null;
-            }
-            m_d3d.Reset(m_pp);
+            m_GLFont = new OpenTK.Fonts.TextureFont(SysFont);
          }
+         return m_GLFont;
       }
    }
 
    /// <summary>
-   /// Frees and re-creates all resources managed by the display
+   /// Return the System level font on which the <see cref="GLFont"/> is based
    /// </summary>
-   public void Recreate()
-   {
-      DisposeAllTextures();
-      if (m_Sprite != null)
-      {
-         m_Sprite.Dispose();
-         m_Sprite = null;
-      }
-      if (m_Font != null)
-      {
-         m_Font.Dispose();
-         m_Font = null;
-      }
-      if (m_Line != null)
-      {
-         m_Line.Dispose();
-         m_Line = null;
-      }
-      if (m_targetSurface != null)
-      {
-         m_targetSurface.Dispose();
-         m_targetSurface = null;
-      }
-      if (m_d3d != null)
-         m_d3d.Dispose();
-      if (Windowed || (m_CoverWindow == null))
-         m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, this, CreateFlags.SoftwareVertexProcessing, m_pp);
-      else
-         m_d3d = new Device(Manager.Adapters.Default.Adapter, DeviceType.Hardware, m_CoverWindow, CreateFlags.SoftwareVertexProcessing, m_pp);
-      m_d3d.DeviceReset += new EventHandler(d3d_DeviceReset);
-   }
-   
-   private static string ValidateAdapter(AdapterInformation adapter)
-   {
-      Caps caps = Manager.GetDeviceCaps(adapter.Adapter, DeviceType.Hardware);
-      if (!caps.PrimitiveMiscCaps.SupportsBlendOperation)
-         return "Inadequate hardware support for alpha blending";
-      if (!caps.TextureCaps.SupportsAlpha)
-         return "Hardware does not support textures with alpha";
-      if (!caps.RasterCaps.SupportsScissorTest)
-         return "No hardware support for clipping";
-      if (!caps.TextureOperationCaps.SupportsModulate)
-         return "No hardware support for color modulation";
-      return null;
-   }
-   
-   /// <summary>
-   /// Returns the Direct3D Sprite object implementing this display's ability to draw graphics.
-   /// </summary>
-   public Sprite Sprite
+   public System.Drawing.Font SysFont
    {
       get
       {
-         if ((m_Sprite == null) && (m_d3d != null))
-            m_Sprite = new Sprite(m_d3d);
-         return m_Sprite;
-      }
-   }
-
-   /// <summary>
-   /// Returns the Direct3D Font object implementing this display's ability to draw text.
-   /// </summary>
-   public Font D3DFont
-   {
-      get
-      {
-         if ((m_Font == null) && (m_d3d != null))
+         if (m_SysFont == null)
          {
             if (fontName == null)
-            {
-               m_Font = new Microsoft.DirectX.Direct3D.Font(m_d3d, Font);
-            }
+               m_SysFont = System.Drawing.SystemFonts.DefaultFont;
             else
-            {
-               Microsoft.DirectX.Direct3D.FontDescription desc = new Microsoft.DirectX.Direct3D.FontDescription();
-               desc.FaceName = fontName;
-               desc.Height = fontSize;
-               m_Font = new Microsoft.DirectX.Direct3D.Font(m_d3d, desc);
-            }
+               m_SysFont = new System.Drawing.Font(fontName, fontSize, System.Drawing.GraphicsUnit.Pixel);
          }
-         return m_Font;
+         return m_SysFont;
       }
    }
 
    /// <summary>
    /// Change the font used for drawing text on the display.
    /// </summary>
-   /// <param name="font">Specifies a font to use</param>
+   /// <param name="name">Specifies a font family name such as Arial</param>
+   /// <param name="size">Specifies the size of the font in pixels</param>
    public void SetFont(string name, int size)
    {
-      if (m_Font != null)
+      if (m_GLFont != null)
       {
-         m_Font.Dispose();
-         m_Font = null;
+         m_GLFont.Dispose();
+         m_GLFont = null;
       }
+
+      if (m_SysFont != null)
+      {
+         if (m_SysFont != System.Drawing.SystemFonts.DefaultFont)
+            m_SysFont.Dispose();
+         m_SysFont = null;
+      }
+
       fontName = name;
-      fontSize = size;      
+      fontSize = size;
    }
-   
+
    /// <summary>
-   /// Returns the Direct3D Line object implementing this displays ability to perform simple line
-   /// drawing operations.
+   /// Draw a rectangle from a texture on the display
    /// </summary>
-   public Line D3DLine
+   /// <param name="texture">Texture from which graphics are copied</param>
+   /// <param name="sourceRect">Specifies the source area of the copy</param>
+   /// <param name="corners">Specifies the corners (counter-clockwise) of the output quadrilateral</param>
+   /// <param name="offsetX">Specifies the horizontal (rightward) offset of the corners</param>
+   /// <param name="offsetY">Specifies the vertical (downward) offset of the corners</param>
+   public void DrawFrame(TextureRef texture, System.Drawing.Rectangle sourceRect, System.Drawing.PointF[] corners, int offsetX, int offsetY)
    {
-      get
+      if ((m_currentOp != DisplayOperation.DrawFrames) ||
+          (m_currentTexture != texture))
       {
-         if ((m_Line == null) && (m_d3d != null))
-            m_Line = new Microsoft.DirectX.Direct3D.Line(m_d3d);
-         return m_Line;
+         if (m_currentOp != DisplayOperation.None)
+            GL.End();
+         else
+         {
+            GL.TexEnv(TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (float)TextureEnvMode.Modulate);
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+            GL.Enable(texCap);
+            GL.Disable(EnableCap.DepthTest);
+            GL.Disable(EnableCap.Lighting);
+            GL.Disable(EnableCap.Dither);
+         }
+         GL.BindTexture(texTarget, texture.Texture);
+         GL.Begin(BeginMode.Quads);
+         m_currentOp = DisplayOperation.DrawFrames;
+         m_currentTexture = texture;
+      }
+      GL.TexCoord2(sourceRect.Left, sourceRect.Top);
+      GL.Vertex2(corners[0].X + offsetX, corners[0].Y + offsetY);
+      GL.TexCoord2(sourceRect.Left, sourceRect.Top + sourceRect.Height);
+      GL.Vertex2(corners[1].X + offsetX, corners[1].Y + offsetY);
+      GL.TexCoord2(sourceRect.Left + sourceRect.Width, sourceRect.Top + sourceRect.Height);
+      GL.Vertex2(corners[2].X + offsetX, corners[2].Y + offsetY);
+      GL.TexCoord2(sourceRect.Left + sourceRect.Width, sourceRect.Top);
+      GL.Vertex2(corners[3].X + offsetX, corners[3].Y + offsetY);
+   }
+
+   /// <summary>
+   /// Finishes any pending drawing operation on the display.
+   /// </summary>
+   public void Flush()
+   {
+      if (m_currentOp != DisplayOperation.None)
+      {
+         GL.End();
+         m_currentOp = DisplayOperation.None;
       }
    }
 
    /// <summary>
-   /// Return DirectX rendering target surface
+   /// Draw series of connected lines connecting points ending in an arrow head.
    /// </summary>
-   /// <remarks>Apparent memory leak in managed D3D requires minimizing number of
-   /// references to GetRenderTarget or program hangs on close.</remarks>
-   public Surface TargetSurface
+   /// <param name="points">Points between which lines are drawn</param>
+   /// <param name="width">Width of the lines</param>
+   /// <param name="pattern">Bit pattern defining the line's dash style</param>
+   /// <param name="antiAlias">Determines whether or not the line should be anti-aliased</param>
+   /// <param name="arrowSize">The length of the arrow head in pixels</param>
+   /// <param name="arrowShorten">The number of pixels (beyond arrowSize) by which the last line is shortened, and the arrowhead pulled back.</param>
+   public void DrawArrow(System.Drawing.Point[] points, int width, short pattern, bool antiAlias, int arrowSize, int arrowShorten)
    {
-      get
+      if (m_currentOp != DisplayOperation.None)
+         GL.End();
+      GL.Disable(texCap);
+      if (antiAlias)
       {
-         if ((m_targetSurface == null) && (m_d3d != null))
-            m_targetSurface = m_d3d.GetRenderTarget(0);
-         return m_targetSurface;
+         GL.Enable(EnableCap.LineSmooth);
+         GL.Hint(HintTarget.LineSmoothHint, HintMode.Nicest);
+         GL.Enable(EnableCap.PolygonSmooth);
+         GL.Hint(HintTarget.PolygonSmoothHint, HintMode.Nicest);
+      }
+      else
+      {
+         GL.Disable(EnableCap.LineSmooth);
+         GL.Disable(EnableCap.PolygonSmooth);
+      }
+      GL.LineWidth(width);
+
+      if ((pattern != unchecked((short)(0xffff))) && (pattern != 0))
+      {
+         GL.Enable(EnableCap.LineStipple);
+         GL.LineStipple(1, pattern);
+      }
+      else
+      {
+         GL.Disable(EnableCap.LineStipple);
+      }
+      GL.Begin(BeginMode.LineStrip);
+      for (int i = 0; i < points.Length - 1; i++)
+         GL.Vertex2(points[i].X, points[i].Y);
+      int x = points[points.Length - 1].X;
+      int y = points[points.Length - 1].Y;
+      int dx = x - points[points.Length - 2].X;
+      int dy = y - points[points.Length - 2].Y;
+      float len = (float)Math.Sqrt(dx * dx + dy * dy);
+      if (len > 1)
+      {
+         float ndx = dx * (arrowSize + arrowShorten) / len;
+         float ndy = dy * (arrowSize + arrowShorten) / len;
+         float x1 = x - ndx;
+         float y1 = y - ndy;
+         GL.Vertex2(x1, y1);
+         ndx = dx * arrowSize / len;
+         ndy = dy * arrowSize / len;
+         GL.End();
+
+         m_currentOp = DisplayOperation.None;
+
+         GL.Enable(EnableCap.PolygonSmooth);
+         GL.Hint(HintTarget.PolygonSmoothHint, HintMode.Nicest);
+         GL.Begin(BeginMode.Triangles);
+         GL.Vertex2(x1 - ndy / 2, y1 + ndx / 2);
+         GL.Vertex2(x1 + ndx, y1 + ndy);
+         GL.Vertex2(x1 + ndy / 2, y1 - ndx / 2);
+         GL.End();
+      }
+      else
+      {
+         GL.Vertex2(points[points.Length - 1].X, points[points.Length - 1].Y);
+         GL.End();
+      }
+      m_currentOp = DisplayOperation.None;
+   }
+
+   /// <summary>
+   /// Begins drawing a series of connected lines.
+   /// </summary>
+   /// <param name="width">Width of the lines.</param>
+   /// <param name="pattern">Bit pattern determining how/if the line is dashed.</param>
+   /// <param name="antiAlias">Determines if the lines are anti-aliased.</param>
+   public void BeginLine(float width, short pattern, bool antiAlias)
+   {
+      if (m_currentOp != DisplayOperation.None)
+         GL.End();
+      GL.Disable(texCap);
+      if (antiAlias)
+      {
+         GL.Enable(EnableCap.LineSmooth);
+         GL.Hint(HintTarget.LineSmoothHint, HintMode.Nicest);
+      }
+      else
+      {
+         GL.Disable(EnableCap.LineSmooth);
+      }
+      GL.LineWidth(width);
+
+      if ((pattern != unchecked((short)(0xffff))) && (pattern != 0))
+      {
+         GL.Enable(EnableCap.LineStipple);
+         GL.LineStipple(1, pattern);
+      }
+      else
+      {
+         GL.Disable(EnableCap.LineStipple);
+      }
+      GL.Begin(BeginMode.LineStrip);
+      m_currentOp = DisplayOperation.DrawLines;
+   }
+
+   /// <summary>
+   /// Continues a line started with <see cref="BeginLine"/>.
+   /// </summary>
+   /// <param name="x">Horizontal coordinate within the display</param>
+   /// <param name="y">Vertical coordinate within the display</param>
+   /// <remarks>First first call to LineTo sets the beginning point
+   /// of the line. Coordinates are relative to the top left corner of
+   /// the display, not the layer or map.</remarks>
+   public void LineTo(int x, int y)
+   {
+      if (m_currentOp != DisplayOperation.DrawLines)
+      {
+         if (m_currentOp != DisplayOperation.None)
+            GL.End();
+         BeginLine(1, 0, false);
+      }
+      GL.Vertex2(x, y);
+      endPoint = new System.Drawing.Point(x, y);
+   }
+
+   /// <summary>
+   /// End a line begun with <see cref="BeginLine"/> with an arrowhead.
+   /// </summary>
+   /// <param name="x">Horizontal coordinate of the tip of the arrow head</param>
+   /// <param name="y">Vertical coordinate of the tip of the arrowhead</param>
+   /// <param name="ArrowSize">Length of the arrowhead</param>
+   public void ArrowTo(int x, int y, int ArrowSize)
+   {
+      if (m_currentOp != DisplayOperation.DrawLines)
+      {
+         if (m_currentOp != DisplayOperation.None)
+            GL.End();
+         BeginLine(1, 0, true);
+         GL.Vertex2(endPoint.X, endPoint.Y);
+      }
+      int dx = (x - endPoint.X);
+      int dy = (y - endPoint.Y);
+      float len = (float)Math.Sqrt(dx * dx + dy * dy);
+      if (len > 1)
+      {
+         float ndx = dx * ArrowSize / len;
+         float ndy = dy * ArrowSize / len;
+         float x1 = x - ndx;
+         float y1 = y - ndy;
+         GL.Vertex2(x1, y1);
+         GL.End();
+
+         m_currentOp = DisplayOperation.None;
+
+         GL.Enable(EnableCap.PolygonSmooth);
+         GL.Hint(HintTarget.PolygonSmoothHint, HintMode.Nicest);
+         GL.Begin(BeginMode.Triangles);
+         GL.Vertex2(x1 - ndy / 2, y1 + ndx / 2);
+         GL.Vertex2(x1 + ndx, y1 + ndy);
+         GL.Vertex2(x1 + ndy / 2, y1 - ndx / 2);
+         GL.End();
+      }
+      else
+         LineTo(x, y);
+   }
+
+   /// <summary>
+   /// Draw a rectangular outline on the display.
+   /// </summary>
+   /// <param name="rect">Rectangle relative to the top left corner of the display.</param>
+   /// <param name="pattern">Dash pattern applied to the lines forming the outline.</param>
+   public void DrawRectangle(System.Drawing.Rectangle rect, short pattern)
+   {
+      if (m_currentOp != DisplayOperation.None)
+      {
+         GL.End();
+         m_currentOp = DisplayOperation.None;
+      }
+      if ((pattern == 0) || (pattern == unchecked((short)(0xffff))))
+         GL.Disable(EnableCap.LineStipple);
+      else
+      {
+         GL.Enable(EnableCap.LineStipple);
+         GL.LineStipple(1, pattern);
+      }
+      GL.Disable(EnableCap.LineSmooth);
+      GL.LineWidth(1);
+      GL.Disable(texCap);
+      GL.Begin(BeginMode.LineLoop);
+      GL.Vertex2(rect.X, rect.Y);
+      GL.Vertex2(rect.X, rect.Y + rect.Height - 1);
+      GL.Vertex2(rect.X + rect.Width - 1, rect.Y + rect.Height - 1);
+      GL.Vertex2(rect.X + rect.Width - 1, rect.Y);
+      GL.End();
+   }
+
+   /// <summary>
+   /// Fills a rectangular area with a solid color
+   /// </summary>
+   /// <param name="rect">Rectangular area to fill.</param>
+   /// <remarks>
+   /// <see cref="SetColor"/> determines the color with which to fill
+   /// the rectangle, and may be semi-translucent.
+   /// <seealso cref="SetColor"/></remarks>
+   public void FillRectangle(System.Drawing.Rectangle rect)
+   {
+      if (m_currentOp != DisplayOperation.None)
+         GL.End();
+      m_currentOp = DisplayOperation.None;
+      GL.Disable(texCap);
+      GL.Begin(BeginMode.Quads);
+      GL.Vertex2(rect.X, rect.Y);
+      GL.Vertex2(rect.X, rect.Y + rect.Height - 1);
+      GL.Vertex2(rect.X + rect.Width - 1, rect.Y + rect.Height - 1);
+      GL.Vertex2(rect.X + rect.Width - 1, rect.Y);
+      GL.End();
+   }
+
+   /// <summary>
+   /// Specifies the size of points drawn with <see cref="DrawPoint"/>.
+   /// </summary>
+   public int PointSize
+   {
+      set
+      {
+         if (m_currentOp != DisplayOperation.None)
+            GL.End();
+         m_currentOp = DisplayOperation.None;
+         GL.PointSize(value);
       }
    }
-   #endregion
 
-   #region Event Handlers
-   private void d3d_DeviceReset(object sender, EventArgs e)
+   /// <summary>
+   /// Draw a point in the display
+   /// </summary>
+   /// <param name="location">Coordinate relative to the top left corner of the display.</param>
+   public void DrawPoint(System.Drawing.Point location)
    {
-      DisposeAllTextures();
-   }
-   #endregion
-
-   #region ISerializable Members
-
-   public void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
-   {
-      info.SetType(typeof(DisplayRef));
-   }
-
-   #endregion
-}
-
-/// <summary>
-/// Provides serialization "services" for the <see cref="Display"/> object, preventing
-/// attempts to save or load data for the display object when the game is saved/loaded.
-/// </summary>
-[Serializable()]
-public class DisplayRef : System.Runtime.Serialization.IObjectReference, System.Runtime.Serialization.ISerializable
-{
-
-   private DisplayRef(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
-   {
+      if (m_currentOp != DisplayOperation.DrawPoints)
+      {
+         if (m_currentOp != DisplayOperation.None)
+            GL.End();
+         GL.Hint(HintTarget.PointSmoothHint, HintMode.Nicest);
+         GL.Enable(EnableCap.PointSmooth);
+         GL.Begin(BeginMode.Points);
+         m_currentOp = DisplayOperation.DrawPoints;
+      }
+      GL.Disable(texCap);
+      GL.Vertex2(location.X, location.Y);
    }
 
-   public void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+   /// <summary>
+   /// Set the current color for drawing operations.
+   /// </summary>
+   /// <param name="color">Color to select.</param>
+   public void SetColor(System.Drawing.Color color)
    {
-      throw new System.NotImplementedException("Unexpected serialization call");
+      GL.Color4(color.R, color.G, color.B, color.A);
    }
 
-   #region IObjectReference Members
-   public object GetRealObject(System.Runtime.Serialization.StreamingContext context)
+   /// <summary>
+   /// Set the current color for drawing operations.
+   /// </summary>
+   /// <param name="color">Color as an integer with bytes in ARGB order.</param>
+   public void SetColor(int color)
    {
-      return Project.GameWindow.GameDisplay;
+      System.Drawing.Color c = System.Drawing.Color.FromArgb(color);
+      SetColor(c);
    }
+
+   /// <summary>
+   /// Draw a shaded rectangular frame.
+   /// </summary>
+   /// <param name="inner">Inner, empty portion of the rectangle</param>
+   /// <param name="thickness">Thickness of the frame in pixels.</param>
+   /// <param name="color1">Background color</param>
+   /// <param name="color2">Foreground dither color</param>
+   public void DrawShadedRectFrame(System.Drawing.Rectangle inner, int thickness, System.Drawing.Color color1, System.Drawing.Color color2)
+   {
+      if (m_currentOp != DisplayOperation.None)
+         GL.End();
+      m_currentOp = DisplayOperation.None;
+      GL.Disable(texCap);
+      GL.Disable(EnableCap.PolygonStipple);
+      SetColor(color1);
+      GL.Begin(BeginMode.QuadStrip);
+      SendRectFramePoints(inner, thickness);
+      GL.End();
+      GL.Enable(EnableCap.PolygonStipple);
+      GL.PolygonStipple(shadedStipple);
+      SetColor(color2);
+      GL.Begin(BeginMode.QuadStrip);
+      SendRectFramePoints(inner, thickness);
+      GL.End();
+      GL.Disable(EnableCap.PolygonStipple);
+   }
+
+   private void SendRectFramePoints(System.Drawing.Rectangle inner, int thickness)
+   {
+      GL.Vertex2(inner.X - thickness, inner.Y - thickness);
+      GL.Vertex2(inner.X - 1, inner.Y - 1);
+      GL.Vertex2(inner.X - thickness, inner.Y + inner.Height + thickness - 1);
+      GL.Vertex2(inner.X - 1, inner.Y + inner.Height);
+      GL.Vertex2(inner.X + inner.Width + thickness - 1, inner.Y + inner.Height + thickness - 1);
+      GL.Vertex2(inner.X + inner.Width, inner.Y + inner.Height);
+      GL.Vertex2(inner.X + inner.Width + thickness - 1, inner.Y - thickness);
+      GL.Vertex2(inner.X + inner.Width, inner.Y - 1);
+      GL.Vertex2(inner.X - thickness, inner.Y - thickness);
+      GL.Vertex2(inner.X - 1, inner.Y - 1);
+   }
+
+   /// <summary>
+   /// Clear the display of all graphics.
+   /// </summary>
+   public void Clear()
+   {
+      GL.Clear(ClearBufferMask.AccumBufferBit | ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
+   }
+
+   /// <summary>
+   /// Draw text on the display
+   /// </summary>
+   /// <param name="text">Text to draw</param>
+   /// <param name="x">Horizontal location of upper left corner of text block</param>
+   /// <param name="y">Vertical location of upper left corner of text block</param>
+   /// <param name="width">Width of text block</param>
+   /// <param name="wordWrap">Specifies whether word-wrap will be applied</param>
+   /// <param name="alignment">Determines how text is aligned within the block.</param>
+   public void DrawText(string text, int x, int y, int width, bool wordWrap, System.Drawing.StringAlignment alignment)
+   {
+      if (m_currentOp != DisplayOperation.None)
+         GL.End();
+      GL.Disable(texCap);
+      OpenTK.Fonts.ITextPrinter tp = new OpenTK.Fonts.TextPrinter();
+      OpenTK.Fonts.TextHandle th = null;
+      if (m_cachedText != null)
+      {
+         foreach (System.Collections.Generic.KeyValuePair<string, OpenTK.Fonts.TextHandle> kvp in m_cachedText)
+            if (kvp.Key == text)
+               th = kvp.Value;
+      }
+      if (th == null)
+      {
+         tp.Prepare(text, GLFont, out th/*, width, wordWrap, alignment*/);
+         if (m_cachedText == null)
+            m_cachedText = new System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, OpenTK.Fonts.TextHandle>>(TextCacheSize);
+         while (m_cachedText.Count + 1 > TextCacheSize)
+            m_cachedText.Dequeue().Value.Dispose();
+         m_cachedText.Enqueue(new System.Collections.Generic.KeyValuePair<string, OpenTK.Fonts.TextHandle>(text, th));
+      }
+      tp.Begin();
+      GL.Translate(x, y, 0);
+      tp.Draw(th);
+      tp.End();
+   }
+
+   public void Scissor(System.Drawing.Rectangle rect)
+   {
+      GL.Enable(EnableCap.ScissorTest);
+      GL.Scissor(rect.X, rect.Y, rect.Width, rect.Height);
+   }
+
+   public void ScissorOff()
+   {
+      GL.Disable(EnableCap.ScissorTest);
+   }
+
+   protected override void WndProc(ref System.Windows.Forms.Message m)
+   {
+      base.WndProc(ref m);
+      if (Parent is GameForm)
+      {
+         KeyboardState kbs = ((GameForm)Parent).KeyboardState;
+         if (kbs != null)
+            kbs.ProcessMessage(m);
+      }
+   }
+
    #endregion
 }

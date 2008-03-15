@@ -4,8 +4,6 @@
  */
 using System;
 using System.Drawing;
-using Microsoft.DirectX.Direct3D;
-using Microsoft.DirectX;
 
 /// <summary>
 /// Defines the basic operation of a layer of tiles and sprites within a map.
@@ -76,10 +74,10 @@ public abstract class LayerBase : System.Collections.IEnumerable
          this.priority = priority;
          if (color == -1)
             this.color = frame.Color;
-         else if (frame.Color == -1)
+         else //if (frame.Color == -1)
             this.color = color;
-         else
-            this.color = Microsoft.DirectX.Direct3D.ColorOperator.Modulate(ColorValue.FromArgb(frame.Color), ColorValue.FromArgb(color)).ToArgb();
+         /*else
+            this.color = Microsoft.DirectX.Direct3D.ColorOperator.Modulate(ColorValue.FromArgb(frame.Color), ColorValue.FromArgb(color)).ToArgb();*/
       }
       #region IComparable Members
 
@@ -360,8 +358,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
          nStartRow = 0;
 
       Rectangle ViewRect = m_ParentMap.CurrentView;
-      m_ParentMap.Display.Device.RenderState.ScissorTestEnable = true;
-      m_ParentMap.Display.Device.ScissorRectangle = ViewRect;
+      Display disp = m_ParentMap.Display;
+      disp.Scissor(ViewRect);
 
       int EndCol = (ViewRect.Width - 1 + m_nRightBuffer - CurrentPosition.X) / nTileWidth;
       if (EndCol >= VirtualColumns)
@@ -379,7 +377,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
             Injected = null;
       }
 
-      Sprite spr = m_ParentMap.Display.Sprite;
+      int lastColor = 0;
 
       for (int y = nStartRow; y <= EndRow; y++)
       {
@@ -388,11 +386,15 @@ public abstract class LayerBase : System.Collections.IEnumerable
             while ((((CurFrame = (InjectedFrame)Injected.Current).y < y * nTileHeight)) && (CurFrame.priority <= 0) ||
                    (CurFrame.priority < 0))
             {
-               spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
-                  (float)CurFrame.x + CurrentPosition.X + ViewRect.X,
-                  (float)CurFrame.y + CurrentPosition.Y + ViewRect.Y, 0));
-               spr.Draw(CurFrame.frame.GraphicSheetTexture.Texture, CurFrame.frame.SourceRect,
-                  Vector3.Empty, Vector3.Empty, CurFrame.color);
+               if (CurFrame.color != lastColor)
+               {
+                  disp.SetColor(CurFrame.color);
+                  lastColor = CurFrame.color;
+               }
+               disp.DrawFrame(CurFrame.frame.GraphicSheetTexture,
+                  CurFrame.frame.SourceRect, CurFrame.frame.Corners,
+                  CurFrame.x + CurrentPosition.X + ViewRect.X,
+                  CurFrame.y + CurrentPosition.Y + ViewRect.Y);
                if (!Injected.MoveNext())
                {
                   Injected = null;
@@ -407,10 +409,14 @@ public abstract class LayerBase : System.Collections.IEnumerable
             for (int nFrame = 0; nFrame < SubFrames.Length; nFrame++)
             {
                Frame f = m_Frameset[SubFrames[nFrame]];
-               spr.Transform = Matrix.Multiply(f.Transform, Matrix.Translation(
+               if (f.Color != lastColor)
+               {
+                  disp.SetColor(f.Color);
+                  lastColor = f.Color;
+               }
+               disp.DrawFrame(f.GraphicSheetTexture, f.SourceRect, f.Corners,
                   x * nTileWidth + CurrentPosition.X + ViewRect.X,
-                  y * nTileHeight + CurrentPosition.Y + ViewRect.Y, 0));
-               spr.Draw(f.GraphicSheetTexture.Texture, f.SourceRect, Vector3.Empty, Vector3.Empty, f.Color);
+                  y * nTileHeight + CurrentPosition.Y + ViewRect.Y);
             }
          }
       }
@@ -418,11 +424,15 @@ public abstract class LayerBase : System.Collections.IEnumerable
       while (Injected != null)
       {
          CurFrame = (InjectedFrame)Injected.Current;
-         spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
-            (float)CurFrame.x + CurrentPosition.X + ViewRect.X,
-            (float)CurFrame.y + CurrentPosition.Y + ViewRect.Y, 0));
-         spr.Draw(CurFrame.frame.GraphicSheetTexture.Texture, CurFrame.frame.SourceRect,
-            Vector3.Empty, Vector3.Empty, CurFrame.color);
+         if (CurFrame.color != lastColor)
+         {
+            disp.SetColor(CurFrame.color);
+            lastColor = CurFrame.color;
+         }
+         disp.DrawFrame(CurFrame.frame.GraphicSheetTexture,
+            CurFrame.frame.SourceRect, CurFrame.frame.Corners,
+            CurFrame.x + CurrentPosition.X + ViewRect.X,
+            CurFrame.y + CurrentPosition.Y + ViewRect.Y);
          if (!Injected.MoveNext())
          {
             Injected = null;
@@ -595,10 +605,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
    public Point GetMousePosition()
    {
       Point dispPos;
-      if (m_ParentMap.Display.Windowed)
-         dispPos = m_ParentMap.Display.PointToClient(System.Windows.Forms.Control.MousePosition);
-      else
-         dispPos = System.Windows.Forms.Control.MousePosition;
+      dispPos = m_ParentMap.Display.PointToClient(System.Windows.Forms.Control.MousePosition);
       dispPos.Offset(-CurrentPosition.X, -CurrentPosition.Y);
       return dispPos;
    }

@@ -20,9 +20,6 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
       reflectType = typeof(RemoteReflector).Assembly.GetType(typeName, false);
       if (null != reflectType)
          return;
-      reflectType = typeof(Microsoft.DirectX.DirectInput.KeyboardState).Assembly.GetType(typeName, false);
-      if (null != reflectType)
-         return;
       reflectType = typeof(System.Drawing.Color).Assembly.GetType(typeName, false);
       if (null != reflectType)
          return;

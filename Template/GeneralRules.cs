@@ -657,7 +657,7 @@ public abstract class GeneralRules
    /// <param name="key">Which key to check</param>
    /// <returns>True if the specified key is currently pressed, false otherwise</returns>
    [Description("Returns true if the specified key is currently pressed")]
-   public bool IsKeyPressed(Microsoft.DirectX.DirectInput.Key key)
+   public bool IsKeyPressed(Key key)
    {
       return Project.GameWindow.KeyboardState[key];
    }

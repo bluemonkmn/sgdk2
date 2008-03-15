@@ -15,12 +15,9 @@ public class GameForm : Form
    /// Hardware-backed display object embedded in the main window.
    /// </summary>
    public Display GameDisplay = null;
-   private Microsoft.DirectX.DirectInput.Device keyboard = null;
-   private Microsoft.DirectX.DirectInput.KeyboardState m_keyboardState;
-   private Microsoft.DirectX.DirectInput.Device[] controllers = null;
-   private Microsoft.DirectX.DirectInput.JoystickState[] m_controllerState;
+   private KeyboardState m_keyboardState = null;
+   private Joystick[] controllers = null;
    private System.Collections.BitArray controllerEnabled;
-   private System.Collections.BitArray controllerAcquired;
    /// <summary>
    /// Refers to the currently active primary map that is being drawn on the display
    /// </summary>
@@ -96,6 +93,7 @@ public class GameForm : Form
    private System.Windows.Forms.MenuItem mnuTools;
    private System.Windows.Forms.MenuItem mnuToolsOptions;
    private System.Windows.Forms.MenuItem mnuHelp;
+   private System.ComponentModel.IContainer components;
    private System.Windows.Forms.MenuItem mnuHelpAbout;
    #endregion
 
@@ -132,7 +130,6 @@ public class GameForm : Form
          OverlayMap = GetMap(overlayMapType);
       else
          OverlayMap = null;
-      GameDisplay.WindowedChanged += new EventHandler(GameDisplay_WindowedChanged);
    }
 
    /// <summary>
@@ -174,46 +171,16 @@ public class GameForm : Form
    public void Run()
    {
       int coopCode;
-
-      System.Collections.ArrayList controllersBuilder = new System.Collections.ArrayList();
-      foreach(Microsoft.DirectX.DirectInput.DeviceInstance dev in Microsoft.DirectX.DirectInput.Manager.Devices)
+      int controllerCount = Joystick.GetDeviceCount();
+      if (controllerCount > 0)
       {
-         switch (dev.DeviceType)
-         {
-            case Microsoft.DirectX.DirectInput.DeviceType.Keyboard:
-               if (keyboard == null)
-               {
-                  keyboard = new Microsoft.DirectX.DirectInput.Device(dev.InstanceGuid);
-                  keyboard.SetCooperativeLevel(this, Microsoft.DirectX.DirectInput.CooperativeLevelFlags.Background |
-                     Microsoft.DirectX.DirectInput.CooperativeLevelFlags.NonExclusive); 
-                  keyboard.SetDataFormat(Microsoft.DirectX.DirectInput.DeviceDataFormat.Keyboard);
-                  keyboard.Acquire();
-               }
-               break;
-            case Microsoft.DirectX.DirectInput.DeviceType.Gamepad:
-            case Microsoft.DirectX.DirectInput.DeviceType.Joystick:
-            {
-               Microsoft.DirectX.DirectInput.Device controller =
-                  new Microsoft.DirectX.DirectInput.Device(dev.InstanceGuid);
-               controller.SetCooperativeLevel(this, Microsoft.DirectX.DirectInput.CooperativeLevelFlags.Background |
-                  Microsoft.DirectX.DirectInput.CooperativeLevelFlags.NonExclusive);
-               controller.SetDataFormat(Microsoft.DirectX.DirectInput.DeviceDataFormat.Joystick);
-               controllersBuilder.Add(controller);
-               break;
-            }
-         }
-      }
-      if (controllersBuilder.Count > 0)
-      {
-         controllers = (Microsoft.DirectX.DirectInput.Device[])controllersBuilder.ToArray(typeof(Microsoft.DirectX.DirectInput.Device));
+         controllers = new Joystick[controllerCount];
          controllerEnabled = new System.Collections.BitArray(controllers.Length, false);
-         controllerAcquired = new System.Collections.BitArray(controllers.Length, false);
-         m_controllerState = new Microsoft.DirectX.DirectInput.JoystickState[controllers.Length];
       }
       else
       {
          controllers = null;
-         controllerEnabled = controllerAcquired = null;
+         controllerEnabled = null;
       }
 
       // Player 0 always uses keyboard by default
@@ -229,62 +196,46 @@ public class GameForm : Form
             Players[playerIdx] = new KeyboardPlayer(playerIdx);
       }
 
+      m_keyboardState = new KeyboardState();
+
       while(true)
       {
          if (OnFrameStart != null)
             OnFrameStart();
-         if ((GameDisplay == null) || GameDisplay.Device.Disposed || m_quit)
+         if ((GameDisplay == null) || GameDisplay.IsDisposed || m_quit)
          {
             Close();
             return;
          }
          bool isActive = true;
-         if (GameDisplay.Windowed)
-            isActive = (System.Windows.Forms.Form.ActiveForm == this);
-         if (!isActive || (GameDisplay != null) && (GameDisplay.Device == null))
+         isActive = (System.Windows.Forms.Form.ActiveForm == this);
+         if (!isActive)
          {
             // Display is minimized or inactive, wait until it is restored
             Application.DoEvents();
-            if ((GameDisplay != null) && (GameDisplay.Device != null))
-               GameDisplay.Device.Present();
+            GameDisplay.SwapBuffers();
             System.Threading.Thread.Sleep(0);
             continue;
          }
-         if (!GameDisplay.Device.CheckCooperativeLevel(out coopCode))
+         if (OnBeforeBeginScene != null)
+            OnBeforeBeginScene();
+         CurrentMap.DrawAllViews();
+         ReadControllers();
+         if (OnBeforeExecuteRules != null)
+            OnBeforeExecuteRules();
+         CurrentMap.ExecuteRules();
+         if (OnBeforeDrawOverlay != null)
+            OnBeforeDrawOverlay();
+         if (OverlayMap != null)
          {
-            Microsoft.DirectX.Direct3D.ResultCode coop = (Microsoft.DirectX.Direct3D.ResultCode)System.Enum.Parse(typeof(Microsoft.DirectX.Direct3D.ResultCode), coopCode.ToString());
-            if (coop == Microsoft.DirectX.Direct3D.ResultCode.DeviceNotReset)
-               GameDisplay.Recreate();
-            else
-               System.Threading.Thread.Sleep(0);
+            OverlayMap.DrawAllViews();
+            OverlayMap.ExecuteRules();
          }
-         else
-         {
-            if (OnBeforeBeginScene != null)
-               OnBeforeBeginScene();
-            GameDisplay.Device.BeginScene();
-            GameDisplay.Sprite.Begin(Microsoft.DirectX.Direct3D.SpriteFlags.AlphaBlend);
-            CurrentMap.DrawAllViews();
-            if (keyboard != null)
-               m_keyboardState = keyboard.GetCurrentKeyboardState();
-            ReadControllers();
-            if (OnBeforeExecuteRules != null)
-               OnBeforeExecuteRules();
-            CurrentMap.ExecuteRules();
-            if (OnBeforeDrawOverlay != null)
-               OnBeforeDrawOverlay();
-            if (OverlayMap != null)
-            {
-               OverlayMap.DrawAllViews();
-               OverlayMap.ExecuteRules();
-            }
-            OutputDebugInfo();
-            if (OnAfterDrawOverlay != null)
-               OnAfterDrawOverlay();
-            GameDisplay.Sprite.End();
-            GameDisplay.Device.EndScene();
-            GameDisplay.Device.Present();
-         }
+         OutputDebugInfo();
+         if (OnAfterDrawOverlay != null)
+            OnAfterDrawOverlay();
+         GameDisplay.Flush();
+         GameDisplay.SwapBuffers();
          Application.DoEvents();
       }
    }
@@ -296,9 +247,9 @@ public class GameForm : Form
    [System.Diagnostics.Conditional("DEBUG")]
    public void OutputDebugInfo()
    {
-      GameDisplay.Sprite.Transform = Microsoft.DirectX.Matrix.Identity;
-      GameDisplay.Device.RenderState.ScissorTestEnable = false;
-      GameDisplay.D3DFont.DrawText(GameDisplay.Sprite, debugText.ToString(), GameDisplay.DisplayRectangle, Microsoft.DirectX.Direct3D.DrawTextFormat.Left, Color.White);
+      GameDisplay.ScissorOff();
+      GameDisplay.SetColor(Color.White);
+      GameDisplay.DrawText(debugText.ToString(), 0, 0, GameDisplay.ClientSize.Width, true, StringAlignment.Near);
 
       debugText.GetStringBuilder().Length = 0;
       debugText.WriteLine("fps=" + m_fps.ToString());
@@ -370,26 +321,28 @@ public class GameForm : Form
 
    private void InitializeComponent()
    {
-      this.mnuGame = new System.Windows.Forms.MainMenu();
+      this.components = new System.ComponentModel.Container();
+      this.mnuGame = new System.Windows.Forms.MainMenu(this.components);
       this.mnuFile = new System.Windows.Forms.MenuItem();
       this.mnuFileExit = new System.Windows.Forms.MenuItem();
       this.mnuTools = new System.Windows.Forms.MenuItem();
       this.mnuToolsOptions = new System.Windows.Forms.MenuItem();
       this.mnuHelp = new System.Windows.Forms.MenuItem();
       this.mnuHelpAbout = new System.Windows.Forms.MenuItem();
+      this.SuspendLayout();
       // 
       // mnuGame
       // 
       this.mnuGame.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                             this.mnuFile,
-                                                                             this.mnuTools,
-                                                                             this.mnuHelp});
+            this.mnuFile,
+            this.mnuTools,
+            this.mnuHelp});
       // 
       // mnuFile
       // 
       this.mnuFile.Index = 0;
       this.mnuFile.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                             this.mnuFileExit});
+            this.mnuFileExit});
       this.mnuFile.Text = "&File";
       // 
       // mnuFileExit
@@ -403,7 +356,7 @@ public class GameForm : Form
       // 
       this.mnuTools.Index = 1;
       this.mnuTools.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                              this.mnuToolsOptions});
+            this.mnuToolsOptions});
       this.mnuTools.Text = "&Tools";
       // 
       // mnuToolsOptions
@@ -416,7 +369,7 @@ public class GameForm : Form
       // 
       this.mnuHelp.Index = 2;
       this.mnuHelp.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                               this.mnuHelpAbout});
+            this.mnuHelpAbout});
       this.mnuHelp.Text = "&Help";
       // 
       // mnuHelpAbout
@@ -432,27 +385,19 @@ public class GameForm : Form
       this.MaximizeBox = false;
       this.Menu = this.mnuGame;
       this.Name = "GameForm";
+      this.ResumeLayout(false);
 
    }
 
    /// <summary>
    /// Represents the current state of the keyboard.
    /// </summary>
-   public Microsoft.DirectX.DirectInput.KeyboardState KeyboardState
+   public KeyboardState KeyboardState
    {
       get
       {
          return m_keyboardState;
       }
-   }
-
-   /// <summary>
-   /// Retrieve information about which keys are pressed.
-   /// </summary>
-   /// <returns>Array of keys that are currently pressed.</returns>
-   public Microsoft.DirectX.DirectInput.Key[] GetPressedKeys()
-   {
-      return keyboard.GetPressedKeys();
    }
 
    /// <summary>
@@ -474,18 +419,12 @@ public class GameForm : Form
       {
          if (controllerEnabled[i])
          {
-            if (!controllerAcquired[i])
-            {
-               controllers[i].Acquire();
-               controllerAcquired[i] = true;
-            }
-            m_controllerState[i] = controllers[i].CurrentJoystickState;
+            if (controllers[i] == null)
+               controllers[i] = new Joystick(i);
+            controllers[i].Read();
          }
-         else if (controllerAcquired[i])
-         {
-            controllers[i].Unacquire();
-            controllerAcquired[i] = false;
-         }
+         else if (controllers[i] != null)
+            controllers[i] = null;
       }
    }
 
@@ -509,16 +448,16 @@ public class GameForm : Form
    /// <returns>String containing the display name for the device</returns>
    public string GetControllerName(int deviceNumber)
    {
-      return controllers[deviceNumber].DeviceInformation.InstanceName;
+      return controllers[deviceNumber].Name;
    }
 
    /// <summary>
    /// Reads the current state of a game controller
    /// </summary>
    /// <param name="deviceNumber">Zero-based index of the game controller</param>
-   public Microsoft.DirectX.DirectInput.JoystickState GetControllerState(int deviceNumber)
+   public Joystick GetControllerState(int deviceNumber)
    {
-      return m_controllerState[deviceNumber];
+      return controllers[deviceNumber];
    }
 
    /// <summary>
@@ -531,12 +470,6 @@ public class GameForm : Form
       {
          return controllerEnabled;
       }
-   }
-
-   private void GameDisplay_WindowedChanged(object sender, EventArgs e)
-   {
-      if (GameDisplay.Windowed)
-         ClientSize = Display.GetScreenSize(GameDisplay.GameDisplayMode);
    }
 
    private void mnuFileExit_Click(object sender, System.EventArgs e)

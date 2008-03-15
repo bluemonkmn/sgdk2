@@ -3,8 +3,6 @@
  * See Project.cs for copyright/licensing details
  */
 using System;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
 using System.Drawing;
 
 /// <summary>
@@ -23,9 +21,9 @@ public struct Frame
    /// <see cref="SourceRect"/>.</remarks>
    public short CellIndex;
    /// <summary>
-   /// Defines the transformation that is applied to the graphic cell to yield this frame
+   /// Defines the transformed corners of this frame when drawn.
    /// </summary>
-   public Matrix Transform;
+   public PointF[] Corners;
    /// <summary>
    /// Specifies color channel modulations that are applied to this frame
    /// </summary>
@@ -42,26 +40,15 @@ public struct Frame
    /// <param name="texture">Refers to an object that provides a hardware copy of the graphic
    /// sheet on which this frame is based.</param>
    /// <param name="cell">Provides a value for this frame's <see cref="CellIndex"/> property.</param>
-   /// <param name="M11">Provides a component of this frames <see cref="Transform"/> matrix.</param>
-   /// <param name="M12">Provides a component of this frames <see cref="Transform"/> matrix.</param>
-   /// <param name="M21">Provides a component of this frames <see cref="Transform"/> matrix.</param>
-   /// <param name="M22">Provides a component of this frames <see cref="Transform"/> matrix.</param>
-   /// <param name="M41">Provides a component of this frames <see cref="Transform"/> matrix.</param>
-   /// <param name="M42">Provides a component of this frames <see cref="Transform"/> matrix.</param>
+   /// <param name="corners">Corners of the output rectangle for drawing this frame in
+   /// counter-clockwise order beginning with the top left corner.</param>
    /// <param name="srcRect">Provides this frame's <see cref="SourceRect"/>.</param>
    /// <param name="color">Provides this frame's <see cref="Color"/>.</param>
-   public Frame(Display.TextureRef texture, short cell, float M11, float M12, float M21, float M22, float M41, float M42, Rectangle srcRect, int color)
+   public Frame(Display.TextureRef texture, short cell, PointF[] corners, Rectangle srcRect, int color)
    {
       GraphicSheetTexture = texture;
       CellIndex = cell;
-      Transform = Matrix.Identity;
-      Transform.M11 = M11;
-      Transform.M12 = M12;
-      Transform.M21 = M21;
-      Transform.M22 = M22;
-      Transform.M41 = M41;
-      Transform.M42 = M42;
-      Transform.M44 = 1;
+      this.Corners = corners;
       SourceRect = srcRect;
       this.Color = color;
    }
@@ -72,15 +59,11 @@ public struct Frame
    /// <param name="texture">Refers to an object that provides a hardware copy of the graphic
    /// sheet on which this frame is based.</param>
    /// <param name="cell">Provides a value for this frame's <see cref="CellIndex"/> property.</param>
-   /// <param name="M11">Provides a component of this frames <see cref="Transform"/> matrix.</param>
-   /// <param name="M12">Provides a component of this frames <see cref="Transform"/> matrix.</param>
-   /// <param name="M21">Provides a component of this frames <see cref="Transform"/> matrix.</param>
-   /// <param name="M22">Provides a component of this frames <see cref="Transform"/> matrix.</param>
-   /// <param name="M41">Provides a component of this frames <see cref="Transform"/> matrix.</param>
-   /// <param name="M42">Provides a component of this frames <see cref="Transform"/> matrix.</param>
+   /// <param name="corners">Corners of the output rectangle for drawing this frame in
+   /// counter-clockwise order beginning with the top left corner.</param>
    /// <param name="srcRect">Provides this frame's <see cref="SourceRect"/>.</param>
-   public Frame(Display.TextureRef texture, short cell, float M11, float M12, float M21, float M22, float M41, float M42, Rectangle srcRect) :
-      this(texture, cell, M11, M12, M21, M22, M41, M42, srcRect, -1)
+   public Frame(Display.TextureRef texture, short cell, PointF[] corners, Rectangle srcRect) :
+      this(texture, cell, corners, srcRect, -1)
    {
    }
 
@@ -97,7 +80,11 @@ public struct Frame
    {
       GraphicSheetTexture = texture;
       CellIndex = cell;
-      Transform = Matrix.Identity;
+      Corners = new PointF[] {
+         new PointF(0, 0),
+         new PointF(0, srcRect.Height),
+         new PointF(srcRect.Width, srcRect.Height),
+         new PointF(srcRect.Width, 0) };
       SourceRect = srcRect;
       this.Color = color;
    }

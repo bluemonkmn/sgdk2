@@ -186,28 +186,28 @@ public class CollisionMask
             gfxSingle.CompositingMode = CompositingMode.SourceCopy;
             gfxSingle.PixelOffsetMode = PixelOffsetMode.Half;
 
-            for(int subFrameIdx = 0; subFrameIdx < subFrames.Length; subFrameIdx++)
+            for (int subFrameIdx = 0; subFrameIdx < subFrames.Length; subFrameIdx++)
             {
                int subFrame = subFrames[subFrameIdx];
                gfxSingle.Clear(Color.Transparent);
                Frame SFrame = frameset[subFrame];
-               using(Matrix mtx = new Matrix(SFrame.Transform.M11, SFrame.Transform.M12, SFrame.Transform.M21, SFrame.Transform.M22, SFrame.Transform.M41, SFrame.Transform.M42))
+
+               Bitmap bmpGfxSheet = (Bitmap)Project.Resources.GetObject(SFrame.GraphicSheetTexture.Name);
+               PointF[] corners = new PointF[] {
+                  new PointF(SFrame.Corners[0].X - rcBound.X, SFrame.Corners[0].Y - rcBound.Y),
+                  new PointF(SFrame.Corners[3].X - rcBound.X, SFrame.Corners[3].Y - rcBound.Y),
+                  new PointF(SFrame.Corners[1].X - rcBound.X, SFrame.Corners[1].Y - rcBound.Y)};
+               gfxSingle.DrawImage(bmpGfxSheet, corners, SFrame.SourceRect, GraphicsUnit.Pixel);
+               bmpData = bmpSingle.LockBits(new Rectangle(Point.Empty, rcBound.Size), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+               pixels = new int[bmpSingle.Height * Math.Abs(bmpData.Stride) / 4];
+               System.Runtime.InteropServices.Marshal.Copy(bmpData.Scan0, pixels, 0, bmpSingle.Height * Math.Abs(bmpData.Stride) / 4);
+               bmpSingle.UnlockBits(bmpData);
+               for (int rowIdx = 0; rowIdx < bmpSingle.Height; rowIdx++)
                {
-                  gfxSingle.Transform = mtx;
-                  Bitmap bmpGfxSheet = (Bitmap)Project.Resources.GetObject(SFrame.GraphicSheetTexture.Name);
-                  gfxSingle.TranslateTransform(-rcBound.X, -rcBound.Y, MatrixOrder.Append);
-                  gfxSingle.DrawImage(bmpGfxSheet, 0, 0, SFrame.SourceRect, GraphicsUnit.Pixel);
-                  bmpData = bmpSingle.LockBits(new Rectangle(Point.Empty, rcBound.Size), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-                  pixels = new int[bmpSingle.Height * Math.Abs(bmpData.Stride) / 4];
-                  System.Runtime.InteropServices.Marshal.Copy(bmpData.Scan0, pixels, 0, bmpSingle.Height * Math.Abs(bmpData.Stride) / 4);
-                  bmpSingle.UnlockBits(bmpData);
-                  for (int rowIdx = 0; rowIdx < bmpSingle.Height; rowIdx++)
+                  for (int pixIdx = 0; pixIdx < bmpSingle.Width; pixIdx++)
                   {
-                     for (int pixIdx = 0; pixIdx < bmpSingle.Width; pixIdx++)
-                     {
-                        if (Color.FromArgb(pixels[rowIdx * bmpData.Stride / 4 + pixIdx]).A > alphas[subFrameIdx])
-                           arbt[rowIdx, pixIdx / 32] |= 1 << (31 - (pixIdx % 32));
-                     }
+                     if (Color.FromArgb(pixels[rowIdx * bmpData.Stride / 4 + pixIdx]).A > alphas[subFrameIdx])
+                        arbt[rowIdx, pixIdx / 32] |= 1 << (31 - (pixIdx % 32));
                   }
                }
             }

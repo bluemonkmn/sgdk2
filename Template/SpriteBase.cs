@@ -871,32 +871,34 @@ public abstract class SpriteBase : GeneralRules
    public void RotateVelocity([Editor("SpriteState", "UITypeEditor")] int FirstState, int StateCount)
    {
       Debug.Assert(this.isActive, "Attepmted to execute RotateVelocity on an inactive sprite");
-      Microsoft.DirectX.Vector2 oldVector;
+      float oldDx, oldDy;
       if (double.IsNaN(LocalDX))
-         oldVector.X = (float)dx;
+         oldDx = (float)dx;
       else
-         oldVector.X = (float)LocalDX;
+         oldDx = (float)LocalDX;
       if (double.IsNaN(LocalDY))
-         oldVector.Y = (float)dy;
+         oldDy = (float)dy;
       else
-         oldVector.Y = (float)LocalDY;
+         oldDy = (float)LocalDY;
 
       float angle = (float)((state - FirstState) * Math.PI * 2 / (float)StateCount);
 
-      Microsoft.DirectX.Vector2 facingVector;
-      facingVector.X = (float)Math.Cos(angle);
-      facingVector.Y = -(float)Math.Sin(angle);
-      facingVector.Multiply(Microsoft.DirectX.Vector2.Dot(oldVector, facingVector));
+      float facingX, facingY;
+      facingX = (float)Math.Cos(angle);
+      facingY = -(float)Math.Sin(angle);
+      float dotProduct = oldDx * facingX + oldDy * facingY;
+      facingX *= dotProduct;
+      facingY *= dotProduct;
 
       if (double.IsNaN(LocalDX))
-         dx = facingVector.X;
+         dx = facingX;
       else
-         LocalDX = facingVector.X;
+         LocalDX = facingX;
 
       if (double.IsNaN(LocalDY))
-         dy = facingVector.Y;
+         dy = facingY;
       else
-         LocalDY = facingVector.Y;
+         LocalDY = facingY;
    }
 
    /// <summary>
@@ -1214,7 +1216,7 @@ public abstract class SpriteBase : GeneralRules
    {
       get
       {
-         return color >> 24;
+         return 0xFF & color >> 24;
       }
       set
       {
@@ -1351,7 +1353,7 @@ public abstract class SpriteBase : GeneralRules
    /// <param name="Input">Which sprite input should be affected</param>
    /// <remarks>This function does not affect <see cref="oldinputs"/>.</remarks>
    [Description("Associates the state of the specified keyboard key with the specified input on this sprite.")]
-   public void MapKeyToInput(Microsoft.DirectX.DirectInput.Key key, InputBits Input)
+   public void MapKeyToInput(Key key, InputBits Input)
    {
       Debug.Assert(this.isActive, "Attempted to execute MapKeyToInput on an inactive sprite");
       SetInputState(Input, Project.GameWindow.KeyboardState[key]);

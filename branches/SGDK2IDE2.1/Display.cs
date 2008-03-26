@@ -100,7 +100,7 @@ namespace SGDK2
       private DisplayOperation m_currentOp;
       private TextureRef m_currentTexture = null;
       private bool scaleNativeSize = false;
-      private OpenTK.Fonts.TextureFont m_GLFont = null;
+      private OpenTK.Graphics.TextureFont m_GLFont = null;
       private System.Drawing.Font m_SysFont = null;
       private string fontName = null;
       private int fontSize = 0;
@@ -124,7 +124,7 @@ namespace SGDK2
          0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
          0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA};
       private System.Drawing.Point endPoint = System.Drawing.Point.Empty;
-      private System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, OpenTK.Fonts.TextHandle>> m_cachedText = null;
+      private System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, OpenTK.Graphics.TextHandle>> m_cachedText = null;
       public const int TextCacheSize = 5;
       #endregion
 
@@ -318,13 +318,13 @@ namespace SGDK2
       /// <summary>
       /// Returns the GLFont object used for drawing text on this display.
       /// </summary>
-      public OpenTK.Fonts.TextureFont GLFont
+      public OpenTK.Graphics.TextureFont GLFont
       {
          get
          {
             if (m_GLFont == null)
             {
-               m_GLFont = new OpenTK.Fonts.TextureFont(SysFont);
+               m_GLFont = new OpenTK.Graphics.TextureFont(SysFont);
             }
             return m_GLFont;
          }
@@ -761,8 +761,8 @@ namespace SGDK2
          if (m_currentOp != DisplayOperation.None)
             GL.End();
          GL.Disable(texCap);
-         OpenTK.Fonts.ITextPrinter tp = new OpenTK.Fonts.TextPrinter();
-         OpenTK.Fonts.TextHandle th = null;
+         OpenTK.Graphics.ITextPrinter tp = new OpenTK.Graphics.TextPrinter();
+         OpenTK.Graphics.TextHandle th = null;
          if (m_cachedText != null)
          {
             foreach (var kvp in m_cachedText)
@@ -773,10 +773,10 @@ namespace SGDK2
          {
             tp.Prepare(text, GLFont, out th/*, width, wordWrap, alignment*/);
             if (m_cachedText == null)
-               m_cachedText = new System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, OpenTK.Fonts.TextHandle>>(TextCacheSize);
+               m_cachedText = new System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, OpenTK.Graphics.TextHandle>>(TextCacheSize);
             while (m_cachedText.Count+1 > TextCacheSize)
                m_cachedText.Dequeue().Value.Dispose();
-            m_cachedText.Enqueue(new System.Collections.Generic.KeyValuePair<string, OpenTK.Fonts.TextHandle>(text, th));
+            m_cachedText.Enqueue(new System.Collections.Generic.KeyValuePair<string, OpenTK.Graphics.TextHandle>(text, th));
          }
          tp.Begin();
          GL.Translate(x, y, 0);

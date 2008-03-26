@@ -2959,11 +2959,14 @@ namespace SGDK2
             file.SetAttribute("Include", filename.Substring(filePos));
          }
 
-         foreach(string resx in GetResourcesFileList(System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile)))
+         foreach(string resx in GetResxFileList(System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile)))
          {
             System.Xml.XmlElement file = xml.CreateElement("EmbeddedResource");
             files.AppendChild(file);
+            System.Xml.XmlElement dep = xml.CreateElement("DependentUpon");
+            file.AppendChild(dep);
             file.SetAttribute("Include", resx.Substring(filePos));
+            dep.InnerText = System.IO.Path.GetFileNameWithoutExtension(resx) + ".cs";
          }
 
          XmlElement bootStrap = xml.CreateElement("ItemGroup");

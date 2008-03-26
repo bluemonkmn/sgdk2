@@ -89,6 +89,10 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Fonts, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\OpenTK\Source\Utilities\Fonts\bin\Release\Fonts.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.DirectX">
       <Name>Microsoft.DirectX</Name>
       <HintPath>..\..\..\..\..\..\WINDOWS\Microsoft.NET\DirectX for Managed Code\1.0.2902.0\Microsoft.DirectX.dll</HintPath>
@@ -103,6 +107,10 @@
     </Reference>
     <Reference Include="Microsoft.VisualC">
       <Name>Microsoft.VisualC</Name>
+    </Reference>
+    <Reference Include="OpenTK, Version=0.9.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\OpenTK\Source\OpenTK\bin\Release\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
@@ -119,10 +127,6 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <ProjectReference Include="..\OpenTK\Source\OpenTK\OpenTK.csproj">
-      <Project>{D81D5CB6-68F1-47C9-B19F-5539BD97E70E}</Project>
-      <Name>OpenTK</Name>
-    </ProjectReference>
     <ProjectReference Include="Reflect\Reflect.csproj">
       <Name>Reflect</Name>
       <Project>{C8D38510-B197-47A1-9CE0-C2ED6187278E}</Project>

@@ -7645,6 +7645,7 @@ namespace CustomObjects
          {
             disp.SetColor(Color.DarkBlue);
             disp.FillRectangle(rectMessage);
+            disp.SetColor(Color.White);
             disp.DrawText(message, rectText.X, rectText.Y, rectText.Width, false, StringAlignment.Near);
             disp.SetColor(Color.Yellow);
             disp.DrawRectangle(rectMessage, 0);
@@ -7765,6 +7766,12 @@ namespace CustomObjects
 }</Text>
   </SourceCode>
   <SourceCode Name="OpenTK.dll" IsCustomObject="true">
+    <Text>/*
+   Because this is a binary file, this text only
+   serves as a comment and will not be compiled.
+*/</Text>
+  </SourceCode>
+  <SourceCode Name="Fonts.dll" IsCustomObject="true">
     <Text>/*
    Because this is a binary file, this text only
    serves as a comment and will not be compiled.

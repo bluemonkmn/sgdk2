@@ -709,6 +709,7 @@ namespace CustomObjects
          {
             disp.SetColor(Color.DarkBlue);
             disp.FillRectangle(rectMessage);
+            disp.SetColor(Color.White);
             disp.DrawText(message, rectText.X, rectText.Y, rectText.Width, false, StringAlignment.Near);
             disp.SetColor(Color.Yellow);
             disp.DrawRectangle(rectMessage, 0);

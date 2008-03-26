@@ -836,6 +836,8 @@ namespace SGDK2
                   stm.Close();
                }
             }
+            ProjectData.AddSourceCode("OpenTK.dll", null, null, true, null);
+            ProjectData.AddSourceCode("Fonts.dll", null, null, true, null);
             ProjectData.AcceptChanges();
             tvwMain.CollapseAll();
             tvwMain.Nodes[0].Expand();

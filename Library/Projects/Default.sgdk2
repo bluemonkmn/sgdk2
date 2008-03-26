@@ -1,9 +1,9 @@
 <?xml version="1.0" standalone="yes"?>
 <ProjectDataset>
   <xs:schema id="ProjectDataset" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop">
-    <xs:element name="ProjectDataset" msdata:IsDataSet="true" msprop:SchemaVersion="1">
+    <xs:element name="ProjectDataset" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:SchemaVersion="1">
       <xs:complexType>
-        <xs:choice maxOccurs="unbounded">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="GraphicSheet">
             <xs:complexType>
               <xs:sequence>
@@ -631,6 +631,18 @@
   <Solidity Name="Standard">
     <SolidityShape CategoryName="Solid" ShapeName="SolidTileShape" />
   </Solidity>
+  <SourceCode Name="OpenTK.dll" IsCustomObject="true">
+    <Text>/*
+   Because this is a binary file, this text only
+   serves as a comment and will not be compiled.
+*/</Text>
+  </SourceCode>
+  <SourceCode Name="Fonts.dll" IsCustomObject="true">
+    <Text>/*
+   Because this is a binary file, this text only
+   serves as a comment and will not be compiled.
+*/</Text>
+  </SourceCode>
   <Project DisplayMode="m640x480x24" Windowed="true" TitleText="Default SGDK2 Project" MaxPlayers="1" MaxViews="1" Credits="SGDK2 Engine: http://sgdk2.sf.net">
     <Comments />
   </Project>

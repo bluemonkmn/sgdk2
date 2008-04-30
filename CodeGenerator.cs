@@ -2860,7 +2860,7 @@ namespace SGDK2
          AppendElem(mainGroup, "SchemaVersion", "2.0");
          AppendElem(mainGroup, "Configuration", "Debug",
             new System.Collections.Generic.KeyValuePair<string, string>("Condition", " '$(Configuration)' == '' "));
-         AppendElem(mainGroup, "Platform", "AnyCPU",
+         AppendElem(mainGroup, "Platform", "x86",
             new System.Collections.Generic.KeyValuePair<string, string>("Condition", " '$(Platform)' == '' "));
          AppendElem(mainGroup, "AssemblyName", System.IO.Path.GetFileNameWithoutExtension(SGDK2IDE.CurrentProjectFile));
          AppendElem(mainGroup, "OutputType", "WinExe");
@@ -2870,8 +2870,10 @@ namespace SGDK2
          XmlElement releaseGroup = xml.CreateElement("PropertyGroup");
          root.AppendChild(debugGroup);
          root.AppendChild(releaseGroup);
-         debugGroup.SetAttribute("Condition", " '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ");
-         releaseGroup.SetAttribute("Condition", " '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ");
+         debugGroup.SetAttribute("Condition", " '$(Configuration)|$(Platform)' == 'Debug|x86' ");
+         releaseGroup.SetAttribute("Condition", " '$(Configuration)|$(Platform)' == 'Release|x86' ");
+         AppendElem(debugGroup, "PlatformTarget", "x86");
+         AppendElem(releaseGroup, "PlatformTarget", "x86");
          AppendElem(debugGroup, "OutputPath", @".\");
          AppendElem(releaseGroup, "OutputPath", @".\");
          AppendElem(debugGroup, "AllowUnsafeBlocks", "false");
@@ -3247,9 +3249,16 @@ namespace SGDK2
                   }
                   else
                   {
-                     string targetPath = System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(drCode.Name));
-                     System.IO.File.Copy(fullPath, targetPath, true);
-                     compilerParams.ReferencedAssemblies.Add(targetPath);
+                     if (System.IO.File.Exists(fullPath))
+                     {
+                        string targetPath = System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(drCode.Name));
+                        System.IO.File.Copy(fullPath, targetPath, true);
+                        compilerParams.ReferencedAssemblies.Add(targetPath);
+                     }
+                     else
+                     {
+                        compilerParams.ReferencedAssemblies.Add(drCode.Name);
+                     }
                   }
                }
                else if (drCode.Name.EndsWith(".cs") && !drCode.IsCustomObjectDataNull())
@@ -3259,9 +3268,9 @@ namespace SGDK2
             compilerParams.GenerateInMemory = false;
             compilerParams.IncludeDebugInformation = Debug;
             if (Debug)
-               compilerParams.CompilerOptions = "/define:DEBUG /target:winexe" + resourceSwitches;
+               compilerParams.CompilerOptions = "/define:DEBUG /platform:x86 /target:winexe" + resourceSwitches;
             else
-               compilerParams.CompilerOptions = " /target:winexe" + resourceSwitches;
+               compilerParams.CompilerOptions = "/platform:x86 /target:winexe" + resourceSwitches;
 
             string iconFile = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, "Prj.ico");
             while(true)
@@ -3279,7 +3288,6 @@ namespace SGDK2
                   iconFile = System.IO.Path.Combine(parentDir.FullName, System.IO.Path.GetFileName(iconFile));
                }
             }
-
             System.CodeDom.Compiler.CompilerResults results = codeProvider.CompileAssemblyFromFile(compilerParams, fileList);
             if (results.Errors.Count > 0)
             {

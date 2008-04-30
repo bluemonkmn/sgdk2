@@ -448,6 +448,8 @@ public class GameForm : Form
    /// <returns>String containing the display name for the device</returns>
    public string GetControllerName(int deviceNumber)
    {
+      if (controllers[deviceNumber] == null)
+         controllers[deviceNumber] = new Joystick(deviceNumber);
       return controllers[deviceNumber].Name;
    }
 

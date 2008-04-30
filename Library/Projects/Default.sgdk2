@@ -637,7 +637,7 @@
    serves as a comment and will not be compiled.
 */</Text>
   </SourceCode>
-  <SourceCode Name="Fonts.dll" IsCustomObject="true">
+  <SourceCode Name="OpenTK.Utilities.dll" IsCustomObject="true">
     <Text>/*
    Because this is a binary file, this text only
    serves as a comment and will not be compiled.

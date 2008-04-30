@@ -15,6 +15,12 @@ public abstract class GeneralRules
    private static SaveUnit saveUnit = null;
    private static System.Collections.Hashtable memorySaveSlots = new System.Collections.Hashtable();
    private static System.Random randomGen = new System.Random();
+   private static long previousFrame = 0;
+
+   [System.Runtime.InteropServices.DllImport("Kernel32.dll")]
+   public static extern bool QueryPerformanceCounter(out long PerformanceCount);
+   [System.Runtime.InteropServices.DllImport("Kernel32.dll")]
+   public static extern bool QueryPerformanceFrequency(out long PerformanceCount);
 
    /// <summary>
    /// Contains the last sprite created with <see cref="PlanBase.AddSpriteAtPlan"/>,
@@ -35,6 +41,30 @@ public abstract class GeneralRules
    {
       get;
    }
+
+   /// <summary>
+   /// Limit the frame rate of the game to the specified number of frames per second.  Call this only once per frame.
+   /// </summary>
+   /// <param name="fps">Frames per second.</param>
+   /// <remarks>If this is called twice per frame, the effect would be to
+   /// limit the frame rate to half the specified value, and more calls will
+   /// make the game run even slower.</remarks>
+   [Description("Limit the frame rate of the game to the specified number of frames per second.  Call this only once per frame.")]
+   public void LimitFrameRate(int fps)
+   {
+      long freq;
+      long frame;
+      QueryPerformanceFrequency(out freq);
+      QueryPerformanceCounter(out frame);
+      while ((frame - previousFrame) * fps < freq)
+      {
+         int sleepTime = (int)((previousFrame * fps + freq - frame * fps) * 1000 / (freq * fps));
+         System.Threading.Thread.Sleep(sleepTime);
+         QueryPerformanceCounter(out frame);
+      }
+      previousFrame = frame;
+   }
+
 
    /// <summary>
    /// Write a string to the debug output without moving to the next line.

@@ -6,6 +6,7 @@
 using System;
 using System.Collections;
 using OpenTK;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Graphics.OpenGL.Enums;
 
@@ -98,7 +99,7 @@ public class Display : GLControl, IDisposable
    private DisplayOperation m_currentOp;
    private TextureRef m_currentTexture = null;
    private bool scaleNativeSize = false;
-   private OpenTK.Graphics.TextureFont m_GLFont = null;
+   private TextureFont m_GLFont = null;
    private System.Drawing.Font m_SysFont = null;
    private string fontName = null;
    private int fontSize = 0;
@@ -122,8 +123,9 @@ public class Display : GLControl, IDisposable
       0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
       0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA};
    private System.Drawing.Point endPoint = System.Drawing.Point.Empty;
-   private System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, OpenTK.Graphics.TextHandle>> m_cachedText = null;
+   private System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, TextHandle>> m_cachedText = null;
    public const int TextCacheSize = 5;
+   public bool requirementsChecked = false;
    #endregion
 
    #region Initialization and clean-up
@@ -133,7 +135,7 @@ public class Display : GLControl, IDisposable
    }
 
    public Display(GameDisplayMode mode, bool windowed)
-      : base(CreateDisplayMode(mode, windowed))
+      : base(CreateGraphicsMode(mode))
    {
       m_GameDisplayMode = mode;
    }
@@ -163,6 +165,8 @@ public class Display : GLControl, IDisposable
    protected override void OnResize(EventArgs e)
    {
       base.OnResize(e);
+      if (GraphicsContext.CurrentContext == null)
+         return;
       GL.Viewport(0, 0, ClientSize.Width, ClientSize.Height);
       GL.MatrixMode(MatrixMode.Projection);
       GL.LoadIdentity();
@@ -267,20 +271,40 @@ public class Display : GLControl, IDisposable
       return new System.Drawing.Size(0, 0);
    }
 
+   public void CheckRequirements()
+   {
+      if (!requirementsChecked)
+      {
+         requirementsChecked = true;
+         GL.Finish();
+         if (!GL.SupportsExtension("VERSION_1_2"))
+         {
+            string errString = "OpenGL version 1.2 is required";
+            try
+            {
+               errString += "; your version is: " + GL.GetString(StringName.Version);
+            }
+            catch
+            {
+            }
+            throw new ApplicationException(errString);
+         }
+         if (!GL.SupportsExtension("GL_ARB_texture_rectangle"))
+         {
+            System.Windows.Forms.MessageBox.Show(this, "GL_ARB_texture_rectangle may be required for proper operation. The current video driver/hardware does not support this feature.", "Requirement Check Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
+         }
+      }
+   }
+
    /// <summary>
-   /// Completes the presentation parameter structure by filling out a back buffer
-   /// width, height, and format.
+   /// Returns a GraphicsMode structure corresponding to the requested GameDisplayMode
    /// </summary>
    /// <param name="mode">Game requested display mode</param>
-   /// <param name="pp">Object to finish populating</param>
-   public static DisplayMode CreateDisplayMode(GameDisplayMode mode, bool windowed)
+   public static GraphicsMode CreateGraphicsMode(GameDisplayMode mode)
    {
       System.Drawing.Size screenSize = GetScreenSize(mode);
       int depth;
 
-      // TODO: Check for hardware support
-      /*         if (!Manager.CheckDeviceType(Manager.Adapters.Default.Adapter, DeviceType.Hardware, Manager.Adapters.Default.CurrentDisplayMode.Format, pp.BackBufferFormat, pp.Windowed))
-                  throw new ApplicationException("No hardware support for windowed mode on default display adapter");*/
       switch (mode)
       {
          case GameDisplayMode.m320x240x16:
@@ -294,7 +318,7 @@ public class Display : GLControl, IDisposable
             depth = 24;
             break;
       }
-      return new DisplayMode(screenSize.Width, screenSize.Height, 0, depth, !windowed);
+      return new GraphicsMode(new ColorFormat(depth));
    }
 
    /// <summary>
@@ -322,13 +346,13 @@ public class Display : GLControl, IDisposable
    /// <summary>
    /// Returns the GLFont object used for drawing text on this display.
    /// </summary>
-   public OpenTK.Graphics.TextureFont GLFont
+   public TextureFont GLFont
    {
       get
       {
          if (m_GLFont == null)
          {
-            m_GLFont = new OpenTK.Graphics.TextureFont(SysFont);
+            m_GLFont = new TextureFont(SysFont);
          }
          return m_GLFont;
       }
@@ -391,16 +415,18 @@ public class Display : GLControl, IDisposable
       {
          if (m_currentOp != DisplayOperation.None)
             GL.End();
-         else
-         {
-            GL.TexEnv(TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (float)TextureEnvMode.Modulate);
-            GL.Enable(EnableCap.Blend);
-            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-            GL.Enable(texCap);
-            GL.Disable(EnableCap.DepthTest);
-            GL.Disable(EnableCap.Lighting);
-            GL.Disable(EnableCap.Dither);
-         }
+         CheckError();
+
+         CheckRequirements();
+         GL.TexEnv(TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (float)TextureEnvMode.Modulate);
+         GL.Enable(EnableCap.Blend);
+         GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+         GL.Enable(texCap);
+         GL.Disable(EnableCap.DepthTest);
+         GL.Disable(EnableCap.Lighting);
+         GL.Disable(EnableCap.Dither);
+
+         CheckError();
          GL.BindTexture(texTarget, texture.Texture);
          GL.Begin(BeginMode.Quads);
          m_currentOp = DisplayOperation.DrawFrames;
@@ -426,6 +452,7 @@ public class Display : GLControl, IDisposable
          GL.End();
          m_currentOp = DisplayOperation.None;
       }
+      CheckError();
    }
 
    /// <summary>
@@ -676,10 +703,10 @@ public class Display : GLControl, IDisposable
             GL.End();
          GL.Hint(HintTarget.PointSmoothHint, HintMode.Nicest);
          GL.Enable(EnableCap.PointSmooth);
+         GL.Disable(texCap);
          GL.Begin(BeginMode.Points);
          m_currentOp = DisplayOperation.DrawPoints;
       }
-      GL.Disable(texCap);
       GL.Vertex2(location.X, location.Y);
    }
 
@@ -748,6 +775,9 @@ public class Display : GLControl, IDisposable
    /// </summary>
    public void Clear()
    {
+      if (m_currentOp != DisplayOperation.None)
+         GL.End();
+      m_currentOp = DisplayOperation.None;
       GL.Clear(ClearBufferMask.AccumBufferBit | ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
    }
 
@@ -764,12 +794,13 @@ public class Display : GLControl, IDisposable
    {
       if (m_currentOp != DisplayOperation.None)
          GL.End();
+      CheckError();
       GL.Disable(texCap);
-      OpenTK.Graphics.ITextPrinter tp = new OpenTK.Graphics.TextPrinter();
-      OpenTK.Graphics.TextHandle th = null;
+      ITextPrinter tp = new TextPrinter();
+      TextHandle th = null;
       if (m_cachedText != null)
       {
-         foreach (System.Collections.Generic.KeyValuePair<string, OpenTK.Graphics.TextHandle> kvp in m_cachedText)
+         foreach (System.Collections.Generic.KeyValuePair<string, TextHandle> kvp in m_cachedText)
             if (kvp.Key == text)
                th = kvp.Value;
       }
@@ -777,25 +808,32 @@ public class Display : GLControl, IDisposable
       {
          tp.Prepare(text, GLFont, out th/*, width, wordWrap, alignment*/);
          if (m_cachedText == null)
-            m_cachedText = new System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, OpenTK.Graphics.TextHandle>>(TextCacheSize);
+            m_cachedText = new System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, TextHandle>>(TextCacheSize);
          while (m_cachedText.Count+1 > TextCacheSize)
             m_cachedText.Dequeue().Value.Dispose();
-         m_cachedText.Enqueue(new System.Collections.Generic.KeyValuePair<string, OpenTK.Graphics.TextHandle>(text, th));
+         m_cachedText.Enqueue(new System.Collections.Generic.KeyValuePair<string, TextHandle>(text, th));
       }
       tp.Begin();
       GL.Translate(x, y, 0);
       tp.Draw(th);
       tp.End();
+      CheckError();
    }
 
    public void Scissor(System.Drawing.Rectangle rect)
    {
+      if (m_currentOp != DisplayOperation.None)
+         GL.End();
+      m_currentOp = DisplayOperation.None;
       GL.Enable(EnableCap.ScissorTest);
       GL.Scissor(rect.X, rect.Y, rect.Width, rect.Height);
    }
 
    public void ScissorOff()
    {
+      if (m_currentOp != DisplayOperation.None)
+         GL.End();
+      m_currentOp = DisplayOperation.None;
       GL.Disable(EnableCap.ScissorTest);
    }
 
@@ -807,6 +845,15 @@ public class Display : GLControl, IDisposable
          KeyboardState kbs = ((GameForm)Parent).KeyboardState;
          if (kbs != null)
             kbs.ProcessMessage(m);
+      }
+   }
+
+   private static void CheckError()
+   {
+      ErrorCode ec = GL.GetError();
+      if (ec != 0)
+      {
+         throw new System.Exception(ec.ToString());
       }
    }
 

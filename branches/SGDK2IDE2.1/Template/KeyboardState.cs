@@ -139,7 +139,6 @@ public class KeyboardState
       switch (m.Msg)
       {
          case WM_KEYDOWN:
-            System.Diagnostics.Debug.WriteLine(m.ToString());
             keyStates[m.WParam.ToInt32()] = true;
             keyStates[GetExtraKey(m)] = true;
             break;

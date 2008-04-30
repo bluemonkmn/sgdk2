@@ -2059,8 +2059,8 @@ namespace SGDK2
          }
          catch (System.Exception ex)
          {
-            MessageBox.Show(MdiParent, "An error occurred while drawing the display in the map editor. This might happen if too many displays are active. In order to attempt to avoid fatal errors and data loss, the display handling in this map editor window will be disabled and you should close it yourself. Details:\r\n" + ex.ToString(), "Map Editor Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
             m_DangerWillRobinson = true;
+            MessageBox.Show(MdiParent, "An error occurred while drawing the display in the map editor. In order to attempt to avoid fatal errors and data loss, the display handling in this map editor window will be disabled and you should close it yourself. Details:\r\n" + ex.ToString(), "Map Editor Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
          }
       }
 

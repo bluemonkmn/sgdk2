@@ -1341,7 +1341,11 @@ namespace SGDK2
             sName += ".cs";
          }
 
-         string msg = ProjectData.ValidateName(sBareName);
+         string msg = null;
+         if (sBareName.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) >= 0)
+         {
+            msg = "Invalid characters in name";
+         }
          if (msg != null)
          {
             MessageBox.Show(this, "Invalid name \"" + sBareName + "\": " + msg, "Rename Custom Code Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);

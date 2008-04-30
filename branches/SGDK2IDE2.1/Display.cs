@@ -6,6 +6,7 @@
 using System;
 using System.Collections;
 using OpenTK;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Graphics.OpenGL.Enums;
 
@@ -70,6 +71,7 @@ namespace SGDK2
             {
                if (m_Texture == 0)
                {
+                  m_Display.MakeCurrent();
                   m_Texture = m_Display.GetTexture(m_Name);
                }
                return m_Texture;
@@ -100,7 +102,7 @@ namespace SGDK2
       private DisplayOperation m_currentOp;
       private TextureRef m_currentTexture = null;
       private bool scaleNativeSize = false;
-      private OpenTK.Graphics.TextureFont m_GLFont = null;
+      private TextureFont m_GLFont = null;
       private System.Drawing.Font m_SysFont = null;
       private string fontName = null;
       private int fontSize = 0;
@@ -124,8 +126,9 @@ namespace SGDK2
          0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
          0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA};
       private System.Drawing.Point endPoint = System.Drawing.Point.Empty;
-      private System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, OpenTK.Graphics.TextHandle>> m_cachedText = null;
+      private System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, TextHandle>> m_cachedText = null;
       public const int TextCacheSize = 5;
+      public bool requirementsChecked = false;
       #endregion
 
       #region Initialization and clean-up
@@ -133,7 +136,7 @@ namespace SGDK2
       {
       }
 
-      public Display(GameDisplayMode mode, bool windowed) : base(CreateDisplayMode(mode, windowed))
+      public Display(GameDisplayMode mode, bool windowed) : base(CreateGraphicsMode(mode))
       {
          m_GameDisplayMode = mode;
       }
@@ -159,6 +162,10 @@ namespace SGDK2
       protected override void OnResize(EventArgs e)
       {
          base.OnResize(e);
+         if (GraphicsContext.CurrentContext == null)
+            return;
+         MakeCurrent();
+         GL.Finish();
          GL.Viewport(0, 0, ClientSize.Width, ClientSize.Height);
          GL.MatrixMode(MatrixMode.Projection);
          GL.LoadIdentity();
@@ -194,6 +201,15 @@ namespace SGDK2
             bmpTexture.UnlockBits(bits);
          }
          return texture;
+      }
+
+      private static void CheckError()
+      {
+         ErrorCode ec = GL.GetError();
+         if (ec != 0)
+         {
+            throw new System.Exception(ec.ToString());
+         }
       }
       #endregion
 
@@ -263,20 +279,42 @@ namespace SGDK2
          return new System.Drawing.Size(0,0);
       }
 
+      public void CheckRequirements()
+      {
+         if (!requirementsChecked)
+         {
+            requirementsChecked = true;
+            GL.Finish();
+            if (!GL.SupportsExtension("VERSION_1_2"))
+            {
+               string errString = "OpenGL version 1.2 is required";
+               try
+               {
+                  errString += "; your version is: " + GL.GetString(StringName.Version);
+               }
+               catch
+               {
+               }
+               throw new ApplicationException(errString);
+            }
+            if (!GL.SupportsExtension("GL_ARB_texture_rectangle"))
+            {
+               System.Windows.Forms.MessageBox.Show(this, "GL_ARB_texture_rectangle may be required for proper operation. The current video driver/hardware does not support this feature.", "Requirement Check Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
+            }
+         }
+      }
+
       /// <summary>
       /// Completes the presentation parameter structure by filling out a back buffer
       /// width, height, and format.
       /// </summary>
       /// <param name="mode">Game requested display mode</param>
       /// <param name="pp">Object to finish populating</param>
-      public static DisplayMode CreateDisplayMode(GameDisplayMode mode, bool windowed) 
+      public static GraphicsMode CreateGraphicsMode(GameDisplayMode mode) 
       {
-         var screenSize = GetScreenSize(mode);
+         System.Drawing.Size screenSize = GetScreenSize(mode);
          int depth;
 
-         // TODO: Check for hardware support
-/*         if (!Manager.CheckDeviceType(Manager.Adapters.Default.Adapter, DeviceType.Hardware, Manager.Adapters.Default.CurrentDisplayMode.Format, pp.BackBufferFormat, pp.Windowed))
-            throw new ApplicationException("No hardware support for windowed mode on default display adapter");*/
          switch (mode)
          {
             case GameDisplayMode.m320x240x16:
@@ -290,7 +328,7 @@ namespace SGDK2
                depth = 24;
                break;
          }
-         return new DisplayMode(screenSize.Width, screenSize.Height, 0, depth, !windowed);
+         return new GraphicsMode(new ColorFormat(depth));
       }
 
       /// <summary>
@@ -318,13 +356,13 @@ namespace SGDK2
       /// <summary>
       /// Returns the GLFont object used for drawing text on this display.
       /// </summary>
-      public OpenTK.Graphics.TextureFont GLFont
+      public TextureFont GLFont
       {
          get
          {
             if (m_GLFont == null)
             {
-               m_GLFont = new OpenTK.Graphics.TextureFont(SysFont);
+               m_GLFont = new TextureFont(SysFont);
             }
             return m_GLFont;
          }
@@ -387,16 +425,18 @@ namespace SGDK2
          {
             if (m_currentOp != DisplayOperation.None)
                GL.End();
-            else
-            {
-               GL.TexEnv(TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (float)TextureEnvMode.Modulate);
-               GL.Enable(EnableCap.Blend);
-               GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
-               GL.Enable(texCap);
-               GL.Disable(EnableCap.DepthTest);
-               GL.Disable(EnableCap.Lighting);
-               GL.Disable(EnableCap.Dither);
-            }
+            CheckError();
+
+            CheckRequirements();
+            GL.TexEnv(TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (float)TextureEnvMode.Modulate);
+            GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+            GL.Enable(texCap);
+            GL.Disable(EnableCap.DepthTest);
+            GL.Disable(EnableCap.Lighting);
+            GL.Disable(EnableCap.Dither);
+
+            CheckError();
             GL.BindTexture(texTarget, texture.Texture);
             GL.Begin(BeginMode.Quads);
             m_currentOp = DisplayOperation.DrawFrames;
@@ -422,6 +462,7 @@ namespace SGDK2
             GL.End();
             m_currentOp = DisplayOperation.None;
          }
+         CheckError();
       }
 
       /// <summary>
@@ -761,8 +802,8 @@ namespace SGDK2
          if (m_currentOp != DisplayOperation.None)
             GL.End();
          GL.Disable(texCap);
-         OpenTK.Graphics.ITextPrinter tp = new OpenTK.Graphics.TextPrinter();
-         OpenTK.Graphics.TextHandle th = null;
+         ITextPrinter tp = new TextPrinter();
+         TextHandle th = null;
          if (m_cachedText != null)
          {
             foreach (var kvp in m_cachedText)
@@ -773,17 +814,16 @@ namespace SGDK2
          {
             tp.Prepare(text, GLFont, out th/*, width, wordWrap, alignment*/);
             if (m_cachedText == null)
-               m_cachedText = new System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, OpenTK.Graphics.TextHandle>>(TextCacheSize);
+               m_cachedText = new System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, TextHandle>>(TextCacheSize);
             while (m_cachedText.Count+1 > TextCacheSize)
                m_cachedText.Dequeue().Value.Dispose();
-            m_cachedText.Enqueue(new System.Collections.Generic.KeyValuePair<string, OpenTK.Graphics.TextHandle>(text, th));
+            m_cachedText.Enqueue(new System.Collections.Generic.KeyValuePair<string, TextHandle>(text, th));
          }
          tp.Begin();
          GL.Translate(x, y, 0);
          tp.Draw(th);
          tp.End();
       }
-
       #endregion
    }
 }

@@ -108,28 +108,16 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.DirectX">
-      <Name>Microsoft.DirectX</Name>
-      <HintPath>..\..\..\..\..\..\WINDOWS\Microsoft.NET\DirectX for Managed Code\1.0.2902.0\Microsoft.DirectX.dll</HintPath>
-      <AssemblyFolderKey>hklm\dn\dx_1.0.2902.0</AssemblyFolderKey>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="Microsoft.DirectX.DirectInput">
-      <Name>Microsoft.DirectX.DirectInput</Name>
-      <HintPath>..\..\..\..\..\WINDOWS\Microsoft.NET\DirectX for Managed Code\1.0.2902.0\Microsoft.DirectX.DirectInput.dll</HintPath>
-      <AssemblyFolderKey>hklm\dn\dx_1.0.2902.0</AssemblyFolderKey>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Microsoft.VisualC">
       <Name>Microsoft.VisualC</Name>
     </Reference>
-    <Reference Include="OpenTK, Version=0.9.1.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OpenTK, Version=0.9.1.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\OpenTK\Binaries\Release\Libraries\OpenTK.dll</HintPath>
+      <HintPath>..\OpenTK\Source\OpenTK\bin\Release\OpenTK.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK.Utilities, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="OpenTK.Utilities, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\OpenTK\Binaries\Release\Libraries\OpenTK.Utilities.dll</HintPath>
+      <HintPath>..\OpenTK\Source\Utilities\bin\Release\OpenTK.Utilities.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
@@ -616,6 +604,9 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Content Include="App.ico" />
+    <Content Include="fmodex.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="ProjectDataset.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <CustomToolNamespace>SGDK2</CustomToolNamespace>

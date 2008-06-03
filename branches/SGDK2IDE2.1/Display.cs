@@ -789,6 +789,20 @@ namespace SGDK2
       }
 
       /// <summary>
+      /// Measure the size of the specified text with the specified layout options
+      /// </summary>
+      /// <param name="text">Textx to be measured</param>
+      /// <param name="width">Width for word wrapping</param>
+      /// <param name="wrap">True to allow word wrap, false otherwise</param>
+      /// <returns>The size of the text in pixels</returns>
+      public System.Drawing.SizeF MeasureText(string text, float width, bool wrap)
+      {
+         System.Drawing.RectangleF layout = new System.Drawing.RectangleF(0, 0, width, 1);
+         GLFont.GetCharPositions(text, ref layout, wrap, System.Drawing.StringAlignment.Near, false);
+         return layout.Size;
+      }
+
+      /// <summary>
       /// Draw text on the display
       /// </summary>
       /// <param name="text">Text to draw</param>
@@ -812,7 +826,7 @@ namespace SGDK2
          }
          if (th == null)
          {
-            tp.Prepare(text, GLFont, out th/*, width, wordWrap, alignment*/);
+            tp.Prepare(text, GLFont, out th, width, wordWrap, alignment);
             if (m_cachedText == null)
                m_cachedText = new System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, TextHandle>>(TextCacheSize);
             while (m_cachedText.Count+1 > TextCacheSize)

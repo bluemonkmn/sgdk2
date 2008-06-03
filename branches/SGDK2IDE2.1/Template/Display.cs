@@ -40,7 +40,7 @@ public enum DisplayOperation
 /// Manages the display device on which real-time game graphics are drawn
 /// </summary>
 [Serializable()]
-public class Display : GLControl, IDisposable
+public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISerializable
 {
    #region Embedded Classes
    public class TextureRef : IDisposable
@@ -144,6 +144,7 @@ public class Display : GLControl, IDisposable
    {
       if (disposing)
       {
+         OpenTK.Graphics.DisplayDevice.Default.RestoreResolution();
          DisposeAllTextures();
          if (m_GLFont != null)
             m_GLFont.Dispose();
@@ -297,14 +298,12 @@ public class Display : GLControl, IDisposable
    }
 
    /// <summary>
-   /// Returns a GraphicsMode structure corresponding to the requested GameDisplayMode
+   /// Return the bit depth of the specified mode
    /// </summary>
-   /// <param name="mode">Game requested display mode</param>
-   public static GraphicsMode CreateGraphicsMode(GameDisplayMode mode)
+   /// <param name="mode">GameDisplayMode value whose depth will be returned</param>
+   /// <returns>Integer value of 16 or 24</returns>
+   public static int GetModeDepth(GameDisplayMode mode)
    {
-      System.Drawing.Size screenSize = GetScreenSize(mode);
-      int depth;
-
       switch (mode)
       {
          case GameDisplayMode.m320x240x16:
@@ -312,13 +311,57 @@ public class Display : GLControl, IDisposable
          case GameDisplayMode.m800x600x16:
          case GameDisplayMode.m1024x768x16:
          case GameDisplayMode.m1280x1024x16:
-            depth = 16;
-            break;
+            return 16;
          default:
-            depth = 24;
-            break;
+            return 24;
       }
-      return new GraphicsMode(new ColorFormat(depth));
+   }
+
+   /// <summary>
+   /// Returns a GraphicsMode structure corresponding to the requested GameDisplayMode
+   /// </summary>
+   /// <param name="mode">Game requested display mode</param>
+   public static GraphicsMode CreateGraphicsMode(GameDisplayMode mode)
+   {
+      return new GraphicsMode(new ColorFormat(GetModeDepth(mode)));
+   }
+
+   /// <summary>
+   /// Restore the resolution of the display after a call to <see cref="SwitchToResolution" />
+   /// </summary>
+   public void SwitchToResolution()
+   {
+      System.Drawing.Size size = GetScreenSize(m_GameDisplayMode);
+      int depth = GetModeDepth(m_GameDisplayMode);
+      OpenTK.Graphics.DisplayResolution best = null;
+      foreach (OpenTK.Graphics.DisplayResolution dr in OpenTK.Graphics.DisplayDevice.Default.AvailableResolutions)
+      {
+         if ((dr.Width == size.Width) && (dr.Height == size.Height))
+         {
+            if ((dr.BitsPerPixel == 32 ? 24 : 32) == depth)
+            {
+               if ((best == null) || (best.RefreshRate < dr.RefreshRate))
+                  best = dr;
+            }
+            else
+            {
+               if ((best == null) || (best.BitsPerPixel != depth) &&
+                   (best.BitsPerPixel < dr.BitsPerPixel))
+                  best = dr;
+            }
+         }
+      }
+      if (best != null)
+      {
+         OpenTK.Graphics.DisplayDevice.Default.ChangeResolution(best);
+         return;
+      }
+      throw new ApplicationException("Cannot match display mode " + m_GameDisplayMode.ToString());
+   }
+
+   public static void RestoreResolution()
+   {
+      OpenTK.Graphics.DisplayDevice.Default.RestoreResolution();
    }
 
    /// <summary>
@@ -782,6 +825,20 @@ public class Display : GLControl, IDisposable
    }
 
    /// <summary>
+   /// Measure the size of the specified text with the specified layout options
+   /// </summary>
+   /// <param name="text">Textx to be measured</param>
+   /// <param name="width">Width for word wrapping</param>
+   /// <param name="wrap">True to allow word wrap, false otherwise</param>
+   /// <returns>The size of the text in pixels</returns>
+   public System.Drawing.SizeF MeasureText(string text, float width, bool wrap)
+   {
+      System.Drawing.RectangleF layout = new System.Drawing.RectangleF(0, 0, width, 1);
+      GLFont.GetCharPositions(text, ref layout, wrap, System.Drawing.StringAlignment.Near, false);
+      return layout.Size;
+   }
+
+   /// <summary>
    /// Draw text on the display
    /// </summary>
    /// <param name="text">Text to draw</param>
@@ -806,7 +863,7 @@ public class Display : GLControl, IDisposable
       }
       if (th == null)
       {
-         tp.Prepare(text, GLFont, out th/*, width, wordWrap, alignment*/);
+         tp.Prepare(text, GLFont, out th, width, wordWrap, alignment);
          if (m_cachedText == null)
             m_cachedText = new System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, TextHandle>>(TextCacheSize);
          while (m_cachedText.Count+1 > TextCacheSize)
@@ -857,5 +914,39 @@ public class Display : GLControl, IDisposable
       }
    }
 
+   #endregion
+
+   #region ISerializable Members
+
+   public void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+   {
+      info.SetType(typeof(DisplayRef));
+   }
+
+   #endregion
+}
+
+/// <summary>
+/// Provides serialization "services" for the <see cref="Display"/> object, preventing
+/// attempts to save or load data for the display object when the game is saved/loaded.
+/// </summary>
+[Serializable()]
+public class DisplayRef : System.Runtime.Serialization.IObjectReference, System.Runtime.Serialization.ISerializable
+{
+
+   private DisplayRef(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+   {
+   }
+
+   public void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
+   {
+      throw new System.NotImplementedException("Unexpected serialization call");
+   }
+
+   #region IObjectReference Members
+   public object GetRealObject(System.Runtime.Serialization.StreamingContext context)
+   {
+      return Project.GameWindow.GameDisplay;
+   }
    #endregion
 }

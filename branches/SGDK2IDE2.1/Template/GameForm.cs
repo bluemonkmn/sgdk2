@@ -49,6 +49,8 @@ public class GameForm : Form
    /// <remarks>Each of these objects can refer to a <see cref="KeyboardPlayer"/>
    /// or a <see cref="ControllerPlayer"/>, or you can create your own player input.</remarks>
    public IPlayer[] Players = new IPlayer[Project.MaxPlayers];
+   bool isFullScreen = false;
+   private string title;
 
    #region Events
    /// <summary>
@@ -122,7 +124,7 @@ public class GameForm : Form
       GameDisplay.Size = Display.GetScreenSize(mode);
       Controls.Add(this.GameDisplay);
       Name = "GameForm";
-      Text = title;
+      Text = this.title = title;
       KeyPreview = true;
       FormBorderStyle = FormBorderStyle.FixedSingle;
       CurrentMap = GetMap(initMapType);
@@ -130,6 +132,8 @@ public class GameForm : Form
          OverlayMap = GetMap(overlayMapType);
       else
          OverlayMap = null;
+      if (!windowed)
+         FullScreen = true;
    }
 
    /// <summary>
@@ -512,5 +516,51 @@ public class GameForm : Form
       if (Project.GameWindow != null)
          Project.GameWindow.Close();
       MessageBox.Show("A fatal error occurred initializing or running the game:\r\n" + ex.ToString(), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+   }
+
+   protected override void OnKeyDown(KeyEventArgs e)
+   {
+      if (e.KeyCode == Keys.Enter && e.Modifiers == Keys.Alt)
+      {
+         e.Handled = true;
+         e.SuppressKeyPress = true;
+         FullScreen = !FullScreen;
+      }
+   }
+
+   public bool FullScreen
+   {
+      get
+      {
+         return isFullScreen;
+      }
+      set
+      {
+         if (value != isFullScreen)
+         {
+            isFullScreen = value;
+            if (isFullScreen)
+            {
+               Text = String.Empty;
+               FormBorderStyle = FormBorderStyle.None;
+               ControlBox = false;
+               MinimizeBox = false;
+               Menu = null;
+               GameDisplay.SwitchToResolution();
+               WindowState = FormWindowState.Maximized;
+            }
+            else
+            {
+               Display.RestoreResolution();
+               WindowState = FormWindowState.Normal;
+               Text = title;
+               FormBorderStyle = FormBorderStyle.FixedSingle;
+               ControlBox = true;
+               MinimizeBox = true;
+               Menu = mnuGame;
+               ClientSize = Display.GetScreenSize(GameDisplay.GameDisplayMode);
+            }
+         }
+      }
    }
 }

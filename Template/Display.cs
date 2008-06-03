@@ -123,7 +123,8 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
       0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
       0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA};
    private System.Drawing.Point endPoint = System.Drawing.Point.Empty;
-   private System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, TextHandle>> m_cachedText = null;
+   private System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, TextLayout>> m_cachedText = null;
+   private ITextPrinter textPrinter = null;
    public const int TextCacheSize = 5;
    public bool requirementsChecked = false;
    #endregion
@@ -410,10 +411,10 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
       {
          if (m_SysFont == null)
          {
-            if (fontName == null)
-               m_SysFont = System.Drawing.SystemFonts.DefaultFont;
-            else
-               m_SysFont = new System.Drawing.Font(fontName, fontSize, System.Drawing.GraphicsUnit.Pixel);
+             if (fontName == null)
+                 m_SysFont = System.Drawing.SystemFonts.DefaultFont;
+             else
+                 m_SysFont = new System.Drawing.Font(fontName, fontSize, System.Drawing.GraphicsUnit.Pixel);
          }
          return m_SysFont;
       }
@@ -687,14 +688,16 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
          GL.Enable(EnableCap.LineStipple);
          GL.LineStipple(1, pattern);
       }
+      System.Drawing.RectangleF rectf = rect;
+      rectf.Offset(0.5f, 0.5f); // Align to pixel grid
       GL.Disable(EnableCap.LineSmooth);
       GL.LineWidth(1);
       GL.Disable(texCap);
       GL.Begin(BeginMode.LineLoop);
-      GL.Vertex2(rect.X, rect.Y);
-      GL.Vertex2(rect.X, rect.Y + rect.Height - 1);
-      GL.Vertex2(rect.X + rect.Width - 1, rect.Y + rect.Height - 1);
-      GL.Vertex2(rect.X + rect.Width - 1, rect.Y);
+      GL.Vertex2(rectf.X, rectf.Y);
+      GL.Vertex2(rectf.X, rectf.Y + rectf.Height - 1);
+      GL.Vertex2(rectf.X + rectf.Width - 1, rectf.Y + rectf.Height - 1);
+      GL.Vertex2(rectf.X + rectf.Width - 1, rectf.Y);
       GL.End();
    }
 
@@ -824,6 +827,25 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
       GL.Clear(ClearBufferMask.AccumBufferBit | ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
    }
 
+   public class TextLayout : IDisposable
+   {
+      public TextHandle handle;
+      public System.Drawing.Size size;
+      public TextLayout(TextHandle handle, System.Drawing.Size size)
+      {
+         this.handle = handle;
+         this.size = size;
+      }
+
+      #region IDisposable Members
+      public void Dispose()
+      {
+         handle.Dispose();
+         GC.SuppressFinalize(this);
+      }
+      #endregion
+   }
+
    /// <summary>
    /// Measure the size of the specified text with the specified layout options
    /// </summary>
@@ -831,11 +853,29 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
    /// <param name="width">Width for word wrapping</param>
    /// <param name="wrap">True to allow word wrap, false otherwise</param>
    /// <returns>The size of the text in pixels</returns>
-   public System.Drawing.SizeF MeasureText(string text, float width, bool wrap)
+   public TextLayout MeasureText(string text, float width, bool wrap, System.Drawing.StringAlignment alignment)
    {
-      System.Drawing.RectangleF layout = new System.Drawing.RectangleF(0, 0, width, 1);
-      GLFont.GetCharPositions(text, ref layout, wrap, System.Drawing.StringAlignment.Near, false);
-      return layout.Size;
+      if (textPrinter == null)
+         textPrinter = new TextPrinter();
+      TextLayout tl = null;
+      if (m_cachedText != null)
+      {
+         foreach (System.Collections.Generic.KeyValuePair<string, TextLayout> kvp in m_cachedText)
+            if (kvp.Key == text)
+               tl = kvp.Value;
+      }
+      if (tl == null)
+      {
+         TextHandle th;
+         System.Drawing.Size textSize = System.Drawing.Size.Ceiling(textPrinter.Prepare(text, GLFont, out th, width, wrap, alignment));
+         if (m_cachedText == null)
+            m_cachedText = new System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, TextLayout>>(TextCacheSize);
+         while (m_cachedText.Count + 1 > TextCacheSize)
+            m_cachedText.Dequeue().Value.Dispose();
+         tl = new TextLayout(th, textSize);
+         m_cachedText.Enqueue(new System.Collections.Generic.KeyValuePair<string, TextLayout>(text, tl));
+      }
+      return tl;
    }
 
    /// <summary>
@@ -853,27 +893,13 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
          GL.End();
       CheckError();
       GL.Disable(texCap);
-      ITextPrinter tp = new TextPrinter();
-      TextHandle th = null;
-      if (m_cachedText != null)
-      {
-         foreach (System.Collections.Generic.KeyValuePair<string, TextHandle> kvp in m_cachedText)
-            if (kvp.Key == text)
-               th = kvp.Value;
-      }
-      if (th == null)
-      {
-         tp.Prepare(text, GLFont, out th, width, wordWrap, alignment);
-         if (m_cachedText == null)
-            m_cachedText = new System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, TextHandle>>(TextCacheSize);
-         while (m_cachedText.Count+1 > TextCacheSize)
-            m_cachedText.Dequeue().Value.Dispose();
-         m_cachedText.Enqueue(new System.Collections.Generic.KeyValuePair<string, TextHandle>(text, th));
-      }
-      tp.Begin();
+
+      TextLayout tl = MeasureText(text, width, wordWrap, alignment);
+
+      textPrinter.Begin();
       GL.Translate(x, y, 0);
-      tp.Draw(th);
-      tp.End();
+      textPrinter.Draw(tl.handle);
+      textPrinter.End();
       CheckError();
    }
 

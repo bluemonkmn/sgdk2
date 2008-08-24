@@ -96,7 +96,7 @@ namespace SGDK2
          // This call is required by the Windows Form Designer.
          InitializeComponent();
 
-         m_Layer = layerProps.m_drLayer;
+         m_Layer = layerProps.m_tempLayer;
          m_LayerProperties = layerProps;
          if ((m_Layer.MapRow.ViewWidth <= 0) || (m_Layer.MapRow.ViewHeight <= 0))
             m_ViewSize = Display.GetScreenSize((GameDisplayMode)Enum.Parse(typeof(GameDisplayMode), ProjectData.ProjectRow.DisplayMode));

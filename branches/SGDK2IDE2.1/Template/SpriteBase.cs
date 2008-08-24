@@ -645,7 +645,7 @@ public abstract class SpriteBase : GeneralRules
       for (int idx = 0; idx < Targets.Count; idx++)
       {
          SpriteBase TargetSprite = Targets[idx];
-         if (TargetSprite == this)
+         if ((TargetSprite == this) || (!TargetSprite.isActive))
             continue;
          int x1 = PixelX;
          int w1 = SolidWidth;

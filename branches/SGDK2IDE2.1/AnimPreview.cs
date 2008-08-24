@@ -315,6 +315,8 @@ namespace SGDK2
                return;
             display.MakeCurrent();
             display.Clear();
+            display.SetColor(m_Background);
+            display.FillRectangle(display.ClientRectangle);
             Rectangle bounds;
             if (m_TileRow != null)
             {

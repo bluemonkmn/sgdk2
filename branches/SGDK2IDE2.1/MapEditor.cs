@@ -2475,6 +2475,6 @@ namespace SGDK2
       {
          LocateSelectedObject();
       }
+      #endregion
    }
-   #endregion
 }

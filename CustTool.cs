@@ -31,7 +31,7 @@ namespace SGDK2
             case 2:
                return "Diamond";
             case 3:
-               return "Pentagon";
+                return "Pentagon";
             case 4:
                return "Hexagon";
             case 5:
@@ -51,36 +51,35 @@ namespace SGDK2
       public static Bitmap GetToolImage(int ToolIndex)
       {
          Bitmap bmpResult = new Bitmap(15,15,PixelFormat.Format32bppArgb);
-         Graphics g = Graphics.FromImage(bmpResult);
-
-         g.SmoothingMode = SmoothingMode.AntiAlias;
-
-         switch(ToolIndex)
+         using (Graphics g = Graphics.FromImage(bmpResult))
          {
-            case 0: // Star
-            case 1: // Triangle
-            case 2: // Diamond
-            case 3: // Pentagon
-            case 4: // Hexagon
-            case 5: // Septagon
-            case 6: // Octagon
-               DrawTool(ToolIndex, g, new PointF(7f, 7f), new PointF(7f, 0), Pens.Black, Brushes.Yellow,
-                  ToolOptions.Outline | ToolOptions.Fill | ToolOptions.AntiAlias);
+            g.SmoothingMode = SmoothingMode.AntiAlias;
+            switch (ToolIndex)
+            {
+               case 0: // Star
+               case 1: // Triangle
+               case 2: // Diamond
+               case 3: // Pentagon
+               case 4: // Hexagon
+               case 5: // Septagon
+               case 6: // Octagon
+                  DrawTool(ToolIndex, g, new PointF(7f, 7f), new PointF(7f, 0), Pens.Black, Brushes.Yellow,
+                     ToolOptions.Outline | ToolOptions.Fill | ToolOptions.AntiAlias);
                   break;
-            case 7: // Right Triangle
-               DrawTool(ToolIndex, g, new PointF(14f, 14f), new PointF(14f, 0), Pens.Black, Brushes.Yellow,
-                  ToolOptions.Outline | ToolOptions.Fill | ToolOptions.AntiAlias);
-               break;
-            case 8: // Droplet
-               DrawTool(ToolIndex, g, new PointF(7f, 14f), new PointF(7f, 0), Pens.Black, Brushes.Yellow,
-                  ToolOptions.Outline | ToolOptions.Fill | ToolOptions.AntiAlias);
-               break;
-            case 9:
-               DrawTool(ToolIndex, g, new PointF(0f, 0f), new PointF(14f, 14f), Pens.Black, Brushes.Yellow,
-                  ToolOptions.Outline | ToolOptions.Fill | ToolOptions.AntiAlias);
-               break;
+               case 7: // Right Triangle
+                  DrawTool(ToolIndex, g, new PointF(14f, 14f), new PointF(14f, 0), Pens.Black, Brushes.Yellow,
+                     ToolOptions.Outline | ToolOptions.Fill | ToolOptions.AntiAlias);
+                  break;
+               case 8: // Droplet
+                  DrawTool(ToolIndex, g, new PointF(7f, 14f), new PointF(7f, 0), Pens.Black, Brushes.Yellow,
+                     ToolOptions.Outline | ToolOptions.Fill | ToolOptions.AntiAlias);
+                  break;
+               case 9:
+                  DrawTool(ToolIndex, g, new PointF(0f, 0f), new PointF(14f, 14f), Pens.Black, Brushes.Yellow,
+                     ToolOptions.Outline | ToolOptions.Fill | ToolOptions.AntiAlias);
+                  break;
+            }
          }
-         g.Dispose();
          return bmpResult;
       }
  

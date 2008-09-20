@@ -949,7 +949,7 @@ public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
       Display disp = ParentLayer.ParentMap.Display;
       disp.ScissorOff();
       disp.SetColor(Color.FromKnownColor(color));
-      disp.DrawText(Label.ToString() + counter.CurrentValue.ToString(), PlanRectangle.Left, PlanRectangle.Top, PlanRectangle.Width, true, StringAlignment.Near);
+      disp.DrawText(Label.ToString() + counter.CurrentValue.ToString(), PlanRectangle.Left, PlanRectangle.Top);
       disp.Flush();
    }
    #endregion

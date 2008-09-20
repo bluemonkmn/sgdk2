@@ -99,12 +99,9 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
    private DisplayOperation m_currentOp;
    private TextureRef m_currentTexture = null;
    private bool scaleNativeSize = false;
-   private TextureFont m_GLFont = null;
-   private System.Drawing.Font m_SysFont = null;
-   private string fontName = null;
-   private int fontSize = 0;
    public const TextureTarget texTarget = TextureTarget.TextureRectangleArb;
    public const EnableCap texCap = (EnableCap)ArbTextureRectangle.TextureRectangleArb;
+   private static TextureRef m_DefaultFont = null;
    private static byte[] shadedStipple = new byte[] {
       0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
       0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
@@ -123,9 +120,6 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
       0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
       0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA};
    private System.Drawing.Point endPoint = System.Drawing.Point.Empty;
-   private System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, TextLayout>> m_cachedText = null;
-   private ITextPrinter textPrinter = null;
-   public const int TextCacheSize = 5;
    public bool requirementsChecked = false;
    #endregion
 
@@ -147,13 +141,6 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
       {
          OpenTK.Graphics.DisplayDevice.Default.RestoreResolution();
          DisposeAllTextures();
-         if (m_GLFont != null)
-            m_GLFont.Dispose();
-         m_GLFont = null;
-         if (m_SysFont != null)
-            if (m_SysFont != System.Drawing.SystemFonts.DefaultFont)
-               m_SysFont.Dispose();
-         m_SysFont = null;
       }
       base.Dispose(disposing);
    }
@@ -385,63 +372,6 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
          System.Drawing.Size naturalSize = GetScreenSize(value);
          GL.Ortho(0, naturalSize.Width, naturalSize.Height, 0, -1, 1);
       }
-   }
-
-   /// <summary>
-   /// Returns the GLFont object used for drawing text on this display.
-   /// </summary>
-   public TextureFont GLFont
-   {
-      get
-      {
-         if (m_GLFont == null)
-         {
-            m_GLFont = new TextureFont(SysFont);
-         }
-         return m_GLFont;
-      }
-   }
-
-   /// <summary>
-   /// Return the System level font on which the <see cref="GLFont"/> is based
-   /// </summary>
-   public System.Drawing.Font SysFont
-   {
-      get
-      {
-         if (m_SysFont == null)
-         {
-             if (fontName == null)
-                 m_SysFont = System.Drawing.SystemFonts.DefaultFont;
-             else
-                 m_SysFont = new System.Drawing.Font(fontName, fontSize, System.Drawing.GraphicsUnit.Pixel);
-         }
-         return m_SysFont;
-      }
-   }
-
-   /// <summary>
-   /// Change the font used for drawing text on the display.
-   /// </summary>
-   /// <param name="name">Specifies a font family name such as Arial</param>
-   /// <param name="size">Specifies the size of the font in pixels</param>
-   public void SetFont(string name, int size)
-   {
-      if (m_GLFont != null)
-      {
-         m_GLFont.Dispose();
-         m_GLFont = null;
-      }
-
-      if (m_SysFont != null)
-      {
-         if (m_SysFont != System.Drawing.SystemFonts.DefaultFont)
-            m_SysFont.Dispose();
-         m_SysFont = null;
-      }
-
-      fontName = name;
-      fontSize = size;
    }
 
    /// <summary>
@@ -717,9 +647,9 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
       GL.Disable(texCap);
       GL.Begin(BeginMode.Quads);
       GL.Vertex2(rect.X, rect.Y);
-      GL.Vertex2(rect.X, rect.Y + rect.Height - 1);
-      GL.Vertex2(rect.X + rect.Width - 1, rect.Y + rect.Height - 1);
-      GL.Vertex2(rect.X + rect.Width - 1, rect.Y);
+      GL.Vertex2(rect.X, rect.Y + rect.Height);
+      GL.Vertex2(rect.X + rect.Width, rect.Y + rect.Height);
+      GL.Vertex2(rect.X + rect.Width, rect.Y);
       GL.End();
    }
 
@@ -827,89 +757,13 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
       GL.Clear(ClearBufferMask.AccumBufferBit | ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
    }
 
-   public class TextLayout : IDisposable
-   {
-      public TextHandle handle;
-      public System.Drawing.Size size;
-      public TextLayout(TextHandle handle, System.Drawing.Size size)
-      {
-         this.handle = handle;
-         this.size = size;
-      }
-
-      #region IDisposable Members
-      public void Dispose()
-      {
-         handle.Dispose();
-         GC.SuppressFinalize(this);
-      }
-      #endregion
-   }
-
-   /// <summary>
-   /// Measure the size of the specified text with the specified layout options
-   /// </summary>
-   /// <param name="text">Textx to be measured</param>
-   /// <param name="width">Width for word wrapping</param>
-   /// <param name="wrap">True to allow word wrap, false otherwise</param>
-   /// <returns>The size of the text in pixels</returns>
-   public TextLayout MeasureText(string text, float width, bool wrap, System.Drawing.StringAlignment alignment)
-   {
-      if (textPrinter == null)
-         textPrinter = new TextPrinter();
-      TextLayout tl = null;
-      if (m_cachedText != null)
-      {
-         foreach (System.Collections.Generic.KeyValuePair<string, TextLayout> kvp in m_cachedText)
-            if (kvp.Key == text)
-               tl = kvp.Value;
-      }
-      if (tl == null)
-      {
-         TextHandle th;
-         System.Drawing.Size textSize = System.Drawing.Size.Ceiling(textPrinter.Prepare(text, GLFont, out th, width, wrap, alignment));
-         if (m_cachedText == null)
-            m_cachedText = new System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, TextLayout>>(TextCacheSize);
-         while (m_cachedText.Count + 1 > TextCacheSize)
-            m_cachedText.Dequeue().Value.Dispose();
-         tl = new TextLayout(th, textSize);
-         m_cachedText.Enqueue(new System.Collections.Generic.KeyValuePair<string, TextLayout>(text, tl));
-      }
-      return tl;
-   }
-
-   /// <summary>
-   /// Draw text on the display
-   /// </summary>
-   /// <param name="text">Text to draw</param>
-   /// <param name="x">Horizontal location of upper left corner of text block</param>
-   /// <param name="y">Vertical location of upper left corner of text block</param>
-   /// <param name="width">Width of text block</param>
-   /// <param name="wordWrap">Specifies whether word-wrap will be applied</param>
-   /// <param name="alignment">Determines how text is aligned within the block.</param>
-   public void DrawText(string text, int x, int y, int width, bool wordWrap, System.Drawing.StringAlignment alignment)
-   {
-      if (m_currentOp != DisplayOperation.None)
-         GL.End();
-      CheckError();
-      GL.Disable(texCap);
-
-      TextLayout tl = MeasureText(text, width, wordWrap, alignment);
-
-      textPrinter.Begin();
-      GL.Translate(x, y, 0);
-      textPrinter.Draw(tl.handle);
-      textPrinter.End();
-      CheckError();
-   }
-
    public void Scissor(System.Drawing.Rectangle rect)
    {
       if (m_currentOp != DisplayOperation.None)
          GL.End();
       m_currentOp = DisplayOperation.None;
       GL.Enable(EnableCap.ScissorTest);
-      GL.Scissor(rect.X, rect.Y, rect.Width, rect.Height);
+      GL.Scissor(rect.X, ClientRectangle.Height - rect.Y - rect.Height, rect.Width, rect.Height);
    }
 
    public void ScissorOff()
@@ -940,6 +794,43 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
       }
    }
 
+   public void DrawText(string text, int x, int y)
+   {
+      const int charWidth = 13;
+      const int charHeight = 18;
+      if (m_DefaultFont == null)
+      {
+         object testExist = Project.Resources.GetObject("CoolFont");
+         if (testExist == null)
+            throw new ApplicationException("In order to use Display.DrawText, the project must have a Graphic Sheet named \"CoolFont\"");
+         m_DefaultFont = GetTextureRef("CoolFont");
+      }
+      byte[] charBytes = System.Text.Encoding.ASCII.GetBytes(text);
+      System.Drawing.PointF[] corners = new System.Drawing.PointF[]
+         { new System.Drawing.PointF(0, 0),
+           new System.Drawing.PointF(0, charHeight),
+           new System.Drawing.PointF(charWidth, charHeight),
+           new System.Drawing.PointF(charWidth, 0)};
+      int origX = x;
+      for (int charIdx = 0; charIdx < charBytes.Length; charIdx++)
+      {
+         byte curChar = charBytes[charIdx];
+         if (curChar > 32)
+         {
+            int col = (curChar - 33) % 24;
+            int row = (curChar - 33) / 24;
+            System.Drawing.Rectangle sourceRect = new System.Drawing.Rectangle(
+               col * charWidth, row * charHeight, charWidth, charHeight);
+            DrawFrame(m_DefaultFont, sourceRect, corners, x, y);
+            x += charWidth;
+         }
+         else if (curChar == 10)
+         {
+            x = origX;
+            y += charHeight;
+         }
+      }
+   }
    #endregion
 
    #region ISerializable Members

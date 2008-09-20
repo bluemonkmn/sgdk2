@@ -1382,14 +1382,17 @@ public abstract class SpriteBase : GeneralRules
       oldinputs = inputs;
       IPlayer player = Project.GameWindow.Players[PlayerNumber-1];
       inputs = 0;
-      if (player.Up) inputs |= InputBits.Up;
-      if (player.Left) inputs |= InputBits.Left;
-      if (player.Right) inputs |= InputBits.Right;
-      if (player.Down) inputs |= InputBits.Down;
-      if (player.Button1) inputs |= InputBits.Button1;
-      if (player.Button2) inputs |= InputBits.Button2;
-      if (player.Button3) inputs |= InputBits.Button3;
-      if (player.Button4) inputs |= InputBits.Button4;
+      if (PlayerPressButton(PlayerNumber, player))
+      {
+         if (player.Up) inputs |= InputBits.Up;
+         if (player.Left) inputs |= InputBits.Left;
+         if (player.Right) inputs |= InputBits.Right;
+         if (player.Down) inputs |= InputBits.Down;
+         if (player.Button1) inputs |= InputBits.Button1;
+         if (player.Button2) inputs |= InputBits.Button2;
+         if (player.Button3) inputs |= InputBits.Button3;
+         if (player.Button4) inputs |= InputBits.Button4;
+      }
    }
 
    /// <summary>

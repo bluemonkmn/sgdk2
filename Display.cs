@@ -654,14 +654,16 @@ namespace SGDK2
             GL.Enable(EnableCap.LineStipple);
             GL.LineStipple(1, pattern);
          }
+         System.Drawing.RectangleF rectf = rect;
+         rectf.Offset(0.5f, 0.5f); // Align to pixel grid
          GL.Disable(EnableCap.LineSmooth);
          GL.LineWidth(1);
          GL.Disable(texCap);
          GL.Begin(BeginMode.LineLoop);
-         GL.Vertex2(rect.X, rect.Y);
-         GL.Vertex2(rect.X, rect.Y + rect.Height - 1);
-         GL.Vertex2(rect.X + rect.Width - 1, rect.Y + rect.Height - 1);
-         GL.Vertex2(rect.X + rect.Width - 1, rect.Y);
+         GL.Vertex2(rectf.X, rectf.Y);
+         GL.Vertex2(rectf.X, rectf.Y + rectf.Height - 1);
+         GL.Vertex2(rectf.X + rectf.Width - 1, rectf.Y + rectf.Height - 1);
+         GL.Vertex2(rectf.X + rectf.Width - 1, rectf.Y);
          GL.End();
       }
 
@@ -681,9 +683,9 @@ namespace SGDK2
          GL.Disable(texCap);
          GL.Begin(BeginMode.Quads);
          GL.Vertex2(rect.X, rect.Y);
-         GL.Vertex2(rect.X, rect.Y + rect.Height - 1);
-         GL.Vertex2(rect.X + rect.Width - 1, rect.Y + rect.Height - 1);
-         GL.Vertex2(rect.X + rect.Width - 1, rect.Y);
+         GL.Vertex2(rect.X, rect.Y + rect.Height);
+         GL.Vertex2(rect.X + rect.Width, rect.Y + rect.Height);
+         GL.Vertex2(rect.X + rect.Width, rect.Y);
          GL.End();
       }
 
@@ -713,10 +715,10 @@ namespace SGDK2
                GL.End();
             GL.Hint(HintTarget.PointSmoothHint, HintMode.Nicest);
             GL.Enable(EnableCap.PointSmooth);
+            GL.Disable(texCap);
             GL.Begin(BeginMode.Points);
             m_currentOp = DisplayOperation.DrawPoints;
          }
-         GL.Disable(texCap);
          GL.Vertex2(location.X, location.Y);
       }
 
@@ -795,12 +797,12 @@ namespace SGDK2
       /// <param name="width">Width for word wrapping</param>
       /// <param name="wrap">True to allow word wrap, false otherwise</param>
       /// <returns>The size of the text in pixels</returns>
-      public System.Drawing.SizeF MeasureText(string text, float width, bool wrap)
+      /*public System.Drawing.SizeF MeasureText(string text, float width, bool wrap)
       {
          System.Drawing.RectangleF layout = new System.Drawing.RectangleF(0, 0, width, 1);
          GLFont.GetCharPositions(text, ref layout, wrap, System.Drawing.StringAlignment.Near, false);
          return layout.Size;
-      }
+      }*/
 
       /// <summary>
       /// Draw text on the display

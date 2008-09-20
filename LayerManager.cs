@@ -485,8 +485,8 @@ namespace SGDK2
                (DataObject.BackgroundTile >= 0))
             {
                DataObject.m_tempLayer.Tiles = GetTilesForCurrentParams();
-               DataObject.Persist();
             }
+            DataObject.Persist();
             btnCancel.Text = "Close";
             ((frmMain)MdiParent).SelectByContext("LR" + DataObject.m_persistLayer.Name);
             return true;

@@ -211,13 +211,14 @@ public class GameForm : Form
             Close();
             return;
          }
-         bool isActive = true;
+         bool isActive;
          isActive = (System.Windows.Forms.Form.ActiveForm == this);
          if (!isActive)
          {
             // Display is minimized or inactive, wait until it is restored
             Application.DoEvents();
-            GameDisplay.SwapBuffers();
+            if (GameDisplay != null)
+               GameDisplay.SwapBuffers();
             System.Threading.Thread.Sleep(0);
             continue;
          }
@@ -230,6 +231,7 @@ public class GameForm : Form
          CurrentMap.ExecuteRules();
          if (OnBeforeDrawOverlay != null)
             OnBeforeDrawOverlay();
+         GeneralRules.DrawMessages();
          if (OverlayMap != null)
          {
             OverlayMap.DrawAllViews();
@@ -253,7 +255,7 @@ public class GameForm : Form
    {
       GameDisplay.ScissorOff();
       GameDisplay.SetColor(Color.White);
-      GameDisplay.DrawText(debugText.ToString(), 0, 0, GameDisplay.ClientSize.Width, true, StringAlignment.Near);
+      GameDisplay.DrawText(debugText.ToString(), 0, 0);
 
       debugText.GetStringBuilder().Length = 0;
       debugText.WriteLine("fps=" + m_fps.ToString());

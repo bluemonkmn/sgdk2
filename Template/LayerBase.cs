@@ -174,7 +174,13 @@ public abstract class LayerBase : System.Collections.IEnumerable
          this.m_nVirtualRows = nVirtualRows;
       this.m_AbsolutePosition = Position;
       this.m_ScrollRate = ScrollRate;
-      this.Move(new Point(0,0));
+      byte origView = Parent.CurrentViewIndex;
+      for (byte v = 0; v < Project.MaxViews; v++)
+      {
+         Parent.CurrentViewIndex = v;
+         this.Move(new Point(0, 0));
+      }
+      Parent.CurrentViewIndex = origView;
       this.m_nInjectStartIndex = nInjectStartIndex;
       this.m_nAppendStartIndex = nAppendStartIndex;
    }
@@ -1087,7 +1093,10 @@ public abstract class IntLayer : LayerBase
       ScrollRate, nInjectStartIndex, nAppendStartIndex)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
-      m_Tiles = (int[,])(resources.GetObject(Name));
+      if (Name != null)
+         m_Tiles = (int[,])(resources.GetObject(Name));
+      else
+         m_Tiles = new int[nColumns, nRows];
    }
 
    /// <summary>
@@ -1135,7 +1144,10 @@ public abstract class ShortLayer : LayerBase
       ScrollRate, nInjectStartIndex, nAppendStartIndex)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
-      m_Tiles = (short[,])(resources.GetObject(Name));
+      if (Name != null)
+         m_Tiles = (short[,])(resources.GetObject(Name));
+      else
+         m_Tiles = new short[nColumns, nRows];
    }
 
    /// <summary>
@@ -1149,17 +1161,17 @@ public abstract class ShortLayer : LayerBase
    {
       get
       {
-         return (int)(m_Tiles[x,y]);
+         return (int)(m_Tiles[x % m_nColumns, y % m_nRows]);
       }
       set
       {
-         m_Tiles[x,y] = (short)value;
+         m_Tiles[x % m_nColumns, y % m_nRows] = (short)value;
       }
    }
 
    protected override int[] GetTileFrame(int x, int y)
    {
-      return m_Tileset[m_Tiles[x,y]].CurrentFrame;
+      return m_Tileset[m_Tiles[x % m_nColumns, y % m_nRows]].CurrentFrame;
    }
 
    /// <summary>
@@ -1167,7 +1179,7 @@ public abstract class ShortLayer : LayerBase
    /// </summary>
    public override TileBase GetTile(int x, int y)
    {
-      return m_Tileset[m_Tiles[x,y]];
+      return m_Tileset[m_Tiles[x % m_nColumns, y % m_nRows]];
    }
 }
 
@@ -1187,7 +1199,10 @@ public abstract class ByteLayer : LayerBase
       ScrollRate, nInjectStartIndex, nAppendStartIndex)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
-      m_Tiles = (byte[,])(resources.GetObject(Name));
+      if (Name != null)
+         m_Tiles = (byte[,])(resources.GetObject(Name));
+      else
+         m_Tiles = new byte[nColumns, nRows];
    }
 
    /// <summary>

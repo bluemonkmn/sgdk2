@@ -707,17 +707,6 @@ public abstract class GeneralRules
    }
 
    /// <summary>
-   /// Change the font used for drawing text on the display.
-   /// </summary>
-   /// <param name="FontName">Name of the font (quoted string).</param>
-   /// <param name="FontSize">The em-size, in points, of the new font.</param>
-   [Description("Change the font used for drawing text on the display.")]
-   public void SetFont(string FontName, int FontSize)
-   {
-      Project.GameWindow.GameDisplay.SetFont(FontName, FontSize);
-   }
-
-   /// <summary>
    /// Change a counter's value with a pre-defined operation.
    /// </summary>
    /// <param name="Operation">Specified a pre-defined operation to execute on a counter</param>
@@ -847,6 +836,333 @@ public abstract class GeneralRules
       }
       else
          pi.SetValue(selectedTarget, Value, null);
+   }
+   #endregion
+
+   #region "Messages"
+   public enum MessageView
+   {
+      Current,
+      All,
+      First,
+      Second,
+      Third,
+      Fourth
+   }
+   [Flags()]
+   public enum ButtonSpecifier
+   {
+      First=1,
+      Second=2,
+      Third=4,
+      Fourth=8,
+      FreezeInputs=16
+   }
+
+   private static Tileset FontTileset = null;
+   private const int maxMessages = 4;
+   private static MessageLayer[] activeMessages = new MessageLayer[maxMessages];
+   private static int activeMessageCount = 0;
+   private static System.Drawing.Color messageBackground = System.Drawing.Color.FromArgb(128, 64, 0, 255);
+   private static MessageView msgView = MessageView.Current;
+   private static RelativePosition msgPos = RelativePosition.CenterMiddle;
+   private const int messageMargin = 6;
+   /// <summary>
+   /// Zero-based player index that will be assigned to newly created messages
+   /// </summary>
+   private static int currentPlayer = 0;
+   private static ButtonSpecifier dismissButton = ButtonSpecifier.First | ButtonSpecifier.FreezeInputs;
+   private static bool[] dismissReleased = null;
+
+   public class MessageLayer : ByteLayer
+   {
+      public readonly System.Drawing.Color background;
+      public MessageView view;
+      public ButtonSpecifier dismissButton;
+      /// <summary>
+      /// 0-based player index whose controls affect this message
+      /// </summary>
+      public int player;
+
+      public MessageLayer(Tileset Tileset, MapBase Parent, int nColumns, int nRows,
+         System.Drawing.Point Position, System.Drawing.Color background, int player,
+         ButtonSpecifier dismissButton, MessageView msgView) :
+         base(Tileset, Parent, 0, 0, 0, 0, nColumns, nRows, 0, 0, Position,
+         new System.Drawing.SizeF(0, 0), 0, 0, null)
+      {
+         this.background = background;
+         this.player = player;
+         this.dismissButton = dismissButton;
+         if (msgView == MessageView.Current)
+         {
+            switch (Parent.CurrentViewIndex)
+            {
+               case 0:
+                  view = MessageView.First;
+                  break;
+               case 1:
+                  view = MessageView.Second;
+                  break;
+               case 2:
+                  view = MessageView.Third;
+                  break;
+               case 3:
+                  view = MessageView.Fourth;
+                  break;
+            }
+         }
+         else
+            view = msgView;
+      }
+   }
+
+   /// <summary>
+   /// Handles button pressses from a player with respect to displayed messages
+   /// </summary>
+   /// <param name="playerNumber">1-based player index</param>
+   /// <param name="player">Player object providing the inputs.</param>
+   /// <returns>True if input can be passed to the player or false if the player
+   /// is "frozen" viewing a message.</returns>
+   public static bool PlayerPressButton(int playerNumber, IPlayer player)
+   {
+      for (int i = 0; i < activeMessageCount; i++)
+      {
+         MessageLayer msg = activeMessages[i];
+         if (msg.player == playerNumber-1)
+         {
+            bool dismissPressed = false;
+            if ((0 != (msg.dismissButton & ButtonSpecifier.First)) && player.Button1)
+               dismissPressed = true;
+            if ((0 != (msg.dismissButton & ButtonSpecifier.Second)) && player.Button2)
+               dismissPressed = true;
+            if ((0 != (msg.dismissButton & ButtonSpecifier.Third)) && player.Button3)
+               dismissPressed = true;
+            if ((0 != (msg.dismissButton & ButtonSpecifier.Fourth)) && player.Button4)
+               dismissPressed = true;
+            
+            if (dismissReleased == null)
+               dismissReleased = new bool[Project.MaxPlayers];
+            if (dismissPressed)
+            {
+               if (dismissReleased[msg.player])
+               {
+                  dismissReleased[msg.player] = false;
+                  DismissMessage(i);
+               }
+            }
+            else
+               dismissReleased[msg.player] = true;
+
+            if (0 != (msg.dismissButton & ButtonSpecifier.FreezeInputs))
+            {
+               return false;
+            }
+         }
+      }
+      return true;
+   }
+
+   private static void DismissMessage(int messageIndex)
+   {
+      for (int i = messageIndex; i < activeMessageCount - 1; i++)
+         activeMessages[i] = activeMessages[i + 1];
+      activeMessageCount--;
+   }
+
+   [Description("Sets the background for new messages added with ShowMessage. Alpha 255 = opaque, alpha 128=50% transparent.")]
+   public void SetMessageBackground(System.Drawing.KnownColor background, byte alpha)
+   {
+      System.Drawing.Color c = System.Drawing.Color.FromKnownColor(background);
+      messageBackground = System.Drawing.Color.FromArgb(alpha, c.R, c.G, c.B);
+   }
+
+   [Description("Determines where newly created messages appear.")]
+   public void SetMessagePosition(MessageView ViewOption, RelativePosition Position)
+   {
+      msgView = ViewOption;
+      msgPos = Position;
+   }
+
+   [Description("Determines which player and which button will dismiss newly created messages. Player is a number 1 to 4.")]
+   public void SetMessageDismissal(ButtonSpecifier DismissButton, int Player)
+   {
+      dismissButton = DismissButton;
+      currentPlayer = Player - 1;
+   }
+
+   [Description("Adds a message to the display")]
+   public void ShowMessage(string Message)
+   {
+      if (activeMessageCount >= maxMessages)
+         throw new InvalidOperationException("Maximum number of displayed messages exceeded");
+      activeMessages[activeMessageCount++] = CreateMessage(Message);
+   }
+
+   [Description("Clears all active messages from the display")]
+   public void ClearAllMessages()
+   {
+      activeMessageCount = 0;
+   }
+
+   public static void DrawMessages()
+   {
+      for (int i = 0; i < activeMessageCount; i++)
+      {
+         MessageLayer msg = activeMessages[i];
+         Display disp = msg.ParentMap.Display;
+         byte oldView = msg.ParentMap.CurrentViewIndex;
+         switch (msg.view)
+         {
+            case MessageView.Current:
+               DrawMessage(msg, disp);
+               break;
+            case MessageView.All:
+               for (byte v = 0; v < Project.MaxViews; v++)
+               {
+                  msg.ParentMap.CurrentViewIndex = v;
+                  DrawMessage(msg, disp);
+               }
+               break;
+            case MessageView.First:
+               msg.ParentMap.CurrentViewIndex = 0;
+               DrawMessage(msg, disp);
+               break;
+            case MessageView.Second:
+               msg.ParentMap.CurrentViewIndex = 1;
+               DrawMessage(msg, disp);
+               break;
+            case MessageView.Third:
+               msg.ParentMap.CurrentViewIndex = 2;
+               DrawMessage(msg, disp);
+               break;
+            case MessageView.Fourth:
+               msg.ParentMap.CurrentViewIndex = 3;
+               DrawMessage(msg, disp);
+               break;
+         }
+         msg.ParentMap.CurrentViewIndex = oldView;
+      }
+   }
+
+   private static void DrawMessage(MessageLayer msg, Display disp)
+   {
+      disp.Scissor(msg.ParentMap.CurrentView);
+      System.Drawing.Rectangle messageRect = new System.Drawing.Rectangle(
+         msg.CurrentPosition.X + msg.ParentMap.CurrentView.X,
+         msg.CurrentPosition.Y + msg.ParentMap.CurrentView.Y,
+         msg.VirtualColumns * msg.Tileset.TileWidth,
+         msg.VirtualRows * msg.Tileset.TileHeight);
+      messageRect.Inflate(messageMargin, messageMargin);
+      disp.SetColor(msg.background);
+      disp.FillRectangle(messageRect);
+      disp.SetColor(System.Drawing.Color.White);
+      disp.DrawRectangle(messageRect, 0);
+      msg.Draw();
+   }
+
+   [Description("Set the tileset used as the source for characters in messages")]
+   public void SetMessageFont(Tileset Tileset)
+   {
+      FontTileset = Tileset;
+   }
+
+   private MessageLayer CreateMessage(string Message)
+   {
+      if (FontTileset == null)
+         FontTileset = (Tileset)(typeof(Tileset).GetProperties(
+            System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.GetProperty | System.Reflection.BindingFlags.Public)
+            [0].GetValue(null, null));
+
+      byte[] charBytes = System.Text.Encoding.ASCII.GetBytes(Message);
+      Display disp = ParentLayer.ParentMap.Display;
+      int x = 0, y = 1;
+      int maxWidth = 1;
+      for (int charIdx = 0; charIdx < charBytes.Length; charIdx++)
+      {
+         if (Message[charIdx] == '\n')
+         {
+            x = 0;
+            y++;
+         }
+         else if (Message[charIdx] != '\r')
+         {
+            if (++x > maxWidth)
+               maxWidth = x;
+         }
+      }
+
+      System.Drawing.Size messageSize = new System.Drawing.Size(
+         maxWidth * FontTileset.TileWidth, y * FontTileset.TileHeight);
+      System.Drawing.Size viewSize = ParentLayer.ParentMap.CurrentView.Size;
+
+      System.Drawing.Point ptMessage = System.Drawing.Point.Empty;
+
+      switch (msgPos)
+      {
+         case RelativePosition.TopLeft:
+         case RelativePosition.LeftMiddle:
+         case RelativePosition.BottomLeft:
+            ptMessage.X = viewSize.Width / 4 - messageSize.Width / 2;
+            if (ptMessage.X < messageMargin)
+               ptMessage.X = messageMargin;
+            break;
+         case RelativePosition.TopCenter:
+         case RelativePosition.CenterMiddle:
+         case RelativePosition.BottomCenter:
+            ptMessage.X = (viewSize.Width - messageSize.Width) / 2;
+            break;
+         case RelativePosition.TopRight:
+         case RelativePosition.RightMiddle:
+         case RelativePosition.BottomRight:
+            ptMessage.X = viewSize.Width * 3 / 4 - messageSize.Width / 2;
+            if (ptMessage.X + messageSize.Width > viewSize.Width - messageMargin)
+               ptMessage.X = viewSize.Width - messageSize.Width - messageMargin;
+            break;
+      }
+
+      switch (msgPos)
+      {
+         case RelativePosition.TopLeft:
+         case RelativePosition.TopCenter:
+         case RelativePosition.TopRight:
+            ptMessage.Y = viewSize.Height / 4 - messageSize.Height / 2;
+            if (ptMessage.Y <= 0)
+               ptMessage.Y = 1;
+            break;
+         case RelativePosition.LeftMiddle:
+         case RelativePosition.CenterMiddle:
+         case RelativePosition.RightMiddle:
+            ptMessage.Y = (viewSize.Height - messageSize.Height) / 2;
+            break;
+         case RelativePosition.BottomLeft:
+         case RelativePosition.BottomCenter:
+         case RelativePosition.BottomRight:
+            ptMessage.Y = viewSize.Height * 3 / 4 - messageSize.Height / 2;
+            if (ptMessage.Y + messageSize.Height >= viewSize.Height)
+               ptMessage.Y = viewSize.Height - messageSize.Height - 1;
+            break;
+      }
+
+      MessageLayer result = new MessageLayer(
+         FontTileset, ParentLayer.ParentMap, maxWidth, y, ptMessage,
+         messageBackground, currentPlayer, dismissButton, msgView);
+
+      x = 0;
+      y = 0;
+      for (int charIdx = 0; charIdx < charBytes.Length; charIdx++)
+      {
+         if (Message[charIdx] == '\n')
+         {
+            x = 0;
+            y++;
+         }
+         else if (Message[charIdx] != '\r')
+         {
+            result[x++, y] = charBytes[charIdx];
+         }
+      }
+
+      return result;
    }
    #endregion
 }

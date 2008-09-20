@@ -111,13 +111,13 @@
     <Reference Include="Microsoft.VisualC">
       <Name>Microsoft.VisualC</Name>
     </Reference>
-    <Reference Include="OpenTK, Version=0.9.1.0, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="OpenTK, Version=0.9.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\OpenTK\Source\OpenTK\bin\Release\OpenTK.dll</HintPath>
+      <HintPath>..\OpenTK\Binaries\Release\Libraries\OpenTK.dll</HintPath>
     </Reference>
-    <Reference Include="OpenTK.Utilities, Version=0.0.0.0, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="OpenTK.Utilities, Version=0.9.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\OpenTK\Source\Utilities\bin\Release\OpenTK.Utilities.dll</HintPath>
+      <HintPath>..\OpenTK\Binaries\Release\Libraries\OpenTK.Utilities.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>

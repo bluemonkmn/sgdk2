@@ -102,10 +102,6 @@ namespace SGDK2
       private DisplayOperation m_currentOp;
       private TextureRef m_currentTexture = null;
       private bool scaleNativeSize = false;
-      private TextureFont m_GLFont = null;
-      private System.Drawing.Font m_SysFont = null;
-      private string fontName = null;
-      private int fontSize = 0;
       public const TextureTarget texTarget = TextureTarget.TextureRectangleArb;
       public const EnableCap texCap = (EnableCap)ArbTextureRectangle.TextureRectangleArb;
       private static byte[] shadedStipple = new byte[] {
@@ -126,8 +122,6 @@ namespace SGDK2
          0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
          0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA};
       private System.Drawing.Point endPoint = System.Drawing.Point.Empty;
-      private System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, TextHandle>> m_cachedText = null;
-      public const int TextCacheSize = 5;
       public bool requirementsChecked = false;
       #endregion
 
@@ -146,13 +140,6 @@ namespace SGDK2
          if (disposing)
          {
             DisposeAllTextures();
-            if (m_GLFont != null)
-               m_GLFont.Dispose();
-            m_GLFont = null;
-            if (m_SysFont != null)
-               if (m_SysFont != System.Drawing.SystemFonts.DefaultFont)
-                  m_SysFont.Dispose();
-            m_SysFont = null;
          }
          base.Dispose (disposing);
       }
@@ -299,7 +286,7 @@ namespace SGDK2
             }
             if (!GL.SupportsExtension("GL_ARB_texture_rectangle"))
             {
-               System.Windows.Forms.MessageBox.Show(this, "GL_ARB_texture_rectangle may be required for proper operation. The current video driver/hardware does not support this feature.", "Requirement Check Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
+               System.Windows.Forms.MessageBox.Show(this, "GL_ARB_texture_rectangle may be required for proper operation. The current video driver does not support this feature. Try updating your video drivers.", "Requirement Check Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
             }
          }
       }
@@ -351,63 +338,6 @@ namespace SGDK2
             var naturalSize = GetScreenSize(value);
             GL.Ortho(0, naturalSize.Width, naturalSize.Height, 0, -1, 1);
          }
-      }
-
-      /// <summary>
-      /// Returns the GLFont object used for drawing text on this display.
-      /// </summary>
-      public TextureFont GLFont
-      {
-         get
-         {
-            if (m_GLFont == null)
-            {
-               m_GLFont = new TextureFont(SysFont);
-            }
-            return m_GLFont;
-         }
-      }
-
-      /// <summary>
-      /// Return the System level font on which the <see cref="GLFont"/> is based
-      /// </summary>
-      public System.Drawing.Font SysFont
-      {
-         get
-         {
-            if (m_SysFont == null)
-            {
-               if (fontName == null)
-                  m_SysFont = System.Drawing.SystemFonts.DefaultFont;
-               else
-                  m_SysFont = new System.Drawing.Font(fontName, fontSize, System.Drawing.GraphicsUnit.Pixel);
-            }
-            return m_SysFont;
-         }
-      }
-
-      /// <summary>
-      /// Change the font used for drawing text on the display.
-      /// </summary>
-      /// <param name="name">Specifies a font family name such as Arial</param>
-      /// <param name="size">Specifies the size of the font in pixels</param>
-      public void SetFont(string name, int size)
-      {
-         if (m_GLFont != null)
-         {
-            m_GLFont.Dispose();
-            m_GLFont = null;
-         }
-
-         if (m_SysFont != null)
-         {
-            if (m_SysFont != System.Drawing.SystemFonts.DefaultFont)
-               m_SysFont.Dispose();
-            m_SysFont = null;
-         }
-
-         fontName = name;
-         fontSize = size;
       }
 
       /// <summary>
@@ -790,56 +720,6 @@ namespace SGDK2
          GL.Clear(ClearBufferMask.AccumBufferBit | ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
       }
 
-      /// <summary>
-      /// Measure the size of the specified text with the specified layout options
-      /// </summary>
-      /// <param name="text">Textx to be measured</param>
-      /// <param name="width">Width for word wrapping</param>
-      /// <param name="wrap">True to allow word wrap, false otherwise</param>
-      /// <returns>The size of the text in pixels</returns>
-      /*public System.Drawing.SizeF MeasureText(string text, float width, bool wrap)
-      {
-         System.Drawing.RectangleF layout = new System.Drawing.RectangleF(0, 0, width, 1);
-         GLFont.GetCharPositions(text, ref layout, wrap, System.Drawing.StringAlignment.Near, false);
-         return layout.Size;
-      }*/
-
-      /// <summary>
-      /// Draw text on the display
-      /// </summary>
-      /// <param name="text">Text to draw</param>
-      /// <param name="x">Horizontal location of upper left corner of text block</param>
-      /// <param name="y">Vertical location of upper left corner of text block</param>
-      /// <param name="width">Width of text block</param>
-      /// <param name="wordWrap">Specifies whether word-wrap will be applied</param>
-      /// <param name="alignment">Determines how text is aligned within the block.</param>
-      public void DrawText(string text, int x, int y, int width, bool wordWrap, System.Drawing.StringAlignment alignment)
-      {
-         if (m_currentOp != DisplayOperation.None)
-            GL.End();
-         GL.Disable(texCap);
-         ITextPrinter tp = new TextPrinter();
-         TextHandle th = null;
-         if (m_cachedText != null)
-         {
-            foreach (var kvp in m_cachedText)
-               if (kvp.Key == text)
-                  th = kvp.Value;
-         }
-         if (th == null)
-         {
-            tp.Prepare(text, GLFont, out th, width, wordWrap, alignment);
-            if (m_cachedText == null)
-               m_cachedText = new System.Collections.Generic.Queue<System.Collections.Generic.KeyValuePair<string, TextHandle>>(TextCacheSize);
-            while (m_cachedText.Count+1 > TextCacheSize)
-               m_cachedText.Dequeue().Value.Dispose();
-            m_cachedText.Enqueue(new System.Collections.Generic.KeyValuePair<string, TextHandle>(text, th));
-         }
-         tp.Begin();
-         GL.Translate(x, y, 0);
-         tp.Draw(th);
-         tp.End();
-      }
       #endregion
    }
 }

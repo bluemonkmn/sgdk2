@@ -842,20 +842,54 @@ public abstract class GeneralRules
    #region "Messages"
    public enum MessageView
    {
+      /// <summary>
+      /// Display messages in the view that is active when the message is created.
+      /// </summary>
       Current,
+      /// <summary>
+      /// Display messages in all views
+      /// </summary>
       All,
+      /// <summary>
+      /// Display messages in the first (top or left) view
+      /// </summary>
       First,
+      /// <summary>
+      /// Display messages in the second view: bottom or right in 2-view layout, top-right in 4-view layout.
+      /// </summary>
       Second,
+      /// <summary>
+      /// Display messages in the bottom-left view
+      /// </summary>
       Third,
+      /// <summary>
+      /// Display messages in the bottom-right view
+      /// </summary>
       Fourth
    }
    [Flags()]
    public enum ButtonSpecifier
    {
+      /// <summary>
+      /// The first button as defined by the player options
+      /// </summary>
       First=1,
-      Second=2,
-      Third=4,
-      Fourth=8,
+      /// <summary>
+      /// The second button as defined by the player options
+      /// </summary>
+      Second = 2,
+      /// <summary>
+      /// The third button as defined by the player options
+      /// </summary>
+      Third = 4,
+      /// <summary>
+      /// The fourth button as defined by the player options
+      /// </summary>
+      Fourth = 8,
+      /// <summary>
+      /// Disable input from the player while waiting for a button;
+      /// prevent it from affecting the player's sprite.
+      /// </summary>
       FreezeInputs=16
    }
 
@@ -969,6 +1003,11 @@ public abstract class GeneralRules
       activeMessageCount--;
    }
 
+   /// <summary>
+   /// Sets the background for new messages added with ShowMessage.
+   /// </summary>
+   /// <param name="background">Names a color for the background of new messages.</param>
+   /// <param name="alpha">Transparency level of the color: 255 = opaque, 128=50% transparent.</param>
    [Description("Sets the background for new messages added with ShowMessage. Alpha 255 = opaque, alpha 128=50% transparent.")]
    public void SetMessageBackground(System.Drawing.KnownColor background, byte alpha)
    {
@@ -976,6 +1015,11 @@ public abstract class GeneralRules
       messageBackground = System.Drawing.Color.FromArgb(alpha, c.R, c.G, c.B);
    }
 
+   /// <summary>
+   /// Determines where newly created messages appear.
+   /// </summary>
+   /// <param name="ViewOption">Determines which view or views messages will appear in.</param>
+   /// <param name="Position">Determines the area within the view in which the message appears.</param>
    [Description("Determines where newly created messages appear.")]
    public void SetMessagePosition(MessageView ViewOption, RelativePosition Position)
    {
@@ -983,6 +1027,11 @@ public abstract class GeneralRules
       msgPos = Position;
    }
 
+   /// <summary>
+   /// Determines which player and which button will dismiss newly created messages.
+   /// </summary>
+   /// <param name="DismissButton">Which of the player's buttons will dismiss the message</param>
+   /// <param name="Player">Player number 1 to 4</param>
    [Description("Determines which player and which button will dismiss newly created messages. Player is a number 1 to 4.")]
    public void SetMessageDismissal(ButtonSpecifier DismissButton, int Player)
    {
@@ -990,7 +1039,14 @@ public abstract class GeneralRules
       currentPlayer = Player - 1;
    }
 
-   [Description("Adds a message to the display")]
+   /// <summary>
+   /// Adds a message to the display.
+   /// </summary>
+   /// <param name="Message">Message text as a quoted string.  Use \r\n to insert new lines
+   /// into the message.</param>
+   /// <remarks>Up to 4 messages may be displayed.  No automatic word wrap or centering
+   /// is performed.  All formatting is determined by the content of the string.</remarks>
+   [Description("Adds a message to the display. Up to 4 messages may be displayed.")]
    public void ShowMessage(string Message)
    {
       if (activeMessageCount >= maxMessages)
@@ -998,12 +1054,19 @@ public abstract class GeneralRules
       activeMessages[activeMessageCount++] = CreateMessage(Message);
    }
 
+   /// <summary>
+   /// Clears all active messages from the display
+   /// </summary>
    [Description("Clears all active messages from the display")]
    public void ClearAllMessages()
    {
       activeMessageCount = 0;
    }
 
+   /// <summary>
+   /// Draws all active messages.
+   /// </summary>
+   /// <remarks>This function is called by the framework after drawing the overlay map.</remarks>
    public static void DrawMessages()
    {
       for (int i = 0; i < activeMessageCount; i++)
@@ -1060,6 +1123,12 @@ public abstract class GeneralRules
       msg.Draw();
    }
 
+   /// <summary>
+   /// Set the tileset used as the source for characters in messages.
+   /// </summary>
+   /// <param name="Tileset">Tileset whose tiles will be used to represent characters
+   /// for messages. The tile numbers correspond to ASCII values of the characters
+   /// used in the messages.</param>
    [Description("Set the tileset used as the source for characters in messages")]
    public void SetMessageFont(Tileset Tileset)
    {

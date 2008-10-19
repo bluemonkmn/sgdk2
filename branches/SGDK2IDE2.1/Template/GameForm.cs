@@ -249,7 +249,8 @@ public class GameForm : Form
    /// <summary>
    /// Draw the text currently in the <see cref="debugText"/> buffer and clear the buffer.
    /// </summary>
-   /// <remarks>This will only execute in debug mode.</remarks>
+   /// <remarks>This will only execute in debug mode. It requires that the "CoolFont" graphic
+   /// sheet be embedded in the project.</remarks>
    [System.Diagnostics.Conditional("DEBUG")]
    public void OutputDebugInfo()
    {
@@ -530,6 +531,9 @@ public class GameForm : Form
       }
    }
 
+   /// <summary>
+   /// Determines whether the display will occupy the full screen rather than being contained in a window.
+   /// </summary>
    public bool FullScreen
    {
       get

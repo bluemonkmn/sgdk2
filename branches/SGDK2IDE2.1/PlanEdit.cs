@@ -983,6 +983,16 @@ namespace SGDK2
                ((ProjectDataset.CounterRow)drv.Row).Name));
       }
 
+      private void FillComboWithTilesets(ComboBox cboTarget)
+      {
+         foreach (DataRowView drv in ProjectData.Tileset.DefaultView)
+         {
+            cboTarget.Items.Add(CodeGenerator.TilesetClass + "." +
+               CodeGenerator.NameToVariable(
+               ((ProjectDataset.TilesetRow)drv.Row).Name));
+         }
+      }
+
       private void FillComboWithParams(ComboBox cboParams, bool isRef)
       {
          if (m_SpriteContext != null)
@@ -1164,6 +1174,9 @@ namespace SGDK2
                   case "SpriteDefinition":
                      FillComboWithSpriteDefinitions(cboParameter);
                      break;
+                  case "Message":
+                     cboParameter.Items.Add(frmEditMessage.messageEditorItem);
+                     break;
                }
             }
          }
@@ -1173,19 +1186,23 @@ namespace SGDK2
             FillComboWithParams(cboParameter, true);
             FillComboWithIntVars(cboParameter, true);
          }
-         else if(string.Compare(param.Type.Name, "Counter") == 0)
+         else if (string.Compare(param.Type.Name, "Counter") == 0)
          {
             FillComboWithCounters(cboParameter);
          }
+         else if (string.Compare(param.Type.Name, "Tileset") == 0)
+         {
+            FillComboWithTilesets(cboParameter);
+         }
          else if (param.Type.FullName.StartsWith("Sprites."))
          {
-            foreach(ProjectDataset.SpriteRow drSprite in ProjectData.GetSortedSpriteRows(m_Plan.LayerRowParent))
+            foreach (ProjectDataset.SpriteRow drSprite in ProjectData.GetSortedSpriteRows(m_Plan.LayerRowParent))
                if (param.Type.FullName.EndsWith("." + drSprite.DefinitionName))
                   cboParameter.Items.Add(new SpriteCodeRef(drSprite));
          }
-         else 
+         else
          {
-            foreach(string typeName in new string[]
+            foreach (string typeName in new string[]
             {
                typeof(Int32).Name, typeof(Int16).Name,
                typeof(Double).Name, typeof(Single).Name
@@ -2027,6 +2044,18 @@ namespace SGDK2
                else
                   source.SelectedIndex = source.Items.Add(newValue);
             }
+         }
+         else if ((source.SelectedIndex >= 0) && (string.Compare((string)source.Items[source.SelectedIndex], frmEditMessage.messageEditorItem) == 0))
+         {
+            string oldText = source.Text;
+            string newText = frmEditMessage.EditMessage(source.Text, this);
+            if (newText == null)
+               newText = oldText;
+            int selIdx = source.FindStringExact(newText);
+            if (selIdx >= 0)
+               source.SelectedIndex = selIdx;
+            else
+               source.SelectedIndex = source.Items.Add(newText);
          }
       }
 

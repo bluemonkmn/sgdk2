@@ -90,7 +90,16 @@
             sub-items in this menu allow you to copy the currently highlighted rule including
             all the rules contained within it (in the tree node), or excluding them, or copy
             all the rules displayed in the tree.</li>
-         <li class="SubPara">
+        <li class="SubPara">
+          Cut Rules: Various cut commands will cut all the details of the specified rule
+          or rules so that the rules can be easily transferred or deleted.  This is the
+          same as Copy Rules, but also deletes the rules from their current location as
+          they are copied to the clipboard.  The sub-items in this menu allow you to affect
+          the currently highlighted rule including all the rules contained within it
+          (in the tree node), or excluding them, or affect all the rules displayed in the
+          tree.
+        </li>
+        <li class="SubPara">
             Paste Rules: Once rules have been copied from a sprite definition or a plan, they
             can be pasted into a sprite definition using this command. Note that when pasting
             plan rules into a sprite definition, some tweaking may be necessary to make the
@@ -415,9 +424,9 @@
             <td>Example</td>
          </tr>
          <tr>
-            <td>Keypress (provided by DirectX)</td>
+            <td>Keypress</td>
             <td>Preset list of static values, each value representing a key on the keyboard</td>
-            <td>Microsoft.DirectX.DirectInput.Key.A</td>
+            <td>Key.A</td>
          </tr>
          <tr>
             <td>Direction</td>
@@ -512,6 +521,11 @@
                function may be available that accepts a counter, or the value can be stored in 
                a parameter and subsequently be copied into the counter with an "=" rule.</td>
             <td>Counter.Lives.CurrentValue</td>
+         </tr>
+         <tr>
+          <td>Tileset</td>
+            <td>Displays a list of Tilesets defined within the project.</td>
+            <td>Tileset.FireText</td>
          </tr>
       </table>
       <h3>Output to</h3>

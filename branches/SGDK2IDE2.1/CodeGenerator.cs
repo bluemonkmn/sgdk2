@@ -32,7 +32,7 @@ namespace SGDK2
       private const string CounterMaxFld = "m_nMax";
       private const string CounterValProp = "CurrentValue";
       private const string CounterMaxProp = "MaxValue";
-      private const string TilesetClass = "Tileset";
+      public const string TilesetClass = "Tileset";
       private const string TileListVar = "TileList";
       private const string TileBaseClass = "TileBase";
       private const string AnimTileClass = "AnimTile";

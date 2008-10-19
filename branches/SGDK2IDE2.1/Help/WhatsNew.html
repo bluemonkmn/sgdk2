@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <title>Scrolling Game Development Kit 2 - What's New</title>
+  <meta name="vs_targetSchema" content=
+  "http://schemas.microsoft.com/intellisense/ie5" />
+  <link rel="stylesheet" href="SGDK2Help.css" type="text/css" />
+</head>
+
+<body>
+  <h1>What's New</h1>
+  <p>This page documents updates between various updates to SGDK 2.0.
+  If you're interested in the differences between the 1.x versions and
+  version 2.0, see the <a href="Introduction.html#WhatsNew">
+  What's New section of the Introduction</a>.
+  </p>
+  <h2>Version 2.1</h2>
+  <p>This section describes updates between versions 2.0 and 2.1.</p>
+  <ol>
+    <li>Upgrade to .NET 2.0: SGDK2 and the projects it generates now rely
+    on .NET Framework version 2.0 and take advantage of new features added
+    in this version. The SGDK2 Project itself requires Visual C# 2008 or .NET
+    3.0 to compile, but can run on any system that has .NET Framework 2.0.
+    It also knows how to compile game projects on any system with .NET 2.0.</li>
+    <li>OpenGL Framework: Version 2.0 was based on Managed DirectX. SGDK 2.1 uses
+    the OpenTK library to access the OpenGL interface to video hardware, 
+    allowing SGDK2 to and the projects created with it to potentially
+    be more easily ported to other platforms.  This also provided an
+    apparent performance boost.</li>
+    <li>Improved Message Functions: Displaying messages is now an integrated
+    function in SGDK2 instead of a custom object.  Furthermore, it now uses
+    a tileset as the font instead of using the fonst support provided by the
+    system (because as of this writing, OpenTK does not properly support
+    fonts).  This means, however, that you can use graphics and animated
+    tiles/characters in your messages.  A new message preview window is
+    provided to assist in laying out the message at design time.</li>
+    <li>Frame Rate Limit: If your game runs too fast on some systems,
+    you can now use the <a href="html/M_GeneralRules_LimitFrameRate.htm">LimitFrameRate</a>
+    function to control the speed.</li>
+    <li>Cut Rules: It's now possible to cut a group of rules when using
+    a rule editor. This can also be used to delete hierarchies of rules.</li>
+    <li>Upgrade Documentation: This help file is now being built with <a href=
+    "http://www.microsoft.com/downloads/details.aspx?FamilyID=E82EA71D-DA89-42EE-A715-696E3A4873B2&displaylang=en">Sandcastle</a>
+    and <a href="http://www.codeplex.com/SHFB">Sandcastle Help File Builder</a>
+    instead of NDOC because NDOC did not support .NET 2.0.  As a result the
+    build process is somewhat simplified and the content is better linked with
+    some other improvements wrapped in too.</li>    
+  </ol>
+
+  <p>
+    If this list seems short, notice that the first two items are relatively
+    large, and also that the goal was to get the major update out to folks and
+    in use before proceeding with a multitude of smaller updates.  That way
+    everyone doesn't have to wait for all the small updates to be complete before
+    being able to use the updated framework.
+  </p>  
+</body>
+</html>

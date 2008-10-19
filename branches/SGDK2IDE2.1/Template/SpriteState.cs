@@ -8,7 +8,7 @@ using System;
 /// This specialization of TileFrame is used specifically for sprite frames
 /// with collision masks (when mask alpha level is non-zero).
 /// </summary>
-/// <remarks>Some sprites simple enough that they can be treated very similar to tiles, and
+/// <remarks>Some sprites are simple enough that they can be treated very similar to tiles, and
 /// will simply use <see cref="TileFrame"/> directly. Others will use this class.</remarks>
 public class SpriteFrame : TileFrame
 {
@@ -24,6 +24,9 @@ public class SpriteFrame : TileFrame
       m_Mask = new CollisionMask(localBounds, frameset, new int[] {frame}, new byte[] {alpha});
    }
 
+   /// <summary>
+   /// Returns the mask for this sprite frame.
+   /// </summary>
    public CollisionMask Mask
    {
       get

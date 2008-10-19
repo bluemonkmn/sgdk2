@@ -4,6 +4,9 @@ using System.Text;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 
+/// <summary>
+/// Identifies a key on the keyboard.
+/// </summary>
 public enum Key
 {
    None = 0,
@@ -113,6 +116,9 @@ public enum Key
    Quote = 0xDE,
 }
 
+/// <summary>
+/// Represents the current state of all keys on the keyboard.
+/// </summary>
 public class KeyboardState
 {
    [DllImport("user32.dll")]
@@ -122,6 +128,11 @@ public class KeyboardState
 
    private System.Collections.BitArray keyStates = new System.Collections.BitArray(256,false);
 
+   /// <summary>
+   /// Gets or sets the state of the specified key on the keyboard.
+   /// </summary>
+   /// <param name="key">Which key is affected.</param>
+   /// <returns>True if the key is pressed of false if it is not pressed.</returns>
    public bool this[Key key]
    {
       get
@@ -134,6 +145,11 @@ public class KeyboardState
       }
    }
 
+   /// <summary>
+   /// This function is called by the environment and processes key events to track the state
+   /// of all the keys on the keyboard.
+   /// </summary>
+   /// <param name="m">Windows API message</param>
    public void ProcessMessage(Message m)
    {
       switch (m.Msg)
@@ -174,6 +190,10 @@ public class KeyboardState
       return m.WParam.ToInt32();
    }
 
+   /// <summary>
+   /// Get the currently pressed key.  If more than one key is pressed, get the first one.
+   /// </summary>
+   /// <returns><see cref="Key.None"/> is returned if no key is pressed.</returns>
    public Key GetFirstKey()
    {
       foreach (Key specificKey in new Key[] {

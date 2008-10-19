@@ -16,24 +16,46 @@ using OpenTK.Graphics.OpenGL.Enums;
 /// <remarks>Color depth only applies when the display is in full screen mode.</remarks>
 public enum GameDisplayMode
 {
+   /// <summary>
+   /// 320x240-pixel display with 16-bit color
+   /// </summary>
    m320x240x16,
+   /// <summary>
+   /// 640x480-pixel display with 16-bit color
+   /// </summary>
    m640x480x16,
+   /// <summary>
+   /// 800x600-pixel display with 16-bit color
+   /// </summary>
    m800x600x16,
+   /// <summary>
+   /// 1024x768-pixel display with 16-bit color
+   /// </summary>
    m1024x768x16,
+   /// <summary>
+   /// 1280x1024-pixel display with 16-bit color
+   /// </summary>
    m1280x1024x16,
+   /// <summary>
+   /// 320x240-pixel display with 24-bit color
+   /// </summary>
    m320x240x24,
+   /// <summary>
+   /// 640x480-pixel display with 24-bit color
+   /// </summary>
    m640x480x24,
+   /// <summary>
+   /// 800x600-pixel display with 24-bit color
+   /// </summary>
    m800x600x24,
+   /// <summary>
+   /// 1024x768-pixel display with 24-bit color
+   /// </summary>
    m1024x768x24,
+   /// <summary>
+   /// 1280x1024-pixel display with 24-bit color
+   /// </summary>
    m1280x1024x24
-}
-
-public enum DisplayOperation
-{
-   None = 0,
-   DrawFrames,
-   DrawLines,
-   DrawPoints
 }
 
 /// <summary>
@@ -43,6 +65,9 @@ public enum DisplayOperation
 public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISerializable
 {
    #region Embedded Classes
+   /// <summary>
+   /// Object used to refer to a texture (graphic sheet) managed by a particular <see cref="Display" />.
+   /// </summary>
    public class TextureRef : IDisposable
    {
       private string m_Name;
@@ -55,6 +80,9 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
          m_Name = Name;
       }
 
+      /// <summary>
+      /// Name of a graphic sheet
+      /// </summary>
       public string Name
       {
          get
@@ -63,6 +91,9 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
          }
       }
 
+      /// <summary>
+      /// Returns OpenGL handle to the texture referenced by this object
+      /// </summary>
       public int Texture
       {
          get
@@ -76,6 +107,9 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
       }
 
       #region IDisposable Members
+      /// <summary>
+      /// Releases all resources for the associated texture.
+      /// </summary>
       public void Dispose()
       {
          if (m_Texture != 0)
@@ -91,6 +125,14 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
       }
       #endregion
    }
+
+   private enum DisplayOperation
+   {
+      None = 0,
+      DrawFrames,
+      DrawLines,
+      DrawPoints
+   }
    #endregion
 
    #region Fields
@@ -99,8 +141,8 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
    private DisplayOperation m_currentOp;
    private TextureRef m_currentTexture = null;
    private bool scaleNativeSize = false;
-   public const TextureTarget texTarget = TextureTarget.TextureRectangleArb;
-   public const EnableCap texCap = (EnableCap)ArbTextureRectangle.TextureRectangleArb;
+   private const TextureTarget texTarget = TextureTarget.TextureRectangleArb;
+   private const EnableCap texCap = (EnableCap)ArbTextureRectangle.TextureRectangleArb;
    private static TextureRef m_DefaultFont = null;
    private static byte[] shadedStipple = new byte[] {
       0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
@@ -120,6 +162,12 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
       0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
       0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA};
    private System.Drawing.Point endPoint = System.Drawing.Point.Empty;
+   /// <summary>
+   /// Determines if requirements have already been checked or need to be
+   /// (re-)checked during the next call to <see cref="DrawFrame"/>.
+   /// </summary>
+   /// <value>If true, requirements have already been checked.
+   /// If false, requirements will be checked next time DrawFrame executes.</value>
    public bool requirementsChecked = false;
    #endregion
 
@@ -260,6 +308,11 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
       return new System.Drawing.Size(0, 0);
    }
 
+   /// <summary>
+   /// Checks that the current video drivers support features required by the framework code,
+   /// and didplays a message if not.
+   /// </summary>
+   /// <remarks>Checks that the driver supports the GL_ARB_texture_rectangle extension.</remarks>
    public void CheckRequirements()
    {
       if (!requirementsChecked)
@@ -347,6 +400,10 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
       throw new ApplicationException("Cannot match display mode " + m_GameDisplayMode.ToString());
    }
 
+   /// <summary>
+   /// Restores the original (desktop) resolution, for example after switching to full
+   /// screen mode in another resolution.
+   /// </summary>
    public static void RestoreResolution()
    {
       OpenTK.Graphics.DisplayDevice.Default.RestoreResolution();
@@ -757,6 +814,11 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
       GL.Clear(ClearBufferMask.AccumBufferBit | ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
    }
 
+   /// <summary>
+   /// Set the clipping rectangle that determines the area of the display which will be
+   /// affected by all drawing operations.
+   /// </summary>
+   /// <param name="rect">Rectangle relative to the top-left corner of the display in pixel coordinates.</param>
    public void Scissor(System.Drawing.Rectangle rect)
    {
       if (m_currentOp != DisplayOperation.None)
@@ -766,6 +828,9 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
       GL.Scissor(rect.X, ClientRectangle.Height - rect.Y - rect.Height, rect.Width, rect.Height);
    }
 
+   /// <summary>
+   /// Disables clipping defined with <see cref="Scissor"/>.
+   /// </summary>
    public void ScissorOff()
    {
       if (m_currentOp != DisplayOperation.None)
@@ -794,6 +859,15 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
       }
    }
 
+   /// <summary>
+   /// Draws a string of text on the display using the "CoolFont" graphic sheet
+   /// </summary>
+   /// <param name="text">String to be drawn. Embedded line feeds (\n) are the only cause for line breaks.</param>
+   /// <param name="x">Horizontal coordinate relative to the top left corner of the display where drawing begins.</param>
+   /// <param name="y">Vertical coordinate relative to the top left corner of the display where drawing begins.</param>
+   /// <remarks>An error will occur if there is no "CoolFont" graphic sheet in the project.
+   /// This function is only a very basic implementation of text drawing intended for debugging purposes.
+   /// For more full-featured text support, see the <see cref="GeneralRules.ShowMessage"/> rule function.</remarks>
    public void DrawText(string text, int x, int y)
    {
       const int charWidth = 13;
@@ -834,7 +908,12 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
    #endregion
 
    #region ISerializable Members
-
+   /// <summary>
+   /// This is for internal use only and is needed to control behavior of the
+   /// Display with respect to the Save Game functions.
+   /// </summary>
+   /// <param name="info">Internal use only</param>
+   /// <param name="context">Not used</param>
    public void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
    {
       info.SetType(typeof(DisplayRef));
@@ -855,12 +934,20 @@ public class DisplayRef : System.Runtime.Serialization.IObjectReference, System.
    {
    }
 
+   /// <summary>
+   /// This is for internal use only and is needed to control behavior of the
+   /// Display with respect to the Save Game functions.
+   /// </summary>
    public void GetObjectData(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)
    {
       throw new System.NotImplementedException("Unexpected serialization call");
    }
 
    #region IObjectReference Members
+   /// <summary>
+   /// This is for internal use only and is needed to control behavior of the
+   /// Display with respect to the Load Game functions.
+   /// </summary>
    public object GetRealObject(System.Runtime.Serialization.StreamingContext context)
    {
       return Project.GameWindow.GameDisplay;

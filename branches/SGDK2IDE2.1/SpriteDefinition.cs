@@ -350,6 +350,10 @@ namespace SGDK2
          this.mnuCopyRuleChildren = new System.Windows.Forms.MenuItem();
          this.mnuCopyRuleOnly = new System.Windows.Forms.MenuItem();
          this.mnuCopyAllRules = new System.Windows.Forms.MenuItem();
+         this.mnuCutRules = new System.Windows.Forms.MenuItem();
+         this.mnuCutRuleChildren = new System.Windows.Forms.MenuItem();
+         this.mnuCutRuleOnly = new System.Windows.Forms.MenuItem();
+         this.mnuCutAllRules = new System.Windows.Forms.MenuItem();
          this.mnuPasteRules = new System.Windows.Forms.MenuItem();
          this.mnuPasteRuleAbove = new System.Windows.Forms.MenuItem();
          this.mnuPasteRuleBelow = new System.Windows.Forms.MenuItem();
@@ -360,10 +364,6 @@ namespace SGDK2
          this.mnuRotateWizard = new System.Windows.Forms.MenuItem();
          this.DataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.tmrPopulateRules = new System.Windows.Forms.Timer(this.components);
-         this.mnuCutRules = new System.Windows.Forms.MenuItem();
-         this.mnuCutRuleChildren = new System.Windows.Forms.MenuItem();
-         this.mnuCutRuleOnly = new System.Windows.Forms.MenuItem();
-         this.mnuCutAllRules = new System.Windows.Forms.MenuItem();
          this.tabSpriteDefinition.SuspendLayout();
          this.tabStates.SuspendLayout();
          this.pnlFrames.SuspendLayout();
@@ -928,7 +928,7 @@ namespace SGDK2
          this.txtHelpText.Name = "txtHelpText";
          this.txtHelpText.ReadOnly = true;
          this.txtHelpText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-         this.txtHelpText.Size = new System.Drawing.Size(344, 32);
+         this.txtHelpText.Size = new System.Drawing.Size(349, 32);
          this.txtHelpText.TabIndex = 16;
          // 
          // txtRuleName
@@ -1266,6 +1266,33 @@ namespace SGDK2
          this.mnuCopyAllRules.Text = "Copy &All Rules";
          this.mnuCopyAllRules.Click += new System.EventHandler(this.mnuCopyRules_Click);
          // 
+         // mnuCutRules
+         // 
+         this.mnuCutRules.Index = 13;
+         this.mnuCutRules.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.mnuCutRuleChildren,
+            this.mnuCutRuleOnly,
+            this.mnuCutAllRules});
+         this.mnuCutRules.Text = "Cu&t Rule";
+         // 
+         // mnuCutRuleChildren
+         // 
+         this.mnuCutRuleChildren.Index = 0;
+         this.mnuCutRuleChildren.Text = "&Cut Selected Rule Including Children";
+         this.mnuCutRuleChildren.Click += new System.EventHandler(this.mnuCopyRules_Click);
+         // 
+         // mnuCutRuleOnly
+         // 
+         this.mnuCutRuleOnly.Index = 1;
+         this.mnuCutRuleOnly.Text = "Cut &Selected Rule Only";
+         this.mnuCutRuleOnly.Click += new System.EventHandler(this.mnuCopyRules_Click);
+         // 
+         // mnuCutAllRules
+         // 
+         this.mnuCutAllRules.Index = 2;
+         this.mnuCutAllRules.Text = "Cut &All Rules";
+         this.mnuCutAllRules.Click += new System.EventHandler(this.mnuCopyRules_Click);
+         // 
          // mnuPasteRules
          // 
          this.mnuPasteRules.Enabled = false;
@@ -1334,33 +1361,6 @@ namespace SGDK2
          // tmrPopulateRules
          // 
          this.tmrPopulateRules.Tick += new System.EventHandler(this.tmrPopulateRules_Tick);
-         // 
-         // mnuCutRules
-         // 
-         this.mnuCutRules.Index = 13;
-         this.mnuCutRules.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.mnuCutRuleChildren,
-            this.mnuCutRuleOnly,
-            this.mnuCutAllRules});
-         this.mnuCutRules.Text = "Cu&t Rule";
-         // 
-         // mnuCutRuleChildren
-         // 
-         this.mnuCutRuleChildren.Index = 0;
-         this.mnuCutRuleChildren.Text = "&Cut Selected Rule Including Children";
-         this.mnuCutRuleChildren.Click += new System.EventHandler(this.mnuCopyRules_Click);
-         // 
-         // mnuCutRuleOnly
-         // 
-         this.mnuCutRuleOnly.Index = 1;
-         this.mnuCutRuleOnly.Text = "Cut &Selected Rule Only";
-         this.mnuCutRuleOnly.Click += new System.EventHandler(this.mnuCopyRules_Click);
-         // 
-         // mnuCutAllRules
-         // 
-         this.mnuCutAllRules.Index = 2;
-         this.mnuCutAllRules.Text = "Cut &All Rules";
-         this.mnuCutAllRules.Click += new System.EventHandler(this.mnuCopyRules_Click);
          // 
          // frmSpriteDefinition
          // 
@@ -1786,6 +1786,16 @@ namespace SGDK2
          }
       }
 
+      private void FillComboWithTilesets(ComboBox cboTarget)      
+      {
+         foreach (DataRowView drv in ProjectData.Tileset.DefaultView)
+         {
+            cboTarget.Items.Add(CodeGenerator.TilesetClass + "." +
+               CodeGenerator.NameToVariable(
+               ((ProjectDataset.TilesetRow)drv.Row).Name));
+         }
+      }
+
       private void PopulateParameter(Label lblParameter, ComboBox cboParameter, RemotingServices.RemoteParameterInfo param)
       {
          cboParameter.Items.Clear();
@@ -1856,12 +1866,19 @@ namespace SGDK2
                   case "SpriteDefinition":
                      FillComboWithSpriteDefinitions(cboParameter);
                      break;
+                  case "Message":
+                     cboParameter.Items.Add(frmEditMessage.messageEditorItem);
+                     break;
                }
             }
          }
          else if (string.Compare(param.Type.Name, CodeGenerator.SpriteCollectionClassName) == 0)
          {
             FillComboWithSpriteCollections(cboParameter);
+         }
+         else if (string.Compare(param.Type.Name, CodeGenerator.TilesetClass) == 0)
+         {
+            FillComboWithTilesets(cboParameter);
          }
          else if (string.Compare(param.Type.FullName, typeof(Int32).FullName + "&") == 0)
          {
@@ -3175,6 +3192,18 @@ namespace SGDK2
                else
                   source.SelectedIndex = source.Items.Add(newValue);
             }
+         }
+         else if ((source.SelectedIndex >= 0) && (string.Compare((string)source.Items[source.SelectedIndex], frmEditMessage.messageEditorItem) == 0))
+         {
+            string oldText = source.Text;
+            string newText = frmEditMessage.EditMessage(source.Text, this);
+            if (newText == null)
+               newText = oldText;
+            int selIdx = source.FindStringExact(newText);
+            if (selIdx >= 0)
+               source.SelectedIndex = selIdx;
+            else
+               source.SelectedIndex = source.Items.Add(newText);
          }
       }
 

@@ -34,6 +34,8 @@
         <contentItem sourcePath=".\Tutorial4.html" destPath="" excludeItems="False" />
         <contentItem sourcePath=".\Tutorial5.html" destPath="" excludeItems="False" />
         <contentItem sourcePath=".\GfxEdit.PNG" destPath="" excludeItems="False" />
+        <contentItem sourcePath=".\EditMessage.html" destPath="" excludeItems="False" />
+        <contentItem sourcePath=".\WhatsNew.html" destPath="" excludeItems="False" />
     </additionalContent>
     <dependencies>
         <dependencyItem depPath=".\Default\OpenTK.dll" />

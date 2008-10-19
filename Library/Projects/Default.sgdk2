@@ -898,9 +898,11 @@
   </Frameset>
   <Tileset Name="CoolText" Frameset="CoolFontFrames" TileWidth="11" TileHeight="15">
     <Tile TileValue="32" />
+    <Tile TileValue="0" />
   </Tileset>
   <Tileset Name="FireText" Frameset="FireFontFrames" TileWidth="11" TileHeight="15">
     <Tile TileValue="32" />
+    <Tile TileValue="0" />
   </Tileset>
   <Solidity Name="Standard">
     <SolidityShape CategoryName="Solid" ShapeName="SolidTileShape" />

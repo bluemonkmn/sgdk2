@@ -2,6 +2,7 @@
 <siteMap xmlns="http://schemas.microsoft.com/AspNet/SiteMap-File-1.0">
   <siteMapNode title="User Interface" url="">
     <siteMapNode title="Introduction" url=".\Introduction.html" isDefault="true" />
+    <siteMapNode title="What's New" url=".\WhatsNew.html" />
     <siteMapNode title="Main Window" url=".\MainWindow.html" />
     <siteMapNode title="Project Properties" url=".\ProjectProperties.html" />
     <siteMapNode title="Graphic Sheet Properties" url=".\GfxSheet.html" />
@@ -14,6 +15,7 @@
     <siteMapNode title="Layer Manager" url=".\LayerManager.html" />
     <siteMapNode title="Map Editor" url=".\MapEditor.html" />
     <siteMapNode title="Edit Plans" url=".\PlanEdit.html" />
+    <siteMapNode title="Edit Message" url=".\EditMessage.html" />
     <siteMapNode title="Solidity" url=".\Solidity.html" />
     <siteMapNode title="Sprite Definition" url=".\SpriteDefinition.html">
       <siteMapNode title="Sprite Parameters" url=".\SpriteParam.html" />

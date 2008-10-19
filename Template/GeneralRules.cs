@@ -17,8 +17,16 @@ public abstract class GeneralRules
    private static System.Random randomGen = new System.Random();
    private static long previousFrame = 0;
 
+   /// <summary>
+   /// Windows API call used to time the displaying of frames by <see cref="LimitFrameRate"/>.
+   /// </summary>
+   /// <param name="PerformanceCount">Receives the counter value.</param>
    [System.Runtime.InteropServices.DllImport("Kernel32.dll")]
    public static extern bool QueryPerformanceCounter(out long PerformanceCount);
+   /// <summary>
+   /// Windows API call used to time the displaying of frames by <see cref="LimitFrameRate"/>.
+   /// </summary>
+   /// <param name="PerformanceCount">Receives the number of counter cycles per second.</param>
    [System.Runtime.InteropServices.DllImport("Kernel32.dll")]
    public static extern bool QueryPerformanceFrequency(out long PerformanceCount);
 
@@ -840,6 +848,9 @@ public abstract class GeneralRules
    #endregion
 
    #region "Messages"
+   /// <summary>
+   /// Determines in which view(s) a message will appear.
+   /// </summary>
    public enum MessageView
    {
       /// <summary>
@@ -867,6 +878,9 @@ public abstract class GeneralRules
       /// </summary>
       Fourth
    }
+   /// <summary>
+   /// Specifies a button or buttons on a player's input controller.
+   /// </summary>
    [Flags()]
    public enum ButtonSpecifier
    {
@@ -908,6 +922,9 @@ public abstract class GeneralRules
    private static ButtonSpecifier dismissButton = ButtonSpecifier.First | ButtonSpecifier.FreezeInputs;
    private static bool[] dismissReleased = null;
 
+   /// <summary>
+   /// Represents a message created and displayed by <see cref="ShowMessage"/>.
+   /// </summary>
    public class MessageLayer : ByteLayer
    {
       public readonly System.Drawing.Color background;
@@ -918,6 +935,19 @@ public abstract class GeneralRules
       /// </summary>
       public int player;
 
+      /// <summary>
+      /// Creates a message layer object
+      /// </summary>
+      /// <param name="Tileset">Each tile in this tileset represents a unicode character starting with
+      /// tile number 0 representing unicode character 0.</param>
+      /// <param name="Parent">Map that will host this layer.</param>
+      /// <param name="nColumns">Number of columns of text this layer can represent.</param>
+      /// <param name="nRows">Number of rows of text this layer can represent.</param>
+      /// <param name="Position">Position of the top-left corner of this layer within the map.</param>
+      /// <param name="background">Background color for the box containing this message.</param>
+      /// <param name="player">0-based player number whose button can dismiss this message.</param>
+      /// <param name="dismissButton">Which of the player's buttons can dismiss this message.</param>
+      /// <param name="msgView">Which view(s) will the message appear in.</param>
       public MessageLayer(Tileset Tileset, MapBase Parent, int nColumns, int nRows,
          System.Drawing.Point Position, System.Drawing.Color background, int player,
          ButtonSpecifier dismissButton, MessageView msgView) :
@@ -1004,7 +1034,7 @@ public abstract class GeneralRules
    }
 
    /// <summary>
-   /// Sets the background for new messages added with ShowMessage.
+   /// Sets the background for new messages added with <see cref="ShowMessage"/>.
    /// </summary>
    /// <param name="background">Names a color for the background of new messages.</param>
    /// <param name="alpha">Transparency level of the color: 255 = opaque, 128=50% transparent.</param>
@@ -1047,7 +1077,7 @@ public abstract class GeneralRules
    /// <remarks>Up to 4 messages may be displayed.  No automatic word wrap or centering
    /// is performed.  All formatting is determined by the content of the string.</remarks>
    [Description("Adds a message to the display. Up to 4 messages may be displayed.")]
-   public void ShowMessage(string Message)
+   public void ShowMessage([Editor("Message", "UITypeEditor")] string Message)
    {
       if (activeMessageCount >= maxMessages)
          throw new InvalidOperationException("Maximum number of displayed messages exceeded");
@@ -1055,7 +1085,7 @@ public abstract class GeneralRules
    }
 
    /// <summary>
-   /// Clears all active messages from the display
+   /// Clears all active messages from the display.
    /// </summary>
    [Description("Clears all active messages from the display")]
    public void ClearAllMessages()
@@ -1142,18 +1172,18 @@ public abstract class GeneralRules
             System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.GetProperty | System.Reflection.BindingFlags.Public)
             [0].GetValue(null, null));
 
-      byte[] charBytes = System.Text.Encoding.ASCII.GetBytes(Message);
+      byte[] charBytes = System.Text.Encoding.Unicode.GetBytes(Message);
       Display disp = ParentLayer.ParentMap.Display;
       int x = 0, y = 1;
       int maxWidth = 1;
-      for (int charIdx = 0; charIdx < charBytes.Length; charIdx++)
+      for (int charIdx = 0; charIdx < charBytes.Length; charIdx+=2)
       {
-         if (Message[charIdx] == '\n')
+         if (Message[charIdx / 2] == '\n')
          {
             x = 0;
             y++;
          }
-         else if (Message[charIdx] != '\r')
+         else if (Message[charIdx / 2] != '\r')
          {
             if (++x > maxWidth)
                maxWidth = x;
@@ -1218,14 +1248,14 @@ public abstract class GeneralRules
 
       x = 0;
       y = 0;
-      for (int charIdx = 0; charIdx < charBytes.Length; charIdx++)
+      for (int charIdx = 0; charIdx < charBytes.Length; charIdx+=2)
       {
-         if (Message[charIdx] == '\n')
+         if (Message[charIdx / 2] == '\n')
          {
             x = 0;
             y++;
          }
-         else if (Message[charIdx] != '\r')
+         else if (Message[charIdx / 2] != '\r')
          {
             result[x++, y] = charBytes[charIdx];
          }

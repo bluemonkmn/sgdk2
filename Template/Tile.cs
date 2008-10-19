@@ -225,6 +225,9 @@ public class SimpleTile : TileBase
 /// </summary>
 public class EmptyTile : TileBase
 {
+   /// <summary>
+   /// Returns the single empty tile object used for all empty tiles.
+   /// </summary>
    public static readonly EmptyTile Value = new EmptyTile();
    private readonly int[] frame;
 

@@ -2045,7 +2045,8 @@ namespace SGDK2
                   source.SelectedIndex = source.Items.Add(newValue);
             }
          }
-         else if ((source.SelectedIndex >= 0) && (string.Compare((string)source.Items[source.SelectedIndex], frmEditMessage.messageEditorItem) == 0))
+         else if ((source.SelectedIndex >= 0) && (source.Items[source.SelectedIndex] is string)
+            && (string.Compare((string)source.Items[source.SelectedIndex], frmEditMessage.messageEditorItem) == 0))
          {
             string oldText = source.Text;
             string newText = frmEditMessage.EditMessage(source.Text, this);

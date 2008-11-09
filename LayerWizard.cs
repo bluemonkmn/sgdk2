@@ -126,6 +126,7 @@ namespace SGDK2
       /// </summary>
       private void InitializeComponent()
       {
+         this.offsetDisplay = new SGDK2.Display();
          this.pnlTileset = new System.Windows.Forms.Panel();
          this.lblPreviewTileset = new System.Windows.Forms.Label();
          this.PreviewTiles = new SGDK2.GraphicBrowser();
@@ -145,7 +146,6 @@ namespace SGDK2
          this.BackgroundTile = new SGDK2.frmWizardBase.StepInfo();
          this.pnlOffset = new System.Windows.Forms.Panel();
          this.lblOffsetInfo = new System.Windows.Forms.Label();
-         this.offsetDisplay = new SGDK2.Display();
          this.lblOffset = new System.Windows.Forms.Label();
          this.Offset = new SGDK2.frmWizardBase.StepInfo();
          this.pnlScrollRate = new System.Windows.Forms.Panel();
@@ -198,6 +198,20 @@ namespace SGDK2
          this.pnlReview.SuspendLayout();
          this.pnlVirtualSize.SuspendLayout();
          this.SuspendLayout();
+         // 
+         // offsetDisplay
+         // 
+         this.offsetDisplay.AutoScroll = true;
+         this.offsetDisplay.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+         this.offsetDisplay.GameDisplayMode = SGDK2.GameDisplayMode.m640x480x24;
+         this.offsetDisplay.Location = new System.Drawing.Point(0, 32);
+         this.offsetDisplay.Name = "offsetDisplay";
+         this.offsetDisplay.Size = new System.Drawing.Size(280, 176);
+         this.offsetDisplay.TabIndex = 0;
+         this.offsetDisplay.Paint += new System.Windows.Forms.PaintEventHandler(this.offsetDisplay_Paint);
+         this.offsetDisplay.MouseMove += new System.Windows.Forms.MouseEventHandler(this.offsetDisplay_MouseMove);
+         this.offsetDisplay.MouseLeave += new System.EventHandler(this.offsetDisplay_MouseLeave);
+         this.offsetDisplay.MouseDown += new System.Windows.Forms.MouseEventHandler(this.offsetDisplay_MouseDown);
          // 
          // pnlTileset
          // 
@@ -390,19 +404,6 @@ namespace SGDK2
          this.lblOffsetInfo.Size = new System.Drawing.Size(264, 24);
          this.lblOffsetInfo.TabIndex = 1;
          this.lblOffsetInfo.Text = "***";
-         // 
-         // offsetDisplay
-         // 
-         this.offsetDisplay.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-         this.offsetDisplay.GameDisplayMode = SGDK2.GameDisplayMode.m320x240x16;
-         this.offsetDisplay.Location = new System.Drawing.Point(0, 32);
-         this.offsetDisplay.Name = "offsetDisplay";
-         this.offsetDisplay.Size = new System.Drawing.Size(280, 176);
-         this.offsetDisplay.TabIndex = 0;
-         this.offsetDisplay.Paint += new System.Windows.Forms.PaintEventHandler(this.offsetDisplay_Paint);
-         this.offsetDisplay.MouseMove += new System.Windows.Forms.MouseEventHandler(this.offsetDisplay_MouseMove);
-         this.offsetDisplay.MouseLeave += new System.EventHandler(this.offsetDisplay_MouseLeave);
-         this.offsetDisplay.MouseDown += new System.Windows.Forms.MouseEventHandler(this.offsetDisplay_MouseDown);
          // 
          // lblOffset
          // 
@@ -1073,6 +1074,7 @@ namespace SGDK2
                DrawLayer.Move(offsetDisplay.AutoScrollPosition.X, offsetDisplay.AutoScrollPosition.Y);
             m_Layers[i].Draw(offsetDisplay, offsetDisplay.ClientSize);
          }
+         offsetDisplay.Flush();
          offsetDisplay.SwapBuffers();
       }
 

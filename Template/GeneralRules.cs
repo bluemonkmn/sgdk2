@@ -10,7 +10,7 @@ using System.Diagnostics;
 /// Implements rules common to sprites and plans
 /// </summary>
 [Serializable()]
-public abstract class GeneralRules
+public abstract partial class GeneralRules
 {
    private static SaveUnit saveUnit = null;
    private static System.Collections.Hashtable memorySaveSlots = new System.Collections.Hashtable();
@@ -925,7 +925,7 @@ public abstract class GeneralRules
    /// <summary>
    /// Represents a message created and displayed by <see cref="ShowMessage"/>.
    /// </summary>
-   public class MessageLayer : ByteLayer
+   public partial class MessageLayer : ByteLayer
    {
       public readonly System.Drawing.Color background;
       public MessageView view;
@@ -1380,7 +1380,7 @@ public enum ViewLayout
 /// which stores an indicator of the current map at the time <see cref="GeneralRules.IncludeInSaveUnit"/> is
 /// called.</remarks>
 [Serializable()]
-public class SaveUnit
+public partial class SaveUnit
 {
    public SaveUnit()
    {
@@ -1430,7 +1430,7 @@ public class SaveUnit
 /// the value of the global counters can automatically be linked to those in a
 /// <see cref="SaveUnit"/>.</remarks>
 [Serializable()]
-public class CounterRef : System.Runtime.Serialization.ISerializable
+public partial class CounterRef : System.Runtime.Serialization.ISerializable
 {
    public string counterName;
    public Counter instance;

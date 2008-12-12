@@ -18,7 +18,7 @@ using System;
 /// Highest level code (including the entry point) can be customized
 /// while still allowing the code generator to provide some high level
 /// global properties in the Project.resx file.</remarks>
-public class Project
+public partial class Project
 {
    private static System.Resources.ResourceManager m_res;
    private static GameForm game;

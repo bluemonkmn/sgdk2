@@ -14,7 +14,7 @@ using System.Drawing.Imaging;
 /// sub-frames with non-zero mask alpha levels. When testing for collisions between two sprites,
 /// if both sprites have a collision mask, the masks will be used to determine if "solid"
 /// pixels of the two sprites overlap.</remarks>
-public class CollisionMask
+public partial class CollisionMask
 {
    private int[,] m_Mask;
    private int m_Width;

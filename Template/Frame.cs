@@ -8,7 +8,7 @@ using System.Drawing;
 /// <summary>
 /// An instance of the Frame class represents one image from a frameset.
 /// </summary>
-public struct Frame
+public partial struct Frame
 {
    /// <summary>
    /// References the un-transformed graphics on which this frame is based

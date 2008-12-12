@@ -119,7 +119,7 @@ public enum Key
 /// <summary>
 /// Represents the current state of all keys on the keyboard.
 /// </summary>
-public class KeyboardState
+public partial class KeyboardState
 {
    [DllImport("user32.dll")]
    private static extern bool GetKeyboardState(byte[] lpKeyState);

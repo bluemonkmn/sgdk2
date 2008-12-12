@@ -62,13 +62,13 @@ public enum GameDisplayMode
 /// Manages the display device on which real-time game graphics are drawn
 /// </summary>
 [Serializable()]
-public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISerializable
+public partial class Display : GLControl, IDisposable, System.Runtime.Serialization.ISerializable
 {
    #region Embedded Classes
    /// <summary>
    /// Object used to refer to a texture (graphic sheet) managed by a particular <see cref="Display" />.
    /// </summary>
-   public class TextureRef : IDisposable
+   public partial class TextureRef : IDisposable
    {
       private string m_Name;
       private int m_Texture = 0;
@@ -927,7 +927,7 @@ public class Display : GLControl, IDisposable, System.Runtime.Serialization.ISer
 /// attempts to save or load data for the display object when the game is saved/loaded.
 /// </summary>
 [Serializable()]
-public class DisplayRef : System.Runtime.Serialization.IObjectReference, System.Runtime.Serialization.ISerializable
+public partial class DisplayRef : System.Runtime.Serialization.IObjectReference, System.Runtime.Serialization.ISerializable
 {
 
    private DisplayRef(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)

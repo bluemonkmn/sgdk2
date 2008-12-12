@@ -9,7 +9,7 @@ using System.Drawing;
 /// Defines the basic operation of a layer of tiles and sprites within a map.
 /// </summary>
 [Serializable()]
-public abstract class LayerBase : System.Collections.IEnumerable
+public abstract partial class LayerBase : System.Collections.IEnumerable
 {
    #region Embedded Classes
    /// <summary>
@@ -445,6 +445,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
             break;
          }
       }
+      disp.SetColor(-1);
    }
 
    /// <summary>
@@ -1080,7 +1081,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
 /// Represents a layer where each tile is represented as a 32-bit integer.
 /// </summary>
 [Serializable()]
-public abstract class IntLayer : LayerBase
+public abstract partial class IntLayer : LayerBase
 {
    private int[,] m_Tiles;
 
@@ -1132,7 +1133,7 @@ public abstract class IntLayer : LayerBase
 /// Represents a layer where each tile is represented as a 16-bit integer.
 /// </summary>
 [Serializable()]
-public abstract class ShortLayer : LayerBase
+public abstract partial class ShortLayer : LayerBase
 {
    private short[,] m_Tiles;
 
@@ -1187,7 +1188,7 @@ public abstract class ShortLayer : LayerBase
 /// Represents a layer where each tile is represented as a single byte.
 /// </summary>
 [Serializable()]
-public abstract class ByteLayer : LayerBase
+public abstract partial class ByteLayer : LayerBase
 {
    private byte[,] m_Tiles;
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Runtime.InteropServices;
 
-public class Joystick
+public partial class Joystick
 {
    #region Embedded Types
    [Flags()]

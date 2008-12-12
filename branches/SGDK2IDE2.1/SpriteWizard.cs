@@ -84,6 +84,19 @@ namespace SGDK2
 			// TODO: Add any initialization after the InitializeComponent call
 		}
 
+      public frmSpriteImportWizard(string sourceFile) : this()
+      {
+         txtSourceFile.Text = sourceFile;
+         CurrentStep.StepControl.Visible = false;
+         Steps[0].Init();
+         if (Steps[0].Validate())
+         {
+            Steps[0].StepControl.Visible = false;
+            CurrentStep = Steps[1];
+            CurrentStep.Init();
+         }
+      }
+
 		/// <summary>
 		/// Clean up any resources being used.
 		/// </summary>

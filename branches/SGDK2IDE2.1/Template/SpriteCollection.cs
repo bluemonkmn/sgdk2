@@ -14,7 +14,7 @@ using System;
 /// and dynamic sprites. For more information about this distinction, see remarks in
 /// <see cref="staticSize"/>.</remarks>
 [Serializable()]
-public class SpriteCollection : System.Collections.CollectionBase
+public partial class SpriteCollection : System.Collections.CollectionBase
 {
    /// <summary>
    /// Indicates the initial size of this collection, and the size below which

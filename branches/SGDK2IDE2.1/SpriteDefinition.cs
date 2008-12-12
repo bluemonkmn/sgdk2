@@ -189,6 +189,9 @@ namespace SGDK2
       private MenuItem mnuCutRuleChildren;
       private MenuItem mnuCutRuleOnly;
       private MenuItem mnuCutAllRules;
+      private MenuItem mnuConvertToFunc;
+      private MenuItem mnuConvertAllRules;
+      private MenuItem mnuConvertSelectedRule;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -358,12 +361,15 @@ namespace SGDK2
          this.mnuPasteRuleAbove = new System.Windows.Forms.MenuItem();
          this.mnuPasteRuleBelow = new System.Windows.Forms.MenuItem();
          this.mnuToggleSuspend = new System.Windows.Forms.MenuItem();
+         this.mnuConvertToFunc = new System.Windows.Forms.MenuItem();
          this.mnuSpriteDefSeparator2 = new System.Windows.Forms.MenuItem();
          this.mnuExport = new System.Windows.Forms.MenuItem();
          this.mnuSpriteDefSeparator3 = new System.Windows.Forms.MenuItem();
          this.mnuRotateWizard = new System.Windows.Forms.MenuItem();
          this.DataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.tmrPopulateRules = new System.Windows.Forms.Timer(this.components);
+         this.mnuConvertAllRules = new System.Windows.Forms.MenuItem();
+         this.mnuConvertSelectedRule = new System.Windows.Forms.MenuItem();
          this.tabSpriteDefinition.SuspendLayout();
          this.tabStates.SuspendLayout();
          this.pnlFrames.SuspendLayout();
@@ -1158,6 +1164,7 @@ namespace SGDK2
             this.mnuCutRules,
             this.mnuPasteRules,
             this.mnuToggleSuspend,
+            this.mnuConvertToFunc,
             this.mnuSpriteDefSeparator2,
             this.mnuExport,
             this.mnuSpriteDefSeparator3,
@@ -1320,25 +1327,33 @@ namespace SGDK2
          this.mnuToggleSuspend.Text = "To&ggle Suspend for This and Child Rules";
          this.mnuToggleSuspend.Click += new System.EventHandler(this.OnToggleSuspend);
          // 
+         // mnuConvertToFunc
+         // 
+         this.mnuConvertToFunc.Index = 16;
+         this.mnuConvertToFunc.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.mnuConvertAllRules,
+            this.mnuConvertSelectedRule});
+         this.mnuConvertToFunc.Text = "Convert to Fu&nction";
+         // 
          // mnuSpriteDefSeparator2
          // 
-         this.mnuSpriteDefSeparator2.Index = 16;
+         this.mnuSpriteDefSeparator2.Index = 17;
          this.mnuSpriteDefSeparator2.Text = "-";
          // 
          // mnuExport
          // 
-         this.mnuExport.Index = 17;
+         this.mnuExport.Index = 18;
          this.mnuExport.Text = "E&xport to template...";
          this.mnuExport.Click += new System.EventHandler(this.mnuExport_Click);
          // 
          // mnuSpriteDefSeparator3
          // 
-         this.mnuSpriteDefSeparator3.Index = 18;
+         this.mnuSpriteDefSeparator3.Index = 19;
          this.mnuSpriteDefSeparator3.Text = "-";
          // 
          // mnuRotateWizard
          // 
-         this.mnuRotateWizard.Index = 19;
+         this.mnuRotateWizard.Index = 20;
          this.mnuRotateWizard.Text = "R&otating Sprite State Wizard";
          this.mnuRotateWizard.Click += new System.EventHandler(this.mnuRotateWizard_Click);
          // 
@@ -1361,6 +1376,18 @@ namespace SGDK2
          // tmrPopulateRules
          // 
          this.tmrPopulateRules.Tick += new System.EventHandler(this.tmrPopulateRules_Tick);
+         // 
+         // mnuConvertAllRules
+         // 
+         this.mnuConvertAllRules.Index = 0;
+         this.mnuConvertAllRules.Text = "Convert &All Enabled Rules";
+         this.mnuConvertAllRules.Click += new System.EventHandler(this.mnuConvertToFunc_Click);
+         // 
+         // mnuConvertSelectedRule
+         // 
+         this.mnuConvertSelectedRule.Index = 1;
+         this.mnuConvertSelectedRule.Text = "Convert &Selected Rule and Children";
+         this.mnuConvertSelectedRule.Click += new System.EventHandler(this.mnuConvertToFunc_Click);
          // 
          // frmSpriteDefinition
          // 
@@ -1396,7 +1423,7 @@ namespace SGDK2
       #endregion
 
       #region Private Methods
-      private void LoadFunctions(bool onlyBools, bool forceRefresh)
+      private void LoadFunctions(bool onlyBools, bool forceRefresh, bool updateUI)
       {
          if (forceRefresh || (m_AvailableRules == null))
          {
@@ -1412,8 +1439,9 @@ namespace SGDK2
             }
 
             txtErrors.Visible = false;
-            RemotingServices.IRemoteTypeInfo reflector = CodeGenerator.CreateInstanceAndUnwrap(
-               "RemoteReflector", CodeGenerator.SpriteBaseClass) as RemotingServices.IRemoteTypeInfo;
+            RemotingServices.IRemoteTypeInfo reflector = CodeGenerator.CreateInstanceAndUnwrap( "RemoteReflector", 
+               CodeGenerator.SpritesNamespace + "." + CodeGenerator.NameToVariable(m_SpriteDef.Name)) 
+               as RemotingServices.IRemoteTypeInfo;
 
             RemotingServices.RemoteMethodInfo[] localRuleList = reflector.GetMethods();
             RemotingServices.RemoteMethodInfo[] globalRuleList = reflector.GetGlobalFunctions();
@@ -1444,27 +1472,30 @@ namespace SGDK2
             }
             m_AvailableRules.InsertOperators();
          }
-         
-         cboFunction.Items.Clear();
-         RemotingServices.RemoteMethodInfo[] rules = new SGDK2.RemotingServices.RemoteMethodInfo[m_AvailableRules.Count];
-         m_AvailableRules.Rules.CopyTo(rules, 0);
-         System.Array.Sort(rules, new RemotingServices.RemoteMethodComparer());
-         foreach(RemotingServices.RemoteMethodInfo mi in rules)
-         {
-            if ((string.Compare(mi.ReturnType.Name,typeof(Boolean).Name)==0) || !onlyBools)
-               cboFunction.Items.Add(mi.MethodName);
-         }
-         if (!onlyBools)
-            chkNot.Checked = false;
-         chkNot.Enabled = onlyBools;
 
-         PopulateParameter(lblParam1, cboParam1, RemotingServices.RemoteParameterInfo.Empty);
-         PopulateParameter(lblParam2, cboParam2, RemotingServices.RemoteParameterInfo.Empty);
-         PopulateParameter(lblParam3, cboParam3, RemotingServices.RemoteParameterInfo.Empty);
-         m_PreparedFunction = String.Empty;
-         lblOutput.Enabled = false;
-         cboOutput.Enabled = false;
-         cboOutput.SelectedIndex = -1;
+         if (updateUI)
+         {
+            cboFunction.Items.Clear();
+            RemotingServices.RemoteMethodInfo[] rules = new SGDK2.RemotingServices.RemoteMethodInfo[m_AvailableRules.Count];
+            m_AvailableRules.Rules.CopyTo(rules, 0);
+            System.Array.Sort(rules, new RemotingServices.RemoteMethodComparer());
+            foreach (RemotingServices.RemoteMethodInfo mi in rules)
+            {
+               if ((string.Compare(mi.ReturnType.Name, typeof(Boolean).Name) == 0) || !onlyBools)
+                  cboFunction.Items.Add(mi.MethodName);
+            }
+            if (!onlyBools)
+               chkNot.Checked = false;
+            chkNot.Enabled = onlyBools;
+
+            PopulateParameter(lblParam1, cboParam1, RemotingServices.RemoteParameterInfo.Empty);
+            PopulateParameter(lblParam2, cboParam2, RemotingServices.RemoteParameterInfo.Empty);
+            PopulateParameter(lblParam3, cboParam3, RemotingServices.RemoteParameterInfo.Empty);
+            m_PreparedFunction = String.Empty;
+            lblOutput.Enabled = false;
+            cboOutput.Enabled = false;
+            cboOutput.SelectedIndex = -1;
+         }
       }
 
       private void LoadCustomObjectsProviding(string TypeName)
@@ -1924,7 +1955,7 @@ namespace SGDK2
             m_Loading = true;
             txtRuleName.Text = drRule.Name;
 
-            LoadFunctions(IsRuleTypeConditional(drRule.Type), false);
+            LoadFunctions(IsRuleTypeConditional(drRule.Type), false, true);
 
             if (cboFunction.Items.Contains(drRule.Function))
             {
@@ -2185,6 +2216,69 @@ namespace SGDK2
          foreach(TreeNode child in parent.Nodes)
             result.AddRange(GetNodeWithChildList(child));
          return (ProjectData.CopiedRule[])result.ToArray(typeof(ProjectData.CopiedRule));
+      }
+
+      private void ConvertAllRules()
+      {
+         System.Collections.ArrayList nodes = new ArrayList();
+
+         foreach(TreeNode rule in tvwRules.Nodes)
+         {
+            nodes.AddRange(GetNodeWithChildList(rule));
+         }
+         ConvertRules((ProjectData.CopiedRule[])nodes.ToArray(typeof(ProjectData.CopiedRule)));
+      }
+
+      private void ConvertRuleAndChildren()
+      {
+         if (tvwRules.SelectedNode == null)
+         {
+            MessageBox.Show(this, "Select a rule before selecting this command.", "Convert Rules to Function", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
+
+         ConvertRules(GetNodeWithChildList(tvwRules.SelectedNode));
+      }
+
+      private void ConvertRules(ProjectData.CopiedRule[] copiedRules)
+      {
+         ProjectDataset.SpriteRuleRow[] rules;
+         ArrayList selectedRules = new ArrayList();
+         foreach (ProjectData.CopiedRule rule in copiedRules)
+         {
+            if (!rule.Suspended)
+               selectedRules.Add(ProjectData.GetSpriteRule(m_SpriteDef, rule.Name));
+         }
+         rules = (ProjectDataset.SpriteRuleRow[])selectedRules.ToArray(typeof(ProjectDataset.SpriteRuleRow));
+
+         System.Collections.Specialized.StringCollection reservedNames = new System.Collections.Specialized.StringCollection();
+         try
+         {
+            LoadFunctions(false, false, false);
+            foreach (DictionaryEntry de in m_AvailableRules)
+            {
+               reservedNames.Add(de.Key.ToString());
+            }
+            foreach (RemotingServices.RemotePropertyInfo pi in m_SpriteProperties)
+            {
+               reservedNames.Add(pi.Name);
+            }
+         }
+         catch (System.Exception ex)
+         {
+            MessageBox.Show(this, ex.Message, "Convert Rules to Function", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+         }
+         reservedNames.Add("ExecuteRules");
+         frmConvertToFunction frm = new frmConvertToFunction(rules, reservedNames);
+         frm.ShowDialog(this);
+         try
+         {
+            LoadFunctions(false, true, false);
+         }
+         catch (System.Exception ex)
+         {
+            MessageBox.Show(this, ex.Message, "Convert Rules to Function", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+         }
       }
 
       private void DeleteAllRules()
@@ -2790,7 +2884,7 @@ namespace SGDK2
          if (String.Compare(cboRuleType.Text, "End", true) == 0)
             EnableFields();
          else
-            LoadFunctions(IsRuleTypeConditional(cboRuleType.SelectedItem.ToString()), false);
+            LoadFunctions(IsRuleTypeConditional(cboRuleType.SelectedItem.ToString()), false, true);
          
          if (CurrentRule != null)
          {
@@ -3233,6 +3327,14 @@ namespace SGDK2
             DeleteRules(true);
 
          EnablePasteRules();
+      }
+
+      private void mnuConvertToFunc_Click(object sender, EventArgs e)
+      {
+         if (sender == mnuConvertAllRules)
+            ConvertAllRules();
+         else
+            ConvertRuleAndChildren();
       }
       #endregion
    }

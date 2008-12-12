@@ -10,7 +10,7 @@ using System.Drawing;
 /// Base class for "plans", which consist of map coordinates and rules
 /// </summary>
 [Serializable()]
-public abstract class PlanBase : GeneralRules, System.Collections.IEnumerable
+public abstract partial class PlanBase : GeneralRules, System.Collections.IEnumerable
 {
    /// <summary>
    /// This is provided as a temporary storage area for numbers while processing

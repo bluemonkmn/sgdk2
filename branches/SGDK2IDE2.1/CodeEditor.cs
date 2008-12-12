@@ -69,20 +69,14 @@ namespace SGDK2
       #region Non-control members
       ProjectDataset.SourceCodeRow m_SourceCode;
       frmFindReplace m_frmFindReplace = null;
-      #endregion
-
       private SGDK2.DataChangeNotifier DataMonitor;
       private CodeEditor rtfCode;
       private System.ComponentModel.IContainer components;
       private UndoUnit undoStack;
       private UndoUnit redoStack;
+      #endregion
 
-      #region Win32 API
-      private const int WM_USER = 0x0400;
-      private const int EM_GETSCROLLPOS = WM_USER + 221;
-      private System.Windows.Forms.Timer tmrReparse;
-      private const int EM_SETSCROLLPOS = WM_USER + 222;
-      private const int EM_SETUNDOLIMIT = WM_USER + 82;
+      #region Form Designer Members
       private System.Windows.Forms.StatusBar staCode;
       private System.Windows.Forms.StatusBarPanel sbpLineNum;
       private System.Windows.Forms.StatusBarPanel sbpChar;
@@ -110,6 +104,14 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuExportEmbeddedData;
       private System.Windows.Forms.SaveFileDialog dlgExportEmbeddedData;
       private System.Windows.Forms.MenuItem mnuDataPlay;
+      #endregion
+
+      #region Win32 API
+      private const int WM_USER = 0x0400;
+      private const int EM_GETSCROLLPOS = WM_USER + 221;
+      private System.Windows.Forms.Timer tmrReparse;
+      private const int EM_SETSCROLLPOS = WM_USER + 222;
+      private const int EM_SETUNDOLIMIT = WM_USER + 82;
       private struct POINT
       {
          public int x;
@@ -707,6 +709,7 @@ namespace SGDK2
                   case "out":
                   case "override":
                   case "params":
+                  case "partial":
                   case "private":
                   case "protected":
                   case "public":

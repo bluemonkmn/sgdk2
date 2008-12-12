@@ -675,6 +675,7 @@ namespace SGDK2
                new CodeCommentStatement("<remarks>The class is entirely generated based on the framesets defined in the project. Static members exist to create/access instances of each frameset, and each instance represents one specific frameset. Only one instance (maximum) of each frameset will ever exist per display.</remarks>", true)
             });
 
+         framesetClassDecl.IsPartial = true;
          framesetClassDecl.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
          framesetClassDecl.BaseTypes.Add(typeof(System.Runtime.Serialization.ISerializable));
          framesetClassDecl.Members.Add(new CodeMemberField(new CodeTypeReference(FrameClass, 1), "m_arFrames"));
@@ -712,6 +713,7 @@ namespace SGDK2
 
 
          CodeTypeDeclaration classFramesetRef = new CodeTypeDeclaration(FramesetRefClassName);
+         classFramesetRef.IsPartial = true;
          classFramesetRef.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
          classFramesetRef.BaseTypes.Add(typeof(System.Runtime.Serialization.IObjectReference));
          classFramesetRef.BaseTypes.Add(typeof(System.Runtime.Serialization.ISerializable));
@@ -933,6 +935,7 @@ namespace SGDK2
       public void GenerateCounters(System.IO.TextWriter txt)
       {
          CodeTypeDeclaration counterClassDecl = new CodeTypeDeclaration(CounterClass);
+         counterClassDecl.IsPartial = true;
          CodeConstructor construct = new CodeConstructor();
          construct.Attributes = MemberAttributes.Public;
          construct.Parameters.AddRange(new CodeParameterDeclarationExpression[] {new CodeParameterDeclarationExpression(typeof(int), "nValue"), new CodeParameterDeclarationExpression(typeof(int), "nMax")});
@@ -1025,6 +1028,7 @@ namespace SGDK2
       public void GenerateTilesets(System.IO.TextWriter txt, System.IO.TextWriter err)
       {
          CodeTypeDeclaration classTileset = new CodeTypeDeclaration(TilesetClass);
+         classTileset.IsPartial = true;
          classTileset.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
          classTileset.BaseTypes.Add(typeof(System.Runtime.Serialization.ISerializable));
          CodeTypeConstructor staticConstructor = new CodeTypeConstructor();
@@ -1046,6 +1050,7 @@ namespace SGDK2
             {new CodeTypeOfExpression(TilesetRefClassName)}));            
 
          CodeTypeDeclaration classTilesetRef = new CodeTypeDeclaration(TilesetRefClassName);
+         classTilesetRef.IsPartial = true;
          classTilesetRef.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
          classTilesetRef.BaseTypes.Add(typeof(System.Runtime.Serialization.IObjectReference));
          classTilesetRef.BaseTypes.Add(typeof(System.Runtime.Serialization.ISerializable));
@@ -1445,8 +1450,9 @@ namespace SGDK2
 
       public void GenerateMap(ProjectDataset.MapRow drMap, System.IO.TextWriter txt, System.IO.TextWriter err)
       {
-         CodeTypeDeclaration clsMap = new CodeTypeDeclaration(NameToVariable(drMap.Name) + "_Map");
+         CodeTypeDeclaration clsMap = new CodeTypeDeclaration(NameToMapClass(drMap.Name));
          clsMap.BaseTypes.Add("MapBase");
+         clsMap.IsPartial = true;
          clsMap.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
          CodeConstructor constructor = new CodeConstructor();
          constructor.Attributes = MemberAttributes.Final | MemberAttributes.Public;
@@ -1626,6 +1632,7 @@ namespace SGDK2
 
             CodeTypeDeclaration clsLayer = new CodeTypeDeclaration(NameToVariable(drLayer.Name)+ "_Lyr");
             clsLayer.BaseTypes.Add(lyrTyp);
+            clsLayer.IsPartial = true;
             clsLayer.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
             lyrTyp = new CodeTypeReference(clsLayer.Name);
             CodeConstructor lyrConstructor = new CodeConstructor();
@@ -1749,6 +1756,7 @@ namespace SGDK2
             {
                CodeTypeDeclaration clsPlan = new CodeTypeDeclaration(NameToVariable(drPlan.Name));
                clsLayer.Members.Add(clsPlan);
+               clsPlan.IsPartial = true;
                clsPlan.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
                clsPlan.BaseTypes.Add(PlanBaseClassName);
 
@@ -1884,6 +1892,7 @@ namespace SGDK2
 
             CodeTypeDeclaration clsLayerSpriteCategories = new CodeTypeDeclaration(LayerSpriteCategoriesClassName);
             clsLayer.Members.Add(clsLayerSpriteCategories);
+            clsLayerSpriteCategories.IsPartial = true;
             clsLayerSpriteCategories.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
 
             CodeMemberField fldSprCatLayer = new CodeMemberField(clsLayer.Name, "m_layer");
@@ -2275,6 +2284,80 @@ namespace SGDK2
          }
       }
 
+      public string ConvertRuleToCode(ProjectDataset.SpriteRuleRow[] drRules, string name)
+      {
+         CodeNamespace nsSprites = new CodeNamespace(SpritesNamespace);
+         CodeTypeDeclaration clsSpriteDef = new CodeTypeDeclaration(NameToVariable(drRules[0].SpriteDefinitionRow.Name));
+         clsSpriteDef.IsPartial = true;
+         nsSprites.Types.Add(clsSpriteDef);
+
+         CodeMemberMethod mthRule = new CodeMemberMethod();
+         mthRule.Name = name;
+         mthRule.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+         mthRule.CustomAttributes.Add(
+            new CodeAttributeDeclaration(
+            new CodeTypeReference(typeof(System.ComponentModel.DescriptionAttribute)),
+            new CodeAttributeArgument(
+            new CodePrimitiveExpression("Executes rules converted to code from sprite " + drRules[0].SpriteDefinitionRow.Name))));
+         clsSpriteDef.Members.Add(mthRule);
+         RuleContent[] ruleArray = new RuleContent[drRules.Length];
+         for (int i = 0; i < drRules.Length; i++)
+            ruleArray[i] = new RuleContent(drRules[i]);
+         GenerateRules(ruleArray, mthRule);
+         using (System.IO.StringWriter sw = new System.IO.StringWriter())
+         {
+            if (string.IsNullOrEmpty(name))
+            {
+               foreach (CodeStatement stmt in mthRule.Statements)
+                  Generator.GenerateCodeFromStatement(stmt, sw, GeneratorOptions);
+            }
+            else
+            {
+               Generator.GenerateCodeFromNamespace(nsSprites, sw, GeneratorOptions);
+            }
+            return sw.ToString();
+         }
+      }
+
+      public string ConvertRuleToCode(ProjectDataset.PlanRuleRow[] drRules, string name)
+      {
+         CodeTypeDeclaration clsMap = new CodeTypeDeclaration(NameToMapClass(drRules[0].MapName));
+         clsMap.IsPartial = true;
+         CodeTypeDeclaration clsLayer = new CodeTypeDeclaration(NameToVariable(drRules[0].LayerName) + "_Lyr");
+         clsLayer.IsPartial = true;
+         clsMap.Members.Add(clsLayer);
+         CodeTypeDeclaration clsPlan = new CodeTypeDeclaration(NameToVariable(drRules[0].PlanName));
+         clsPlan.IsPartial = true;
+         clsLayer.Members.Add(clsPlan);
+
+         CodeMemberMethod mthRule = new CodeMemberMethod();
+         mthRule.Name = name;
+         mthRule.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+         mthRule.CustomAttributes.Add(
+            new CodeAttributeDeclaration(
+            new CodeTypeReference(typeof(System.ComponentModel.DescriptionAttribute)),
+            new CodeAttributeArgument(
+            new CodePrimitiveExpression("Executes rules converted to code from plan " + drRules[0].SpritePlanRowParent.Name))));
+         clsPlan.Members.Add(mthRule);
+         RuleContent[] ruleArray = new RuleContent[drRules.Length];
+         for (int i = 0; i < drRules.Length; i++)
+            ruleArray[i] = new RuleContent(drRules[i]);
+         GenerateRules(ruleArray, mthRule);
+         using (System.IO.StringWriter sw = new System.IO.StringWriter())
+         {
+            if (string.IsNullOrEmpty(name))
+            {
+               foreach (CodeStatement stmt in mthRule.Statements)
+                  Generator.GenerateCodeFromStatement(stmt, sw, GeneratorOptions);
+            }
+            else
+            {
+               Generator.GenerateCodeFromType(clsMap, sw, GeneratorOptions);
+            }
+            return sw.ToString();
+         }
+      }
+
       public void GenerateSpriteDef(ProjectDataset.SpriteDefinitionRow drSpriteDef, System.IO.TextWriter txt, System.IO.TextWriter err)
       {
          CodeNamespace nsSprites = new CodeNamespace(SpritesNamespace);
@@ -2283,6 +2366,7 @@ namespace SGDK2
          clsSpriteDef.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
 
          clsSpriteDef.BaseTypes.Add(SpriteBaseClass);
+         clsSpriteDef.IsPartial = true;
          CodeConstructor constructor = new CodeConstructor();
          constructor.Attributes = MemberAttributes.Public;
          constructor.Parameters.AddRange(new CodeParameterDeclarationExpression[]
@@ -2667,6 +2751,7 @@ namespace SGDK2
                new CodeCommentStatement("<summary>Provides categorized access to sprite within a layer for all categories defined in the project</summary>", true),
                new CodeCommentStatement("<remarks>Each <see cref=\"" + LayerBaseClassName + "." + SpriteCategoriesFieldName + "\"/> member of each layer contains an instance of a class derived from this that knows how to return sprites by category for the individual layer. Each sprite category is represented as a member whose name is based on a sprite category defined in the project, and returns a <see cref=\"" + SpriteCollectionClassName + "\"/> containing the sprites in that layer that are in the named category. Even categories without any members are represented in order to allow this common base class to provide the same set of categories universally regardless of the specific layer to which it applies.</remarks>", true)
             });
+         clsLayerSpriteCategoriesBase.IsPartial = true;
 
          foreach(System.Data.DataRowView drv in ProjectData.SpriteCategory.DefaultView)
          {
@@ -2718,6 +2803,7 @@ namespace SGDK2
                new CodeCommentStatement("<summary>Represents solidity definitions in the project</summary>", true),
                new CodeCommentStatement("<remarks>This class is generated based on solidity definitions defined in the project. A solidity definition defines a set of \"rules\" that associates tiles with the shapes that they should assume when these rules are active. The \"shape\" of a tile determines how sprites react to it. Each individual solidity definition is represented as a static member of this class whose name is based on the name assigned at design-time, which returns an instance of this class</remarks>", true)
             });
+         clsSolidity.IsPartial = true;
 
          CodeMemberMethod mthGetTileShape = new CodeMemberMethod();
          mthGetTileShape.Name = "GetCurrentTileShape";

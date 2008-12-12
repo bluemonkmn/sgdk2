@@ -9,7 +9,7 @@ using System.Drawing;
 /// Base class for all maps.
 /// </summary>
 [Serializable()]
-public abstract class MapBase
+public abstract partial class MapBase
 {
    protected Display m_Display;
    /// <summary>

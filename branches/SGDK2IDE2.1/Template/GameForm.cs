@@ -9,7 +9,7 @@ using System.Windows.Forms;
 /// <summary>
 /// UI that contains and manages the main display for the game.
 /// </summary>
-public class GameForm : Form
+public partial class GameForm : Form
 {
    /// <summary>
    /// Hardware-backed display object embedded in the main window.

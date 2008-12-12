@@ -10,7 +10,7 @@ using System.Diagnostics;
 /// Base class for all sprite definitions.
 /// </summary>
 [Serializable()]
-public abstract class SpriteBase : GeneralRules
+public abstract partial class SpriteBase : GeneralRules
 {
    /// <summary>
    /// Horizontal coordinate of the sprite within its layer.

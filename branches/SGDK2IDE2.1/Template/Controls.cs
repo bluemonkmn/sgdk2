@@ -11,7 +11,7 @@ using System.Windows.Forms;
 /// <summary>
 /// UI to support the player's customization of input device.
 /// </summary>
-public class frmControls : System.Windows.Forms.Form
+public partial class frmControls : System.Windows.Forms.Form
 {
    #region Embedded Types
    class KeyTextBox : TextBox

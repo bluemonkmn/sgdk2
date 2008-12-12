@@ -10,7 +10,7 @@ using System;
 /// </summary>
 /// <remarks>Some sprites are simple enough that they can be treated very similar to tiles, and
 /// will simply use <see cref="TileFrame"/> directly. Others will use this class.</remarks>
-public class SpriteFrame : TileFrame
+public partial class SpriteFrame : TileFrame
 {
    private CollisionMask m_Mask;
 
@@ -39,7 +39,7 @@ public class SpriteFrame : TileFrame
 /// <summary>
 /// Represents one state within a sprite definition, primarily defining how a it can animate.
 /// </summary>
-public class SpriteState
+public partial class SpriteState
 {
    private readonly TileFrame[] m_frames;
    private short[] m_frameIndexMap;

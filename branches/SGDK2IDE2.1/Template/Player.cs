@@ -8,7 +8,7 @@ using System;
 /// Defines a common interface by which a sprite can receive input from a player
 /// or some object simulating a player.
 /// </summary>
-public interface IPlayer
+public partial interface IPlayer
 {
    /// <summary>
    /// Returns true when the player is pressing up, or false otherwise.
@@ -87,7 +87,7 @@ public interface IPlayer
 /// Represents interactions between the game and a player via the keyboard
 /// </summary>
 [Serializable()]
-public class KeyboardPlayer : IPlayer
+public partial class KeyboardPlayer : IPlayer
 {
    /// <summary>
    /// Specifies which keyboard key maps to the notion of pressing left.
@@ -351,7 +351,7 @@ public class KeyboardPlayer : IPlayer
 /// Represents interactions between the game and a player via a joystick/gamepad
 /// </summary>
 [Serializable()]
-public class ControllerPlayer : IPlayer
+public partial class ControllerPlayer : IPlayer
 {
    public int deviceNumber;
    /// <summary>

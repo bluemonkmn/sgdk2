@@ -192,6 +192,7 @@ namespace SGDK2
       private MenuItem mnuConvertToFunc;
       private MenuItem mnuConvertAllRules;
       private MenuItem mnuConvertSelectedRule;
+      private ToolBarButton tbbConvertToFunc;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -362,14 +363,15 @@ namespace SGDK2
          this.mnuPasteRuleBelow = new System.Windows.Forms.MenuItem();
          this.mnuToggleSuspend = new System.Windows.Forms.MenuItem();
          this.mnuConvertToFunc = new System.Windows.Forms.MenuItem();
+         this.mnuConvertAllRules = new System.Windows.Forms.MenuItem();
+         this.mnuConvertSelectedRule = new System.Windows.Forms.MenuItem();
          this.mnuSpriteDefSeparator2 = new System.Windows.Forms.MenuItem();
          this.mnuExport = new System.Windows.Forms.MenuItem();
          this.mnuSpriteDefSeparator3 = new System.Windows.Forms.MenuItem();
          this.mnuRotateWizard = new System.Windows.Forms.MenuItem();
          this.DataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.tmrPopulateRules = new System.Windows.Forms.Timer(this.components);
-         this.mnuConvertAllRules = new System.Windows.Forms.MenuItem();
-         this.mnuConvertSelectedRule = new System.Windows.Forms.MenuItem();
+         this.tbbConvertToFunc = new System.Windows.Forms.ToolBarButton();
          this.tabSpriteDefinition.SuspendLayout();
          this.tabStates.SuspendLayout();
          this.pnlFrames.SuspendLayout();
@@ -754,6 +756,7 @@ namespace SGDK2
          this.imlSpriteDefinition.Images.SetKeyName(3, "");
          this.imlSpriteDefinition.Images.SetKeyName(4, "");
          this.imlSpriteDefinition.Images.SetKeyName(5, "");
+         this.imlSpriteDefinition.Images.SetKeyName(6, "Code.bmp");
          // 
          // tabParameters
          // 
@@ -831,7 +834,8 @@ namespace SGDK2
             this.tbbMoveRuleUp,
             this.tbbMoveRuleDown,
             this.tbbRuleSeparator2,
-            this.tbbToggleSuspend});
+            this.tbbToggleSuspend,
+            this.tbbConvertToFunc});
          this.tbrRules.Divider = false;
          this.tbrRules.DropDownArrows = true;
          this.tbrRules.ImageList = this.imlSpriteDefinition;
@@ -1335,6 +1339,18 @@ namespace SGDK2
             this.mnuConvertSelectedRule});
          this.mnuConvertToFunc.Text = "Convert to Fu&nction";
          // 
+         // mnuConvertAllRules
+         // 
+         this.mnuConvertAllRules.Index = 0;
+         this.mnuConvertAllRules.Text = "Convert &All Enabled Rules";
+         this.mnuConvertAllRules.Click += new System.EventHandler(this.mnuConvertToFunc_Click);
+         // 
+         // mnuConvertSelectedRule
+         // 
+         this.mnuConvertSelectedRule.Index = 1;
+         this.mnuConvertSelectedRule.Text = "Convert &Selected Rule and Children";
+         this.mnuConvertSelectedRule.Click += new System.EventHandler(this.mnuConvertToFunc_Click);
+         // 
          // mnuSpriteDefSeparator2
          // 
          this.mnuSpriteDefSeparator2.Index = 17;
@@ -1377,17 +1393,11 @@ namespace SGDK2
          // 
          this.tmrPopulateRules.Tick += new System.EventHandler(this.tmrPopulateRules_Tick);
          // 
-         // mnuConvertAllRules
+         // tbbConvertToFunc
          // 
-         this.mnuConvertAllRules.Index = 0;
-         this.mnuConvertAllRules.Text = "Convert &All Enabled Rules";
-         this.mnuConvertAllRules.Click += new System.EventHandler(this.mnuConvertToFunc_Click);
-         // 
-         // mnuConvertSelectedRule
-         // 
-         this.mnuConvertSelectedRule.Index = 1;
-         this.mnuConvertSelectedRule.Text = "Convert &Selected Rule and Children";
-         this.mnuConvertSelectedRule.Click += new System.EventHandler(this.mnuConvertToFunc_Click);
+         this.tbbConvertToFunc.ImageIndex = 6;
+         this.tbbConvertToFunc.Name = "tbbConvertToFunc";
+         this.tbbConvertToFunc.ToolTipText = "Convert selected rule and children to function";
          // 
          // frmSpriteDefinition
          // 
@@ -2263,10 +2273,11 @@ namespace SGDK2
             {
                reservedNames.Add(pi.Name);
             }
+            reservedNames.Add(CodeGenerator.NameToVariable(m_SpriteDef.Name));
          }
          catch (System.Exception ex)
          {
-            MessageBox.Show(this, ex.Message, "Convert Rules to Function", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            MessageBox.Show(this, "Error inspecting compiled project for list of reserved names (" + ex.Message + ")", "Convert Rules to Function", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
          }
          reservedNames.Add("ExecuteRules");
          frmConvertToFunction frm = new frmConvertToFunction(rules, reservedNames);
@@ -3023,6 +3034,8 @@ namespace SGDK2
             OnMoveRuleDown(tbbMoveRuleDown, e);
          if (e.Button == tbbToggleSuspend)
             OnToggleSuspend(tbbToggleSuspend, e);
+         if (e.Button == tbbConvertToFunc)
+            ConvertRuleAndChildren();
       }
 
       private void dataMonitor_SpriteRuleRowChanging(object sender, SGDK2.ProjectDataset.SpriteRuleRowChangeEvent e)
@@ -3095,7 +3108,8 @@ namespace SGDK2
 
       private void tvwRules_AfterSelect(object sender, System.Windows.Forms.TreeViewEventArgs e)
       {
-         LoadRule(CurrentRule);
+         if (CurrentRule != null)
+            LoadRule(CurrentRule);
          EnableFields();
       }
 

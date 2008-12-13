@@ -102,6 +102,12 @@ namespace SGDK2
                MessageBox.Show(this, txtCodeName.Text + " already exists", "Name Target", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                return false;
             }
+
+            if (validateText.Length == 0)
+            {
+               MessageBox.Show(this, "Code object name must be specified.", "Name Target", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+               return false;
+            }
          }
 
          if (txtFunctionName.Text.Length <= 0)
@@ -132,6 +138,19 @@ namespace SGDK2
          return true;
       }
 
+      private bool stepRuleOptions_ValidateFunction(StepInfo sender)
+      {
+         if (chkAddCall.Checked)
+         {
+            if (txtNewRuleName.Text.Trim().Length == 0)
+            {
+               MessageBox.Show(this, "New rule name must be specified", "Rule Options", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+               return false;
+            }
+         }
+         return true;
+      }
+
       private void stepFinish_InitFunction(object sender, EventArgs e)
       {
          System.Text.StringBuilder sb = new StringBuilder("The content of the following rules will be converted to source code:\r\n");
@@ -153,17 +172,17 @@ namespace SGDK2
 
          if (rdoOutputClipboard.Checked)
          {
-            sb.AppendLine("The resulting code will be copied to the system clipboard.\r\n");
+            sb.AppendLine("\r\nThe resulting code will be copied to the system clipboard.\r\n");
          }
          else if (rdoOutputExistingFile.Checked)
          {
-            sb.AppendLine("The resulting code will be added to a new function named " + txtFunctionName.Text +
-               " in the existing " + cboCodeName.SelectedText + " source code object.");
+            sb.AppendLine("\r\nThe resulting code will be added to a new function named \"" + txtFunctionName.Text +
+               "\" in the existing \"" + ((ProjectDataset.SourceCodeRow)cboCodeName.SelectedItem).Name + "\" source code object.");
          }
          else if (rdoOutputNewFile.Checked)
          {
-            sb.AppendLine("The resulting code will be added to a new function named " + txtFunctionName.Text +
-               " in a new source code object named " + txtCodeName.Text + ".");
+            sb.AppendLine("\r\nThe resulting code will be added to a new function named \"" + txtFunctionName.Text +
+               "\" in a new source code object named \"" + txtCodeName.Text + "\".");
          }
 
          if (chkDeleteOld.Checked)
@@ -173,7 +192,10 @@ namespace SGDK2
 
          if (!rdoOutputClipboard.Checked && chkAddCall.Checked)
          {
-            sb.AppendLine("A rule named " + txtNewRuleName.Text + " will be added to the sprite to call the created function.");
+            if (m_planRules != null)
+               sb.AppendLine("A rule named \"" + txtNewRuleName.Text + "\" will be added to the plan to call the created function.");
+            else
+               sb.AppendLine("A rule named \"" + txtNewRuleName.Text + "\" will be added to the sprite to call the created function.");
          }
 
          txtFinish.Text = sb.ToString();

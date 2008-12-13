@@ -28,6 +28,7 @@
       /// </summary>
       private void InitializeComponent()
       {
+         System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmConvertToFunction));
          this.pnlOutputOption = new System.Windows.Forms.Panel();
          this.rdoOutputExistingFile = new System.Windows.Forms.RadioButton();
          this.rdoOutputNewFile = new System.Windows.Forms.RadioButton();
@@ -42,6 +43,7 @@
          this.lblCodeName = new System.Windows.Forms.Label();
          this.stepTargetName = new SGDK2.frmWizardBase.StepInfo();
          this.pnlRuleOptions = new System.Windows.Forms.Panel();
+         this.lblOptionDetails = new System.Windows.Forms.Label();
          this.txtNewRuleName = new System.Windows.Forms.TextBox();
          this.lblNewRuleName = new System.Windows.Forms.Label();
          this.chkAddCall = new System.Windows.Forms.CheckBox();
@@ -181,6 +183,7 @@
          // 
          // pnlRuleOptions
          // 
+         this.pnlRuleOptions.Controls.Add(this.lblOptionDetails);
          this.pnlRuleOptions.Controls.Add(this.txtNewRuleName);
          this.pnlRuleOptions.Controls.Add(this.lblNewRuleName);
          this.pnlRuleOptions.Controls.Add(this.chkAddCall);
@@ -189,6 +192,14 @@
          this.pnlRuleOptions.Name = "pnlRuleOptions";
          this.pnlRuleOptions.Size = new System.Drawing.Size(280, 231);
          this.pnlRuleOptions.TabIndex = 8;
+         // 
+         // lblOptionDetails
+         // 
+         this.lblOptionDetails.Location = new System.Drawing.Point(3, 105);
+         this.lblOptionDetails.Name = "lblOptionDetails";
+         this.lblOptionDetails.Size = new System.Drawing.Size(274, 123);
+         this.lblOptionDetails.TabIndex = 4;
+         this.lblOptionDetails.Text = resources.GetString("lblOptionDetails.Text");
          // 
          // txtNewRuleName
          // 
@@ -234,6 +245,7 @@
          this.stepRuleOptions.StepControl = this.pnlRuleOptions;
          this.stepRuleOptions.TitleText = "Rule Options";
          this.stepRuleOptions.InitFunction += new System.EventHandler(this.stepRuleOptions_InitFunction);
+         this.stepRuleOptions.ValidateFunction += new SGDK2.frmWizardBase.ValidateFunctionEvent(this.stepRuleOptions_ValidateFunction);
          // 
          // pnlFinish
          // 
@@ -315,5 +327,6 @@
       private frmWizardBase.StepInfo stepFinish;
       private System.Windows.Forms.TextBox txtNewRuleName;
       private System.Windows.Forms.Label lblNewRuleName;
+      private System.Windows.Forms.Label lblOptionDetails;
    }
 }

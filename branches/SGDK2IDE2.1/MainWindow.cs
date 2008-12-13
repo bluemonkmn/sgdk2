@@ -209,7 +209,7 @@ namespace SGDK2
          this.tbrMain.Location = new System.Drawing.Point(0, 0);
          this.tbrMain.Name = "tbrMain";
          this.tbrMain.ShowToolTips = true;
-         this.tbrMain.Size = new System.Drawing.Size(800, 27);
+         this.tbrMain.Size = new System.Drawing.Size(870, 27);
          this.tbrMain.TabIndex = 1;
          this.tbrMain.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tbrMain_ButtonClick);
          this.tbrMain.ButtonDropDown += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tbrMain_ButtonDropDown);
@@ -341,7 +341,7 @@ namespace SGDK2
          this.tvwMain.Location = new System.Drawing.Point(0, 16);
          this.tvwMain.Name = "tvwMain";
          this.tvwMain.SelectedImageIndex = 0;
-         this.tvwMain.Size = new System.Drawing.Size(176, 271);
+         this.tvwMain.Size = new System.Drawing.Size(222, 508);
          this.tvwMain.TabIndex = 3;
          this.tvwMain.DoubleClick += new System.EventHandler(this.tvwMain_DoubleClick);
          this.tvwMain.MouseUp += new System.Windows.Forms.MouseEventHandler(this.tvwMain_MouseUp);
@@ -385,10 +385,10 @@ namespace SGDK2
          // 
          // splitterMDI
          // 
-         this.splitterMDI.Location = new System.Drawing.Point(176, 27);
+         this.splitterMDI.Location = new System.Drawing.Point(222, 27);
          this.splitterMDI.MinSize = 20;
          this.splitterMDI.Name = "splitterMDI";
-         this.splitterMDI.Size = new System.Drawing.Size(6, 287);
+         this.splitterMDI.Size = new System.Drawing.Size(6, 524);
          this.splitterMDI.TabIndex = 4;
          this.splitterMDI.TabStop = false;
          // 
@@ -663,7 +663,7 @@ namespace SGDK2
          this.pnlProjectTree.Dock = System.Windows.Forms.DockStyle.Left;
          this.pnlProjectTree.Location = new System.Drawing.Point(0, 27);
          this.pnlProjectTree.Name = "pnlProjectTree";
-         this.pnlProjectTree.Size = new System.Drawing.Size(176, 287);
+         this.pnlProjectTree.Size = new System.Drawing.Size(222, 524);
          this.pnlProjectTree.TabIndex = 6;
          // 
          // lblProjectTree
@@ -677,7 +677,7 @@ namespace SGDK2
          this.lblProjectTree.ImageList = this.imlMain;
          this.lblProjectTree.Location = new System.Drawing.Point(0, 0);
          this.lblProjectTree.Name = "lblProjectTree";
-         this.lblProjectTree.Size = new System.Drawing.Size(176, 16);
+         this.lblProjectTree.Size = new System.Drawing.Size(222, 16);
          this.lblProjectTree.TabIndex = 4;
          this.lblProjectTree.Text = "Project Tree";
          this.lblProjectTree.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -688,9 +688,9 @@ namespace SGDK2
          // 
          // sbMain
          // 
-         this.sbMain.Location = new System.Drawing.Point(0, 314);
+         this.sbMain.Location = new System.Drawing.Point(0, 551);
          this.sbMain.Name = "sbMain";
-         this.sbMain.Size = new System.Drawing.Size(800, 20);
+         this.sbMain.Size = new System.Drawing.Size(870, 20);
          this.sbMain.TabIndex = 8;
          // 
          // tmrInitComplete
@@ -755,7 +755,7 @@ namespace SGDK2
          // frmMain
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-         this.ClientSize = new System.Drawing.Size(800, 334);
+         this.ClientSize = new System.Drawing.Size(870, 571);
          this.Controls.Add(this.splitterMDI);
          this.Controls.Add(this.pnlProjectTree);
          this.Controls.Add(this.tbrMain);

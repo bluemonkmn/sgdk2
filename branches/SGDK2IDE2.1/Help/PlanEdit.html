@@ -129,6 +129,31 @@
             only the current rule, but it often doesn't make sense to turn off a parent
             rule without also turning off all the children, so this toggle can come in
             handy for disabling (or re-enabling) entire branches of rules.</li>
+        <li class="SubPara">
+          Convert Rules to Function: There are two versions of this command.  One will
+          convert all enabled rules in the tree and the other will convert the currently
+          selected rule and all its children. The command to convert all rules is only
+          available from the menu (not available on the toolbar). If you have too many rules
+          to easily manage in the tree view, you can use this command to convert groups of
+          rules into single functions that can be called with a single rule.  The converted
+          function will be added to a source code object (or copied to the clipboard if you
+          prefer to look at the code or add it somewhere manually). This action cannot be
+          reversed, so make sure the rules are set up how you would like, and that you do
+          not want to edit the rules in the tree view any more before converting them.
+          Once the rules are converted, they can only be edited as source code in the
+          <a href="CodeEdit.html">Code Editor</a>. Another reason to do this is if you
+          need more control over your rules that the rule editor cannot provide. Editing
+          them directly exposes the full power of the C# language. The converted rules
+          will be implemented as a function specifically available to this plan only.
+          You may manually add up to 3 parameters to the converted function (in the code
+          editor, assuming you are familiar with C#) if you would like to be able to create
+          rules that pass different parameter values to this function (you can use functions
+          from <a href="html/T_PlanBase.htm">PlanBase</a> as an example), but it will
+          still only be accessible to this plan. However, if your rules are not dependent
+          on anything specific to this plan, layer or map, you may move the code or change
+          the code declaration to put the function in the
+          <a href="html/T_PlanBase.htm">PlanBase</a> class. Then it will be accessible
+          to all Plans.</li>
       </ul>
       <h3>Rule List</h3>
       <p class="SubPara">This displays a list of rules associated with the current plan 

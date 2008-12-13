@@ -120,6 +120,7 @@ namespace SGDK2
       private MenuItem mnuConvertToFunc;
       private MenuItem mnuConvertAll;
       private MenuItem mnuConvertSelected;
+      private ToolBarButton tbbConvertToFunc;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -243,10 +244,11 @@ namespace SGDK2
          this.mnuPasteAbove = new System.Windows.Forms.MenuItem();
          this.mnuPasteBelow = new System.Windows.Forms.MenuItem();
          this.mnuToggleSuspend = new System.Windows.Forms.MenuItem();
-         this.tmrPopulate = new System.Windows.Forms.Timer(this.components);
          this.mnuConvertToFunc = new System.Windows.Forms.MenuItem();
          this.mnuConvertAll = new System.Windows.Forms.MenuItem();
          this.mnuConvertSelected = new System.Windows.Forms.MenuItem();
+         this.tmrPopulate = new System.Windows.Forms.Timer(this.components);
+         this.tbbConvertToFunc = new System.Windows.Forms.ToolBarButton();
          this.grpRules.SuspendLayout();
          this.pnlRule.SuspendLayout();
          this.pnlName.SuspendLayout();
@@ -329,7 +331,8 @@ namespace SGDK2
             this.tbbMoveUp,
             this.tbbMoveDown,
             this.tbbSep2,
-            this.tbbToggleSuspend});
+            this.tbbToggleSuspend,
+            this.tbbConvertToFunc});
          this.tbRules.Divider = false;
          this.tbRules.DropDownArrows = true;
          this.tbRules.ImageList = this.imlPlan;
@@ -389,6 +392,7 @@ namespace SGDK2
          this.imlPlan.Images.SetKeyName(2, "");
          this.imlPlan.Images.SetKeyName(3, "");
          this.imlPlan.Images.SetKeyName(4, "");
+         this.imlPlan.Images.SetKeyName(5, "Code.bmp");
          // 
          // splitterRules
          // 
@@ -793,10 +797,6 @@ namespace SGDK2
          this.mnuToggleSuspend.Text = "Toggle &Suspend for This and Children";
          this.mnuToggleSuspend.Click += new System.EventHandler(this.OnToggleSuspend);
          // 
-         // tmrPopulate
-         // 
-         this.tmrPopulate.Tick += new System.EventHandler(this.tmrPopulate_Tick);
-         // 
          // mnuConvertToFunc
          // 
          this.mnuConvertToFunc.Index = 8;
@@ -816,6 +816,16 @@ namespace SGDK2
          this.mnuConvertSelected.Index = 1;
          this.mnuConvertSelected.Text = "Convert &Selected Rule and Children";
          this.mnuConvertSelected.Click += new System.EventHandler(this.mnuConvertToFunc_Click);
+         // 
+         // tmrPopulate
+         // 
+         this.tmrPopulate.Tick += new System.EventHandler(this.tmrPopulate_Tick);
+         // 
+         // tbbConvertToFunc
+         // 
+         this.tbbConvertToFunc.ImageIndex = 5;
+         this.tbbConvertToFunc.Name = "tbbConvertToFunc";
+         this.tbbConvertToFunc.ToolTipText = "Convert selected rule and children to function";
          // 
          // frmPlanEdit
          // 
@@ -1639,10 +1649,13 @@ namespace SGDK2
             {
                reservedNames.Add(pi.Name);
             }
+            reservedNames.Add(CodeGenerator.NameToVariable(m_Plan.Name));
+            reservedNames.Add(CodeGenerator.NameToVariable(m_Plan.LayerName + "_Lyr"));
+            reservedNames.Add(CodeGenerator.NameToMapClass(m_Plan.MapName));
          }
          catch (System.Exception ex)
          {
-            MessageBox.Show(this, ex.Message, "Convert Rules to Function", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            MessageBox.Show(this, "Error inspecting compiled project for list of reserved names (" + ex.Message + ")", "Convert Rules to Function", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
          }
          reservedNames.Add("ExecuteRules");
          frmConvertToFunction frm = new frmConvertToFunction(rules, reservedNames);
@@ -1865,25 +1878,17 @@ namespace SGDK2
       private void tbRules_ButtonClick(object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e)
       {
          if (e.Button == tbbNewRule)
-         {
             OnAddRule(this, e);
-         }
          else if (e.Button == tbbDeleteRule)
-         {
             OnDeleteRule(this, e);
-         }
          else if (e.Button == tbbMoveUp)
-         {
             OnMoveRuleUp(this, e);
-         }
          else if (e.Button == tbbMoveDown)
-         {
             OnMoveRuleDown(this, e);
-         }
          else if (e.Button == tbbToggleSuspend)
-         {
             OnToggleSuspend(this, e);
-         }
+         else if (e.Button == tbbConvertToFunc)
+            ConvertRuleAndChildren();
       }
 
       private void dataMonitor_PlanRuleRowChanging(object sender, SGDK2.ProjectDataset.PlanRuleRowChangeEvent e)
@@ -1936,7 +1941,8 @@ namespace SGDK2
 
       private void tvwRules_AfterSelect(object sender, System.Windows.Forms.TreeViewEventArgs e)
       {
-         LoadRule(CurrentRule);
+         if (CurrentRule != null)
+            LoadRule(CurrentRule);
          EnableFields();
       }
 

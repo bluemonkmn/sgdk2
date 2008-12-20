@@ -147,6 +147,24 @@ namespace SGDK2
                MessageBox.Show(this, "New rule name must be specified", "Rule Options", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                return false;
             }
+
+            if (m_planRules != null)
+            {
+               if (ProjectData.GetPlanRule(m_planRules[0].SpritePlanRowParent, txtNewRuleName.Text) != null)
+               {
+                  MessageBox.Show(this, "The specified rule name already exists on this plan. Specify a unique name.", "Rule Options", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  return false;
+               }
+            }
+            else if (m_spriteRules != null)
+            {
+               if (ProjectData.GetSpriteRule(m_spriteRules[0].SpriteDefinitionRow, txtNewRuleName.Text) != null)
+               {
+                  MessageBox.Show(this, "The specified rule name already exists on this sprite. Specify a unique name.", "Rule Options", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                  return false;
+               }
+            }
+
          }
          return true;
       }

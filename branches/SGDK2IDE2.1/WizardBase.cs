@@ -322,19 +322,22 @@ namespace SGDK2
       {
          if (m_Steps[m_nCurrentStepIndex].Validate())
          {
-            if (m_nCurrentStepIndex < m_Steps.Count-1)
+            if (m_nCurrentStepIndex < m_Steps.Count - 1)
             {
                m_Steps[m_nCurrentStepIndex].StepControl.Visible = false;
                // Assumes last step is always applicable
-               while(!m_Steps[++m_nCurrentStepIndex].IsApplicable())
+               while (!m_Steps[++m_nCurrentStepIndex].IsApplicable())
                   ;
                m_Steps[m_nCurrentStepIndex].Init();
-               if (m_nCurrentStepIndex == m_Steps.Count-1)
+               if (m_nCurrentStepIndex == m_Steps.Count - 1)
                   btnNext.Text = "&Finish";
                InitHeading();
             }
             else
+            {
+               DialogResult = DialogResult.OK;
                this.Close();
+            }
          }
       }
 

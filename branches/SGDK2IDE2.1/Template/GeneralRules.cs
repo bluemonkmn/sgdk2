@@ -920,7 +920,7 @@ public abstract partial class GeneralRules
    /// </summary>
    private static int currentPlayer = 0;
    private static ButtonSpecifier dismissButton = ButtonSpecifier.First | ButtonSpecifier.FreezeInputs;
-   private static bool[] dismissReleased = null;
+   private static byte[] dismissPhase = null;
 
    /// <summary>
    /// Represents a message created and displayed by <see cref="ShowMessage"/>.
@@ -1003,19 +1003,31 @@ public abstract partial class GeneralRules
                dismissPressed = true;
             if ((0 != (msg.dismissButton & ButtonSpecifier.Fourth)) && player.Button4)
                dismissPressed = true;
-            
-            if (dismissReleased == null)
-               dismissReleased = new bool[Project.MaxPlayers];
+
+            // dismissPhase[x]:
+            // 0 = No frames have passed yet
+            // 1 = Frames have passed and the dismiss button was initially pressed
+            // 2 = Frames have passed and the dismiss button is not pressed
+            // 3 = Dismiss button was not pressed, but now it is.
+
+            if (dismissPhase == null)
+               dismissPhase = new byte[Project.MaxPlayers];
+
             if (dismissPressed)
             {
-               if (dismissReleased[msg.player])
-               {
-                  dismissReleased[msg.player] = false;
-                  DismissMessage(i);
-               }
+               if ((dismissPhase[msg.player] == 0) || (dismissPhase[msg.player] == 2))
+                  dismissPhase[msg.player]++;
             }
             else
-               dismissReleased[msg.player] = true;
+            {
+               if (dismissPhase[msg.player] < 2)
+                  dismissPhase[msg.player] = 2;
+               else if (dismissPhase[msg.player] > 2)
+               {
+                  DismissMessage(i);
+                  dismissPhase[msg.player] = 0;
+               }
+            }
 
             if (0 != (msg.dismissButton & ButtonSpecifier.FreezeInputs))
             {

@@ -1449,9 +1449,19 @@ namespace SGDK2
             }
 
             txtErrors.Visible = false;
-            RemotingServices.IRemoteTypeInfo reflector = CodeGenerator.CreateInstanceAndUnwrap( "RemoteReflector", 
-               CodeGenerator.SpritesNamespace + "." + CodeGenerator.NameToVariable(m_SpriteDef.Name)) 
-               as RemotingServices.IRemoteTypeInfo;
+            RemotingServices.IRemoteTypeInfo reflector;
+
+            try
+            {
+               reflector = CodeGenerator.CreateInstanceAndUnwrap("RemoteReflector",
+                  CodeGenerator.SpritesNamespace + "." + CodeGenerator.NameToVariable(m_SpriteDef.Name))
+                  as RemotingServices.IRemoteTypeInfo;
+            }
+            catch (System.Exception)
+            {
+               reflector = CodeGenerator.CreateInstanceAndUnwrap("RemoteReflector", "SpriteBase")
+                  as RemotingServices.IRemoteTypeInfo;
+            }
 
             RemotingServices.RemoteMethodInfo[] localRuleList = reflector.GetMethods();
             RemotingServices.RemoteMethodInfo[] globalRuleList = reflector.GetGlobalFunctions();
@@ -2282,6 +2292,7 @@ namespace SGDK2
          reservedNames.Add("ExecuteRules");
          frmConvertToFunction frm = new frmConvertToFunction(rules, reservedNames);
          frm.ShowDialog(this);
+         frm.Dispose();
          try
          {
             LoadFunctions(false, true, false);

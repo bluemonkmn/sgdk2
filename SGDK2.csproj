@@ -331,6 +331,12 @@
     <Compile Include="SpriteDefinition.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="SpriteFunctionSelector.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SpriteFunctionSelector.Designer.cs">
+      <DependentUpon>SpriteFunctionSelector.cs</DependentUpon>
+    </Compile>
     <Compile Include="SpriteWizard.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -347,6 +353,10 @@
     </EmbeddedResource>
     <EmbeddedResource Include="EditMessageChar.resx">
       <DependentUpon>EditMessageChar.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SpriteFunctionSelector.resx">
+      <DependentUpon>SpriteFunctionSelector.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Template\Joystick.cs" />

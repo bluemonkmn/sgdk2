@@ -27,16 +27,17 @@ namespace SGDK2
       bool m_OldEndIf = false;
       private Hashtable m_TreeNodes = new Hashtable();
       private bool m_Loading = false;
-      SpriteCodeRef m_SpriteContext = null;
+      public SpriteCodeRef m_SpriteContext = null;
       private Hashtable m_CustomObjects = null; // .[TypeName] -> RemoteGlobalAccessorInfo[]
       private string m_PreparedFunction = string.Empty;
-      private const string SelectSpriteParameterItem = "<Select sprite parameter...>";
-      private const string SelectWritableSpriteParameterItem = "<Select writable sprite parameter...>";
+      public const string SelectSpriteParameterItem = "<Select sprite parameter...>";
+      public const string SelectWritableSpriteParameterItem = "<Select writable sprite parameter...>";
+      private const string SpriteFunctionItem = "<Select sprite function...>";
       private ProjectDataset.PlanRuleRow m_SelectAfterLoad = null;
       #endregion
 
       #region Embedded Classes
-      private class SpriteCodeRef
+      public class SpriteCodeRef
       {
          private ProjectDataset.SpriteRow m_drSprite;
 
@@ -865,10 +866,20 @@ namespace SGDK2
             }
 
             txtErrors.Visible = false;
-            RemotingServices.IRemoteTypeInfo reflector = CodeGenerator.CreateInstanceAndUnwrap(
-                "RemoteReflector", CodeGenerator.NameToMapClass(m_Plan.MapName) + "+" +
-                CodeGenerator.NameToVariable(m_Plan.LayerName) + "_Lyr+" +
-                CodeGenerator.NameToVariable(m_Plan.Name)) as RemotingServices.IRemoteTypeInfo;
+
+            RemotingServices.IRemoteTypeInfo reflector;
+            try
+            {
+               reflector = CodeGenerator.CreateInstanceAndUnwrap(
+                   "RemoteReflector", CodeGenerator.NameToMapClass(m_Plan.MapName) + "+" +
+                   CodeGenerator.NameToVariable(m_Plan.LayerName) + "_Lyr+" +
+                   CodeGenerator.NameToVariable(m_Plan.Name)) as RemotingServices.IRemoteTypeInfo;
+            }
+            catch (System.Exception)
+            {
+               reflector = CodeGenerator.CreateInstanceAndUnwrap("RemoteReflector", "PlanBase")
+                  as RemotingServices.IRemoteTypeInfo;
+            }
 
             RemotingServices.RemoteMethodInfo[] localRuleList = reflector.GetMethods();
             RemotingServices.RemoteMethodInfo[] globalRuleList = reflector.GetGlobalFunctions();
@@ -912,6 +923,7 @@ namespace SGDK2
                if ((string.Compare(mi.ReturnType.Name, typeof(Boolean).Name) == 0) || !onlyBools)
                   cboFunction.Items.Add(mi.MethodName);
             }
+            cboFunction.Items.Add(SpriteFunctionItem);
             if (!onlyBools)
                chkNot.Checked = false;
             chkNot.Enabled = onlyBools;
@@ -951,6 +963,50 @@ namespace SGDK2
          m_CustomObjects[TypeName] = reflector.GetGlobalProvidersOfSelf();
       }
 
+      private bool ParseSpriteFunction(string funcName, out RemotingServices.RemoteMethodInfo methodInfo)
+      {
+         System.Text.RegularExpressions.Regex re = new System.Text.RegularExpressions.Regex(
+            CodeGenerator.SpritePlanParentField + @"\." + @"m_(\w+)\.(\w+)");
+         System.Text.RegularExpressions.Match match = re.Match(funcName);
+         if ((match != null) && (match.Success))
+         {
+            string spriteName = match.Groups[1].Captures[0].Value.Replace("_", " ");
+            string function = match.Groups[2].Captures[0].Value;
+            ProjectDataset.SpriteRow drSprite = ProjectData.GetSprite(m_Plan.LayerRowParent, spriteName);
+            if (drSprite != null)
+            {
+               string errs;
+               CodeGenerator gen = new CodeGenerator();
+               gen.GenerateLevel = CodeGenerator.CodeLevel.ExcludeRules;
+               errs = gen.CompileTempAssembly(false);
+               if (errs != null)
+               {
+                  txtErrors.Text = errs;
+                  txtErrors.Visible = true;
+                  methodInfo = new RemotingServices.RemoteMethodInfo();
+                  return false;
+               }
+
+               txtErrors.Visible = false;
+
+               RemotingServices.IRemoteTypeInfo reflector = CodeGenerator.CreateInstanceAndUnwrap(
+               "RemoteReflector", CodeGenerator.SpritesNamespace + "." + 
+               CodeGenerator.NameToVariable(drSprite.DefinitionName)) as RemotingServices.IRemoteTypeInfo;
+               RemotingServices.RemoteMethodInfo[] mi = reflector.GetMethods();
+               for (int i = 0; i < mi.Length; i++)
+               {
+                  if (string.Compare(mi[i].MethodName, function, false) == 0)
+                  {
+                     methodInfo = mi[i];
+                     return true;
+                  }
+               }
+            }
+         }
+         methodInfo = new RemotingServices.RemoteMethodInfo();
+         return false;
+      }
+
       private void PrepareFunction(string funcName)
       {
          if (m_PreparedFunction == funcName)
@@ -958,19 +1014,36 @@ namespace SGDK2
 
          m_SpriteContext = null;
 
+         RemotingServices.RemoteMethodInfo mi;
+
          if ((m_AvailableRules == null) || !m_AvailableRules.Contains(funcName))
          {
-            PopulateParameter(lblParam1, cboParam1, RemotingServices.RemoteParameterInfo.Unknown, true);
-            PopulateParameter(lblParam2, cboParam2, RemotingServices.RemoteParameterInfo.Unknown, true);
-            PopulateParameter(lblParam3, cboParam3, RemotingServices.RemoteParameterInfo.Unknown, true);
-            lblOutput.Enabled = true;
-            cboOutput.Enabled = true;
-            txtHelpText.Text = "The specified function name could not be located or the project failed to compile.";
-            m_PreparedFunction = string.Empty;
-            return;
-         }
+            bool isSpriteFunction;
+            try
+            {
+               isSpriteFunction = ParseSpriteFunction(funcName, out mi);
+            }
+            catch (System.Exception ex)
+            {
+               MessageBox.Show(this, "Error parsing function as sprite function: " + ex.Message, "Select Function", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+               isSpriteFunction = false;
+               mi = new RemotingServices.RemoteMethodInfo(); // Avoid compiler error
+            }
 
-         RemotingServices.RemoteMethodInfo mi = m_AvailableRules[funcName];
+            if (!isSpriteFunction)
+            {
+               PopulateParameter(lblParam1, cboParam1, RemotingServices.RemoteParameterInfo.Unknown, true);
+               PopulateParameter(lblParam2, cboParam2, RemotingServices.RemoteParameterInfo.Unknown, true);
+               PopulateParameter(lblParam3, cboParam3, RemotingServices.RemoteParameterInfo.Unknown, true);
+               lblOutput.Enabled = true;
+               cboOutput.Enabled = true;
+               txtHelpText.Text = "The specified function name could not be located or the project failed to compile.";
+               m_PreparedFunction = string.Empty;
+               return;
+            }
+         }
+         else
+            mi = m_AvailableRules[funcName];
 
          txtHelpText.Text = mi.Description;
 
@@ -1121,7 +1194,7 @@ namespace SGDK2
          }
       }
 
-      private void PopulateParameter(Label lblParameter, ComboBox cboParameter, RemotingServices.RemoteParameterInfo param, bool clearValue)
+      public void PopulateParameter(Label lblParameter, ComboBox cboParameter, RemotingServices.RemoteParameterInfo param, bool clearValue)
       {
          cboParameter.Items.Clear();
          if (clearValue)
@@ -1299,8 +1372,17 @@ namespace SGDK2
          {
             m_Loading = true;
             txtRuleName.Text = drRule.Name;
-            
+
             LoadFunctions(IsRuleTypeConditional(drRule.Type), false, true);
+
+            if (!string.IsNullOrEmpty(drRule.Function))
+            {
+               int selIdx = cboFunction.FindStringExact(drRule.Function);
+               if (selIdx >= 0)
+                  cboFunction.SelectedIndex = selIdx;
+               else
+                  cboFunction.SelectedIndex = cboFunction.Items.Add(drRule.Function);
+            }
 
             if (cboFunction.Items.Contains(drRule.Function))
             {
@@ -1658,8 +1740,10 @@ namespace SGDK2
             MessageBox.Show(this, "Error inspecting compiled project for list of reserved names (" + ex.Message + ")", "Convert Rules to Function", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
          }
          reservedNames.Add("ExecuteRules");
-         frmConvertToFunction frm = new frmConvertToFunction(rules, reservedNames);
-         frm.ShowDialog(this);
+         using (frmConvertToFunction frm = new frmConvertToFunction(rules, reservedNames))
+         {
+            frm.ShowDialog(this);
+         }
          try
          {
             LoadFunctions(false, true, false);
@@ -1853,10 +1937,32 @@ namespace SGDK2
 
       private void cboFunction_SelectedIndexChanged(object sender, System.EventArgs e)
       {
-         EnableFields();
-         PrepareFunction(cboFunction.SelectedItem.ToString());
-         if (CurrentRule != null)
-            LoadParameters(CurrentRule);
+         if ((cboFunction.SelectedItem is string) &&
+            (string.Compare(((string)cboFunction.SelectedItem), SpriteFunctionItem) == 0))
+         {
+            if (CurrentRule == null)
+            {
+               MessageBox.Show(this, "You must select a rule first.", "Select Sprite Function", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+               return;
+            }
+            using (frmSpriteFunctionSelector frm = new frmSpriteFunctionSelector(m_Plan.LayerRowParent, CurrentRule, this))
+            {
+               if (DialogResult.OK == frm.ShowDialog(this))
+                  LoadRule(CurrentRule);
+               else
+                  cboFunction.SelectedIndex = -1;
+            }
+         }
+         else
+         {
+            EnableFields();
+            if (cboFunction.SelectedItem == null)
+               PrepareFunction(string.Empty);
+            else
+               PrepareFunction(cboFunction.SelectedItem.ToString());
+            if (CurrentRule != null)
+               LoadParameters(CurrentRule);
+         }
       }
 
       private void cboFunction_Validated(object sender, System.EventArgs e)

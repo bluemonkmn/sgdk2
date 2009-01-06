@@ -1375,36 +1375,36 @@ namespace SGDK2
 
             LoadFunctions(IsRuleTypeConditional(drRule.Type), false, true);
 
+
             if (!string.IsNullOrEmpty(drRule.Function))
             {
-               int selIdx = cboFunction.FindStringExact(drRule.Function);
+               string funcName = drRule.Function;
+               bool invert = false;
+
+               cboRuleType.Text = drRule.Type;
+
+               int selIdx = cboFunction.FindStringExact(funcName);
+               if (selIdx < 0)
+               {
+                  if (funcName.StartsWith("!"))
+                  {
+                     funcName = funcName.Substring(1);
+                     invert = true;
+                  }
+                  selIdx = cboFunction.FindStringExact(funcName);
+               }
                if (selIdx >= 0)
                   cboFunction.SelectedIndex = selIdx;
                else
                   cboFunction.SelectedIndex = cboFunction.Items.Add(drRule.Function);
+
+               chkNot.Checked = invert;
+
+               PrepareFunction(funcName);
+
+               LoadParameters(drRule);
             }
 
-            if (cboFunction.Items.Contains(drRule.Function))
-            {
-               chkNot.Checked = false;
-               cboFunction.Text = drRule.Function;
-            }
-            else if (drRule.Function.StartsWith("!"))
-            {
-               chkNot.Checked = true;
-               cboFunction.Text = drRule.Function.Substring(1);
-            }
-            else
-            {
-               chkNot.Checked = false;
-               cboFunction.Text = drRule.Function;
-            }
-
-            PrepareFunction(cboFunction.Text);
-
-            cboRuleType.Text = drRule.Type;
-
-            LoadParameters(drRule);
 
             chkEndIf.Checked = drRule.EndIf;
             chkSuspended.Checked = drRule.Suspended;

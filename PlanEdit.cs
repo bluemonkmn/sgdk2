@@ -1396,7 +1396,7 @@ namespace SGDK2
                if (selIdx >= 0)
                   cboFunction.SelectedIndex = selIdx;
                else
-                  cboFunction.SelectedIndex = cboFunction.Items.Add(drRule.Function);
+                  cboFunction.SelectedIndex = cboFunction.Items.Add(funcName);
 
                chkNot.Checked = invert;
 

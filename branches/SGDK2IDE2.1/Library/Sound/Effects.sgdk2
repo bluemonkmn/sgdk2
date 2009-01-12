@@ -1,9 +1,9 @@
 <?xml version="1.0" standalone="yes"?>
 <ProjectDataset>
   <xs:schema id="ProjectDataset" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop">
-    <xs:element name="ProjectDataset" msdata:IsDataSet="true" msprop:SchemaVersion="1">
+    <xs:element name="ProjectDataset" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:SchemaVersion="1">
       <xs:complexType>
-        <xs:choice maxOccurs="unbounded">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="GraphicSheet">
             <xs:complexType>
               <xs:sequence>
@@ -636,11 +636,11 @@
 </Text>
   </SourceCode>
   <SourceCode Name="fmod.cs" IsCustomObject="true" DependsOn="fmodex.dll">
-    <Text>~import fmod.cs</Text>
+    <Text>~import "fmod.cs"</Text>
   </SourceCode>
   <SourceCode Name="fmodbase.cs" IsCustomObject="true" DependsOn="fmod.cs">
-    <Text>// File version 2 (distributed with initial beta release)
-// Last change: Add PauseSound function
+    <Text>// File version 3 (initially distributed with version 2.1 beta 5)
+// Last change: Update setCallback interface to new FMOD prototype.
 
 using System;
 using System.ComponentModel;
@@ -703,7 +703,7 @@ namespace CustomObjects
             }
          }
          ERRCHECK(system.playSound(FMOD.CHANNELINDEX.FREE, Sound.sound, false, ref Sound.channel));
-         ERRCHECK(Sound.channel.setCallback(FMOD.CHANNEL_CALLBACKTYPE.END, updateCallback, 0));
+         ERRCHECK(Sound.channel.setCallback(updateCallback));
          ERRCHECK(Sound.channel.setVolume(Sound.Volume));
       }
 
@@ -713,14 +713,14 @@ namespace CustomObjects
          ERRCHECK(Sound.channel.setPaused(Pause));
       }
 
-      private static FMOD.RESULT Channel_Callback(IntPtr channelraw, FMOD.CHANNEL_CALLBACKTYPE type, int command, uint commanddata1, uint commanddata2)
+      private static FMOD.RESULT Channel_Callback(IntPtr channelraw, FMOD.CHANNEL_CALLBACKTYPE type, IntPtr commanddata1, IntPtr commanddata2)
       {
          try
          {
             for(int i=0; i&lt;soundList.Count; i++)
             {
                FMODBase snd = (FMODBase)soundList[i];
-               if ((snd.channel != null) &amp;&amp; (snd.channel.getRaw() == channelraw))
+               if ((snd.channel != null) &amp;&amp; (snd.channel.getRaw() == channelraw) &amp;&amp; (type == FMOD.CHANNEL_CALLBACKTYPE.END))
                   snd.channel = null;
             }
             return FMOD.RESULT.OK;

@@ -649,6 +649,12 @@
       <LastGenOutput>ProjectDataset.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </Content>
+    <None Include="libfmodex-4.22.01.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="OpenTK.dll.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="ProjectDataset.xsc">
       <DependentUpon>ProjectDataset.xsd</DependentUpon>
     </None>
@@ -658,6 +664,7 @@
     <None Include="ProjectDataset.xsx">
       <DependentUpon>ProjectDataset.xsd</DependentUpon>
     </None>
+    <EmbeddedResource Include="Template\app.config" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">

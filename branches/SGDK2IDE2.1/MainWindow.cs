@@ -1064,12 +1064,16 @@ namespace SGDK2
                      sBareName = sName.Substring(0, sName.Length - 3);
                   else if (sName.EndsWith(".dll"))
                      sBareName = sName.Substring(0, sName.Length - 4);
+                  else if (sName.EndsWith(".config"))
+                     sBareName = sName.Substring(0, sName.Length - 7);
+                  else if (sName.EndsWith(".so"))
+                     sBareName = sName.Substring(0, sName.Length - 3);
                   else
                   {
                      sBareName = sName;
                      sName += ".cs";
                   }
-                  if (!sName.EndsWith(".dll"))
+                  if (!(sName.EndsWith(".dll") || sName.EndsWith(".so") || sName.EndsWith(".config")))
                   {
                      string msg = ProjectData.ValidateName(sBareName);
                      if (msg != null)
@@ -1083,7 +1087,7 @@ namespace SGDK2
                      MessageBox.Show(this, "The specified custom object name already exists", "New Custom Code Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                      return;
                   }
-                  if (sName.EndsWith(".cs"))
+                  if (sName.EndsWith(".cs") || sName.EndsWith(".config"))
                   {
                      frmNew = new frmCodeEditor(sName, KeyParts[KeyParts.Length-1]);
                      frmNew.MdiParent = this;
@@ -2846,7 +2850,11 @@ namespace SGDK2
          deleteFiles.AddRange(g.GetResxFileList(strFolder));
          deleteFiles.AddRange(g.GetResourcesFileList(strFolder));
          deleteFiles.AddRange(g.GetEmbeddedResourceList(strFolder));
+         string cfgFile = g.GetIntermediateConfigFile(strFolder);
+         if (cfgFile != null)
+            deleteFiles.Add(cfgFile);
          deleteFiles.Add(g.GetVSProjectFile(strFolder));
+         deleteFiles.Add(g.GetMDProjectFile(strFolder));
          deleteFiles.Add(System.IO.Path.Combine(strFolder, System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath) + ".pdb"));
          foreach(string deleteFile in deleteFiles)
          {
@@ -2867,10 +2875,13 @@ namespace SGDK2
          System.Collections.Specialized.StringCollection deleteFiles = new System.Collections.Specialized.StringCollection();
          deleteFiles.AddRange(g.GetLocalReferenceFileList(strFolder));
          deleteFiles.Add(System.IO.Path.Combine(strFolder, System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath) + ".exe"));
+         deleteFiles.Add(System.IO.Path.Combine(strFolder, System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath) + ".exe.config"));
          foreach(string deleteFile in deleteFiles)
          {
             if (System.IO.File.Exists(deleteFile))
                System.IO.File.Delete(deleteFile);
+            if (System.IO.File.Exists(deleteFile + ".config"))
+               System.IO.File.Delete(deleteFile + ".config");
          }
          if (System.IO.Directory.GetFileSystemEntries(strFolder).Length == 0)
             System.IO.Directory.Delete(strFolder, false);

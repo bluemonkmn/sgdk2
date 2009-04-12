@@ -839,17 +839,6 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       GL.Disable(EnableCap.ScissorTest);
    }
 
-   protected override void WndProc(ref System.Windows.Forms.Message m)
-   {
-      base.WndProc(ref m);
-      if (Parent is GameForm)
-      {
-         KeyboardState kbs = ((GameForm)Parent).KeyboardState;
-         if (kbs != null)
-            kbs.ProcessMessage(m);
-      }
-   }
-
    private static void CheckError()
    {
       ErrorCode ec = GL.GetError();

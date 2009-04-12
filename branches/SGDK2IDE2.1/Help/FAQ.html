@@ -112,5 +112,51 @@
          shape should behave. After recompiling the project, the new shape should show up in the
          Solidity Definition editor.
          </p>
+      <h2>Can I run under Linux?</h2>
+      <p>The SGDK2 IDE itself does not run (at least not well) under Linux, but the projects created by
+         SGDK2 can run under Linux as of SGDK version 2.1.1. In order to make the projects run
+         under Linux some modifications had to be made to the default framework code for SGDK2 projects
+         because some of it was relying on Windows-specific behavior.  The new code, however, will work
+         universally under Linux and Windows.  (Mainly this code relates to keyboard input, and as of this
+         writing, there is no support for Joystick input under Linux, so the new code disables the
+         Joystick input under Linux, but leaves it enabled when running under Windows.)</p>
+      <ol>
+         <li>Make sure you have all the Linux Project support files. These are delivered as a separate
+         package because they are relatively large, and some people may not want to download the extra
+         content if they don't plan to distribute or run their projects in Linux.</li>
+         <li>The easiest method to make a project that runs under Linux is to start with the new
+         &quot;Scrolling Game Development Kit Linux Sample&quot; project listed among the available
+         new project templates (after the Linux package has been properly installed).
+         However, it is possible to convert existing projects to run under Linux as well. The
+         Remaining steps will describe this process.</li>
+         <li>Load the project to be converted, and select &lt;Blank&gt; from the &quot;Reset Source
+         Code&quot; pop-up menu in the file menu. If any of the framework code for the project has been
+         modified, these modifications will be lost when resetting the source code.</li>
+         <li>After this is taken care of, if your project has sound, the fmodex.dll file in the Source
+         Code folder of the SGDK2 project tree needs to be renamed to &quot;libfmodex-4.22.01.so&quot;.
+         This is the Linux version of the FMODEx library with which SGDK2 has been tested. To do this,
+         open the file for editing and select the Rename command from the file menu. Renaming that
+         file actually causes SGDK2 to pick up a different file when generating the project output.
+         Instead of copying FMODEx.dll from the directory where SGDK2 is running, it will copy the new
+         filename. Of course that assumes that you have to have that file available from the Linux
+         support package.</li>
+         <li>Notice that after the code was reset, a new file called app.config was added to the Source
+         Code folder in the project tree.  There is one configuration setting in here that will force
+         Mono (the Linux implementation of the .NET Framework) to re-map every request for FMODEx.dll to
+         the new filename.  If you happen to be trying a different version/name of fmod in Linux, you will
+         need to modify this configuration file.  When the project compiles, it will be copied to the
+         output directory as Project.exe.config where Project.exe is the name of your project executable
+         file.</li>
+         <li>If you are using any other unmanaged DLLs you may need to perform similar conversions for
+         these, using FMODEx.dll as an example. Of course there needs to be a Linux version of each
+         available.</li>
+      </ol><p>After all this has been done, when you compile your project, the output directory will contain
+         all the files necessary to run your project under Linux. It will also contain all the files
+         necessary to develop, edit and re-compile your project using MonoDevelop in case further debugging
+         is necessary under Linux.  Note that you may no longer be able to run your project in the Windows
+         environment simply because FMODEx.dll may no longer exist in the project's output directory.  You
+         can manually add it. Also, be aware that you can delete the intermediate output files (a command
+         in the File menu) if you don't care to have all the source code available, and then only the
+         files to run your project under Linux will remain.</p>
    </body>
 </html>

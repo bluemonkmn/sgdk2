@@ -91,11 +91,15 @@ public partial class Joystick
    public static int GetDeviceCount()
    {
       JOYCAPS joyCaps = new JOYCAPS();
-      int count;
-      for (count = 0; count < 16; count++)
+      int count = 0;
+      if ((Environment.OSVersion.Platform == PlatformID.Win32NT) ||
+          (Environment.OSVersion.Platform == PlatformID.Win32Windows))
       {
-         if (0 != joyGetDevCaps(count, out joyCaps, Marshal.SizeOf(joyCaps)))
-            return count;
+         for (count = 0; count < 16; count++)
+         {
+            if (0 != joyGetDevCaps(count, out joyCaps, Marshal.SizeOf(joyCaps)))
+               return count;
+         }
       }
       return count;
    }
@@ -108,8 +112,12 @@ public partial class Joystick
    public Joystick(int deviceNum)
    {
       this.deviceNum = deviceNum;
-      if (0 != joyGetDevCaps(deviceNum, out joyCaps, Marshal.SizeOf(joyCaps)))
-         throw new InvalidOperationException("Failed to access specified joystick");
+      if ((Environment.OSVersion.Platform == PlatformID.Win32NT) ||
+          (Environment.OSVersion.Platform == PlatformID.Win32Windows))
+      {
+         if (0 != joyGetDevCaps(deviceNum, out joyCaps, Marshal.SizeOf(joyCaps)))
+            throw new InvalidOperationException("Failed to access specified joystick");
+      }
    }
 
    /// <summary>
@@ -128,7 +136,9 @@ public partial class Joystick
    {
       joyInfo.dwSize = (UInt32)Marshal.SizeOf(joyInfo);
       joyInfo.dwFlags = JoystickFlags.JOY_RETURNALL;
-      joyGetPosEx(deviceNum, out joyInfo);
+      if ((Environment.OSVersion.Platform == PlatformID.Win32NT) ||
+          (Environment.OSVersion.Platform == PlatformID.Win32Windows))
+         joyGetPosEx(deviceNum, out joyInfo);
    }
 
    /// <summary>

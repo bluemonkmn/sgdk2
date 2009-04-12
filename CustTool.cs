@@ -165,7 +165,29 @@ namespace SGDK2
                                 (Start.Y * 3 + End.Y) / 4f,
                                 (End.X - Start.X) / 2f,
                                 (End.Y - Start.Y) / 2f);
-               DrawToolPath(gTarget, pTemp, CurrentPen, CurrentBrush, Options);
+               if (((Options & (ToolOptions.GradientFill | ToolOptions.Fill)) ==
+                  (ToolOptions.Fill | ToolOptions.GradientFill))
+                  && (CurrentBrush is SolidBrush))
+               {
+                  if (((Math.Abs(Start.X - End.X) > 2) &&
+                   (Math.Abs(Start.Y - End.Y) > 2)))
+                  {
+                     PathGradientBrush pgb = new PathGradientBrush(pTemp);
+                     Blend blend = new Blend();
+                     blend.Factors = new float[] { 0, 1, 0, 0 };
+                     blend.Positions = new float[] { 0, 0.25F, .5F, 1 };
+                     pgb.Blend = blend;
+                     pgb.CenterColor = ((SolidBrush)CurrentBrush).Color;
+                     pgb.SurroundColors = new Color[] { CurrentPen.Color };
+                     gTarget.FillPath(pgb, pTemp);
+                     pgb.Dispose();
+                  }
+                  if (0 != (Options & ToolOptions.Outline))
+                     gTarget.DrawPath(CurrentPen, pTemp);
+               }
+               else
+                  DrawToolPath(gTarget, pTemp, CurrentPen, CurrentBrush, Options);
+               pTemp.Dispose();
                break;
          }
       }

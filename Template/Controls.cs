@@ -581,10 +581,10 @@ public partial class frmControls : System.Windows.Forms.Form
 
    private void ProcessMessage(KeyTextBox sender, Message m)
    {
-      Project.GameWindow.KeyboardState.ProcessMessage(m);
       if (m.Msg == WM_KEYDOWN)
       {
          KeyboardState kbs = Project.GameWindow.KeyboardState;
+         kbs.Poll();
          sender.Text = System.Enum.Format(typeof(Key), kbs.GetFirstKey(), "g");
          KeyboardPlayer player = (KeyboardPlayer)Project.GameWindow.Players[SelectedPlayer];
          if (sender == txtUp)

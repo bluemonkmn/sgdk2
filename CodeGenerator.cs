@@ -340,6 +340,10 @@ namespace SGDK2
             GenerateVSProject(txt);
             txt.Close();
 
+            txt = new System.IO.StreamWriter(GetMDProjectFile(FolderName));
+            GenerateMDProject(txt);
+            txt.Close();
+
             GenerateProjectSourceCode(FolderName, err);
             GenerateEmbeddedResources(FolderName);
          }
@@ -389,6 +393,17 @@ namespace SGDK2
          return (string[])(fileList.ToArray(typeof(string)));
       }
 
+      public string GetIntermediateConfigFile(string FolderName)
+      {
+         foreach (System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
+         {
+            string name = ((ProjectDataset.SourceCodeRow)drv.Row).Name;
+            if (name.EndsWith(".config"))
+               return System.IO.Path.Combine(FolderName, name);
+         }
+         return null;
+      }
+
       public static string GetIntermediateCodeFilename(string FolderName, System.Data.DataRow row)
       {
          if (!System.IO.Path.IsPathRooted(FolderName))
@@ -406,7 +421,8 @@ namespace SGDK2
          else if (row is ProjectDataset.SourceCodeRow)
          {
             ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)row;
-            if (!drCode.IsTextNull() && (drCode.Text.Trim().Length > 0) && drCode.Name.EndsWith(".cs"))
+            if (!drCode.IsTextNull() && (drCode.Text.Trim().Length > 0)
+               && drCode.Name.EndsWith(".cs"))
                return System.IO.Path.Combine(FolderName, drCode.Name);
          }
          return null;
@@ -486,7 +502,7 @@ namespace SGDK2
          foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
          {
             ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
-            if (drCode.Name.EndsWith(".dll"))
+            if (drCode.Name.EndsWith(".dll") || drCode.Name.EndsWith(".so"))
                fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(drCode.Name)));
          }
          return (string[])(fileList.ToArray(typeof(string)));
@@ -495,6 +511,11 @@ namespace SGDK2
       public string GetVSProjectFile(string FolderName)
       {
          return System.IO.Path.Combine(FolderName, System.IO.Path.GetFileNameWithoutExtension(SGDK2IDE.CurrentProjectFile) + ".csproj");
+      }
+
+      public string GetMDProjectFile(string FolderName)
+      {
+         return System.IO.Path.Combine(FolderName, System.IO.Path.GetFileNameWithoutExtension(SGDK2IDE.CurrentProjectFile) + ".mdp");
       }
 
       public string[] GenerateCodeStrings()
@@ -596,7 +617,8 @@ namespace SGDK2
          foreach (System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
          {
             ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
-            if (!drCode.IsTextNull() && (drCode.Text.Trim().Length > 0) && drCode.Name.EndsWith(".cs"))
+            if (!drCode.IsTextNull() && (drCode.Text.Trim().Length > 0) && 
+               (drCode.Name.EndsWith(".cs") || drCode.Name.EndsWith(".config")))
             {
                System.IO.TextWriter txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, drCode.Name));
                try
@@ -623,7 +645,8 @@ namespace SGDK2
                fs.Write(drCode.CustomObjectData, 0, drCode.CustomObjectData.Length);
                fs.Close();
             }
-            else if (drCode.Name.EndsWith(".dll") && !drCode.IsCustomObjectDataNull())
+            else if ((drCode.Name.EndsWith(".dll") || drCode.Name.EndsWith(".so"))
+               && !drCode.IsCustomObjectDataNull())
             {
                System.IO.FileStream fs = new System.IO.FileStream(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(drCode.Name)), System.IO.FileMode.Create);
                fs.Write(drCode.CustomObjectData, 0, drCode.CustomObjectData.Length);
@@ -2110,9 +2133,11 @@ namespace SGDK2
                // If function is an operator
                if (op != CodeBinaryOperatorType.Modulus)
                {
-                  if (!rule.Parameter1.StartsWith("(") || !rule.Parameter1.EndsWith(")"))
+                  if (rule.Parameter1 != null &&
+                     (rule.Parameter1.StartsWith("(") || !rule.Parameter1.EndsWith(")")))
                      rule.Parameter1 = "(" + rule.Parameter1 + ")";
-                  if (!rule.Parameter2.StartsWith("(") || !rule.Parameter2.EndsWith(")"))
+                  if (rule.Parameter2 != null &&
+                     (!rule.Parameter2.StartsWith("(") || !rule.Parameter2.EndsWith(")")))
                      rule.Parameter2 = "(" + rule.Parameter2 + ")";
                   invokeResult = new CodeBinaryOperatorExpression(
                      new CodeSnippetExpression(rule.Parameter1),
@@ -3037,7 +3062,14 @@ namespace SGDK2
             XmlElement compileUnit = xml.CreateElement("Compile");
             compileUnit.SetAttribute("Include", filename.Substring(filePos));
             files.AppendChild(compileUnit);
-            System.Xml.XmlElement file = xml.CreateElement("File");
+         }
+
+         string cfgFile = GetIntermediateConfigFile(System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile));
+         if (cfgFile != null)
+         {
+            XmlElement compileUnit = xml.CreateElement("None");
+            compileUnit.SetAttribute("Include", cfgFile.Substring(filePos));
+            files.AppendChild(compileUnit);
          }
 
          foreach(string filename in GetEmbeddedResourceList(System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile)))
@@ -3068,6 +3100,148 @@ namespace SGDK2
          XmlElement importProj = xml.CreateElement("Import");
          importProj.SetAttribute("Project", @"$(MSBuildBinPath)\Microsoft.CSharp.targets");
          root.AppendChild(importProj);
+         System.Xml.XmlTextWriter xw = new System.Xml.XmlTextWriter(txt);
+         xw.Indentation = 2;
+         xw.IndentChar = ' ';
+         xw.Formatting = System.Xml.Formatting.Indented;
+         xml.WriteContentTo(xw);
+      }
+
+      public void GenerateMDProject(System.IO.TextWriter txt)
+      {
+         XmlDocument xml = new XmlDocument();
+         XmlElement root = xml.CreateElement("Project");
+         xml.AppendChild(root);
+         string prjName = System.IO.Path.GetFileNameWithoutExtension(SGDK2IDE.CurrentProjectFile);
+         root.SetAttribute("name", prjName);
+         root.SetAttribute("fileversion", "2.0");
+         root.SetAttribute("language", "C#");
+         root.SetAttribute("clr-version", "Net_2_0");
+         root.SetAttribute("ctype", "DotNetProject");
+         XmlElement configurations = xml.CreateElement("Configurations");
+         root.AppendChild(configurations);
+         configurations.SetAttribute("active", "Debug");
+
+         XmlElement debugCfg = xml.CreateElement("Configuration");
+         debugCfg.SetAttribute("name", "Debug");
+         debugCfg.SetAttribute("ctype", "DotNetProjectConfiguration");
+         XmlElement releaseCfg = xml.CreateElement("Configuration");
+         releaseCfg.SetAttribute("name", "Release");
+         releaseCfg.SetAttribute("ctype", "DotNetProjectConfiguration");
+         configurations.AppendChild(debugCfg);
+         configurations.AppendChild(releaseCfg);
+
+         XmlElement cfgOut = xml.CreateElement("Output");
+         debugCfg.AppendChild(cfgOut);
+         cfgOut.SetAttribute("directory", ".");
+         cfgOut.SetAttribute("assembly", prjName);
+         XmlElement cfgBuild = xml.CreateElement("Build");
+         debugCfg.AppendChild(cfgBuild);
+         cfgBuild.SetAttribute("debugmode", "True");
+         cfgBuild.SetAttribute("target", "Exe");
+         XmlElement cfgExec = xml.CreateElement("Execution");
+         debugCfg.AppendChild(cfgExec);
+         cfgExec.SetAttribute("runwithwarnings", "True");
+         cfgExec.SetAttribute("consolepause", "True");
+         cfgExec.SetAttribute("runtime", "MsNet");
+         cfgExec.SetAttribute("clr-version", "Net_2_0");
+         XmlElement cfgCodeGen = xml.CreateElement("CodeGeneration");
+         debugCfg.AppendChild(cfgCodeGen);
+         cfgCodeGen.SetAttribute("compiler", "Mcs");
+         cfgCodeGen.SetAttribute("warninglevel", "4");
+         cfgCodeGen.SetAttribute("optimize", "True");
+         cfgCodeGen.SetAttribute("unsafecodeallowed", "False");
+         cfgCodeGen.SetAttribute("generateoverflowchecks", "True");
+         cfgCodeGen.SetAttribute("mainclass", string.Empty);
+         cfgCodeGen.SetAttribute("definesymbols", "DEBUG");
+         cfgCodeGen.SetAttribute("generatexmldocumentation", "False");
+         cfgCodeGen.SetAttribute("win32Icon", ".");
+         cfgCodeGen.SetAttribute("ctype", "CSharpCompilerParameters");
+
+         releaseCfg.AppendChild(cfgOut.Clone());
+         cfgOut.SetAttribute("directory", ".");
+         cfgOut.SetAttribute("assembly", prjName);
+         cfgBuild = xml.CreateElement("Build");
+         releaseCfg.AppendChild(cfgBuild);
+         cfgBuild.SetAttribute("debugmode", "False");
+         cfgBuild.SetAttribute("target", "Exe");
+         releaseCfg.AppendChild(cfgExec);
+         cfgCodeGen = (XmlElement)cfgCodeGen.Clone();
+         releaseCfg.AppendChild(cfgCodeGen);
+         cfgCodeGen.SetAttribute("definesymbols", string.Empty);
+
+         System.Xml.XmlElement files = xml.CreateElement("Contents");
+         root.AppendChild(files);
+
+         int filePos = SGDK2IDE.CurrentProjectFile.IndexOf(System.IO.Path.GetFileName(SGDK2IDE.CurrentProjectFile));
+         foreach(string filename in GetCodeFileList(System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile)))
+         {
+            XmlElement compileUnit = xml.CreateElement("File");
+            compileUnit.SetAttribute("name", filename.Substring(filePos).Replace(System.IO.Path.DirectorySeparatorChar, '/'));
+            compileUnit.SetAttribute("subtype", "Code");
+            compileUnit.SetAttribute("buildaction", "Compile");
+            files.AppendChild(compileUnit);
+         }
+
+         string cfgFile = GetIntermediateConfigFile(System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile));
+         if (cfgFile != null)
+         {
+            XmlElement compileUnit = xml.CreateElement("File");
+            compileUnit.SetAttribute("name", cfgFile.Substring(filePos));
+            compileUnit.SetAttribute("subtype", "Code");
+            compileUnit.SetAttribute("buildaction", "FileCopy");
+            files.AppendChild(compileUnit);
+         }
+
+         foreach(string filename in GetEmbeddedResourceList(System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile)))
+         {
+            System.Xml.XmlElement file = xml.CreateElement("File");
+            files.AppendChild(file);
+            file.SetAttribute("name", filename.Substring(filePos));
+            file.SetAttribute("subtype", "Code");
+            file.SetAttribute("buildaction", "EmbedAsResource");
+         }
+
+         foreach(string resx in GetResxFileList(System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile)))
+         {
+            System.Xml.XmlElement file = xml.CreateElement("File");
+            files.AppendChild(file);
+            file.SetAttribute("name", resx.Substring(filePos));
+            file.SetAttribute("subtype", "Code");
+            file.SetAttribute("buildaction", "EmbedAsResource");
+            file.SetAttribute("resource_id", System.IO.Path.GetFileNameWithoutExtension(resx) + ".resources");
+         }
+
+         XmlElement references = xml.CreateElement("References");
+         root.AppendChild(references);
+         foreach (string refName in new string[]
+            {
+               "System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+               "System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+               "System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+            })
+         {
+            XmlElement assyRef = xml.CreateElement("ProjectReference");
+            references.AppendChild(assyRef);
+            assyRef.SetAttribute("type", "Gac");
+            assyRef.SetAttribute("localcopy", "False");
+            assyRef.SetAttribute("refto", refName);
+         }
+
+         foreach (System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
+         {
+            ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
+            string fullPath = FindFullPath(drCode.Name);
+            if (drCode.Name.EndsWith(".dll") && !IsOldDll(fullPath))
+            {
+               XmlElement assyRef = xml.CreateElement("ProjectReference");
+               references.AppendChild(assyRef);
+               assyRef.SetAttribute("type", "Assembly");
+               assyRef.SetAttribute("localcopy", "True");
+               assyRef.SetAttribute("refto", System.IO.Path.GetFileName(fullPath));
+            }
+         }
+
          System.Xml.XmlTextWriter xw = new System.Xml.XmlTextWriter(txt);
          xw.Indentation = 2;
          xw.IndentChar = ' ';
@@ -3303,6 +3477,8 @@ namespace SGDK2
                FolderName = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, FolderName);
 
             string[] fileList = GetCodeFileList(FolderName);
+            string appCfgIntermediate = GetIntermediateConfigFile(FolderName);
+            string appCfgOutput = System.IO.Path.Combine(FolderName, ProjectName + ".exe.config");
             string[] resourcesList = GetResourcesFileList(FolderName);
             System.Collections.ArrayList OldDlls = new System.Collections.ArrayList();
             GenerateAllCode(FolderName, out errs);
@@ -3326,10 +3502,10 @@ namespace SGDK2
             foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
             {
                ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
-               if (drCode.Name.EndsWith(".dll"))
+               if (drCode.Name.EndsWith(".dll") || drCode.Name.EndsWith(".so"))
                {
                   string fullPath = FindFullPath(drCode.Name);
-                  if (IsOldDll(fullPath))
+                  if (drCode.Name.EndsWith(".so") || IsOldDll(fullPath))
                   {
                      OldDlls.Add(fullPath);
                   }
@@ -3339,6 +3515,8 @@ namespace SGDK2
                      {
                         string targetPath = System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(drCode.Name));
                         System.IO.File.Copy(fullPath, targetPath, true);
+                        if (System.IO.File.Exists(fullPath + ".config"))
+                           System.IO.File.Copy(fullPath + ".config", targetPath + ".config", true);
                         compilerParams.ReferencedAssemblies.Add(targetPath);
                      }
                      else
@@ -3375,6 +3553,10 @@ namespace SGDK2
                }
             }
             System.CodeDom.Compiler.CompilerResults results = codeProvider.CompileAssemblyFromFile(compilerParams, fileList);
+            // MSBuild and Visual Studio automatically copy the config file, but
+            // CSharpCodeProvider operates below that and we must copy it manually.
+            if ((appCfgIntermediate != null) && System.IO.File.Exists(appCfgIntermediate))
+               System.IO.File.Copy(appCfgIntermediate, appCfgOutput, true);
             if (results.Errors.Count > 0)
             {
                System.Text.StringBuilder sb = new System.Text.StringBuilder();

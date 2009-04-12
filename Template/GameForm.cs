@@ -202,6 +202,7 @@ public partial class GameForm : Form
 
       m_keyboardState = new KeyboardState();
 
+      Application.DoEvents();
       while(true)
       {
          if (OnFrameStart != null)
@@ -413,6 +414,8 @@ public partial class GameForm : Form
    /// </summary>
    public void ReadControllers()
    {
+      KeyboardState.Poll();
+
       if (controllerEnabled == null)
          return;
 

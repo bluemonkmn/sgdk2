@@ -221,62 +221,70 @@ namespace SGDK2
 
       private bool stepFinish_ValidateFunction(StepInfo sender)
       {
-         CodeGenerator cg = new CodeGenerator();
-         cg.GeneratorOptions = new System.CodeDom.Compiler.CodeGeneratorOptions();
-         cg.GeneratorOptions.IndentString = "   ";
-
-         string code = string.Empty;
-         string funcName = null;
-
-         if (!rdoOutputClipboard.Checked)
-            funcName = txtFunctionName.Text;
-
-         if (m_spriteRules != null)
+         try
          {
-            code = cg.ConvertRuleToCode(m_spriteRules, funcName);
-         }
-         else if (m_planRules != null)
-         {
-            code = cg.ConvertRuleToCode(m_planRules, funcName);
-         }
+            CodeGenerator cg = new CodeGenerator();
+            cg.GeneratorOptions = new System.CodeDom.Compiler.CodeGeneratorOptions();
+            cg.GeneratorOptions.IndentString = "   ";
 
-         if (rdoOutputClipboard.Checked)
-         {
-            Clipboard.SetText(code);
-         }
-         else if (rdoOutputExistingFile.Checked)
-         {
-            ProjectDataset.SourceCodeRow src = (ProjectDataset.SourceCodeRow)cboCodeName.SelectedItem;
-            if (src == null)
+            string code = string.Empty;
+            string funcName = null;
+
+            if (!rdoOutputClipboard.Checked)
+               funcName = txtFunctionName.Text;
+
+            if (m_spriteRules != null)
             {
-               MessageBox.Show(this, "Failed to access code named " + cboCodeName.SelectedText, "Convert Rules to Code", MessageBoxButtons.OK, MessageBoxIcon.Error);
-               return false;
+               code = cg.ConvertRuleToCode(m_spriteRules, funcName);
             }
-            src.Text += "\r\n" + code;
-         }
-         else if (rdoOutputNewFile.Checked)
-         {
-            ProjectData.AddSourceCode(txtCodeName.Text, code, null, true, null);
-         }
-
-         if (!rdoOutputClipboard.Checked && chkAddCall.Checked)
-         {
-            if (m_spriteRules != null)
-               ProjectData.InsertSpriteRule(m_spriteRules[0].SpriteDefinitionRow, txtNewRuleName.Text, "Do", -1, txtFunctionName.Text, null, null, null, null, false, false);
             else if (m_planRules != null)
-               ProjectData.InsertPlanRule(m_planRules[0].SpritePlanRowParent, txtNewRuleName.Text, "Do", -1, txtFunctionName.Text, null, null, null, null, false, false);
-         }
+            {
+               code = cg.ConvertRuleToCode(m_planRules, funcName);
+            }
 
-         if (chkDeleteOld.Checked)
-         {
-            if (m_spriteRules != null)
-               foreach (ProjectDataset.SpriteRuleRow row in m_spriteRules)
-                  ProjectData.DeleteSpriteRule(row);
-            else if (m_planRules != null)
-               foreach (ProjectDataset.PlanRuleRow row in m_planRules)
-                  ProjectData.DeletePlanRule(row);
+            if (rdoOutputClipboard.Checked)
+            {
+               Clipboard.SetText(code);
+            }
+            else if (rdoOutputExistingFile.Checked)
+            {
+               ProjectDataset.SourceCodeRow src = (ProjectDataset.SourceCodeRow)cboCodeName.SelectedItem;
+               if (src == null)
+               {
+                  MessageBox.Show(this, "Failed to access code named " + cboCodeName.SelectedText, "Convert Rules to Code", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                  return false;
+               }
+               src.Text += "\r\n" + code;
+            }
+            else if (rdoOutputNewFile.Checked)
+            {
+               ProjectData.AddSourceCode(txtCodeName.Text, code, null, true, null);
+            }
+
+            if (!rdoOutputClipboard.Checked && chkAddCall.Checked)
+            {
+               if (m_spriteRules != null)
+                  ProjectData.InsertSpriteRule(m_spriteRules[0].SpriteDefinitionRow, txtNewRuleName.Text, "Do", -1, txtFunctionName.Text, null, null, null, null, false, false);
+               else if (m_planRules != null)
+                  ProjectData.InsertPlanRule(m_planRules[0].SpritePlanRowParent, txtNewRuleName.Text, "Do", -1, txtFunctionName.Text, null, null, null, null, false, false);
+            }
+
+            if (chkDeleteOld.Checked)
+            {
+               if (m_spriteRules != null)
+                  foreach (ProjectDataset.SpriteRuleRow row in m_spriteRules)
+                     ProjectData.DeleteSpriteRule(row);
+               else if (m_planRules != null)
+                  foreach (ProjectDataset.PlanRuleRow row in m_planRules)
+                     ProjectData.DeletePlanRule(row);
+            }
+            return true;
          }
-         return true;
+         catch (System.Exception ex)
+         {
+            MessageBox.Show(this, ex.Message, "Convert Rules to Code", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return false;
+         }
       }
    }
 }

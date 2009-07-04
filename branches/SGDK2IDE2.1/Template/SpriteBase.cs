@@ -461,12 +461,15 @@ public abstract partial class SpriteBase : GeneralRules
    /// Execute the rules for this sprite if they have not already been executed this frame
    /// </summary>
    /// <remarks>This checks <see cref="Processed"/> and calls <see cref="ExecuteRules"/>
-   /// if it's not set, then sets <see cref="Processed"/> to true.</remarks>
+   /// if it's not set, setting <see cref="Processed"/> to true first.</remarks>
    public void ProcessRules()
    {
       if (!Processed)
+      {
+         // Help prevent infinite recursion
+         Processed = true;
          ExecuteRules();
-      Processed = true;
+      }
    }
 
    #endregion
@@ -1593,6 +1596,7 @@ public abstract partial class SpriteBase : GeneralRules
          throw new System.ApplicationException("Attempted to execute ReactToSolid on sprite without solidity defined");
       bool hit = false;
       double dyOrig = dy;
+      double dxOrig = dx;
 
       int ProposedPixelY2 = (int)Math.Ceiling(y+dy);
       int SolidPixelWidth = SolidWidth + (int)Math.Ceiling(x) - PixelX;
@@ -1750,6 +1754,9 @@ public abstract partial class SpriteBase : GeneralRules
             hit = true;
          }
       }
+
+      if (hit && !double.IsNaN(LocalDX))
+         LocalDX += dx - dxOrig;
 
       return hit;
    }
@@ -2370,6 +2377,167 @@ public abstract partial class SpriteBase : GeneralRules
    public void Deactivate()
    {
       isActive = false;
+   }
+   #endregion
+
+   #region Pushing
+   /// <summary>
+   /// Alter the velocity of TargetSprite to plan to move out of the way of this sprite
+   /// if TargetSprite is obstructing this sprite.
+   /// </summary>
+   /// <param name="TargetSprite">Sprite whose velocity may be affected.</param>
+   /// <returns>True if the sprite was pushed, false otherwise.</return>
+   [Description("Alter the velocity of TargetSprite to plan to move out of the way of this sprite.")]
+   public bool PushSprite(SpriteBase TargetSprite)
+   {
+      Debug.Assert(this.isActive, "Attempted to execute PushSprite on an inactive sprite");
+
+      int x1 = ProposedPixelX;
+      int w1 = SolidWidth;
+      int x2 = TargetSprite.ProposedPixelX;
+      int w2 = TargetSprite.SolidWidth;
+      int y1 = ProposedPixelY;
+      int h1 = SolidHeight;
+      int y2 = TargetSprite.ProposedPixelY;
+      int h2 = TargetSprite.SolidHeight;
+
+      int pushright = x1 + w1 - x2;
+      int pushleft = x2 + w2 - x1;
+      if ((pushright > 0) && (pushleft > 0))
+      {
+         int pushx;
+         pushx = (pushright < pushleft) ? pushright : -pushleft;
+         int pushdown = y1 + h1 - y2;
+         int pushup = y2 + h2 - y1;
+         if ((pushup > 0) && (pushdown > 0))
+         {
+            int pushy = (pushdown < pushup) ? pushdown : -pushup;
+            if (System.Math.Abs(pushx) > System.Math.Abs(pushy))
+            {
+               if (!double.IsNaN(TargetSprite.LocalDY))
+                  TargetSprite.LocalDY += pushy;
+               TargetSprite.dy += pushy;
+            }
+            else
+            {
+               if (!double.IsNaN(TargetSprite.LocalDX))
+                  TargetSprite.LocalDX += pushx;
+               TargetSprite.dx += pushx;
+            }
+            return true;
+         }
+      }
+      return false;
+   }
+
+   /// <summary>
+   /// Alter the velocity of this sprite to plan to move out of the way of sprites in Pushers
+   /// if this sprite is obstructing sprites in Pushers.
+   /// </summary>
+   /// <param name="Pushers">Sprites that can push this sprite.</param>
+   /// <returns>True if the sprite was pushed, false otherwise.</return>
+   [Description("Alter the velocity of this sprite to plan to move out of the way of sprites in Pushers.")]
+   public bool ReactToPush(SpriteCollection Pushers)
+   {
+      if (!isActive)
+         return false;
+      bool result = false;
+      for (int idx = 0; idx < Pushers.Count; idx++)
+      {
+         SpriteBase TargetSprite = Pushers[idx];
+         if ((TargetSprite == this) || (!TargetSprite.isActive))
+            continue;
+         if (TargetSprite.Processed)
+            result |= TargetSprite.PushSprite(this);
+      }
+      return result;
+   }
+
+   private class CompareSpriteDistance : System.Collections.IComparer
+   {
+      private int sx;
+      private int sy;
+
+      public CompareSpriteDistance(SpriteBase source)
+      {
+         sx = source.PixelX;
+         sy = source.PixelY;
+      }
+
+      int System.Collections.IComparer.Compare(object s1, object s2)
+      {
+         int x1 = ((SpriteBase)s1).PixelX - sx;
+         int y1 = ((SpriteBase)s1).PixelY - sy;
+         int x2 = ((SpriteBase)s2).PixelX - sx;
+         int y2 = ((SpriteBase)s2).PixelY - sy;
+         return (x1 * x1 + y1 * y1) - (x2 * x2 + y2 * y2);
+      }
+   }
+
+   private static SpriteBase[] sortedPushers = null;
+   private static bool isPushersSorted = false;
+
+   /// <summary>
+   /// Alter the velocity of this sprite to plan to move out of the way of sprites in
+   /// Pushers after they have processed their rules (usually to react to this
+   /// sprite's pushing first).
+   /// </summary>
+   /// <param name="Pushers">Sprites that can push back on this sprite.</param>
+   /// <returns>True if the sprite was pushed, false otherwise.</return>
+   /// <remarks>The process of making moving sprites push and avoid each other is
+   /// relatively complex. If only one of the sprites is moving, it's recommended
+   /// to use the simpler <see cref="ReactToPush"/> function on the moving sprite
+   /// instead. This function is designed to be used on sprites that can both move
+   /// and push other sprites, and the other sprites need to push back if they cannot
+   /// move any farther. It will sort all the sprites in Pushers in order of distance
+   /// from this sprite, but only if the current sprite is not processing rules in
+   /// response to another sprite that is also processing ReactToPushback. Then
+   /// sprites are processed in order from nearest to farthest from the first sprite
+   /// that calls ReactToPushback, and Pushers is expected to be the same for all
+   /// sprites that are recursively affected by a particular push.</remarks>
+   [Description("Alter the velocity of this sprite to plan to move out of the way of sprites in Pushers, but only after they have processed their rules.")]
+   public bool ReactToPushback(SpriteCollection Pushers)
+   {
+      if (!isActive)
+         return false;
+
+      if ((sortedPushers == null) || (Pushers.Count != sortedPushers.Length))
+         sortedPushers = new SpriteBase[Pushers.Count];
+      if (!isPushersSorted)
+      {
+         Pushers.CopyTo(sortedPushers, 0);
+         System.Array.Sort(sortedPushers, new CompareSpriteDistance(this));
+      }
+      bool wasSorted = isPushersSorted;
+      isPushersSorted = true;
+
+      SpriteBase TargetSprite = null;
+      for (int idx = 0; idx < sortedPushers.Length; idx++)
+      {
+         TargetSprite = sortedPushers[idx];
+         if ((TargetSprite == this) || (!TargetSprite.isActive))
+         {
+            TargetSprite = null;
+            continue;
+         }
+         if (!TargetSprite.Processed)
+            break;
+         TargetSprite = null;
+      }
+
+      try
+      {
+         if (TargetSprite != null)
+         {
+            TargetSprite.ProcessRules();
+            return TargetSprite.PushSprite(this);
+         }
+      }
+      finally
+      {
+         isPushersSorted = wasSorted;
+      }
+      return false;
    }
    #endregion
 }

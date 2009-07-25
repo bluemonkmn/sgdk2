@@ -815,6 +815,8 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
       Frameset fr = ts.GetFrameset(ParentLayer.ParentMap.Display);
       Rectangle CurrentView = ParentLayer.ParentMap.CurrentView;
 
+      int lastColor = 0;
+
       switch(style)
       {
          case DrawStyle.ClipRightToCounter:
@@ -833,6 +835,11 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
                   corners[i].Y = fr[frameIndex].Corners[i].Y;
                }
 
+               if (fr[frameIndex].Color != lastColor)
+               {
+                  disp.SetColor(fr[frameIndex].Color);
+                  lastColor = fr[frameIndex].Color;
+               }
                disp.DrawFrame(fr[frameIndex].GraphicSheetTexture,
                   fr[frameIndex].SourceRect, corners,
                   PlanRectangle.X + ParentLayer.CurrentPosition.X + CurrentView.X,
@@ -851,6 +858,11 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
                   corners[i].Y = fr[frameIndex].Corners[i].Y;
                }
 
+               if (fr[frameIndex].Color != lastColor)
+               {
+                  disp.SetColor(fr[frameIndex].Color);
+                  lastColor = fr[frameIndex].Color;
+               }
                disp.DrawFrame(fr[frameIndex].GraphicSheetTexture,
                   fr[frameIndex].SourceRect, corners,
                   PlanRectangle.X + ParentLayer.CurrentPosition.X + CurrentView.X,
@@ -861,7 +873,12 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
             foreach(int frameIndex in ts[TileIndex].CurrentFrame)
             {
                int FillWidth = PlanRectangle.Width * counter.CurrentValue / counter.MaxValue;
-               for (int repeat=0; repeat < (int)Math.Ceiling(FillWidth / (float)ts.TileWidth); repeat++)
+               if (fr[frameIndex].Color != lastColor)
+               {
+                  disp.SetColor(fr[frameIndex].Color);
+                  lastColor = fr[frameIndex].Color;
+               }
+               for (int repeat = 0; repeat < (int)Math.Ceiling(FillWidth / (float)ts.TileWidth); repeat++)
                {
                   disp.DrawFrame(fr[frameIndex].GraphicSheetTexture,
                      fr[frameIndex].SourceRect, fr[frameIndex].Corners,
@@ -886,6 +903,11 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
                   corners[i].X = fr[frameIndex].Corners[i].X;
                   corners[i].Y = fr[frameIndex].Corners[i].Y * PlanRectangle.Height / ts.TileHeight;
                }
+               if (fr[frameIndex].Color != lastColor)
+               {
+                  disp.SetColor(fr[frameIndex].Color);
+                  lastColor = fr[frameIndex].Color;
+               }
                disp.DrawFrame(fr[frameIndex].GraphicSheetTexture,
                   fr[frameIndex].SourceRect, corners,
                   PlanRectangle.X + ParentLayer.CurrentPosition.X + CurrentView.X,
@@ -907,6 +929,11 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
                   corners[i].Y = fr[frameIndex].Corners[i].Y * FillHeight / ts.TileHeight;
                }
 
+               if (fr[frameIndex].Color != lastColor)
+               {
+                  disp.SetColor(fr[frameIndex].Color);
+                  lastColor = fr[frameIndex].Color;
+               }
                disp.DrawFrame(fr[frameIndex].GraphicSheetTexture,
                   fr[frameIndex].SourceRect, corners,
                   PlanRectangle.X + ParentLayer.CurrentPosition.X + CurrentView.X,
@@ -919,7 +946,12 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
             {
                int FillHeight = PlanRectangle.Height * counter.CurrentValue / counter.MaxValue;
                disp.ScissorOff();
-               for (int repeat=0; repeat < (int)Math.Ceiling(FillHeight / (float)ts.TileHeight); repeat++)
+               if (fr[frameIndex].Color != lastColor)
+               {
+                  disp.SetColor(fr[frameIndex].Color);
+                  lastColor = fr[frameIndex].Color;
+               }
+               for (int repeat = 0; repeat < (int)Math.Ceiling(FillHeight / (float)ts.TileHeight); repeat++)
                {
                   disp.DrawFrame(fr[frameIndex].GraphicSheetTexture, fr[frameIndex].SourceRect, fr[frameIndex].Corners,
                      PlanRectangle.X + ParentLayer.CurrentPosition.X + CurrentView.X,

@@ -1905,7 +1905,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// processed and tracking which of those tiles have been processed.
    /// <seealso cref="TileTake"/><seealso cref="TileUseUp"/><seealso cref="TileTouchingIndex"/>
    /// <seealso cref="TileActivateSprite"/><seealso cref="TileAddSprite"/>
-   /// <seealso cref="TileChange"/></remarks>
+   /// <seealso cref="TileChange"/><seealso cref="TileChangeTouched"/></remarks>
    /// <example>This example will check to see if the current sprite is touching
    /// any tiles in a category named "Touchable" and then (assuming tile numbers 10
    /// and 11 are members of this category) take any tiles whose number is 10 as an
@@ -1934,10 +1934,10 @@ public abstract partial class SpriteBase : GeneralRules
       int maxYEdge = (PixelY + SolidHeight - 1) / th;
       int minX = (PixelX - 1)/ tw;
       int minXEdge = PixelX / tw;
-      int maxX = (PixelX + SolidHeight) / tw;
+      int maxX = (PixelX + SolidWidth) / tw;
       if (maxX >= layer.VirtualColumns)
          maxX = layer.VirtualColumns - 1;
-      int maxXEdge = (PixelX + SolidHeight - 1) / tw;
+      int maxXEdge = (PixelX + SolidWidth - 1) / tw;
       for (int yidx = (PixelY - 1) / th; yidx <= maxY; yidx++)
       {
          bool isYEdge = !((yidx >= minYEdge) && (yidx <= maxYEdge));
@@ -2265,8 +2265,8 @@ public abstract partial class SpriteBase : GeneralRules
 
       System.Drawing.Point ptLocation = GetRelativePosition(Location);
       System.Drawing.Point ptHotSpot = lastCreatedSprite.GetRelativePosition(HotSpot);
-      lastCreatedSprite.x = ptLocation.X - ptHotSpot.X;
-      lastCreatedSprite.y = ptLocation.Y - ptHotSpot.Y;
+      lastCreatedSprite.x = lastCreatedSprite.oldX = ptLocation.X - ptHotSpot.X;
+      lastCreatedSprite.y = lastCreatedSprite.oldY = ptLocation.Y - ptHotSpot.Y;
    }
 
    /// <summary>
@@ -2276,6 +2276,9 @@ public abstract partial class SpriteBase : GeneralRules
    /// <param name="NewTileValue">Which tile should these tiles be changed to</param>
    /// <param name="InitialOnly">If true, only affect tiles that the player just started touching.</param>
    /// <returns>The number of tiles affected.</returns>
+   /// <remarks>This function changes all specified tiles at once.
+   /// Use <see cref="TileChangeTouched"/> to change only one tile.
+   /// <seealso cref="TileChangeTouched"/></remarks>
    [Description("Change the specified tile that the sprite is touching to another tile. Return the number of tiles affected. (Must run TouchTiles first.)")]
    public int TileChange(int OldTileValue, int NewTileValue, bool InitialOnly)
    {
@@ -2297,6 +2300,26 @@ public abstract partial class SpriteBase : GeneralRules
          }
       }
       return result;
+   }
+
+   /// <summary>
+   /// Change the tile specified by TouchingIndex that is being touched by the sprite to another tile (requires <see cref="TouchTiles"/>).
+   /// </summary>
+   /// <param name="TouchingIndex">Refers to a tile in <see cref="TouchedTiles"/> by index.
+   /// <see cref="TileTouchingIndex"/> can be used to acquire this value.</param>
+   /// <param name="NewTileValue">Specifies the tileset tile index of the new tile that will appear in place of the specified tile.</param>
+   [Description("Change the tile specified by TouchingIndex that is being touched by the sprite to another tile. (Must run TouchTiles first.)")]
+   public void TileChangeTouched(int TouchingIndex, int NewTileValue)
+   {
+      Debug.Assert(this.isActive, "Attempted to execute TileChangeTouched on an inactive sprite");
+      Debug.Assert((TouchedTiles != null) && (TouchedTiles.Count > TouchingIndex),
+         "Attempted to execute TileChangeTouched with invalid touched tiles");
+
+      if ((TouchedTiles == null) || (TouchedTiles.Count <= TouchingIndex))
+         return;
+
+      TouchedTile tt = (TouchedTile)TouchedTiles[TouchingIndex];
+      layer[tt.x, tt.y] = tt.tileValue = NewTileValue;
    }
 
    /// <summary>
@@ -2453,89 +2476,69 @@ public abstract partial class SpriteBase : GeneralRules
       return result;
    }
 
-   private class CompareSpriteDistance : System.Collections.IComparer
-   {
-      private int sx;
-      private int sy;
-
-      public CompareSpriteDistance(SpriteBase source)
-      {
-         sx = source.PixelX;
-         sy = source.PixelY;
-      }
-
-      int System.Collections.IComparer.Compare(object s1, object s2)
-      {
-         int x1 = ((SpriteBase)s1).PixelX - sx;
-         int y1 = ((SpriteBase)s1).PixelY - sy;
-         int x2 = ((SpriteBase)s2).PixelX - sx;
-         int y2 = ((SpriteBase)s2).PixelY - sy;
-         return (x1 * x1 + y1 * y1) - (x2 * x2 + y2 * y2);
-      }
-   }
-
-   private static SpriteBase[] sortedPushers = null;
-   private static bool isPushersSorted = false;
-
    /// <summary>
    /// Alter the velocity of this sprite to plan to move out of the way of sprites in
-   /// Pushers after they have processed their rules (usually to react to this
+   /// Pushers but if this sprite is planning to overlap a sprite in Pushers, only
+   /// after those sprites have processed their rules (usually to react to this
    /// sprite's pushing first).
    /// </summary>
    /// <param name="Pushers">Sprites that can push back on this sprite.</param>
    /// <returns>True if the sprite was pushed, false otherwise.</return>
    /// <remarks>The process of making moving sprites push and avoid each other is
-   /// relatively complex. If only one of the sprites is moving, it's recommended
-   /// to use the simpler <see cref="ReactToPush"/> function on the moving sprite
-   /// instead. This function is designed to be used on sprites that can both move
-   /// and push other sprites, and the other sprites need to push back if they cannot
-   /// move any farther. It will sort all the sprites in Pushers in order of distance
-   /// from this sprite, but only if the current sprite is not processing rules in
-   /// response to another sprite that is also processing ReactToPushback. Then
-   /// sprites are processed in order from nearest to farthest from the first sprite
-   /// that calls ReactToPushback, and Pushers is expected to be the same for all
-   /// sprites that are recursively affected by a particular push.</remarks>
-   [Description("Alter the velocity of this sprite to plan to move out of the way of sprites in Pushers, but only after they have processed their rules.")]
+   /// relatively complex and not 100% reliable. If only one of the sprites is moving,
+   /// it's recommended to use the simpler <see cref="ReactToPush"/> function on the
+   /// moving sprite instead. This function is designed to be used on sprites that can
+   /// both move and push other sprites, and the other sprites need to push back if
+   /// they cannot move any farther.</remarks>
+   [Description("Alter the velocity of this sprite to plan to move out of the way of sprites in Pushers, but only after they have processed their rules where necessary.")]
    public bool ReactToPushback(SpriteCollection Pushers)
    {
       if (!isActive)
          return false;
 
-      if ((sortedPushers == null) || (Pushers.Count != sortedPushers.Length))
-         sortedPushers = new SpriteBase[Pushers.Count];
-      if (!isPushersSorted)
+      bool result = false;
+      for (int idx = 0; idx < Pushers.Count; idx++)
       {
-         Pushers.CopyTo(sortedPushers, 0);
-         System.Array.Sort(sortedPushers, new CompareSpriteDistance(this));
-      }
-      bool wasSorted = isPushersSorted;
-      isPushersSorted = true;
-
-      SpriteBase TargetSprite = null;
-      for (int idx = 0; idx < sortedPushers.Length; idx++)
-      {
-         TargetSprite = sortedPushers[idx];
-         if ((TargetSprite == this) || (!TargetSprite.isActive))
-         {
-            TargetSprite = null;
+         SpriteBase TargetSprite = Pushers[idx];
+         if (!TargetSprite.isActive || TargetSprite.Processed || TargetSprite == this)
             continue;
-         }
-         if (!TargetSprite.Processed)
-            break;
-         TargetSprite = null;
-      }
-
-      try
-      {
-         if (TargetSprite != null)
+         if (TestCollisionRect(TargetSprite))
          {
             TargetSprite.ProcessRules();
-            return TargetSprite.PushSprite(this);
+            result |= TargetSprite.PushSprite(this);
          }
       }
-      finally
+
+      return result;
+   }
+
+   /// <summary>
+   /// Determine if this sprite is planning to overlap the target sprite.
+   /// </summary>
+   /// <param name="TargetSprite">Sprite against which planned overlap is checked.</param>
+   /// <returns>True if the sprite will overlap TargetSprite.</return>
+   [Description("Determine if this sprite is planning to overlap the target sprite.")]
+   public bool TestCollisionRect(SpriteBase TargetSprite)
+   {
+      Debug.Assert(this.isActive, "Attempted to execute TestCollision on an inactive sprite");
+
+      int x1 = ProposedPixelX;
+      int w1 = SolidWidth;
+      int x2 = TargetSprite.ProposedPixelX;
+      int w2 = TargetSprite.SolidWidth;
+      int y1 = ProposedPixelY;
+      int h1 = SolidHeight;
+      int y2 = TargetSprite.ProposedPixelY;
+      int h2 = TargetSprite.SolidHeight;
+
+      int pushright = x1 + w1 - x2;
+      int pushleft = x2 + w2 - x1;
+      if ((pushright > 0) && (pushleft > 0))
       {
-         isPushersSorted = wasSorted;
+         int pushdown = y1 + h1 - y2;
+         int pushup = y2 + h2 - y1;
+         if ((pushup > 0) && (pushdown > 0))
+            return true;
       }
       return false;
    }

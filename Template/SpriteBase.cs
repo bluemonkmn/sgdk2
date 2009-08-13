@@ -2070,6 +2070,41 @@ public abstract partial class SpriteBase : GeneralRules
       return result;
    }
 
+
+   /// <summary>
+   /// Determine if the sprite is touching a tile in the specified category (requires <see cref="TouchTiles"/>).
+   /// </summary>
+   /// <param name="Category">Category of tiles to be tested</param>
+   /// <param name="TouchingIndex">Receives the index of the first qualifying tile
+   /// if the sprite is touching a tile in the specified category.  This is an index
+   /// into the <see cref="TouchedTiles"/> array returned by <see cref="TouchTiles"/>.</param>
+   /// <param name="InitialOnly">If true, a tile can only qualify if the sprite was not
+   /// already touching the tile in the previous frame.</param>
+   /// <returns>True if the sprite is touching a tile in the specified category, false otherwise.</returns>
+   [Description("Determine if the sprite is touching the specified tile. TouchingIndex is updated to refer to the index of the first qualifying tile if true. Returns true if the sprite is touching a tile in the specified category. (Must run TouchTiles first.)")]
+   public bool TileCategoryTouched(TileCategoryName Category, ref int TouchingIndex, bool InitialOnly)
+   {
+      Debug.Assert(this.isActive, "Attempted to execute TileCategoryTouched on an inactive sprite");
+
+      if (TouchedTiles == null)
+         return false;
+
+      int result = 0;
+
+      for (int i = 0; i < TouchedTiles.Count; i++)
+      {
+         TouchedTile tt = (TouchedTile)TouchedTiles[i];
+         if (!tt.processed && layer.GetTile(tt.x, tt.y).IsMember(Category) 
+            && (!InitialOnly || tt.initial))
+         {
+            TouchingIndex = i;
+            tt.processed = true;
+            return true;
+         }
+      }
+      return false;
+   }
+
    /// <summary>
    /// Find the next unprocessed tile of the specified type (requires <see cref="TouchTiles"/>).
    /// </summary>

@@ -228,6 +228,14 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       GL.TexParameter(texTarget, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
       GL.TexParameter(texTarget, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
       System.Drawing.Bitmap bmpTexture = (System.Drawing.Bitmap)Project.Resources.GetObject(Name);
+
+      int texSize;
+      GL.GetInteger(GetPName.MaxTextureSize, out texSize);
+      if ((texSize < bmpTexture.Width) ||
+          (texSize < bmpTexture.Height))
+         throw new System.ApplicationException("Texture " + Name + " is size " + bmpTexture.Width + "x" + bmpTexture.Height +
+            ", but the current OpenGL video drivers only support textures up to " + texSize.ToString());
+
       System.Drawing.Imaging.BitmapData bits = bmpTexture.LockBits(new System.Drawing.Rectangle(0, 0, bmpTexture.Width, bmpTexture.Height),
          System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
       try

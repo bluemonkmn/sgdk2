@@ -16,6 +16,31 @@
   version 2.0, see the <a href="Introduction.html#WhatsNew">
   What's New section of the Introduction</a>.
   </p>
+  <h2>Version 2.1.2</h2>
+  <p>This section describes updates between versions 2.1 and 2.1.2.</p>
+  <ol>
+    <li>Upgrade to OpenTK 0.9.8.</li>
+    <li>Check if graphic sheet (texture) is larger than supported by the OpenGL
+    driver in order to provide a better error message if it's too big.</li>
+    <li>Add TileCategoryTouched function to provide simpler ability to check
+    when a sprite touches a tile in a category.</li>
+    <li>Use frame's color modulation when drawing the frame with
+    DrawCounterAsTile.</li>
+    <li>Correct handling of TouchTiles for non-square sprites.</li>
+    <li>Correct TileAddSprite to register old position as initial position.</li>
+    <li>Create TileChangeTouched function to change one tile at a time.</li>
+    <li>Deliver standard functions for pushing and repelling sprites.</li>
+    <li>Improve error handling when converting rules to source code.</li>
+    <li>Remove dllmap from configuration file because Microsoft .NET
+    cannot handle it.  Plan to use a hard link or symbolic link to new filename
+    libfmodex.so instead (linked to versioned libfmodex-v.so).</li>
+    <li>Improve some sprite rule function implementations.</li>
+    <li>Implement limited support for generating Linux projects.</li>
+    <li>Prevent errors when null rule parameters are encountered while
+    compiling.</li>
+    <li>Improve drawing of gradient rings (2-D torus) in graphics editor.</li>
+    <li>Upgrade FMOD to stable version 4.20.06.</li>
+  </ol>
   <h2>Version 2.1</h2>
   <p>This section describes updates between versions 2.0 and 2.1.</p>
   <ol>

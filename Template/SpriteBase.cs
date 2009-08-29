@@ -143,35 +143,35 @@ public abstract partial class SpriteBase : GeneralRules
       /// <summary>
       /// Refers to an input that causes the sprite to move up or accelerate
       /// </summary>
-      Up=1,
+      Up = 1,
       /// <summary>
       /// Refers to an input that causes the sprite to move or turn right
       /// </summary>
-      Right=2,
+      Right = 2,
       /// <summary>
       /// Refers to an input that causes the sprite to move down or decelerate
       /// </summary>
-      Down=4,
+      Down = 4,
       /// <summary>
       /// Refers to an input that causes the sprite to move or turn left
       /// </summary>
-      Left=8,
+      Left = 8,
       /// <summary>
       /// Refers to 1 of 4 customizable inputs on the sprite.
       /// </summary>
-      Button1=16,
+      Button1 = 16,
       /// <summary>
       /// Refers to 1 of 4 customizable inputs on the sprite.
       /// </summary>
-      Button2=32,
+      Button2 = 32,
       /// <summary>
       /// Refers to 1 of 4 customizable inputs on the sprite.
       /// </summary>
-      Button3=64,
+      Button3 = 64,
       /// <summary>
       /// Refers to 1 of 4 customizable inputs on the sprite.
       /// </summary>
-      Button4=128
+      Button4 = 128
    }
 
    /// <summary>
@@ -288,7 +288,7 @@ public abstract partial class SpriteBase : GeneralRules
          // return statement to work around the rounding difference of negative numbers,
          // but it involves just a bit of unnecessary overhead, and looks rather clumsy:
          // return (int)(x+dx+16)-16
-         return (int)(x+dx);
+         return (int)(x + dx);
       }
    }
 
@@ -302,7 +302,7 @@ public abstract partial class SpriteBase : GeneralRules
       get
       {
          Debug.Assert(this.isActive, "Attempted to access ProposedPixelY on an inactive sprite");
-         return (int)(y+dy);
+         return (int)(y + dy);
       }
    }
 
@@ -452,7 +452,7 @@ public abstract partial class SpriteBase : GeneralRules
       Frameset stateframes = curstate.Frameset;
       int[] subframes = curstate.GetFrame(frame);
       Frame[] result = new Frame[subframes.Length];
-      for(int idx = 0; idx < result.Length; idx++)
+      for (int idx = 0; idx < result.Length; idx++)
          result[idx] = stateframes[subframes[idx]];
       return result;
    }
@@ -506,8 +506,8 @@ public abstract partial class SpriteBase : GeneralRules
          // Ensure that the sprite that this sprite is riding moves first
          RidingOn.ProcessRules();
 
-      if ((x+SolidWidth < RidingOn.oldX) || (x > RidingOn.oldX+RidingOn.SolidWidth) ||
-         (y+SolidHeight < RidingOn.oldY - 1) || (y+SolidHeight >= RidingOn.oldY+RidingOn.SolidHeight))
+      if ((x + SolidWidth < RidingOn.oldX) || (x > RidingOn.oldX + RidingOn.SolidWidth) ||
+         (y + SolidHeight < RidingOn.oldY - 1) || (y + SolidHeight >= RidingOn.oldY + RidingOn.SolidHeight))
       {
          StopRiding();
          return;
@@ -557,11 +557,11 @@ public abstract partial class SpriteBase : GeneralRules
       Debug.Assert(this.isActive, "Attempted to execute LandDownOnPlatform on an inactive sprite");
       if (RidingOn != null)
          return false;
-      foreach(SpriteBase spr in PlatformList)
+      foreach (SpriteBase spr in PlatformList)
       {
          if (!spr.isActive)
             continue;
-         if((oldY + SolidHeight <= spr.oldY) &&
+         if ((oldY + SolidHeight <= spr.oldY) &&
             (y + SolidHeight > spr.y) &&
             (x + SolidWidth > spr.x) &&
             (x < spr.x + spr.SolidWidth))
@@ -576,7 +576,7 @@ public abstract partial class SpriteBase : GeneralRules
       return false;
    }
    #endregion
-   
+
    /// <summary>
    /// Determine whether the sprite's collision mask is overlapping part of any sprite in the specified category.
    /// </summary>
@@ -625,7 +625,7 @@ public abstract partial class SpriteBase : GeneralRules
             }
             if (sourceMask.TestCollisionWith(targetMask, TargetSprite.PixelX - PixelX, TargetSprite.PixelY - PixelY))
                return idx;
-         }         
+         }
       }
       return -1;
    }
@@ -659,7 +659,7 @@ public abstract partial class SpriteBase : GeneralRules
          int y2 = TargetSprite.PixelY;
          int h2 = TargetSprite.SolidHeight;
 
-         if ((x1+w1 > x2) && (x2+w2 > x1) && (y1+h1 > y2) && (y2+h2 > y1))
+         if ((x1 + w1 > x2) && (x2 + w2 > x1) && (y1 + h1 > y2) && (y2 + h2 > y1))
             return idx;
       }
       return -1;
@@ -815,7 +815,7 @@ public abstract partial class SpriteBase : GeneralRules
       else
          useDY = LocalDY;
 
-      switch(Direction)
+      switch (Direction)
       {
          case Direction.Left:
             return useDX < 0;
@@ -858,7 +858,7 @@ public abstract partial class SpriteBase : GeneralRules
       else
          LocalDX += ddx;
    }
-   
+
    /// <summary>
    /// Redirect this sprite's velocity to be 100% in the direction that it is facing.
    /// </summary>
@@ -956,7 +956,7 @@ public abstract partial class SpriteBase : GeneralRules
    {
       int minDist = int.MaxValue;
       int result = -1;
-      for(int i = 0; i < Target.Count; i++)
+      for (int i = 0; i < Target.Count; i++)
       {
          if (!Target[i].isActive)
             continue;
@@ -1039,7 +1039,7 @@ public abstract partial class SpriteBase : GeneralRules
    public void Animate(SpriteAnimationType Correlation)
    {
       Debug.Assert(this.isActive, "Attempted to execute Animate on an inactive sprite");
-      switch(Correlation)
+      switch (Correlation)
       {
          case SpriteAnimationType.ByFrame:
             frame++;
@@ -1057,11 +1057,11 @@ public abstract partial class SpriteBase : GeneralRules
                frame += System.Math.Abs((int)LocalDY);
             break;
          case SpriteAnimationType.ByVectorVelocity:
-         {
-            int tmpDx = ProposedPixelX - PixelX;
-            int tmpDy = ProposedPixelY - PixelY;
-            frame += (int)(System.Math.Sqrt(tmpDx * tmpDx + tmpDy * tmpDy));
-         }
+            {
+               int tmpDx = ProposedPixelX - PixelX;
+               int tmpDy = ProposedPixelY - PixelY;
+               frame += (int)(System.Math.Sqrt(tmpDx * tmpDx + tmpDy * tmpDy));
+            }
             break;
       }
    }
@@ -1089,7 +1089,7 @@ public abstract partial class SpriteBase : GeneralRules
          useDY = dy;
       else
          useDY = LocalDY;
-      return FirstState + ((StateCount + (int)Math.Round(System.Math.Atan2(-useDY,useDX) * StateCount / Math.PI / 2f)) % StateCount);
+      return FirstState + ((StateCount + (int)Math.Round(System.Math.Atan2(-useDY, useDX) * StateCount / Math.PI / 2f)) % StateCount);
    }
 
    /// <summary>
@@ -1137,7 +1137,7 @@ public abstract partial class SpriteBase : GeneralRules
       int newWidth = this[State].SolidWidth;
       int newHeight = this[State].SolidHeight;
       double newX, newY;
-      switch(Alignment)
+      switch (Alignment)
       {
          case RelativePosition.TopCenter:
          case RelativePosition.CenterMiddle:
@@ -1153,7 +1153,7 @@ public abstract partial class SpriteBase : GeneralRules
             newX = x;
             break;
       }
-      switch(Alignment)
+      switch (Alignment)
       {
          case RelativePosition.LeftMiddle:
          case RelativePosition.CenterMiddle:
@@ -1223,7 +1223,7 @@ public abstract partial class SpriteBase : GeneralRules
       }
       set
       {
-         color = color & 0x00FFFFFF | (byte)(value%256) << 24;
+         color = color & 0x00FFFFFF | (byte)(value % 256) << 24;
       }
    }
 
@@ -1244,7 +1244,7 @@ public abstract partial class SpriteBase : GeneralRules
       }
       set
       {
-         color = (int)(color & 0xFF00FFFF) | (byte)(value%256) << 16;
+         color = (int)(color & 0xFF00FFFF) | (byte)(value % 256) << 16;
       }
    }
 
@@ -1265,7 +1265,7 @@ public abstract partial class SpriteBase : GeneralRules
       }
       set
       {
-         color = (int)(color & 0xFFFF00FF) | (byte)(value%256) << 8;
+         color = (int)(color & 0xFFFF00FF) | (byte)(value % 256) << 8;
       }
    }
 
@@ -1286,7 +1286,7 @@ public abstract partial class SpriteBase : GeneralRules
       }
       set
       {
-         color = (int)(color & 0xFFFFFF00) | (byte)(value%256);
+         color = (int)(color & 0xFFFFFF00) | (byte)(value % 256);
       }
    }
    #endregion
@@ -1308,7 +1308,7 @@ public abstract partial class SpriteBase : GeneralRules
    public bool IsInputPressed(InputBits Input, bool InitialOnly)
    {
       Debug.Assert(this.isActive, "Attempted to execute IsInputPressed on an inactive sprite");
-      return (0 != (inputs & Input)) && 
+      return (0 != (inputs & Input)) &&
          (!InitialOnly || (0 == (oldinputs & Input)));
    }
 
@@ -1383,7 +1383,7 @@ public abstract partial class SpriteBase : GeneralRules
          return;
       }
       oldinputs = inputs;
-      IPlayer player = Project.GameWindow.Players[PlayerNumber-1];
+      IPlayer player = Project.GameWindow.Players[PlayerNumber - 1];
       inputs = 0;
       if (PlayerPressButton(PlayerNumber, player))
       {
@@ -1421,22 +1421,22 @@ public abstract partial class SpriteBase : GeneralRules
          if (double.IsNaN(LocalDY))
          {
             if (0 != (inputs & InputBits.Up))
-               dy -= ((double)Acceleration)/10.0d;
+               dy -= ((double)Acceleration) / 10.0d;
             if (dy < -(double)Max)
                dy = -(double)Max;
             if (0 != (inputs & InputBits.Down))
-               dy += ((double)Acceleration)/10.0d;
+               dy += ((double)Acceleration) / 10.0d;
             if (dy > (double)Max)
                dy = (double)Max;
          }
          else
          {
             if (0 != (inputs & InputBits.Up))
-               LocalDY -= ((double)Acceleration)/10.0d;
+               LocalDY -= ((double)Acceleration) / 10.0d;
             if (LocalDY < -(double)Max)
                LocalDY = -(double)Max;
             if (0 != (inputs & InputBits.Down))
-               LocalDY += ((double)Acceleration)/10.0d;
+               LocalDY += ((double)Acceleration) / 10.0d;
             if (LocalDY > (double)Max)
                LocalDY = (double)Max;
          }
@@ -1444,22 +1444,22 @@ public abstract partial class SpriteBase : GeneralRules
       if (double.IsNaN(LocalDX))
       {
          if (0 != (inputs & InputBits.Left))
-            dx -= ((double)Acceleration)/10.0d;
+            dx -= ((double)Acceleration) / 10.0d;
          if (dx < -(double)Max)
             dx = -(double)Max;
          if (0 != (inputs & InputBits.Right))
-            dx += ((double)Acceleration)/10.0d;
+            dx += ((double)Acceleration) / 10.0d;
          if (dx > (double)Max)
             dx = (double)Max;
       }
       else
       {
          if (0 != (inputs & InputBits.Left))
-            LocalDX -= ((double)Acceleration)/10.0d;
+            LocalDX -= ((double)Acceleration) / 10.0d;
          if (LocalDX < -(double)Max)
             LocalDX = -(double)Max;
          if (0 != (inputs & InputBits.Right))
-            LocalDX += ((double)Acceleration)/10.0d;
+            LocalDX += ((double)Acceleration) / 10.0d;
          if (LocalDX > (double)Max)
             LocalDX = (double)Max;
       }
@@ -1598,18 +1598,18 @@ public abstract partial class SpriteBase : GeneralRules
       double dyOrig = dy;
       double dxOrig = dx;
 
-      int ProposedPixelY2 = (int)Math.Ceiling(y+dy);
+      int ProposedPixelY2 = (int)Math.Ceiling(y + dy);
       int SolidPixelWidth = SolidWidth + (int)Math.Ceiling(x) - PixelX;
       if (dy > 0)
       {
-         int ground = layer.GetTopSolidPixel(new System.Drawing.Rectangle(PixelX, PixelY+SolidHeight, SolidPixelWidth, ProposedPixelY2 - PixelY), m_solidity);
+         int ground = layer.GetTopSolidPixel(new System.Drawing.Rectangle(PixelX, PixelY + SolidHeight, SolidPixelWidth, ProposedPixelY2 - PixelY), m_solidity);
          if (ground != int.MinValue)
          {
             // Do integer arithmetic before double otherwise strange rounding seems to happen
             dy = ground - SolidHeight - y;
             hit = true;
          }
-      } 
+      }
       else if (dy < 0)
       {
          int ceiling = layer.GetBottomSolidPixel(new System.Drawing.Rectangle(PixelX, ProposedPixelY, SolidPixelWidth, PixelY - ProposedPixelY), m_solidity);
@@ -1623,7 +1623,7 @@ public abstract partial class SpriteBase : GeneralRules
 
       if (dx > 0)
       {
-         int ProposedPixelX2 = (int)Math.Ceiling(x+dx);
+         int ProposedPixelX2 = (int)Math.Ceiling(x + dx);
          int PixelX2 = (int)Math.Ceiling(x);
          int rightwall = layer.GetLeftSolidPixel(new System.Drawing.Rectangle(PixelX2 + SolidWidth, ProposedPixelY, ProposedPixelX2 - PixelX2, SolidHeight), m_solidity);
          bool hitWall = false;
@@ -1732,11 +1732,11 @@ public abstract partial class SpriteBase : GeneralRules
 
       dy = dyOrig;
 
-      int ProposedSolidPixelWidth = SolidWidth + (int)Math.Ceiling(x+dx) - ProposedPixelX;
+      int ProposedSolidPixelWidth = SolidWidth + (int)Math.Ceiling(x + dx) - ProposedPixelX;
       if (dy > 0)
       {
-         ProposedPixelY2 = (int)Math.Ceiling(y+dy);
-         int ground = layer.GetTopSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, PixelY+SolidHeight, ProposedSolidPixelWidth, ProposedPixelY2 - PixelY), m_solidity);
+         ProposedPixelY2 = (int)Math.Ceiling(y + dy);
+         int ground = layer.GetTopSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, PixelY + SolidHeight, ProposedSolidPixelWidth, ProposedPixelY2 - PixelY), m_solidity);
          if (ground != int.MinValue)
          {
             // Do integer arithmetic before double otherwise strange rounding seems to happen
@@ -1779,8 +1779,8 @@ public abstract partial class SpriteBase : GeneralRules
    {
       Debug.Assert(this.isActive, "Attempted to execute SnapToGround on an inactive sprite");
 
-      int ProposedSolidPixelWidth = SolidWidth + (int)Math.Ceiling(x+dx) - ProposedPixelX;
-      int ground = layer.GetTopSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, ProposedPixelY+SolidHeight, ProposedSolidPixelWidth, Threshhold), m_solidity);
+      int ProposedSolidPixelWidth = SolidWidth + (int)Math.Ceiling(x + dx) - ProposedPixelX;
+      int ground = layer.GetTopSolidPixel(new System.Drawing.Rectangle(ProposedPixelX, ProposedPixelY + SolidHeight, ProposedSolidPixelWidth, Threshhold), m_solidity);
       if (ground != int.MinValue)
       {
          // Do integer arithmetic before double otherwise strange rounding seems to happen
@@ -1809,17 +1809,17 @@ public abstract partial class SpriteBase : GeneralRules
 
       int SolidPixelWidth;
       int SolidPixelHeight;
-      switch(Direction)
+      switch (Direction)
       {
          case Direction.Up:
             SolidPixelWidth = SolidWidth + (int)Math.Ceiling(x) - PixelX;
-            return layer.GetBottomSolidPixel(new System.Drawing.Rectangle(PixelX, PixelY-1, SolidPixelWidth, 1), m_solidity) != int.MinValue;
+            return layer.GetBottomSolidPixel(new System.Drawing.Rectangle(PixelX, PixelY - 1, SolidPixelWidth, 1), m_solidity) != int.MinValue;
          case Direction.Right:
             SolidPixelHeight = SolidHeight + (int)Math.Ceiling(y) - PixelY;
-            return layer.GetLeftSolidPixel(new System.Drawing.Rectangle(PixelX+SolidWidth, PixelY, 1, SolidPixelHeight), m_solidity) != int.MinValue;
+            return layer.GetLeftSolidPixel(new System.Drawing.Rectangle(PixelX + SolidWidth, PixelY, 1, SolidPixelHeight), m_solidity) != int.MinValue;
          case Direction.Down:
             SolidPixelWidth = SolidWidth + (int)Math.Ceiling(x) - PixelX;
-            return layer.GetTopSolidPixel(new System.Drawing.Rectangle(PixelX, PixelY+SolidHeight, SolidPixelWidth, 1), m_solidity) != int.MinValue;
+            return layer.GetTopSolidPixel(new System.Drawing.Rectangle(PixelX, PixelY + SolidHeight, SolidPixelWidth, 1), m_solidity) != int.MinValue;
          case Direction.Left:
             SolidPixelHeight = SolidHeight + (int)Math.Ceiling(y) - PixelY;
             return layer.GetRightSolidPixel(new System.Drawing.Rectangle(PixelX - 1, PixelY, 1, SolidPixelHeight), m_solidity) != int.MinValue;
@@ -1839,14 +1839,14 @@ public abstract partial class SpriteBase : GeneralRules
    {
       Debug.Assert(this.isActive, "Attempted to execute IsPointBlocked on an inactive sprite");
       System.Drawing.Point ptRelative = GetRelativePosition(TestPoint);
-      switch(Direction)
+      switch (Direction)
       {
          case Direction.Up:
             return layer.GetBottomSolidPixel(new System.Drawing.Rectangle(ptRelative.X, ptRelative.Y - Distance, 1, Distance), m_solidity) != int.MinValue;
          case Direction.Right:
-            return layer.GetLeftSolidPixel(new System.Drawing.Rectangle(ptRelative.X+1, ptRelative.Y, Distance, 1), m_solidity) != int.MinValue;
+            return layer.GetLeftSolidPixel(new System.Drawing.Rectangle(ptRelative.X + 1, ptRelative.Y, Distance, 1), m_solidity) != int.MinValue;
          case Direction.Down:
-            return layer.GetTopSolidPixel(new System.Drawing.Rectangle(ptRelative.X, ptRelative.Y+1, 1, Distance), m_solidity) != int.MinValue;
+            return layer.GetTopSolidPixel(new System.Drawing.Rectangle(ptRelative.X, ptRelative.Y + 1, 1, Distance), m_solidity) != int.MinValue;
          case Direction.Left:
             return layer.GetRightSolidPixel(new System.Drawing.Rectangle(ptRelative.X - Distance, ptRelative.Y, Distance, 1), m_solidity) != int.MinValue;
       }
@@ -1921,7 +1921,7 @@ public abstract partial class SpriteBase : GeneralRules
    public bool TouchTiles(TileCategoryName Category)
    {
       Debug.Assert(this.isActive, "Attempted to execute TouchTiles on an inactive sprite");
-      
+
       if (TouchedTiles != null)
          TouchedTiles.Clear();
 
@@ -1930,9 +1930,9 @@ public abstract partial class SpriteBase : GeneralRules
       int minYEdge = (PixelY / th);
       int maxY = (PixelY + SolidHeight) / th;
       if (maxY >= layer.VirtualRows)
-         maxY = layer.VirtualRows -1;
+         maxY = layer.VirtualRows - 1;
       int maxYEdge = (PixelY + SolidHeight - 1) / th;
-      int minX = (PixelX - 1)/ tw;
+      int minX = (PixelX - 1) / tw;
       int minXEdge = PixelX / tw;
       int maxX = (PixelX + SolidWidth) / tw;
       if (maxX >= layer.VirtualColumns)
@@ -1954,9 +1954,9 @@ public abstract partial class SpriteBase : GeneralRules
                   (OldPixelY <= yidx * th + th) &&
                   (OldPixelY + SolidHeight >= yidx * th))
                {
-                  bool edgeX = (OldPixelX+SolidWidth == xidx * tw) || 
+                  bool edgeX = (OldPixelX + SolidWidth == xidx * tw) ||
                      (OldPixelX == xidx * tw + tw);
-                  bool edgeY = (OldPixelY+SolidHeight == yidx * th) ||
+                  bool edgeY = (OldPixelY + SolidHeight == yidx * th) ||
                      (OldPixelY == yidx * th + th);
                   if (edgeX && edgeY)
                      wasTouching = false;
@@ -1965,7 +1965,7 @@ public abstract partial class SpriteBase : GeneralRules
                }
                else
                   wasTouching = false;
-               
+
                if (TouchedTiles == null)
                   TouchedTiles = new System.Collections.ArrayList(10);
                TouchedTiles.Add(new TouchedTile(xidx, yidx, layer[xidx, yidx], !wasTouching));
@@ -1996,16 +1996,16 @@ public abstract partial class SpriteBase : GeneralRules
    /// affects the tile, it is marked as processed. It is only marked as processed if
    /// it is affected (if the counter changes).</para></remarks>
    [Description("When the sprite is touching the specified tile, and the specified counter is not maxed, change/clear the tile value to NewValue and increment the specified counter/parameter. Returns the number of tiles affected. (Must run TouchTiles first.)")]
-   public int TileTake(int TileValue,  Counter Counter, int NewValue)
+   public int TileTake(int TileValue, Counter Counter, int NewValue)
    {
       Debug.Assert(this.isActive, "Attempted to execute TileTake on an inactive sprite");
 
       if (TouchedTiles == null)
-         return 0 ;
+         return 0;
 
       int result = 0;
 
-      for (int i=0; i < TouchedTiles.Count; i++)
+      for (int i = 0; i < TouchedTiles.Count; i++)
       {
          TouchedTile tt = (TouchedTile)TouchedTiles[i];
          if ((tt.tileValue == TileValue) && (!tt.processed))
@@ -2042,7 +2042,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// affects the tile, it is marked as processed. It is only marked as processed if
    /// it is affected (if the counter changes).</para></remarks>
    [Description("When the sprite is touching the specified tile, and the specified counter is greater than 0, decrement the counter and clear the tile value to NewValue. Returns the number of tiles affected. (Must run TouchTiles first.)")]
-   public int TileUseUp(int TileValue,  Counter Counter, int NewValue)
+   public int TileUseUp(int TileValue, Counter Counter, int NewValue)
    {
       Debug.Assert(this.isActive, "Attempted to execute TileUseUp on an inactive sprite");
 
@@ -2051,7 +2051,7 @@ public abstract partial class SpriteBase : GeneralRules
 
       int result = 0;
 
-      for (int i=0; i < TouchedTiles.Count; i++)
+      for (int i = 0; i < TouchedTiles.Count; i++)
       {
          TouchedTile tt = (TouchedTile)TouchedTiles[i];
          if ((tt.tileValue == TileValue) && (!tt.processed))
@@ -2094,7 +2094,7 @@ public abstract partial class SpriteBase : GeneralRules
       for (int i = 0; i < TouchedTiles.Count; i++)
       {
          TouchedTile tt = (TouchedTile)TouchedTiles[i];
-         if (!tt.processed && layer.GetTile(tt.x, tt.y).IsMember(Category) 
+         if (!tt.processed && layer.GetTile(tt.x, tt.y).IsMember(Category)
             && (!InitialOnly || tt.initial))
          {
             TouchingIndex = i;
@@ -2150,7 +2150,7 @@ public abstract partial class SpriteBase : GeneralRules
       if (TouchedTiles == null)
          return -1;
 
-      for (int i=0; i < TouchedTiles.Count; i++)
+      for (int i = 0; i < TouchedTiles.Count; i++)
       {
          TouchedTile tt = (TouchedTile)TouchedTiles[i];
          if ((tt.tileValue == TileValue) && (!tt.processed) && (!InitialOnly || tt.initial))
@@ -2159,7 +2159,7 @@ public abstract partial class SpriteBase : GeneralRules
             return i;
          }
       }
-      
+
       return -1;
    }
 
@@ -2191,7 +2191,7 @@ public abstract partial class SpriteBase : GeneralRules
    {
       Debug.Assert(this.isActive, "Attempted to execute TileActivateSprite on an inactive sprite");
 
-      for(int i=0; i<Category.Count; i++)
+      for (int i = 0; i < Category.Count; i++)
       {
          if (!Category[i].isActive)
          {
@@ -2324,7 +2324,7 @@ public abstract partial class SpriteBase : GeneralRules
 
       int result = 0;
 
-      for (int i=0; i < TouchedTiles.Count; i++)
+      for (int i = 0; i < TouchedTiles.Count; i++)
       {
          TouchedTile tt = (TouchedTile)TouchedTiles[i];
          if ((tt.tileValue == OldTileValue) && (!tt.processed) && (!InitialOnly || tt.initial))
@@ -2388,7 +2388,7 @@ public abstract partial class SpriteBase : GeneralRules
             rp.Y = PixelY + (int)(SolidHeight / 2);
             break;
          case RelativePosition.BottomLeft:
-            rp.Y = PixelY + SolidHeight -1;
+            rp.Y = PixelY + SolidHeight - 1;
             break;
          case RelativePosition.BottomCenter:
             rp.X = PixelX + (int)(SolidWidth / 2);
@@ -2444,7 +2444,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// if TargetSprite is obstructing this sprite.
    /// </summary>
    /// <param name="TargetSprite">Sprite whose velocity may be affected.</param>
-   /// <returns>True if the sprite was pushed, false otherwise.</return>
+   /// <returns>True if the sprite was pushed, false otherwise.</returns>
    [Description("Alter the velocity of TargetSprite to plan to move out of the way of this sprite.")]
    public bool PushSprite(SpriteBase TargetSprite)
    {
@@ -2493,7 +2493,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// if this sprite is obstructing sprites in Pushers.
    /// </summary>
    /// <param name="Pushers">Sprites that can push this sprite.</param>
-   /// <returns>True if the sprite was pushed, false otherwise.</return>
+   /// <returns>True if the sprite was pushed, false otherwise.</returns>
    [Description("Alter the velocity of this sprite to plan to move out of the way of sprites in Pushers.")]
    public bool ReactToPush(SpriteCollection Pushers)
    {
@@ -2518,7 +2518,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// sprite's pushing first).
    /// </summary>
    /// <param name="Pushers">Sprites that can push back on this sprite.</param>
-   /// <returns>True if the sprite was pushed, false otherwise.</return>
+   /// <returns>True if the sprite was pushed, false otherwise.</returns>
    /// <remarks>The process of making moving sprites push and avoid each other is
    /// relatively complex and not 100% reliable. If only one of the sprites is moving,
    /// it's recommended to use the simpler <see cref="ReactToPush"/> function on the
@@ -2551,7 +2551,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// Determine if this sprite is planning to overlap the target sprite.
    /// </summary>
    /// <param name="TargetSprite">Sprite against which planned overlap is checked.</param>
-   /// <returns>True if the sprite will overlap TargetSprite.</return>
+   /// <returns>True if the sprite will overlap TargetSprite.</returns>
    [Description("Determine if this sprite is planning to overlap the target sprite.")]
    public bool TestCollisionRect(SpriteBase TargetSprite)
    {

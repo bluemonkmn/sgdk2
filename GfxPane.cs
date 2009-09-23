@@ -320,7 +320,7 @@ namespace SGDK2
                   break;
                case DrawingTool.Dropper:
                   if ((DragStart.X < Image.Width) && (DragStart.Y < Image.Height) &&
-                     (DragStart.X > 0) && (DragStart.Y > 0))
+                     (DragStart.X >= 0) && (DragStart.Y >= 0))
                      ParentEditor.PickColor(Image.GetPixel((int)DragStart.X, (int)DragStart.Y));
                   break;
                case DrawingTool.FloodFill:

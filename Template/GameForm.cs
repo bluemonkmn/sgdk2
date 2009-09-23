@@ -174,7 +174,6 @@ public partial class GameForm : Form
    /// </remarks>
    public void Run()
    {
-      int coopCode;
       int controllerCount = Joystick.GetDeviceCount();
       if (controllerCount > 0)
       {

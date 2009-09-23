@@ -18,19 +18,6 @@ public abstract partial class GeneralRules
    private static long previousFrame = 0;
 
    /// <summary>
-   /// Windows API call used to time the displaying of frames by <see cref="LimitFrameRate"/>.
-   /// </summary>
-   /// <param name="PerformanceCount">Receives the counter value.</param>
-   [System.Runtime.InteropServices.DllImport("Kernel32.dll")]
-   public static extern bool QueryPerformanceCounter(out long PerformanceCount);
-   /// <summary>
-   /// Windows API call used to time the displaying of frames by <see cref="LimitFrameRate"/>.
-   /// </summary>
-   /// <param name="PerformanceCount">Receives the number of counter cycles per second.</param>
-   [System.Runtime.InteropServices.DllImport("Kernel32.dll")]
-   public static extern bool QueryPerformanceFrequency(out long PerformanceCount);
-
-   /// <summary>
    /// Contains the last sprite created with <see cref="PlanBase.AddSpriteAtPlan"/>,
    /// <see cref="SpriteBase.TileAddSprite"/> or <see cref="SpriteBase.AddSpriteHere"/>.
    /// </summary>
@@ -62,13 +49,13 @@ public abstract partial class GeneralRules
    {
       long freq;
       long frame;
-      QueryPerformanceFrequency(out freq);
-      QueryPerformanceCounter(out frame);
+      freq = System.Diagnostics.Stopwatch.Frequency;
+      frame = System.Diagnostics.Stopwatch.GetTimestamp();
       while ((frame - previousFrame) * fps < freq)
       {
          int sleepTime = (int)((previousFrame * fps + freq - frame * fps) * 1000 / (freq * fps));
          System.Threading.Thread.Sleep(sleepTime);
-         QueryPerformanceCounter(out frame);
+         frame = System.Diagnostics.Stopwatch.GetTimestamp();
       }
       previousFrame = frame;
    }

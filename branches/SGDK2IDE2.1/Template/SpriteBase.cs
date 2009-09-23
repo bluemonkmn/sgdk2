@@ -2089,8 +2089,6 @@ public abstract partial class SpriteBase : GeneralRules
       if (TouchedTiles == null)
          return false;
 
-      int result = 0;
-
       for (int i = 0; i < TouchedTiles.Count; i++)
       {
          TouchedTile tt = (TouchedTile)TouchedTiles[i];
@@ -2552,7 +2550,6 @@ public abstract partial class SpriteBase : GeneralRules
    /// </summary>
    /// <param name="TargetSprite">Sprite against which planned overlap is checked.</param>
    /// <returns>True if the sprite will overlap TargetSprite.</returns>
-   [Description("Determine if this sprite is planning to overlap the target sprite.")]
    public bool TestCollisionRect(SpriteBase TargetSprite)
    {
       Debug.Assert(this.isActive, "Attempted to execute TestCollision on an inactive sprite");

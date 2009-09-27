@@ -304,6 +304,9 @@ namespace SGDK2
          EditRow.BytesPerTile = 1;
          if (ProjectData.Tileset.DefaultView.Count > 0)
             EditRow.Tileset = (ProjectData.Tileset.DefaultView[0].Row as ProjectDataset.TilesetRow).Name;
+         foreach (ProjectDataset.LayerRow lr in ProjectData.GetSortedLayers(parent))
+            if (lr.ZIndex >= EditRow.ZIndex)
+               EditRow.ZIndex = lr.ZIndex + 1;
          EditRow.BeginEdit();
          pgrLayer.SelectedObject = DataObject = new LayerProperties(EditRow);
          DataObject.BackgroundTile = 0;

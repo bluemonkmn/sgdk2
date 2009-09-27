@@ -98,10 +98,18 @@ namespace SGDK2
       public Layer(ProjectDataset.LayerRow layer, Display display)
       {
          m_Layer = layer;
-         ProjectData.GetTilesetOverlaps(m_Layer.TilesetRow,
+         if (!String.IsNullOrEmpty(layer.Tileset))
+         {
+            ProjectData.GetTilesetOverlaps(m_Layer.TilesetRow,
             out m_nRightBuffer, out m_nBottomBuffer, out m_nLeftBuffer, out m_nTopBuffer);
-         m_TileCache = new TileCache(layer.TilesetRow);
-         m_FrameCache = FrameCache.GetFrameCache(layer.TilesetRow.Frameset, display);
+            m_TileCache = new TileCache(layer.TilesetRow);
+            m_FrameCache = FrameCache.GetFrameCache(layer.TilesetRow.Frameset, display);
+         }
+         else
+         {
+            m_TileCache = null;
+            m_FrameCache = FrameCache.GetFrameCache(null, display);
+         }
       }
 
       #region Public properties
@@ -266,11 +274,25 @@ namespace SGDK2
 
       public void Draw(Display Display, Size ViewSize)
       {
-         if (m_TileCache.Count <= 0)
+         if ((m_TileCache != null) &&  (m_TileCache.Count <= 0))
             return;
-         ProjectDataset.TilesetRow tsr = m_Layer.TilesetRow;
-         int nTileWidth = tsr.TileWidth;
-         int nTileHeight = tsr.TileHeight;
+         int[] bgTileFrame = {0};
+
+         ProjectDataset.TilesetRow tsr;
+         int nTileWidth;
+         int nTileHeight;
+         if (String.IsNullOrEmpty(m_Layer.Tileset))
+         {
+            tsr = null;
+            nTileWidth = 32;
+            nTileHeight = 32;
+         }
+         else
+         {
+            tsr = m_Layer.TilesetRow;
+            nTileWidth = tsr.TileWidth;
+            nTileHeight = tsr.TileHeight;
+         }
 
          int nStartCol = (-m_nLeftBuffer-m_CurrentPosition.X) / nTileWidth;
          if (nStartCol < 0)
@@ -329,7 +351,12 @@ namespace SGDK2
 
             for (int x = nStartCol; x <= EndCol; x++)
             {
-               int[] SubFrames = m_TileCache[this[x,y]];
+               int[] SubFrames;
+               if (m_TileCache == null)
+                  SubFrames = bgTileFrame;
+               else
+                  SubFrames = m_TileCache[this[x, y]];
+
                for (int nFrame = 0; nFrame < SubFrames.Length; nFrame++)
                {
                   if ((suspendedTiles != null) && (Array.BinarySearch(suspendedTiles, new Point(x,y), PointComparer.Value) >= 0))

@@ -1636,6 +1636,8 @@ namespace SGDK2
 
          foreach (ProjectDataset.LayerRow drLayer in ProjectData.GetSortedLayers(drMap))
          {
+            if (String.IsNullOrEmpty(drLayer.Tileset))
+               continue;
             CodeMemberField fldLayer;
             int nTop, nBottom, nLeft, nRight;
             ProjectData.GetTilesetOverlaps(drLayer.TilesetRow, out nRight, out nBottom, out nLeft, out nTop);

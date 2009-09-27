@@ -364,7 +364,7 @@ namespace SGDK2
          if (m_GraphicSheets.Contains(Name))
          {
             WeakReference wr = (WeakReference)m_GraphicSheets[Name];
-            if(bForceReload)
+            if (bForceReload)
             {
                // If reload is forced, may have to dispose of old bitmap
                if (wr.IsAlive)
@@ -377,29 +377,44 @@ namespace SGDK2
             }
          }
 
-         Bitmap bmpStreamImage;
-         ProjectDataset.GraphicSheetRow drGfx = ProjectData.GetGraphicSheet(Name);
-         System.IO.MemoryStream ms = null;
-         if (IsGraphicSheetDecapsulated(drGfx))
-            try
+         Bitmap bmpResult;
+         if (String.IsNullOrEmpty(Name))
+         {
+            bmpResult = new Bitmap(32, 32, System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            using (Graphics g = Graphics.FromImage(bmpResult))
             {
-               bmpStreamImage = new Bitmap(ProjectData.GetGraphicSheetCapsulePath(SGDK2IDE.CurrentProjectFile, drGfx));
+               using (HatchBrush br = new HatchBrush(HatchStyle.SolidDiamond, Color.Gray, Color.White))
+               {
+                  g.FillRectangle(br, new Rectangle(0, 0, bmpResult.Width, bmpResult.Height));
+               }
             }
-            catch(System.Exception ex)
-            {
-               throw new ApplicationException("An error occurred attempting to load a decapsulated graphic sheet from \"" + ProjectData.GetGraphicSheetCapsulePath(SGDK2IDE.CurrentProjectFile, drGfx) + "\": " + ex.ToString(), ex);
-            }
+         }
          else
          {
-            ms = new System.IO.MemoryStream(ProjectData.GetGraphicSheet(Name).Image, false);
-            bmpStreamImage = (Bitmap)Bitmap.FromStream(ms);
+            Bitmap bmpStreamImage;
+            ProjectDataset.GraphicSheetRow drGfx = ProjectData.GetGraphicSheet(Name);
+            System.IO.MemoryStream ms = null;
+            if (IsGraphicSheetDecapsulated(drGfx))
+               try
+               {
+                  bmpStreamImage = new Bitmap(ProjectData.GetGraphicSheetCapsulePath(SGDK2IDE.CurrentProjectFile, drGfx));
+               }
+               catch (System.Exception ex)
+               {
+                  throw new ApplicationException("An error occurred attempting to load a decapsulated graphic sheet from \"" + ProjectData.GetGraphicSheetCapsulePath(SGDK2IDE.CurrentProjectFile, drGfx) + "\": " + ex.ToString(), ex);
+               }
+            else
+            {
+               ms = new System.IO.MemoryStream(ProjectData.GetGraphicSheet(Name).Image, false);
+               bmpStreamImage = (Bitmap)Bitmap.FromStream(ms);
+            }
+            bmpResult = new Bitmap(bmpStreamImage.Width, bmpStreamImage.Height,
+               System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+            SGDK2IDE.CopyImage(bmpResult, bmpStreamImage);
+            bmpStreamImage.Dispose();
+            if (ms != null)
+               ms.Close();
          }
-         Bitmap bmpResult = new Bitmap(bmpStreamImage.Width, bmpStreamImage.Height,
-            System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-         SGDK2IDE.CopyImage(bmpResult, bmpStreamImage);
-         bmpStreamImage.Dispose();
-         if (ms != null)
-            ms.Close();
          m_GraphicSheets[Name] = new WeakReference(bmpResult);
          return bmpResult;
       }

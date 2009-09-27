@@ -904,6 +904,9 @@ namespace SGDK2
       #region Private Members
       private Size GetScrollBounds()
       {
+         if (String.IsNullOrEmpty(m_Layers[m_nCurLayer].LayerRow.Tileset))
+            return new Size(m_Layers[m_nCurLayer].VirtualColumns * 32,
+            m_Layers[m_nCurLayer].VirtualRows * 32);
          ProjectDataset.TilesetRow tsr = m_Layers[m_nCurLayer].LayerRow.TilesetRow;
          return new Size(m_Layers[m_nCurLayer].VirtualColumns * tsr.TileWidth,
             m_Layers[m_nCurLayer].VirtualRows * tsr.TileHeight);
@@ -1023,9 +1026,12 @@ namespace SGDK2
          cboCategory.Items.Clear();
          cboCategory.Items.Add("<All>");
          cboCategory.DisplayMember = "Name";
-         foreach(ProjectDataset.CategorizedTilesetRow row in m_Layers[m_nCurLayer].LayerRow.TilesetRow.GetCategorizedTilesetRows())
+         if (!string.IsNullOrEmpty(m_Layers[m_nCurLayer].LayerRow.Tileset))
          {
-            cboCategory.Items.Add(row);
+            foreach (ProjectDataset.CategorizedTilesetRow row in m_Layers[m_nCurLayer].LayerRow.TilesetRow.GetCategorizedTilesetRows())
+            {
+               cboCategory.Items.Add(row);
+            }
          }
          cboCategory.SelectedIndex = 0;
       }
@@ -1535,6 +1541,11 @@ namespace SGDK2
       #region Public Static Members
       public static void Edit(Form MdiParent, ProjectDataset.LayerRow EditRow)
       {
+         if (String.IsNullOrEmpty(EditRow.Tileset))
+         {
+            MessageBox.Show(MdiParent, "The designer background has no tileset and cannot be edited in the map editor. Edit the properties to refer to a valid tileset or delete it and replace it with your own background.", "Edit Layer", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
          foreach(Form frm in MdiParent.MdiChildren)
          {
             frmMapEditor f = frm as frmMapEditor;
@@ -1998,10 +2009,20 @@ namespace SGDK2
                   if (mnuLayers.MenuItems[i].Checked)
                   {
                      Layer lyr = m_Layers[i];
-                     ProjectDataset.TilesetRow tsr = lyr.LayerRow.TilesetRow;
-                     Rectangle rcLayer = new Rectangle(lyr.CurrentPosition,
-                        new Size(lyr.VirtualColumns * tsr.TileWidth,
-                        lyr.VirtualRows * tsr.TileHeight));
+                     Rectangle rcLayer;
+                     if (String.IsNullOrEmpty(lyr.LayerRow.Tileset))
+                     {
+                        rcLayer = new Rectangle(lyr.CurrentPosition,
+                           new Size(lyr.VirtualColumns * 32,
+                           lyr.VirtualRows * 32));
+                     }
+                     else
+                     {
+                        ProjectDataset.TilesetRow tsr = lyr.LayerRow.TilesetRow;
+                        rcLayer = new Rectangle(lyr.CurrentPosition,
+                           new Size(lyr.VirtualColumns * tsr.TileWidth,
+                           lyr.VirtualRows * tsr.TileHeight));
+                     }
                      MapDisplay.SetColor(Color.White);
                      MapDisplay.DrawRectangle(rcLayer, unchecked((short)0xFF00));
                      MapDisplay.SetColor(Color.Black);

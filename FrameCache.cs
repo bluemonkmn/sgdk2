@@ -77,7 +77,9 @@ namespace SGDK2
 
       public static FrameCache GetFrameCache(string name, Display display)
       {
-         if (activeCaches.ContainsKey(name))
+         if (String.IsNullOrEmpty(name))
+            return new FrameCache(null, display);
+         else if (activeCaches.ContainsKey(name))
          {
             WeakReference cachedObject = activeCaches[name];
             FrameCache result;
@@ -113,8 +115,23 @@ namespace SGDK2
 
       private FrameCache(ProjectDataset.FramesetRow Frameset, Display display)
       {
-         ProjectDataset.FrameRow[] arfr = ProjectData.GetSortedFrameRows(Frameset);
          m_Display = display;
+         if (Frameset == null)
+         {
+            System.Drawing.Point[] ptsRect = new Point[]
+            {
+               new Point(0, 0),
+               new Point(0,32),
+               new Point(32, 32),
+               new Point(32,0)
+            };
+            m_arFrames = new Frame[1];
+            m_arFrames[0] = new Frame(0, new Rectangle(0, 0, 32, 32), null, -1, ptsRect);
+            if (m_Display != null)
+               m_arFrames[0].GraphicSheetTexture = m_Display.GetTextureRef(String.Empty);
+            return;
+         }
+         ProjectDataset.FrameRow[] arfr = ProjectData.GetSortedFrameRows(Frameset);
          m_arFrames = new Frame[arfr.Length];
          for (int nIdx = 0; nIdx < arfr.Length; nIdx++)
          {

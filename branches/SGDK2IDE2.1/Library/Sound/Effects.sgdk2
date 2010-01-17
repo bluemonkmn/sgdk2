@@ -639,8 +639,8 @@
     <Text>~import "fmod.cs"</Text>
   </SourceCode>
   <SourceCode Name="fmodbase.cs" IsCustomObject="true" DependsOn="fmod.cs">
-    <Text>// File version 3 (initially distributed with version 2.1 beta 5)
-// Last change: Update setCallback interface to new FMOD prototype.
+    <Text>// File version 4 (initially distributed with version 2.1.3)
+// Last change: Implement PlayMusic.
 
 using System;
 using System.ComponentModel;
@@ -659,6 +659,9 @@ namespace CustomObjects
       private static FMOD.System system  = null;
       private FMOD.Channel channel = null;
       private FMOD.Sound sound  = null;
+      private float lastSetVolume;
+      private static FMODBase music = null;
+      private static FMODBase oldMusic = null;
       private static System.Collections.ArrayList soundList = new System.Collections.ArrayList();
       // Must keep a reference to the callback to prevent
       // Garbage collector from causing NullReferenceException
@@ -683,10 +686,11 @@ namespace CustomObjects
       public static void OnFrameStart()
       {
          ERRCHECK(system.update());
+         ManageMusic();
       }
 
-      [Description("Play an FMOD sound effect")]
-      public static void PlaySound([System.ComponentModel.Editor("CustomObject", "UITypeEditor")] CustomObjects.FMODBase Sound, SoundReplay ReplayOption)
+      [Description("Play an FMOD sound effect. Returns true if the sound was (re-)started.")]
+      public static bool PlaySound([System.ComponentModel.Editor("CustomObject", "UITypeEditor")] CustomObjects.FMODBase Sound, SoundReplay ReplayOption)
       {
          LoadSound(Sound);
          if (Sound.isPlaying)
@@ -694,7 +698,7 @@ namespace CustomObjects
             switch(ReplayOption)
             {
                case SoundReplay.Continue:
-                  return;
+                  return false;
                case SoundReplay.StartNew:
                   break;
                case SoundReplay.Restart:
@@ -705,6 +709,54 @@ namespace CustomObjects
          ERRCHECK(system.playSound(FMOD.CHANNELINDEX.FREE, Sound.sound, false, ref Sound.channel));
          ERRCHECK(Sound.channel.setCallback(updateCallback));
          ERRCHECK(Sound.channel.setVolume(Sound.Volume));
+         Sound.lastSetVolume = Sound.Volume;
+         return true;
+      }
+
+      [Description("Play an FMOD sound as background music which will fade out when new music starts.")]
+      public static void PlayMusic([System.ComponentModel.Editor("CustomObject", "UITypeEditor")] CustomObjects.FMODBase Sound)
+      {
+         bool newSoundStarted = PlaySound(Sound, SoundReplay.Continue);
+
+         if ((music != Sound) &amp;&amp; (music != null))
+         {
+            if ((oldMusic != null) &amp;&amp; (Sound != oldMusic))
+               oldMusic.Stop();
+            oldMusic = music;
+            if (newSoundStarted)
+            {
+               Sound.lastSetVolume = .005f;
+               ERRCHECK(Sound.channel.setVolume(Sound.lastSetVolume));
+            }
+         }
+         music = Sound;
+      }
+
+      private static void ManageMusic()
+      {
+         if (oldMusic != null)
+         {
+            oldMusic.lastSetVolume -= .005f;
+            if (oldMusic.lastSetVolume &lt; 0)
+            {
+               oldMusic.Stop();
+               oldMusic = null;
+            }
+            else
+            {
+               ERRCHECK(oldMusic.channel.setVolume(oldMusic.lastSetVolume));
+            }
+         }
+         if (music != null)
+         {
+            if (music.lastSetVolume &lt; music.Volume)
+            {
+               music.lastSetVolume += .005f;
+               if (music.lastSetVolume &gt; music.Volume)
+                  music.lastSetVolume = music.Volume;
+               ERRCHECK(music.channel.setVolume(music.lastSetVolume));
+            }
+         }
       }
 
       [Description("Pause or resume an FMOD sound effect")]
@@ -721,7 +773,13 @@ namespace CustomObjects
             {
                FMODBase snd = (FMODBase)soundList[i];
                if ((snd.channel != null) &amp;&amp; (snd.channel.getRaw() == channelraw) &amp;&amp; (type == FMOD.CHANNEL_CALLBACKTYPE.END))
+               {
                   snd.channel = null;
+                  if (snd == oldMusic)
+                     oldMusic = null;
+                  if (snd == music)
+                     music = null;
+               }
             }
             return FMOD.RESULT.OK;
          }
@@ -756,6 +814,10 @@ namespace CustomObjects
          if(isPlaying)
             ERRCHECK(channel.stop());
          channel = null;
+         if (this == oldMusic)
+            oldMusic = null;
+          if (this == music)
+            music = null;         
       }
 
       [Description("Release the memory associated with the specified FMOD object")]
@@ -819,6 +881,7 @@ namespace CustomObjects
       }
    }
 }
+
 </Text>
   </SourceCode>
   <SourceCode Name="Boing.cs" IsCustomObject="true" DependsOn="fmodbase.cs">

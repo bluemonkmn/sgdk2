@@ -931,7 +931,16 @@ namespace SGDK2
             ProjectData.Clear();
             InitializeTree();
             ProjectData.Merge(dsLoad);
-            if (!asTemplate)
+            if (asTemplate)
+            {
+               foreach (DataRowView drv in ProjectData.SourceCode.DefaultView)
+               {
+                  ProjectDataset.SourceCodeRow row = ((ProjectDataset.SourceCodeRow)drv.Row);
+                  if (ProjectData.IsSourceCodeDecapsulated(row))
+                     ProjectData.ReencapsulateSourceCode(projectFile, row);
+               }
+            }
+            else
             {
                ProjectData.AcceptChanges();
                tvwMain.CollapseAll();

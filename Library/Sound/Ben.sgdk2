@@ -640,7 +640,7 @@
   </SourceCode>
   <SourceCode Name="fmodbase.cs" IsCustomObject="true" DependsOn="fmod.cs">
     <Text>// File version 4 (initially distributed with version 2.1.3)
-// Last change: Implement PlayMusic.
+// Last change: Implement PlayMusic and FadeMusic.
 
 using System;
 using System.ComponentModel;
@@ -700,17 +700,33 @@ namespace CustomObjects
                case SoundReplay.Continue:
                   return false;
                case SoundReplay.StartNew:
+                  ERRCHECK(system.playSound(FMOD.CHANNELINDEX.FREE, Sound.sound, false, ref Sound.channel));
                   break;
                case SoundReplay.Restart:
                   Sound.Stop();
+                  ERRCHECK(system.playSound(FMOD.CHANNELINDEX.REUSE, Sound.sound, false, ref Sound.channel));
                   break;
             }
          }
-         ERRCHECK(system.playSound(FMOD.CHANNELINDEX.FREE, Sound.sound, false, ref Sound.channel));
+         else
+            ERRCHECK(system.playSound(FMOD.CHANNELINDEX.REUSE, Sound.sound, false, ref Sound.channel));
+
          ERRCHECK(Sound.channel.setCallback(updateCallback));
          ERRCHECK(Sound.channel.setVolume(Sound.Volume));
          Sound.lastSetVolume = Sound.Volume;
          return true;
+      }
+
+      [Description("Fade out any background music which is playing.")]
+      public static void FadeMusic()
+      {
+         if (oldMusic != null)
+            oldMusic.Stop();
+         if (music != null)
+         {
+            oldMusic = music;
+            music = null;
+         }
       }
 
       [Description("Play an FMOD sound as background music which will fade out when new music starts.")]
@@ -730,6 +746,8 @@ namespace CustomObjects
             }
          }
          music = Sound;
+         if (music == oldMusic)
+            oldMusic = null;
       }
 
       private static void ManageMusic()

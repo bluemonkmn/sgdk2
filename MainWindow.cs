@@ -1644,6 +1644,35 @@ namespace SGDK2
             MessageBox.Show(this, ex.Message, "Error Enumerating Sprite Templates", MessageBoxButtons.OK, MessageBoxIcon.Error);
          }            
       }
+
+      private TreeNode InsertSortedNode(TreeNode parent, string childName)
+      {
+         int newIndex;
+         for (newIndex = 0; newIndex < parent.Nodes.Count; newIndex++)
+         {
+            if (string.Compare(parent.Nodes[newIndex].Text, childName, true) > 0)
+               break;
+         }
+         return parent.Nodes.Insert(newIndex, childName);
+      }
+
+      private void UpdateSortedNode(TreeNode child)
+      {
+         int newIndex;
+         TreeNode parent = child.Parent;
+         for (newIndex = 0; newIndex < parent.Nodes.Count; newIndex++)
+         {
+            if (string.Compare(parent.Nodes[newIndex].Text, child.Text, true) > 0)
+               break;
+         }
+         if (child.Index < newIndex)
+            newIndex--;
+         if (newIndex != child.Index)
+         {
+            child.Remove();
+            parent.Nodes.Insert(newIndex, child);
+         }
+      }
       #endregion
 
       #region Public Methods
@@ -1793,7 +1822,8 @@ namespace SGDK2
       {
          if (e.Action == DataRowAction.Add)
          {
-            TreeNode ndNew = ((TreeNode)m_TreeNodes["GS"]).Nodes.Add(e.Row.Name);
+            TreeNode ndNew = InsertSortedNode((TreeNode)m_TreeNodes["GS"], e.Row.Name);
+            
             ndNew.Tag = "GS" + e.Row.Name;
             ndNew.SelectedImageIndex = ndNew.ImageIndex = 4;
             // Add the node to the local index
@@ -1819,6 +1849,7 @@ namespace SGDK2
             m_TreeNodes.Remove("GS" + sOldKey);
             m_TreeNodes.Remove("GE" + sOldKey);
             ndOld.Tag = "GS" + (ndOld.Text = e.Row.Name);
+            UpdateSortedNode(ndOld);
             ndOldChild.Tag = "GE" + e.Row.Name;
             m_TreeNodes.Add(ndOld.Tag, ndOld);
             m_TreeNodes.Add(ndOldChild.Tag, ndOldChild);
@@ -1848,7 +1879,7 @@ namespace SGDK2
       {
          if (e.Action == DataRowAction.Add)
          {
-            TreeNode ndNew = ((TreeNode)m_TreeNodes["FS"]).Nodes.Add(e.Row.Name);
+            TreeNode ndNew = InsertSortedNode((TreeNode)m_TreeNodes["FS"],e.Row.Name);
             ndNew.Tag = "FS" + e.Row.Name;
             ndNew.SelectedImageIndex = ndNew.ImageIndex = 10;
             ndNew.EnsureVisible();
@@ -1866,6 +1897,7 @@ namespace SGDK2
             TreeNode ndOld = (TreeNode)m_TreeNodes["FS" + sOldKey];
             m_TreeNodes.Remove("FS" + sOldKey);
             ndOld.Tag = "FS" + (ndOld.Text = e.Row.Name);
+            UpdateSortedNode(ndOld);
             m_TreeNodes.Add(ndOld.Tag, ndOld);
          }
       }
@@ -1895,6 +1927,7 @@ namespace SGDK2
             TreeNode ndOld = (TreeNode)m_TreeNodes["TS" + sOldKey];
             m_TreeNodes.Remove("TS" + sOldKey);
             ndOld.Tag = "TS" + (ndOld.Text = e.Row.Name);
+            UpdateSortedNode(ndOld);
             m_TreeNodes.Add(ndOld.Tag, ndOld);
          }
       }
@@ -1907,6 +1940,7 @@ namespace SGDK2
             TreeNode ndOld = (TreeNode)m_TreeNodes["TC" + sOldKey];
             m_TreeNodes.Remove("TC" + sOldKey);
             ndOld.Tag = "TC" + (ndOld.Text = e.Row.Name);
+            UpdateSortedNode(ndOld);
             m_TreeNodes.Add(ndOld.Tag, ndOld);
          }
       }
@@ -1932,7 +1966,7 @@ namespace SGDK2
       {
          if (e.Action == DataRowAction.Add)
          {
-            TreeNode ndNew = ((TreeNode)m_TreeNodes["TS"]).Nodes.Add(e.Row.Name);
+            TreeNode ndNew = InsertSortedNode((TreeNode)m_TreeNodes["TS"], e.Row.Name);
             ndNew.Tag = "TS" + e.Row.Name;
             ndNew.SelectedImageIndex = ndNew.ImageIndex = 12;
             // Add the node to the local index
@@ -1944,7 +1978,7 @@ namespace SGDK2
       {
          if (e.Action == DataRowAction.Add)
          {
-            TreeNode ndNew = ((TreeNode)m_TreeNodes["TC"]).Nodes.Add(e.Row.Name);
+            TreeNode ndNew = InsertSortedNode((TreeNode)m_TreeNodes["TC"], e.Row.Name);
             ndNew.Tag = "TC" + e.Row.Name;
             ndNew.SelectedImageIndex = ndNew.ImageIndex = 17;
             // Add the node to the local index
@@ -1956,7 +1990,7 @@ namespace SGDK2
       {
          if (e.Action == DataRowAction.Add)
          {
-            TreeNode ndNew = ((TreeNode)m_TreeNodes["CR"]).Nodes.Add(e.Row.Name);
+            TreeNode ndNew = InsertSortedNode((TreeNode)m_TreeNodes["CR"], e.Row.Name);
             ndNew.Tag = "CR" + e.Row.Name;
             ndNew.SelectedImageIndex = ndNew.ImageIndex = 13;
             ndNew.EnsureVisible();
@@ -1973,6 +2007,7 @@ namespace SGDK2
             TreeNode ndOld = (TreeNode)m_TreeNodes["CR" + sOldKey];
             m_TreeNodes.Remove("CR" + sOldKey);
             ndOld.Tag = "CR" + (ndOld.Text = e.Row.Name);
+            UpdateSortedNode(ndOld);
             m_TreeNodes.Add(ndOld.Tag, ndOld);
          }      
       }
@@ -1998,7 +2033,7 @@ namespace SGDK2
       {
          if (e.Action == DataRowAction.Add)
          {
-            TreeNode ndNew = ((TreeNode)m_TreeNodes["SY"]).Nodes.Add(e.Row.Name);
+            TreeNode ndNew = InsertSortedNode((TreeNode)m_TreeNodes["SY"], e.Row.Name);
             ndNew.Tag = "SY" + e.Row.Name;
             ndNew.SelectedImageIndex = ndNew.ImageIndex = 19;
             ndNew.EnsureVisible();
@@ -2015,6 +2050,7 @@ namespace SGDK2
             TreeNode ndOld = (TreeNode)m_TreeNodes["SY" + sOldKey];
             m_TreeNodes.Remove("SY" + sOldKey);
             ndOld.Tag = "SY" + (ndOld.Text = e.Row.Name);
+            UpdateSortedNode(ndOld);
             m_TreeNodes.Add(ndOld.Tag, ndOld);
          }            
       }
@@ -2040,7 +2076,7 @@ namespace SGDK2
       {
          if (e.Action == DataRowAction.Add)
          {
-            TreeNode ndNew = ((TreeNode)m_TreeNodes["MP"]).Nodes.Add(e.Row.Name);
+            TreeNode ndNew = InsertSortedNode((TreeNode)m_TreeNodes["MP"], e.Row.Name);
             ndNew.Tag = "MP" + e.Row.Name;
             ndNew.SelectedImageIndex = ndNew.ImageIndex = 14;
             // Add the node to the local index
@@ -2062,6 +2098,7 @@ namespace SGDK2
             TreeNode ndOld = (TreeNode)m_TreeNodes["MP" + sOldKey];
             m_TreeNodes.Remove("MP" + sOldKey);
             ndOld.Tag = "MP" + (ndOld.Text = e.Row.Name);
+            UpdateSortedNode(ndOld);
             m_TreeNodes.Add(ndOld.Tag, ndOld);
 
             ndOld = (TreeNode)m_TreeNodes["LR" + sOldKey];
@@ -2093,7 +2130,7 @@ namespace SGDK2
       {
          if (e.Action == DataRowAction.Add)
          {
-            TreeNode ndNew = ((TreeNode)m_TreeNodes["SD"]).Nodes.Add(e.Row.Name);
+            TreeNode ndNew = InsertSortedNode((TreeNode)m_TreeNodes["SD"], e.Row.Name);
             ndNew.Tag = "SD" + e.Row.Name;
             ndNew.SelectedImageIndex = ndNew.ImageIndex = 20;
             ndNew.EnsureVisible();
@@ -2110,6 +2147,7 @@ namespace SGDK2
             TreeNode ndOld = (TreeNode)m_TreeNodes["SD" + sOldKey];
             m_TreeNodes.Remove("SD" + sOldKey);
             ndOld.Tag = "SD" + (ndOld.Text = e.Row.Name);
+            UpdateSortedNode(ndOld);
             m_TreeNodes.Add(ndOld.Tag, ndOld);
          }
       }
@@ -2135,7 +2173,7 @@ namespace SGDK2
       {
          if (e.Action == DataRowAction.Add)
          {
-            TreeNode ndNew = ((TreeNode)m_TreeNodes["LR" + e.Row.MapRow.Name]).Nodes.Add(e.Row.Name);
+            TreeNode ndNew = InsertSortedNode((TreeNode)m_TreeNodes["LR" + e.Row.MapRow.Name], e.Row.Name);
             ndNew.Tag = "LR" + e.Row.MapRow.Name + "~" + e.Row.Name;
             ndNew.SelectedImageIndex = ndNew.ImageIndex = 15;
             // Add the node to the local index
@@ -2172,6 +2210,7 @@ namespace SGDK2
                m_TreeNodes.Remove("PL" + sOldKey);
                ndOld.Tag = "LR" + sNewKey;
                ndOld.Text = e.Row.Name;
+               UpdateSortedNode(ndOld);
                ndOldChild.Tag = "LE" + sNewKey;
                ndOldPlan.Tag = "PL" + sNewKey;
                m_TreeNodes.Add(ndOld.Tag, ndOld);
@@ -2206,7 +2245,7 @@ namespace SGDK2
          if (e.Action == DataRowAction.Add)
          {
             string parentKey = "PL" + e.Row.LayerRowParent.MapRow.Name + "~" + e.Row.LayerRowParent.Name;
-            TreeNode ndNew = ((TreeNode)m_TreeNodes[parentKey]).Nodes.Add(e.Row.Name);
+            TreeNode ndNew = InsertSortedNode((TreeNode)m_TreeNodes[parentKey], e.Row.Name);
             ndNew.Tag = parentKey + "~" + e.Row.Name;
             ndNew.SelectedImageIndex = ndNew.ImageIndex = 22;
             // Add the node to the local index
@@ -2227,6 +2266,7 @@ namespace SGDK2
                "~" + e.Row[ProjectData.SpritePlan.LayerNameColumn,DataRowVersion.Proposed].ToString() +
                "~" + e.Row.Name;
             ndOld.Text = e.Row.Name;
+            UpdateSortedNode(ndOld);
             m_TreeNodes.Add(ndOld.Tag, ndOld);
          }
       }
@@ -2254,7 +2294,7 @@ namespace SGDK2
       {
          if (e.Action == DataRowAction.Add)
          {
-            TreeNode ndNew = ((TreeNode)m_TreeNodes["TC" + e.Row.Name]).Nodes.Add(e.Row.Tileset);
+            TreeNode ndNew = InsertSortedNode((TreeNode)m_TreeNodes["TC" + e.Row.Name], e.Row.Tileset);
             ndNew.Tag = "TC" + e.Row.Name + "~" + e.Row.TilesetRow.Name;
             ndNew.SelectedImageIndex = ndNew.ImageIndex = 12;
             ndNew.EnsureVisible();
@@ -2271,7 +2311,8 @@ namespace SGDK2
             TreeNode ndOld = (TreeNode)m_TreeNodes["TC" + sOldKey];
             m_TreeNodes.Remove("TC" + sOldKey);
             ndOld.Tag = "TC" + e.Row[ProjectData.CategorizedTileset.NameColumn, DataRowVersion.Proposed].ToString() + "~" + e.Row.Tileset;
-            ndOld.Text = e.Row.Name;
+            ndOld.Text = e.Row.Tileset;
+            UpdateSortedNode(ndOld);
             m_TreeNodes.Add(ndOld.Tag, ndOld);
          }      
       }
@@ -2314,7 +2355,7 @@ namespace SGDK2
       {
          if (e.Action == DataRowAction.Add)
          {
-            TreeNode ndNew = ((TreeNode)m_TreeNodes["SC"]).Nodes.Add(e.Row.Name);
+            TreeNode ndNew = InsertSortedNode((TreeNode)m_TreeNodes["SC"], e.Row.Name);
             ndNew.Tag = "SC" + e.Row.Name;
             ndNew.SelectedImageIndex = ndNew.ImageIndex = 21;
             ndNew.EnsureVisible();
@@ -2332,6 +2373,7 @@ namespace SGDK2
             m_TreeNodes.Remove("SC" + sOldKey);
             ndOld.Tag = "SC" + e.Row.Name;
             ndOld.Text = e.Row.Name;
+            UpdateSortedNode(ndOld);
             m_TreeNodes.Add(ndOld.Tag, ndOld);
          }            
       }
@@ -2360,7 +2402,7 @@ namespace SGDK2
             string parent = String.Empty;
             if (!e.Row.IsDependsOnNull())
                parent = e.Row.DependsOn;
-            TreeNode ndNew = ((TreeNode)m_TreeNodes["CD" + parent]).Nodes.Add(e.Row.Name);
+            TreeNode ndNew = InsertSortedNode((TreeNode)m_TreeNodes["CD" + parent], e.Row.Name);
             ndNew.Tag = "CD" + e.Row.Name;
             if (e.Row.IsCustomObject)
                ndNew.SelectedImageIndex = ndNew.ImageIndex = 24;
@@ -2382,6 +2424,7 @@ namespace SGDK2
             m_TreeNodes.Remove(sOldKey);
             ndOld.Tag = "CD" + e.Row.Name;
             ndOld.Text = e.Row.Name;
+            UpdateSortedNode(ndOld);
             m_TreeNodes.Add(ndOld.Tag, ndOld);
             foreach(ProjectDataset.SourceCodeRow child in ProjectData.GetDependentSourceCode(e.Row))
                child.DependsOn = e.Row.Name;

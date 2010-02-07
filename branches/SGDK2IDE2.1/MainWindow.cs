@@ -889,6 +889,7 @@ namespace SGDK2
                }
             }
             ProjectData.AddSourceCode("OpenTK.dll", null, null, true, null);
+            ProjectData.AddSourceCode("OpenTK.GLControl.dll", null, null, true, null);
             ProjectData.AcceptChanges();
             tvwMain.CollapseAll();
             tvwMain.Nodes[0].Expand();

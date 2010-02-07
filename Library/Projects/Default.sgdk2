@@ -913,6 +913,12 @@
    serves as a comment and will not be compiled.
 */</Text>
   </SourceCode>
+  <SourceCode Name="OpenTK.GLControl.dll" IsCustomObject="true">
+    <Text>/*
+   Because this is a binary file, this text only
+   serves as a comment and will not be compiled.
+*/</Text>
+  </SourceCode>
   <Project DisplayMode="m640x480x24" Windowed="true" TitleText="Default SGDK2 Project" MaxPlayers="1" MaxViews="1" Credits="SGDK2 Engine: http://sgdk2.sf.net">
     <Comments />
   </Project>

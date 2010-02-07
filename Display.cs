@@ -8,7 +8,6 @@ using System.Collections;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Graphics.OpenGL.Enums;
 
 namespace SGDK2
 {
@@ -280,7 +279,10 @@ namespace SGDK2
          {
             requirementsChecked = true;
             GL.Finish();
-            if (!GL.SupportsExtension("VERSION_1_2"))
+            string[] versionParts = GL.GetString(StringName.Version).Split(new char[] {'.'}, 3);
+            int majorVer = int.Parse(versionParts[0]);
+            int minorVer = int.Parse(versionParts[1]);
+            if ((majorVer < 1 ) || ((majorVer == 1) && (minorVer < 2)))
             {
                string errString = "OpenGL version 1.2 is required";
                try
@@ -290,9 +292,10 @@ namespace SGDK2
                catch
                {
                }
-               throw new ApplicationException(errString);
+               if (System.Windows.Forms.DialogResult.Cancel == System.Windows.Forms.MessageBox.Show(this, errString + "\r\nTry updating your video drivers.", "Requirement Check Warning", System.Windows.Forms.MessageBoxButtons.OKCancel, System.Windows.Forms.MessageBoxIcon.Exclamation, System.Windows.Forms.MessageBoxDefaultButton.Button2))
+                  throw new ApplicationException(errString);
             }
-            if (!GL.SupportsExtension("GL_ARB_texture_rectangle"))
+            if (!GL.GetString(StringName.Extensions).Contains("GL_ARB_texture_rectangle"))
             {
                System.Windows.Forms.MessageBox.Show(this, "GL_ARB_texture_rectangle may be required for proper operation. The current video driver does not support this feature. Try updating your video drivers.", "Requirement Check Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
             }
@@ -341,10 +344,13 @@ namespace SGDK2
          set
          {
             m_GameDisplayMode = value;
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadIdentity();
-            var naturalSize = GetScreenSize(value);
-            GL.Ortho(0, naturalSize.Width, naturalSize.Height, 0, -1, 1);
+            if (this.Context != null) // Forces context to be created
+            {
+               GL.MatrixMode(MatrixMode.Projection);
+               GL.LoadIdentity();
+               var naturalSize = GetScreenSize(value);
+               GL.Ortho(0, naturalSize.Width, naturalSize.Height, 0, -1, 1);
+            }
          }
       }
 

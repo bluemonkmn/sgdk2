@@ -561,12 +561,12 @@ public partial class GameForm : Form
             {
                Display.RestoreResolution();
                WindowState = FormWindowState.Normal;
-               Text = title;
                FormBorderStyle = FormBorderStyle.FixedSingle;
                ControlBox = true;
                MinimizeBox = true;
                Menu = mnuGame;
                ClientSize = Display.GetScreenSize(GameDisplay.GameDisplayMode);
+               Text = title;
             }
          }
       }

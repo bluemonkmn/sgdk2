@@ -3220,6 +3220,12 @@ namespace CustomObjects
    serves as a comment and will not be compiled.
 */</Text>
   </SourceCode>
+  <SourceCode Name="OpenTK.GLControl.dll" IsCustomObject="true">
+    <Text>/*
+   Because this is a binary file, this text only
+   serves as a comment and will not be compiled.
+*/</Text>
+  </SourceCode>
   <Project DisplayMode="m800x600x24" Windowed="true" TitleText="Scrolling Game Development Kit Sample Project" StartMap="Menu" OverlayMap="" MaxPlayers="2" MaxViews="2" Credits="SGDK2 Engine: http://sgdk2.sf.net&#xD;&#xA;Graphics: Jeff Cruz (jeffc@comdel.net)&#xD;&#xA;Sound/Music support provided by FMOD: http://www.fmod.org/&#xD;&#xA;Music: Ceekayed (sampo.narhi@gmail.com)&#xD;&#xA;Spectrum Analyzer Display: Seth Marty&#xD;&#xA;">
     <Comments />
   </Project>

@@ -8,7 +8,6 @@ using System.Collections;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Graphics.OpenGL.Enums;
 
 /// <summary>
 /// Specifies a size and color depth for a display.
@@ -187,7 +186,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    {
       if (disposing)
       {
-         OpenTK.Graphics.DisplayDevice.Default.RestoreResolution();
+         OpenTK.DisplayDevice.Default.RestoreResolution();
          DisposeAllTextures();
       }
       base.Dispose(disposing);
@@ -327,7 +326,10 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       {
          requirementsChecked = true;
          GL.Finish();
-         if (!GL.SupportsExtension("VERSION_1_2"))
+         string[] versionParts = GL.GetString(StringName.Version).Split(new char[] { '.' }, 3);
+         int majorVer = int.Parse(versionParts[0]);
+         int minorVer = int.Parse(versionParts[1]);
+         if ((majorVer < 1) || ((majorVer == 1) && (minorVer < 2)))
          {
             string errString = "OpenGL version 1.2 is required";
             try
@@ -337,9 +339,10 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
             catch
             {
             }
-            throw new ApplicationException(errString);
+            if (System.Windows.Forms.DialogResult.Cancel == System.Windows.Forms.MessageBox.Show(this, errString + "\r\nTry updating your video drivers.", "Requirement Check Warning", System.Windows.Forms.MessageBoxButtons.OKCancel, System.Windows.Forms.MessageBoxIcon.Exclamation, System.Windows.Forms.MessageBoxDefaultButton.Button2))
+               throw new ApplicationException(errString);
          }
-         if (!GL.SupportsExtension("GL_ARB_texture_rectangle"))
+         if (!GL.GetString(StringName.Extensions).Contains("GL_ARB_texture_rectangle"))
          {
             System.Windows.Forms.MessageBox.Show(this, "GL_ARB_texture_rectangle may be required for proper operation. The current video driver does not support this feature. Try updating your video drivers.", "Requirement Check Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
          }
@@ -382,8 +385,8 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    {
       System.Drawing.Size size = GetScreenSize(m_GameDisplayMode);
       int depth = GetModeDepth(m_GameDisplayMode);
-      OpenTK.Graphics.DisplayResolution best = null;
-      foreach (OpenTK.Graphics.DisplayResolution dr in OpenTK.Graphics.DisplayDevice.Default.AvailableResolutions)
+      OpenTK.DisplayResolution best = null;
+      foreach (OpenTK.DisplayResolution dr in OpenTK.DisplayDevice.Default.AvailableResolutions)
       {
          if ((dr.Width == size.Width) && (dr.Height == size.Height))
          {
@@ -402,7 +405,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       }
       if (best != null)
       {
-         OpenTK.Graphics.DisplayDevice.Default.ChangeResolution(best);
+         OpenTK.DisplayDevice.Default.ChangeResolution(best);
          return;
       }
       throw new ApplicationException("Cannot match display mode " + m_GameDisplayMode.ToString());
@@ -414,7 +417,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    /// </summary>
    public static void RestoreResolution()
    {
-      OpenTK.Graphics.DisplayDevice.Default.RestoreResolution();
+      OpenTK.DisplayDevice.Default.RestoreResolution();
    }
 
    /// <summary>
@@ -432,10 +435,13 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       set
       {
          m_GameDisplayMode = value;
-         GL.MatrixMode(MatrixMode.Projection);
-         GL.LoadIdentity();
-         System.Drawing.Size naturalSize = GetScreenSize(value);
-         GL.Ortho(0, naturalSize.Width, naturalSize.Height, 0, -1, 1);
+         if (this.Context != null) // Forces context to be created
+         {
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.LoadIdentity();
+            System.Drawing.Size naturalSize = GetScreenSize(value);
+            GL.Ortho(0, naturalSize.Width, naturalSize.Height, 0, -1, 1);
+         }
       }
    }
 

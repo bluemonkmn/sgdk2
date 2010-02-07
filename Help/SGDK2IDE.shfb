@@ -39,6 +39,7 @@
     </additionalContent>
     <dependencies>
         <dependencyItem depPath=".\Default\OpenTK.dll" />
+        <dependencyItem depPath=".\Default\OpenTK.GLControl.dll" />
     </dependencies>
     <ProjectSummary>&lt;p&gt;Projects are generated and compiled by the IDE in C# using a combination of
 code from the project's Source Code folder and code that is generated based on

@@ -21,7 +21,7 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Scrolling Game Development Kit")]
-[assembly: AssemblyCopyright("Copyright ©2000-2009 Benjamin Marty")]
+[assembly: AssemblyCopyright("Copyright ©2000-2010 Benjamin Marty")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
 

@@ -16,6 +16,25 @@
   version 2.0, see the <a href="Introduction.html#WhatsNew">
   What's New section of the Introduction</a>.
   </p>
+  <h2>Version 2.1.3</h2>
+  <p>This section describes updates between versions 2.1.2 and 2.1.3.</p>
+  <ol>
+    <li>Upgrade to OpenTK 1.0.0 beta 2.</li>
+    <li> Fix dropper tool to also function on row 0 and column 0 of graphic editor pane.</li>
+    <li> Eliminate a couple compiler warnings on generated projects.</li>
+    <li> Fix TestCollisionRect so that it can be used from the Plan and Sprite rule editors.</li>
+    <li> Implement default designer-only background layer in map editor.  When no opaque layer exists, the map editor will still draw nicely with this design-mode-only layer active.</li>
+    <li> Automatically default new layers to next available Z-Index.</li>
+    <li> Change Reflect.dll to build with .NET 2.0.</li>
+    <li> Add SpriteRecorder code object to library for recording scripted sprite movements.</li>
+    <li> Implement PlayMusic function that cross-fades background music.</li>
+    <li> Implement FadeMusic function to fade out background music.</li>
+    <li> Specify REUSE instead of FREE when playing FMOD sound to try to avoid sound scrambling occurring in some project(s).</li>
+    <li> Improve FMOD code reuse - fmodbase.cs and fmod.cs are now delivered only in the Sound directory of the library, and all delivered templates refer to these files.</li>
+    <li> Automatically sort main tree view.</li>
+    <li> Correct bug that updated all children of a tile category in the tree view when the parent name was changed.</li>
+    <li> Avoid error when pressing delete key on frameset editor when nothing has been selected.</li>
+  </ol>
   <h2>Version 2.1.2</h2>
   <p>This section describes updates between versions 2.1 and 2.1.2.</p>
   <ol>

@@ -1492,7 +1492,7 @@ namespace SGDK2
          clsMap.Members.Add(mthDraw);
 
          CodeMemberMethod mthExecuteMapRules = new CodeMemberMethod();
-         mthExecuteMapRules.Name = "ExecuteRules";
+         mthExecuteMapRules.Name = "ExecuteRulesInternal";
          mthExecuteMapRules.Attributes = MemberAttributes.Override | MemberAttributes.Public;
          clsMap.Members.Add(mthExecuteMapRules);
 
@@ -1768,8 +1768,8 @@ namespace SGDK2
 
             if ((plans.Length > 0) || (sprites.Length > 0))
             {
-               mthExecuteLayerRules.Attributes = MemberAttributes.Public | MemberAttributes.Final;
-               mthExecuteLayerRules.Name = "ExecuteRules";
+               mthExecuteLayerRules.Attributes = MemberAttributes.Public | MemberAttributes.Override;
+               mthExecuteLayerRules.Name = "ExecuteRulesInternal";
                clsLayer.Members.Add(mthExecuteLayerRules);
                mthExecuteMapRules.Statements.Add(
                   new CodeMethodInvokeExpression(
@@ -1783,7 +1783,7 @@ namespace SGDK2
                clsLayer.Members.Add(clsPlan);
                clsPlan.IsPartial = true;
                clsPlan.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
-               clsPlan.BaseTypes.Add(PlanBaseClassName);
+               clsPlan.BaseTypes.Add(drPlan.BaseClass);
 
                clsPlan.Members.Add(new CodeMemberField(clsLayer.Name, SpritePlanParentField));
 
@@ -1900,7 +1900,7 @@ namespace SGDK2
                      for (int i = 0; i < rules.Length; i++)
                         ruleArray[i] = new RuleContent(rules[i]);
                      CodeMemberMethod mthExecuteRules = new CodeMemberMethod();
-                     mthExecuteRules.Name = "ExecuteRules";
+                     mthExecuteRules.Name = "ExecuteRulesInternal";
                      mthExecuteRules.Attributes = MemberAttributes.Override | MemberAttributes.Public;
                      try
                      {
@@ -2392,7 +2392,7 @@ namespace SGDK2
          nsSprites.Types.Add(clsSpriteDef);
          clsSpriteDef.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
 
-         clsSpriteDef.BaseTypes.Add(SpriteBaseClass);
+         clsSpriteDef.BaseTypes.Add(drSpriteDef.BaseClass);
          clsSpriteDef.IsPartial = true;
          CodeConstructor constructor = new CodeConstructor();
          constructor.Attributes = MemberAttributes.Public;

@@ -54,8 +54,16 @@ public abstract partial class MapBase
    /// Execute the rules of each layer in the map.
    /// </summary>
    /// <remarks>This executes all the rules for all the plans and active sprites for all layers
-   /// in the map.</remarks>
-   public abstract void ExecuteRules();
+   /// in the map. See <see cref="ExecuteRules"/> for information on overiding this.</remarks>
+   public abstract void ExecuteRulesInternal();
+
+   /// <summary>
+   /// Allows customization of the way <see cref="ExecuteRulesInternal"/> is called.
+   /// </summary>
+   /// <remarks>The default implementation simply calls ExecuteRulesInternal,
+   /// but a partial class on the class derived from this base class may
+   /// override this behavior and call ExecuteRulesInternal conditionally.</remarks>
+   public virtual void ExecuteRules() { ExecuteRulesInternal(); }
 
    /// <summary>
    /// Scroll all layers to the specified coordinates after calculating relative scroll rates

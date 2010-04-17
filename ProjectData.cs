@@ -1428,9 +1428,9 @@ namespace SGDK2
       {
          return m_dsPrj.SpriteDefinition.FindByName(Name);
       }
-      public static ProjectDataset.SpriteDefinitionRow AddSpriteDefinition(string Name)
+      public static ProjectDataset.SpriteDefinitionRow AddSpriteDefinition(string Name, string BaseClass)
       {
-         return m_dsPrj.SpriteDefinition.AddSpriteDefinitionRow(Name);
+         return m_dsPrj.SpriteDefinition.AddSpriteDefinitionRow(Name, BaseClass);
       }
       public static ProjectDataset.SpriteParameterRow[] GetSortedSpriteParameters(ProjectDataset.SpriteDefinitionRow row)
       {
@@ -2212,11 +2212,11 @@ namespace SGDK2
             return m_dsPrj.SpritePlan;
          }
       }
-      public static ProjectDataset.SpritePlanRow AddSpritePlan(ProjectDataset.LayerRow ParentLayer, string Name, int Priority)
+      public static ProjectDataset.SpritePlanRow AddSpritePlan(ProjectDataset.LayerRow ParentLayer, string Name, int Priority, string BaseClass)
       {
          if (ProjectData.GetSprite(ParentLayer, Name) != null)
             throw new ApplicationException("Plan name \"" + Name + "\" conflicts with that of a sprite.  Choose a name that doesn't conflict with that of a sprite or another plan.");
-         return m_dsPrj.SpritePlan.AddSpritePlanRow(ParentLayer.MapRow.Name, ParentLayer.Name, Name, Priority);
+         return m_dsPrj.SpritePlan.AddSpritePlanRow(ParentLayer.MapRow.Name, ParentLayer.Name, Name, Priority, BaseClass);
       }
       public static ProjectDataset.SpritePlanRow GetSpritePlan(ProjectDataset.LayerRow ParentLayer, string Name)
       {

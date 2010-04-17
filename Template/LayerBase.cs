@@ -589,8 +589,10 @@ public abstract partial class LayerBase : System.Collections.IEnumerable
    /// Execute the rules of all active sprites on this layer.
    /// </summary>
    /// <remarks>After the rules are executed, the function checks to see if
-   /// any dynamic sprites have been de-activated and removes them.</remarks>
-   public void ProcessSprites()
+   /// any dynamic sprites have been de-activated and removes them.
+   /// This function can be overridden in the derived layer to customize how
+   /// and when ProcessRules is called on each sprite.</remarks>
+   public virtual void ProcessSprites()
    {
       foreach(SpriteBase sprite in m_Sprites)
          // Assuming it's more efficient to just set them all to false rather than
@@ -602,6 +604,17 @@ public abstract partial class LayerBase : System.Collections.IEnumerable
       m_Sprites.Clean();
    }
 
+   /// <summary>
+   /// Executes the rules for all the plans on this layer
+   /// </summary>
+   /// <remarks>See <see cref="ExecuteRules"/> for information on overriding this.</remarks>
+   public virtual void ExecuteRulesInternal()
+   {
+      throw new NotImplementedException("ExecuteRules called on a layer without rules");
+   }
+
+   public virtual void ExecuteRules() { ExecuteRulesInternal(); }
+  
    /// <summary>
    /// Retrieve the current mouse position
    /// </summary>

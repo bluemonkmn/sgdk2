@@ -193,6 +193,8 @@ namespace SGDK2
       private MenuItem mnuConvertAllRules;
       private MenuItem mnuConvertSelectedRule;
       private ToolBarButton tbbConvertToFunc;
+      private Label lblBaseClass;
+      private ComboBox cboBaseClass;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -211,12 +213,14 @@ namespace SGDK2
          do
             sName = "New Sprite Definition " + (nIdx++).ToString();
          while (ProjectData.GetSpriteDefinition(sName) != null);
-         m_SpriteDef = ProjectData.AddSpriteDefinition(sName);
+         m_SpriteDef = ProjectData.AddSpriteDefinition(sName, CodeGenerator.SpriteBaseClass);
          txtName.Text = sName;
+         cboBaseClass.Text = m_SpriteDef.BaseClass;
 
          EnableState(false);
          FillFramesets();
          FillStates();
+         FillBaseClasses();
          InitParameters();
 
          SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"SpriteDefinition.html");
@@ -231,10 +235,12 @@ namespace SGDK2
 
          m_SpriteDef = drSpriteDef;
          txtName.Text = drSpriteDef.Name;
+         cboBaseClass.Text = m_SpriteDef.BaseClass;
 
          EnableState(false);
          FillFramesets();
          FillStates();
+         FillBaseClasses();
          InitParameters();
 
          SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"SpriteDefinition.html");
@@ -314,6 +320,7 @@ namespace SGDK2
          this.tbbMoveRuleDown = new System.Windows.Forms.ToolBarButton();
          this.tbbRuleSeparator2 = new System.Windows.Forms.ToolBarButton();
          this.tbbToggleSuspend = new System.Windows.Forms.ToolBarButton();
+         this.tbbConvertToFunc = new System.Windows.Forms.ToolBarButton();
          this.RuleSplitter = new System.Windows.Forms.Splitter();
          this.pnlRules = new System.Windows.Forms.Panel();
          this.chkSuspended = new System.Windows.Forms.CheckBox();
@@ -334,6 +341,8 @@ namespace SGDK2
          this.lblParam3 = new System.Windows.Forms.Label();
          this.lblRuleName = new System.Windows.Forms.Label();
          this.pnlSpriteHeader = new System.Windows.Forms.Panel();
+         this.cboBaseClass = new System.Windows.Forms.ComboBox();
+         this.lblBaseClass = new System.Windows.Forms.Label();
          this.txtName = new System.Windows.Forms.TextBox();
          this.lblName = new System.Windows.Forms.Label();
          this.mnuSprites = new System.Windows.Forms.MainMenu(this.components);
@@ -371,7 +380,6 @@ namespace SGDK2
          this.mnuRotateWizard = new System.Windows.Forms.MenuItem();
          this.DataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.tmrPopulateRules = new System.Windows.Forms.Timer(this.components);
-         this.tbbConvertToFunc = new System.Windows.Forms.ToolBarButton();
          this.tabSpriteDefinition.SuspendLayout();
          this.tabStates.SuspendLayout();
          this.pnlFrames.SuspendLayout();
@@ -395,7 +403,7 @@ namespace SGDK2
          this.tabSpriteDefinition.Location = new System.Drawing.Point(0, 32);
          this.tabSpriteDefinition.Name = "tabSpriteDefinition";
          this.tabSpriteDefinition.SelectedIndex = 0;
-         this.tabSpriteDefinition.Size = new System.Drawing.Size(568, 385);
+         this.tabSpriteDefinition.Size = new System.Drawing.Size(565, 385);
          this.tabSpriteDefinition.TabIndex = 3;
          this.tabSpriteDefinition.SelectedIndexChanged += new System.EventHandler(this.tabSpriteDefinition_SelectedIndexChanged);
          // 
@@ -410,7 +418,7 @@ namespace SGDK2
          this.tabStates.Controls.Add(this.pnlStateList);
          this.tabStates.Location = new System.Drawing.Point(4, 22);
          this.tabStates.Name = "tabStates";
-         this.tabStates.Size = new System.Drawing.Size(560, 359);
+         this.tabStates.Size = new System.Drawing.Size(557, 359);
          this.tabStates.TabIndex = 0;
          this.tabStates.Text = "States";
          // 
@@ -429,7 +437,7 @@ namespace SGDK2
          this.AvailableFrames.Location = new System.Drawing.Point(133, 221);
          this.AvailableFrames.Name = "AvailableFrames";
          this.AvailableFrames.SheetImage = null;
-         this.AvailableFrames.Size = new System.Drawing.Size(427, 138);
+         this.AvailableFrames.Size = new System.Drawing.Size(424, 138);
          this.AvailableFrames.TabIndex = 10;
          // 
          // lblAvailableFrames
@@ -437,7 +445,7 @@ namespace SGDK2
          this.lblAvailableFrames.Dock = System.Windows.Forms.DockStyle.Top;
          this.lblAvailableFrames.Location = new System.Drawing.Point(133, 205);
          this.lblAvailableFrames.Name = "lblAvailableFrames";
-         this.lblAvailableFrames.Size = new System.Drawing.Size(427, 16);
+         this.lblAvailableFrames.Size = new System.Drawing.Size(424, 16);
          this.lblAvailableFrames.TabIndex = 9;
          this.lblAvailableFrames.Text = "Available Frames:";
          // 
@@ -447,7 +455,7 @@ namespace SGDK2
          this.StateSplitter.Dock = System.Windows.Forms.DockStyle.Top;
          this.StateSplitter.Location = new System.Drawing.Point(133, 200);
          this.StateSplitter.Name = "StateSplitter";
-         this.StateSplitter.Size = new System.Drawing.Size(427, 5);
+         this.StateSplitter.Size = new System.Drawing.Size(424, 5);
          this.StateSplitter.TabIndex = 8;
          this.StateSplitter.TabStop = false;
          // 
@@ -459,7 +467,7 @@ namespace SGDK2
          this.pnlFrames.Dock = System.Windows.Forms.DockStyle.Top;
          this.pnlFrames.Location = new System.Drawing.Point(133, 56);
          this.pnlFrames.Name = "pnlFrames";
-         this.pnlFrames.Size = new System.Drawing.Size(427, 144);
+         this.pnlFrames.Size = new System.Drawing.Size(424, 144);
          this.pnlFrames.TabIndex = 6;
          // 
          // StateFrames
@@ -477,7 +485,7 @@ namespace SGDK2
          this.StateFrames.Location = new System.Drawing.Point(0, 16);
          this.StateFrames.Name = "StateFrames";
          this.StateFrames.SheetImage = null;
-         this.StateFrames.Size = new System.Drawing.Size(427, 104);
+         this.StateFrames.Size = new System.Drawing.Size(424, 104);
          this.StateFrames.TabIndex = 1;
          this.StateFrames.DragOver += new System.Windows.Forms.DragEventHandler(this.StateFrames_DragOver);
          this.StateFrames.CurrentCellChanged += new System.EventHandler(this.StateFrames_CurrentCellChanged);
@@ -495,7 +503,7 @@ namespace SGDK2
          this.pnlFrameDetails.Location = new System.Drawing.Point(0, 120);
          this.pnlFrameDetails.Name = "pnlFrameDetails";
          this.pnlFrameDetails.Padding = new System.Windows.Forms.Padding(1, 2, 0, 2);
-         this.pnlFrameDetails.Size = new System.Drawing.Size(427, 24);
+         this.pnlFrameDetails.Size = new System.Drawing.Size(424, 24);
          this.pnlFrameDetails.TabIndex = 7;
          // 
          // btnMaskAlpha
@@ -562,7 +570,7 @@ namespace SGDK2
          this.lblStateFrames.Dock = System.Windows.Forms.DockStyle.Top;
          this.lblStateFrames.Location = new System.Drawing.Point(0, 0);
          this.lblStateFrames.Name = "lblStateFrames";
-         this.lblStateFrames.Size = new System.Drawing.Size(427, 16);
+         this.lblStateFrames.Size = new System.Drawing.Size(424, 16);
          this.lblStateFrames.TabIndex = 0;
          this.lblStateFrames.Text = "Frames in Current State:";
          // 
@@ -579,7 +587,7 @@ namespace SGDK2
          this.pnlSpriteState.Dock = System.Windows.Forms.DockStyle.Top;
          this.pnlSpriteState.Location = new System.Drawing.Point(133, 0);
          this.pnlSpriteState.Name = "pnlSpriteState";
-         this.pnlSpriteState.Size = new System.Drawing.Size(427, 56);
+         this.pnlSpriteState.Size = new System.Drawing.Size(424, 56);
          this.pnlSpriteState.TabIndex = 5;
          // 
          // lblStateName
@@ -617,7 +625,7 @@ namespace SGDK2
          this.cboFrameset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
          this.cboFrameset.Location = new System.Drawing.Point(296, 8);
          this.cboFrameset.Name = "cboFrameset";
-         this.cboFrameset.Size = new System.Drawing.Size(120, 21);
+         this.cboFrameset.Size = new System.Drawing.Size(117, 21);
          this.cboFrameset.TabIndex = 3;
          this.cboFrameset.SelectionChangeCommitted += new System.EventHandler(this.cboFrameset_SelectionChangeCommitted);
          // 
@@ -763,7 +771,7 @@ namespace SGDK2
          this.tabParameters.Controls.Add(this.grdParameters);
          this.tabParameters.Location = new System.Drawing.Point(4, 22);
          this.tabParameters.Name = "tabParameters";
-         this.tabParameters.Size = new System.Drawing.Size(560, 359);
+         this.tabParameters.Size = new System.Drawing.Size(557, 359);
          this.tabParameters.TabIndex = 1;
          this.tabParameters.Text = "Parameters";
          // 
@@ -776,7 +784,7 @@ namespace SGDK2
          this.grdParameters.HeaderForeColor = System.Drawing.SystemColors.ControlText;
          this.grdParameters.Location = new System.Drawing.Point(0, 0);
          this.grdParameters.Name = "grdParameters";
-         this.grdParameters.Size = new System.Drawing.Size(560, 359);
+         this.grdParameters.Size = new System.Drawing.Size(557, 359);
          this.grdParameters.TabIndex = 35;
          // 
          // tabRules
@@ -787,7 +795,7 @@ namespace SGDK2
          this.tabRules.Controls.Add(this.pnlRules);
          this.tabRules.Location = new System.Drawing.Point(4, 22);
          this.tabRules.Name = "tabRules";
-         this.tabRules.Size = new System.Drawing.Size(560, 359);
+         this.tabRules.Size = new System.Drawing.Size(557, 359);
          this.tabRules.TabIndex = 2;
          this.tabRules.Text = "Rules";
          // 
@@ -800,7 +808,7 @@ namespace SGDK2
          this.tvwRules.Location = new System.Drawing.Point(0, 25);
          this.tvwRules.Name = "tvwRules";
          this.tvwRules.SelectedImageIndex = 0;
-         this.tvwRules.Size = new System.Drawing.Size(187, 334);
+         this.tvwRules.Size = new System.Drawing.Size(184, 334);
          this.tvwRules.TabIndex = 0;
          this.tvwRules.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvwRules_AfterSelect);
          // 
@@ -842,7 +850,7 @@ namespace SGDK2
          this.tbrRules.Location = new System.Drawing.Point(0, 0);
          this.tbrRules.Name = "tbrRules";
          this.tbrRules.ShowToolTips = true;
-         this.tbrRules.Size = new System.Drawing.Size(187, 25);
+         this.tbrRules.Size = new System.Drawing.Size(184, 25);
          this.tbrRules.TabIndex = 28;
          this.tbrRules.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tbrRules_ButtonClick);
          // 
@@ -886,10 +894,16 @@ namespace SGDK2
          this.tbbToggleSuspend.Name = "tbbToggleSuspend";
          this.tbbToggleSuspend.ToolTipText = "Toggle suspend for this rule and all children";
          // 
+         // tbbConvertToFunc
+         // 
+         this.tbbConvertToFunc.ImageIndex = 6;
+         this.tbbConvertToFunc.Name = "tbbConvertToFunc";
+         this.tbbConvertToFunc.ToolTipText = "Convert selected rule and children to function";
+         // 
          // RuleSplitter
          // 
          this.RuleSplitter.Dock = System.Windows.Forms.DockStyle.Right;
-         this.RuleSplitter.Location = new System.Drawing.Point(187, 0);
+         this.RuleSplitter.Location = new System.Drawing.Point(184, 0);
          this.RuleSplitter.Name = "RuleSplitter";
          this.RuleSplitter.Size = new System.Drawing.Size(5, 359);
          this.RuleSplitter.TabIndex = 13;
@@ -915,7 +929,7 @@ namespace SGDK2
          this.pnlRules.Controls.Add(this.lblParam3);
          this.pnlRules.Controls.Add(this.lblRuleName);
          this.pnlRules.Dock = System.Windows.Forms.DockStyle.Right;
-         this.pnlRules.Location = new System.Drawing.Point(192, 0);
+         this.pnlRules.Location = new System.Drawing.Point(189, 0);
          this.pnlRules.Name = "pnlRules";
          this.pnlRules.Size = new System.Drawing.Size(368, 359);
          this.pnlRules.TabIndex = 27;
@@ -1117,17 +1131,40 @@ namespace SGDK2
          // 
          // pnlSpriteHeader
          // 
+         this.pnlSpriteHeader.Controls.Add(this.cboBaseClass);
+         this.pnlSpriteHeader.Controls.Add(this.lblBaseClass);
          this.pnlSpriteHeader.Controls.Add(this.txtName);
          this.pnlSpriteHeader.Controls.Add(this.lblName);
          this.pnlSpriteHeader.Dock = System.Windows.Forms.DockStyle.Top;
          this.pnlSpriteHeader.Location = new System.Drawing.Point(0, 0);
          this.pnlSpriteHeader.Name = "pnlSpriteHeader";
-         this.pnlSpriteHeader.Size = new System.Drawing.Size(568, 32);
+         this.pnlSpriteHeader.Size = new System.Drawing.Size(565, 32);
          this.pnlSpriteHeader.TabIndex = 0;
+         // 
+         // cboBaseClass
+         // 
+         this.cboBaseClass.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                     | System.Windows.Forms.AnchorStyles.Right)));
+         this.cboBaseClass.FormattingEnabled = true;
+         this.cboBaseClass.Location = new System.Drawing.Point(316, 7);
+         this.cboBaseClass.Name = "cboBaseClass";
+         this.cboBaseClass.Size = new System.Drawing.Size(234, 21);
+         this.cboBaseClass.TabIndex = 4;
+         this.cboBaseClass.TextUpdate += new System.EventHandler(this.cboBaseClass_TextUpdate);
+         this.cboBaseClass.TextChanged += new System.EventHandler(this.cboBaseClass_TextUpdate);
+         // 
+         // lblBaseClass
+         // 
+         this.lblBaseClass.AutoSize = true;
+         this.lblBaseClass.Location = new System.Drawing.Point(248, 10);
+         this.lblBaseClass.Name = "lblBaseClass";
+         this.lblBaseClass.Size = new System.Drawing.Size(62, 13);
+         this.lblBaseClass.TabIndex = 3;
+         this.lblBaseClass.Text = "Base Class:";
          // 
          // txtName
          // 
-         this.txtName.Location = new System.Drawing.Point(72, 8);
+         this.txtName.Location = new System.Drawing.Point(65, 7);
          this.txtName.Name = "txtName";
          this.txtName.Size = new System.Drawing.Size(160, 20);
          this.txtName.TabIndex = 2;
@@ -1136,7 +1173,7 @@ namespace SGDK2
          // 
          // lblName
          // 
-         this.lblName.Location = new System.Drawing.Point(8, 8);
+         this.lblName.Location = new System.Drawing.Point(12, 6);
          this.lblName.Name = "lblName";
          this.lblName.Size = new System.Drawing.Size(64, 20);
          this.lblName.TabIndex = 1;
@@ -1393,16 +1430,10 @@ namespace SGDK2
          // 
          this.tmrPopulateRules.Tick += new System.EventHandler(this.tmrPopulateRules_Tick);
          // 
-         // tbbConvertToFunc
-         // 
-         this.tbbConvertToFunc.ImageIndex = 6;
-         this.tbbConvertToFunc.Name = "tbbConvertToFunc";
-         this.tbbConvertToFunc.ToolTipText = "Convert selected rule and children to function";
-         // 
          // frmSpriteDefinition
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-         this.ClientSize = new System.Drawing.Size(568, 417);
+         this.ClientSize = new System.Drawing.Size(565, 417);
          this.Controls.Add(this.tabSpriteDefinition);
          this.Controls.Add(this.pnlSpriteHeader);
          this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -1584,6 +1615,35 @@ namespace SGDK2
          {
             MessageBox.Show(this, ex.ToString(), "GetEnumInfo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return new EnumTable.EnumDetails();
+         }
+      }
+
+      private void FillBaseClasses()
+      {
+         try
+         {
+            CodeGenerator gen = new CodeGenerator();
+            string errs;
+            gen.GenerateLevel = CodeGenerator.CodeLevel.ExcludeRules;
+            errs = gen.CompileTempAssembly(false);
+            if ((errs != null) && (errs.Length > 0))
+            {
+               txtErrors.Text = errs;
+               txtErrors.Visible = true;
+               return;
+            }
+
+            RemotingServices.IRemoteTypeInfo reflector = CodeGenerator.CreateInstanceAndUnwrap(
+               "RemoteReflector", CodeGenerator.SpriteBaseClass) as RemotingServices.IRemoteTypeInfo;
+            RemotingServices.RemoteTypeName[] bases = reflector.GetDerivedClasses(true);
+            cboBaseClass.Items.Add(CodeGenerator.SpriteBaseClass);
+            for(int i = 0; i < bases.Length; i++)
+               cboBaseClass.Items.Add(bases[i].FullName);
+         }
+         catch(System.Exception ex)
+         {
+            txtErrors.Text = ex.Message;
+            txtErrors.Visible = true;
          }
       }
 
@@ -3360,6 +3420,13 @@ namespace SGDK2
             ConvertAllRules();
          else
             ConvertRuleAndChildren();
+      }
+
+      private void cboBaseClass_TextUpdate(object sender, EventArgs e)
+      {
+         m_SpriteDef.BaseClass = cboBaseClass.Text;
+         CodeGenerator.ResetTempAssembly();
+         m_AvailableRules = null;
       }
       #endregion
    }

@@ -122,6 +122,8 @@ namespace SGDK2
       private MenuItem mnuConvertAll;
       private MenuItem mnuConvertSelected;
       private ToolBarButton tbbConvertToFunc;
+      private ComboBox cboBaseClass;
+      private Label lblBaseClass;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -141,9 +143,11 @@ namespace SGDK2
             sName = parent.MapRow.Name + " Plan " + (nIdx++).ToString();
          while (ProjectData.GetSpritePlan(parent, sName) != null);
 
-         m_Plan = ProjectData.AddSpritePlan(parent, sName, 1);
+         m_Plan = ProjectData.AddSpritePlan(parent, sName, 1, CodeGenerator.PlanBaseClassName);
          txtName.Text = sName;
+         cboBaseClass.Text = m_Plan.BaseClass;
          txtPriority.Text = m_Plan.Priority.ToString();
+         PopulateBaseClasses();
 
          SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"PlanEdit.html");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
@@ -157,7 +161,9 @@ namespace SGDK2
 
          m_Plan = plan;
          txtName.Text = plan.Name;
+         cboBaseClass.Text = m_Plan.BaseClass;
          txtPriority.Text = plan.Priority.ToString();
+         PopulateBaseClasses();
          
          QueuePopulateRules();
 
@@ -203,6 +209,7 @@ namespace SGDK2
          this.tbbMoveDown = new System.Windows.Forms.ToolBarButton();
          this.tbbSep2 = new System.Windows.Forms.ToolBarButton();
          this.tbbToggleSuspend = new System.Windows.Forms.ToolBarButton();
+         this.tbbConvertToFunc = new System.Windows.Forms.ToolBarButton();
          this.imlPlan = new System.Windows.Forms.ImageList(this.components);
          this.splitterRules = new System.Windows.Forms.Splitter();
          this.pnlRule = new System.Windows.Forms.Panel();
@@ -224,6 +231,8 @@ namespace SGDK2
          this.chkNot = new System.Windows.Forms.CheckBox();
          this.cboFunction = new System.Windows.Forms.ComboBox();
          this.pnlName = new System.Windows.Forms.Panel();
+         this.cboBaseClass = new System.Windows.Forms.ComboBox();
+         this.lblBaseClass = new System.Windows.Forms.Label();
          this.lblPriority = new System.Windows.Forms.Label();
          this.txtPriority = new System.Windows.Forms.TextBox();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
@@ -249,7 +258,6 @@ namespace SGDK2
          this.mnuConvertAll = new System.Windows.Forms.MenuItem();
          this.mnuConvertSelected = new System.Windows.Forms.MenuItem();
          this.tmrPopulate = new System.Windows.Forms.Timer(this.components);
-         this.tbbConvertToFunc = new System.Windows.Forms.ToolBarButton();
          this.grpRules.SuspendLayout();
          this.pnlRule.SuspendLayout();
          this.pnlName.SuspendLayout();
@@ -257,7 +265,6 @@ namespace SGDK2
          // 
          // lblName
          // 
-         this.lblName.Dock = System.Windows.Forms.DockStyle.Left;
          this.lblName.Location = new System.Drawing.Point(2, 2);
          this.lblName.Name = "lblName";
          this.lblName.Size = new System.Drawing.Size(72, 20);
@@ -267,10 +274,11 @@ namespace SGDK2
          // 
          // txtName
          // 
-         this.txtName.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.txtName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                     | System.Windows.Forms.AnchorStyles.Right)));
          this.txtName.Location = new System.Drawing.Point(74, 2);
          this.txtName.Name = "txtName";
-         this.txtName.Size = new System.Drawing.Size(332, 20);
+         this.txtName.Size = new System.Drawing.Size(321, 20);
          this.txtName.TabIndex = 1;
          this.txtName.Validated += new System.EventHandler(this.txtName_Validated);
          this.txtName.Validating += new System.ComponentModel.CancelEventHandler(this.txtName_Validating);
@@ -282,9 +290,9 @@ namespace SGDK2
          this.grpRules.Controls.Add(this.splitterRules);
          this.grpRules.Controls.Add(this.pnlRule);
          this.grpRules.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.grpRules.Location = new System.Drawing.Point(0, 24);
+         this.grpRules.Location = new System.Drawing.Point(0, 53);
          this.grpRules.Name = "grpRules";
-         this.grpRules.Size = new System.Drawing.Size(544, 385);
+         this.grpRules.Size = new System.Drawing.Size(533, 356);
          this.grpRules.TabIndex = 2;
          this.grpRules.TabStop = false;
          this.grpRules.Text = "Rules";
@@ -298,7 +306,7 @@ namespace SGDK2
          this.tvwRules.Location = new System.Drawing.Point(3, 41);
          this.tvwRules.Name = "tvwRules";
          this.tvwRules.SelectedImageIndex = 0;
-         this.tvwRules.Size = new System.Drawing.Size(165, 341);
+         this.tvwRules.Size = new System.Drawing.Size(154, 312);
          this.tvwRules.TabIndex = 0;
          this.tvwRules.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvwRules_AfterSelect);
          // 
@@ -340,7 +348,7 @@ namespace SGDK2
          this.tbRules.Location = new System.Drawing.Point(3, 16);
          this.tbRules.Name = "tbRules";
          this.tbRules.ShowToolTips = true;
-         this.tbRules.Size = new System.Drawing.Size(165, 25);
+         this.tbRules.Size = new System.Drawing.Size(154, 25);
          this.tbRules.TabIndex = 3;
          this.tbRules.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tbRules_ButtonClick);
          // 
@@ -384,6 +392,12 @@ namespace SGDK2
          this.tbbToggleSuspend.Name = "tbbToggleSuspend";
          this.tbbToggleSuspend.ToolTipText = "Toggle suspend for this rule and its children";
          // 
+         // tbbConvertToFunc
+         // 
+         this.tbbConvertToFunc.ImageIndex = 5;
+         this.tbbConvertToFunc.Name = "tbbConvertToFunc";
+         this.tbbConvertToFunc.ToolTipText = "Convert selected rule and children to function";
+         // 
          // imlPlan
          // 
          this.imlPlan.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imlPlan.ImageStream")));
@@ -398,9 +412,9 @@ namespace SGDK2
          // splitterRules
          // 
          this.splitterRules.Dock = System.Windows.Forms.DockStyle.Right;
-         this.splitterRules.Location = new System.Drawing.Point(168, 16);
+         this.splitterRules.Location = new System.Drawing.Point(157, 16);
          this.splitterRules.Name = "splitterRules";
-         this.splitterRules.Size = new System.Drawing.Size(5, 366);
+         this.splitterRules.Size = new System.Drawing.Size(5, 337);
          this.splitterRules.TabIndex = 1;
          this.splitterRules.TabStop = false;
          // 
@@ -425,9 +439,9 @@ namespace SGDK2
          this.pnlRule.Controls.Add(this.chkNot);
          this.pnlRule.Controls.Add(this.cboFunction);
          this.pnlRule.Dock = System.Windows.Forms.DockStyle.Right;
-         this.pnlRule.Location = new System.Drawing.Point(173, 16);
+         this.pnlRule.Location = new System.Drawing.Point(162, 16);
          this.pnlRule.Name = "pnlRule";
-         this.pnlRule.Size = new System.Drawing.Size(368, 366);
+         this.pnlRule.Size = new System.Drawing.Size(368, 337);
          this.pnlRule.TabIndex = 2;
          // 
          // chkSuspended
@@ -463,7 +477,7 @@ namespace SGDK2
          this.txtErrors.Name = "txtErrors";
          this.txtErrors.ReadOnly = true;
          this.txtErrors.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-         this.txtErrors.Size = new System.Drawing.Size(344, 108);
+         this.txtErrors.Size = new System.Drawing.Size(344, 79);
          this.txtErrors.TabIndex = 34;
          this.txtErrors.Visible = false;
          // 
@@ -633,6 +647,8 @@ namespace SGDK2
          // 
          // pnlName
          // 
+         this.pnlName.Controls.Add(this.cboBaseClass);
+         this.pnlName.Controls.Add(this.lblBaseClass);
          this.pnlName.Controls.Add(this.txtName);
          this.pnlName.Controls.Add(this.lblPriority);
          this.pnlName.Controls.Add(this.lblName);
@@ -641,13 +657,33 @@ namespace SGDK2
          this.pnlName.Location = new System.Drawing.Point(0, 0);
          this.pnlName.Name = "pnlName";
          this.pnlName.Padding = new System.Windows.Forms.Padding(2);
-         this.pnlName.Size = new System.Drawing.Size(544, 24);
+         this.pnlName.Size = new System.Drawing.Size(533, 53);
          this.pnlName.TabIndex = 3;
+         // 
+         // cboBaseClass
+         // 
+         this.cboBaseClass.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                     | System.Windows.Forms.AnchorStyles.Right)));
+         this.cboBaseClass.FormattingEnabled = true;
+         this.cboBaseClass.Location = new System.Drawing.Point(74, 28);
+         this.cboBaseClass.Name = "cboBaseClass";
+         this.cboBaseClass.Size = new System.Drawing.Size(320, 21);
+         this.cboBaseClass.TabIndex = 44;
+         this.cboBaseClass.Validated += new System.EventHandler(this.cboBaseClass_Validated);
+         // 
+         // lblBaseClass
+         // 
+         this.lblBaseClass.AutoSize = true;
+         this.lblBaseClass.Location = new System.Drawing.Point(2, 31);
+         this.lblBaseClass.Name = "lblBaseClass";
+         this.lblBaseClass.Size = new System.Drawing.Size(62, 13);
+         this.lblBaseClass.TabIndex = 43;
+         this.lblBaseClass.Text = "Base Class:";
          // 
          // lblPriority
          // 
-         this.lblPriority.Dock = System.Windows.Forms.DockStyle.Right;
-         this.lblPriority.Location = new System.Drawing.Point(406, 2);
+         this.lblPriority.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+         this.lblPriority.Location = new System.Drawing.Point(395, 2);
          this.lblPriority.Name = "lblPriority";
          this.lblPriority.Size = new System.Drawing.Size(64, 20);
          this.lblPriority.TabIndex = 41;
@@ -656,8 +692,8 @@ namespace SGDK2
          // 
          // txtPriority
          // 
-         this.txtPriority.Dock = System.Windows.Forms.DockStyle.Right;
-         this.txtPriority.Location = new System.Drawing.Point(470, 2);
+         this.txtPriority.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+         this.txtPriority.Location = new System.Drawing.Point(459, 2);
          this.txtPriority.Name = "txtPriority";
          this.txtPriority.Size = new System.Drawing.Size(72, 20);
          this.txtPriority.TabIndex = 42;
@@ -822,16 +858,10 @@ namespace SGDK2
          // 
          this.tmrPopulate.Tick += new System.EventHandler(this.tmrPopulate_Tick);
          // 
-         // tbbConvertToFunc
-         // 
-         this.tbbConvertToFunc.ImageIndex = 5;
-         this.tbbConvertToFunc.Name = "tbbConvertToFunc";
-         this.tbbConvertToFunc.ToolTipText = "Convert selected rule and children to function";
-         // 
          // frmPlanEdit
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-         this.ClientSize = new System.Drawing.Size(544, 409);
+         this.ClientSize = new System.Drawing.Size(533, 409);
          this.Controls.Add(this.grpRules);
          this.Controls.Add(this.pnlName);
          this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -1463,6 +1493,29 @@ namespace SGDK2
             cboOutput.Text = drRule.ResultParameter;
       }
 
+      private void PopulateBaseClasses()
+      {
+         CodeGenerator gen = new CodeGenerator();
+         string errs;
+         gen.GenerateLevel = CodeGenerator.CodeLevel.ExcludeRules;
+         errs = gen.CompileTempAssembly(false);
+         if ((errs != null) && (errs.Length > 0))
+         {
+            txtErrors.Text = errs;
+            txtErrors.Visible = true;
+            return;
+         }
+
+         txtErrors.Visible = false;
+         RemotingServices.IRemoteTypeInfo reflector = CodeGenerator.CreateInstanceAndUnwrap(
+            "RemoteReflector", CodeGenerator.PlanBaseClassName) as RemotingServices.IRemoteTypeInfo;
+         cboBaseClass.Items.Clear();
+         cboBaseClass.Items.Add(CodeGenerator.PlanBaseClassName);
+         RemotingServices.RemoteTypeName[] bases = reflector.GetDerivedClasses(true);
+         for(int i = 0; i < bases.Length; i++)
+            cboBaseClass.Items.Add(bases[i].FullName);
+      }
+
       private void QueuePopulateRules()
       {
          tmrPopulate.Stop();
@@ -1873,6 +1926,16 @@ namespace SGDK2
          if (m_Loading)
             return;
          m_Plan.Name = txtName.Text;
+      }
+
+      private void cboBaseClass_Validated(object sender, EventArgs e)
+      {
+         if (m_Loading)
+            return;
+         m_Plan.BaseClass = cboBaseClass.Text;
+         CodeGenerator.ResetTempAssembly();
+         m_AvailableRules = null;
+         m_Enums = null;
       }
 
       private void txtName_Validating(object sender, System.ComponentModel.CancelEventArgs e)

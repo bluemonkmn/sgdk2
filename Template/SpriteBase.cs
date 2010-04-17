@@ -461,8 +461,10 @@ public abstract partial class SpriteBase : GeneralRules
    /// Execute the rules for this sprite if they have not already been executed this frame
    /// </summary>
    /// <remarks>This checks <see cref="Processed"/> and calls <see cref="ExecuteRules"/>
-   /// if it's not set, setting <see cref="Processed"/> to true first.</remarks>
-   public void ProcessRules()
+   /// if it's not set, setting <see cref="Processed"/> to true first.  This function
+   /// can be overridden in a partial class of the derived sprite to call ExecuteRules
+   /// based on other conditions.</remarks>
+   public virtual void ProcessRules()
    {
       if (!Processed)
       {

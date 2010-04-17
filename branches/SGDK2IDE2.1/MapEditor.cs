@@ -1534,7 +1534,7 @@ namespace SGDK2
          {
             PlanName = m_Layers[m_nCurLayer].LayerRow.MapRow.Name + " Plan " + i++.ToString();
          } while (null != ProjectData.GetSpritePlan(m_Layers[m_nCurLayer].LayerRow, PlanName));
-         ProjectData.AddSpritePlan(m_Layers[m_nCurLayer].LayerRow, PlanName, 1);
+         ProjectData.AddSpritePlan(m_Layers[m_nCurLayer].LayerRow, PlanName, 1, CodeGenerator.PlanBaseClassName);
       }
       #endregion
 

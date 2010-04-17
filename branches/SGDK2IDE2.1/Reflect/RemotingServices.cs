@@ -113,6 +113,7 @@ namespace SGDK2
          RemoteMethodInfo[] GetMethods();
          RemotePropertyInfo[] GetProperties();
          RemoteGlobalAccessorInfo[] GetGlobalProvidersOfSelf();
+         RemoteTypeName[] GetDerivedClasses(bool abstractOnly);
          RemoteMethodInfo[] GetGlobalFunctions();
          bool IsEnum
          {

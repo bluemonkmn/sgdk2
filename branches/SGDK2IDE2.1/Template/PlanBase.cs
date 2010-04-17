@@ -174,7 +174,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// <remarks>Unlike <see cref="IsSpriteTouching"/>, this can only return true when the sprite
    /// and the plan's rectangle actually overlap because the point is inside the sprite's
    /// rectangle, and must also be inside the plan's rectangle to return true.
-   /// <seealso cref="GetSpriteWithin"/></remarks>
+   /// <seealso cref="GetSpriteWithin"/><seealso cref="IsSpriteWithinPolygon"/></remarks>
    [Description("Returns true if the specified part of the specified sprite is within the plan's rectangle")]
    public bool IsSpriteWithin(SpriteBase sprite, RelativePosition RelativePosition)
    {
@@ -207,6 +207,34 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
             return i;
       }
       return -1;
+   }
+
+   [Description("Returns true if the specified part of the specified sprite is within a polygon formed by this plan's coordinates.")]
+   /// <summary>
+   /// Determines if the specified part of the specified sprite is within a polygon formed by this plan's coordinates.
+   /// </summary>
+   /// <param name="sprite">Sprite whose position will be tested</param>
+   /// <param name="RelativePosition">Specifies a point within the sprite to test</param>
+   /// <returns>True if the specified point within the specified sprite's solidity rectangle is
+   /// within the polygon.</returns>
+   /// <remarks>
+   /// <seealso cref="IsSpriteWithin"/></remarks>
+   public bool IsSpriteWithinPolygon(SpriteBase sprite, RelativePosition RelativePosition)
+   {
+      System.Drawing.Point rp = sprite.GetRelativePosition(RelativePosition);
+      bool result = false;
+      for (int i = 0, j = Count - 1; i < Count; j = i++)
+      {
+         int x1 = Coordinates[i].x;
+         int y1 = Coordinates[i].y;
+         int x2 = Coordinates[j].x;
+         int y2 = Coordinates[j].y;
+         if ((((y1 <= rp.Y) && (rp.Y < y2)) ||
+              ((y2 <= rp.Y) && (rp.Y < y1))) &&
+             (rp.X < (x2 - x1) * (rp.Y - y1) / (y2 - y1) + x1))
+            result = !result;
+      }
+      return result;
    }
 
    /// <summary>
@@ -670,10 +698,18 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// Executes this plan's rules if any exist.
    /// </summary>
    /// <remarks>An error is raised if no rules exist on this plan.</remarks>
-   public virtual void ExecuteRules()
+   public virtual void ExecuteRulesInternal()
    {
       throw new NotImplementedException("Attempted to execute rules on plan " + this.GetType().Name + " without any rules");
    }
+
+   /// <summary>
+   /// Allows customization of the way <see cref="ExecuteRulesInternal"/> is called.
+   /// </summary>
+   /// <remarks>The default implementation simply calls ExecuteRulesInternal,
+   /// but a partial class of the derived class may override this behavior,
+   /// calling ExecuteRulesInternal conditionally.</remarks>
+   public virtual void ExecuteRules() { ExecuteRulesInternal(); }
 
    /// <summary>
    /// Specifies one of the 4 color channels: alpha, red, green or blue.

@@ -26,7 +26,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    [Description("How close must a sprite be to a coordinate in this plan before heading to the next (default=5)")]
    public int TargetDistance = 5;
 
-   private PointF[] corners = null;
+   protected PointF[] corners = null;
 
    protected PlanBase()
    {
@@ -97,7 +97,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// <remarks>If the specified sprite instance is already active, this has
    /// no effect.</remarks>
    [Description("Make the specified sprite active.")]
-   public void ActivateSprite(SpriteBase Target)
+   public virtual void ActivateSprite(SpriteBase Target)
    {
       Target.isActive = true;
    }
@@ -109,7 +109,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// <remarks>If the specified sprite instance is already inactive, this
    /// has no effect.</remarks>
    [Description("Make the specified sprite inactive.")]
-   public void DeactivateSprite(SpriteBase Target)
+   public virtual void DeactivateSprite(SpriteBase Target)
    {
       Target.isActive = false;
    }
@@ -127,7 +127,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// <seealso cref="TransportToPoint"/>
    /// <seealso cref="TransportToPlan"/></remarks>
    [Description("Set the position of the target sprite to match that of the source sprite.")]
-   public void MatchSpritePosition(SpriteBase Target, SpriteBase Source)
+   public virtual void MatchSpritePosition(SpriteBase Target, SpriteBase Source)
    {
       Target.oldX = Target.x;
       Target.oldY = Target.y;
@@ -148,7 +148,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// solid blocks can't be touched (and thus potentially "activated") through the crack.
    /// </remarks>
    [Description("Returns true if the specified sprite is touching this plan's rectangle")]
-   public bool IsSpriteTouching(SpriteBase sprite)
+   public virtual bool IsSpriteTouching(SpriteBase sprite)
    {
       if (!sprite.isActive)
          return false;
@@ -176,7 +176,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// rectangle, and must also be inside the plan's rectangle to return true.
    /// <seealso cref="GetSpriteWithin"/><seealso cref="IsSpriteWithinPolygon"/></remarks>
    [Description("Returns true if the specified part of the specified sprite is within the plan's rectangle")]
-   public bool IsSpriteWithin(SpriteBase sprite, RelativePosition RelativePosition)
+   public virtual bool IsSpriteWithin(SpriteBase sprite, RelativePosition RelativePosition)
    {
       System.Drawing.Point rp = sprite.GetRelativePosition(RelativePosition);
       Rectangle targetRect = PlanRectangle;
@@ -199,7 +199,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// in a collection (beginning with the sprite whose index is after Skip).
    /// <seealso cref="IsSpriteWithin"/></remarks>
    [Description("Returns the index of the first active sprite whose specified coordinate is within the plan's rectangle, or -1 if none exist. Indexes up through Skip will be ignored.")]
-   public int GetSpriteWithin(SpriteCollection Sprites, RelativePosition RelativePosition, int Skip)
+   public virtual int GetSpriteWithin(SpriteCollection Sprites, RelativePosition RelativePosition, int Skip)
    {
       for (int i=Skip+1; i < Sprites.Count; i++)
       {
@@ -219,7 +219,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// within the polygon.</returns>
    /// <remarks>
    /// <seealso cref="IsSpriteWithin"/></remarks>
-   public bool IsSpriteWithinPolygon(SpriteBase sprite, RelativePosition RelativePosition)
+   public virtual bool IsSpriteWithinPolygon(SpriteBase sprite, RelativePosition RelativePosition)
    {
       System.Drawing.Point rp = sprite.GetRelativePosition(RelativePosition);
       bool result = false;
@@ -258,7 +258,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// started touching the plan, so the plan may never get activated.
    /// </remarks>
    [Description("Returns true if the specified sprite was touching this plan's rectangle in the previous frame")]
-   public bool WasSpriteTouching(SpriteBase sprite)
+   public virtual bool WasSpriteTouching(SpriteBase sprite)
    {
       Rectangle spriteRect = new Rectangle(sprite.OldPixelX, sprite.OldPixelY, sprite.SolidWidth, sprite.SolidHeight);
       Rectangle targetRect = PlanRectangle;
@@ -284,7 +284,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// keep it scrolled so strictly within the scroll margin area.
    /// <seealso cref="PushSpriteIntoView"/></remarks>
    [Description("Scroll all layers on this plan's layer's map so that the specified sprite is within the visible area of the map.  If UseScrollMargins is true, the layer will scroll the sprite into the scroll margins of the map.")]
-   public void ScrollSpriteIntoView(SpriteBase Sprite, bool UseScrollMargins)
+   public virtual void ScrollSpriteIntoView(SpriteBase Sprite, bool UseScrollMargins)
    {
       ParentLayer.ScrollSpriteIntoView(Sprite, UseScrollMargins);
    }
@@ -300,7 +300,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// (another player) can't leave the view (in cases where both players are shown in
    /// the same view). <seealso cref="ScrollSpriteIntoView"/></remarks>
    [Description("Alter a sprite's velocity so that it remains within the map's visible area or within the scroll margins.")]
-   public void PushSpriteIntoView(SpriteBase Sprite, bool StayInScrollMargins)
+   public virtual void PushSpriteIntoView(SpriteBase Sprite, bool StayInScrollMargins)
    {
       ParentLayer.PushSpriteIntoView(Sprite, StayInScrollMargins);
    }
@@ -319,7 +319,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// See <see cref="StopSprite"/> for an example.
    /// </example>
    [Description("Alter the velocity of the specified sprite to go toward a coordinate associated with the current plan.  CoordinateIndex indicates which coordinate in the plan to head toward, and Force is how hard to push the sprite in tenths of a pixel per frame per frame")]
-   public void PushSpriteTowardCoordinate(SpriteBase Sprite, int CoordinateIndex, int Force)
+   public virtual void PushSpriteTowardCoordinate(SpriteBase Sprite, int CoordinateIndex, int Force)
    {
       PushSpriteTowardPoint(Sprite, this[CoordinateIndex], Force);
    }
@@ -338,7 +338,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// <code>PushSpriteTowardPoint(m_ParentLayer.m_Plasma_1, ParentLayer.GetMousePosition(), 40);</code>
    /// </example>
    [Description("Alter the velocity of the specified sprite to go toward a specified location.  Force is how hard to push the sprite in tenths of a pixel per frame per frame")]
-   public void PushSpriteTowardPoint(SpriteBase Sprite, Point Target, int Force)
+   public virtual void PushSpriteTowardPoint(SpriteBase Sprite, Point Target, int Force)
    {
       double dx = Target.X - Sprite.PixelX;
       double dy = Target.Y - Sprite.PixelY;
@@ -384,7 +384,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// For a more complete example, see <see cref="StopSprite"/>.
    /// </example>
    [Description("Determine whether the sprite is within the TargetDistance of the specified coordinate, and has waited for the number of frames determined by the coordinate's weight based on the specified WaitCounter after reaching it.  If so, return the next CoordinateIndex, otherwise return the current CoordinateIndex.")]
-   public int CheckNextCoordinate(SpriteBase Sprite, int CoordinateIndex, ref int WaitCounter)
+   public virtual int CheckNextCoordinate(SpriteBase Sprite, int CoordinateIndex, ref int WaitCounter)
    {
       if (WaitCounter > 0)
       {
@@ -398,7 +398,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
       }
       int dx = this[CoordinateIndex].x - Sprite.PixelX;
       int dy = this[CoordinateIndex].y - Sprite.PixelY;
-      if (Math.Sqrt(dx * dx + dy * dy) < TargetDistance)
+      if (Math.Sqrt(dx * dx + dy * dy) <= TargetDistance)
       {
          if (this[CoordinateIndex].weight > 0)
             WaitCounter++;
@@ -426,7 +426,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// performing the actual movement (see <see cref="SpriteBase.MoveByVelocity"/>).</note>
    /// </remarks>
    [Description("Cause the specified sprite to follow the coordinates in this plan as a path, provided some parameters where the current point index and wait counter can be stored.")]
-   public void FollowPath(SpriteBase Sprite, ref int CoordinateIndex, ref int WaitCounter)
+   public virtual void FollowPath(SpriteBase Sprite, ref int CoordinateIndex, ref int WaitCounter)
    {
       if (Sprite.isActive)
       {
@@ -475,7 +475,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// </code>
    /// </example>
    [Description("Set the velocity of the specified sprite to zero")]
-   public void StopSprite(SpriteBase Sprite)
+   public virtual void StopSprite(SpriteBase Sprite)
    {
       Sprite.dx = Sprite.dy = 0;
    }
@@ -495,7 +495,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// If both sprites have Mask Alpha Level set to 0, then a simple rectangular collision
    /// detection is performed (for improved performance).</remarks>
    [Description("Determine whether the specified sprite's collision mask is overlapping part of any sprite in the specified category. Return the index of the sprite within the category if a collision is occurring, otherwise return -1.")]
-   public int TestCollisionMask(SpriteBase SourceSprite, SpriteCollection Targets)
+   public virtual int TestCollisionMask(SpriteBase SourceSprite, SpriteCollection Targets)
    {
       return SourceSprite.TestCollisionMask(Targets);
    }
@@ -512,7 +512,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// for improved performance when pixel-perfect collision detection is not required.
    /// <seealso cref="TestCollisionMask"/></remarks>
    [Description("Determine whether the solidity rectangle of the specified sprite overlaps that of any sprite in the specified category. Return the index of the sprite within the category if a collision is occurring, otherwise return -1.")]
-   public int TestCollisionRect(SpriteBase SourceSprite, SpriteCollection Targets)
+   public virtual int TestCollisionRect(SpriteBase SourceSprite, SpriteCollection Targets)
    {
       return SourceSprite.TestCollisionRect(Targets);
    }
@@ -527,7 +527,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// target sprite when a collision occurs.
    /// <seealso cref="DeactivateSprite"/></remarks>
    [Description("Deactivate a sprite within a category given the sprite's index within the category")]
-   public void DeactivateCategorySprite(SpriteCollection Category, int Index)
+   public virtual void DeactivateCategorySprite(SpriteCollection Category, int Index)
    {
       Category[Index].isActive = false;
    }
@@ -548,7 +548,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// <example>See <see cref="StopSprite"/> for an example of
    /// IsSpriteActive.</example>
    [Description("Determines if the specified sprite instace is active.")]
-   public bool IsSpriteActive(SpriteBase Sprite)
+   public virtual bool IsSpriteActive(SpriteBase Sprite)
    {
       return Sprite.isActive;
    }
@@ -571,7 +571,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// <code>TransportToPoint(m_ParentLayer.m_Plasma_1, ParentLayer.GetMousePosition());</code>
    /// </example>
    [Description("Moves the specified sprite to the specified coordinate.")]
-   public void TransportToPoint(SpriteBase sprite, Point target)
+   public virtual void TransportToPoint(SpriteBase sprite, Point target)
    {
       sprite.oldX = sprite.x;
       sprite.oldY = sprite.y;
@@ -592,7 +592,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// right side of the sprite's solidity rectangle will be aligned to the midpoint of the
    /// right side of the plan's rectangle.</remarks>
    [Description("Moves the specified sprite to the specified plan's rectangle, aligned to the specified corner/edge.")]
-   public void TransportToPlan(SpriteBase Sprite, PlanBase Plan, RelativePosition Alignment)
+   public virtual void TransportToPlan(SpriteBase Sprite, PlanBase Plan, RelativePosition Alignment)
    {
       System.Diagnostics.Debug.Assert(!Plan.PlanRectangle.IsEmpty, "TransportToPlan was called on a plan that does not have a rectangle defined.");
       if (Plan.PlanRectangle.IsEmpty)
@@ -645,7 +645,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// easier or necessary to distinguish the individual players on each map if each player
    /// uses the same sprite definition.</remarks>
    [Description("Associate the state of the input device for the specified player (1-4) with the inputs on the specified sprite.")]
-   public void MapPlayerToInputs(int PlayerNumber, SpriteBase Target)
+   public virtual void MapPlayerToInputs(int PlayerNumber, SpriteBase Target)
    {
       Target.MapPlayerToInputs(PlayerNumber);
    }
@@ -673,7 +673,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    ///<code>if (Counter.AnimationCounter.CurrentValue > this[0].weight)
    ///   Counter.AnimationCounter.CurrentValue = this[0].weight;</code>
    ///</example>
-   public Coordinate this[int index]
+   public virtual Coordinate this[int index]
    {
       get
       {
@@ -684,7 +684,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// <summary>
    /// Retrieves the number of coordinates that this plan contains
    /// </summary>
-   public int Count
+   public virtual int Count
    {
       get
       {
@@ -738,7 +738,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// <code>ModulateColor(m_ParentLayer.m_Player_1, ColorChannel.Alpha, 128);</code>
    /// </example>
    [Description("Modulate/scale the specified color channel of the specified sprite to the specified level (0-255)")]
-   public void ModulateColor(SpriteBase Sprite, ColorChannel Channel, int Level)
+   public virtual void ModulateColor(SpriteBase Sprite, ColorChannel Channel, int Level)
    {
       switch(Channel)
       {
@@ -838,7 +838,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// See <see cref="DrawStyle"/> for details about the different ways in which the bar
    /// can be filled.</remarks>
    [Description("Draw the specified tile from the layer's tileset in this plan's rectangle according to the specified counter value")]
-   public void DrawCounterAsTile(int TileIndex, Counter counter, DrawStyle style)
+   public virtual void DrawCounterAsTile(int TileIndex, Counter counter, DrawStyle style)
    {
       System.Diagnostics.Debug.Assert(!PlanRectangle.IsEmpty, "DrawCounterAsTile was called on a plan that does not have a rectangle defined");
       if (PlanRectangle.IsEmpty)
@@ -1008,7 +1008,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// <remarks>The label and quantity are merged into a single string of
    /// text and drawn at the top left corner of the plan's rectangle.</remarks>
    [Description("Display a counter value as a number with a label in the current plan's rectangle")]
-   public void DrawCounterWithLabel(string Label, Counter counter, System.Drawing.KnownColor color)
+   public virtual void DrawCounterWithLabel(string Label, Counter counter, System.Drawing.KnownColor color)
    {
       System.Diagnostics.Debug.Assert(!PlanRectangle.IsEmpty, "DrawCounterAsTile was called on a plan that does not have a rectangle defined");
       if (PlanRectangle.IsEmpty)
@@ -1022,7 +1022,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    }
    #endregion
 
-   private void CopyTiles(PlanBase Source, PlanBase Target, RelativePosition RelativePosition)
+   protected virtual void CopyTiles(PlanBase Source, PlanBase Target, RelativePosition RelativePosition)
    {
       int src_left = (int)(Source.PlanRectangle.X / Source.ParentLayer.Tileset.TileWidth);
       int src_top = (int)(Source.PlanRectangle.Y / Source.ParentLayer.Tileset.TileHeight);
@@ -1099,7 +1099,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// rectangle will be copied into the right middle tile of the target rectangle, and
    /// build around there regardless of the target rectangle's size.</remarks>
    [Description("Copy tiles from this plan's rectangle to another plan's rectangle.")]
-   public void CopyTo(PlanBase Target, RelativePosition RelativePosition)
+   public virtual void CopyTo(PlanBase Target, RelativePosition RelativePosition)
    {
       CopyTiles(this, Target, RelativePosition);
    }
@@ -1117,7 +1117,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// rectangle will be copied into the right middle tile of the target rectangle, and
    /// build around there regardless of the target rectangle's size.</remarks>
    [Description("Copy tiles from the specified plan's rectangle to this plan's rectangle.")]
-   public void CopyFrom(PlanBase Source, RelativePosition RelativePosition)
+   public virtual void CopyFrom(PlanBase Source, RelativePosition RelativePosition)
    {
       CopyTiles(Source, this, RelativePosition);
    }
@@ -1133,7 +1133,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// more commonly used, but this allows you to test a specific sprite's inputs on a specific
    /// layer.</remarks>
    [Description("Determine if the specified sprite's specified input is pressed.  InitialOnly causes this to return true only if the input has just been pressed and was not pressed before.")]
-   public bool IsInputPressed(SpriteBase Sprite, SpriteBase.InputBits Input, bool InitialOnly)
+   public virtual bool IsInputPressed(SpriteBase Sprite, SpriteBase.InputBits Input, bool InitialOnly)
    {
       return Sprite.IsInputPressed(Input, InitialOnly);
    }
@@ -1147,7 +1147,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// shift the current inputs into the old inputs to allow correct handling for
    /// "InitialOnly" parameters.</remarks>
    [Description("Ensure that all the inputs currently being pressed on the specified sprite are henceforth processed as already pressed.")]
-   public void CopyInputsToOld(SpriteBase Sprite)
+   public virtual void CopyInputsToOld(SpriteBase Sprite)
    {
       Sprite.oldinputs = Sprite.inputs;
    }
@@ -1189,7 +1189,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// the layer, and not adjusted according to <paramref name="RelativePosition"/>.
    /// </para><seealso cref="SpriteBase.AddSpriteHere"/><seealso cref="SpriteBase.TileAddSprite"/></remarks>
    [Description("Add a new instance of the specified sprite type to this plan's layer such that the specified position within the sprite corresponds to the first coordinate in this plan")]
-   public void AddSpriteAtPlan([Editor("SpriteDefinition", "UITypeEditor")] System.Type SpriteDefinition, RelativePosition RelativePosition)
+   public virtual void AddSpriteAtPlan([Editor("SpriteDefinition", "UITypeEditor")] System.Type SpriteDefinition, RelativePosition RelativePosition)
    {
       System.Reflection.ConstructorInfo constructor = SpriteDefinition.GetConstructor(new System.Type[]
       {
@@ -1215,7 +1215,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// <param name="Force">Acceleration in tenths of a pixel per frame per frame.</param>
    /// <returns>True if the sprite is pushed, false if the sprites are already a the same location.</returns>
    [Description("Push the specified Source sprite toward the specified Target sprite. Force is in tenths of a pixel per frame per frame.")]
-   public bool PushSpriteTowardSprite(SpriteBase Source, SpriteBase Target, int Force)
+   public virtual bool PushSpriteTowardSprite(SpriteBase Source, SpriteBase Target, int Force)
    {
       return Source.PushTowardSprite(Target, Force);
    }
@@ -1236,7 +1236,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// so other rules will be able to determine which buttons were pressed before.
    /// </remarks>
    [Description("Move the specified sprite to the position of the mouse cursor and set the sprite's button inputs based on mouse button states. If InstantMove is true, the sprite will be moved immediately, otherwise it the velocity will be set to move when MoveByVelocity runs.")]
-   public void MapMouseToSprite(SpriteBase Target, bool InstantMove)
+   public virtual void MapMouseToSprite(SpriteBase Target, bool InstantMove)
    {
       Target.MapMouseToSprite(InstantMove);
    }
@@ -1261,7 +1261,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// the sprite will be transported such that the bottom center of the sprite will match up
    /// with the opposite plan rectangle's bottom center.</remarks>
    [Description("If any sprite in the specified category is within the bounds of this plan or the Target plan, and is pressing the specified Trigger, transport it to the other plan.")]
-   public int Door(PlanBase Target, SpriteCollection Sprites, SpriteBase.InputBits Trigger)
+   public virtual int Door(PlanBase Target, SpriteCollection Sprites, SpriteBase.InputBits Trigger)
    {
       int result = -1;
       for (int i=0; i<Sprites.Count; i++)
@@ -1292,7 +1292,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    /// Allows a the coordinates of a plan to be enumerated with a foreach loop.
    /// </summary>
    /// <returns>An object that enumerates this plan's coordinates.</returns>
-   public System.Collections.IEnumerator GetEnumerator()
+   public virtual System.Collections.IEnumerator GetEnumerator()
    {
       if (Coordinates == null)
          new System.Collections.ArrayList().GetEnumerator();

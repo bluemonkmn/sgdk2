@@ -212,6 +212,9 @@ namespace SGDK2
             {
                if (ProjectData.GetSpritePlan(m_SpriteRow.LayerRowParent, value) != null)
                   throw new ApplicationException("Sprite name \"" + value + "\" conflicts with the name of an existing plan.  Choose a name that does not conflict with that of a plan or another sprite.");
+               string error = ProjectData.ValidateName(value);
+               if (!string.IsNullOrEmpty(error))
+                  throw new ApplicationException(error);
                m_SpriteRow.Name = value;
             }
             else

@@ -12,10 +12,10 @@ using System.Diagnostics;
 [Serializable()]
 public abstract partial class GeneralRules
 {
-   private static SaveUnit saveUnit = null;
-   private static System.Collections.Hashtable memorySaveSlots = new System.Collections.Hashtable();
-   private static System.Random randomGen = new System.Random();
-   private static long previousFrame = 0;
+   protected static SaveUnit saveUnit = null;
+   protected static System.Collections.Hashtable memorySaveSlots = new System.Collections.Hashtable();
+   protected static System.Random randomGen = new System.Random();
+   protected static long previousFrame = 0;
 
    /// <summary>
    /// Contains the last sprite created with <see cref="PlanBase.AddSpriteAtPlan"/>,
@@ -45,7 +45,7 @@ public abstract partial class GeneralRules
    /// limit the frame rate to half the specified value, and more calls will
    /// make the game run even slower.</remarks>
    [Description("Limit the frame rate of the game to the specified number of frames per second.  Call this only once per frame.")]
-   public void LimitFrameRate(int fps)
+   public virtual void LimitFrameRate(int fps)
    {
       long freq;
       long frame;
@@ -82,7 +82,7 @@ public abstract partial class GeneralRules
    /// LogDebugValue(Counter.Counter_1.CurrentValue);</code></example>
    [Description("Write a string to the debug output without moving to the next line"),
    System.Diagnostics.Conditional("DEBUG")]
-   public void LogDebugLabel(string Label)
+   public virtual void LogDebugLabel(string Label)
    {
       Project.GameWindow.debugText.Write(Label);
    }
@@ -105,7 +105,7 @@ public abstract partial class GeneralRules
    /// <example>See <see cref="LogDebugLabel"/> for an example</example>
    [Description("Write a number to the debug output and move to the next line"),
    System.Diagnostics.Conditional("DEBUG")]
-   public void LogDebugValue(int DebugValue)
+   public virtual void LogDebugValue(int DebugValue)
    {
       Project.GameWindow.debugText.WriteLine(DebugValue.ToString());
    }
@@ -136,7 +136,7 @@ public abstract partial class GeneralRules
    /// away from the map.</para>
    /// <seealso cref="UnloadMap"/></remarks>
    [Description("Sets a different map as the one to be drawn on the game display.  If UnloadCurrent is true, the current map will be unloaded first (which causes it to be recreated/reset when returning to it).")]
-   public void SwitchToMap([Editor("MapType", "UITypeEditor")] Type MapType, bool UnloadCurrent)
+   public virtual void SwitchToMap([Editor("MapType", "UITypeEditor")] Type MapType, bool UnloadCurrent)
    {
       System.Type source = Project.GameWindow.CurrentMap.GetType();
       if (UnloadCurrent)
@@ -158,7 +158,7 @@ public abstract partial class GeneralRules
    /// <para>If there is no previous map to return to, this function will have no effect.</para>
    /// <para>See <see cref="SwitchToMap"/> for more information about unloading maps.</para></remarks>
    [Description("Return to the map that was active before the last SwitchToMap.  If UnloadCurrent is true, the current map will be unloaded first (which causes it to be recreated/reset when returning to it).")]
-   public void ReturnToPreviousMap(bool UnloadCurrent)
+   public virtual void ReturnToPreviousMap(bool UnloadCurrent)
    {
       System.Type source = Project.GameWindow.CurrentMap.m_CameFromMapType;
       if (source == null)
@@ -174,7 +174,7 @@ public abstract partial class GeneralRules
    /// <returns>True if calling <see cref="ReturnToPreviousMap"/> will have any effect,
    /// false otherwise.</returns>
    [Description("Determines if there is a previous map to return to.")]
-   public bool CanReturnToPreviousMap()
+   public virtual bool CanReturnToPreviousMap()
    {
       return Project.GameWindow.CurrentMap.m_CameFromMapType != null;
    }
@@ -191,7 +191,7 @@ public abstract partial class GeneralRules
    /// <seealso cref="SwitchToMap"/>
    /// <seealso cref="ReturnToPreviousMap"/></remarks>
    [Description("Unloads the specified map, which will force it to be recreated/reset next time it is used.")]
-   public void UnloadMap([Editor("MapType", "UITypeEditor")] Type MapType)
+   public virtual void UnloadMap([Editor("MapType", "UITypeEditor")] Type MapType)
    {
       Project.GameWindow.UnloadMap(MapType);
    }
@@ -224,7 +224,7 @@ public abstract partial class GeneralRules
    /// <seealso cref="ExcludeMapFromSaveUnit"/>
    /// <seealso cref="SaveGame"/></remarks>
    [Description("Includes a specified set of objects in the SaveUnit that will be saved with the next call to SaveGame")]
-   public void IncludeInSaveUnit(SaveUnitInclusion Include)
+   public virtual void IncludeInSaveUnit(SaveUnitInclusion Include)
    {
       if (saveUnit == null)
          saveUnit = new SaveUnit();
@@ -274,7 +274,7 @@ public abstract partial class GeneralRules
    /// <seealso cref="ExcludeMapFromSaveUnit"/>
    /// <seealso cref="SaveGame"/></remarks>
    [Description("Include the specified counter in the SaveUnit that will be saved with the next call to SaveGame")]
-   public void IncludeCounterInSaveUnit(Counter Counter)
+   public virtual void IncludeCounterInSaveUnit(Counter Counter)
    {
       if (saveUnit == null)
       {
@@ -307,7 +307,7 @@ public abstract partial class GeneralRules
    /// <seealso cref="ExcludeMapFromSaveUnit"/>
    /// <seealso cref="SaveGame"/></remarks>
    [Description("Exclude the specified counter from the SaveUnit that will be saved with the next call to SaveGame")]
-   public void ExcludeCounterFromSaveUnit(Counter Counter)
+   public virtual void ExcludeCounterFromSaveUnit(Counter Counter)
    {
       if ((saveUnit == null) || (saveUnit.Counters == null))
          return;
@@ -336,7 +336,7 @@ public abstract partial class GeneralRules
    /// <seealso cref="ExcludeMapFromSaveUnit"/>
    /// <seealso cref="SaveGame"/></remarks>
    [Description("Include the specified map in the SaveUnit that will be saved with the next call to SaveGame.")]
-   public void IncludeMapInSaveUnit([Editor("MapType", "UITypeEditor")] Type MapType)
+   public virtual void IncludeMapInSaveUnit([Editor("MapType", "UITypeEditor")] Type MapType)
    {
       if (Project.GameWindow.LoadedMaps.ContainsKey(MapType))
       {
@@ -365,7 +365,7 @@ public abstract partial class GeneralRules
    /// <seealso cref="IncludeMapInSaveUnit"/>
    /// <seealso cref="SaveGame"/></remarks>
    [Description("Remove the specified map in from the SaveUnit that will be saved with the next call to SaveGame.")]
-   public void ExcludeMapFromSaveUnit([Editor("MapType", "UITypeEditor")] Type MapType)
+   public virtual void ExcludeMapFromSaveUnit([Editor("MapType", "UITypeEditor")] Type MapType)
    {
       if ((saveUnit == null) || (saveUnit.Maps == null))
          return;
@@ -397,7 +397,7 @@ public abstract partial class GeneralRules
    /// <seealso cref="DeleteSave"/>
    /// </remarks>
    [Description("Save the current save unit into the specified save slot, and reset the save unit. If InMemory is true, no file will be created, otherwise the game is saved to a file.")]
-   public void SaveGame(int Slot, bool InMemory)
+   public virtual void SaveGame(int Slot, bool InMemory)
    {
       System.IO.Stream stm;
       if (InMemory)
@@ -444,7 +444,7 @@ public abstract partial class GeneralRules
    /// <seealso cref="DeleteSave"/>
    /// </remarks>
    [Description("Restore the state of the objects contained in the specified save slot. If InMemory is true, the memory slot is used, otherwise the file associated with the slot is loaded.")]
-   public void LoadGame(int Slot, bool InMemory)
+   public virtual void LoadGame(int Slot, bool InMemory)
    {
       System.IO.Stream stm;
 
@@ -502,7 +502,7 @@ public abstract partial class GeneralRules
    /// <seealso cref="SaveGame"/>
    /// <seealso cref="DeleteSave"/></remarks>
    [Description("Determines if saved game data exists in the specified slot.  Checks for the existence of a file if InMemory is false.")]
-   public bool SaveExists(int Slot, bool InMemory)
+   public virtual bool SaveExists(int Slot, bool InMemory)
    {
       if (InMemory)
          return memorySaveSlots.ContainsKey(Slot);
@@ -523,7 +523,7 @@ public abstract partial class GeneralRules
    /// <seealso cref="SaveGame"/>
    /// <seealso cref="SaveExists"/></remarks>
    [Description("Empties the specified save slot.  If InMemory is false, a file is deleted, otherwise a memory slot is cleared.")]
-   public void DeleteSave(int Slot, bool InMemory)
+   public virtual void DeleteSave(int Slot, bool InMemory)
    {
       if (InMemory)
          memorySaveSlots.Remove(Slot);
@@ -542,7 +542,7 @@ public abstract partial class GeneralRules
    /// and draw it. The scope of this value is limited to the map, so setting it
    /// affects only the map containing this object.</remarks>
    [Browsable(false)]
-   public int CurrentView
+   public virtual int CurrentView
    {
       get
       {
@@ -561,7 +561,7 @@ public abstract partial class GeneralRules
    /// <remarks>The number of views designated by <paramref name="Layout"/> must not exceed
    /// <see cref="Project.MaxViews"/> defined by the project.</remarks>
    [Description("Sets the layout of multiple views for the current map.")]
-   public void SetViewLayout(ViewLayout Layout)
+   public virtual void SetViewLayout(ViewLayout Layout)
    {
       ParentLayer.ParentMap.ViewLayout = Layout;
    }
@@ -573,7 +573,7 @@ public abstract partial class GeneralRules
    /// <param name="SpriteIndex">Zero-based index into the category, specifying a sprite</param>
    /// <param name="State">Numeric value referring to a state of the specified sprite.</param>
    [Description("Sets the current state of a sprite based on a category and index into the category.")]
-   public void SetCategorySpriteState(SpriteCollection Category, int SpriteIndex, int State)
+   public virtual void SetCategorySpriteState(SpriteCollection Category, int SpriteIndex, int State)
    {
       Debug.Assert(Category[SpriteIndex].isActive, "SetCategorySpriteState attempted to set the state of an inactive sprite.");
       Category[SpriteIndex].state = State;
@@ -584,7 +584,7 @@ public abstract partial class GeneralRules
    /// </summary>
    /// <remarks>This disables all drawing and rules in the overlay map.</remarks>
    [Description("Turn off the overlay map. This disables all drawing and rules in the overlay map.")]
-   public void ClearOverlay()
+   public virtual void ClearOverlay()
    {
       Project.GameWindow.OverlayMap = null;
    }
@@ -596,7 +596,7 @@ public abstract partial class GeneralRules
    /// <remarks>This is very similar to <see cref="SwitchToMap"/>, but it affects the overlay
    /// map instead of the main map.</remarks>
    [Description("Set the overlay map.")]
-   public void SetOverlay([Editor("MapType", "UITypeEditor")] Type MapType)
+   public virtual void SetOverlay([Editor("MapType", "UITypeEditor")] Type MapType)
    {
       Project.GameWindow.OverlayMap = Project.GameWindow.GetMap(MapType);
    }
@@ -615,7 +615,7 @@ public abstract partial class GeneralRules
    /// <seealso cref="SetTargetMapFlag"/>
    /// <seealso cref="IsMapFlagOn"/></remarks>
    [Description("Turn on or off a flag associated with the current map.  FlagIndex must be a value from 0 through 30.")]
-   public void SetMapFlag(int FlagIndex, bool Value)
+   public virtual void SetMapFlag(int FlagIndex, bool Value)
    {
       if (Value)
          ParentLayer.ParentMap.MapFlags |= 1 << FlagIndex;
@@ -637,7 +637,7 @@ public abstract partial class GeneralRules
    /// <seealso cref="SetMapFlag"/>
    /// <seealso cref="IsMapFlagOn"/></remarks>
    [Description("Turn on or off a flag associated with the specified map. FlagIndex must be a value from 0 through 30.")]
-   public void SetTargetMapFlag([Editor("MapType", "UITypeEditor")] Type MapType, int FlagIndex, bool Value)
+   public virtual void SetTargetMapFlag([Editor("MapType", "UITypeEditor")] Type MapType, int FlagIndex, bool Value)
    {
       if (Value)
          Project.GameWindow.GetMap(MapType).MapFlags |= 1 << FlagIndex;
@@ -651,7 +651,7 @@ public abstract partial class GeneralRules
    /// <param name="FlagIndex">A number from 0 to 30 specifying which flag to check</param>
    /// <returns>True if the specified flag is set, or false if it is not.</returns>
    [Description("Determine if the specified map-specific flag on the current map is on.")]
-   public bool IsMapFlagOn(int FlagIndex)
+   public virtual bool IsMapFlagOn(int FlagIndex)
    {
       return ((ParentLayer.ParentMap.MapFlags & (1<<FlagIndex)) != 0);
    }
@@ -662,7 +662,7 @@ public abstract partial class GeneralRules
    /// <remarks>This unloads all maps except the current map and the overlay map.
    /// They will be reset next time they become active.</remarks>
    [Description("Unload all maps that aren't currently visible (as the current map or overlay map).")]
-   public void UnloadBackgroundMaps()
+   public virtual void UnloadBackgroundMaps()
    {
       Project.GameWindow.UnloadBackgroundMaps();
    }
@@ -671,7 +671,7 @@ public abstract partial class GeneralRules
    /// Quit the game by closing the main window.
    /// </summary>
    [Description("Quit the game by closing the main window.")]
-   public void QuitGame()
+   public virtual void QuitGame()
    {
       Project.GameWindow.Quit();
    }
@@ -682,7 +682,7 @@ public abstract partial class GeneralRules
    /// <param name="key">Which key to check</param>
    /// <returns>True if the specified key is currently pressed, false otherwise</returns>
    [Description("Returns true if the specified key is currently pressed")]
-   public bool IsKeyPressed(Key key)
+   public virtual bool IsKeyPressed(Key key)
    {
       return Project.GameWindow.KeyboardState[key];
    }
@@ -696,7 +696,7 @@ public abstract partial class GeneralRules
    /// This value is based on a random seed that was generated based on the current time when
    /// the program started.</returns>
    [Description("Return a random number greater than or equal to Minimum and less than Maximum.")]
-   public int GetRandomNumber(int Minimum, int Maximum)
+   public virtual int GetRandomNumber(int Minimum, int Maximum)
    {
       return randomGen.Next(Minimum,Maximum);
    }
@@ -714,7 +714,7 @@ public abstract partial class GeneralRules
    /// using a pre-defined operation, you can easily cause the counter to loop when
    /// it hits a limit, which is useful for counters linked to tile animations.</remarks>
    [Description("Change a counter's value with a pre-defined operation. Return true if the counter hits a limit or is left unchanged.")]
-   public bool ChangeCounter(Counter Counter, CounterOperation Operation)
+   public virtual bool ChangeCounter(Counter Counter, CounterOperation Operation)
    {
       switch(Operation)
       {
@@ -766,13 +766,13 @@ public abstract partial class GeneralRules
    /// <param name="Button">Specifies which button to check.</param>
    /// <returns>True if the button is pressed, false if it is not pressed.</returns>
    [Description("Determines if the specified mouse button is pressed.")]
-   public bool IsMouseButtonPressed(System.Windows.Forms.MouseButtons Button)
+   public virtual bool IsMouseButtonPressed(System.Windows.Forms.MouseButtons Button)
    {
       return 0 != (System.Windows.Forms.Control.MouseButtons & Button);
    }
 
    #region Collections
-   private static SpriteBase selectedTarget;
+   protected static SpriteBase selectedTarget;
 
    /// <summary>
    /// Selects a sprite within a collection, using a 0-based index, to be the target of <see cref="SetTargetParameter"/>.
@@ -785,7 +785,7 @@ public abstract partial class GeneralRules
    /// of arbitrary sprites within a collection to trigger various behaviors based on their rules.
    /// </remarks>
    [Description("Selects a sprite within a collection, using a 0-based index, to be the target of SetTargetParameter.")]
-   public bool SelectTargetSprite(SpriteCollection Sprites, int Index)
+   public virtual bool SelectTargetSprite(SpriteCollection Sprites, int Index)
    {
       if (Sprites.Count > Index)
       {
@@ -803,7 +803,7 @@ public abstract partial class GeneralRules
    /// Selects the most recently created sprite to be the target of <see cref="SetTargetParameter"/>.
    /// </summary>
    [Description("Selects the most recently created sprite to be the target of SetTargetParameter.")]
-   public void SelectLastCreatedSprite()
+   public virtual void SelectLastCreatedSprite()
    {
       selectedTarget = lastCreatedSprite;
    }
@@ -819,7 +819,7 @@ public abstract partial class GeneralRules
    /// sprite to trigger its rules to react. Remember that ParameterName is provided as a string,
    /// and must be quoted assuming the name is provided directly.</remarks>
    [Description("Set the value of a numeric property or parameter (given its name as a string) on a sprite selected with SelectTargetSprite to the specified value.")]
-   public void SetTargetParameter(string ParameterName, int Value)
+   public virtual void SetTargetParameter(string ParameterName, int Value)
    {
       System.Reflection.PropertyInfo pi = selectedTarget.GetType().GetProperty(ParameterName);
       if (pi == null)
@@ -894,20 +894,20 @@ public abstract partial class GeneralRules
       FreezeInputs=16
    }
 
-   private static Tileset FontTileset = null;
-   private const int maxMessages = 4;
-   private static MessageLayer[] activeMessages = new MessageLayer[maxMessages];
-   private static int activeMessageCount = 0;
-   private static System.Drawing.Color messageBackground = System.Drawing.Color.FromArgb(128, 64, 0, 255);
-   private static MessageView msgView = MessageView.Current;
-   private static RelativePosition msgPos = RelativePosition.CenterMiddle;
-   private const int messageMargin = 6;
+   protected static Tileset FontTileset = null;
+   protected const int maxMessages = 4;
+   protected static MessageLayer[] activeMessages = new MessageLayer[maxMessages];
+   protected static int activeMessageCount = 0;
+   protected static System.Drawing.Color messageBackground = System.Drawing.Color.FromArgb(128, 64, 0, 255);
+   protected static MessageView msgView = MessageView.Current;
+   protected static RelativePosition msgPos = RelativePosition.CenterMiddle;
+   protected const int messageMargin = 6;
    /// <summary>
    /// Zero-based player index that will be assigned to newly created messages
    /// </summary>
-   private static int currentPlayer = 0;
-   private static ButtonSpecifier dismissButton = ButtonSpecifier.First | ButtonSpecifier.FreezeInputs;
-   private static byte[] dismissPhase = null;
+   protected static int currentPlayer = 0;
+   protected static ButtonSpecifier dismissButton = ButtonSpecifier.First | ButtonSpecifier.FreezeInputs;
+   protected static byte[] dismissPhase = null;
 
    /// <summary>
    /// Represents a message created and displayed by <see cref="ShowMessage"/>.
@@ -1038,7 +1038,7 @@ public abstract partial class GeneralRules
    /// <param name="background">Names a color for the background of new messages.</param>
    /// <param name="alpha">Transparency level of the color: 255 = opaque, 128=50% transparent.</param>
    [Description("Sets the background for new messages added with ShowMessage. Alpha 255 = opaque, alpha 128=50% transparent.")]
-   public void SetMessageBackground(System.Drawing.KnownColor background, byte alpha)
+   public virtual void SetMessageBackground(System.Drawing.KnownColor background, byte alpha)
    {
       System.Drawing.Color c = System.Drawing.Color.FromKnownColor(background);
       messageBackground = System.Drawing.Color.FromArgb(alpha, c.R, c.G, c.B);
@@ -1050,7 +1050,7 @@ public abstract partial class GeneralRules
    /// <param name="ViewOption">Determines which view or views messages will appear in.</param>
    /// <param name="Position">Determines the area within the view in which the message appears.</param>
    [Description("Determines where newly created messages appear.")]
-   public void SetMessagePosition(MessageView ViewOption, RelativePosition Position)
+   public virtual void SetMessagePosition(MessageView ViewOption, RelativePosition Position)
    {
       msgView = ViewOption;
       msgPos = Position;
@@ -1062,7 +1062,7 @@ public abstract partial class GeneralRules
    /// <param name="DismissButton">Which of the player's buttons will dismiss the message</param>
    /// <param name="Player">Player number 1 to 4</param>
    [Description("Determines which player and which button will dismiss newly created messages. Player is a number 1 to 4.")]
-   public void SetMessageDismissal(ButtonSpecifier DismissButton, int Player)
+   public virtual void SetMessageDismissal(ButtonSpecifier DismissButton, int Player)
    {
       dismissButton = DismissButton;
       currentPlayer = Player - 1;
@@ -1076,7 +1076,7 @@ public abstract partial class GeneralRules
    /// <remarks>Up to 4 messages may be displayed.  No automatic word wrap or centering
    /// is performed.  All formatting is determined by the content of the string.</remarks>
    [Description("Adds a message to the display. Up to 4 messages may be displayed.")]
-   public void ShowMessage([Editor("Message", "UITypeEditor")] string Message)
+   public virtual void ShowMessage([Editor("Message", "UITypeEditor")] string Message)
    {
       if (activeMessageCount >= maxMessages)
          throw new InvalidOperationException("Maximum number of displayed messages exceeded");
@@ -1087,7 +1087,7 @@ public abstract partial class GeneralRules
    /// Clears all active messages from the display.
    /// </summary>
    [Description("Clears all active messages from the display")]
-   public void ClearAllMessages()
+   public virtual void ClearAllMessages()
    {
       activeMessageCount = 0;
    }
@@ -1136,7 +1136,7 @@ public abstract partial class GeneralRules
       }
    }
 
-   private static void DrawMessage(MessageLayer msg, Display disp)
+   protected static void DrawMessage(MessageLayer msg, Display disp)
    {
       disp.Scissor(msg.ParentMap.CurrentView);
       System.Drawing.Rectangle messageRect = new System.Drawing.Rectangle(
@@ -1159,12 +1159,12 @@ public abstract partial class GeneralRules
    /// for messages. The tile numbers correspond to ASCII values of the characters
    /// used in the messages.</param>
    [Description("Set the tileset used as the source for characters in messages")]
-   public void SetMessageFont(Tileset Tileset)
+   public virtual void SetMessageFont(Tileset Tileset)
    {
       FontTileset = Tileset;
    }
 
-   private MessageLayer CreateMessage(string Message)
+   protected virtual MessageLayer CreateMessage(string Message)
    {
       if (FontTileset == null)
          FontTileset = (Tileset)(typeof(Tileset).GetProperties(

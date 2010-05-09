@@ -99,8 +99,8 @@ public abstract partial class SpriteBase : GeneralRules
    /// will result in an error message in debug mode. <seealso cref="Deactivate"/>
    /// <seealso cref="TileActivateSprite"/></remarks>
    public bool isActive;
-   private LayerBase layer;
-   private Solidity m_solidity;
+   protected LayerBase layer;
+   protected Solidity m_solidity;
    /// <summary>
    /// A combination of <see cref="ModulateRed"/>, <see cref="ModulateGreen"/>,
    /// <see cref="ModulateBlue"/> and <see cref="ModulateAlpha"/>.
@@ -358,7 +358,7 @@ public abstract partial class SpriteBase : GeneralRules
    }
    #endregion
 
-   #region Virtual members
+   #region Abstract members
    /// <summary>
    /// How many pixels wide is the solid area of this sprite.
    /// </summary>
@@ -428,7 +428,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// </summary>
    /// <returns>Rectangle object containing layer-relative coordinates that encompass the
    /// sprite's current image.</returns>
-   public System.Drawing.Rectangle GetBounds()
+   public virtual System.Drawing.Rectangle GetBounds()
    {
       Debug.Assert(this.isActive, "Attempted to execute GetBounds on an inactive sprite");
       System.Drawing.Rectangle result = CurrentState.LocalBounds;
@@ -445,7 +445,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// <remarks>The array will only have more than one element if the sprite
    /// is currently displaying a composite frame.  The frames are ordered from
    /// background to foreground.</remarks>
-   public Frame[] GetCurrentFramesetFrames()
+   public virtual Frame[] GetCurrentFramesetFrames()
    {
       Debug.Assert(this.isActive, "Attempted to execute GetCurrentFramesetFrames on an inactive sprite");
       SpriteState curstate = CurrentState;
@@ -466,7 +466,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// based on other conditions.</remarks>
    public virtual void ProcessRules()
    {
-      if (!Processed)
+      if ((!Processed) && (this.isActive))
       {
          // Help prevent infinite recursion
          Processed = true;
@@ -495,7 +495,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// <remarks>Apply this rule before <see cref="ReactToSolid"/> in order to prevent
    /// the platform from allowing the sprite to move through solids.</remarks>
    [Description("Moves this sprite according to the motion of the platform it is riding.")]
-   public void ReactToPlatform()
+   public virtual void ReactToPlatform()
    {
       Debug.Assert(this.isActive, "Attempted to execute ReactToPlatform on an inactive sprite");
       if (RidingOn == null)
@@ -508,7 +508,7 @@ public abstract partial class SpriteBase : GeneralRules
          // Ensure that the sprite that this sprite is riding moves first
          RidingOn.ProcessRules();
 
-      if ((x + SolidWidth < RidingOn.oldX) || (x > RidingOn.oldX + RidingOn.SolidWidth) ||
+      if ((RidingOn.isActive == false) || (x + SolidWidth < RidingOn.oldX) || (x > RidingOn.oldX + RidingOn.SolidWidth) ||
          (y + SolidHeight < RidingOn.oldY - 1) || (y + SolidHeight >= RidingOn.oldY + RidingOn.SolidHeight))
       {
          StopRiding();
@@ -537,7 +537,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// Stop riding the sprite that this sprite is currently riding, if any.
    /// </summary>
    [Description("Stop riding the sprite that this sprite is currently riding, if any.")]
-   public void StopRiding()
+   public virtual void StopRiding()
    {
       Debug.Assert(this.isActive, "Attempted to execute StopRiding on an inactive sprite");
       LocalDX = double.NaN;
@@ -554,7 +554,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// This should be called after sprites are moved, but before
    /// they are drawn.</remarks>
    [Description("Tests to see if this sprite is landing on a platform (from above). If it is, the sprite will begin riding the platform.")]
-   public bool LandDownOnPlatform(SpriteCollection PlatformList)
+   public virtual bool LandDownOnPlatform(SpriteCollection PlatformList)
    {
       Debug.Assert(this.isActive, "Attempted to execute LandDownOnPlatform on an inactive sprite");
       if (RidingOn != null)
@@ -593,7 +593,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// If both sprites have Mask Alpha Level set to 0, then a simple rectangular collision
    /// detection is performed (for improved performance).</remarks>
    [Description("Determine whether the sprite's collision mask is overlapping part of any sprite in the specified category. Return the index of the sprite within the category if a collision is occurring, otherwise return -1.")]
-   public int TestCollisionMask(SpriteCollection Targets)
+   public virtual int TestCollisionMask(SpriteCollection Targets)
    {
       if (!isActive)
          return -1;
@@ -643,7 +643,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// for improved performance when pixel-perfect collision detection is not required.
    /// <seealso cref="TestCollisionMask"/></remarks>
    [Description("Determine whether the solidity rectangle of the sprite overlaps that of any sprite in the specified category. Return the index of the sprite within the category if a collision is occurring, otherwise return -1.")]
-   public int TestCollisionRect(SpriteCollection Targets)
+   public virtual int TestCollisionRect(SpriteCollection Targets)
    {
       if (!isActive)
          return -1;
@@ -674,7 +674,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// </summary>
    /// <param name="delta">Amount by which to change velocity in pixels per frame per frame</param>
    [Description("Increment or decrement horizontal velocity")]
-   public void AlterXVelocity(double delta)
+   public virtual void AlterXVelocity(double delta)
    {
       Debug.Assert(this.isActive, "Attempted to execute AlterXVelocity on an inactive sprite");
       dx += delta;
@@ -685,7 +685,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// </summary>
    /// <param name="delta">Amount by which to change velocity in pixels per frame per frame</param>
    [Description("Increment or decrement vertical velocity")]
-   public void AlterYVelocity(double delta)
+   public virtual void AlterYVelocity(double delta)
    {
       Debug.Assert(this.isActive, "Attempted to execute AlterYVelocity on an inactive sprite");
       dy += delta;
@@ -699,7 +699,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// <see cref="x"/> and <see cref="y"/> by adding <see cref="dx"/> and
    /// <see cref="dy"/> to them respectively.</remarks>
    [Description("Move this sprite according to its current velocity")]
-   public void MoveByVelocity()
+   public virtual void MoveByVelocity()
    {
       Debug.Assert(this.isActive, "Attempted to execute MoveByVelocity on an inactive sprite");
       oldX = x;
@@ -722,7 +722,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// pixels per frame in absolute terms), and the maximum is set to 4 pixels per frame,
    /// the sprite's <see cref="LocalDX"/> will be reduced to 4 rather than to 1</para>.</remarks>
    [Description("Limit the velocity of the sprite to the specified maximum pixels per frame (affects only local velocity when applicable)")]
-   public void LimitVelocity(int Maximum)
+   public virtual void LimitVelocity(int Maximum)
    {
       Debug.Assert(this.isActive, "Attempted to execute LimitVelocity on an inactive sprite");
       double useDX, useDY;
@@ -765,7 +765,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// when gravity is in effect. A gravity effect is simply an automatic adjustment to the
    /// Y velocity with <see cref="AlterYVelocity"/>.</remarks>
    [Description("Reduces the sprite's velocity to simulate friction.  RetainPercent is a number 0 to 100 indicating how much inertia is retained.")]
-   public void ReactToInertia(int RetainPercentVertical, int RetainPercentHorizontal)
+   public virtual void ReactToInertia(int RetainPercentVertical, int RetainPercentHorizontal)
    {
       Debug.Assert(this.isActive, "Attempted to execute ReactToInertia on an inactive sprite");
       if (double.IsNaN(LocalDX))
@@ -804,7 +804,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// <param name="Direction">Determines which direction to check</param>
    /// <returns>True if the sprite has any movement in the specified direction, otherwise false.</returns>
    [Description("Returns true if the sprite is moving in the specified direction")]
-   public bool IsMoving(Direction Direction)
+   public virtual bool IsMoving(Direction Direction)
    {
       Debug.Assert(this.isActive, "Attempted to execute IsMoving on an inactive sprite");
       double useDX, useDY;
@@ -844,7 +844,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// (state - FirstState) * pi * 2 / StateCount, which calculates the angle in radians.
    /// <seealso cref="RotateVelocity"/></remarks>
    [Description("Accelerate the sprite in a direction determined by its state, assuming the first state points rightward and the number of states rotate counterclockwise 360 degrees. Acceleration is in tenths of a pixel per frame per frame.")]
-   public void PolarAccelerate(int Acceleration, [Editor("SpriteState", "UITypeEditor")] int FirstState, int StateCount)
+   public virtual void PolarAccelerate(int Acceleration, [Editor("SpriteState", "UITypeEditor")] int FirstState, int StateCount)
    {
       Debug.Assert(this.isActive, "Attempted to execute PolarAccelerate on an inactive sprite");
       double angle = (state - FirstState) * Math.PI * 2 / (double)StateCount;
@@ -873,7 +873,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// cause the sprite to be moving in that direction only (no drifting in the previous direction
    /// like a space ship would). <seealso cref="PolarAccelerate"/></remarks>
    [Description("Redirect this sprite's velocity to be 100% in the direction that it is facing, based on its state, where FirstState points rightward and the number of states rotate counterclockwise.")]
-   public void RotateVelocity([Editor("SpriteState", "UITypeEditor")] int FirstState, int StateCount)
+   public virtual void RotateVelocity([Editor("SpriteState", "UITypeEditor")] int FirstState, int StateCount)
    {
       Debug.Assert(this.isActive, "Attepmted to execute RotateVelocity on an inactive sprite");
       float oldDx, oldDy;
@@ -916,7 +916,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// rate of zero. <seealso cref="PushSpriteIntoView"/>
    /// </remarks>
    [Description("Scroll all layers on this sprite's layer's map so that the sprite is within visible area of the map.  If UseScrollMargins is true, scroll the sprite into the scroll margins of the map.")]
-   public void ScrollSpriteIntoView(bool UseScrollMargins)
+   public virtual void ScrollSpriteIntoView(bool UseScrollMargins)
    {
       ParentLayer.ScrollSpriteIntoView(this, UseScrollMargins);
    }
@@ -940,7 +940,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// remain on screen.
    /// <seealso cref="ScrollSpriteIntoView"/></remarks>
    [Description("Alter this sprite's velocity so that it remains within the map's visible area or within the scroll margins, according to this sprite's layer's position within the map.")]
-   public void PushSpriteIntoView(bool StayInScrollMargins)
+   public virtual void PushSpriteIntoView(bool StayInScrollMargins)
    {
       ParentLayer.PushSpriteIntoView(this, StayInScrollMargins);
    }
@@ -954,7 +954,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// <remarks>The output of this function would commonly be stored in a sprite parameter for
    /// passing to <see cref="PushTowardCategory "/>.</remarks>
    [Description("Compute the index of the nearest active sprite from the specified category and return it.")]
-   public int GetNearestSpriteIndex(SpriteCollection Target)
+   public virtual int GetNearestSpriteIndex(SpriteCollection Target)
    {
       int minDist = int.MaxValue;
       int result = -1;
@@ -992,7 +992,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// <seealso cref="PushTowardSprite"/>
    /// <seealso cref="SetInputsTowardSprite"/></remarks>
    [Description("Push this sprite toward a sprite in the specified category. Use GetNearestSpriteIndex to compute the index of the nearest sprite and pass that to Index, or pass -1 to push toward the current nearest sprite. Force is in tenths of a pixel per frame per frame.")]
-   public bool PushTowardCategory(SpriteCollection Target, int Index, int Force)
+   public virtual bool PushTowardCategory(SpriteCollection Target, int Index, int Force)
    {
       Debug.Assert(this.isActive, "Attepmted to execute PushTowardCategory on an inactive sprite");
       Debug.Assert(Index < Target.Count, "Attempted to PushTowardCategory on an index beyond the bounds of a collection");
@@ -1015,7 +1015,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// <seealso cref="PushTowardCategory"/>
    /// <seealso cref="SetInputsTowardSprite"/>
    /// <seealso cref="SetInputsTowardCategory"/></returns>
-   public bool PushTowardSprite(SpriteBase Target, int Force)
+   public virtual bool PushTowardSprite(SpriteBase Target, int Force)
    {
       double vx = Target.PixelX - PixelX + (Target.SolidWidth - SolidWidth) / 2;
       double vy = Target.PixelY - PixelY + (Target.SolidHeight - SolidHeight) / 2;
@@ -1038,7 +1038,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// <param name="Correlation">Determines how and if the sprite's animation speed should be
    /// based on its movement.</param>
    [Description("Advance the animation frame of this sprite according to its velocity or a constant rate")]
-   public void Animate(SpriteAnimationType Correlation)
+   public virtual void Animate(SpriteAnimationType Correlation)
    {
       Debug.Assert(this.isActive, "Attempted to execute Animate on an inactive sprite");
       switch (Correlation)
@@ -1079,7 +1079,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// The result of this can be stored directly into <see cref="state"/> if you want the sprite
    /// to switch to that state.</returns>
    [Description("Return the state that a rotating sprite should use in order to point in the direction it is currently traveling, assuming that FirstState points rightward and each subsequent state is one step counter-clockwise")]
-   public int GetPolarStateByVector([Editor("SpriteState", "UITypeEditor")] int FirstState, int StateCount)
+   public virtual int GetPolarStateByVector([Editor("SpriteState", "UITypeEditor")] int FirstState, int StateCount)
    {
       double useDX, useDY;
       Debug.Assert(this.isActive, "Attempted to execute GetPolarStateByVector on an inactive sprite");
@@ -1110,7 +1110,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// pressed on a rotating sprite, to ensure that pressing left and right don't
    /// cause the sprite to change to a different group of states.</remarks>
    [Description("Return a state that is in the same group of states as the sprite's current state, but possibly pointing a different direction.")]
-   public int CalculateRotatedState([Editor("SpriteState", "UITypeEditor")] int FirstState, int StateCount, int NewState)
+   public virtual int CalculateRotatedState([Editor("SpriteState", "UITypeEditor")] int FirstState, int StateCount, int NewState)
    {
       Debug.Assert(this.isActive, "Attempted to execute CalculateRotatedState on an inactive sprite");
       return (NewState + StateCount - FirstState) % StateCount + FirstState + (int)((state - FirstState) / StateCount) * StateCount;
@@ -1132,7 +1132,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// floor. But by using the Alignment paremeter, you can make sure that the botton of the
    /// new state aligns with the bottom of the current state.</remarks>
    [Description("Switch the sprite to the the specified state, ensuring that the specified alignment point in the new state lines up with the same point in the current state.  Returns false if the state could not switch due to solidity.")]
-   public bool SwitchToState([Editor("SpriteState", "UITypeEditor")] int State, RelativePosition Alignment)
+   public virtual bool SwitchToState([Editor("SpriteState", "UITypeEditor")] int State, RelativePosition Alignment)
    {
       Debug.Assert(this.isActive, "Attempted to execute SwitchToState on an inactive sprite");
       System.Drawing.Rectangle oldRect = new System.Drawing.Rectangle(PixelX, PixelY, SolidWidth, SolidHeight);
@@ -1202,7 +1202,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// <returns>Returns true if the sprite's current state is equal to <paramref name="FirstState" /> or
    /// <paramref name="LastState" /> or any state in between. False otherwise.</returns>
    [Description("Determines if the sprite is in the specified range of states")]
-   public bool IsInState([Editor("SpriteState", "UITypeEditor")] int FirstState, [Editor("SpriteState", "UITypeEditor")] int LastState)
+   public virtual bool IsInState([Editor("SpriteState", "UITypeEditor")] int FirstState, [Editor("SpriteState", "UITypeEditor")] int LastState)
    {
       Debug.Assert(this.isActive, "Attempted to execute IsInState on an inactive sprite");
       return (state >= FirstState) && (state <= LastState);
@@ -1217,7 +1217,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// So if the frame is set to ModulateAlpha=128 and the sprite ModulateAlpha=128,
    /// then the final visibility of the frame will only be 25% (64).
    /// <seealso cref="color"/></remarks>
-   public int ModulateAlpha
+   public virtual int ModulateAlpha
    {
       get
       {
@@ -1238,7 +1238,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// set to ModulateRed=128 and the sprite ModulateRed=128, then the final image will
    /// only contain 25% of the original red.
    /// <seealso cref="color"/></remarks>
-   public int ModulateRed
+   public virtual int ModulateRed
    {
       get
       {
@@ -1259,7 +1259,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// set to ModulateGreen=128 and the sprite ModulateGreen=128, then the final image will
    /// only contain 25% of the original red.
    /// <seealso cref="color"/></remarks>
-   public int ModulateGreen
+   public virtual int ModulateGreen
    {
       get
       {
@@ -1280,7 +1280,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// set to ModulateBlue=128 and the sprite ModulateBlue=128, then the final image will
    /// only contain 25% of the original blue.
    /// <seealso cref="color"/></remarks>
-   public int ModulateBlue
+   public virtual int ModulateBlue
    {
       get
       {
@@ -1307,7 +1307,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// is automatically managed by the <see cref="MapPlayerToInputs"/> function.
    /// <seealso cref="oldinputs"/></remarks>
    [Description("Determine if the specified input is being pressed for this sprite.  InitialOnly causes this to return true only if the input has just been pressed and was not pressed before.")]
-   public bool IsInputPressed(InputBits Input, bool InitialOnly)
+   public virtual bool IsInputPressed(InputBits Input, bool InitialOnly)
    {
       Debug.Assert(this.isActive, "Attempted to execute IsInputPressed on an inactive sprite");
       return (0 != (inputs & Input)) &&
@@ -1327,7 +1327,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// <see cref="IsInputPressed"/>, you will have to manage <see cref="oldinputs"/>
    /// manually.</remarks>
    [Description("Turns on or off the specified input on this sprite.")]
-   public void SetInputState(InputBits Input, bool Press)
+   public virtual void SetInputState(InputBits Input, bool Press)
    {
       Debug.Assert(this.isActive, "Attempted to execute SetInputState on an inactive sprite");
       if (Press)
@@ -1343,7 +1343,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// as the inputs for the previous frame (<see cref="oldinputs"/>).
    /// False if you just want to clear the inputs.</param>
    [Description("Turns off all current inputs on this sprite.")]
-   public void ClearInputs(bool SetOldInputs)
+   public virtual void ClearInputs(bool SetOldInputs)
    {
       Debug.Assert(this.isActive, "Attempted to execute ClearInputs on an inactive sprite");
       if (SetOldInputs)
@@ -1358,7 +1358,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// <param name="Input">Which sprite input should be affected</param>
    /// <remarks>This function does not affect <see cref="oldinputs"/>.</remarks>
    [Description("Associates the state of the specified keyboard key with the specified input on this sprite.")]
-   public void MapKeyToInput(Key key, InputBits Input)
+   public virtual void MapKeyToInput(Key key, InputBits Input)
    {
       Debug.Assert(this.isActive, "Attempted to execute MapKeyToInput on an inactive sprite");
       SetInputState(Input, Project.GameWindow.KeyboardState[key]);
@@ -1376,7 +1376,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// <para>The input device is defined by the player at runtime, and may come from a
    /// joystick, gamepad or keyboard.</para></remarks>
    [Description("Associate the state of the input device for the specified player (1-4) with the inputs on this sprite.")]
-   public void MapPlayerToInputs(int PlayerNumber)
+   public virtual void MapPlayerToInputs(int PlayerNumber)
    {
       Debug.Assert(this.isActive, "Attempted to execute MapPlayerToInput on an inactive sprite");
       if (PlayerNumber > Project.MaxPlayers)
@@ -1415,7 +1415,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// up to a maximum of 5 pixels per frame.
    /// <code>AccelerateByInputs(10, 5, true)</code></example>
    [Description("Accelerate this sprite according to which directional inputs are on.  Acceleration is in tenths of a pixel per frame squared.  Max is in pixels per frame.")]
-   public void AccelerateByInputs(int Acceleration, int Max, bool HorizontalOnly)
+   public virtual void AccelerateByInputs(int Acceleration, int Max, bool HorizontalOnly)
    {
       Debug.Assert(this.isActive, "Attempted to execute AccelerateByInputs on an inactive sprite");
       if (!HorizontalOnly)
@@ -1479,7 +1479,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// <seealso cref="PushTowardCategory"/>
    /// <seealso cref="GetNearestSpriteIndex"/></remarks>
    [Description("Set the state of the directional inputs on this sprite to move toward the specified sprite in a category, assuming the input causes the sprite to move directly in its direction. Use GetNearestSpriteIndex to compute an Index or pass -1 to use the current nearest sprite.")]
-   public void SetInputsTowardCategory(SpriteCollection Target, int Index)
+   public virtual void SetInputsTowardCategory(SpriteCollection Target, int Index)
    {
       Debug.Assert(this.isActive, "Attepmted to execute SetInputsTowardCategory on an inactive sprite");
       Debug.Assert(Index < Target.Count, "Attempted to SetInputsTowardCategory on an index beyond the bounds of a collection");
@@ -1501,7 +1501,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// called by a plan or other code that can provide a target sprite based on specific
    /// context whereas a sprite definition rule function is supposed to be generic.
    /// This is called by <see cref="SetInputsTowardCategory"/>.</remarks>
-   public void SetInputsTowardSprite(SpriteBase Target)
+   public virtual void SetInputsTowardSprite(SpriteBase Target)
    {
       int targetCenter = Target.PixelX + Target.SolidWidth / 2;
       int myCenter = PixelX + SolidWidth / 2;
@@ -1538,7 +1538,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// so other rules will be able to determine which buttons were pressed before.
    /// </remarks>
    [Description("Move the sprite to the position of the mouse cursor and set the sprite's button inputs based on mouse button states. If InstantMove is true, the sprite will be moved immediately, otherwise it the velocity will be set to move when MoveByVelocity runs.")]
-   public void MapMouseToSprite(bool InstantMove)
+   public virtual void MapMouseToSprite(bool InstantMove)
    {
       System.Drawing.Point pos = ParentLayer.GetMousePosition();
       if (InstantMove)
@@ -1576,7 +1576,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// the sprite act differently to all tiles (for example, to suddenly be able to
    /// traverse any water).</remarks>
    [Description("Set the solidity rules to which the sprite is currently reacting.")]
-   public void SetSolidity(Solidity Solidity)
+   public virtual void SetSolidity(Solidity Solidity)
    {
       m_solidity = Solidity;
    }
@@ -1591,7 +1591,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// before <see cref="MoveByVelocity"/> is applied. This will help ensure that the sprite
    /// never goes through solids even if scrolling and platforms try to make it.</remarks>
    [Description("Alter the sprite's velocity to react to solid areas on the map.  Returns true if velocity is affected by solid.")]
-   public bool ReactToSolid()
+   public virtual bool ReactToSolid()
    {
       Debug.Assert(this.isActive, "Attempted to execute ReactToSolid on an inactive sprite");
       if (m_solidity == null)
@@ -1777,7 +1777,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// them "grounded" (which it often isn't with the simple physics model used for sprites).
    /// </remarks>
    [Description("If the sprite's proposed position is within <Threshhold> pixels of the ground, alter its velocity so it will touch the ground.  Returns true if snap occurred.")]
-   public bool SnapToGround(int Threshhold)
+   public virtual bool SnapToGround(int Threshhold)
    {
       Debug.Assert(this.isActive, "Attempted to execute SnapToGround on an inactive sprite");
 
@@ -1805,7 +1805,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// direction, but does not indicate whether the sprite will be blocked by it or simply
    /// deflected (up or down a hill) by it.</remarks>
    [Description("Determines if the sprite is blocked from moving freely in a particular direction by solidity on the layer.")]
-   public bool Blocked(Direction Direction)
+   public virtual bool Blocked(Direction Direction)
    {
       Debug.Assert(this.isActive, "Attempted to execute Blocked on an inactive sprite");
 
@@ -1837,7 +1837,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// <param name="Distance">How many pixels to check for solidity from the test point</param>
    /// <returns>True if there is solidity within Distance pixels of TestPoint, false otherwise.</returns>
    [Description("Determines if the specified point within a sprite is blocked from moving in a particular direction by the specified number of pixels.")]
-   public bool IsPointBlocked(RelativePosition TestPoint, Direction Direction, int Distance)
+   public virtual bool IsPointBlocked(RelativePosition TestPoint, Direction Direction, int Distance)
    {
       Debug.Assert(this.isActive, "Attempted to execute IsPointBlocked on an inactive sprite");
       System.Drawing.Point ptRelative = GetRelativePosition(TestPoint);
@@ -1892,7 +1892,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// then process the data about tiles that the sprite is touching stored in this
    /// object. It's not usually necessary to refer to this object directly.</remarks>
    [NonSerialized()]
-   public System.Collections.ArrayList TouchedTiles = null;
+   public System.Collections.Generic.List<TouchedTile> TouchedTiles = null;
 
    /// <summary>
    /// Collects information about tiles the sprite is currently touching.
@@ -1920,7 +1920,7 @@ public abstract partial class SpriteBase : GeneralRules
    ///    TileTake(11,Counter.Keys))
    /// }</code></example>
    [Description("Collects information about tiles the sprite is currently touching.  Category should include all tiles that the sprite interacts with.  Must be called before performing any tile interaction.")]
-   public bool TouchTiles(TileCategoryName Category)
+   public virtual bool TouchTiles(TileCategoryName Category)
    {
       Debug.Assert(this.isActive, "Attempted to execute TouchTiles on an inactive sprite");
 
@@ -1969,7 +1969,7 @@ public abstract partial class SpriteBase : GeneralRules
                   wasTouching = false;
 
                if (TouchedTiles == null)
-                  TouchedTiles = new System.Collections.ArrayList(10);
+                  TouchedTiles = new System.Collections.Generic.List<TouchedTile>(10);
                TouchedTiles.Add(new TouchedTile(xidx, yidx, layer[xidx, yidx], !wasTouching));
             }
          }
@@ -1998,7 +1998,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// affects the tile, it is marked as processed. It is only marked as processed if
    /// it is affected (if the counter changes).</para></remarks>
    [Description("When the sprite is touching the specified tile, and the specified counter is not maxed, change/clear the tile value to NewValue and increment the specified counter/parameter. Returns the number of tiles affected. (Must run TouchTiles first.)")]
-   public int TileTake(int TileValue, Counter Counter, int NewValue)
+   public virtual int TileTake(int TileValue, Counter Counter, int NewValue)
    {
       Debug.Assert(this.isActive, "Attempted to execute TileTake on an inactive sprite");
 
@@ -2009,7 +2009,7 @@ public abstract partial class SpriteBase : GeneralRules
 
       for (int i = 0; i < TouchedTiles.Count; i++)
       {
-         TouchedTile tt = (TouchedTile)TouchedTiles[i];
+         TouchedTile tt = TouchedTiles[i];
          if ((tt.tileValue == TileValue) && (!tt.processed))
          {
             if (Counter.CurrentValue < Counter.MaxValue)
@@ -2044,7 +2044,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// affects the tile, it is marked as processed. It is only marked as processed if
    /// it is affected (if the counter changes).</para></remarks>
    [Description("When the sprite is touching the specified tile, and the specified counter is greater than 0, decrement the counter and clear the tile value to NewValue. Returns the number of tiles affected. (Must run TouchTiles first.)")]
-   public int TileUseUp(int TileValue, Counter Counter, int NewValue)
+   public virtual int TileUseUp(int TileValue, Counter Counter, int NewValue)
    {
       Debug.Assert(this.isActive, "Attempted to execute TileUseUp on an inactive sprite");
 
@@ -2055,7 +2055,7 @@ public abstract partial class SpriteBase : GeneralRules
 
       for (int i = 0; i < TouchedTiles.Count; i++)
       {
-         TouchedTile tt = (TouchedTile)TouchedTiles[i];
+         TouchedTile tt = TouchedTiles[i];
          if ((tt.tileValue == TileValue) && (!tt.processed))
          {
             if (Counter.CurrentValue > 0)
@@ -2084,7 +2084,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// already touching the tile in the previous frame.</param>
    /// <returns>True if the sprite is touching a tile in the specified category, false otherwise.</returns>
    [Description("Determine if the sprite is touching the specified tile. TouchingIndex is updated to refer to the index of the first qualifying tile if true. Returns true if the sprite is touching a tile in the specified category. (Must run TouchTiles first.)")]
-   public bool TileCategoryTouched(TileCategoryName Category, ref int TouchingIndex, bool InitialOnly)
+   public virtual bool TileCategoryTouched(TileCategoryName Category, ref int TouchingIndex, bool InitialOnly)
    {
       Debug.Assert(this.isActive, "Attempted to execute TileCategoryTouched on an inactive sprite");
 
@@ -2093,7 +2093,7 @@ public abstract partial class SpriteBase : GeneralRules
 
       for (int i = 0; i < TouchedTiles.Count; i++)
       {
-         TouchedTile tt = (TouchedTile)TouchedTiles[i];
+         TouchedTile tt = TouchedTiles[i];
          if (!tt.processed && layer.GetTile(tt.x, tt.y).IsMember(Category)
             && (!InitialOnly || tt.initial))
          {
@@ -2143,7 +2143,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// </code>
    /// </example>
    [Description("Return the index of the next unprocessed tile with the specified value from the list of tiles the sprite is touching. If InitialOnly is set, only return tiles that the sprite wasn't already touching. Return -1 if no tiles are being touched. (Must run TouchTiles first.)")]
-   public int TileTouchingIndex(int TileValue, bool InitialOnly, bool MarkAsProcessed)
+   public virtual int TileTouchingIndex(int TileValue, bool InitialOnly, bool MarkAsProcessed)
    {
       Debug.Assert(this.isActive, "Attempted to execute TileTouchingIndex on an inactive sprite");
 
@@ -2152,7 +2152,7 @@ public abstract partial class SpriteBase : GeneralRules
 
       for (int i = 0; i < TouchedTiles.Count; i++)
       {
-         TouchedTile tt = (TouchedTile)TouchedTiles[i];
+         TouchedTile tt = TouchedTiles[i];
          if ((tt.tileValue == TileValue) && (!tt.processed) && (!InitialOnly || tt.initial))
          {
             tt.processed = MarkAsProcessed;
@@ -2187,7 +2187,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// it to some other value and perform whatever initialization it needs to (such as offsetting
    /// its position from the tile by some pre-set distance).</para></remarks>
    [Description("Activate the next inactive sprite from a category at the coordinates of a tile being touched by the sprite.  Use TileTouchingIndex to acquire TouchingIndex.  Returns the index into the category of the sprite that was activated, or -1 if all sprites in the category were already active.")]
-   public int TileActivateSprite(int TouchingIndex, SpriteCollection Category, bool ClearParameters)
+   public virtual int TileActivateSprite(int TouchingIndex, SpriteCollection Category, bool ClearParameters)
    {
       Debug.Assert(this.isActive, "Attempted to execute TileActivateSprite on an inactive sprite");
 
@@ -2196,7 +2196,7 @@ public abstract partial class SpriteBase : GeneralRules
          if (!Category[i].isActive)
          {
             Category[i].isActive = true;
-            TouchedTile tt = (TouchedTile)TouchedTiles[TouchingIndex];
+            TouchedTile tt = TouchedTiles[TouchingIndex];
             Category[i].x = tt.x * layer.Tileset.TileWidth;
             Category[i].y = tt.y * layer.Tileset.TileHeight;
             if (ClearParameters)
@@ -2251,7 +2251,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// <seealso cref="PlanBase.AddSpriteAtPlan"/>
    /// <seealso cref="AddSpriteHere"/></remarks>
    [Description("Create a new (dynamic) instance of the specified sprite type at the coordinates of a tile being touched by the player.  Use TileTouchingIndex to acquire TouchingIndex.")]
-   public void TileAddSprite(int TouchingIndex, [Editor("SpriteDefinition", "UITypeEditor")] System.Type SpriteDefinition)
+   public virtual void TileAddSprite(int TouchingIndex, [Editor("SpriteDefinition", "UITypeEditor")] System.Type SpriteDefinition)
    {
       Debug.Assert(this.isActive, "Attempted to execute TileAddSprite on an inactive sprite");
 
@@ -2259,7 +2259,7 @@ public abstract partial class SpriteBase : GeneralRules
       {
          typeof(LayerBase), typeof(double), typeof(double), typeof(double), typeof(double), typeof(int), typeof(int), typeof(bool), typeof(Display), typeof(Solidity), typeof(int), typeof(bool)
       });
-      TouchedTile tt = (TouchedTile)TouchedTiles[TouchingIndex];
+      TouchedTile tt = TouchedTiles[TouchingIndex];
       lastCreatedSprite = (SpriteBase)constructor.Invoke(new object[]
       {
          layer, tt.x * layer.Tileset.TileWidth, tt.y * layer.Tileset.TileHeight, 0, 0, 0, 0, true, layer.ParentMap.Display, m_solidity, -1, true
@@ -2284,7 +2284,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// <code>AddSpriteHere(typeof(Sprites.Bullet), RelativePosition.RightMiddle, RelativePosition.LeftMiddle);</code>
    /// </example>
    [Description("Create a new (dynamic) instance of the specified sprite positioned such that HotSpot on the created sprite overlaps Location on this sprite.")]
-   public void AddSpriteHere([Editor("SpriteDefinition", "UITypeEditor")] System.Type SpriteDefinition, RelativePosition Location, RelativePosition HotSpot)
+   public virtual void AddSpriteHere([Editor("SpriteDefinition", "UITypeEditor")] System.Type SpriteDefinition, RelativePosition Location, RelativePosition HotSpot)
    {
       Debug.Assert(this.isActive, "Attempted to execute AddSpriteHere on an inactive sprite");
 
@@ -2315,7 +2315,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// Use <see cref="TileChangeTouched"/> to change only one tile.
    /// <seealso cref="TileChangeTouched"/></remarks>
    [Description("Change the specified tile that the sprite is touching to another tile. Return the number of tiles affected. (Must run TouchTiles first.)")]
-   public int TileChange(int OldTileValue, int NewTileValue, bool InitialOnly)
+   public virtual int TileChange(int OldTileValue, int NewTileValue, bool InitialOnly)
    {
       Debug.Assert(this.isActive, "Attempted to execute TileChange on an inactive sprite");
 
@@ -2326,7 +2326,7 @@ public abstract partial class SpriteBase : GeneralRules
 
       for (int i = 0; i < TouchedTiles.Count; i++)
       {
-         TouchedTile tt = (TouchedTile)TouchedTiles[i];
+         TouchedTile tt = TouchedTiles[i];
          if ((tt.tileValue == OldTileValue) && (!tt.processed) && (!InitialOnly || tt.initial))
          {
             tt.processed = true;
@@ -2344,7 +2344,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// <see cref="TileTouchingIndex"/> can be used to acquire this value.</param>
    /// <param name="NewTileValue">Specifies the tileset tile index of the new tile that will appear in place of the specified tile.</param>
    [Description("Change the tile specified by TouchingIndex that is being touched by the sprite to another tile. (Must run TouchTiles first.)")]
-   public void TileChangeTouched(int TouchingIndex, int NewTileValue)
+   public virtual void TileChangeTouched(int TouchingIndex, int NewTileValue)
    {
       Debug.Assert(this.isActive, "Attempted to execute TileChangeTouched on an inactive sprite");
       Debug.Assert((TouchedTiles != null) && (TouchedTiles.Count > TouchingIndex),
@@ -2353,7 +2353,7 @@ public abstract partial class SpriteBase : GeneralRules
       if ((TouchedTiles == null) || (TouchedTiles.Count <= TouchingIndex))
          return;
 
-      TouchedTile tt = (TouchedTile)TouchedTiles[TouchingIndex];
+      TouchedTile tt = TouchedTiles[TouchingIndex];
       layer[tt.x, tt.y] = tt.tileValue = NewTileValue;
    }
 
@@ -2364,7 +2364,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// <returns>A point relative to the sprite's layer that represents the requested position in the sprite.</returns>
    /// <remarks>This cannot be applied as a rule function because it returns a point object,
    /// which is not supported by the SGDK2 IDE as an output type.</remarks>
-   public System.Drawing.Point GetRelativePosition(RelativePosition RelativePosition)
+   public virtual System.Drawing.Point GetRelativePosition(RelativePosition RelativePosition)
    {
       System.Drawing.Point rp = new System.Drawing.Point(PixelX, PixelY);
 
@@ -2411,7 +2411,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// the specified position.</param>
    /// <returns>True if the specified point in the sprite is on a tile in the specified category, false otherwise.</returns>
    [Description("Examines the tile on the layer at the sprite's current position and determines if it is a member of the specified category. The RelativePosition parameter determines which part of the sprite to use when identifying a location on the layer. (TouchTiles is not necessary for this function.)")]
-   public bool IsOnTile(TileCategoryName Category, RelativePosition RelativePosition)
+   public virtual bool IsOnTile(TileCategoryName Category, RelativePosition RelativePosition)
    {
       Debug.Assert(this.isActive, "Attempted to execute IsOnTile on an inactive sprite");
 
@@ -2432,7 +2432,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// categories so it cannot even be considered for re-activation.
    /// <seealso cref="TileAddSprite"/><seealso cref="TileActivateSprite"/></remarks>
    [Description("Deactivate this sprite.  It will no longer be drawn, and in debug mode, will display errors if rules try to execute on it.")]
-   public void Deactivate()
+   public virtual void Deactivate()
    {
       isActive = false;
    }
@@ -2446,7 +2446,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// <param name="TargetSprite">Sprite whose velocity may be affected.</param>
    /// <returns>True if the sprite was pushed, false otherwise.</returns>
    [Description("Alter the velocity of TargetSprite to plan to move out of the way of this sprite.")]
-   public bool PushSprite(SpriteBase TargetSprite)
+   public virtual bool PushSprite(SpriteBase TargetSprite)
    {
       Debug.Assert(this.isActive, "Attempted to execute PushSprite on an inactive sprite");
 
@@ -2495,7 +2495,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// <param name="Pushers">Sprites that can push this sprite.</param>
    /// <returns>True if the sprite was pushed, false otherwise.</returns>
    [Description("Alter the velocity of this sprite to plan to move out of the way of sprites in Pushers.")]
-   public bool ReactToPush(SpriteCollection Pushers)
+   public virtual bool ReactToPush(SpriteCollection Pushers)
    {
       if (!isActive)
          return false;
@@ -2526,7 +2526,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// both move and push other sprites, and the other sprites need to push back if
    /// they cannot move any farther.</remarks>
    [Description("Alter the velocity of this sprite to plan to move out of the way of sprites in Pushers, but only after they have processed their rules where necessary.")]
-   public bool ReactToPushback(SpriteCollection Pushers)
+   public virtual bool ReactToPushback(SpriteCollection Pushers)
    {
       if (!isActive)
          return false;
@@ -2552,7 +2552,7 @@ public abstract partial class SpriteBase : GeneralRules
    /// </summary>
    /// <param name="TargetSprite">Sprite against which planned overlap is checked.</param>
    /// <returns>True if the sprite will overlap TargetSprite.</returns>
-   public bool TestCollisionRect(SpriteBase TargetSprite)
+   public virtual bool TestCollisionRect(SpriteBase TargetSprite)
    {
       Debug.Assert(this.isActive, "Attempted to execute TestCollision on an inactive sprite");
 

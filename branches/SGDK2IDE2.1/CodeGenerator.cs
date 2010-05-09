@@ -3490,18 +3490,18 @@ namespace SGDK2
             string resourceSwitches = string.Empty;
             foreach (string resFile in resourcesList)
             {
-               resourceSwitches += " /res:\"" + resFile +"\"";
+               resourceSwitches += " /res:\"" + resFile + "\"";
             }
 
             CompileResources(FolderName);
 
             Microsoft.CSharp.CSharpCodeProvider codeProvider = new Microsoft.CSharp.CSharpCodeProvider();
-            System.CodeDom.Compiler.CompilerParameters compilerParams = new System.CodeDom.Compiler.CompilerParameters(new string[] {}, System.IO.Path.Combine(FolderName, ProjectName + ".exe"));
+            System.CodeDom.Compiler.CompilerParameters compilerParams = new System.CodeDom.Compiler.CompilerParameters(new string[] { }, System.IO.Path.Combine(FolderName, ProjectName + ".exe"));
             compilerParams.ReferencedAssemblies.Add("System.Windows.Forms.dll");
             compilerParams.ReferencedAssemblies.Add("System.dll");
             compilerParams.ReferencedAssemblies.Add("System.Drawing.dll");
             compilerParams.ReferencedAssemblies.Add("System.Design.dll");
-            foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
+            foreach (System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
             {
                ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
                if (drCode.Name.EndsWith(".dll") || drCode.Name.EndsWith(".so"))
@@ -3539,7 +3539,7 @@ namespace SGDK2
                compilerParams.CompilerOptions = "/platform:x86 /target:winexe" + resourceSwitches;
 
             string iconFile = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, "Prj.ico");
-            while(true)
+            while (true)
             {
                if (System.IO.File.Exists(iconFile))
                {
@@ -3571,7 +3571,7 @@ namespace SGDK2
             }
             else
             {
-               foreach(string dllFile in OldDlls)
+               foreach (string dllFile in OldDlls)
                {
                   System.IO.File.Copy(dllFile,
                      System.IO.Path.Combine(System.IO.Path.GetDirectoryName(results.PathToAssembly),
@@ -3579,6 +3579,12 @@ namespace SGDK2
                }
             }
             return compilerParams.OutputAssembly;
+         }
+         catch (System.IO.IOException ex)
+         {
+            errs = "A failure accessing files occurred; make sure your project is not already running." + Environment.NewLine +
+               ex.Message;
+            return null;
          }
          finally
          {

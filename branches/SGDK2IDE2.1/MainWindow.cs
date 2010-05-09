@@ -2815,7 +2815,8 @@ namespace SGDK2
          if (m_MenuToTemplateMap.ContainsKey(sender))
          {
             DataSet template = new DataSet();
-            template.ReadXml(m_MenuToTemplateMap[sender].ToString());
+            string templateFile = m_MenuToTemplateMap[sender].ToString();
+            template.ReadXml(templateFile);
             ProjectData.EnforceConstraints = false;
             foreach (DataRow drImport in template.Tables[ProjectData.SourceCode.TableName].Rows)
             {
@@ -2823,7 +2824,10 @@ namespace SGDK2
 
                if (drReplace != null)
                   ProjectData.DeleteSourceCode(drReplace);
-               ProjectData.SourceCode.Rows.Add(drImport.ItemArray);
+               ProjectDataset.SourceCodeRow row = (ProjectDataset.SourceCodeRow)
+                  ProjectData.SourceCode.Rows.Add(drImport.ItemArray);
+               if (ProjectData.IsSourceCodeDecapsulated(row))
+                  ProjectData.ReencapsulateSourceCode(templateFile, row);
             }
             ProjectData.EnforceConstraints = true;
          }

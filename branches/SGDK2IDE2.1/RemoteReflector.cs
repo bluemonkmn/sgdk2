@@ -226,17 +226,5 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
          result[idx] = reflectType.FullName.Replace('+','.') + "." + result[idx];
       return result;
    }
-
-   public SGDK2.RemotingServices.RemoteTypeName[] GetSubclasses()
-   {
-      System.Collections.ArrayList result = new System.Collections.ArrayList();
-      System.Type[] types = reflectType.Assembly.GetTypes();
-      for (int i=0; i<types.Length; i++)
-      {
-         if (types[i].IsSubclassOf(reflectType))
-            result.Add(new SGDK2.RemotingServices.RemoteTypeName(types[i]));
-      }
-      return (SGDK2.RemotingServices.RemoteTypeName[])result.ToArray(typeof(SGDK2.RemotingServices.RemoteTypeName));
-   }
    #endregion
 }

@@ -11,9 +11,17 @@ namespace SGDK2
    {
       System.Collections.Hashtable m_PlanProperties = null;
       System.Collections.Hashtable m_RemoteTypeCache = null;
+      string[] m_PlanBaseClasses = null;
+      string BaseClass;
 
       public PlanConverter()
       {
+         this.BaseClass = CodeGenerator.PlanBaseClassName;
+      }
+
+      public PlanConverter(string BaseClass)
+      {
+         this.BaseClass = BaseClass;
       }
 
       public override PropertyDescriptorCollection GetProperties(ITypeDescriptorContext context, object value, Attribute[] attributes)
@@ -25,22 +33,23 @@ namespace SGDK2
             properties.AddRange(new ReflectionPropertyDescriptor[]
             {
                new ReflectionPropertyDescriptor(typ.GetProperty("Name")),
-               new ReflectionPropertyDescriptor(typ.GetProperty("Priority"))
+               new ReflectionPropertyDescriptor(typ.GetProperty("Priority")),
+               new ReflectionPropertyDescriptor(typ.GetProperty("BaseClass"), this)
             });
 
-            InitCustomProperties();
+            InitCustomProperties(context);
             foreach(System.Collections.DictionaryEntry de in m_PlanProperties)
             {
                RemotingServices.RemotePropertyInfo pi = (RemotingServices.RemotePropertyInfo)de.Value;
                if ((pi.Flags & (RemotingServices.MemberFlags.Static | RemotingServices.MemberFlags.Browsable)) == RemotingServices.MemberFlags.Browsable)
-                  properties.Add(new PlanParamDescriptor(pi));
+                  properties.Add(new PlanParamDescriptor(pi, BaseClass));
             }
             return new PropertyDescriptorCollection((PropertyDescriptor[])properties.ToArray(typeof(PropertyDescriptor)));
          }
          return base.GetProperties (context, value, attributes);
       }
 
-      private void InitCustomProperties()
+      private void InitCustomProperties(ITypeDescriptorContext context)
       {
          if (m_PlanProperties == null)
          {
@@ -54,7 +63,7 @@ namespace SGDK2
                return;
 
             RemotingServices.IRemoteTypeInfo reflector = CodeGenerator.CreateInstanceAndUnwrap(
-               "RemoteReflector", CodeGenerator.PlanBaseClassName) as RemotingServices.IRemoteTypeInfo;
+               "RemoteReflector", BaseClass) as RemotingServices.IRemoteTypeInfo;
 
             foreach(RemotingServices.RemotePropertyInfo pi in reflector.GetProperties())
                if ((pi.Flags & RemotingServices.MemberFlags.CanWrite) != 0)
@@ -69,29 +78,25 @@ namespace SGDK2
          return base.GetPropertiesSupported (context);
       }
 
-      private string[] GetSpritesOfType(RemotingServices.RemoteTypeName type, ITypeDescriptorContext context)
+      private string[] GetSpritesOfType(SGDK2.RemotingServices.RemoteTypeName type, ITypeDescriptorContext context, SGDK2.RemotingServices.IRemoteTypeInfo reflector)
       {
          if (!(context.Instance is PlanProvider))
             return null;
 
-         if (type.FullName.StartsWith(CodeGenerator.SpritesNamespace +  ".") || (type.FullName == CodeGenerator.SpriteBaseClass))
+         RemotingServices.RemoteTypeName[] types = reflector.GetDerivedClasses(false);
+         ProjectDataset.SpriteRow[] sprites = ProjectData.GetSortedSpriteRows(((PlanProvider)context.Instance).Plan.LayerRowParent);
+         System.Collections.ArrayList result = new System.Collections.ArrayList();
+         foreach(ProjectDataset.SpriteRow sprite in sprites)
          {
-            string className;
-            if (type.FullName.StartsWith(CodeGenerator.SpritesNamespace + "."))
-               className = type.FullName.Substring(8);
-            else
-               className = type.FullName;
-            ProjectDataset.SpriteRow[] sprites = ProjectData.GetSortedSpriteRows(((PlanProvider)context.Instance).Plan.LayerRowParent);
-            System.Collections.ArrayList result = new System.Collections.ArrayList();
-            foreach(ProjectDataset.SpriteRow sprite in sprites)
+            foreach (RemotingServices.RemoteTypeName typ in types)
             {
-               if ((sprite[ProjectData.Sprite.DefinitionNameColumn].ToString() == className) ||
-                  (className == CodeGenerator.SpriteBaseClass))
+               if (CodeGenerator.SpritesNamespace + "." + sprite[ProjectData.Sprite.DefinitionNameColumn].ToString() == typ.FullName)
                   result.Add("m_" + CodeGenerator.NameToVariable(sprite.Name));
             }
-            return (string[])result.ToArray(typeof(string));
          }
-         return null;
+         if (result.Count == 0)
+            return null;
+         return (string[])result.ToArray(typeof(string));
       }
 
       private string[] GetPlans(ITypeDescriptorContext context)
@@ -173,7 +178,7 @@ namespace SGDK2
             }
             else
             {
-               string[] result = GetSpritesOfType(type, context);
+               string[] result = GetSpritesOfType(type, context, reflector);
                if (result != null)
                   return (string[])(m_RemoteTypeCache[type.FullName] = result);
                else if (type.FullName == CodeGenerator.PlanBaseClassName)
@@ -199,15 +204,46 @@ namespace SGDK2
 
       public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
       {
-         if ((context.Instance is PlanProvider) && (context.PropertyDescriptor != null) && (context.PropertyDescriptor is PlanParamDescriptor))
+         if ((context.Instance is PlanProvider) && (context.PropertyDescriptor != null))
          {
-            return GetStandardValues(((PlanParamDescriptor)context.PropertyDescriptor).RemotePropertyInfo.Type, context) != null;
+            if (context.PropertyDescriptor is PlanParamDescriptor)
+            {
+               return GetStandardValues(((PlanParamDescriptor)context.PropertyDescriptor).RemotePropertyInfo.Type, context) != null;
+            }
+            if ((context.PropertyDescriptor is ReflectionPropertyDescriptor) &&
+               (string.Compare(context.PropertyDescriptor.Name, "BaseClass", true) == 0))
+            {
+               return true;
+            }
          }
          return base.GetStandardValuesSupported(context);
       }
 
       public override System.ComponentModel.TypeConverter.StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
       {
+         if ((context.PropertyDescriptor is ReflectionPropertyDescriptor) &&
+             (string.Compare(context.PropertyDescriptor.Name, "BaseClass", true) == 0))
+         {
+            if (m_PlanBaseClasses != null)
+               return new StandardValuesCollection(m_PlanBaseClasses);
+
+            CodeGenerator gen = new CodeGenerator();
+            string errs;
+            gen.GenerateLevel = CodeGenerator.CodeLevel.ExcludeRules;
+            errs = gen.CompileTempAssembly(false);
+            if ((errs != null) && (errs.Length > 0))
+               return new StandardValuesCollection((string[])(m_PlanBaseClasses = null));
+
+            RemotingServices.IRemoteTypeInfo reflector = CodeGenerator.CreateInstanceAndUnwrap(
+               "RemoteReflector", CodeGenerator.PlanBaseClassName) as RemotingServices.IRemoteTypeInfo;
+
+            RemotingServices.RemoteTypeName[] subclasses = reflector.GetDerivedClasses(true);
+            m_PlanBaseClasses = new string[subclasses.Length + 1];
+            m_PlanBaseClasses[0] = CodeGenerator.PlanBaseClassName;
+            for(int i = 1; i <= subclasses.Length; i++)
+               m_PlanBaseClasses[i] = subclasses[i-1].FullName;
+            return new StandardValuesCollection(m_PlanBaseClasses);
+         }
          return new StandardValuesCollection(
             GetStandardValues(((PlanParamDescriptor)context.PropertyDescriptor).RemotePropertyInfo.Type, context));
       }
@@ -226,7 +262,7 @@ namespace SGDK2
             return true;
          }
 
-         InitCustomProperties();
+         InitCustomProperties(context);
          if ((context.Instance is PlanProvider[]) && (context.PropertyDescriptor != null) &&
             (m_PlanProperties.ContainsKey(context.PropertyDescriptor.Name)) &&
             (sourceType == typeof(string)))
@@ -244,7 +280,7 @@ namespace SGDK2
          {
             return value.ToString();
          }
-         InitCustomProperties();
+         InitCustomProperties(context);
          if ((context.Instance is PlanProvider[]) && (context.PropertyDescriptor != null) &&
             (m_PlanProperties.ContainsKey(context.PropertyDescriptor.Name)) &&
             (value is string) || (value == null))
@@ -253,21 +289,30 @@ namespace SGDK2
          }
          return base.ConvertFrom (context, culture, value);
       }
+
+      public int ParamStatus(string paramName)
+      {
+         if (m_PlanProperties == null) return 0;
+         if (m_PlanProperties.ContainsKey(paramName)) return 1;
+         return -1;
+      }
    }
 
    class PlanParamDescriptor : PropertyDescriptor
    {
       private RemotingServices.RemotePropertyInfo propertyInfo;
-      private static PlanConverter m_converter = null;
+      private static System.Collections.Generic.Dictionary<string, PlanConverter> m_converters = null;
+      private string BaseClass;
       
-      public PlanParamDescriptor(RemotingServices.RemotePropertyInfo propertyInfo) : base(propertyInfo.Name, new Attribute[] {new CategoryAttribute("Parameters")})
+      public PlanParamDescriptor(RemotingServices.RemotePropertyInfo propertyInfo, string BaseClass) : base(propertyInfo.Name, new Attribute[] {new CategoryAttribute("Parameters")})
       {
          this.propertyInfo = propertyInfo;
+         this.BaseClass = BaseClass;
       }
 
       public static void ResetCustomProperties()
       {
-         m_converter = null;
+         m_converters = null;
       }
 
       public RemotingServices.RemotePropertyInfo RemotePropertyInfo
@@ -311,9 +356,11 @@ namespace SGDK2
       {
          get
          {
-            if (m_converter == null)
-               m_converter = new PlanConverter();
-            return m_converter;
+            if (m_converters == null)
+               m_converters = new System.Collections.Generic.Dictionary<string, PlanConverter>();
+            if (!m_converters.ContainsKey(BaseClass))
+               m_converters[BaseClass] = new PlanConverter(BaseClass);
+            return m_converters[BaseClass];
          }
       }
 
@@ -356,7 +403,7 @@ namespace SGDK2
       private ProjectDataset.SpritePlanRow m_Plan;
       private System.Collections.Hashtable m_Params = null;
       
-      private static PlanConverter m_converter = null;
+      private static System.Collections.Generic.Dictionary<string, PlanConverter> m_converters = null;
 
       public PlanProvider(ProjectDataset.SpritePlanRow plan)
       {
@@ -365,7 +412,7 @@ namespace SGDK2
 
       public static void ResetCustomProperties()
       {
-         m_converter = null;
+         m_converters = null;
       }
 
       public string Name
@@ -378,6 +425,9 @@ namespace SGDK2
          {
             if (ProjectData.GetSprite(m_Plan.LayerRowParent, value) != null)
                throw new ApplicationException("Plan name \"" + value + "\" conflicts with the name of a sprite.  Choose a name that does not conflict with that of a sprite or another plan.");
+            string error = ProjectData.ValidateName(value);
+            if (!string.IsNullOrEmpty(error))
+               throw new ApplicationException(error);
             m_Plan.Name = value;
          }
       }
@@ -400,9 +450,27 @@ namespace SGDK2
          if (m_Params == null)
          {
             m_Params = new System.Collections.Hashtable();
-            foreach(ProjectDataset.PlanParameterValueRow dr in m_Plan.GetPlanParameterValueRows())
+            foreach (ProjectDataset.PlanParameterValueRow dr in m_Plan.GetPlanParameterValueRows())
             {
                m_Params[dr.Name] = dr;
+            }
+         }
+         
+         if ((m_converters != null) && (m_converters.ContainsKey(BaseClass)))
+         {
+            PlanConverter conv = m_converters[BaseClass];
+            if (conv == null)
+               return;
+            System.Collections.Specialized.StringCollection toRemove = new System.Collections.Specialized.StringCollection();
+            foreach (System.Collections.DictionaryEntry de in m_Params)
+            {
+               if (conv.ParamStatus((string)de.Key) == -1)
+                  toRemove.Add((string)de.Key);
+            }
+            foreach (string key in toRemove)
+            {
+               ((ProjectDataset.PlanParameterValueRow)m_Params[key]).Delete();
+               m_Params.Remove(key);
             }
          }
       }
@@ -455,13 +523,29 @@ namespace SGDK2
          }
       }
 
+      [Description("Source code object that defines the basic behavior of this plan (default=PlanBase)."),
+      RefreshProperties(RefreshProperties.All)]
+      public string BaseClass
+      {
+         get
+         {
+            return m_Plan.BaseClass;
+         }
+         set
+         {
+            m_Plan.BaseClass = value;
+         }
+      }
+
       #region ICustomTypeDescriptor Members
 
       public TypeConverter GetConverter()
       {
-         if (m_converter == null)
-            m_converter = new PlanConverter();
-         return m_converter;
+         if (m_converters == null)
+            m_converters = new System.Collections.Generic.Dictionary<string,PlanConverter>();
+         if (!m_converters.ContainsKey(BaseClass))
+            m_converters[BaseClass] = new PlanConverter(BaseClass);
+         return m_converters[BaseClass];
       }
 
       public EventDescriptorCollection GetEvents(Attribute[] attributes)

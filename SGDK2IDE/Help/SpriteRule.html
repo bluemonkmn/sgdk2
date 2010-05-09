@@ -90,7 +90,16 @@
             sub-items in this menu allow you to copy the currently highlighted rule including
             all the rules contained within it (in the tree node), or excluding them, or copy
             all the rules displayed in the tree.</li>
-         <li class="SubPara">
+        <li class="SubPara">
+          Cut Rules: Various cut commands will cut all the details of the specified rule
+          or rules so that the rules can be easily transferred or deleted.  This is the
+          same as Copy Rules, but also deletes the rules from their current location as
+          they are copied to the clipboard.  The sub-items in this menu allow you to affect
+          the currently highlighted rule including all the rules contained within it
+          (in the tree node), or excluding them, or affect all the rules displayed in the
+          tree.
+        </li>
+        <li class="SubPara">
             Paste Rules: Once rules have been copied from a sprite definition or a plan, they
             can be pasted into a sprite definition using this command. Note that when pasting
             plan rules into a sprite definition, some tweaking may be necessary to make the
@@ -105,6 +114,31 @@
             only the current rule, but it often doesn't make sense to turn off a parent
             rule without also turning off all the children, so this toggle can come in
             handy for disabling (or re-enabling) entire branches of rules.</li>
+        <li class="SubPara">
+          Convert Rules to Function: There are two versions of this command.  One will
+          convert all enabled rules in the tree and the other will convert the currently
+          selected rule and all its children. The command to convert all rules is only
+          available from the menu (not available on the toolbar). If you have too many rules
+          to easily manage in the tree view, you can use this command to convert groups of
+          rules into single functions that can be called with a single rule.  The converted
+          function will be added to a source code object (or copied to the clipboard if you
+          prefer to look at the code or add it somewhere manually). This action cannot be
+          reversed, so make sure the rules are set up how you would like, and that you do
+          not want to edit the rules in the tree view any more before converting them.
+          Once the rules are converted, they can only be edited as source code in the
+          <a href="CodeEdit.html">Code Editor</a>.  Another reason to do this is if you
+          need more control over your rules that the rule editor cannot provide. Editing
+          them directly exposes the full power of the C# language. The converted rules
+          will be implemented as a function specifically available to this sprite only.
+          You may manually add up to 3 parameters to the converted function (in the code
+          editor, assuming you are familiar with C#) if you would like to be able to create
+          rules that pass different parameter values to this function (you can use functions
+          from <a href="html/T_SpriteBase.htm">SpriteBase</a> as an example), but it will
+          still only be accessible to this sprite. However, if your rules are not dependent
+          on anything specific to this sprite, you may move the code or change the code
+          declaration to put the function in the
+          <a href="html/T_SpriteBase.htm">SpriteBase</a> class. Then it will be accessible
+          to all sprites.</li>
       </ul>
       <h3>Rule List</h3>
       <p class="SubPara">This displays a list of rules associated with the current 
@@ -283,7 +317,7 @@
          functions available to define sprite behavior, including functions defined 
          yourself by editing files in the "Source Code" folder of the project. For more 
          details about defining your own rule functions, see the
-         <a href="ms-its:SGDK2 Coding Reference.chm::/default.html">
+         <a href="html/R_Project.htm">
             coding reference</a> . A number of pre-defined functions exist to perform 
          simple comparisons, calculations and copying of values:</p>
       <table id="Table4" class="SubPara" cellspacing="1" cellpadding="1" border="1" summary="First column lists a pre-defined function, and second describes it">
@@ -415,9 +449,9 @@
             <td>Example</td>
          </tr>
          <tr>
-            <td>Keypress (provided by DirectX)</td>
+            <td>Keypress</td>
             <td>Preset list of static values, each value representing a key on the keyboard</td>
-            <td>Microsoft.DirectX.DirectInput.Key.A</td>
+            <td>Key.A</td>
          </tr>
          <tr>
             <td>Direction</td>
@@ -512,6 +546,11 @@
                function may be available that accepts a counter, or the value can be stored in 
                a parameter and subsequently be copied into the counter with an "=" rule.</td>
             <td>Counter.Lives.CurrentValue</td>
+         </tr>
+         <tr>
+          <td>Tileset</td>
+            <td>Displays a list of Tilesets defined within the project.</td>
+            <td>Tileset.FireText</td>
          </tr>
       </table>
       <h3>Output to</h3>

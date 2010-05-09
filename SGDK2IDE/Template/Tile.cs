@@ -7,7 +7,7 @@ using System;
 /// <summary>
 /// Maps a tile index to frameset frames based on counter values etc
 /// </summary>
-public abstract class TileBase
+public abstract partial class TileBase
 {
    protected TileCategoryMembershipBase m_membership;
 
@@ -35,7 +35,7 @@ public abstract class TileBase
 /// <summary>
 /// Represents the definition for an animated tile in a tileset
 /// </summary>
-public class AnimTile : TileBase
+public partial class AnimTile : TileBase
 {
    private readonly TileFrame[] m_frames;
    private readonly Counter m_counter;
@@ -146,7 +146,7 @@ public class AnimTile : TileBase
 /// <summary>
 /// Represents a non-animated composite or single-cell tile
 /// </summary>
-public class SimpleTile : TileBase
+public partial class SimpleTile : TileBase
 {
    private readonly int[] frame;
 
@@ -223,8 +223,11 @@ public class SimpleTile : TileBase
 /// <summary>
 /// Represents a tile that doesn't draw anything onto the layer
 /// </summary>
-public class EmptyTile : TileBase
+public partial class EmptyTile : TileBase
 {
+   /// <summary>
+   /// Returns the single empty tile object used for all empty tiles.
+   /// </summary>
    public static readonly EmptyTile Value = new EmptyTile();
    private readonly int[] frame;
 
@@ -259,7 +262,7 @@ public class EmptyTile : TileBase
 /// <remarks>Composite tiles are tiles that draw multiple images at once for a single
 /// iteration of the game loop. Such tiles will have sub-frames representing the multiple
 /// images that are drawn overlapped.</remarks>
-public class TileFrame : IComparable
+public partial class TileFrame : IComparable
 {
    /// <summary>
    /// Represents counter value, and is used to optimize frame searching

@@ -11,7 +11,7 @@ using System.Windows.Forms;
 /// <summary>
 /// About dialog displayed from game's help menu.
 /// </summary>
-public class frmAbout : System.Windows.Forms.Form
+public partial class frmAbout : System.Windows.Forms.Form
 {
    private System.Windows.Forms.Button btnOK;
    private System.Windows.Forms.Label lblHeader;

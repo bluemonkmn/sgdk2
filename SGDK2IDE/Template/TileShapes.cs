@@ -8,7 +8,7 @@ using System;
 /// Associates a category of tiles with a solidity shape to which sprites can react.
 /// </summary>
 [Serializable()]
-public struct SolidityMapping : System.Runtime.Serialization.ISerializable
+public partial struct SolidityMapping : System.Runtime.Serialization.ISerializable
 {
    /// <summary>
    /// Designates the category of tiles to which a shape is applied.
@@ -51,7 +51,7 @@ public struct SolidityMapping : System.Runtime.Serialization.ISerializable
 /// <summary>
 /// Defines a particular shape that a tile can have at any/all sizes
 /// </summary>
-public abstract class TileShape
+public abstract partial class TileShape
 {
    public TileShape()
    {
@@ -97,7 +97,7 @@ public abstract class TileShape
 /// <summary>
 /// Represents an empty tile (nothing solid)
 /// </summary>
-public class EmptyTileShape : TileShape
+public partial class EmptyTileShape : TileShape
 {
    private static EmptyTileShape m_Value = new EmptyTileShape();
 
@@ -156,7 +156,7 @@ public class EmptyTileShape : TileShape
 /// <summary>
 /// Represents a solid tile (flat solid on all 4 sides)
 /// </summary>
-public class SolidTileShape : TileShape
+public partial class SolidTileShape : TileShape
 {
    private static SolidTileShape m_Value = new SolidTileShape();
 
@@ -228,7 +228,7 @@ public class SolidTileShape : TileShape
 /// Represents an "uphill" shape with a slope leading from the lower left corner
 /// to the upper right corner with the lower right half of the tile being solid.
 /// </summary>
-public class UphillTileShape : TileShape
+public partial class UphillTileShape : TileShape
 {
    private static UphillTileShape m_Value = new UphillTileShape();
 
@@ -300,7 +300,7 @@ public class UphillTileShape : TileShape
 /// Represents a "downhill" shape with a slope leading from the upper left corner
 /// to the lower right corner with the lower left half of the tile being solid.
 /// </summary>
-public class DownhillTileShape : TileShape
+public partial class DownhillTileShape : TileShape
 {
    private static DownhillTileShape m_Value = new DownhillTileShape();
 
@@ -372,7 +372,7 @@ public class DownhillTileShape : TileShape
 /// Represents an "upward ceiling" shape with a slope leading from the lower left corner
 /// to the upper right corner with the upper left half of the tile being solid.
 /// </summary>
-public class UpCeilingTileShape : TileShape
+public partial class UpCeilingTileShape : TileShape
 {
    private static UpCeilingTileShape m_Value = new UpCeilingTileShape();
 
@@ -444,7 +444,7 @@ public class UpCeilingTileShape : TileShape
 /// Represents a "downward ceiling" shape with a slope leading from the upper left corner
 /// to the lower right corner with the upper right half of the tile being solid.
 /// </summary>
-public class DownCeilingTileShape : TileShape
+public partial class DownCeilingTileShape : TileShape
 {
    private static DownCeilingTileShape m_Value = new DownCeilingTileShape();
 
@@ -516,7 +516,7 @@ public class DownCeilingTileShape : TileShape
 /// Represents the right half of a gradual "uphill" tile with a slope leading from the
 /// middle left to the upper right corner with the lower portion of the tile being solid.
 /// </summary>
-public class UphillRightTileShape : TileShape
+public partial class UphillRightTileShape : TileShape
 {
    private static UphillRightTileShape m_Value = new UphillRightTileShape();
 
@@ -588,7 +588,7 @@ public class UphillRightTileShape : TileShape
 /// Represents the left half of a gradual "uphill" tile with a slope leading from the
 /// lower left corner to the middle right with the lower portion of the tile being solid.
 /// </summary>
-public class UphillLeftTileShape : TileShape
+public partial class UphillLeftTileShape : TileShape
 {
    private static UphillLeftTileShape m_Value = new UphillLeftTileShape();
 
@@ -660,7 +660,7 @@ public class UphillLeftTileShape : TileShape
 /// Represents the left half of a gradual "downhill" tile with a slope leading from the
 /// upper left corner to the middle right with the lower portion of the tile being solid.
 /// </summary>
-public class DownhillLeftTileShape : TileShape
+public partial class DownhillLeftTileShape : TileShape
 {
    private static DownhillLeftTileShape m_Value = new DownhillLeftTileShape();
 
@@ -732,7 +732,7 @@ public class DownhillLeftTileShape : TileShape
 /// Represents the right half of a gradual "downhill" tile with a slope leading from the
 /// middle left to the lower right corner with the lower portion of the tile being solid.
 /// </summary>
-public class DownhillRightTileShape : TileShape
+public partial class DownhillRightTileShape : TileShape
 {
    private static DownhillRightTileShape m_Value = new DownhillRightTileShape();
 
@@ -807,7 +807,7 @@ public class DownhillRightTileShape : TileShape
 /// in any direction unless the sprite is fully above the tile in which case it cannot penetrate
 /// the top.
 /// </summary>
-public class TopSolidTileShape : TileShape
+public partial class TopSolidTileShape : TileShape
 {
    private static TopSolidTileShape m_Value = new TopSolidTileShape();
 

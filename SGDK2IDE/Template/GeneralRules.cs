@@ -10,11 +10,12 @@ using System.Diagnostics;
 /// Implements rules common to sprites and plans
 /// </summary>
 [Serializable()]
-public abstract class GeneralRules
+public abstract partial class GeneralRules
 {
-   private static SaveUnit saveUnit = null;
-   private static System.Collections.Hashtable memorySaveSlots = new System.Collections.Hashtable();
-   private static System.Random randomGen = new System.Random();
+   protected static SaveUnit saveUnit = null;
+   protected static System.Collections.Hashtable memorySaveSlots = new System.Collections.Hashtable();
+   protected static System.Random randomGen = new System.Random();
+   protected static long previousFrame = 0;
 
    /// <summary>
    /// Contains the last sprite created with <see cref="PlanBase.AddSpriteAtPlan"/>,
@@ -37,6 +38,30 @@ public abstract class GeneralRules
    }
 
    /// <summary>
+   /// Limit the frame rate of the game to the specified number of frames per second.  Call this only once per frame.
+   /// </summary>
+   /// <param name="fps">Frames per second.</param>
+   /// <remarks>If this is called twice per frame, the effect would be to
+   /// limit the frame rate to half the specified value, and more calls will
+   /// make the game run even slower.</remarks>
+   [Description("Limit the frame rate of the game to the specified number of frames per second.  Call this only once per frame.")]
+   public virtual void LimitFrameRate(int fps)
+   {
+      long freq;
+      long frame;
+      freq = System.Diagnostics.Stopwatch.Frequency;
+      frame = System.Diagnostics.Stopwatch.GetTimestamp();
+      while ((frame - previousFrame) * fps < freq)
+      {
+         int sleepTime = (int)((previousFrame * fps + freq - frame * fps) * 1000 / (freq * fps));
+         System.Threading.Thread.Sleep(sleepTime);
+         frame = System.Diagnostics.Stopwatch.GetTimestamp();
+      }
+      previousFrame = frame;
+   }
+
+
+   /// <summary>
    /// Write a string to the debug output without moving to the next line.
    /// </summary>
    /// <param name="Label">String value to write to the debug output</param>
@@ -57,7 +82,7 @@ public abstract class GeneralRules
    /// LogDebugValue(Counter.Counter_1.CurrentValue);</code></example>
    [Description("Write a string to the debug output without moving to the next line"),
    System.Diagnostics.Conditional("DEBUG")]
-   public void LogDebugLabel(string Label)
+   public virtual void LogDebugLabel(string Label)
    {
       Project.GameWindow.debugText.Write(Label);
    }
@@ -80,7 +105,7 @@ public abstract class GeneralRules
    /// <example>See <see cref="LogDebugLabel"/> for an example</example>
    [Description("Write a number to the debug output and move to the next line"),
    System.Diagnostics.Conditional("DEBUG")]
-   public void LogDebugValue(int DebugValue)
+   public virtual void LogDebugValue(int DebugValue)
    {
       Project.GameWindow.debugText.WriteLine(DebugValue.ToString());
    }
@@ -111,7 +136,7 @@ public abstract class GeneralRules
    /// away from the map.</para>
    /// <seealso cref="UnloadMap"/></remarks>
    [Description("Sets a different map as the one to be drawn on the game display.  If UnloadCurrent is true, the current map will be unloaded first (which causes it to be recreated/reset when returning to it).")]
-   public void SwitchToMap([Editor("MapType", "UITypeEditor")] Type MapType, bool UnloadCurrent)
+   public virtual void SwitchToMap([Editor("MapType", "UITypeEditor")] Type MapType, bool UnloadCurrent)
    {
       System.Type source = Project.GameWindow.CurrentMap.GetType();
       if (UnloadCurrent)
@@ -133,7 +158,7 @@ public abstract class GeneralRules
    /// <para>If there is no previous map to return to, this function will have no effect.</para>
    /// <para>See <see cref="SwitchToMap"/> for more information about unloading maps.</para></remarks>
    [Description("Return to the map that was active before the last SwitchToMap.  If UnloadCurrent is true, the current map will be unloaded first (which causes it to be recreated/reset when returning to it).")]
-   public void ReturnToPreviousMap(bool UnloadCurrent)
+   public virtual void ReturnToPreviousMap(bool UnloadCurrent)
    {
       System.Type source = Project.GameWindow.CurrentMap.m_CameFromMapType;
       if (source == null)
@@ -149,7 +174,7 @@ public abstract class GeneralRules
    /// <returns>True if calling <see cref="ReturnToPreviousMap"/> will have any effect,
    /// false otherwise.</returns>
    [Description("Determines if there is a previous map to return to.")]
-   public bool CanReturnToPreviousMap()
+   public virtual bool CanReturnToPreviousMap()
    {
       return Project.GameWindow.CurrentMap.m_CameFromMapType != null;
    }
@@ -166,7 +191,7 @@ public abstract class GeneralRules
    /// <seealso cref="SwitchToMap"/>
    /// <seealso cref="ReturnToPreviousMap"/></remarks>
    [Description("Unloads the specified map, which will force it to be recreated/reset next time it is used.")]
-   public void UnloadMap([Editor("MapType", "UITypeEditor")] Type MapType)
+   public virtual void UnloadMap([Editor("MapType", "UITypeEditor")] Type MapType)
    {
       Project.GameWindow.UnloadMap(MapType);
    }
@@ -199,7 +224,7 @@ public abstract class GeneralRules
    /// <seealso cref="ExcludeMapFromSaveUnit"/>
    /// <seealso cref="SaveGame"/></remarks>
    [Description("Includes a specified set of objects in the SaveUnit that will be saved with the next call to SaveGame")]
-   public void IncludeInSaveUnit(SaveUnitInclusion Include)
+   public virtual void IncludeInSaveUnit(SaveUnitInclusion Include)
    {
       if (saveUnit == null)
          saveUnit = new SaveUnit();
@@ -249,7 +274,7 @@ public abstract class GeneralRules
    /// <seealso cref="ExcludeMapFromSaveUnit"/>
    /// <seealso cref="SaveGame"/></remarks>
    [Description("Include the specified counter in the SaveUnit that will be saved with the next call to SaveGame")]
-   public void IncludeCounterInSaveUnit(Counter Counter)
+   public virtual void IncludeCounterInSaveUnit(Counter Counter)
    {
       if (saveUnit == null)
       {
@@ -282,7 +307,7 @@ public abstract class GeneralRules
    /// <seealso cref="ExcludeMapFromSaveUnit"/>
    /// <seealso cref="SaveGame"/></remarks>
    [Description("Exclude the specified counter from the SaveUnit that will be saved with the next call to SaveGame")]
-   public void ExcludeCounterFromSaveUnit(Counter Counter)
+   public virtual void ExcludeCounterFromSaveUnit(Counter Counter)
    {
       if ((saveUnit == null) || (saveUnit.Counters == null))
          return;
@@ -311,7 +336,7 @@ public abstract class GeneralRules
    /// <seealso cref="ExcludeMapFromSaveUnit"/>
    /// <seealso cref="SaveGame"/></remarks>
    [Description("Include the specified map in the SaveUnit that will be saved with the next call to SaveGame.")]
-   public void IncludeMapInSaveUnit([Editor("MapType", "UITypeEditor")] Type MapType)
+   public virtual void IncludeMapInSaveUnit([Editor("MapType", "UITypeEditor")] Type MapType)
    {
       if (Project.GameWindow.LoadedMaps.ContainsKey(MapType))
       {
@@ -340,7 +365,7 @@ public abstract class GeneralRules
    /// <seealso cref="IncludeMapInSaveUnit"/>
    /// <seealso cref="SaveGame"/></remarks>
    [Description("Remove the specified map in from the SaveUnit that will be saved with the next call to SaveGame.")]
-   public void ExcludeMapFromSaveUnit([Editor("MapType", "UITypeEditor")] Type MapType)
+   public virtual void ExcludeMapFromSaveUnit([Editor("MapType", "UITypeEditor")] Type MapType)
    {
       if ((saveUnit == null) || (saveUnit.Maps == null))
          return;
@@ -372,7 +397,7 @@ public abstract class GeneralRules
    /// <seealso cref="DeleteSave"/>
    /// </remarks>
    [Description("Save the current save unit into the specified save slot, and reset the save unit. If InMemory is true, no file will be created, otherwise the game is saved to a file.")]
-   public void SaveGame(int Slot, bool InMemory)
+   public virtual void SaveGame(int Slot, bool InMemory)
    {
       System.IO.Stream stm;
       if (InMemory)
@@ -419,7 +444,7 @@ public abstract class GeneralRules
    /// <seealso cref="DeleteSave"/>
    /// </remarks>
    [Description("Restore the state of the objects contained in the specified save slot. If InMemory is true, the memory slot is used, otherwise the file associated with the slot is loaded.")]
-   public void LoadGame(int Slot, bool InMemory)
+   public virtual void LoadGame(int Slot, bool InMemory)
    {
       System.IO.Stream stm;
 
@@ -477,7 +502,7 @@ public abstract class GeneralRules
    /// <seealso cref="SaveGame"/>
    /// <seealso cref="DeleteSave"/></remarks>
    [Description("Determines if saved game data exists in the specified slot.  Checks for the existence of a file if InMemory is false.")]
-   public bool SaveExists(int Slot, bool InMemory)
+   public virtual bool SaveExists(int Slot, bool InMemory)
    {
       if (InMemory)
          return memorySaveSlots.ContainsKey(Slot);
@@ -498,7 +523,7 @@ public abstract class GeneralRules
    /// <seealso cref="SaveGame"/>
    /// <seealso cref="SaveExists"/></remarks>
    [Description("Empties the specified save slot.  If InMemory is false, a file is deleted, otherwise a memory slot is cleared.")]
-   public void DeleteSave(int Slot, bool InMemory)
+   public virtual void DeleteSave(int Slot, bool InMemory)
    {
       if (InMemory)
          memorySaveSlots.Remove(Slot);
@@ -517,7 +542,7 @@ public abstract class GeneralRules
    /// and draw it. The scope of this value is limited to the map, so setting it
    /// affects only the map containing this object.</remarks>
    [Browsable(false)]
-   public int CurrentView
+   public virtual int CurrentView
    {
       get
       {
@@ -536,7 +561,7 @@ public abstract class GeneralRules
    /// <remarks>The number of views designated by <paramref name="Layout"/> must not exceed
    /// <see cref="Project.MaxViews"/> defined by the project.</remarks>
    [Description("Sets the layout of multiple views for the current map.")]
-   public void SetViewLayout(ViewLayout Layout)
+   public virtual void SetViewLayout(ViewLayout Layout)
    {
       ParentLayer.ParentMap.ViewLayout = Layout;
    }
@@ -548,7 +573,7 @@ public abstract class GeneralRules
    /// <param name="SpriteIndex">Zero-based index into the category, specifying a sprite</param>
    /// <param name="State">Numeric value referring to a state of the specified sprite.</param>
    [Description("Sets the current state of a sprite based on a category and index into the category.")]
-   public void SetCategorySpriteState(SpriteCollection Category, int SpriteIndex, int State)
+   public virtual void SetCategorySpriteState(SpriteCollection Category, int SpriteIndex, int State)
    {
       Debug.Assert(Category[SpriteIndex].isActive, "SetCategorySpriteState attempted to set the state of an inactive sprite.");
       Category[SpriteIndex].state = State;
@@ -559,7 +584,7 @@ public abstract class GeneralRules
    /// </summary>
    /// <remarks>This disables all drawing and rules in the overlay map.</remarks>
    [Description("Turn off the overlay map. This disables all drawing and rules in the overlay map.")]
-   public void ClearOverlay()
+   public virtual void ClearOverlay()
    {
       Project.GameWindow.OverlayMap = null;
    }
@@ -571,7 +596,7 @@ public abstract class GeneralRules
    /// <remarks>This is very similar to <see cref="SwitchToMap"/>, but it affects the overlay
    /// map instead of the main map.</remarks>
    [Description("Set the overlay map.")]
-   public void SetOverlay([Editor("MapType", "UITypeEditor")] Type MapType)
+   public virtual void SetOverlay([Editor("MapType", "UITypeEditor")] Type MapType)
    {
       Project.GameWindow.OverlayMap = Project.GameWindow.GetMap(MapType);
    }
@@ -590,7 +615,7 @@ public abstract class GeneralRules
    /// <seealso cref="SetTargetMapFlag"/>
    /// <seealso cref="IsMapFlagOn"/></remarks>
    [Description("Turn on or off a flag associated with the current map.  FlagIndex must be a value from 0 through 30.")]
-   public void SetMapFlag(int FlagIndex, bool Value)
+   public virtual void SetMapFlag(int FlagIndex, bool Value)
    {
       if (Value)
          ParentLayer.ParentMap.MapFlags |= 1 << FlagIndex;
@@ -612,7 +637,7 @@ public abstract class GeneralRules
    /// <seealso cref="SetMapFlag"/>
    /// <seealso cref="IsMapFlagOn"/></remarks>
    [Description("Turn on or off a flag associated with the specified map. FlagIndex must be a value from 0 through 30.")]
-   public void SetTargetMapFlag([Editor("MapType", "UITypeEditor")] Type MapType, int FlagIndex, bool Value)
+   public virtual void SetTargetMapFlag([Editor("MapType", "UITypeEditor")] Type MapType, int FlagIndex, bool Value)
    {
       if (Value)
          Project.GameWindow.GetMap(MapType).MapFlags |= 1 << FlagIndex;
@@ -626,7 +651,7 @@ public abstract class GeneralRules
    /// <param name="FlagIndex">A number from 0 to 30 specifying which flag to check</param>
    /// <returns>True if the specified flag is set, or false if it is not.</returns>
    [Description("Determine if the specified map-specific flag on the current map is on.")]
-   public bool IsMapFlagOn(int FlagIndex)
+   public virtual bool IsMapFlagOn(int FlagIndex)
    {
       return ((ParentLayer.ParentMap.MapFlags & (1<<FlagIndex)) != 0);
    }
@@ -637,7 +662,7 @@ public abstract class GeneralRules
    /// <remarks>This unloads all maps except the current map and the overlay map.
    /// They will be reset next time they become active.</remarks>
    [Description("Unload all maps that aren't currently visible (as the current map or overlay map).")]
-   public void UnloadBackgroundMaps()
+   public virtual void UnloadBackgroundMaps()
    {
       Project.GameWindow.UnloadBackgroundMaps();
    }
@@ -646,7 +671,7 @@ public abstract class GeneralRules
    /// Quit the game by closing the main window.
    /// </summary>
    [Description("Quit the game by closing the main window.")]
-   public void QuitGame()
+   public virtual void QuitGame()
    {
       Project.GameWindow.Quit();
    }
@@ -657,7 +682,7 @@ public abstract class GeneralRules
    /// <param name="key">Which key to check</param>
    /// <returns>True if the specified key is currently pressed, false otherwise</returns>
    [Description("Returns true if the specified key is currently pressed")]
-   public bool IsKeyPressed(Microsoft.DirectX.DirectInput.Key key)
+   public virtual bool IsKeyPressed(Key key)
    {
       return Project.GameWindow.KeyboardState[key];
    }
@@ -671,20 +696,9 @@ public abstract class GeneralRules
    /// This value is based on a random seed that was generated based on the current time when
    /// the program started.</returns>
    [Description("Return a random number greater than or equal to Minimum and less than Maximum.")]
-   public int GetRandomNumber(int Minimum, int Maximum)
+   public virtual int GetRandomNumber(int Minimum, int Maximum)
    {
       return randomGen.Next(Minimum,Maximum);
-   }
-
-   /// <summary>
-   /// Change the font used for drawing text on the display.
-   /// </summary>
-   /// <param name="FontName">Name of the font (quoted string).</param>
-   /// <param name="FontSize">The em-size, in points, of the new font.</param>
-   [Description("Change the font used for drawing text on the display.")]
-   public void SetFont(string FontName, int FontSize)
-   {
-      Project.GameWindow.GameDisplay.SetFont(FontName, FontSize);
    }
 
    /// <summary>
@@ -700,7 +714,7 @@ public abstract class GeneralRules
    /// using a pre-defined operation, you can easily cause the counter to loop when
    /// it hits a limit, which is useful for counters linked to tile animations.</remarks>
    [Description("Change a counter's value with a pre-defined operation. Return true if the counter hits a limit or is left unchanged.")]
-   public bool ChangeCounter(Counter Counter, CounterOperation Operation)
+   public virtual bool ChangeCounter(Counter Counter, CounterOperation Operation)
    {
       switch(Operation)
       {
@@ -752,13 +766,13 @@ public abstract class GeneralRules
    /// <param name="Button">Specifies which button to check.</param>
    /// <returns>True if the button is pressed, false if it is not pressed.</returns>
    [Description("Determines if the specified mouse button is pressed.")]
-   public bool IsMouseButtonPressed(System.Windows.Forms.MouseButtons Button)
+   public virtual bool IsMouseButtonPressed(System.Windows.Forms.MouseButtons Button)
    {
       return 0 != (System.Windows.Forms.Control.MouseButtons & Button);
    }
 
    #region Collections
-   private static SpriteBase selectedTarget;
+   protected static SpriteBase selectedTarget;
 
    /// <summary>
    /// Selects a sprite within a collection, using a 0-based index, to be the target of <see cref="SetTargetParameter"/>.
@@ -771,7 +785,7 @@ public abstract class GeneralRules
    /// of arbitrary sprites within a collection to trigger various behaviors based on their rules.
    /// </remarks>
    [Description("Selects a sprite within a collection, using a 0-based index, to be the target of SetTargetParameter.")]
-   public bool SelectTargetSprite(SpriteCollection Sprites, int Index)
+   public virtual bool SelectTargetSprite(SpriteCollection Sprites, int Index)
    {
       if (Sprites.Count > Index)
       {
@@ -789,7 +803,7 @@ public abstract class GeneralRules
    /// Selects the most recently created sprite to be the target of <see cref="SetTargetParameter"/>.
    /// </summary>
    [Description("Selects the most recently created sprite to be the target of SetTargetParameter.")]
-   public void SelectLastCreatedSprite()
+   public virtual void SelectLastCreatedSprite()
    {
       selectedTarget = lastCreatedSprite;
    }
@@ -805,7 +819,7 @@ public abstract class GeneralRules
    /// sprite to trigger its rules to react. Remember that ParameterName is provided as a string,
    /// and must be quoted assuming the name is provided directly.</remarks>
    [Description("Set the value of a numeric property or parameter (given its name as a string) on a sprite selected with SelectTargetSprite to the specified value.")]
-   public void SetTargetParameter(string ParameterName, int Value)
+   public virtual void SetTargetParameter(string ParameterName, int Value)
    {
       System.Reflection.PropertyInfo pi = selectedTarget.GetType().GetProperty(ParameterName);
       if (pi == null)
@@ -817,6 +831,436 @@ public abstract class GeneralRules
       }
       else
          pi.SetValue(selectedTarget, Value, null);
+   }
+   #endregion
+
+   #region "Messages"
+   /// <summary>
+   /// Determines in which view(s) a message will appear.
+   /// </summary>
+   public enum MessageView
+   {
+      /// <summary>
+      /// Display messages in the view that is active when the message is created.
+      /// </summary>
+      Current,
+      /// <summary>
+      /// Display messages in all views
+      /// </summary>
+      All,
+      /// <summary>
+      /// Display messages in the first (top or left) view
+      /// </summary>
+      First,
+      /// <summary>
+      /// Display messages in the second view: bottom or right in 2-view layout, top-right in 4-view layout.
+      /// </summary>
+      Second,
+      /// <summary>
+      /// Display messages in the bottom-left view
+      /// </summary>
+      Third,
+      /// <summary>
+      /// Display messages in the bottom-right view
+      /// </summary>
+      Fourth
+   }
+   /// <summary>
+   /// Specifies a button or buttons on a player's input controller.
+   /// </summary>
+   [Flags()]
+   public enum ButtonSpecifier
+   {
+      /// <summary>
+      /// The first button as defined by the player options
+      /// </summary>
+      First=1,
+      /// <summary>
+      /// The second button as defined by the player options
+      /// </summary>
+      Second = 2,
+      /// <summary>
+      /// The third button as defined by the player options
+      /// </summary>
+      Third = 4,
+      /// <summary>
+      /// The fourth button as defined by the player options
+      /// </summary>
+      Fourth = 8,
+      /// <summary>
+      /// Disable input from the player while waiting for a button;
+      /// prevent it from affecting the player's sprite.
+      /// </summary>
+      FreezeInputs=16
+   }
+
+   protected static Tileset FontTileset = null;
+   protected const int maxMessages = 4;
+   protected static MessageLayer[] activeMessages = new MessageLayer[maxMessages];
+   protected static int activeMessageCount = 0;
+   protected static System.Drawing.Color messageBackground = System.Drawing.Color.FromArgb(128, 64, 0, 255);
+   protected static MessageView msgView = MessageView.Current;
+   protected static RelativePosition msgPos = RelativePosition.CenterMiddle;
+   protected const int messageMargin = 6;
+   /// <summary>
+   /// Zero-based player index that will be assigned to newly created messages
+   /// </summary>
+   protected static int currentPlayer = 0;
+   protected static ButtonSpecifier dismissButton = ButtonSpecifier.First | ButtonSpecifier.FreezeInputs;
+   protected static byte[] dismissPhase = null;
+
+   /// <summary>
+   /// Represents a message created and displayed by <see cref="ShowMessage"/>.
+   /// </summary>
+   public partial class MessageLayer : ByteLayer
+   {
+      public readonly System.Drawing.Color background;
+      public MessageView view;
+      public ButtonSpecifier dismissButton;
+      /// <summary>
+      /// 0-based player index whose controls affect this message
+      /// </summary>
+      public int player;
+
+      /// <summary>
+      /// Creates a message layer object
+      /// </summary>
+      /// <param name="Tileset">Each tile in this tileset represents a unicode character starting with
+      /// tile number 0 representing unicode character 0.</param>
+      /// <param name="Parent">Map that will host this layer.</param>
+      /// <param name="nColumns">Number of columns of text this layer can represent.</param>
+      /// <param name="nRows">Number of rows of text this layer can represent.</param>
+      /// <param name="Position">Position of the top-left corner of this layer within the map.</param>
+      /// <param name="background">Background color for the box containing this message.</param>
+      /// <param name="player">0-based player number whose button can dismiss this message.</param>
+      /// <param name="dismissButton">Which of the player's buttons can dismiss this message.</param>
+      /// <param name="msgView">Which view(s) will the message appear in.</param>
+      public MessageLayer(Tileset Tileset, MapBase Parent, int nColumns, int nRows,
+         System.Drawing.Point Position, System.Drawing.Color background, int player,
+         ButtonSpecifier dismissButton, MessageView msgView) :
+         base(Tileset, Parent, 0, 0, 0, 0, nColumns, nRows, 0, 0, Position,
+         new System.Drawing.SizeF(0, 0), 0, 0, null)
+      {
+         this.background = background;
+         this.player = player;
+         this.dismissButton = dismissButton;
+         if (msgView == MessageView.Current)
+         {
+            switch (Parent.CurrentViewIndex)
+            {
+               case 0:
+                  view = MessageView.First;
+                  break;
+               case 1:
+                  view = MessageView.Second;
+                  break;
+               case 2:
+                  view = MessageView.Third;
+                  break;
+               case 3:
+                  view = MessageView.Fourth;
+                  break;
+            }
+         }
+         else
+            view = msgView;
+      }
+   }
+
+   /// <summary>
+   /// Handles button pressses from a player with respect to displayed messages
+   /// </summary>
+   /// <param name="playerNumber">1-based player index</param>
+   /// <param name="player">Player object providing the inputs.</param>
+   /// <returns>True if input can be passed to the player or false if the player
+   /// is "frozen" viewing a message.</returns>
+   public static bool PlayerPressButton(int playerNumber, IPlayer player)
+   {
+      for (int i = 0; i < activeMessageCount; i++)
+      {
+         MessageLayer msg = activeMessages[i];
+         if (msg.player == playerNumber-1)
+         {
+            bool dismissPressed = false;
+            if ((0 != (msg.dismissButton & ButtonSpecifier.First)) && player.Button1)
+               dismissPressed = true;
+            if ((0 != (msg.dismissButton & ButtonSpecifier.Second)) && player.Button2)
+               dismissPressed = true;
+            if ((0 != (msg.dismissButton & ButtonSpecifier.Third)) && player.Button3)
+               dismissPressed = true;
+            if ((0 != (msg.dismissButton & ButtonSpecifier.Fourth)) && player.Button4)
+               dismissPressed = true;
+
+            // dismissPhase[x]:
+            // 0 = No frames have passed yet
+            // 1 = Frames have passed and the dismiss button was initially pressed
+            // 2 = Frames have passed and the dismiss button is not pressed
+            // 3 = Dismiss button was not pressed, but now it is.
+
+            if (dismissPhase == null)
+               dismissPhase = new byte[Project.MaxPlayers];
+
+            if (dismissPressed)
+            {
+               if ((dismissPhase[msg.player] == 0) || (dismissPhase[msg.player] == 2))
+                  dismissPhase[msg.player]++;
+            }
+            else
+            {
+               if (dismissPhase[msg.player] < 2)
+                  dismissPhase[msg.player] = 2;
+               else if (dismissPhase[msg.player] > 2)
+               {
+                  DismissMessage(i);
+                  dismissPhase[msg.player] = 0;
+               }
+            }
+
+            if (0 != (msg.dismissButton & ButtonSpecifier.FreezeInputs))
+            {
+               return false;
+            }
+         }
+      }
+      return true;
+   }
+
+   private static void DismissMessage(int messageIndex)
+   {
+      for (int i = messageIndex; i < activeMessageCount - 1; i++)
+         activeMessages[i] = activeMessages[i + 1];
+      activeMessageCount--;
+   }
+
+   /// <summary>
+   /// Sets the background for new messages added with <see cref="ShowMessage"/>.
+   /// </summary>
+   /// <param name="background">Names a color for the background of new messages.</param>
+   /// <param name="alpha">Transparency level of the color: 255 = opaque, 128=50% transparent.</param>
+   [Description("Sets the background for new messages added with ShowMessage. Alpha 255 = opaque, alpha 128=50% transparent.")]
+   public virtual void SetMessageBackground(System.Drawing.KnownColor background, byte alpha)
+   {
+      System.Drawing.Color c = System.Drawing.Color.FromKnownColor(background);
+      messageBackground = System.Drawing.Color.FromArgb(alpha, c.R, c.G, c.B);
+   }
+
+   /// <summary>
+   /// Determines where newly created messages appear.
+   /// </summary>
+   /// <param name="ViewOption">Determines which view or views messages will appear in.</param>
+   /// <param name="Position">Determines the area within the view in which the message appears.</param>
+   [Description("Determines where newly created messages appear.")]
+   public virtual void SetMessagePosition(MessageView ViewOption, RelativePosition Position)
+   {
+      msgView = ViewOption;
+      msgPos = Position;
+   }
+
+   /// <summary>
+   /// Determines which player and which button will dismiss newly created messages.
+   /// </summary>
+   /// <param name="DismissButton">Which of the player's buttons will dismiss the message</param>
+   /// <param name="Player">Player number 1 to 4</param>
+   [Description("Determines which player and which button will dismiss newly created messages. Player is a number 1 to 4.")]
+   public virtual void SetMessageDismissal(ButtonSpecifier DismissButton, int Player)
+   {
+      dismissButton = DismissButton;
+      currentPlayer = Player - 1;
+   }
+
+   /// <summary>
+   /// Adds a message to the display.
+   /// </summary>
+   /// <param name="Message">Message text as a quoted string.  Use \r\n to insert new lines
+   /// into the message.</param>
+   /// <remarks>Up to 4 messages may be displayed.  No automatic word wrap or centering
+   /// is performed.  All formatting is determined by the content of the string.</remarks>
+   [Description("Adds a message to the display. Up to 4 messages may be displayed.")]
+   public virtual void ShowMessage([Editor("Message", "UITypeEditor")] string Message)
+   {
+      if (activeMessageCount >= maxMessages)
+         throw new InvalidOperationException("Maximum number of displayed messages exceeded");
+      activeMessages[activeMessageCount++] = CreateMessage(Message);
+   }
+
+   /// <summary>
+   /// Clears all active messages from the display.
+   /// </summary>
+   [Description("Clears all active messages from the display")]
+   public virtual void ClearAllMessages()
+   {
+      activeMessageCount = 0;
+   }
+
+   /// <summary>
+   /// Draws all active messages.
+   /// </summary>
+   /// <remarks>This function is called by the framework after drawing the overlay map.</remarks>
+   public static void DrawMessages()
+   {
+      for (int i = 0; i < activeMessageCount; i++)
+      {
+         MessageLayer msg = activeMessages[i];
+         Display disp = msg.ParentMap.Display;
+         byte oldView = msg.ParentMap.CurrentViewIndex;
+         switch (msg.view)
+         {
+            case MessageView.Current:
+               DrawMessage(msg, disp);
+               break;
+            case MessageView.All:
+               for (byte v = 0; v < Project.MaxViews; v++)
+               {
+                  msg.ParentMap.CurrentViewIndex = v;
+                  DrawMessage(msg, disp);
+               }
+               break;
+            case MessageView.First:
+               msg.ParentMap.CurrentViewIndex = 0;
+               DrawMessage(msg, disp);
+               break;
+            case MessageView.Second:
+               msg.ParentMap.CurrentViewIndex = 1;
+               DrawMessage(msg, disp);
+               break;
+            case MessageView.Third:
+               msg.ParentMap.CurrentViewIndex = 2;
+               DrawMessage(msg, disp);
+               break;
+            case MessageView.Fourth:
+               msg.ParentMap.CurrentViewIndex = 3;
+               DrawMessage(msg, disp);
+               break;
+         }
+         msg.ParentMap.CurrentViewIndex = oldView;
+      }
+   }
+
+   protected static void DrawMessage(MessageLayer msg, Display disp)
+   {
+      disp.Scissor(msg.ParentMap.CurrentView);
+      System.Drawing.Rectangle messageRect = new System.Drawing.Rectangle(
+         msg.CurrentPosition.X + msg.ParentMap.CurrentView.X,
+         msg.CurrentPosition.Y + msg.ParentMap.CurrentView.Y,
+         msg.VirtualColumns * msg.Tileset.TileWidth,
+         msg.VirtualRows * msg.Tileset.TileHeight);
+      messageRect.Inflate(messageMargin, messageMargin);
+      disp.SetColor(msg.background);
+      disp.FillRectangle(messageRect);
+      disp.SetColor(System.Drawing.Color.White);
+      disp.DrawRectangle(messageRect, 0);
+      msg.Draw();
+   }
+
+   /// <summary>
+   /// Set the tileset used as the source for characters in messages.
+   /// </summary>
+   /// <param name="Tileset">Tileset whose tiles will be used to represent characters
+   /// for messages. The tile numbers correspond to ASCII values of the characters
+   /// used in the messages.</param>
+   [Description("Set the tileset used as the source for characters in messages")]
+   public virtual void SetMessageFont(Tileset Tileset)
+   {
+      FontTileset = Tileset;
+   }
+
+   protected virtual MessageLayer CreateMessage(string Message)
+   {
+      if (FontTileset == null)
+         FontTileset = (Tileset)(typeof(Tileset).GetProperties(
+            System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.GetProperty | System.Reflection.BindingFlags.Public)
+            [0].GetValue(null, null));
+
+      byte[] charBytes = System.Text.Encoding.Unicode.GetBytes(Message);
+      Display disp = ParentLayer.ParentMap.Display;
+      int x = 0, y = 1;
+      int maxWidth = 1;
+      for (int charIdx = 0; charIdx < charBytes.Length; charIdx+=2)
+      {
+         if (Message[charIdx / 2] == '\n')
+         {
+            x = 0;
+            y++;
+         }
+         else if (Message[charIdx / 2] != '\r')
+         {
+            if (++x > maxWidth)
+               maxWidth = x;
+         }
+      }
+
+      System.Drawing.Size messageSize = new System.Drawing.Size(
+         maxWidth * FontTileset.TileWidth, y * FontTileset.TileHeight);
+      System.Drawing.Size viewSize = ParentLayer.ParentMap.CurrentView.Size;
+
+      System.Drawing.Point ptMessage = System.Drawing.Point.Empty;
+
+      switch (msgPos)
+      {
+         case RelativePosition.TopLeft:
+         case RelativePosition.LeftMiddle:
+         case RelativePosition.BottomLeft:
+            ptMessage.X = viewSize.Width / 4 - messageSize.Width / 2;
+            if (ptMessage.X < messageMargin)
+               ptMessage.X = messageMargin;
+            break;
+         case RelativePosition.TopCenter:
+         case RelativePosition.CenterMiddle:
+         case RelativePosition.BottomCenter:
+            ptMessage.X = (viewSize.Width - messageSize.Width) / 2;
+            break;
+         case RelativePosition.TopRight:
+         case RelativePosition.RightMiddle:
+         case RelativePosition.BottomRight:
+            ptMessage.X = viewSize.Width * 3 / 4 - messageSize.Width / 2;
+            if (ptMessage.X + messageSize.Width > viewSize.Width - messageMargin)
+               ptMessage.X = viewSize.Width - messageSize.Width - messageMargin;
+            break;
+      }
+
+      switch (msgPos)
+      {
+         case RelativePosition.TopLeft:
+         case RelativePosition.TopCenter:
+         case RelativePosition.TopRight:
+            ptMessage.Y = viewSize.Height / 4 - messageSize.Height / 2;
+            if (ptMessage.Y <= 0)
+               ptMessage.Y = 1;
+            break;
+         case RelativePosition.LeftMiddle:
+         case RelativePosition.CenterMiddle:
+         case RelativePosition.RightMiddle:
+            ptMessage.Y = (viewSize.Height - messageSize.Height) / 2;
+            break;
+         case RelativePosition.BottomLeft:
+         case RelativePosition.BottomCenter:
+         case RelativePosition.BottomRight:
+            ptMessage.Y = viewSize.Height * 3 / 4 - messageSize.Height / 2;
+            if (ptMessage.Y + messageSize.Height >= viewSize.Height)
+               ptMessage.Y = viewSize.Height - messageSize.Height - 1;
+            break;
+      }
+
+      MessageLayer result = new MessageLayer(
+         FontTileset, ParentLayer.ParentMap, maxWidth, y, ptMessage,
+         messageBackground, currentPlayer, dismissButton, msgView);
+
+      x = 0;
+      y = 0;
+      for (int charIdx = 0; charIdx < charBytes.Length; charIdx+=2)
+      {
+         if (Message[charIdx / 2] == '\n')
+         {
+            x = 0;
+            y++;
+         }
+         else if (Message[charIdx / 2] != '\r')
+         {
+            result[x++, y] = charBytes[charIdx];
+         }
+      }
+
+      return result;
    }
    #endregion
 }
@@ -935,7 +1379,7 @@ public enum ViewLayout
 /// which stores an indicator of the current map at the time <see cref="GeneralRules.IncludeInSaveUnit"/> is
 /// called.</remarks>
 [Serializable()]
-public class SaveUnit
+public partial class SaveUnit
 {
    public SaveUnit()
    {
@@ -985,7 +1429,7 @@ public class SaveUnit
 /// the value of the global counters can automatically be linked to those in a
 /// <see cref="SaveUnit"/>.</remarks>
 [Serializable()]
-public class CounterRef : System.Runtime.Serialization.ISerializable
+public partial class CounterRef : System.Runtime.Serialization.ISerializable
 {
    public string counterName;
    public Counter instance;

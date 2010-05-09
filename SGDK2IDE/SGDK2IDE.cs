@@ -62,15 +62,15 @@ namespace SGDK2
          try
          {
             g_HelpProvider = new System.Windows.Forms.HelpProvider();
-            g_HelpProvider.HelpNamespace = System.IO.Path.Combine(Application.StartupPath, "SGDK2IDE.chm");
+            g_HelpProvider.HelpNamespace = System.IO.Path.Combine(Application.StartupPath, "SGDK2Help.chm");
             if (!System.IO.File.Exists(g_HelpProvider.HelpNamespace))
             {            
                string helpParentDir = Application.StartupPath;
                do
                {
-                  if (System.IO.File.Exists(System.IO.Path.Combine(helpParentDir, @"Help\SGDK2IDE.chm")))
+                  if (System.IO.File.Exists(System.IO.Path.Combine(helpParentDir, @"Help\SGDK2Help.chm")))
                   {
-                     g_HelpProvider.HelpNamespace = System.IO.Path.Combine(helpParentDir, @"Help\SGDK2IDE.chm");
+                     g_HelpProvider.HelpNamespace = System.IO.Path.Combine(helpParentDir, @"Help\SGDK2Help.chm");
                      break;
                   }
                   else
@@ -139,7 +139,7 @@ namespace SGDK2
 
          System.Drawing.StringFormat fmt = new System.Drawing.StringFormat(StringFormatFlags.NoWrap | StringFormatFlags.NoClip);
          fmt.Alignment = StringAlignment.Center;
-         String sCopyright = "Copyright ©2000-2007\r\nBenjamin Marty";
+         String sCopyright = "Copyright ©2000-2010\r\nBenjamin Marty";
          Rectangle rcFmt = new Rectangle(40, 164, 130, 25);
          gc.DrawString(sCopyright, fnt, Brushes.Sienna, rcFmt, fmt);
          rcFmt.Offset(-1,-1);

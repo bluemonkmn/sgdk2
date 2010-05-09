@@ -32,6 +32,7 @@ namespace SGDK2
          public override System.ComponentModel.TypeConverter.StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
          {
             ArrayList TilesetNames = new ArrayList();
+            TilesetNames.Add(string.Empty);
             foreach(System.Data.DataRowView drv in ProjectData.Tileset.DefaultView)
             {
                ProjectDataset.TilesetRow tr = (ProjectDataset.TilesetRow)drv.Row;
@@ -56,10 +57,13 @@ namespace SGDK2
 
          public LayerProperties(ProjectDataset.LayerRow dr)
          {
-            m_drLayer = dr;
+            m_persistLayer = dr;
+            m_tempLayer = (ProjectDataset.LayerRow)dr.Table.NewRow();
+            m_tempLayer.ItemArray = (object[])dr.ItemArray.Clone();
          }
 
-         public ProjectDataset.LayerRow m_drLayer;
+         public ProjectDataset.LayerRow m_tempLayer;
+         public ProjectDataset.LayerRow m_persistLayer;
          private int m_BackgroundTile = -1;
 
          [Description("Name by which this layer will be referred to in this project"),
@@ -69,11 +73,11 @@ namespace SGDK2
          {
             get
             {
-               return m_drLayer.Name;
+               return m_tempLayer.Name;
             }
             set
             {
-               m_drLayer.Name = value;
+               m_tempLayer.Name = value;
             }
          }
 
@@ -83,12 +87,12 @@ namespace SGDK2
          {
             get
             {
-               return new Size(m_drLayer.Width, m_drLayer.Height);
+               return new Size(m_tempLayer.Width, m_tempLayer.Height);
             }
             set
             {
-               m_drLayer.Width = value.Width;
-               m_drLayer.Height = value.Height;
+               m_tempLayer.Width = value.Width;
+               m_tempLayer.Height = value.Height;
             }
          }
 
@@ -98,12 +102,12 @@ namespace SGDK2
          {
             get
             {
-               return new Size(m_drLayer.VirtualWidth, m_drLayer.VirtualHeight);
+               return new Size(m_tempLayer.VirtualWidth, m_tempLayer.VirtualHeight);
             }
             set
             {
-               m_drLayer.VirtualWidth = value.Width;
-               m_drLayer.VirtualHeight = value.Height;
+               m_tempLayer.VirtualWidth = value.Width;
+               m_tempLayer.VirtualHeight = value.Height;
             }
          }
 
@@ -114,13 +118,18 @@ namespace SGDK2
          {
             get
             {
-               return m_drLayer.Tileset;
+               return m_tempLayer.Tileset;
             }
             set
             {
+               if (value.Length == 0)
+               {
+                  m_tempLayer.Tileset = null;
+                  return;
+               }
                if (ProjectData.GetTileSet(value) == null)
                   throw new InvalidOperationException("Tileset " + value + " not found");
-               m_drLayer.Tileset = value;
+               m_tempLayer.Tileset = value;
             }
          }
 
@@ -145,7 +154,7 @@ namespace SGDK2
          {
             get
             {
-               switch(m_drLayer.BytesPerTile)
+               switch (m_tempLayer.BytesPerTile)
                {
                   case 1:
                      return BytesPerTile.One;
@@ -162,13 +171,13 @@ namespace SGDK2
                switch(value)
                {
                   case BytesPerTile.One:
-                     m_drLayer.BytesPerTile = 1;
+                     m_tempLayer.BytesPerTile = 1;
                      break;
                   case BytesPerTile.Two:
-                     m_drLayer.BytesPerTile = 2;
+                     m_tempLayer.BytesPerTile = 2;
                      break;
                   case BytesPerTile.Four:
-                     m_drLayer.BytesPerTile = 4;
+                     m_tempLayer.BytesPerTile = 4;
                      break;
                   default:
                      throw new InvalidOperationException("BytesPerTile must be 1, 2 or 4");
@@ -182,11 +191,11 @@ namespace SGDK2
          {
             get
             {
-               return m_drLayer.OffsetX;
+               return m_tempLayer.OffsetX;
             }
             set
             {
-               m_drLayer.OffsetX = value;
+               m_tempLayer.OffsetX = value;
             }
          }
 
@@ -196,11 +205,11 @@ namespace SGDK2
          {
             get
             {
-               return m_drLayer.OffsetY;
+               return m_tempLayer.OffsetY;
             }
             set
             {
-               m_drLayer.OffsetY = value;
+               m_tempLayer.OffsetY = value;
             }
          }
 
@@ -210,11 +219,11 @@ namespace SGDK2
          {
             get
             {
-               return m_drLayer.ScrollRateX;
+               return m_tempLayer.ScrollRateX;
             }
             set
             {
-               m_drLayer.ScrollRateX = value;
+               m_tempLayer.ScrollRateX = value;
             }
          }
 
@@ -224,11 +233,11 @@ namespace SGDK2
          {
             get
             {
-               return m_drLayer.ScrollRateY;
+               return m_tempLayer.ScrollRateY;
             }
             set
             {
-               m_drLayer.ScrollRateY = value;
+               m_tempLayer.ScrollRateY = value;
             }
          }
 
@@ -238,11 +247,11 @@ namespace SGDK2
          {
             get
             {
-               return m_drLayer.ZIndex;
+               return m_tempLayer.ZIndex;
             }
             set
             {
-               m_drLayer.ZIndex = value;
+               m_tempLayer.ZIndex = value;
             }
          }
 
@@ -252,20 +261,23 @@ namespace SGDK2
          {
             get
             {
-               return m_drLayer.Priority;
+               return m_tempLayer.Priority;
             }
             set
             {
-               m_drLayer.Priority = value;
+               m_tempLayer.Priority = value;
             }
+         }
+
+         public void Persist()
+         {
+            m_persistLayer.ItemArray = m_tempLayer.ItemArray;
          }
       }
       #endregion
 
       #region Non-Control Members
       LayerProperties DataObject;
-      Size m_PersistedDimensions = Size.Empty;
-      byte m_PersistedBytesPerTile = 0;
       #endregion
 
       #region Form designer members
@@ -298,6 +310,9 @@ namespace SGDK2
          EditRow.BytesPerTile = 1;
          if (ProjectData.Tileset.DefaultView.Count > 0)
             EditRow.Tileset = (ProjectData.Tileset.DefaultView[0].Row as ProjectDataset.TilesetRow).Name;
+         foreach (ProjectDataset.LayerRow lr in ProjectData.GetSortedLayers(parent))
+            if (lr.ZIndex >= EditRow.ZIndex)
+               EditRow.ZIndex = lr.ZIndex + 1;
          EditRow.BeginEdit();
          pgrLayer.SelectedObject = DataObject = new LayerProperties(EditRow);
          DataObject.BackgroundTile = 0;
@@ -313,8 +328,6 @@ namespace SGDK2
          btnOK.Text = "Update";
          EditRow.BeginEdit();
          pgrLayer.SelectedObject = DataObject = new LayerProperties(EditRow);
-         m_PersistedDimensions = new Size(EditRow.Width, EditRow.Height);
-         m_PersistedBytesPerTile = EditRow.BytesPerTile;
 
          SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"LayerManager.html");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
@@ -428,45 +441,52 @@ namespace SGDK2
       {
          try
          {
-            string sValid = ProjectData.ValidateName(DataObject.m_drLayer.Name);
+            string sValid = ProjectData.ValidateName(DataObject.m_tempLayer.Name);
             if (sValid != null)
             {
                MessageBox.Show(this, sValid, "Layer Name", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                return false;
             }
 
-            if ((DataObject.BackgroundTile < 0) && (DataObject.m_drLayer.IsTilesNull()))
+            if ((DataObject.BackgroundTile < 0) && (DataObject.m_tempLayer.IsTilesNull()))
             {
                MessageBox.Show(this, "You must specify a valid Background Tile for a new layer", "Add Layer", System.Windows.Forms.MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                return false;
             }
 
             if ((DataObject.BackgroundTile >= 0) &&
-               !DataObject.m_drLayer.IsTilesNull())
+               !DataObject.m_tempLayer.IsTilesNull())
             {
                if (DialogResult.OK != MessageBox.Show(this, "Setting the BackgroundTile property will clear the entire layer to the specified tile, erasing all tiles.", "Update Layer", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2))
                   return false;
             }
 
-            foreach (ProjectDataset.LayerRow lr in DataObject.m_drLayer.MapRow.GetLayerRows())
+            if ((DataObject.SizeInTiles.Width == 0) || (DataObject.SizeInTiles.Height == 0))
             {
-               if (lr != DataObject.m_drLayer && lr.ZIndex == DataObject.m_drLayer.ZIndex)
+               MessageBox.Show(this, "The SizeInTiles width or height cannot be zero", "Add/Update Layer", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+               return false;
+            }
+
+            foreach (ProjectDataset.LayerRow lr in DataObject.m_tempLayer.MapRow.GetLayerRows())
+            {
+               if (lr != DataObject.m_persistLayer && lr.ZIndex == DataObject.m_tempLayer.ZIndex)
                {
                   if (DialogResult.OK != MessageBox.Show(this, "Another layer with the same ZIndex value already exists. This may cause an unexpected sequencing of the layers.", "Update Layer", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation))
                      return false;
                }
             }
 
-            DataObject.m_drLayer.EndEdit();
+            DataObject.m_tempLayer.EndEdit();
 
-            if (DataObject.m_drLayer.RowState == DataRowState.Detached)
+            if (DataObject.m_persistLayer.RowState == DataRowState.Detached)
             {
                try
                {
-                  DataObject.m_drLayer.Tiles = GetTilesForCurrentParams();
-                  ProjectData.AddLayerRow(DataObject.m_drLayer);
+                  DataObject.m_tempLayer.Tiles = GetTilesForCurrentParams();
+                  DataObject.Persist();
+                  ProjectData.AddLayerRow(DataObject.m_persistLayer);
                   btnOK.Text = "Update";
-                  frmMapEditor.Edit(MdiParent, DataObject.m_drLayer);
+                  frmMapEditor.Edit(MdiParent, DataObject.m_persistLayer);
                }
                catch (ConstraintException)
                {
@@ -474,17 +494,16 @@ namespace SGDK2
                   return false;
                }
             }
-            else if ((DataObject.m_drLayer.Width != m_PersistedDimensions.Width) ||
-               (DataObject.m_drLayer.Height != m_PersistedDimensions.Height) ||
-               (DataObject.m_drLayer.BytesPerTile != m_PersistedBytesPerTile) ||
+            else if ((DataObject.m_tempLayer.Width != DataObject.m_persistLayer.Width) ||
+               (DataObject.m_tempLayer.Height != DataObject.m_persistLayer.Height) ||
+               (DataObject.m_tempLayer.BytesPerTile != DataObject.m_persistLayer.BytesPerTile) ||
                (DataObject.BackgroundTile >= 0))
             {
-               DataObject.m_drLayer.Tiles = GetTilesForCurrentParams();
-               m_PersistedDimensions = new Size(DataObject.m_drLayer.Width, DataObject.m_drLayer.Height);
-               m_PersistedBytesPerTile = DataObject.m_drLayer.BytesPerTile;
+               DataObject.m_tempLayer.Tiles = GetTilesForCurrentParams();
             }
+            DataObject.Persist();
             btnCancel.Text = "Close";
-            ((frmMain)MdiParent).SelectByContext("LR" + DataObject.m_drLayer.Name);
+            ((frmMain)MdiParent).SelectByContext("LR" + DataObject.m_persistLayer.Name);
             return true;
          }
          catch (ConstraintException)
@@ -498,15 +517,15 @@ namespace SGDK2
       {
          System.Array Tiles;
 
-         int nNewRows = DataObject.m_drLayer.Height;
-         int nNewCols = DataObject.m_drLayer.Width;
+         int nNewRows = DataObject.m_tempLayer.Height;
+         int nNewCols = DataObject.m_tempLayer.Width;
          object ClearVal;
 
          // Create an array of tile values representing the data
          // that will fill the byte array to be returned.
          // The elements are typed according to BytesPerTile, but
          // will be serialized as bytes on return.
-         switch(DataObject.m_drLayer.BytesPerTile)
+         switch (DataObject.m_tempLayer.BytesPerTile)
          {
             case 1:
                Tiles = new byte[nNewRows,nNewCols];
@@ -524,19 +543,19 @@ namespace SGDK2
 
          // Check if we need to copy data from the old layer data
          // (if we have old data and will not be clearing it).
-         if (!DataObject.m_drLayer.IsTilesNull() && (DataObject.BackgroundTile < 0))
+         if (!DataObject.m_tempLayer.IsTilesNull() && (DataObject.BackgroundTile < 0))
          {
-            System.IO.BinaryReader br = new System.IO.BinaryReader(new System.IO.MemoryStream(DataObject.m_drLayer.Tiles));
-            int nMinWidth = Math.Min(m_PersistedDimensions.Width, nNewCols);
-            int nMinHeight = Math.Min(m_PersistedDimensions.Height, nNewRows);
+            System.IO.BinaryReader br = new System.IO.BinaryReader(new System.IO.MemoryStream(DataObject.m_tempLayer.Tiles));
+            int nMinWidth = Math.Min(DataObject.m_persistLayer.Width, nNewCols);
+            int nMinHeight = Math.Min(DataObject.m_persistLayer.Height, nNewRows);
 
             // Read through the old layer data, and copy those tiles that are within
             // the bounds of the new layer dimensions into the new layer data data.
             // The boxing and unboxing might be bad here, but this operation should be rare.
             for (int nRow = 0; nRow < nMinHeight; nRow++)
-               for (int nCol = 0; nCol < m_PersistedDimensions.Width; nCol++)
+               for (int nCol = 0; nCol < DataObject.m_persistLayer.Width; nCol++)
                {
-                  switch (m_PersistedBytesPerTile)
+                  switch (DataObject.m_persistLayer.BytesPerTile)
                   {
                      case 1:
                         if (nCol < nMinWidth)
@@ -570,7 +589,7 @@ namespace SGDK2
          }
 
          // Serialize the layer tiles into a byte array.
-         byte nBytesPerTile = DataObject.m_drLayer.BytesPerTile;
+         byte nBytesPerTile = DataObject.m_tempLayer.BytesPerTile;
          System.IO.MemoryStream ms = new System.IO.MemoryStream(nNewRows * nNewCols * nBytesPerTile);
          System.IO.BinaryWriter bw = new System.IO.BinaryWriter(ms);
          
@@ -602,7 +621,7 @@ namespace SGDK2
             frmLayerManager f = frm as frmLayerManager;
             if (f != null)
             {
-               if (f.DataObject.m_drLayer == EditRow)
+               if (f.DataObject.m_persistLayer == EditRow)
                {
                   f.Activate();
                   return;
@@ -633,13 +652,13 @@ namespace SGDK2
 
       private void btnCancel_Click(object sender, System.EventArgs e)
       {
-         DataObject.m_drLayer.CancelEdit();
+         //DataObject.m_drLayer.CancelEdit();
          this.Close();
       }
 
       private void dataMonitor_LayerRowDeleted(object sender, SGDK2.ProjectDataset.LayerRowChangeEvent e)
       {
-         if (e.Row == DataObject.m_drLayer)
+         if (e.Row == DataObject.m_persistLayer)
             this.Close();
       }
 

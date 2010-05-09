@@ -5,8 +5,6 @@
 
 using System;
 using System.Drawing;
-using Microsoft.DirectX.Direct3D;
-using Microsoft.DirectX;
 
 namespace SGDK2
 {
@@ -36,7 +34,7 @@ namespace SGDK2
             else if (frame.Color == -1)
                this.color = color;
             else
-               this.color = Microsoft.DirectX.Direct3D.ColorOperator.Modulate(frame.Color, color);
+               this.color = color; //Microsoft.DirectX.Direct3D.ColorOperator.Modulate(frame.Color, color);
          }
          #region IComparable Members
 
@@ -100,10 +98,18 @@ namespace SGDK2
       public Layer(ProjectDataset.LayerRow layer, Display display)
       {
          m_Layer = layer;
-         ProjectData.GetTilesetOverlaps(m_Layer.TilesetRow,
+         if (!String.IsNullOrEmpty(layer.Tileset))
+         {
+            ProjectData.GetTilesetOverlaps(m_Layer.TilesetRow,
             out m_nRightBuffer, out m_nBottomBuffer, out m_nLeftBuffer, out m_nTopBuffer);
-         m_TileCache = new TileCache(layer.TilesetRow);
-         m_FrameCache = FrameCache.GetFrameCache(layer.TilesetRow.Frameset, display);
+            m_TileCache = new TileCache(layer.TilesetRow);
+            m_FrameCache = FrameCache.GetFrameCache(layer.TilesetRow.Frameset, display);
+         }
+         else
+         {
+            m_TileCache = null;
+            m_FrameCache = FrameCache.GetFrameCache(null, display);
+         }
       }
 
       #region Public properties
@@ -268,11 +274,25 @@ namespace SGDK2
 
       public void Draw(Display Display, Size ViewSize)
       {
-         if (m_TileCache.Count <= 0)
+         if ((m_TileCache != null) &&  (m_TileCache.Count <= 0))
             return;
-         ProjectDataset.TilesetRow tsr = m_Layer.TilesetRow;
-         int nTileWidth = tsr.TileWidth;
-         int nTileHeight = tsr.TileHeight;
+         int[] bgTileFrame = {0};
+
+         ProjectDataset.TilesetRow tsr;
+         int nTileWidth;
+         int nTileHeight;
+         if (String.IsNullOrEmpty(m_Layer.Tileset))
+         {
+            tsr = null;
+            nTileWidth = 32;
+            nTileHeight = 32;
+         }
+         else
+         {
+            tsr = m_Layer.TilesetRow;
+            nTileWidth = tsr.TileWidth;
+            nTileHeight = tsr.TileHeight;
+         }
 
          int nStartCol = (-m_nLeftBuffer-m_CurrentPosition.X) / nTileWidth;
          if (nStartCol < 0)
@@ -288,13 +308,6 @@ namespace SGDK2
          if (EndRow >= VirtualRows)
             EndRow = VirtualRows - 1;
 
-         Sprite spr = Display.Sprite;
-         Device Device = Display.Device;
-
-         spr.Begin(SpriteFlags.AlphaBlend);
-
-         Display.TextureRef currentTextureRef = null;
-
          System.Collections.IEnumerator Injected = null;
          InjectedFrame CurFrame;
          if (m_InjectedFrames != null)
@@ -304,6 +317,8 @@ namespace SGDK2
                Injected = null;
          }
 
+         int lastColor = 0;
+
          for (int y = nStartRow; y <= EndRow; y++)
          {
             if (Injected != null)
@@ -311,12 +326,13 @@ namespace SGDK2
                while (((CurFrame = (InjectedFrame)Injected.Current).priority < Priority) ||
                   ((CurFrame.priority == Priority) && (CurFrame.y < y * nTileHeight)))
                {
-                  if ((currentTextureRef == null) || (currentTextureRef != CurFrame.frame.GraphicSheetTexture))
-                     Device.SetTexture(0, (currentTextureRef = CurFrame.frame.GraphicSheetTexture).Texture);
-                  spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
-                     CurFrame.x + m_CurrentPosition.X, CurFrame.y + m_CurrentPosition.Y, 0));
-                  spr.Draw(currentTextureRef.Texture, CurFrame.frame.SourceRect,
-                     Vector3.Empty, Vector3.Empty, CurFrame.color);
+                  if (CurFrame.color != lastColor)
+                  {
+                     Display.SetColor(CurFrame.color);
+                     lastColor = CurFrame.color;
+                  }
+                  Display.DrawFrame(CurFrame.frame.GraphicSheetTexture, CurFrame.frame.SourceRect, CurFrame.frame.corners,
+                     CurFrame.x + m_CurrentPosition.X, CurFrame.y + m_CurrentPosition.Y);
                   if (!Injected.MoveNext())
                   {
                      Injected = null;
@@ -335,19 +351,25 @@ namespace SGDK2
 
             for (int x = nStartCol; x <= EndCol; x++)
             {
-               int[] SubFrames = m_TileCache[this[x,y]];
+               int[] SubFrames;
+               if (m_TileCache == null)
+                  SubFrames = bgTileFrame;
+               else
+                  SubFrames = m_TileCache[this[x, y]];
+
                for (int nFrame = 0; nFrame < SubFrames.Length; nFrame++)
                {
                   if ((suspendedTiles != null) && (Array.BinarySearch(suspendedTiles, new Point(x,y), PointComparer.Value) >= 0))
                      continue;
                   FrameCache.Frame f = m_FrameCache[SubFrames[nFrame]%m_FrameCache.Count];
-                  if ((currentTextureRef == null) || (currentTextureRef != f.GraphicSheetTexture))
-                     Device.SetTexture(0, (currentTextureRef = f.GraphicSheetTexture).Texture);
+                  if (f.Color != lastColor)
+                  {
+                     Display.SetColor(f.Color);
+                     lastColor = f.Color;
+                  }
 
-                  spr.Transform = Matrix.Multiply(f.Transform, Matrix.Translation(
-                     x * nTileWidth + m_CurrentPosition.X,
-                     y * nTileHeight + m_CurrentPosition.Y, 0));
-                  spr.Draw(currentTextureRef.Texture, f.SourceRect, Vector3.Empty, Vector3.Empty, f.Color);
+                  Display.DrawFrame(f.GraphicSheetTexture, f.SourceRect, f.corners,
+                     x * nTileWidth + m_CurrentPosition.X, y * nTileHeight + m_CurrentPosition.Y);
                }
             }
          }
@@ -355,19 +377,19 @@ namespace SGDK2
          while (Injected != null)
          {
             CurFrame = (InjectedFrame)Injected.Current;
-            if (currentTextureRef != CurFrame.frame.GraphicSheetTexture)
-               Device.SetTexture(0, (currentTextureRef = CurFrame.frame.GraphicSheetTexture).Texture);
-            spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
-               CurFrame.x + m_CurrentPosition.X, CurFrame.y + m_CurrentPosition.Y, 0));
-            spr.Draw(currentTextureRef.Texture, CurFrame.frame.SourceRect,
-               Vector3.Empty, Vector3.Empty, CurFrame.color);
+            if (CurFrame.color != lastColor)
+            {
+               Display.SetColor(CurFrame.color);
+               lastColor = CurFrame.color;
+            }
+            Display.DrawFrame(CurFrame.frame.GraphicSheetTexture, CurFrame.frame.SourceRect, CurFrame.frame.corners,
+               CurFrame.x + m_CurrentPosition.X, CurFrame.y + m_CurrentPosition.Y);
             if (!Injected.MoveNext())
             {
                Injected = null;
                break;
             }
          }
-         spr.End();
       }
 
       public void InjectFrame(int x, int y, int priority, FrameCache.Frame frame)

@@ -20,9 +20,6 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
       reflectType = typeof(RemoteReflector).Assembly.GetType(typeName, false);
       if (null != reflectType)
          return;
-      reflectType = typeof(Microsoft.DirectX.DirectInput.KeyboardState).Assembly.GetType(typeName, false);
-      if (null != reflectType)
-         return;
       reflectType = typeof(System.Drawing.Color).Assembly.GetType(typeName, false);
       if (null != reflectType)
          return;
@@ -62,6 +59,19 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
       }
 
       return (SGDK2.RemotingServices.RemoteGlobalAccessorInfo[])result.ToArray(typeof(SGDK2.RemotingServices.RemoteGlobalAccessorInfo));
+   }
+
+   public SGDK2.RemotingServices.RemoteTypeName[] GetDerivedClasses(bool abstractOnly)
+   {
+      System.Collections.ArrayList result = new System.Collections.ArrayList();
+      foreach (System.Type type in reflectType.Assembly.GetTypes())
+      {
+         if (type.IsSubclassOf(reflectType) && ((abstractOnly == false) || (type.IsAbstract)))
+         {
+            result.Add(new SGDK2.RemotingServices.RemoteTypeName(type));
+         }
+      }
+      return (SGDK2.RemotingServices.RemoteTypeName[])result.ToArray(typeof(SGDK2.RemotingServices.RemoteTypeName));
    }
 
    public SGDK2.RemotingServices.RemoteMethodInfo[] GetGlobalFunctions()
@@ -215,18 +225,6 @@ public class RemoteReflector : System.MarshalByRefObject, SGDK2.RemotingServices
       for(int idx = 0; idx < result.Length; idx++)
          result[idx] = reflectType.FullName.Replace('+','.') + "." + result[idx];
       return result;
-   }
-
-   public SGDK2.RemotingServices.RemoteTypeName[] GetSubclasses()
-   {
-      System.Collections.ArrayList result = new System.Collections.ArrayList();
-      System.Type[] types = reflectType.Assembly.GetTypes();
-      for (int i=0; i<types.Length; i++)
-      {
-         if (types[i].IsSubclassOf(reflectType))
-            result.Add(new SGDK2.RemotingServices.RemoteTypeName(types[i]));
-      }
-      return (SGDK2.RemotingServices.RemoteTypeName[])result.ToArray(typeof(SGDK2.RemotingServices.RemoteTypeName));
    }
    #endregion
 }

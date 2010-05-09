@@ -83,7 +83,7 @@ namespace SGDK2
       private bool m_Loading = false;
       private string m_PreparedFunction = string.Empty;
       private Hashtable m_CustomObjects = null; // .[TypeName] -> RemoteGlobalAccessorInfo[]
-      private ProjectDataset.SpriteRuleRow m_SelectAfterInsert = null;
+      private ProjectDataset.SpriteRuleRow m_SelectAfterLoad = null;
       #endregion
 
       #region Windows Forms Designer Components
@@ -185,6 +185,16 @@ namespace SGDK2
       private System.Windows.Forms.ToolBarButton tbbRuleSeparator2;
       private System.Windows.Forms.ToolBarButton tbbToggleSuspend;
       private System.Windows.Forms.MenuItem mnuToggleSuspend;
+      private MenuItem mnuCutRules;
+      private MenuItem mnuCutRuleChildren;
+      private MenuItem mnuCutRuleOnly;
+      private MenuItem mnuCutAllRules;
+      private MenuItem mnuConvertToFunc;
+      private MenuItem mnuConvertAllRules;
+      private MenuItem mnuConvertSelectedRule;
+      private ToolBarButton tbbConvertToFunc;
+      private Label lblBaseClass;
+      private ComboBox cboBaseClass;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -203,12 +213,14 @@ namespace SGDK2
          do
             sName = "New Sprite Definition " + (nIdx++).ToString();
          while (ProjectData.GetSpriteDefinition(sName) != null);
-         m_SpriteDef = ProjectData.AddSpriteDefinition(sName);
+         m_SpriteDef = ProjectData.AddSpriteDefinition(sName, CodeGenerator.SpriteBaseClass);
          txtName.Text = sName;
+         cboBaseClass.Text = m_SpriteDef.BaseClass;
 
          EnableState(false);
          FillFramesets();
          FillStates();
+         FillBaseClasses();
          InitParameters();
 
          SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"SpriteDefinition.html");
@@ -223,10 +235,12 @@ namespace SGDK2
 
          m_SpriteDef = drSpriteDef;
          txtName.Text = drSpriteDef.Name;
+         cboBaseClass.Text = m_SpriteDef.BaseClass;
 
          EnableState(false);
          FillFramesets();
          FillStates();
+         FillBaseClasses();
          InitParameters();
 
          SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"SpriteDefinition.html");
@@ -257,7 +271,7 @@ namespace SGDK2
       private void InitializeComponent()
       {
          this.components = new System.ComponentModel.Container();
-         System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(frmSpriteDefinition));
+         System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmSpriteDefinition));
          this.tabSpriteDefinition = new System.Windows.Forms.TabControl();
          this.tabStates = new System.Windows.Forms.TabPage();
          this.AvailableFrames = new SGDK2.GraphicBrowser();
@@ -306,6 +320,7 @@ namespace SGDK2
          this.tbbMoveRuleDown = new System.Windows.Forms.ToolBarButton();
          this.tbbRuleSeparator2 = new System.Windows.Forms.ToolBarButton();
          this.tbbToggleSuspend = new System.Windows.Forms.ToolBarButton();
+         this.tbbConvertToFunc = new System.Windows.Forms.ToolBarButton();
          this.RuleSplitter = new System.Windows.Forms.Splitter();
          this.pnlRules = new System.Windows.Forms.Panel();
          this.chkSuspended = new System.Windows.Forms.CheckBox();
@@ -326,9 +341,11 @@ namespace SGDK2
          this.lblParam3 = new System.Windows.Forms.Label();
          this.lblRuleName = new System.Windows.Forms.Label();
          this.pnlSpriteHeader = new System.Windows.Forms.Panel();
+         this.cboBaseClass = new System.Windows.Forms.ComboBox();
+         this.lblBaseClass = new System.Windows.Forms.Label();
          this.txtName = new System.Windows.Forms.TextBox();
          this.lblName = new System.Windows.Forms.Label();
-         this.mnuSprites = new System.Windows.Forms.MainMenu();
+         this.mnuSprites = new System.Windows.Forms.MainMenu(this.components);
          this.mnuSpriteDefinition = new System.Windows.Forms.MenuItem();
          this.mnuAddState = new System.Windows.Forms.MenuItem();
          this.mnuDeleteState = new System.Windows.Forms.MenuItem();
@@ -346,10 +363,17 @@ namespace SGDK2
          this.mnuCopyRuleChildren = new System.Windows.Forms.MenuItem();
          this.mnuCopyRuleOnly = new System.Windows.Forms.MenuItem();
          this.mnuCopyAllRules = new System.Windows.Forms.MenuItem();
+         this.mnuCutRules = new System.Windows.Forms.MenuItem();
+         this.mnuCutRuleChildren = new System.Windows.Forms.MenuItem();
+         this.mnuCutRuleOnly = new System.Windows.Forms.MenuItem();
+         this.mnuCutAllRules = new System.Windows.Forms.MenuItem();
          this.mnuPasteRules = new System.Windows.Forms.MenuItem();
          this.mnuPasteRuleAbove = new System.Windows.Forms.MenuItem();
          this.mnuPasteRuleBelow = new System.Windows.Forms.MenuItem();
          this.mnuToggleSuspend = new System.Windows.Forms.MenuItem();
+         this.mnuConvertToFunc = new System.Windows.Forms.MenuItem();
+         this.mnuConvertAllRules = new System.Windows.Forms.MenuItem();
+         this.mnuConvertSelectedRule = new System.Windows.Forms.MenuItem();
          this.mnuSpriteDefSeparator2 = new System.Windows.Forms.MenuItem();
          this.mnuExport = new System.Windows.Forms.MenuItem();
          this.mnuSpriteDefSeparator3 = new System.Windows.Forms.MenuItem();
@@ -379,7 +403,7 @@ namespace SGDK2
          this.tabSpriteDefinition.Location = new System.Drawing.Point(0, 32);
          this.tabSpriteDefinition.Name = "tabSpriteDefinition";
          this.tabSpriteDefinition.SelectedIndex = 0;
-         this.tabSpriteDefinition.Size = new System.Drawing.Size(568, 385);
+         this.tabSpriteDefinition.Size = new System.Drawing.Size(565, 385);
          this.tabSpriteDefinition.TabIndex = 3;
          this.tabSpriteDefinition.SelectedIndexChanged += new System.EventHandler(this.tabSpriteDefinition_SelectedIndexChanged);
          // 
@@ -394,7 +418,7 @@ namespace SGDK2
          this.tabStates.Controls.Add(this.pnlStateList);
          this.tabStates.Location = new System.Drawing.Point(4, 22);
          this.tabStates.Name = "tabStates";
-         this.tabStates.Size = new System.Drawing.Size(560, 359);
+         this.tabStates.Size = new System.Drawing.Size(557, 359);
          this.tabStates.TabIndex = 0;
          this.tabStates.Text = "States";
          // 
@@ -413,7 +437,7 @@ namespace SGDK2
          this.AvailableFrames.Location = new System.Drawing.Point(133, 221);
          this.AvailableFrames.Name = "AvailableFrames";
          this.AvailableFrames.SheetImage = null;
-         this.AvailableFrames.Size = new System.Drawing.Size(427, 138);
+         this.AvailableFrames.Size = new System.Drawing.Size(424, 138);
          this.AvailableFrames.TabIndex = 10;
          // 
          // lblAvailableFrames
@@ -421,7 +445,7 @@ namespace SGDK2
          this.lblAvailableFrames.Dock = System.Windows.Forms.DockStyle.Top;
          this.lblAvailableFrames.Location = new System.Drawing.Point(133, 205);
          this.lblAvailableFrames.Name = "lblAvailableFrames";
-         this.lblAvailableFrames.Size = new System.Drawing.Size(427, 16);
+         this.lblAvailableFrames.Size = new System.Drawing.Size(424, 16);
          this.lblAvailableFrames.TabIndex = 9;
          this.lblAvailableFrames.Text = "Available Frames:";
          // 
@@ -431,7 +455,7 @@ namespace SGDK2
          this.StateSplitter.Dock = System.Windows.Forms.DockStyle.Top;
          this.StateSplitter.Location = new System.Drawing.Point(133, 200);
          this.StateSplitter.Name = "StateSplitter";
-         this.StateSplitter.Size = new System.Drawing.Size(427, 5);
+         this.StateSplitter.Size = new System.Drawing.Size(424, 5);
          this.StateSplitter.TabIndex = 8;
          this.StateSplitter.TabStop = false;
          // 
@@ -443,7 +467,7 @@ namespace SGDK2
          this.pnlFrames.Dock = System.Windows.Forms.DockStyle.Top;
          this.pnlFrames.Location = new System.Drawing.Point(133, 56);
          this.pnlFrames.Name = "pnlFrames";
-         this.pnlFrames.Size = new System.Drawing.Size(427, 144);
+         this.pnlFrames.Size = new System.Drawing.Size(424, 144);
          this.pnlFrames.TabIndex = 6;
          // 
          // StateFrames
@@ -461,12 +485,12 @@ namespace SGDK2
          this.StateFrames.Location = new System.Drawing.Point(0, 16);
          this.StateFrames.Name = "StateFrames";
          this.StateFrames.SheetImage = null;
-         this.StateFrames.Size = new System.Drawing.Size(427, 104);
+         this.StateFrames.Size = new System.Drawing.Size(424, 104);
          this.StateFrames.TabIndex = 1;
+         this.StateFrames.DragOver += new System.Windows.Forms.DragEventHandler(this.StateFrames_DragOver);
          this.StateFrames.CurrentCellChanged += new System.EventHandler(this.StateFrames_CurrentCellChanged);
          this.StateFrames.DragDrop += new System.Windows.Forms.DragEventHandler(this.StateFrames_DragDrop);
          this.StateFrames.KeyDown += new System.Windows.Forms.KeyEventHandler(this.StateFrames_KeyDown);
-         this.StateFrames.DragOver += new System.Windows.Forms.DragEventHandler(this.StateFrames_DragOver);
          // 
          // pnlFrameDetails
          // 
@@ -476,12 +500,10 @@ namespace SGDK2
          this.pnlFrameDetails.Controls.Add(this.updRepeatCount);
          this.pnlFrameDetails.Controls.Add(this.lblRepeatCount);
          this.pnlFrameDetails.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.pnlFrameDetails.DockPadding.Bottom = 2;
-         this.pnlFrameDetails.DockPadding.Left = 1;
-         this.pnlFrameDetails.DockPadding.Top = 2;
          this.pnlFrameDetails.Location = new System.Drawing.Point(0, 120);
          this.pnlFrameDetails.Name = "pnlFrameDetails";
-         this.pnlFrameDetails.Size = new System.Drawing.Size(427, 24);
+         this.pnlFrameDetails.Padding = new System.Windows.Forms.Padding(1, 2, 0, 2);
+         this.pnlFrameDetails.Size = new System.Drawing.Size(424, 24);
          this.pnlFrameDetails.TabIndex = 7;
          // 
          // btnMaskAlpha
@@ -502,7 +524,6 @@ namespace SGDK2
          this.txtMaskAlpha.ReadOnly = true;
          this.txtMaskAlpha.Size = new System.Drawing.Size(48, 20);
          this.txtMaskAlpha.TabIndex = 3;
-         this.txtMaskAlpha.Text = "";
          // 
          // lblMaskAlpha
          // 
@@ -518,21 +539,21 @@ namespace SGDK2
          // 
          this.updRepeatCount.Dock = System.Windows.Forms.DockStyle.Left;
          this.updRepeatCount.Location = new System.Drawing.Point(105, 2);
-         this.updRepeatCount.Maximum = new System.Decimal(new int[] {
-                                                                       255,
-                                                                       0,
-                                                                       0,
-                                                                       0});
+         this.updRepeatCount.Maximum = new decimal(new int[] {
+            255,
+            0,
+            0,
+            0});
          this.updRepeatCount.Name = "updRepeatCount";
          this.updRepeatCount.Size = new System.Drawing.Size(64, 20);
          this.updRepeatCount.TabIndex = 1;
-         this.updRepeatCount.Value = new System.Decimal(new int[] {
-                                                                     1,
-                                                                     0,
-                                                                     0,
-                                                                     0});
-         this.updRepeatCount.Validated += new System.EventHandler(this.updRepeatCount_Validated);
+         this.updRepeatCount.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
          this.updRepeatCount.ValueChanged += new System.EventHandler(this.updRepeatCount_ValueChanged);
+         this.updRepeatCount.Validated += new System.EventHandler(this.updRepeatCount_Validated);
          // 
          // lblRepeatCount
          // 
@@ -549,7 +570,7 @@ namespace SGDK2
          this.lblStateFrames.Dock = System.Windows.Forms.DockStyle.Top;
          this.lblStateFrames.Location = new System.Drawing.Point(0, 0);
          this.lblStateFrames.Name = "lblStateFrames";
-         this.lblStateFrames.Size = new System.Drawing.Size(427, 16);
+         this.lblStateFrames.Size = new System.Drawing.Size(424, 16);
          this.lblStateFrames.TabIndex = 0;
          this.lblStateFrames.Text = "Frames in Current State:";
          // 
@@ -566,7 +587,7 @@ namespace SGDK2
          this.pnlSpriteState.Dock = System.Windows.Forms.DockStyle.Top;
          this.pnlSpriteState.Location = new System.Drawing.Point(133, 0);
          this.pnlSpriteState.Name = "pnlSpriteState";
-         this.pnlSpriteState.Size = new System.Drawing.Size(427, 56);
+         this.pnlSpriteState.Size = new System.Drawing.Size(424, 56);
          this.pnlSpriteState.TabIndex = 5;
          // 
          // lblStateName
@@ -584,9 +605,8 @@ namespace SGDK2
          this.txtStateName.Name = "txtStateName";
          this.txtStateName.Size = new System.Drawing.Size(120, 20);
          this.txtStateName.TabIndex = 1;
-         this.txtStateName.Text = "";
-         this.txtStateName.Validating += new System.ComponentModel.CancelEventHandler(this.txtStateName_Validating);
          this.txtStateName.Validated += new System.EventHandler(this.txtStateName_Validated);
+         this.txtStateName.Validating += new System.ComponentModel.CancelEventHandler(this.txtStateName_Validating);
          // 
          // lblFrameset
          // 
@@ -599,13 +619,13 @@ namespace SGDK2
          // 
          // cboFrameset
          // 
-         this.cboFrameset.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+         this.cboFrameset.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                     | System.Windows.Forms.AnchorStyles.Right)));
          this.cboFrameset.DisplayMember = "Name";
          this.cboFrameset.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
          this.cboFrameset.Location = new System.Drawing.Point(296, 8);
          this.cboFrameset.Name = "cboFrameset";
-         this.cboFrameset.Size = new System.Drawing.Size(120, 21);
+         this.cboFrameset.Size = new System.Drawing.Size(117, 21);
          this.cboFrameset.TabIndex = 3;
          this.cboFrameset.SelectionChangeCommitted += new System.EventHandler(this.cboFrameset_SelectionChangeCommitted);
          // 
@@ -624,9 +644,8 @@ namespace SGDK2
          this.txtWidth.Name = "txtWidth";
          this.txtWidth.Size = new System.Drawing.Size(48, 20);
          this.txtWidth.TabIndex = 7;
-         this.txtWidth.Text = "";
-         this.txtWidth.Validating += new System.ComponentModel.CancelEventHandler(this.txtSize_Validating);
          this.txtWidth.Validated += new System.EventHandler(this.txtWidth_Validated);
+         this.txtWidth.Validating += new System.ComponentModel.CancelEventHandler(this.txtSize_Validating);
          // 
          // lblComma
          // 
@@ -643,9 +662,8 @@ namespace SGDK2
          this.txtHeight.Name = "txtHeight";
          this.txtHeight.Size = new System.Drawing.Size(48, 20);
          this.txtHeight.TabIndex = 9;
-         this.txtHeight.Text = "";
-         this.txtHeight.Validating += new System.ComponentModel.CancelEventHandler(this.txtSize_Validating);
          this.txtHeight.Validated += new System.EventHandler(this.txtHeight_Validated);
+         this.txtHeight.Validating += new System.ComponentModel.CancelEventHandler(this.txtSize_Validating);
          // 
          // StateTreeSplitter
          // 
@@ -679,13 +697,13 @@ namespace SGDK2
          // tbrStates
          // 
          this.tbrStates.Buttons.AddRange(new System.Windows.Forms.ToolBarButton[] {
-                                                                                     this.tbbAddState,
-                                                                                     this.tbbDeleteState,
-                                                                                     this.tbbStateSeparator,
-                                                                                     this.tbbMoveStateUp,
-                                                                                     this.tbbMoveStateDown,
-                                                                                     this.tbbStateSeparator2,
-                                                                                     this.tbbPreview});
+            this.tbbAddState,
+            this.tbbDeleteState,
+            this.tbbStateSeparator,
+            this.tbbMoveStateUp,
+            this.tbbMoveStateDown,
+            this.tbbStateSeparator2,
+            this.tbbPreview});
          this.tbrStates.Divider = false;
          this.tbrStates.DropDownArrows = true;
          this.tbrStates.ImageList = this.imlSpriteDefinition;
@@ -699,48 +717,61 @@ namespace SGDK2
          // tbbAddState
          // 
          this.tbbAddState.ImageIndex = 0;
+         this.tbbAddState.Name = "tbbAddState";
          this.tbbAddState.ToolTipText = "Add a new state";
          // 
          // tbbDeleteState
          // 
          this.tbbDeleteState.ImageIndex = 1;
+         this.tbbDeleteState.Name = "tbbDeleteState";
          this.tbbDeleteState.ToolTipText = "Delete the selected state";
          // 
          // tbbStateSeparator
          // 
+         this.tbbStateSeparator.Name = "tbbStateSeparator";
          this.tbbStateSeparator.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
          // 
          // tbbMoveStateUp
          // 
          this.tbbMoveStateUp.ImageIndex = 2;
+         this.tbbMoveStateUp.Name = "tbbMoveStateUp";
          this.tbbMoveStateUp.ToolTipText = "Move the selected state up one slot";
          // 
          // tbbMoveStateDown
          // 
          this.tbbMoveStateDown.ImageIndex = 3;
+         this.tbbMoveStateDown.Name = "tbbMoveStateDown";
          this.tbbMoveStateDown.ToolTipText = "Move the selected state down one slot";
          // 
          // tbbStateSeparator2
          // 
+         this.tbbStateSeparator2.Name = "tbbStateSeparator2";
          this.tbbStateSeparator2.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
          // 
          // tbbPreview
          // 
          this.tbbPreview.ImageIndex = 4;
+         this.tbbPreview.Name = "tbbPreview";
          this.tbbPreview.ToolTipText = "Preview state animation";
          // 
          // imlSpriteDefinition
          // 
-         this.imlSpriteDefinition.ImageSize = new System.Drawing.Size(15, 15);
          this.imlSpriteDefinition.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imlSpriteDefinition.ImageStream")));
          this.imlSpriteDefinition.TransparentColor = System.Drawing.Color.Magenta;
+         this.imlSpriteDefinition.Images.SetKeyName(0, "");
+         this.imlSpriteDefinition.Images.SetKeyName(1, "");
+         this.imlSpriteDefinition.Images.SetKeyName(2, "");
+         this.imlSpriteDefinition.Images.SetKeyName(3, "");
+         this.imlSpriteDefinition.Images.SetKeyName(4, "");
+         this.imlSpriteDefinition.Images.SetKeyName(5, "");
+         this.imlSpriteDefinition.Images.SetKeyName(6, "Code.bmp");
          // 
          // tabParameters
          // 
          this.tabParameters.Controls.Add(this.grdParameters);
          this.tabParameters.Location = new System.Drawing.Point(4, 22);
          this.tabParameters.Name = "tabParameters";
-         this.tabParameters.Size = new System.Drawing.Size(560, 359);
+         this.tabParameters.Size = new System.Drawing.Size(557, 359);
          this.tabParameters.TabIndex = 1;
          this.tabParameters.Text = "Parameters";
          // 
@@ -753,7 +784,7 @@ namespace SGDK2
          this.grdParameters.HeaderForeColor = System.Drawing.SystemColors.ControlText;
          this.grdParameters.Location = new System.Drawing.Point(0, 0);
          this.grdParameters.Name = "grdParameters";
-         this.grdParameters.Size = new System.Drawing.Size(560, 359);
+         this.grdParameters.Size = new System.Drawing.Size(557, 359);
          this.grdParameters.TabIndex = 35;
          // 
          // tabRules
@@ -764,7 +795,7 @@ namespace SGDK2
          this.tabRules.Controls.Add(this.pnlRules);
          this.tabRules.Location = new System.Drawing.Point(4, 22);
          this.tabRules.Name = "tabRules";
-         this.tabRules.Size = new System.Drawing.Size(560, 359);
+         this.tabRules.Size = new System.Drawing.Size(557, 359);
          this.tabRules.TabIndex = 2;
          this.tabRules.Text = "Rules";
          // 
@@ -772,76 +803,107 @@ namespace SGDK2
          // 
          this.tvwRules.Dock = System.Windows.Forms.DockStyle.Fill;
          this.tvwRules.HideSelection = false;
+         this.tvwRules.ImageIndex = 0;
          this.tvwRules.ImageList = this.imlTree;
          this.tvwRules.Location = new System.Drawing.Point(0, 25);
          this.tvwRules.Name = "tvwRules";
-         this.tvwRules.Size = new System.Drawing.Size(187, 334);
+         this.tvwRules.SelectedImageIndex = 0;
+         this.tvwRules.Size = new System.Drawing.Size(184, 334);
          this.tvwRules.TabIndex = 0;
          this.tvwRules.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.tvwRules_AfterSelect);
          // 
          // imlTree
          // 
-         this.imlTree.ImageSize = new System.Drawing.Size(15, 15);
          this.imlTree.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imlTree.ImageStream")));
          this.imlTree.TransparentColor = System.Drawing.Color.Magenta;
+         this.imlTree.Images.SetKeyName(0, "");
+         this.imlTree.Images.SetKeyName(1, "");
+         this.imlTree.Images.SetKeyName(2, "");
+         this.imlTree.Images.SetKeyName(3, "");
+         this.imlTree.Images.SetKeyName(4, "");
+         this.imlTree.Images.SetKeyName(5, "");
+         this.imlTree.Images.SetKeyName(6, "");
+         this.imlTree.Images.SetKeyName(7, "");
+         this.imlTree.Images.SetKeyName(8, "");
+         this.imlTree.Images.SetKeyName(9, "");
+         this.imlTree.Images.SetKeyName(10, "");
+         this.imlTree.Images.SetKeyName(11, "");
+         this.imlTree.Images.SetKeyName(12, "");
+         this.imlTree.Images.SetKeyName(13, "");
+         this.imlTree.Images.SetKeyName(14, "");
+         this.imlTree.Images.SetKeyName(15, "");
          // 
          // tbrRules
          // 
          this.tbrRules.Buttons.AddRange(new System.Windows.Forms.ToolBarButton[] {
-                                                                                    this.tbbNewRule,
-                                                                                    this.tbbDeleteRule,
-                                                                                    this.tbbRuleSeparator,
-                                                                                    this.tbbMoveRuleUp,
-                                                                                    this.tbbMoveRuleDown,
-                                                                                    this.tbbRuleSeparator2,
-                                                                                    this.tbbToggleSuspend});
+            this.tbbNewRule,
+            this.tbbDeleteRule,
+            this.tbbRuleSeparator,
+            this.tbbMoveRuleUp,
+            this.tbbMoveRuleDown,
+            this.tbbRuleSeparator2,
+            this.tbbToggleSuspend,
+            this.tbbConvertToFunc});
          this.tbrRules.Divider = false;
          this.tbrRules.DropDownArrows = true;
          this.tbrRules.ImageList = this.imlSpriteDefinition;
          this.tbrRules.Location = new System.Drawing.Point(0, 0);
          this.tbrRules.Name = "tbrRules";
          this.tbrRules.ShowToolTips = true;
-         this.tbrRules.Size = new System.Drawing.Size(187, 25);
+         this.tbrRules.Size = new System.Drawing.Size(184, 25);
          this.tbrRules.TabIndex = 28;
          this.tbrRules.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tbrRules_ButtonClick);
          // 
          // tbbNewRule
          // 
          this.tbbNewRule.ImageIndex = 0;
+         this.tbbNewRule.Name = "tbbNewRule";
          this.tbbNewRule.ToolTipText = "Add a new rule";
          // 
          // tbbDeleteRule
          // 
          this.tbbDeleteRule.ImageIndex = 1;
+         this.tbbDeleteRule.Name = "tbbDeleteRule";
          this.tbbDeleteRule.ToolTipText = "Delete the selected rule";
          // 
          // tbbRuleSeparator
          // 
+         this.tbbRuleSeparator.Name = "tbbRuleSeparator";
          this.tbbRuleSeparator.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
          // 
          // tbbMoveRuleUp
          // 
          this.tbbMoveRuleUp.ImageIndex = 2;
+         this.tbbMoveRuleUp.Name = "tbbMoveRuleUp";
          this.tbbMoveRuleUp.ToolTipText = "Move selected rule up";
          // 
          // tbbMoveRuleDown
          // 
          this.tbbMoveRuleDown.ImageIndex = 3;
+         this.tbbMoveRuleDown.Name = "tbbMoveRuleDown";
          this.tbbMoveRuleDown.ToolTipText = "Move selected rule down";
          // 
          // tbbRuleSeparator2
          // 
+         this.tbbRuleSeparator2.Name = "tbbRuleSeparator2";
          this.tbbRuleSeparator2.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
          // 
          // tbbToggleSuspend
          // 
          this.tbbToggleSuspend.ImageIndex = 5;
+         this.tbbToggleSuspend.Name = "tbbToggleSuspend";
          this.tbbToggleSuspend.ToolTipText = "Toggle suspend for this rule and all children";
+         // 
+         // tbbConvertToFunc
+         // 
+         this.tbbConvertToFunc.ImageIndex = 6;
+         this.tbbConvertToFunc.Name = "tbbConvertToFunc";
+         this.tbbConvertToFunc.ToolTipText = "Convert selected rule and children to function";
          // 
          // RuleSplitter
          // 
          this.RuleSplitter.Dock = System.Windows.Forms.DockStyle.Right;
-         this.RuleSplitter.Location = new System.Drawing.Point(187, 0);
+         this.RuleSplitter.Location = new System.Drawing.Point(184, 0);
          this.RuleSplitter.Name = "RuleSplitter";
          this.RuleSplitter.Size = new System.Drawing.Size(5, 359);
          this.RuleSplitter.TabIndex = 13;
@@ -867,7 +929,7 @@ namespace SGDK2
          this.pnlRules.Controls.Add(this.lblParam3);
          this.pnlRules.Controls.Add(this.lblRuleName);
          this.pnlRules.Dock = System.Windows.Forms.DockStyle.Right;
-         this.pnlRules.Location = new System.Drawing.Point(192, 0);
+         this.pnlRules.Location = new System.Drawing.Point(189, 0);
          this.pnlRules.Name = "pnlRules";
          this.pnlRules.Size = new System.Drawing.Size(368, 359);
          this.pnlRules.TabIndex = 27;
@@ -890,22 +952,20 @@ namespace SGDK2
          this.txtHelpText.Name = "txtHelpText";
          this.txtHelpText.ReadOnly = true;
          this.txtHelpText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-         this.txtHelpText.Size = new System.Drawing.Size(344, 32);
+         this.txtHelpText.Size = new System.Drawing.Size(349, 32);
          this.txtHelpText.TabIndex = 16;
-         this.txtHelpText.Text = "";
          // 
          // txtRuleName
          // 
-         this.txtRuleName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+         this.txtRuleName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                     | System.Windows.Forms.AnchorStyles.Right)));
          this.txtRuleName.Enabled = false;
          this.txtRuleName.Location = new System.Drawing.Point(128, 8);
          this.txtRuleName.Name = "txtRuleName";
          this.txtRuleName.Size = new System.Drawing.Size(229, 20);
          this.txtRuleName.TabIndex = 4;
-         this.txtRuleName.Text = "";
-         this.txtRuleName.Validating += new System.ComponentModel.CancelEventHandler(this.txtRuleName_Validating);
          this.txtRuleName.Validated += new System.EventHandler(this.txtRuleName_Validated);
+         this.txtRuleName.Validating += new System.ComponentModel.CancelEventHandler(this.txtRuleName_Validating);
          // 
          // chkNot
          // 
@@ -919,41 +979,41 @@ namespace SGDK2
          // 
          // cboParam3
          // 
-         this.cboParam3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+         this.cboParam3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                     | System.Windows.Forms.AnchorStyles.Right)));
          this.cboParam3.Enabled = false;
          this.cboParam3.Location = new System.Drawing.Point(128, 168);
          this.cboParam3.Name = "cboParam3";
          this.cboParam3.Size = new System.Drawing.Size(229, 21);
          this.cboParam3.TabIndex = 22;
-         this.cboParam3.Validated += new System.EventHandler(this.cboParam_Validated);
          this.cboParam3.SelectionChangeCommitted += new System.EventHandler(this.cboParam_SelectionChangeCommitted);
+         this.cboParam3.Validated += new System.EventHandler(this.cboParam_Validated);
          // 
          // cboFunction
          // 
-         this.cboFunction.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+         this.cboFunction.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                     | System.Windows.Forms.AnchorStyles.Right)));
          this.cboFunction.Enabled = false;
          this.cboFunction.Location = new System.Drawing.Point(128, 56);
          this.cboFunction.Name = "cboFunction";
          this.cboFunction.Size = new System.Drawing.Size(229, 21);
          this.cboFunction.TabIndex = 15;
-         this.cboFunction.Validated += new System.EventHandler(this.cboFunction_Validated);
          this.cboFunction.SelectedIndexChanged += new System.EventHandler(this.cboFunction_SelectedIndexChanged);
+         this.cboFunction.Validated += new System.EventHandler(this.cboFunction_Validated);
          // 
          // cboRuleType
          // 
          this.cboRuleType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
          this.cboRuleType.Enabled = false;
          this.cboRuleType.Items.AddRange(new object[] {
-                                                         "Do",
-                                                         "If",
-                                                         "And",
-                                                         "Or",
-                                                         "ElseIf",
-                                                         "Else",
-                                                         "End",
-                                                         "While"});
+            "Do",
+            "If",
+            "And",
+            "Or",
+            "ElseIf",
+            "Else",
+            "End",
+            "While"});
          this.cboRuleType.Location = new System.Drawing.Point(8, 56);
          this.cboRuleType.Name = "cboRuleType";
          this.cboRuleType.Size = new System.Drawing.Size(56, 21);
@@ -972,9 +1032,9 @@ namespace SGDK2
          // 
          // txtErrors
          // 
-         this.txtErrors.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+         this.txtErrors.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                     | System.Windows.Forms.AnchorStyles.Left)
+                     | System.Windows.Forms.AnchorStyles.Right)));
          this.txtErrors.Location = new System.Drawing.Point(8, 248);
          this.txtErrors.Multiline = true;
          this.txtErrors.Name = "txtErrors";
@@ -982,7 +1042,6 @@ namespace SGDK2
          this.txtErrors.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
          this.txtErrors.Size = new System.Drawing.Size(349, 104);
          this.txtErrors.TabIndex = 26;
-         this.txtErrors.Text = "";
          this.txtErrors.Visible = false;
          // 
          // lblOutput
@@ -997,8 +1056,8 @@ namespace SGDK2
          // 
          // cboOutput
          // 
-         this.cboOutput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+         this.cboOutput.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                     | System.Windows.Forms.AnchorStyles.Right)));
          this.cboOutput.Enabled = false;
          this.cboOutput.Location = new System.Drawing.Point(128, 192);
          this.cboOutput.Name = "cboOutput";
@@ -1028,27 +1087,27 @@ namespace SGDK2
          // 
          // cboParam2
          // 
-         this.cboParam2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+         this.cboParam2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                     | System.Windows.Forms.AnchorStyles.Right)));
          this.cboParam2.Enabled = false;
          this.cboParam2.Location = new System.Drawing.Point(128, 144);
          this.cboParam2.Name = "cboParam2";
          this.cboParam2.Size = new System.Drawing.Size(229, 21);
          this.cboParam2.TabIndex = 20;
-         this.cboParam2.Validated += new System.EventHandler(this.cboParam_Validated);
          this.cboParam2.SelectionChangeCommitted += new System.EventHandler(this.cboParam_SelectionChangeCommitted);
+         this.cboParam2.Validated += new System.EventHandler(this.cboParam_Validated);
          // 
          // cboParam1
          // 
-         this.cboParam1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+         this.cboParam1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                     | System.Windows.Forms.AnchorStyles.Right)));
          this.cboParam1.Enabled = false;
          this.cboParam1.Location = new System.Drawing.Point(128, 120);
          this.cboParam1.Name = "cboParam1";
          this.cboParam1.Size = new System.Drawing.Size(229, 21);
          this.cboParam1.TabIndex = 18;
-         this.cboParam1.Validated += new System.EventHandler(this.cboParam_Validated);
          this.cboParam1.SelectionChangeCommitted += new System.EventHandler(this.cboParam_SelectionChangeCommitted);
+         this.cboParam1.Validated += new System.EventHandler(this.cboParam_Validated);
          // 
          // lblParam3
          // 
@@ -1072,27 +1131,49 @@ namespace SGDK2
          // 
          // pnlSpriteHeader
          // 
+         this.pnlSpriteHeader.Controls.Add(this.cboBaseClass);
+         this.pnlSpriteHeader.Controls.Add(this.lblBaseClass);
          this.pnlSpriteHeader.Controls.Add(this.txtName);
          this.pnlSpriteHeader.Controls.Add(this.lblName);
          this.pnlSpriteHeader.Dock = System.Windows.Forms.DockStyle.Top;
          this.pnlSpriteHeader.Location = new System.Drawing.Point(0, 0);
          this.pnlSpriteHeader.Name = "pnlSpriteHeader";
-         this.pnlSpriteHeader.Size = new System.Drawing.Size(568, 32);
+         this.pnlSpriteHeader.Size = new System.Drawing.Size(565, 32);
          this.pnlSpriteHeader.TabIndex = 0;
+         // 
+         // cboBaseClass
+         // 
+         this.cboBaseClass.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                     | System.Windows.Forms.AnchorStyles.Right)));
+         this.cboBaseClass.FormattingEnabled = true;
+         this.cboBaseClass.Location = new System.Drawing.Point(316, 7);
+         this.cboBaseClass.Name = "cboBaseClass";
+         this.cboBaseClass.Size = new System.Drawing.Size(234, 21);
+         this.cboBaseClass.TabIndex = 4;
+         this.cboBaseClass.TextUpdate += new System.EventHandler(this.cboBaseClass_TextUpdate);
+         this.cboBaseClass.TextChanged += new System.EventHandler(this.cboBaseClass_TextUpdate);
+         // 
+         // lblBaseClass
+         // 
+         this.lblBaseClass.AutoSize = true;
+         this.lblBaseClass.Location = new System.Drawing.Point(248, 10);
+         this.lblBaseClass.Name = "lblBaseClass";
+         this.lblBaseClass.Size = new System.Drawing.Size(62, 13);
+         this.lblBaseClass.TabIndex = 3;
+         this.lblBaseClass.Text = "Base Class:";
          // 
          // txtName
          // 
-         this.txtName.Location = new System.Drawing.Point(72, 8);
+         this.txtName.Location = new System.Drawing.Point(65, 7);
          this.txtName.Name = "txtName";
          this.txtName.Size = new System.Drawing.Size(160, 20);
          this.txtName.TabIndex = 2;
-         this.txtName.Text = "";
-         this.txtName.Validating += new System.ComponentModel.CancelEventHandler(this.txtName_Validating);
          this.txtName.Validated += new System.EventHandler(this.txtName_Validated);
+         this.txtName.Validating += new System.ComponentModel.CancelEventHandler(this.txtName_Validating);
          // 
          // lblName
          // 
-         this.lblName.Location = new System.Drawing.Point(8, 8);
+         this.lblName.Location = new System.Drawing.Point(12, 6);
          this.lblName.Name = "lblName";
          this.lblName.Size = new System.Drawing.Size(64, 20);
          this.lblName.TabIndex = 1;
@@ -1102,31 +1183,33 @@ namespace SGDK2
          // mnuSprites
          // 
          this.mnuSprites.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                   this.mnuSpriteDefinition});
+            this.mnuSpriteDefinition});
          // 
          // mnuSpriteDefinition
          // 
          this.mnuSpriteDefinition.Index = 0;
          this.mnuSpriteDefinition.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                            this.mnuAddState,
-                                                                                            this.mnuDeleteState,
-                                                                                            this.mnuMoveStateUp,
-                                                                                            this.mnuMoveStateDown,
-                                                                                            this.mnuAddFrame,
-                                                                                            this.mnuRemoveFrame,
-                                                                                            this.mnuPreviewAnimation,
-                                                                                            this.mnuSpriteDefSeparator,
-                                                                                            this.mnuAddAction,
-                                                                                            this.mnuRemoveRule,
-                                                                                            this.mnuMoveRuleUp,
-                                                                                            this.mnuMoveRuleDown,
-                                                                                            this.mnuCopyRules,
-                                                                                            this.mnuPasteRules,
-                                                                                            this.mnuToggleSuspend,
-                                                                                            this.mnuSpriteDefSeparator2,
-                                                                                            this.mnuExport,
-                                                                                            this.mnuSpriteDefSeparator3,
-                                                                                            this.mnuRotateWizard});
+            this.mnuAddState,
+            this.mnuDeleteState,
+            this.mnuMoveStateUp,
+            this.mnuMoveStateDown,
+            this.mnuAddFrame,
+            this.mnuRemoveFrame,
+            this.mnuPreviewAnimation,
+            this.mnuSpriteDefSeparator,
+            this.mnuAddAction,
+            this.mnuRemoveRule,
+            this.mnuMoveRuleUp,
+            this.mnuMoveRuleDown,
+            this.mnuCopyRules,
+            this.mnuCutRules,
+            this.mnuPasteRules,
+            this.mnuToggleSuspend,
+            this.mnuConvertToFunc,
+            this.mnuSpriteDefSeparator2,
+            this.mnuExport,
+            this.mnuSpriteDefSeparator3,
+            this.mnuRotateWizard});
          this.mnuSpriteDefinition.Text = "&Sprite Definition";
          // 
          // mnuAddState
@@ -1208,9 +1291,9 @@ namespace SGDK2
          // 
          this.mnuCopyRules.Index = 12;
          this.mnuCopyRules.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                     this.mnuCopyRuleChildren,
-                                                                                     this.mnuCopyRuleOnly,
-                                                                                     this.mnuCopyAllRules});
+            this.mnuCopyRuleChildren,
+            this.mnuCopyRuleOnly,
+            this.mnuCopyAllRules});
          this.mnuCopyRules.Text = "&Copy Rule";
          // 
          // mnuCopyRuleChildren
@@ -1231,13 +1314,40 @@ namespace SGDK2
          this.mnuCopyAllRules.Text = "Copy &All Rules";
          this.mnuCopyAllRules.Click += new System.EventHandler(this.mnuCopyRules_Click);
          // 
+         // mnuCutRules
+         // 
+         this.mnuCutRules.Index = 13;
+         this.mnuCutRules.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.mnuCutRuleChildren,
+            this.mnuCutRuleOnly,
+            this.mnuCutAllRules});
+         this.mnuCutRules.Text = "Cu&t Rule";
+         // 
+         // mnuCutRuleChildren
+         // 
+         this.mnuCutRuleChildren.Index = 0;
+         this.mnuCutRuleChildren.Text = "&Cut Selected Rule Including Children";
+         this.mnuCutRuleChildren.Click += new System.EventHandler(this.mnuCopyRules_Click);
+         // 
+         // mnuCutRuleOnly
+         // 
+         this.mnuCutRuleOnly.Index = 1;
+         this.mnuCutRuleOnly.Text = "Cut &Selected Rule Only";
+         this.mnuCutRuleOnly.Click += new System.EventHandler(this.mnuCopyRules_Click);
+         // 
+         // mnuCutAllRules
+         // 
+         this.mnuCutAllRules.Index = 2;
+         this.mnuCutAllRules.Text = "Cut &All Rules";
+         this.mnuCutAllRules.Click += new System.EventHandler(this.mnuCopyRules_Click);
+         // 
          // mnuPasteRules
          // 
          this.mnuPasteRules.Enabled = false;
-         this.mnuPasteRules.Index = 13;
+         this.mnuPasteRules.Index = 14;
          this.mnuPasteRules.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                      this.mnuPasteRuleAbove,
-                                                                                      this.mnuPasteRuleBelow});
+            this.mnuPasteRuleAbove,
+            this.mnuPasteRuleBelow});
          this.mnuPasteRules.Text = "Past&e Rules";
          // 
          // mnuPasteRuleAbove
@@ -1254,47 +1364,67 @@ namespace SGDK2
          // 
          // mnuToggleSuspend
          // 
-         this.mnuToggleSuspend.Index = 14;
+         this.mnuToggleSuspend.Index = 15;
          this.mnuToggleSuspend.Text = "To&ggle Suspend for This and Child Rules";
          this.mnuToggleSuspend.Click += new System.EventHandler(this.OnToggleSuspend);
          // 
+         // mnuConvertToFunc
+         // 
+         this.mnuConvertToFunc.Index = 16;
+         this.mnuConvertToFunc.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.mnuConvertAllRules,
+            this.mnuConvertSelectedRule});
+         this.mnuConvertToFunc.Text = "Convert to Fu&nction";
+         // 
+         // mnuConvertAllRules
+         // 
+         this.mnuConvertAllRules.Index = 0;
+         this.mnuConvertAllRules.Text = "Convert &All Enabled Rules";
+         this.mnuConvertAllRules.Click += new System.EventHandler(this.mnuConvertToFunc_Click);
+         // 
+         // mnuConvertSelectedRule
+         // 
+         this.mnuConvertSelectedRule.Index = 1;
+         this.mnuConvertSelectedRule.Text = "Convert &Selected Rule and Children";
+         this.mnuConvertSelectedRule.Click += new System.EventHandler(this.mnuConvertToFunc_Click);
+         // 
          // mnuSpriteDefSeparator2
          // 
-         this.mnuSpriteDefSeparator2.Index = 15;
+         this.mnuSpriteDefSeparator2.Index = 17;
          this.mnuSpriteDefSeparator2.Text = "-";
          // 
          // mnuExport
          // 
-         this.mnuExport.Index = 16;
+         this.mnuExport.Index = 18;
          this.mnuExport.Text = "E&xport to template...";
          this.mnuExport.Click += new System.EventHandler(this.mnuExport_Click);
          // 
          // mnuSpriteDefSeparator3
          // 
-         this.mnuSpriteDefSeparator3.Index = 17;
+         this.mnuSpriteDefSeparator3.Index = 19;
          this.mnuSpriteDefSeparator3.Text = "-";
          // 
          // mnuRotateWizard
          // 
-         this.mnuRotateWizard.Index = 18;
-         this.mnuRotateWizard.Text = "Ro&tating Sprite State Wizard";
+         this.mnuRotateWizard.Index = 20;
+         this.mnuRotateWizard.Text = "R&otating Sprite State Wizard";
          this.mnuRotateWizard.Click += new System.EventHandler(this.mnuRotateWizard_Click);
          // 
          // DataMonitor
          // 
-         this.DataMonitor.SpriteRuleRowDeleted += new SGDK2.ProjectDataset.SpriteRuleRowChangeEventHandler(this.dataMonitor_SpriteRuleRowChanged);
-         this.DataMonitor.SpriteStateRowChanged += new SGDK2.ProjectDataset.SpriteStateRowChangeEventHandler(this.DataMonitor_SpriteStateRowChanged);
-         this.DataMonitor.FramesetRowChanging += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.DataMonitor_FramesetRowChanging);
-         this.DataMonitor.FramesetRowChanged += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.DataMonitor_FramesetRowChanged);
-         this.DataMonitor.SpriteParameterRowChanged += new SGDK2.ProjectDataset.SpriteParameterRowChangeEventHandler(this.DataMonitor_SpriteParameterRowChanged);
-         this.DataMonitor.SpriteStateRowChanging += new SGDK2.ProjectDataset.SpriteStateRowChangeEventHandler(this.DataMonitor_SpriteStateRowChanging);
-         this.DataMonitor.SpriteRuleRowChanging += new SGDK2.ProjectDataset.SpriteRuleRowChangeEventHandler(this.dataMonitor_SpriteRuleRowChanging);
          this.DataMonitor.SpriteDefinitionRowDeleted += new SGDK2.ProjectDataset.SpriteDefinitionRowChangeEventHandler(this.DataMonitor_SpriteDefinitionRowDeleted);
-         this.DataMonitor.SpriteRuleRowChanged += new SGDK2.ProjectDataset.SpriteRuleRowChangeEventHandler(this.dataMonitor_SpriteRuleRowChanged);
-         this.DataMonitor.FramesetRowDeleted += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.DataMonitor_FramesetRowDeleted);
+         this.DataMonitor.SpriteParameterRowChanged += new SGDK2.ProjectDataset.SpriteParameterRowChangeEventHandler(this.DataMonitor_SpriteParameterRowChanged);
          this.DataMonitor.SpriteRuleRowDeleting += new SGDK2.ProjectDataset.SpriteRuleRowChangeEventHandler(this.dataMonitor_SpriteRuleRowChanging);
-         this.DataMonitor.SpriteStateRowDeleted += new SGDK2.ProjectDataset.SpriteStateRowChangeEventHandler(this.DataMonitor_SpriteStateRowDeleted);
+         this.DataMonitor.SpriteRuleRowChanged += new SGDK2.ProjectDataset.SpriteRuleRowChangeEventHandler(this.dataMonitor_SpriteRuleRowChanged);
+         this.DataMonitor.SpriteStateRowChanging += new SGDK2.ProjectDataset.SpriteStateRowChangeEventHandler(this.DataMonitor_SpriteStateRowChanging);
+         this.DataMonitor.FramesetRowDeleted += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.DataMonitor_FramesetRowDeleted);
          this.DataMonitor.Clearing += new System.EventHandler(this.DataMonitor_Clearing);
+         this.DataMonitor.SpriteStateRowDeleted += new SGDK2.ProjectDataset.SpriteStateRowChangeEventHandler(this.DataMonitor_SpriteStateRowDeleted);
+         this.DataMonitor.FramesetRowChanged += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.DataMonitor_FramesetRowChanged);
+         this.DataMonitor.FramesetRowChanging += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.DataMonitor_FramesetRowChanging);
+         this.DataMonitor.SpriteRuleRowChanging += new SGDK2.ProjectDataset.SpriteRuleRowChangeEventHandler(this.dataMonitor_SpriteRuleRowChanging);
+         this.DataMonitor.SpriteStateRowChanged += new SGDK2.ProjectDataset.SpriteStateRowChangeEventHandler(this.DataMonitor_SpriteStateRowChanged);
+         this.DataMonitor.SpriteRuleRowDeleted += new SGDK2.ProjectDataset.SpriteRuleRowChangeEventHandler(this.dataMonitor_SpriteRuleRowChanged);
          // 
          // tmrPopulateRules
          // 
@@ -1303,7 +1433,7 @@ namespace SGDK2
          // frmSpriteDefinition
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-         this.ClientSize = new System.Drawing.Size(568, 417);
+         this.ClientSize = new System.Drawing.Size(565, 417);
          this.Controls.Add(this.tabSpriteDefinition);
          this.Controls.Add(this.pnlSpriteHeader);
          this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -1314,21 +1444,27 @@ namespace SGDK2
          this.tabStates.ResumeLayout(false);
          this.pnlFrames.ResumeLayout(false);
          this.pnlFrameDetails.ResumeLayout(false);
+         this.pnlFrameDetails.PerformLayout();
          ((System.ComponentModel.ISupportInitialize)(this.updRepeatCount)).EndInit();
          this.pnlSpriteState.ResumeLayout(false);
+         this.pnlSpriteState.PerformLayout();
          this.pnlStateList.ResumeLayout(false);
+         this.pnlStateList.PerformLayout();
          this.tabParameters.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.grdParameters)).EndInit();
          this.tabRules.ResumeLayout(false);
+         this.tabRules.PerformLayout();
          this.pnlRules.ResumeLayout(false);
+         this.pnlRules.PerformLayout();
          this.pnlSpriteHeader.ResumeLayout(false);
+         this.pnlSpriteHeader.PerformLayout();
          this.ResumeLayout(false);
 
       }
       #endregion
 
       #region Private Methods
-      private void LoadFunctions(bool onlyBools, bool forceRefresh)
+      private void LoadFunctions(bool onlyBools, bool forceRefresh, bool updateUI)
       {
          if (forceRefresh || (m_AvailableRules == null))
          {
@@ -1344,8 +1480,19 @@ namespace SGDK2
             }
 
             txtErrors.Visible = false;
-            RemotingServices.IRemoteTypeInfo reflector = CodeGenerator.CreateInstanceAndUnwrap(
-               "RemoteReflector", CodeGenerator.SpriteBaseClass) as RemotingServices.IRemoteTypeInfo;
+            RemotingServices.IRemoteTypeInfo reflector;
+
+            try
+            {
+               reflector = CodeGenerator.CreateInstanceAndUnwrap("RemoteReflector",
+                  CodeGenerator.SpritesNamespace + "." + CodeGenerator.NameToVariable(m_SpriteDef.Name))
+                  as RemotingServices.IRemoteTypeInfo;
+            }
+            catch (System.Exception)
+            {
+               reflector = CodeGenerator.CreateInstanceAndUnwrap("RemoteReflector", "SpriteBase")
+                  as RemotingServices.IRemoteTypeInfo;
+            }
 
             RemotingServices.RemoteMethodInfo[] localRuleList = reflector.GetMethods();
             RemotingServices.RemoteMethodInfo[] globalRuleList = reflector.GetGlobalFunctions();
@@ -1376,27 +1523,30 @@ namespace SGDK2
             }
             m_AvailableRules.InsertOperators();
          }
-         
-         cboFunction.Items.Clear();
-         RemotingServices.RemoteMethodInfo[] rules = new SGDK2.RemotingServices.RemoteMethodInfo[m_AvailableRules.Count];
-         m_AvailableRules.Rules.CopyTo(rules, 0);
-         System.Array.Sort(rules, new RemotingServices.RemoteMethodComparer());
-         foreach(RemotingServices.RemoteMethodInfo mi in rules)
-         {
-            if ((string.Compare(mi.ReturnType.Name,typeof(Boolean).Name)==0) || !onlyBools)
-               cboFunction.Items.Add(mi.MethodName);
-         }
-         if (!onlyBools)
-            chkNot.Checked = false;
-         chkNot.Enabled = onlyBools;
 
-         PopulateParameter(lblParam1, cboParam1, RemotingServices.RemoteParameterInfo.Empty);
-         PopulateParameter(lblParam2, cboParam2, RemotingServices.RemoteParameterInfo.Empty);
-         PopulateParameter(lblParam3, cboParam3, RemotingServices.RemoteParameterInfo.Empty);
-         m_PreparedFunction = String.Empty;
-         lblOutput.Enabled = false;
-         cboOutput.Enabled = false;
-         cboOutput.SelectedIndex = -1;
+         if (updateUI)
+         {
+            cboFunction.Items.Clear();
+            RemotingServices.RemoteMethodInfo[] rules = new SGDK2.RemotingServices.RemoteMethodInfo[m_AvailableRules.Count];
+            m_AvailableRules.Rules.CopyTo(rules, 0);
+            System.Array.Sort(rules, new RemotingServices.RemoteMethodComparer());
+            foreach (RemotingServices.RemoteMethodInfo mi in rules)
+            {
+               if ((string.Compare(mi.ReturnType.Name, typeof(Boolean).Name) == 0) || !onlyBools)
+                  cboFunction.Items.Add(mi.MethodName);
+            }
+            if (!onlyBools)
+               chkNot.Checked = false;
+            chkNot.Enabled = onlyBools;
+
+            PopulateParameter(lblParam1, cboParam1, RemotingServices.RemoteParameterInfo.Empty);
+            PopulateParameter(lblParam2, cboParam2, RemotingServices.RemoteParameterInfo.Empty);
+            PopulateParameter(lblParam3, cboParam3, RemotingServices.RemoteParameterInfo.Empty);
+            m_PreparedFunction = String.Empty;
+            lblOutput.Enabled = false;
+            cboOutput.Enabled = false;
+            cboOutput.SelectedIndex = -1;
+         }
       }
 
       private void LoadCustomObjectsProviding(string TypeName)
@@ -1465,6 +1615,35 @@ namespace SGDK2
          {
             MessageBox.Show(this, ex.ToString(), "GetEnumInfo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return new EnumTable.EnumDetails();
+         }
+      }
+
+      private void FillBaseClasses()
+      {
+         try
+         {
+            CodeGenerator gen = new CodeGenerator();
+            string errs;
+            gen.GenerateLevel = CodeGenerator.CodeLevel.ExcludeRules;
+            errs = gen.CompileTempAssembly(false);
+            if ((errs != null) && (errs.Length > 0))
+            {
+               txtErrors.Text = errs;
+               txtErrors.Visible = true;
+               return;
+            }
+
+            RemotingServices.IRemoteTypeInfo reflector = CodeGenerator.CreateInstanceAndUnwrap(
+               "RemoteReflector", CodeGenerator.SpriteBaseClass) as RemotingServices.IRemoteTypeInfo;
+            RemotingServices.RemoteTypeName[] bases = reflector.GetDerivedClasses(true);
+            cboBaseClass.Items.Add(CodeGenerator.SpriteBaseClass);
+            for(int i = 0; i < bases.Length; i++)
+               cboBaseClass.Items.Add(bases[i].FullName);
+         }
+         catch(System.Exception ex)
+         {
+            txtErrors.Text = ex.Message;
+            txtErrors.Visible = true;
          }
       }
 
@@ -1718,6 +1897,16 @@ namespace SGDK2
          }
       }
 
+      private void FillComboWithTilesets(ComboBox cboTarget)      
+      {
+         foreach (DataRowView drv in ProjectData.Tileset.DefaultView)
+         {
+            cboTarget.Items.Add(CodeGenerator.TilesetClass + "." +
+               CodeGenerator.NameToVariable(
+               ((ProjectDataset.TilesetRow)drv.Row).Name));
+         }
+      }
+
       private void PopulateParameter(Label lblParameter, ComboBox cboParameter, RemotingServices.RemoteParameterInfo param)
       {
          cboParameter.Items.Clear();
@@ -1788,12 +1977,19 @@ namespace SGDK2
                   case "SpriteDefinition":
                      FillComboWithSpriteDefinitions(cboParameter);
                      break;
+                  case "Message":
+                     cboParameter.Items.Add(frmEditMessage.messageEditorItem);
+                     break;
                }
             }
          }
          else if (string.Compare(param.Type.Name, CodeGenerator.SpriteCollectionClassName) == 0)
          {
             FillComboWithSpriteCollections(cboParameter);
+         }
+         else if (string.Compare(param.Type.Name, CodeGenerator.TilesetClass) == 0)
+         {
+            FillComboWithTilesets(cboParameter);
          }
          else if (string.Compare(param.Type.FullName, typeof(Int32).FullName + "&") == 0)
          {
@@ -1839,7 +2035,7 @@ namespace SGDK2
             m_Loading = true;
             txtRuleName.Text = drRule.Name;
 
-            LoadFunctions(IsRuleTypeConditional(drRule.Type), false);
+            LoadFunctions(IsRuleTypeConditional(drRule.Type), false, true);
 
             if (cboFunction.Items.Contains(drRule.Function))
             {
@@ -1946,10 +2142,10 @@ namespace SGDK2
             if (drRule.EndIf)
                parentNode = parentNode.Parent;
          }
-         if (m_SelectAfterInsert != null)
+         if (m_SelectAfterLoad != null)
          {
-            tvwRules.SelectedNode = GetNodeFromRow(m_SelectAfterInsert);
-            m_SelectAfterInsert = null;
+            tvwRules.SelectedNode = GetNodeFromRow(m_SelectAfterLoad);
+            m_SelectAfterLoad = null;
          }
          else if (cur != null)
             tvwRules.SelectedNode = GetNodeFromRow(cur);
@@ -2100,6 +2296,109 @@ namespace SGDK2
          foreach(TreeNode child in parent.Nodes)
             result.AddRange(GetNodeWithChildList(child));
          return (ProjectData.CopiedRule[])result.ToArray(typeof(ProjectData.CopiedRule));
+      }
+
+      private void ConvertAllRules()
+      {
+         System.Collections.ArrayList nodes = new ArrayList();
+
+         foreach(TreeNode rule in tvwRules.Nodes)
+         {
+            nodes.AddRange(GetNodeWithChildList(rule));
+         }
+         ConvertRules((ProjectData.CopiedRule[])nodes.ToArray(typeof(ProjectData.CopiedRule)));
+      }
+
+      private void ConvertRuleAndChildren()
+      {
+         if (tvwRules.SelectedNode == null)
+         {
+            MessageBox.Show(this, "Select a rule before selecting this command.", "Convert Rules to Function", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
+
+         ConvertRules(GetNodeWithChildList(tvwRules.SelectedNode));
+      }
+
+      private void ConvertRules(ProjectData.CopiedRule[] copiedRules)
+      {
+         ProjectDataset.SpriteRuleRow[] rules;
+         ArrayList selectedRules = new ArrayList();
+         foreach (ProjectData.CopiedRule rule in copiedRules)
+         {
+            if (!rule.Suspended)
+               selectedRules.Add(ProjectData.GetSpriteRule(m_SpriteDef, rule.Name));
+         }
+         rules = (ProjectDataset.SpriteRuleRow[])selectedRules.ToArray(typeof(ProjectDataset.SpriteRuleRow));
+
+         System.Collections.Specialized.StringCollection reservedNames = new System.Collections.Specialized.StringCollection();
+         try
+         {
+            LoadFunctions(false, false, false);
+            foreach (DictionaryEntry de in m_AvailableRules)
+            {
+               reservedNames.Add(de.Key.ToString());
+            }
+            foreach (RemotingServices.RemotePropertyInfo pi in m_SpriteProperties)
+            {
+               reservedNames.Add(pi.Name);
+            }
+            reservedNames.Add(CodeGenerator.NameToVariable(m_SpriteDef.Name));
+         }
+         catch (System.Exception ex)
+         {
+            MessageBox.Show(this, "Error inspecting compiled project for list of reserved names (" + ex.Message + ")", "Convert Rules to Function", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+         }
+         reservedNames.Add("ExecuteRules");
+         frmConvertToFunction frm = new frmConvertToFunction(rules, reservedNames);
+         frm.ShowDialog(this);
+         frm.Dispose();
+         try
+         {
+            LoadFunctions(false, true, false);
+         }
+         catch (System.Exception ex)
+         {
+            MessageBox.Show(this, ex.Message, "Convert Rules to Function", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+         }
+      }
+
+      private void DeleteAllRules()
+      {
+         foreach (ProjectDataset.SpriteRuleRow drRule in ProjectData.GetSortedSpriteRules(m_SpriteDef, true))
+         {
+            drRule.Delete();
+         }
+      }
+
+      private void DeleteRules(bool includeChildren)
+      {
+         ProjectDataset.SpriteRuleRow drRule = CurrentRule;
+         if (drRule == null)
+         {
+            MessageBox.Show(this, "Select a rule before selecting this command.", "Delete Rules", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
+         TreeNode selAfterDel = tvwRules.SelectedNode.NextNode;
+         if (!includeChildren && tvwRules.SelectedNode.Nodes.Count > 0)
+            selAfterDel = tvwRules.SelectedNode.Nodes[0];
+         if (selAfterDel == null)
+            selAfterDel = tvwRules.SelectedNode.PrevNode;
+         if (selAfterDel == null)
+            selAfterDel = tvwRules.SelectedNode.Parent;
+         if (selAfterDel != null)
+            m_SelectAfterLoad = ProjectData.GetSpriteRule(m_SpriteDef, selAfterDel.Text);
+         if (includeChildren)
+            DeleteRuleAndChildren(tvwRules.SelectedNode);
+         else
+            ProjectData.DeleteSpriteRule(drRule);
+      }
+
+      private void DeleteRuleAndChildren(TreeNode parent)
+      {
+         foreach (TreeNode child in parent.Nodes)
+            DeleteRuleAndChildren(child);
+         ProjectData.DeleteSpriteRule(ProjectData.GetSpriteRule(m_SpriteDef, parent.Text));
       }
 
       private void PasteRules(bool after)
@@ -2667,7 +2966,7 @@ namespace SGDK2
          if (String.Compare(cboRuleType.Text, "End", true) == 0)
             EnableFields();
          else
-            LoadFunctions(IsRuleTypeConditional(cboRuleType.SelectedItem.ToString()), false);
+            LoadFunctions(IsRuleTypeConditional(cboRuleType.SelectedItem.ToString()), false, true);
          
          if (CurrentRule != null)
          {
@@ -2745,7 +3044,7 @@ namespace SGDK2
          int newSeq = -1;
          if (CurrentRule != null)
             newSeq = CurrentRule.Sequence + 1;
-         m_SelectAfterInsert = ProjectData.InsertSpriteRule(m_SpriteDef, newName, "Do", newSeq, string.Empty, null, null, null, null, false, false);
+         m_SelectAfterLoad = ProjectData.InsertSpriteRule(m_SpriteDef, newName, "Do", newSeq, string.Empty, null, null, null, null, false, false);
       }
       private void OnDeleteRule(object sender, System.EventArgs e)
       {
@@ -2806,6 +3105,8 @@ namespace SGDK2
             OnMoveRuleDown(tbbMoveRuleDown, e);
          if (e.Button == tbbToggleSuspend)
             OnToggleSuspend(tbbToggleSuspend, e);
+         if (e.Button == tbbConvertToFunc)
+            ConvertRuleAndChildren();
       }
 
       private void dataMonitor_SpriteRuleRowChanging(object sender, SGDK2.ProjectDataset.SpriteRuleRowChangeEvent e)
@@ -2878,7 +3179,8 @@ namespace SGDK2
 
       private void tvwRules_AfterSelect(object sender, System.Windows.Forms.TreeViewEventArgs e)
       {
-         LoadRule(CurrentRule);
+         if (CurrentRule != null)
+            LoadRule(CurrentRule);
          EnableFields();
       }
 
@@ -3070,6 +3372,19 @@ namespace SGDK2
                   source.SelectedIndex = source.Items.Add(newValue);
             }
          }
+         else if ((source.SelectedIndex >= 0) && (source.Items[source.SelectedIndex] is string) 
+            && (string.Compare((string)source.Items[source.SelectedIndex], frmEditMessage.messageEditorItem) == 0))
+         {
+            string oldText = source.Text;
+            string newText = frmEditMessage.EditMessage(source.Text, this);
+            if (newText == null)
+               newText = oldText;
+            int selIdx = source.FindStringExact(newText);
+            if (selIdx >= 0)
+               source.SelectedIndex = selIdx;
+            else
+               source.SelectedIndex = source.Items.Add(newText);
+         }
       }
 
       private void mnuPasteRules_Click(object sender, System.EventArgs e)
@@ -3082,13 +3397,36 @@ namespace SGDK2
 
       private void mnuCopyRules_Click(object sender, System.EventArgs e)
       {
-         if (sender == mnuCopyAllRules)
+         if ((sender == mnuCopyAllRules) || (sender == mnuCutAllRules))
             CopyAllRules();
-         else if (sender == mnuCopyRuleOnly)
+         else if ((sender == mnuCopyRuleOnly) || (sender == mnuCutRuleOnly))
             CopyRules(false);
-         else if (sender == mnuCopyRuleChildren)
+         else if ((sender == mnuCopyRuleChildren) || (sender == mnuCutRuleChildren))
             CopyRules(true);
+
+         if (sender == mnuCutAllRules)
+            DeleteAllRules();
+         else if (sender == mnuCutRuleOnly)
+            DeleteRules(false);
+         else if (sender == mnuCutRuleChildren)
+            DeleteRules(true);
+
          EnablePasteRules();
+      }
+
+      private void mnuConvertToFunc_Click(object sender, EventArgs e)
+      {
+         if (sender == mnuConvertAllRules)
+            ConvertAllRules();
+         else
+            ConvertRuleAndChildren();
+      }
+
+      private void cboBaseClass_TextUpdate(object sender, EventArgs e)
+      {
+         m_SpriteDef.BaseClass = cboBaseClass.Text;
+         CodeGenerator.ResetTempAssembly();
+         m_AvailableRules = null;
       }
       #endregion
    }

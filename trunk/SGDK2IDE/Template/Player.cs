@@ -3,13 +3,12 @@
  * See Project.cs for copyright/licensing details
  */
 using System;
-using Microsoft.DirectX.DirectInput;
 
 /// <summary>
 /// Defines a common interface by which a sprite can receive input from a player
 /// or some object simulating a player.
 /// </summary>
-public interface IPlayer
+public partial interface IPlayer
 {
    /// <summary>
    /// Returns true when the player is pressing up, or false otherwise.
@@ -88,7 +87,7 @@ public interface IPlayer
 /// Represents interactions between the game and a player via the keyboard
 /// </summary>
 [Serializable()]
-public class KeyboardPlayer : IPlayer
+public partial class KeyboardPlayer : IPlayer
 {
    /// <summary>
    /// Specifies which keyboard key maps to the notion of pressing left.
@@ -210,47 +209,47 @@ public class KeyboardPlayer : IPlayer
       {
          case 0:
             InitializeKeys(
-               Microsoft.DirectX.DirectInput.Key.UpArrow,      // Up
-               Microsoft.DirectX.DirectInput.Key.LeftArrow,    // Left
-               Microsoft.DirectX.DirectInput.Key.RightArrow,   // Right
-               Microsoft.DirectX.DirectInput.Key.DownArrow,    // Down
-               Microsoft.DirectX.DirectInput.Key.RightControl, // Button 1
-               Microsoft.DirectX.DirectInput.Key.Space,        // Button 2
-               Microsoft.DirectX.DirectInput.Key.Return,       // Button 3
-               Microsoft.DirectX.DirectInput.Key.RightShift);  // Button 4
+               Key.Up,           // Up
+               Key.Left,         // Left
+               Key.Right,        // Right
+               Key.Down,         // Down
+               Key.RControl,     // Button 1
+               Key.Space,        // Button 2
+               Key.Enter,        // Button 3
+               Key.RShift);      // Button 4
             break;
          case 1:
             InitializeKeys(
-               Microsoft.DirectX.DirectInput.Key.W,            // Up
-               Microsoft.DirectX.DirectInput.Key.A,            // Left
-               Microsoft.DirectX.DirectInput.Key.D,            // Right
-               Microsoft.DirectX.DirectInput.Key.S,            // Down
-               Microsoft.DirectX.DirectInput.Key.LeftShift,    // Button 1
-               Microsoft.DirectX.DirectInput.Key.LeftControl,  // Button 2
-               Microsoft.DirectX.DirectInput.Key.Q,            // Button 3
-               Microsoft.DirectX.DirectInput.Key.E);           // Button 4
+               Key.W,            // Up
+               Key.A,            // Left
+               Key.D,            // Right
+               Key.S,            // Down
+               Key.LShift,       // Button 1
+               Key.LControl,     // Button 2
+               Key.Q,            // Button 3
+               Key.E);           // Button 4
             break;
          case 2:
             InitializeKeys(
-               Microsoft.DirectX.DirectInput.Key.NumPad8,      // Up
-               Microsoft.DirectX.DirectInput.Key.NumPad4,      // Right
-               Microsoft.DirectX.DirectInput.Key.NumPad6,      // Left
-               Microsoft.DirectX.DirectInput.Key.NumPad2,      // Down
-               Microsoft.DirectX.DirectInput.Key.NumPad5,      // Button 1
-               Microsoft.DirectX.DirectInput.Key.NumPad0,      // Button 2
-               Microsoft.DirectX.DirectInput.Key.NumPadEnter,  // Button 3
-               Microsoft.DirectX.DirectInput.Key.NumPad7);     // Button 4
+               Key.NumPad8,      // Up
+               Key.NumPad4,      // Right
+               Key.NumPad6,      // Left
+               Key.NumPad2,      // Down
+               Key.NumPad5,      // Button 1
+               Key.NumPad0,      // Button 2
+               Key.NumPadEnter,  // Button 3
+               Key.NumPad7);     // Button 4
             break;
          default:
             InitializeKeys(
-               Microsoft.DirectX.DirectInput.Key.I,            // Up
-               Microsoft.DirectX.DirectInput.Key.J,            // Right
-               Microsoft.DirectX.DirectInput.Key.L,            // Left
-               Microsoft.DirectX.DirectInput.Key.K,            // Down
-               Microsoft.DirectX.DirectInput.Key.U,            // Button 1
-               Microsoft.DirectX.DirectInput.Key.O,            // Button 2
-               Microsoft.DirectX.DirectInput.Key.M,            // Button 3
-               Microsoft.DirectX.DirectInput.Key.Comma);       // Button 4
+               Key.I,            // Up
+               Key.J,            // Right
+               Key.L,            // Left
+               Key.K,            // Down
+               Key.U,            // Button 1
+               Key.O,            // Button 2
+               Key.M,            // Button 3
+               Key.Comma);       // Button 4
             break;
       }
    }
@@ -352,7 +351,7 @@ public class KeyboardPlayer : IPlayer
 /// Represents interactions between the game and a player via a joystick/gamepad
 /// </summary>
 [Serializable()]
-public class ControllerPlayer : IPlayer
+public partial class ControllerPlayer : IPlayer
 {
    public int deviceNumber;
    /// <summary>
@@ -361,7 +360,7 @@ public class ControllerPlayer : IPlayer
    /// <remarks>The array element at index 0 contains index of the button on the controller
    /// that is mapped to player button number 1. Element 1 is the index for button 2 and
    /// so forth.</remarks>
-   public int[] buttonMap;
+   public byte[] buttonMap;
 
    /// <summary>
    /// Constructs a player object that links input from the specified game controller device
@@ -371,9 +370,16 @@ public class ControllerPlayer : IPlayer
    public ControllerPlayer(int deviceNumber)
    {
       this.deviceNumber = deviceNumber;
-      buttonMap = new int[4] {0, 1, 2, 3};
+      buttonMap = new byte[4] {0, 1, 2, 3};
    }
 
+   public Joystick MyController
+   {
+      get
+      {
+         return Project.GameWindow.GetControllerState(deviceNumber);
+      }
+   }
    #region IPlayer Members
 
    /// <summary>
@@ -383,7 +389,7 @@ public class ControllerPlayer : IPlayer
    {
       get
       {
-         return Project.GameWindow.GetControllerState(deviceNumber).Y < 0x4000;
+         return MyController.YPosition < (MyController.MinimumY * 3 + MyController.MaximumY) / 4;
       }
    }
 
@@ -394,7 +400,7 @@ public class ControllerPlayer : IPlayer
    {
       get
       {
-         return Project.GameWindow.GetControllerState(deviceNumber).X < 0x4000;
+         return MyController.XPosition < (MyController.MinimumX * 3 + MyController.MaximumX) / 4;
       }
    }
 
@@ -405,7 +411,7 @@ public class ControllerPlayer : IPlayer
    {
       get
       {
-         return Project.GameWindow.GetControllerState(deviceNumber).X > 0xC000;
+         return MyController.XPosition > (MyController.MinimumX + MyController.MaximumX * 3) / 4;
       }
    }
 
@@ -416,7 +422,7 @@ public class ControllerPlayer : IPlayer
    {
       get
       {
-         return Project.GameWindow.GetControllerState(deviceNumber).Y > 0xC000;
+         return MyController.YPosition > (MyController.MinimumY + MyController.MaximumY * 3) / 4;
       }
    }
 
@@ -427,7 +433,7 @@ public class ControllerPlayer : IPlayer
    {
       get
       {
-         return Project.GameWindow.GetControllerState(deviceNumber).GetButtons()[buttonMap[0]] != 0;
+         return MyController[buttonMap[0]];
       }
    }
 
@@ -438,7 +444,7 @@ public class ControllerPlayer : IPlayer
    {
       get
       {
-         return Project.GameWindow.GetControllerState(deviceNumber).GetButtons()[buttonMap[1]] != 0;
+         return MyController[buttonMap[1]];
       }
    }
 
@@ -449,7 +455,7 @@ public class ControllerPlayer : IPlayer
    {
       get
       {
-         return Project.GameWindow.GetControllerState(deviceNumber).GetButtons()[buttonMap[2]] != 0;
+         return MyController[buttonMap[2]];
       }
    }
 
@@ -460,7 +466,7 @@ public class ControllerPlayer : IPlayer
    {
       get
       {
-         return Project.GameWindow.GetControllerState(deviceNumber).GetButtons()[buttonMap[3]] != 0;
+         return MyController[buttonMap[3]];
       }
    }
 

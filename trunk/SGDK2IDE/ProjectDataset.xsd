@@ -1,668 +1,637 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<xs:schema id="ProjectDataset" elementFormDefault="qualified" attributeFormDefault="qualified"
-   xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata"
-   xmlns:msprop="urn:schemas-microsoft-com:xml-msprop">
-   <xs:element name="ProjectDataset" msdata:IsDataSet="true">
-      <xs:complexType>
-         <xs:choice maxOccurs="unbounded">
-            <xs:element name="GraphicSheet">
-               <xs:complexType>
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="ProjectDataset" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections />
+        <Tables />
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="ProjectDataset" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_UserDSName="ProjectDataset" msprop:Generator_DataSetName="ProjectDataset">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="GraphicSheet" msprop:Generator_UserTableName="GraphicSheet" msprop:Generator_RowDeletedName="GraphicSheetRowDeleted" msprop:Generator_RowChangedName="GraphicSheetRowChanged" msprop:Generator_RowClassName="GraphicSheetRow" msprop:Generator_RowChangingName="GraphicSheetRowChanging" msprop:Generator_RowEvArgName="GraphicSheetRowChangeEvent" msprop:Generator_RowEvHandlerName="GraphicSheetRowChangeEventHandler" msprop:Generator_TableClassName="GraphicSheetDataTable" msprop:Generator_TableVarName="tableGraphicSheet" msprop:Generator_RowDeletingName="GraphicSheetRowDeleting" msprop:Generator_TablePropName="GraphicSheet">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Image" msprop:Generator_UserColumnName="Image" msprop:Generator_ColumnVarNameInTable="columnImage" msprop:Generator_ColumnPropNameInRow="Image" msprop:Generator_ColumnPropNameInTable="ImageColumn" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="5" />
+            </xs:sequence>
+            <xs:attribute name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:Name" use="required" />
+            <xs:attribute name="Columns" msprop:Generator_UserColumnName="Columns" msprop:Generator_ColumnVarNameInTable="columnColumns" msprop:Generator_ColumnPropNameInRow="Columns" msprop:Generator_ColumnPropNameInTable="ColumnsColumn" type="xs:short" default="16" />
+            <xs:attribute name="Rows" msprop:Generator_UserColumnName="Rows" msprop:Generator_ColumnVarNameInTable="columnRows" msprop:Generator_ColumnPropNameInRow="Rows" msprop:Generator_ColumnPropNameInTable="RowsColumn" type="xs:short" default="8" />
+            <xs:attribute name="CellWidth" msdata:Caption="Cell Width" msprop:Generator_UserColumnName="CellWidth" msprop:Generator_ColumnVarNameInTable="columnCellWidth" msprop:Generator_ColumnPropNameInRow="CellWidth" msprop:Generator_ColumnPropNameInTable="CellWidthColumn" type="xs:short" default="32" />
+            <xs:attribute name="CellHeight" msdata:Caption="Cell Height" msprop:Generator_UserColumnName="CellHeight" msprop:Generator_ColumnVarNameInTable="columnCellHeight" msprop:Generator_ColumnPropNameInRow="CellHeight" msprop:Generator_ColumnPropNameInTable="CellHeightColumn" type="xs:short" default="32" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Frameset" msprop:Generator_UserTableName="Frameset" msprop:Generator_RowDeletedName="FramesetRowDeleted" msprop:Generator_RowChangedName="FramesetRowChanged" msprop:Generator_RowClassName="FramesetRow" msprop:Generator_RowChangingName="FramesetRowChanging" msprop:Generator_RowEvArgName="FramesetRowChangeEvent" msprop:Generator_RowEvHandlerName="FramesetRowChangeEventHandler" msprop:Generator_TableClassName="FramesetDataTable" msprop:Generator_TableVarName="tableFrameset" msprop:Generator_RowDeletingName="FramesetRowDeleting" msprop:Generator_TablePropName="Frameset">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Frame" msprop:Generator_UserTableName="Frame" msprop:Generator_RowDeletedName="FrameRowDeleted" msprop:Generator_RowChangedName="FrameRowChanged" msprop:Generator_RowClassName="FrameRow" msprop:Generator_RowChangingName="FrameRowChanging" msprop:Generator_RowEvArgName="FrameRowChangeEvent" msprop:Generator_RowEvHandlerName="FrameRowChangeEventHandler" msprop:Generator_TableClassName="FrameDataTable" msprop:Generator_TableVarName="tableFrame" msprop:Generator_RowDeletingName="FrameRowDeleting" msprop:Generator_TablePropName="Frame" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="FrameValue" msprop:Generator_UserColumnName="FrameValue" msprop:Generator_ColumnVarNameInTable="columnFrameValue" msprop:Generator_ColumnPropNameInRow="FrameValue" msprop:Generator_ColumnPropNameInTable="FrameValueColumn" type="xs:int" use="required" />
+                  <xs:attribute name="GraphicSheet" msprop:Generator_UserColumnName="GraphicSheet" msprop:Generator_ColumnVarNameInTable="columnGraphicSheet" msprop:Generator_ColumnPropNameInRow="GraphicSheet" msprop:Generator_ColumnPropNameInTable="GraphicSheetColumn" type="xs:Name" use="required" />
+                  <xs:attribute name="CellIndex" msprop:Generator_UserColumnName="CellIndex" msprop:Generator_ColumnVarNameInTable="columnCellIndex" msprop:Generator_ColumnPropNameInRow="CellIndex" msprop:Generator_ColumnPropNameInTable="CellIndexColumn" type="xs:short" use="required" />
+                  <xs:attribute name="m11" msprop:Generator_UserColumnName="m11" msprop:Generator_ColumnVarNameInTable="columnm11" msprop:Generator_ColumnPropNameInRow="m11" msprop:Generator_ColumnPropNameInTable="m11Column" type="xs:float" default="1" />
+                  <xs:attribute name="m12" msprop:Generator_UserColumnName="m12" msprop:Generator_ColumnVarNameInTable="columnm12" msprop:Generator_ColumnPropNameInRow="m12" msprop:Generator_ColumnPropNameInTable="m12Column" type="xs:float" default="0" />
+                  <xs:attribute name="m21" msprop:Generator_UserColumnName="m21" msprop:Generator_ColumnVarNameInTable="columnm21" msprop:Generator_ColumnPropNameInRow="m21" msprop:Generator_ColumnPropNameInTable="m21Column" type="xs:float" default="0" />
+                  <xs:attribute name="m22" msprop:Generator_UserColumnName="m22" msprop:Generator_ColumnVarNameInTable="columnm22" msprop:Generator_ColumnPropNameInRow="m22" msprop:Generator_ColumnPropNameInTable="m22Column" type="xs:float" default="1" />
+                  <xs:attribute name="dx" msprop:Generator_UserColumnName="dx" msprop:Generator_ColumnVarNameInTable="columndx" msprop:Generator_ColumnPropNameInRow="dx" msprop:Generator_ColumnPropNameInTable="dxColumn" type="xs:float" default="0" />
+                  <xs:attribute name="dy" msprop:Generator_UserColumnName="dy" msprop:Generator_ColumnVarNameInTable="columndy" msprop:Generator_ColumnPropNameInRow="dy" msprop:Generator_ColumnPropNameInTable="dyColumn" type="xs:float" default="0" />
+                  <xs:attribute name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                  <xs:attribute name="color" msprop:Generator_UserColumnName="color" msprop:nullValue="-1" msprop:Generator_ColumnVarNameInTable="columncolor" msprop:Generator_ColumnPropNameInTable="colorColumn" msprop:Generator_ColumnPropNameInRow="color" type="xs:int" default="-1" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:Name" use="required" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Tileset" msprop:Generator_UserTableName="Tileset" msprop:Generator_RowDeletedName="TilesetRowDeleted" msprop:Generator_RowChangedName="TilesetRowChanged" msprop:Generator_RowClassName="TilesetRow" msprop:Generator_RowChangingName="TilesetRowChanging" msprop:Generator_RowEvArgName="TilesetRowChangeEvent" msprop:Generator_RowEvHandlerName="TilesetRowChangeEventHandler" msprop:Generator_TableClassName="TilesetDataTable" msprop:Generator_TableVarName="tableTileset" msprop:Generator_RowDeletingName="TilesetRowDeleting" msprop:Generator_TablePropName="Tileset">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Tile" msprop:Generator_UserTableName="Tile" msprop:Generator_RowDeletedName="TileRowDeleted" msprop:Generator_RowChangedName="TileRowChanged" msprop:Generator_RowClassName="TileRow" msprop:Generator_RowChangingName="TileRowChanging" msprop:Generator_RowEvArgName="TileRowChangeEvent" msprop:Generator_RowEvHandlerName="TileRowChangeEventHandler" msprop:Generator_TableClassName="TileDataTable" msprop:Generator_TableVarName="tableTile" msprop:Generator_RowDeletingName="TileRowDeleting" msprop:Generator_TablePropName="Tile" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
                   <xs:sequence>
-                     <xs:element name="Image" type="xs:base64Binary" minOccurs="0" />
+                    <xs:element name="TileFrame" msprop:Generator_UserTableName="TileFrame" msprop:Generator_RowDeletedName="TileFrameRowDeleted" msprop:Generator_RowChangedName="TileFrameRowChanged" msprop:Generator_RowClassName="TileFrameRow" msprop:Generator_RowChangingName="TileFrameRowChanging" msprop:Generator_RowEvArgName="TileFrameRowChangeEvent" msprop:Generator_RowEvHandlerName="TileFrameRowChangeEventHandler" msprop:Generator_TableClassName="TileFrameDataTable" msprop:Generator_TableVarName="tableTileFrame" msprop:Generator_RowDeletingName="TileFrameRowDeleting" msprop:Generator_TablePropName="TileFrame" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:attribute name="Sequence" msprop:Generator_UserColumnName="Sequence" msprop:Generator_ColumnVarNameInTable="columnSequence" msprop:Generator_ColumnPropNameInRow="Sequence" msprop:Generator_ColumnPropNameInTable="SequenceColumn" type="xs:short" use="required" />
+                        <xs:attribute name="FrameValue" msprop:Generator_UserColumnName="FrameValue" msprop:Generator_ColumnVarNameInTable="columnFrameValue" msprop:Generator_ColumnPropNameInRow="FrameValue" msprop:Generator_ColumnPropNameInTable="FrameValueColumn" type="xs:int" />
+                        <xs:attribute name="Duration" msprop:Generator_UserColumnName="Duration" msprop:Generator_ColumnVarNameInTable="columnDuration" msprop:Generator_ColumnPropNameInRow="Duration" msprop:Generator_ColumnPropNameInTable="DurationColumn" type="xs:short" />
+                        <xs:attribute name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                        <xs:attribute name="TileValue" msprop:Generator_UserColumnName="TileValue" msprop:Generator_ColumnVarNameInTable="columnTileValue" msprop:Generator_ColumnPropNameInRow="TileValue" msprop:Generator_ColumnPropNameInTable="TileValueColumn" type="xs:int" msdata:AllowDBNull="false" use="prohibited" />
+                      </xs:complexType>
+                    </xs:element>
                   </xs:sequence>
-                  <xs:attribute name="Name" type="xs:Name" use="required" />
-                  <xs:attribute name="Columns" type="xs:short" default="16" />
-                  <xs:attribute name="Rows" type="xs:short" default="8" />
-                  <xs:attribute name="CellWidth" type="xs:short" msdata:Caption="Cell Width" default="32" />
-                  <xs:attribute name="CellHeight" type="xs:short" msdata:Caption="Cell Height" default="32" />
-               </xs:complexType>
-            </xs:element>
-            <xs:element name="Frameset">
-               <xs:complexType>
+                  <xs:attribute name="TileValue" msprop:Generator_UserColumnName="TileValue" msprop:Generator_ColumnVarNameInTable="columnTileValue" msprop:Generator_ColumnPropNameInRow="TileValue" msprop:Generator_ColumnPropNameInTable="TileValueColumn" type="xs:int" use="required" />
+                  <xs:attribute name="Counter" msprop:Generator_UserColumnName="Counter" msprop:Generator_ColumnVarNameInTable="columnCounter" msprop:Generator_ColumnPropNameInRow="Counter" msprop:Generator_ColumnPropNameInTable="CounterColumn" type="xs:Name" />
+                  <xs:attribute name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:Name" use="required" />
+            <xs:attribute name="Frameset" msprop:Generator_UserColumnName="Frameset" msprop:Generator_ColumnVarNameInTable="columnFrameset" msprop:Generator_ColumnPropNameInRow="Frameset" msprop:Generator_ColumnPropNameInTable="FramesetColumn" type="xs:Name" />
+            <xs:attribute name="TileWidth" msprop:Generator_UserColumnName="TileWidth" msprop:Generator_ColumnVarNameInTable="columnTileWidth" msprop:Generator_ColumnPropNameInRow="TileWidth" msprop:Generator_ColumnPropNameInTable="TileWidthColumn" type="xs:short" use="required" />
+            <xs:attribute name="TileHeight" msprop:Generator_UserColumnName="TileHeight" msprop:Generator_ColumnVarNameInTable="columnTileHeight" msprop:Generator_ColumnPropNameInRow="TileHeight" msprop:Generator_ColumnPropNameInTable="TileHeightColumn" type="xs:short" use="required" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Counter" msprop:Generator_UserTableName="Counter" msprop:Generator_RowDeletedName="CounterRowDeleted" msprop:Generator_RowChangedName="CounterRowChanged" msprop:Generator_RowClassName="CounterRow" msprop:Generator_RowChangingName="CounterRowChanging" msprop:Generator_RowEvArgName="CounterRowChangeEvent" msprop:Generator_RowEvHandlerName="CounterRowChangeEventHandler" msprop:Generator_TableClassName="CounterDataTable" msprop:Generator_TableVarName="tableCounter" msprop:Generator_RowDeletingName="CounterRowDeleting" msprop:Generator_TablePropName="Counter">
+          <xs:complexType>
+            <xs:attribute name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:Name" use="required" />
+            <xs:attribute name="Value" msprop:Generator_UserColumnName="Value" msprop:Generator_ColumnVarNameInTable="columnValue" msprop:Generator_ColumnPropNameInRow="Value" msprop:Generator_ColumnPropNameInTable="ValueColumn" type="xs:int" />
+            <xs:attribute name="Max" msprop:Generator_UserColumnName="Max" msprop:Generator_ColumnVarNameInTable="columnMax" msprop:Generator_ColumnPropNameInRow="Max" msprop:Generator_ColumnPropNameInTable="MaxColumn" type="xs:int" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Map" msprop:Generator_UserTableName="Map" msprop:Generator_RowDeletedName="MapRowDeleted" msprop:Generator_RowChangedName="MapRowChanged" msprop:Generator_RowClassName="MapRow" msprop:Generator_RowChangingName="MapRowChanging" msprop:Generator_RowEvArgName="MapRowChangeEvent" msprop:Generator_RowEvHandlerName="MapRowChangeEventHandler" msprop:Generator_TableClassName="MapDataTable" msprop:Generator_TableVarName="tableMap" msprop:Generator_RowDeletingName="MapRowDeleting" msprop:Generator_TablePropName="Map">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Layer" msprop:Generator_UserTableName="Layer" msprop:Generator_RowDeletedName="LayerRowDeleted" msprop:Generator_RowChangedName="LayerRowChanged" msprop:Generator_RowClassName="LayerRow" msprop:Generator_RowChangingName="LayerRowChanging" msprop:Generator_RowEvArgName="LayerRowChangeEvent" msprop:Generator_RowEvHandlerName="LayerRowChangeEventHandler" msprop:Generator_TableClassName="LayerDataTable" msprop:Generator_TableVarName="tableLayer" msprop:Generator_RowDeletingName="LayerRowDeleting" msprop:Generator_TablePropName="Layer" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
                   <xs:sequence>
-                     <xs:element name="Frame" minOccurs="0" maxOccurs="unbounded">
-                        <xs:complexType>
-                           <xs:attribute name="FrameValue" type="xs:int" use="required" />
-                           <xs:attribute name="GraphicSheet" type="xs:Name" use="required" />
-                           <xs:attribute name="CellIndex" type="xs:short" use="required" />
-                           <xs:attribute name="m11" type="xs:float" default="1" />
-                           <xs:attribute name="m12" type="xs:float" default="0" />
-                           <xs:attribute name="m21" type="xs:float" default="0" />
-                           <xs:attribute name="m22" type="xs:float" default="1" />
-                           <xs:attribute name="dx" type="xs:float" default="0" />
-                           <xs:attribute name="dy" type="xs:float" default="0" />
-                           <xs:attribute name="Name" type="xs:Name" use="prohibited" />
-                           <xs:attribute name="color" type="xs:int" default="-1" msprop:nullValue="-1" />
-                        </xs:complexType>
-                     </xs:element>
+                    <xs:element name="Tiles" msprop:Generator_UserColumnName="Tiles" msprop:Generator_ColumnVarNameInTable="columnTiles" msprop:Generator_ColumnPropNameInRow="Tiles" msprop:Generator_ColumnPropNameInTable="TilesColumn" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="14" />
+                    <xs:element name="Sprite" msprop:Generator_UserTableName="Sprite" msprop:Generator_RowDeletedName="SpriteRowDeleted" msprop:Generator_RowChangedName="SpriteRowChanged" msprop:Generator_RowClassName="SpriteRow" msprop:Generator_RowChangingName="SpriteRowChanging" msprop:Generator_RowEvArgName="SpriteRowChangeEvent" msprop:Generator_RowEvHandlerName="SpriteRowChangeEventHandler" msprop:Generator_TableClassName="SpriteDataTable" msprop:Generator_TableVarName="tableSprite" msprop:Generator_RowDeletingName="SpriteRowDeleting" msprop:Generator_TablePropName="Sprite" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="ParameterValue" msprop:Generator_UserTableName="ParameterValue" msprop:Generator_RowDeletedName="ParameterValueRowDeleted" msprop:Generator_RowChangedName="ParameterValueRowChanged" msprop:Generator_RowClassName="ParameterValueRow" msprop:Generator_RowChangingName="ParameterValueRowChanging" msprop:Generator_RowEvArgName="ParameterValueRowChangeEvent" msprop:Generator_RowEvHandlerName="ParameterValueRowChangeEventHandler" msprop:Generator_TableClassName="ParameterValueDataTable" msprop:Generator_TableVarName="tableParameterValue" msprop:Generator_RowDeletingName="ParameterValueRowDeleting" msprop:Generator_TablePropName="ParameterValue" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:attribute name="LayerName" msprop:Generator_UserColumnName="LayerName" msprop:Generator_ColumnVarNameInTable="columnLayerName" msprop:Generator_ColumnPropNameInRow="LayerName" msprop:Generator_ColumnPropNameInTable="LayerNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                              <xs:attribute name="SpriteName" msprop:Generator_UserColumnName="SpriteName" msprop:Generator_ColumnVarNameInTable="columnSpriteName" msprop:Generator_ColumnPropNameInRow="SpriteName" msprop:Generator_ColumnPropNameInTable="SpriteNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                              <xs:attribute name="ParameterName" msprop:Generator_UserColumnName="ParameterName" msprop:Generator_ColumnVarNameInTable="columnParameterName" msprop:Generator_ColumnPropNameInRow="ParameterName" msprop:Generator_ColumnPropNameInTable="ParameterNameColumn" type="xs:Name" use="required" />
+                              <xs:attribute name="Value" msprop:Generator_UserColumnName="Value" msprop:Generator_ColumnVarNameInTable="columnValue" msprop:Generator_ColumnPropNameInRow="Value" msprop:Generator_ColumnPropNameInTable="ValueColumn" type="xs:int" />
+                              <xs:attribute name="DefinitionName" msprop:Generator_UserColumnName="DefinitionName" msprop:Generator_ColumnVarNameInTable="columnDefinitionName" msprop:Generator_ColumnPropNameInRow="DefinitionName" msprop:Generator_ColumnPropNameInTable="DefinitionNameColumn" type="xs:Name" use="prohibited" />
+                              <xs:attribute name="MapName" msprop:Generator_UserColumnName="MapName" msprop:Generator_ColumnVarNameInTable="columnMapName" msprop:Generator_ColumnPropNameInRow="MapName" msprop:Generator_ColumnPropNameInTable="MapNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="LayerName" msprop:Generator_UserColumnName="LayerName" msprop:Generator_ColumnVarNameInTable="columnLayerName" msprop:Generator_ColumnPropNameInRow="LayerName" msprop:Generator_ColumnPropNameInTable="LayerNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                        <xs:attribute name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:Name" use="required" />
+                        <xs:attribute name="DefinitionName" msprop:Generator_UserColumnName="DefinitionName" msprop:Generator_ColumnVarNameInTable="columnDefinitionName" msprop:Generator_ColumnPropNameInRow="DefinitionName" msprop:Generator_ColumnPropNameInTable="DefinitionNameColumn" type="xs:Name" use="required" />
+                        <xs:attribute name="StateName" msprop:Generator_UserColumnName="StateName" msprop:Generator_ColumnVarNameInTable="columnStateName" msprop:Generator_ColumnPropNameInRow="StateName" msprop:Generator_ColumnPropNameInTable="StateNameColumn" type="xs:Name" />
+                        <xs:attribute name="CurrentFrame" msprop:Generator_UserColumnName="CurrentFrame" msprop:Generator_ColumnVarNameInTable="columnCurrentFrame" msprop:Generator_ColumnPropNameInRow="CurrentFrame" msprop:Generator_ColumnPropNameInTable="CurrentFrameColumn" type="xs:short" />
+                        <xs:attribute name="X" msprop:Generator_UserColumnName="X" msprop:Generator_ColumnVarNameInTable="columnX" msprop:Generator_ColumnPropNameInRow="X" msprop:Generator_ColumnPropNameInTable="XColumn" type="xs:int" />
+                        <xs:attribute name="Y" msprop:Generator_UserColumnName="Y" msprop:Generator_ColumnVarNameInTable="columnY" msprop:Generator_ColumnPropNameInRow="Y" msprop:Generator_ColumnPropNameInTable="YColumn" type="xs:int" />
+                        <xs:attribute name="DX" msprop:Generator_UserColumnName="DX" msprop:Generator_ColumnVarNameInTable="columnDX" msprop:Generator_ColumnPropNameInRow="DX" msprop:Generator_ColumnPropNameInTable="DXColumn" type="xs:float" />
+                        <xs:attribute name="DY" msprop:Generator_UserColumnName="DY" msprop:Generator_ColumnVarNameInTable="columnDY" msprop:Generator_ColumnPropNameInRow="DY" msprop:Generator_ColumnPropNameInTable="DYColumn" type="xs:float" />
+                        <xs:attribute name="MapName" msprop:Generator_UserColumnName="MapName" msprop:Generator_ColumnVarNameInTable="columnMapName" msprop:Generator_ColumnPropNameInRow="MapName" msprop:Generator_ColumnPropNameInTable="MapNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                        <xs:attribute name="Priority" msprop:Generator_UserColumnName="Priority" msprop:Generator_ColumnVarNameInTable="columnPriority" msprop:Generator_ColumnPropNameInRow="Priority" msprop:Generator_ColumnPropNameInTable="PriorityColumn" type="xs:int" />
+                        <xs:attribute name="Active" msprop:Generator_UserColumnName="Active" msprop:nullValue="false" msprop:Generator_ColumnVarNameInTable="columnActive" msprop:Generator_ColumnPropNameInTable="ActiveColumn" msprop:Generator_ColumnPropNameInRow="Active" type="xs:boolean" default="true" />
+                        <xs:attribute name="Solidity" msprop:Generator_UserColumnName="Solidity" msprop:nullValue="_empty" msprop:Generator_ColumnVarNameInTable="columnSolidity" msprop:Generator_ColumnPropNameInTable="SolidityColumn" msprop:Generator_ColumnPropNameInRow="Solidity" type="xs:string" />
+                        <xs:attribute name="Color" msprop:Generator_UserColumnName="Color" msprop:nullValue="-1" msprop:Generator_ColumnVarNameInTable="columnColor" msprop:Generator_ColumnPropNameInTable="ColorColumn" msprop:Generator_ColumnPropNameInRow="Color" type="xs:int" default="-1" />
+                      </xs:complexType>
+                    </xs:element>
+                    <xs:element name="SpritePlan" msprop:Generator_UserTableName="SpritePlan" msprop:Generator_RowDeletedName="SpritePlanRowDeleted" msprop:Generator_RowChangedName="SpritePlanRowChanged" msprop:Generator_RowClassName="SpritePlanRow" msprop:Generator_RowChangingName="SpritePlanRowChanging" msprop:Generator_RowEvArgName="SpritePlanRowChangeEvent" msprop:Generator_RowEvHandlerName="SpritePlanRowChangeEventHandler" msprop:Generator_TableClassName="SpritePlanDataTable" msprop:Generator_TableVarName="tableSpritePlan" msprop:Generator_RowDeletingName="SpritePlanRowDeleting" msprop:Generator_TablePropName="SpritePlan" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="BaseClass" msprop:Generator_UserColumnName="BaseClass" msprop:Generator_ColumnPropNameInRow="BaseClass" msprop:Generator_ColumnVarNameInTable="columnBaseClass" msprop:Generator_ColumnPropNameInTable="BaseClassColumn" type="xs:string" default="PlanBase" msdata:Ordinal="4" />
+                          <xs:element name="Coordinate" msprop:Generator_UserTableName="Coordinate" msprop:Generator_RowDeletedName="CoordinateRowDeleted" msprop:Generator_RowChangedName="CoordinateRowChanged" msprop:Generator_RowClassName="CoordinateRow" msprop:Generator_RowChangingName="CoordinateRowChanging" msprop:Generator_RowEvArgName="CoordinateRowChangeEvent" msprop:Generator_RowEvHandlerName="CoordinateRowChangeEventHandler" msprop:Generator_TableClassName="CoordinateDataTable" msprop:Generator_TableVarName="tableCoordinate" msprop:Generator_RowDeletingName="CoordinateRowDeleting" msprop:Generator_TablePropName="Coordinate" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:attribute name="MapName" msprop:Generator_UserColumnName="MapName" msprop:Generator_ColumnVarNameInTable="columnMapName" msprop:Generator_ColumnPropNameInRow="MapName" msprop:Generator_ColumnPropNameInTable="MapNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                              <xs:attribute name="LayerName" msprop:Generator_UserColumnName="LayerName" msprop:Generator_ColumnVarNameInTable="columnLayerName" msprop:Generator_ColumnPropNameInRow="LayerName" msprop:Generator_ColumnPropNameInTable="LayerNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                              <xs:attribute name="PlanName" msprop:Generator_UserColumnName="PlanName" msprop:Generator_ColumnVarNameInTable="columnPlanName" msprop:Generator_ColumnPropNameInRow="PlanName" msprop:Generator_ColumnPropNameInTable="PlanNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                              <xs:attribute name="Sequence" msprop:Generator_UserColumnName="Sequence" msprop:Generator_ColumnVarNameInTable="columnSequence" msprop:Generator_ColumnPropNameInRow="Sequence" msprop:Generator_ColumnPropNameInTable="SequenceColumn" type="xs:short" use="required" />
+                              <xs:attribute name="X" msprop:Generator_UserColumnName="X" msprop:Generator_ColumnVarNameInTable="columnX" msprop:Generator_ColumnPropNameInRow="X" msprop:Generator_ColumnPropNameInTable="XColumn" type="xs:int" />
+                              <xs:attribute name="Y" msprop:Generator_UserColumnName="Y" msprop:Generator_ColumnVarNameInTable="columnY" msprop:Generator_ColumnPropNameInRow="Y" msprop:Generator_ColumnPropNameInTable="YColumn" type="xs:int" />
+                              <xs:attribute name="Weight" msprop:Generator_UserColumnName="Weight" msprop:Generator_ColumnVarNameInTable="columnWeight" msprop:Generator_ColumnPropNameInRow="Weight" msprop:Generator_ColumnPropNameInTable="WeightColumn" type="xs:int" />
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="PlanRule" msprop:Generator_UserTableName="PlanRule" msprop:Generator_RowDeletedName="PlanRuleRowDeleted" msprop:Generator_RowChangedName="PlanRuleRowChanged" msprop:Generator_RowClassName="PlanRuleRow" msprop:Generator_RowChangingName="PlanRuleRowChanging" msprop:Generator_RowEvArgName="PlanRuleRowChangeEvent" msprop:Generator_RowEvHandlerName="PlanRuleRowChangeEventHandler" msprop:Generator_TableClassName="PlanRuleDataTable" msprop:Generator_TableVarName="tablePlanRule" msprop:Generator_RowDeletingName="PlanRuleRowDeleting" msprop:Generator_TablePropName="PlanRule" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:attribute name="MapName" msprop:Generator_UserColumnName="MapName" msprop:Generator_ColumnVarNameInTable="columnMapName" msprop:Generator_ColumnPropNameInRow="MapName" msprop:Generator_ColumnPropNameInTable="MapNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                              <xs:attribute name="LayerName" msprop:Generator_UserColumnName="LayerName" msprop:Generator_ColumnVarNameInTable="columnLayerName" msprop:Generator_ColumnPropNameInRow="LayerName" msprop:Generator_ColumnPropNameInTable="LayerNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                              <xs:attribute name="PlanName" msprop:Generator_UserColumnName="PlanName" msprop:Generator_ColumnVarNameInTable="columnPlanName" msprop:Generator_ColumnPropNameInRow="PlanName" msprop:Generator_ColumnPropNameInTable="PlanNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                              <xs:attribute name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:string" use="required" />
+                              <xs:attribute name="Sequence" msprop:Generator_UserColumnName="Sequence" msprop:nullValue="_throw" msprop:Generator_ColumnVarNameInTable="columnSequence" msprop:Generator_ColumnPropNameInTable="SequenceColumn" msprop:Generator_ColumnPropNameInRow="Sequence" type="xs:int" use="required" />
+                              <xs:attribute name="Type" msprop:Generator_UserColumnName="Type" msprop:nullValue="_throw" msprop:Generator_ColumnVarNameInTable="columnType" msprop:Generator_ColumnPropNameInTable="TypeColumn" msprop:Generator_ColumnPropNameInRow="Type" type="xs:string" use="required" />
+                              <xs:attribute name="Function" msprop:Generator_UserColumnName="Function" msprop:nullValue="_empty" msprop:Generator_ColumnVarNameInTable="columnFunction" msprop:Generator_ColumnPropNameInTable="FunctionColumn" msprop:Generator_ColumnPropNameInRow="Function" type="xs:Name" use="required" />
+                              <xs:attribute name="Parameter1" msprop:Generator_UserColumnName="Parameter1" msprop:Generator_ColumnVarNameInTable="columnParameter1" msprop:Generator_ColumnPropNameInRow="Parameter1" msprop:Generator_ColumnPropNameInTable="Parameter1Column" type="xs:string" />
+                              <xs:attribute name="Parameter2" msprop:Generator_UserColumnName="Parameter2" msprop:Generator_ColumnVarNameInTable="columnParameter2" msprop:Generator_ColumnPropNameInRow="Parameter2" msprop:Generator_ColumnPropNameInTable="Parameter2Column" type="xs:string" />
+                              <xs:attribute name="Parameter3" msprop:Generator_UserColumnName="Parameter3" msprop:Generator_ColumnVarNameInTable="columnParameter3" msprop:Generator_ColumnPropNameInRow="Parameter3" msprop:Generator_ColumnPropNameInTable="Parameter3Column" type="xs:string" />
+                              <xs:attribute name="ResultParameter" msprop:Generator_UserColumnName="ResultParameter" msprop:Generator_ColumnVarNameInTable="columnResultParameter" msprop:Generator_ColumnPropNameInRow="ResultParameter" msprop:Generator_ColumnPropNameInTable="ResultParameterColumn" type="xs:Name" />
+                              <xs:attribute name="EndIf" msprop:Generator_UserColumnName="EndIf" msprop:nullValue="false" msprop:Generator_ColumnVarNameInTable="columnEndIf" msprop:Generator_ColumnPropNameInTable="EndIfColumn" msprop:Generator_ColumnPropNameInRow="EndIf" type="xs:boolean" default="false" />
+                              <xs:attribute name="Suspended" msprop:Generator_UserColumnName="Suspended" msprop:nullValue="false" msprop:Generator_ColumnVarNameInTable="columnSuspended" msprop:Generator_ColumnPropNameInTable="SuspendedColumn" msprop:Generator_ColumnPropNameInRow="Suspended" type="xs:boolean" default="false" />
+                            </xs:complexType>
+                          </xs:element>
+                          <xs:element name="PlanParameterValue" msprop:Generator_UserTableName="PlanParameterValue" msprop:Generator_RowDeletedName="PlanParameterValueRowDeleted" msprop:Generator_RowChangedName="PlanParameterValueRowChanged" msprop:Generator_RowClassName="PlanParameterValueRow" msprop:Generator_RowChangingName="PlanParameterValueRowChanging" msprop:Generator_RowEvArgName="PlanParameterValueRowChangeEvent" msprop:Generator_RowEvHandlerName="PlanParameterValueRowChangeEventHandler" msprop:Generator_TableClassName="PlanParameterValueDataTable" msprop:Generator_TableVarName="tablePlanParameterValue" msprop:Generator_RowDeletingName="PlanParameterValueRowDeleting" msprop:Generator_TablePropName="PlanParameterValue" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:attribute name="MapName" msprop:Generator_UserColumnName="MapName" msprop:Generator_ColumnVarNameInTable="columnMapName" msprop:Generator_ColumnPropNameInRow="MapName" msprop:Generator_ColumnPropNameInTable="MapNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                              <xs:attribute name="LayerName" msprop:Generator_UserColumnName="LayerName" msprop:Generator_ColumnVarNameInTable="columnLayerName" msprop:Generator_ColumnPropNameInRow="LayerName" msprop:Generator_ColumnPropNameInTable="LayerNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                              <xs:attribute name="PlanName" msprop:Generator_UserColumnName="PlanName" msprop:Generator_ColumnVarNameInTable="columnPlanName" msprop:Generator_ColumnPropNameInRow="PlanName" msprop:Generator_ColumnPropNameInTable="PlanNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                              <xs:attribute name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:Name" use="required" />
+                              <xs:attribute name="Value" msprop:Generator_UserColumnName="Value" msprop:Generator_ColumnVarNameInTable="columnValue" msprop:Generator_ColumnPropNameInRow="Value" msprop:Generator_ColumnPropNameInTable="ValueColumn" type="xs:string" />
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="MapName" msprop:Generator_UserColumnName="MapName" msprop:Generator_ColumnVarNameInTable="columnMapName" msprop:Generator_ColumnPropNameInRow="MapName" msprop:Generator_ColumnPropNameInTable="MapNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                        <xs:attribute name="LayerName" msprop:Generator_UserColumnName="LayerName" msprop:Generator_ColumnVarNameInTable="columnLayerName" msprop:Generator_ColumnPropNameInRow="LayerName" msprop:Generator_ColumnPropNameInTable="LayerNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                        <xs:attribute name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:Name" use="required" />
+                        <xs:attribute name="Priority" msprop:Generator_UserColumnName="Priority" msprop:Generator_ColumnVarNameInTable="columnPriority" msprop:Generator_ColumnPropNameInRow="Priority" msprop:Generator_ColumnPropNameInTable="PriorityColumn" type="xs:int" />
+                      </xs:complexType>
+                    </xs:element>
                   </xs:sequence>
-                  <xs:attribute name="Name" type="xs:Name" />
-               </xs:complexType>
-            </xs:element>
-            <xs:element name="Tileset">
-               <xs:complexType>
+                  <xs:attribute name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:Name" use="required" />
+                  <xs:attribute name="Width" msprop:Generator_UserColumnName="Width" msprop:Generator_ColumnVarNameInTable="columnWidth" msprop:Generator_ColumnPropNameInRow="Width" msprop:Generator_ColumnPropNameInTable="WidthColumn" type="xs:int" use="required" />
+                  <xs:attribute name="Height" msprop:Generator_UserColumnName="Height" msprop:Generator_ColumnVarNameInTable="columnHeight" msprop:Generator_ColumnPropNameInRow="Height" msprop:Generator_ColumnPropNameInTable="HeightColumn" type="xs:int" use="required" />
+                  <xs:attribute name="Tileset" msprop:Generator_UserColumnName="Tileset" msprop:nullValue="_null" msprop:Generator_ColumnPropNameInRow="Tileset" msprop:Generator_ColumnPropNameInTable="TilesetColumn" msprop:Generator_ColumnVarNameInTable="columnTileset" type="xs:Name" />
+                  <xs:attribute name="BytesPerTile" msprop:Generator_UserColumnName="BytesPerTile" msprop:Generator_ColumnVarNameInTable="columnBytesPerTile" msprop:Generator_ColumnPropNameInRow="BytesPerTile" msprop:Generator_ColumnPropNameInTable="BytesPerTileColumn" type="xs:unsignedByte" use="required" />
+                  <xs:attribute name="MapName" msprop:Generator_UserColumnName="MapName" msprop:Generator_ColumnVarNameInTable="columnMapName" msprop:Generator_ColumnPropNameInRow="MapName" msprop:Generator_ColumnPropNameInTable="MapNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                  <xs:attribute name="OffsetX" msprop:Generator_UserColumnName="OffsetX" msprop:nullValue="0" msprop:Generator_ColumnVarNameInTable="columnOffsetX" msprop:Generator_ColumnPropNameInTable="OffsetXColumn" msprop:Generator_ColumnPropNameInRow="OffsetX" type="xs:int" default="0" />
+                  <xs:attribute name="OffsetY" msprop:Generator_UserColumnName="OffsetY" msprop:nullValue="0" msprop:Generator_ColumnVarNameInTable="columnOffsetY" msprop:Generator_ColumnPropNameInTable="OffsetYColumn" msprop:Generator_ColumnPropNameInRow="OffsetY" type="xs:int" default="0" />
+                  <xs:attribute name="ScrollRateX" msprop:Generator_UserColumnName="ScrollRateX" msprop:nullValue="1" msprop:Generator_ColumnVarNameInTable="columnScrollRateX" msprop:Generator_ColumnPropNameInTable="ScrollRateXColumn" msprop:Generator_ColumnPropNameInRow="ScrollRateX" type="xs:float" default="1" />
+                  <xs:attribute name="ScrollRateY" msprop:Generator_UserColumnName="ScrollRateY" msprop:nullValue="1" msprop:Generator_ColumnVarNameInTable="columnScrollRateY" msprop:Generator_ColumnPropNameInTable="ScrollRateYColumn" msprop:Generator_ColumnPropNameInRow="ScrollRateY" type="xs:float" default="1" />
+                  <xs:attribute name="ZIndex" msprop:Generator_UserColumnName="ZIndex" msprop:nullValue="0" msprop:Generator_ColumnVarNameInTable="columnZIndex" msprop:Generator_ColumnPropNameInTable="ZIndexColumn" msprop:Generator_ColumnPropNameInRow="ZIndex" type="xs:int" />
+                  <xs:attribute name="Priority" msprop:Generator_UserColumnName="Priority" msprop:nullValue="0" msprop:Generator_ColumnVarNameInTable="columnPriority" msprop:Generator_ColumnPropNameInTable="PriorityColumn" msprop:Generator_ColumnPropNameInRow="Priority" type="xs:int" default="0" />
+                  <xs:attribute name="VirtualWidth" msprop:Generator_UserColumnName="VirtualWidth" msprop:nullValue="0" msprop:Generator_ColumnVarNameInTable="columnVirtualWidth" msprop:Generator_ColumnPropNameInTable="VirtualWidthColumn" msprop:Generator_ColumnPropNameInRow="VirtualWidth" type="xs:int" default="0" />
+                  <xs:attribute name="VirtualHeight" msprop:Generator_UserColumnName="VirtualHeight" msprop:nullValue="0" msprop:Generator_ColumnVarNameInTable="columnVirtualHeight" msprop:Generator_ColumnPropNameInTable="VirtualHeightColumn" msprop:Generator_ColumnPropNameInRow="VirtualHeight" type="xs:int" default="0" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:Name" use="required" />
+            <xs:attribute name="ScrollMarginLeft" msprop:Generator_UserColumnName="ScrollMarginLeft" msprop:Generator_ColumnVarNameInTable="columnScrollMarginLeft" msprop:Generator_ColumnPropNameInRow="ScrollMarginLeft" msprop:Generator_ColumnPropNameInTable="ScrollMarginLeftColumn" type="xs:short" use="required" />
+            <xs:attribute name="ScrollMarginTop" msprop:Generator_UserColumnName="ScrollMarginTop" msprop:Generator_ColumnVarNameInTable="columnScrollMarginTop" msprop:Generator_ColumnPropNameInRow="ScrollMarginTop" msprop:Generator_ColumnPropNameInTable="ScrollMarginTopColumn" type="xs:short" use="required" />
+            <xs:attribute name="ScrollMarginRight" msprop:Generator_UserColumnName="ScrollMarginRight" msprop:Generator_ColumnVarNameInTable="columnScrollMarginRight" msprop:Generator_ColumnPropNameInRow="ScrollMarginRight" msprop:Generator_ColumnPropNameInTable="ScrollMarginRightColumn" type="xs:short" use="required" />
+            <xs:attribute name="ScrollMarginBottom" msprop:Generator_UserColumnName="ScrollMarginBottom" msprop:Generator_ColumnVarNameInTable="columnScrollMarginBottom" msprop:Generator_ColumnPropNameInRow="ScrollMarginBottom" msprop:Generator_ColumnPropNameInTable="ScrollMarginBottomColumn" type="xs:short" use="required" />
+            <xs:attribute name="ScrollWidth" msdata:Caption="Scrollable pixel width of the map independent of its layers" msprop:Generator_UserColumnName="ScrollWidth" msprop:nullValue="0" msprop:Generator_ColumnVarNameInTable="columnScrollWidth" msprop:Generator_ColumnPropNameInTable="ScrollWidthColumn" msprop:Generator_ColumnPropNameInRow="ScrollWidth" type="xs:int" />
+            <xs:attribute name="ScrollHeight" msdata:Caption="Scrollable pixel height of the map independent of its layers" msprop:Generator_UserColumnName="ScrollHeight" msprop:nullValue="0" msprop:Generator_ColumnVarNameInTable="columnScrollHeight" msprop:Generator_ColumnPropNameInTable="ScrollHeightColumn" msprop:Generator_ColumnPropNameInRow="ScrollHeight" type="xs:int" />
+            <xs:attribute name="ViewLeft" msprop:Generator_UserColumnName="ViewLeft" msprop:nullValue="0" msprop:Generator_ColumnVarNameInTable="columnViewLeft" msprop:Generator_ColumnPropNameInTable="ViewLeftColumn" msprop:Generator_ColumnPropNameInRow="ViewLeft" type="xs:short" />
+            <xs:attribute name="ViewTop" msprop:Generator_UserColumnName="ViewTop" msprop:nullValue="0" msprop:Generator_ColumnVarNameInTable="columnViewTop" msprop:Generator_ColumnPropNameInTable="ViewTopColumn" msprop:Generator_ColumnPropNameInRow="ViewTop" type="xs:short" />
+            <xs:attribute name="ViewWidth" msprop:Generator_UserColumnName="ViewWidth" msprop:nullValue="0" msprop:Generator_ColumnVarNameInTable="columnViewWidth" msprop:Generator_ColumnPropNameInTable="ViewWidthColumn" msprop:Generator_ColumnPropNameInRow="ViewWidth" type="xs:short" />
+            <xs:attribute name="ViewHeight" msprop:Generator_UserColumnName="ViewHeight" msprop:nullValue="0" msprop:Generator_ColumnVarNameInTable="columnViewHeight" msprop:Generator_ColumnPropNameInTable="ViewHeightColumn" msprop:Generator_ColumnPropNameInRow="ViewHeight" type="xs:short" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="SpriteDefinition" msprop:Generator_UserTableName="SpriteDefinition" msprop:Generator_RowDeletedName="SpriteDefinitionRowDeleted" msprop:Generator_RowChangedName="SpriteDefinitionRowChanged" msprop:Generator_RowClassName="SpriteDefinitionRow" msprop:Generator_RowChangingName="SpriteDefinitionRowChanging" msprop:Generator_RowEvArgName="SpriteDefinitionRowChangeEvent" msprop:Generator_RowEvHandlerName="SpriteDefinitionRowChangeEventHandler" msprop:Generator_TableClassName="SpriteDefinitionDataTable" msprop:Generator_TableVarName="tableSpriteDefinition" msprop:Generator_RowDeletingName="SpriteDefinitionRowDeleting" msprop:Generator_TablePropName="SpriteDefinition">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="BaseClass" msprop:Generator_UserColumnName="BaseClass" msprop:Generator_ColumnPropNameInRow="BaseClass" msprop:Generator_ColumnVarNameInTable="columnBaseClass" msprop:Generator_ColumnPropNameInTable="BaseClassColumn" type="xs:string" default="SpriteBase" msdata:Ordinal="1" />
+              <xs:element name="SpriteRule" msprop:Generator_UserTableName="SpriteRule" msprop:Generator_RowDeletedName="SpriteRuleRowDeleted" msprop:Generator_RowChangedName="SpriteRuleRowChanged" msprop:Generator_RowClassName="SpriteRuleRow" msprop:Generator_RowChangingName="SpriteRuleRowChanging" msprop:Generator_RowEvArgName="SpriteRuleRowChangeEvent" msprop:Generator_RowEvHandlerName="SpriteRuleRowChangeEventHandler" msprop:Generator_TableClassName="SpriteRuleDataTable" msprop:Generator_TableVarName="tableSpriteRule" msprop:Generator_RowDeletingName="SpriteRuleRowDeleting" msprop:Generator_TablePropName="SpriteRule" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="DefinitionName" msprop:Generator_UserColumnName="DefinitionName" msprop:Generator_ColumnVarNameInTable="columnDefinitionName" msprop:Generator_ColumnPropNameInRow="DefinitionName" msprop:Generator_ColumnPropNameInTable="DefinitionNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                  <xs:attribute name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:Name" use="required" />
+                  <xs:attribute name="Sequence" msprop:Generator_UserColumnName="Sequence" msprop:nullValue="_throw" msprop:Generator_ColumnVarNameInTable="columnSequence" msprop:Generator_ColumnPropNameInTable="SequenceColumn" msprop:Generator_ColumnPropNameInRow="Sequence" type="xs:int" use="required" />
+                  <xs:attribute name="Type" msprop:Generator_UserColumnName="Type" msprop:nullValue="_throw" msprop:Generator_ColumnVarNameInTable="columnType" msprop:Generator_ColumnPropNameInTable="TypeColumn" msprop:Generator_ColumnPropNameInRow="Type" type="xs:string" use="required" />
+                  <xs:attribute name="Function" msprop:Generator_UserColumnName="Function" msprop:nullValue="_empty" msprop:Generator_ColumnVarNameInTable="columnFunction" msprop:Generator_ColumnPropNameInTable="FunctionColumn" msprop:Generator_ColumnPropNameInRow="Function" type="xs:Name" use="required" />
+                  <xs:attribute name="Parameter1" msprop:Generator_UserColumnName="Parameter1" msprop:Generator_ColumnVarNameInTable="columnParameter1" msprop:Generator_ColumnPropNameInRow="Parameter1" msprop:Generator_ColumnPropNameInTable="Parameter1Column" type="xs:string" />
+                  <xs:attribute name="Parameter2" msprop:Generator_UserColumnName="Parameter2" msprop:Generator_ColumnVarNameInTable="columnParameter2" msprop:Generator_ColumnPropNameInRow="Parameter2" msprop:Generator_ColumnPropNameInTable="Parameter2Column" type="xs:string" />
+                  <xs:attribute name="Parameter3" msprop:Generator_UserColumnName="Parameter3" msprop:Generator_ColumnVarNameInTable="columnParameter3" msprop:Generator_ColumnPropNameInRow="Parameter3" msprop:Generator_ColumnPropNameInTable="Parameter3Column" type="xs:string" />
+                  <xs:attribute name="ResultParameter" msprop:Generator_UserColumnName="ResultParameter" msprop:Generator_ColumnVarNameInTable="columnResultParameter" msprop:Generator_ColumnPropNameInRow="ResultParameter" msprop:Generator_ColumnPropNameInTable="ResultParameterColumn" type="xs:Name" />
+                  <xs:attribute name="EndIf" msprop:Generator_UserColumnName="EndIf" msprop:nullValue="false" msprop:Generator_ColumnVarNameInTable="columnEndIf" msprop:Generator_ColumnPropNameInTable="EndIfColumn" msprop:Generator_ColumnPropNameInRow="EndIf" type="xs:boolean" default="false" />
+                  <xs:attribute name="Suspended" msprop:Generator_UserColumnName="Suspended" msprop:nullValue="false" msprop:Generator_ColumnVarNameInTable="columnSuspended" msprop:Generator_ColumnPropNameInTable="SuspendedColumn" msprop:Generator_ColumnPropNameInRow="Suspended" type="xs:boolean" default="false" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="SpriteParameter" msprop:Generator_UserTableName="SpriteParameter" msprop:Generator_RowDeletedName="SpriteParameterRowDeleted" msprop:Generator_RowChangedName="SpriteParameterRowChanged" msprop:Generator_RowClassName="SpriteParameterRow" msprop:Generator_RowChangingName="SpriteParameterRowChanging" msprop:Generator_RowEvArgName="SpriteParameterRowChangeEvent" msprop:Generator_RowEvHandlerName="SpriteParameterRowChangeEventHandler" msprop:Generator_TableClassName="SpriteParameterDataTable" msprop:Generator_TableVarName="tableSpriteParameter" msprop:Generator_RowDeletingName="SpriteParameterRowDeleting" msprop:Generator_TablePropName="SpriteParameter" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="DefinitionName" msprop:Generator_UserColumnName="DefinitionName" msprop:Generator_ColumnVarNameInTable="columnDefinitionName" msprop:Generator_ColumnPropNameInRow="DefinitionName" msprop:Generator_ColumnPropNameInTable="DefinitionNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                  <xs:attribute name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:Name" use="required" />
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="SpriteState" msprop:Generator_UserTableName="SpriteState" msprop:Generator_RowDeletedName="SpriteStateRowDeleted" msprop:Generator_RowChangedName="SpriteStateRowChanged" msprop:Generator_RowClassName="SpriteStateRow" msprop:Generator_RowChangingName="SpriteStateRowChanging" msprop:Generator_RowEvArgName="SpriteStateRowChangeEvent" msprop:Generator_RowEvHandlerName="SpriteStateRowChangeEventHandler" msprop:Generator_TableClassName="SpriteStateDataTable" msprop:Generator_TableVarName="tableSpriteState" msprop:Generator_RowDeletingName="SpriteStateRowDeleting" msprop:Generator_TablePropName="SpriteState" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
                   <xs:sequence>
-                     <xs:element name="Tile" minOccurs="0">
-                        <xs:complexType>
-                           <xs:sequence>
-                              <xs:element name="TileFrame" minOccurs="0">
-                                 <xs:complexType>
-                                    <xs:sequence></xs:sequence>
-                                    <xs:attribute name="Sequence" type="xs:short" />
-                                    <xs:attribute name="FrameValue" type="xs:int" />
-                                    <xs:attribute name="Duration" type="xs:short" />
-                                    <xs:attribute name="Name" type="xs:Name" use="prohibited" />
-                                    <xs:attribute name="TileValue" type="xs:int" use="prohibited" />
-                                 </xs:complexType>
-                              </xs:element>
-                           </xs:sequence>
-                           <xs:attribute name="TileValue" type="xs:int" />
-                           <xs:attribute name="Counter" type="xs:Name" use="optional" />
-                           <xs:attribute name="Name" type="xs:Name" use="prohibited" />
-                        </xs:complexType>
-                     </xs:element>
+                    <xs:element name="SpriteFrame" msprop:Generator_UserTableName="SpriteFrame" msprop:Generator_RowDeletedName="SpriteFrameRowDeleted" msprop:Generator_RowChangedName="SpriteFrameRowChanged" msprop:Generator_RowClassName="SpriteFrameRow" msprop:Generator_RowChangingName="SpriteFrameRowChanging" msprop:Generator_RowEvArgName="SpriteFrameRowChangeEvent" msprop:Generator_RowEvHandlerName="SpriteFrameRowChangeEventHandler" msprop:Generator_TableClassName="SpriteFrameDataTable" msprop:Generator_TableVarName="tableSpriteFrame" msprop:Generator_RowDeletingName="SpriteFrameRowDeleting" msprop:Generator_TablePropName="SpriteFrame" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:attribute name="DefinitionName" msprop:Generator_UserColumnName="DefinitionName" msprop:Generator_ColumnVarNameInTable="columnDefinitionName" msprop:Generator_ColumnPropNameInRow="DefinitionName" msprop:Generator_ColumnPropNameInTable="DefinitionNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                        <xs:attribute name="StateName" msprop:Generator_UserColumnName="StateName" msprop:Generator_ColumnVarNameInTable="columnStateName" msprop:Generator_ColumnPropNameInRow="StateName" msprop:Generator_ColumnPropNameInTable="StateNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                        <xs:attribute name="Sequence" msprop:Generator_UserColumnName="Sequence" msprop:Generator_ColumnVarNameInTable="columnSequence" msprop:Generator_ColumnPropNameInRow="Sequence" msprop:Generator_ColumnPropNameInTable="SequenceColumn" type="xs:short" use="required" />
+                        <xs:attribute name="FrameValue" msprop:Generator_UserColumnName="FrameValue" msprop:Generator_ColumnVarNameInTable="columnFrameValue" msprop:Generator_ColumnPropNameInRow="FrameValue" msprop:Generator_ColumnPropNameInTable="FrameValueColumn" type="xs:int" />
+                        <xs:attribute name="Duration" msprop:Generator_UserColumnName="Duration" msprop:Generator_ColumnVarNameInTable="columnDuration" msprop:Generator_ColumnPropNameInRow="Duration" msprop:Generator_ColumnPropNameInTable="DurationColumn" type="xs:short" />
+                        <xs:attribute name="MaskAlphaLevel" msprop:Generator_UserColumnName="MaskAlphaLevel" msprop:nullValue="_throw" msprop:Generator_ColumnVarNameInTable="columnMaskAlphaLevel" msprop:Generator_ColumnPropNameInTable="MaskAlphaLevelColumn" msprop:Generator_ColumnPropNameInRow="MaskAlphaLevel" type="xs:unsignedByte" default="0" />
+                      </xs:complexType>
+                    </xs:element>
                   </xs:sequence>
-                  <xs:attribute name="Name" type="xs:Name" />
-                  <xs:attribute name="Frameset" type="xs:Name" />
-                  <xs:attribute name="TileWidth" type="xs:short" use="required" />
-                  <xs:attribute name="TileHeight" type="xs:short" use="required" />
-               </xs:complexType>
-            </xs:element>
-            <xs:element name="Counter">
-               <xs:complexType>
-                  <xs:sequence></xs:sequence>
-                  <xs:attribute name="Name" type="xs:Name" />
-                  <xs:attribute name="Value" type="xs:int" />
-                  <xs:attribute name="Max" type="xs:int" />
-               </xs:complexType>
-            </xs:element>
-            <xs:element name="Map">
-               <xs:complexType>
+                  <xs:attribute name="DefinitionName" msprop:Generator_UserColumnName="DefinitionName" msprop:Generator_ColumnVarNameInTable="columnDefinitionName" msprop:Generator_ColumnPropNameInRow="DefinitionName" msprop:Generator_ColumnPropNameInTable="DefinitionNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                  <xs:attribute name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:Name" use="required" />
+                  <xs:attribute name="FramesetName" msprop:Generator_UserColumnName="FramesetName" msprop:Generator_ColumnVarNameInTable="columnFramesetName" msprop:Generator_ColumnPropNameInRow="FramesetName" msprop:Generator_ColumnPropNameInTable="FramesetNameColumn" type="xs:Name" use="required" />
+                  <xs:attribute name="SolidWidth" msprop:Generator_UserColumnName="SolidWidth" msprop:nullValue="0" msprop:Generator_ColumnVarNameInTable="columnSolidWidth" msprop:Generator_ColumnPropNameInTable="SolidWidthColumn" msprop:Generator_ColumnPropNameInRow="SolidWidth" type="xs:short" use="required" />
+                  <xs:attribute name="SolidHeight" msprop:Generator_UserColumnName="SolidHeight" msprop:nullValue="0" msprop:Generator_ColumnVarNameInTable="columnSolidHeight" msprop:Generator_ColumnPropNameInTable="SolidHeightColumn" msprop:Generator_ColumnPropNameInRow="SolidHeight" type="xs:short" use="required" />
+                  <xs:attribute name="Sequence" msprop:Generator_UserColumnName="Sequence" msprop:Generator_ColumnVarNameInTable="columnSequence" msprop:Generator_ColumnPropNameInRow="Sequence" msprop:Generator_ColumnPropNameInTable="SequenceColumn" type="xs:short" use="required" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:Name" use="required" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="SpriteCategory" msprop:Generator_UserTableName="SpriteCategory" msprop:Generator_RowDeletedName="SpriteCategoryRowDeleted" msprop:Generator_RowChangedName="SpriteCategoryRowChanged" msprop:Generator_RowClassName="SpriteCategoryRow" msprop:Generator_RowChangingName="SpriteCategoryRowChanging" msprop:Generator_RowEvArgName="SpriteCategoryRowChangeEvent" msprop:Generator_RowEvHandlerName="SpriteCategoryRowChangeEventHandler" msprop:Generator_TableClassName="SpriteCategoryDataTable" msprop:Generator_TableVarName="tableSpriteCategory" msprop:Generator_RowDeletingName="SpriteCategoryRowDeleting" msprop:Generator_TablePropName="SpriteCategory">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="SpriteCategorySprite" msprop:Generator_UserTableName="SpriteCategorySprite" msprop:Generator_RowDeletedName="SpriteCategorySpriteRowDeleted" msprop:Generator_RowChangedName="SpriteCategorySpriteRowChanged" msprop:Generator_RowClassName="SpriteCategorySpriteRow" msprop:Generator_RowChangingName="SpriteCategorySpriteRowChanging" msprop:Generator_RowEvArgName="SpriteCategorySpriteRowChangeEvent" msprop:Generator_RowEvHandlerName="SpriteCategorySpriteRowChangeEventHandler" msprop:Generator_TableClassName="SpriteCategorySpriteDataTable" msprop:Generator_TableVarName="tableSpriteCategorySprite" msprop:Generator_RowDeletingName="SpriteCategorySpriteRowDeleting" msprop:Generator_TablePropName="SpriteCategorySprite" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="CategoryName" msprop:Generator_UserColumnName="CategoryName" msprop:Generator_ColumnVarNameInTable="columnCategoryName" msprop:Generator_ColumnPropNameInRow="CategoryName" msprop:Generator_ColumnPropNameInTable="CategoryNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                  <xs:attribute name="DefinitionName" msprop:Generator_UserColumnName="DefinitionName" msprop:Generator_ColumnVarNameInTable="columnDefinitionName" msprop:Generator_ColumnPropNameInRow="DefinitionName" msprop:Generator_ColumnPropNameInTable="DefinitionNameColumn" type="xs:Name" use="required" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:Name" use="required" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Solidity" msprop:Generator_UserTableName="Solidity" msprop:Generator_RowDeletedName="SolidityRowDeleted" msprop:Generator_RowChangedName="SolidityRowChanged" msprop:Generator_RowClassName="SolidityRow" msprop:Generator_RowChangingName="SolidityRowChanging" msprop:Generator_RowEvArgName="SolidityRowChangeEvent" msprop:Generator_RowEvHandlerName="SolidityRowChangeEventHandler" msprop:Generator_TableClassName="SolidityDataTable" msprop:Generator_TableVarName="tableSolidity" msprop:Generator_RowDeletingName="SolidityRowDeleting" msprop:Generator_TablePropName="Solidity">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="SolidityShape" msprop:Generator_UserTableName="SolidityShape" msprop:Generator_RowDeletedName="SolidityShapeRowDeleted" msprop:Generator_RowChangedName="SolidityShapeRowChanged" msprop:Generator_RowClassName="SolidityShapeRow" msprop:Generator_RowChangingName="SolidityShapeRowChanging" msprop:Generator_RowEvArgName="SolidityShapeRowChangeEvent" msprop:Generator_RowEvHandlerName="SolidityShapeRowChangeEventHandler" msprop:Generator_TableClassName="SolidityShapeDataTable" msprop:Generator_TableVarName="tableSolidityShape" msprop:Generator_RowDeletingName="SolidityShapeRowDeleting" msprop:Generator_TablePropName="SolidityShape" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                  <xs:attribute name="SolidityName" msprop:Generator_UserColumnName="SolidityName" msprop:Generator_ColumnVarNameInTable="columnSolidityName" msprop:Generator_ColumnPropNameInRow="SolidityName" msprop:Generator_ColumnPropNameInTable="SolidityNameColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                  <xs:attribute name="CategoryName" msprop:Generator_UserColumnName="CategoryName" msprop:Generator_ColumnVarNameInTable="columnCategoryName" msprop:Generator_ColumnPropNameInRow="CategoryName" msprop:Generator_ColumnPropNameInTable="CategoryNameColumn" type="xs:Name" use="required" />
+                  <xs:attribute name="ShapeName" msprop:Generator_UserColumnName="ShapeName" msprop:Generator_ColumnVarNameInTable="columnShapeName" msprop:Generator_ColumnPropNameInRow="ShapeName" msprop:Generator_ColumnPropNameInTable="ShapeNameColumn" type="xs:Name" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:Name" use="required" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="SourceCode" msprop:Generator_UserTableName="SourceCode" msprop:Generator_RowDeletedName="SourceCodeRowDeleted" msprop:Generator_RowChangedName="SourceCodeRowChanged" msprop:Generator_RowClassName="SourceCodeRow" msprop:Generator_RowChangingName="SourceCodeRowChanging" msprop:Generator_RowEvArgName="SourceCodeRowChangeEvent" msprop:Generator_RowEvHandlerName="SourceCodeRowChangeEventHandler" msprop:Generator_TableClassName="SourceCodeDataTable" msprop:Generator_TableVarName="tableSourceCode" msprop:Generator_RowDeletingName="SourceCodeRowDeleting" msprop:Generator_TablePropName="SourceCode">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="Text" msprop:Generator_UserColumnName="Text" msprop:Generator_ColumnVarNameInTable="columnText" msprop:Generator_ColumnPropNameInRow="Text" msprop:Generator_ColumnPropNameInTable="TextColumn" type="xs:string" minOccurs="0" msdata:Ordinal="3" />
+              <xs:element name="CustomObjectData" msprop:Generator_UserColumnName="CustomObjectData" msprop:Generator_ColumnVarNameInTable="columnCustomObjectData" msprop:Generator_ColumnPropNameInRow="CustomObjectData" msprop:Generator_ColumnPropNameInTable="CustomObjectDataColumn" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="4" />
+            </xs:sequence>
+            <xs:attribute name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:Name" use="required" />
+            <xs:attribute name="IsCustomObject" msprop:Generator_UserColumnName="IsCustomObject" msprop:nullValue="false" msprop:Generator_ColumnVarNameInTable="columnIsCustomObject" msprop:Generator_ColumnPropNameInTable="IsCustomObjectColumn" msprop:Generator_ColumnPropNameInRow="IsCustomObject" type="xs:boolean" default="false" />
+            <xs:attribute name="DependsOn" msprop:Generator_UserColumnName="DependsOn" msprop:Generator_ColumnVarNameInTable="columnDependsOn" msprop:Generator_ColumnPropNameInRow="DependsOn" msprop:Generator_ColumnPropNameInTable="DependsOnColumn" type="xs:Name" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="Project" msprop:Generator_UserTableName="Project" msprop:Generator_RowDeletedName="ProjectRowDeleted" msprop:Generator_RowChangedName="ProjectRowChanged" msprop:Generator_RowClassName="ProjectRow" msprop:Generator_RowChangingName="ProjectRowChanging" msprop:Generator_RowEvArgName="ProjectRowChangeEvent" msprop:Generator_RowEvHandlerName="ProjectRowChangeEventHandler" msprop:Generator_TableClassName="ProjectDataTable" msprop:Generator_TableVarName="tableProject" msprop:Generator_RowDeletingName="ProjectRowDeleting" msprop:Generator_TablePropName="Project">
+          <xs:complexType>
+            <xs:attribute name="DisplayMode" msprop:Generator_UserColumnName="DisplayMode" msprop:Generator_ColumnVarNameInTable="columnDisplayMode" msprop:Generator_ColumnPropNameInRow="DisplayMode" msprop:Generator_ColumnPropNameInTable="DisplayModeColumn" type="xs:string" use="required" />
+            <xs:attribute name="Windowed" msprop:Generator_UserColumnName="Windowed" msprop:nullValue="false" msprop:Generator_ColumnVarNameInTable="columnWindowed" msprop:Generator_ColumnPropNameInTable="WindowedColumn" msprop:Generator_ColumnPropNameInRow="Windowed" type="xs:boolean" use="required" />
+            <xs:attribute name="TitleText" msprop:Generator_UserColumnName="TitleText" msprop:Generator_ColumnVarNameInTable="columnTitleText" msprop:Generator_ColumnPropNameInRow="TitleText" msprop:Generator_ColumnPropNameInTable="TitleTextColumn" type="xs:string" />
+            <xs:attribute name="StartMap" msprop:Generator_UserColumnName="StartMap" msprop:nullValue="_empty" msprop:Generator_ColumnVarNameInTable="columnStartMap" msprop:Generator_ColumnPropNameInTable="StartMapColumn" msprop:Generator_ColumnPropNameInRow="StartMap" type="xs:Name" />
+            <xs:attribute name="OverlayMap" msprop:Generator_UserColumnName="OverlayMap" msprop:nullValue="_null" msprop:Generator_ColumnVarNameInTable="columnOverlayMap" msprop:Generator_ColumnPropNameInTable="OverlayMapColumn" msprop:Generator_ColumnPropNameInRow="OverlayMap" type="xs:Name" />
+            <xs:attribute name="MaxPlayers" msprop:Generator_UserColumnName="MaxPlayers" msprop:nullValue="1" msprop:Generator_ColumnVarNameInTable="columnMaxPlayers" msprop:Generator_ColumnPropNameInTable="MaxPlayersColumn" msprop:Generator_ColumnPropNameInRow="MaxPlayers" type="xs:unsignedByte" default="1" />
+            <xs:attribute name="MaxViews" msprop:Generator_UserColumnName="MaxViews" msprop:nullValue="1" msprop:Generator_ColumnVarNameInTable="columnMaxViews" msprop:Generator_ColumnPropNameInTable="MaxViewsColumn" msprop:Generator_ColumnPropNameInRow="MaxViews" type="xs:unsignedByte" default="1" />
+            <xs:attribute name="Credits" msprop:Generator_UserColumnName="Credits" msprop:Generator_ColumnVarNameInTable="columnCredits" msprop:Generator_ColumnPropNameInRow="Credits" msprop:Generator_ColumnPropNameInTable="CreditsColumn" type="xs:string" />
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="TileCategory" msprop:Generator_UserTableName="TileCategory" msprop:Generator_RowDeletedName="TileCategoryRowDeleted" msprop:Generator_RowChangedName="TileCategoryRowChanged" msprop:Generator_RowClassName="TileCategoryRow" msprop:Generator_RowChangingName="TileCategoryRowChanging" msprop:Generator_RowEvArgName="TileCategoryRowChangeEvent" msprop:Generator_RowEvHandlerName="TileCategoryRowChangeEventHandler" msprop:Generator_TableClassName="TileCategoryDataTable" msprop:Generator_TableVarName="tableTileCategory" msprop:Generator_RowDeletingName="TileCategoryRowDeleting" msprop:Generator_TablePropName="TileCategory">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="CategorizedTileset" msprop:Generator_UserTableName="CategorizedTileset" msprop:Generator_RowDeletedName="CategorizedTilesetRowDeleted" msprop:Generator_RowChangedName="CategorizedTilesetRowChanged" msprop:Generator_RowClassName="CategorizedTilesetRow" msprop:Generator_RowChangingName="CategorizedTilesetRowChanging" msprop:Generator_RowEvArgName="CategorizedTilesetRowChangeEvent" msprop:Generator_RowEvHandlerName="CategorizedTilesetRowChangeEventHandler" msprop:Generator_TableClassName="CategorizedTilesetDataTable" msprop:Generator_TableVarName="tableCategorizedTileset" msprop:Generator_RowDeletingName="CategorizedTilesetRowDeleting" msprop:Generator_TablePropName="CategorizedTileset" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
                   <xs:sequence>
-                     <xs:element name="Layer" minOccurs="0">
-                        <xs:complexType>
-                           <xs:sequence>
-                              <xs:element name="Tiles" type="xs:base64Binary" minOccurs="0" />
-                              <xs:element name="Sprite">
-                                 <xs:complexType>
-                                    <xs:sequence>
-                                       <xs:element name="ParameterValue">
-                                          <xs:complexType>
-                                             <xs:sequence></xs:sequence>
-                                             <xs:attribute name="LayerName" type="xs:Name" use="prohibited" />
-                                             <xs:attribute name="SpriteName" type="xs:Name" use="prohibited" />
-                                             <xs:attribute name="ParameterName" type="xs:Name" />
-                                             <xs:attribute name="Value" type="xs:int" />
-                                             <xs:attribute name="DefinitionName" type="xs:Name" use="prohibited" />
-                                             <xs:attribute name="MapName" type="xs:Name" use="prohibited" />
-                                          </xs:complexType>
-                                       </xs:element>
-                                    </xs:sequence>
-                                    <xs:attribute name="LayerName" type="xs:Name" use="prohibited" />
-                                    <xs:attribute name="Name" type="xs:Name" />
-                                    <xs:attribute name="DefinitionName" type="xs:Name" />
-                                    <xs:attribute name="StateName" type="xs:Name" />
-                                    <xs:attribute name="CurrentFrame" type="xs:short" />
-                                    <xs:attribute name="X" type="xs:int" />
-                                    <xs:attribute name="Y" type="xs:int" />
-                                    <xs:attribute name="DX" type="xs:float" />
-                                    <xs:attribute name="DY" type="xs:float" />
-                                    <xs:attribute name="MapName" type="xs:Name" use="prohibited" />
-                                    <xs:attribute name="Priority" type="xs:int" />
-                                    <xs:attribute name="Active" type="xs:boolean" default="true" msprop:nullValue="false" />
-                                    <xs:attribute name="Solidity" type="xs:string" msprop:nullValue="_empty" />
-                                    <xs:attribute name="Color" type="xs:int" default="-1" msprop:nullValue="-1" />
-                                 </xs:complexType>
-                              </xs:element>
-                              <xs:element name="SpritePlan">
-                                 <xs:complexType>
-                                    <xs:sequence>
-                                       <xs:element name="Coordinate">
-                                          <xs:complexType>
-                                             <xs:sequence />
-                                             <xs:attribute name="MapName" type="xs:Name" use="prohibited" />
-                                             <xs:attribute name="LayerName" type="xs:Name" use="prohibited" />
-                                             <xs:attribute name="PlanName" type="xs:Name" use="prohibited" />
-                                             <xs:attribute name="Sequence" type="xs:short" />
-                                             <xs:attribute name="X" type="xs:int" />
-                                             <xs:attribute name="Y" type="xs:int" />
-                                             <xs:attribute name="Weight" type="xs:int" />
-                                          </xs:complexType>
-                                       </xs:element>
-                                       <xs:element name="PlanRule">
-                                          <xs:complexType>
-                                             <xs:sequence></xs:sequence>
-                                             <xs:attribute name="MapName" type="xs:Name" use="prohibited" />
-                                             <xs:attribute name="LayerName" type="xs:Name" use="prohibited" />
-                                             <xs:attribute name="PlanName" type="xs:Name" use="prohibited" />
-                                             <xs:attribute name="Name" type="xs:string" />
-                                             <xs:attribute name="Sequence" type="xs:int" use="required" msprop:nullValue="_throw" />
-                                             <xs:attribute name="Type" type="xs:string" use="required" msprop:nullValue="_throw" />
-                                             <xs:attribute name="Function" type="xs:Name" msprop:nullValue="_empty" use="required" />
-                                             <xs:attribute name="Parameter1" type="xs:string" />
-                                             <xs:attribute name="Parameter2" type="xs:string" />
-                                             <xs:attribute name="Parameter3" type="xs:string" />
-                                             <xs:attribute name="ResultParameter" type="xs:Name" />
-                                             <xs:attribute name="EndIf" type="xs:boolean" msprop:nullValue="false" default="false" />
-                                             <xs:attribute name="Suspended" type="xs:boolean" default="false" msprop:nullValue="false" />
-                                          </xs:complexType>
-                                       </xs:element>
-                                       <xs:element name="PlanParameterValue">
-                                          <xs:complexType>
-                                             <xs:sequence></xs:sequence>
-                                             <xs:attribute name="MapName" type="xs:Name" use="prohibited" />
-                                             <xs:attribute name="LayerName" type="xs:Name" use="prohibited" />
-                                             <xs:attribute name="PlanName" type="xs:Name" use="prohibited" />
-                                             <xs:attribute name="Name" type="xs:Name" />
-                                             <xs:attribute name="Value" type="xs:string" />
-                                          </xs:complexType>
-                                       </xs:element>
-                                    </xs:sequence>
-                                    <xs:attribute name="MapName" type="xs:Name" use="prohibited" />
-                                    <xs:attribute name="LayerName" type="xs:Name" use="prohibited" />
-                                    <xs:attribute name="Name" type="xs:Name" />
-                                    <xs:attribute name="Priority" type="xs:int" />
-                                 </xs:complexType>
-                              </xs:element>
-                           </xs:sequence>
-                           <xs:attribute name="Name" type="xs:Name" use="required" />
-                           <xs:attribute name="Width" type="xs:int" use="required" />
-                           <xs:attribute name="Height" type="xs:int" use="required" />
-                           <xs:attribute name="Tileset" type="xs:Name" />
-                           <xs:attribute name="BytesPerTile" type="xs:unsignedByte" use="required" />
-                           <xs:attribute name="MapName" type="xs:Name" use="prohibited" />
-                           <xs:attribute name="OffsetX" type="xs:int" msprop:nullValue="0" default="0" use="optional" />
-                           <xs:attribute name="OffsetY" type="xs:int" msprop:nullValue="0" default="0" use="optional" />
-                           <xs:attribute name="ScrollRateX" type="xs:float" default="1" msprop:nullValue="1" use="optional" />
-                           <xs:attribute name="ScrollRateY" type="xs:float" default="1" msprop:nullValue="1" use="optional" />
-                           <xs:attribute name="ZIndex" type="xs:int" msprop:nullValue="0" />
-                           <xs:attribute name="Priority" type="xs:int" msprop:nullValue="0" default="0" />
-                           <xs:attribute name="VirtualWidth" type="xs:int" default="0" msprop:nullValue="0" />
-                           <xs:attribute name="VirtualHeight" type="xs:int" default="0" msprop:nullValue="0" />
-                        </xs:complexType>
-                     </xs:element>
+                    <xs:element name="CategoryTile" msprop:Generator_UserTableName="CategoryTile" msprop:Generator_RowDeletedName="CategoryTileRowDeleted" msprop:Generator_RowChangedName="CategoryTileRowChanged" msprop:Generator_RowClassName="CategoryTileRow" msprop:Generator_RowChangingName="CategoryTileRowChanging" msprop:Generator_RowEvArgName="CategoryTileRowChangeEvent" msprop:Generator_RowEvHandlerName="CategoryTileRowChangeEventHandler" msprop:Generator_TableClassName="CategoryTileDataTable" msprop:Generator_TableVarName="tableCategoryTile" msprop:Generator_RowDeletingName="CategoryTileRowDeleting" msprop:Generator_TablePropName="CategoryTile" minOccurs="0" maxOccurs="unbounded">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="CategoryFrame" msprop:Generator_UserTableName="CategoryFrame" msprop:Generator_RowDeletedName="CategoryFrameRowDeleted" msprop:Generator_RowChangedName="CategoryFrameRowChanged" msprop:Generator_RowClassName="CategoryFrameRow" msprop:Generator_RowChangingName="CategoryFrameRowChanging" msprop:Generator_RowEvArgName="CategoryFrameRowChangeEvent" msprop:Generator_RowEvHandlerName="CategoryFrameRowChangeEventHandler" msprop:Generator_TableClassName="CategoryFrameDataTable" msprop:Generator_TableVarName="tableCategoryFrame" msprop:Generator_RowDeletingName="CategoryFrameRowDeleting" msprop:Generator_TablePropName="CategoryFrame" minOccurs="0" maxOccurs="unbounded">
+                            <xs:complexType>
+                              <xs:attribute name="Tileset" msprop:Generator_UserColumnName="Tileset" msprop:Generator_ColumnVarNameInTable="columnTileset" msprop:Generator_ColumnPropNameInRow="Tileset" msprop:Generator_ColumnPropNameInTable="TilesetColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                              <xs:attribute name="Category" msprop:Generator_UserColumnName="Category" msprop:Generator_ColumnVarNameInTable="columnCategory" msprop:Generator_ColumnPropNameInRow="Category" msprop:Generator_ColumnPropNameInTable="CategoryColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                              <xs:attribute name="TileValue" msprop:Generator_UserColumnName="TileValue" msprop:Generator_ColumnVarNameInTable="columnTileValue" msprop:Generator_ColumnPropNameInRow="TileValue" msprop:Generator_ColumnPropNameInTable="TileValueColumn" type="xs:int" msdata:AllowDBNull="false" use="prohibited" />
+                              <xs:attribute name="Frame" msprop:Generator_UserColumnName="Frame" msprop:Generator_ColumnVarNameInTable="columnFrame" msprop:Generator_ColumnPropNameInRow="Frame" msprop:Generator_ColumnPropNameInTable="FrameColumn" type="xs:short" use="required" />
+                            </xs:complexType>
+                          </xs:element>
+                        </xs:sequence>
+                        <xs:attribute name="Tileset" msprop:Generator_UserColumnName="Tileset" msprop:Generator_ColumnVarNameInTable="columnTileset" msprop:Generator_ColumnPropNameInRow="Tileset" msprop:Generator_ColumnPropNameInTable="TilesetColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                        <xs:attribute name="Category" msprop:Generator_UserColumnName="Category" msprop:Generator_ColumnVarNameInTable="columnCategory" msprop:Generator_ColumnPropNameInRow="Category" msprop:Generator_ColumnPropNameInTable="CategoryColumn" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
+                        <xs:attribute name="TileValue" msprop:Generator_UserColumnName="TileValue" msprop:Generator_ColumnVarNameInTable="columnTileValue" msprop:Generator_ColumnPropNameInRow="TileValue" msprop:Generator_ColumnPropNameInTable="TileValueColumn" type="xs:int" use="required" />
+                      </xs:complexType>
+                    </xs:element>
                   </xs:sequence>
-                  <xs:attribute name="Name" type="xs:Name" />
-                  <xs:attribute name="ScrollMarginLeft" type="xs:short" use="required" />
-                  <xs:attribute name="ScrollMarginTop" type="xs:short" use="required" />
-                  <xs:attribute name="ScrollMarginRight" type="xs:short" use="required" />
-                  <xs:attribute name="ScrollMarginBottom" type="xs:short" use="required" />
-                  <xs:attribute name="ScrollWidth" type="xs:int" msdata:Caption="Scrollable pixel width of the map independent of its layers"
-                     msprop:nullValue="0" />
-                  <xs:attribute name="ScrollHeight" type="xs:int" msdata:Caption="Scrollable pixel height of the map independent of its layers"
-                     msprop:nullValue="0" />
-                  <xs:attribute name="ViewLeft" type="xs:short" msprop:nullValue="0" />
-                  <xs:attribute name="ViewTop" type="xs:short" msprop:nullValue="0" />
-                  <xs:attribute name="ViewWidth" type="xs:short" msprop:nullValue="0" />
-                  <xs:attribute name="ViewHeight" type="xs:short" msprop:nullValue="0" />
-               </xs:complexType>
-            </xs:element>
-            <xs:element name="SpriteDefinition">
-               <xs:complexType>
-                  <xs:sequence>
-                     <xs:element name="SpriteRule">
-                        <xs:complexType>
-                           <xs:sequence></xs:sequence>
-                           <xs:attribute name="DefinitionName" type="xs:Name" use="prohibited" />
-                           <xs:attribute name="Name" type="xs:Name" />
-                           <xs:attribute name="Sequence" type="xs:int" use="required" msprop:nullValue="_throw" />
-                           <xs:attribute name="Type" type="xs:string" msprop:nullValue="_throw" use="required" />
-                           <xs:attribute name="Function" type="xs:Name" use="required" msprop:nullValue="_empty" />
-                           <xs:attribute name="Parameter1" type="xs:string" />
-                           <xs:attribute name="Parameter2" type="xs:string" />
-                           <xs:attribute name="Parameter3" type="xs:string" />
-                           <xs:attribute name="ResultParameter" type="xs:Name" />
-                           <xs:attribute name="EndIf" type="xs:boolean" msprop:nullValue="false" default="false" />
-                           <xs:attribute name="Suspended" type="xs:boolean" msprop:nullValue="false" default="false" />
-                        </xs:complexType>
-                     </xs:element>
-                     <xs:element name="SpriteParameter">
-                        <xs:complexType>
-                           <xs:sequence></xs:sequence>
-                           <xs:attribute name="DefinitionName" type="xs:Name" use="prohibited" />
-                           <xs:attribute name="Name" type="xs:Name" />
-                        </xs:complexType>
-                     </xs:element>
-                     <xs:element name="SpriteState">
-                        <xs:complexType>
-                           <xs:sequence>
-                              <xs:element name="SpriteFrame">
-                                 <xs:complexType>
-                                    <xs:sequence></xs:sequence>
-                                    <xs:attribute name="DefinitionName" type="xs:Name" use="prohibited" />
-                                    <xs:attribute name="StateName" type="xs:Name" use="prohibited" />
-                                    <xs:attribute name="Sequence" type="xs:short" />
-                                    <xs:attribute name="FrameValue" type="xs:int" />
-                                    <xs:attribute name="Duration" type="xs:short" />
-                                    <xs:attribute name="MaskAlphaLevel" type="xs:unsignedByte" msprop:nullValue="_throw" use="optional"
-                                       default="0" />
-                                 </xs:complexType>
-                              </xs:element>
-                           </xs:sequence>
-                           <xs:attribute name="DefinitionName" type="xs:Name" use="prohibited" />
-                           <xs:attribute name="Name" type="xs:Name" />
-                           <xs:attribute name="FramesetName" type="xs:Name" />
-                           <xs:attribute name="SolidWidth" type="xs:short" use="required" msprop:nullValue="0" />
-                           <xs:attribute name="SolidHeight" type="xs:short" msprop:nullValue="0" use="required" />
-                           <xs:attribute name="Sequence" type="xs:short" use="required" />
-                        </xs:complexType>
-                     </xs:element>
-                  </xs:sequence>
-                  <xs:attribute name="Name" type="xs:Name" />
-               </xs:complexType>
-            </xs:element>
-            <xs:element name="SpriteCategory">
-               <xs:complexType>
-                  <xs:sequence>
-                     <xs:element name="SpriteCategorySprite">
-                        <xs:complexType>
-                           <xs:sequence></xs:sequence>
-                           <xs:attribute name="CategoryName" type="xs:Name" use="prohibited" />
-                           <xs:attribute name="DefinitionName" type="xs:Name" />
-                        </xs:complexType>
-                     </xs:element>
-                  </xs:sequence>
-                  <xs:attribute name="Name" type="xs:Name" />
-               </xs:complexType>
-            </xs:element>
-            <xs:element name="Solidity">
-               <xs:complexType>
-                  <xs:sequence>
-                     <xs:element name="SolidityShape">
-                        <xs:complexType>
-                           <xs:sequence></xs:sequence>
-                           <xs:attribute name="SolidityName" type="xs:Name" use="prohibited" />
-                           <xs:attribute name="CategoryName" type="xs:Name" />
-                           <xs:attribute name="ShapeName" type="xs:Name" />
-                        </xs:complexType>
-                     </xs:element>
-                  </xs:sequence>
-                  <xs:attribute name="Name" type="xs:Name" />
-               </xs:complexType>
-            </xs:element>
-            <xs:element name="SourceCode">
-               <xs:complexType>
-                  <xs:sequence>
-                     <xs:element name="Text" type="xs:string" minOccurs="0" />
-                     <xs:element name="CustomObjectData" type="xs:base64Binary" minOccurs="0" />
-                  </xs:sequence>
-                  <xs:attribute name="Name" type="xs:Name" />
-                  <xs:attribute name="IsCustomObject" type="xs:boolean" msprop:nullValue="false" default="false" />
-                  <xs:attribute name="DependsOn" type="xs:Name" />
-               </xs:complexType>
-            </xs:element>
-            <xs:element name="Project" maxOccurs="1" minOccurs="1">
-               <xs:complexType>
-                  <xs:sequence></xs:sequence>
-                  <xs:attribute name="DisplayMode" type="xs:string" use="required" />
-                  <xs:attribute name="Windowed" type="xs:boolean" use="required" msprop:nullValue="false" />
-                  <xs:attribute name="TitleText" type="xs:string" />
-                  <xs:attribute name="StartMap" type="xs:Name" msprop:nullValue="_empty" use="optional" />
-                  <xs:attribute name="OverlayMap" type="xs:Name" use="optional" msprop:nullValue="_null" />
-                  <xs:attribute name="MaxPlayers" type="xs:unsignedByte" default="1" msprop:nullValue="1" />
-                  <xs:attribute name="MaxViews" type="xs:unsignedByte" default="1" msprop:nullValue="1" />
-                  <xs:attribute name="Credits" type="xs:string" />
-               </xs:complexType>
-            </xs:element>
-            <xs:element name="TileCategory">
-               <xs:complexType>
-                  <xs:sequence>
-                     <xs:element name="CategorizedTileset">
-                        <xs:complexType>
-                           <xs:sequence>
-                              <xs:element name="CategoryTile">
-                                 <xs:complexType>
-                                    <xs:sequence>
-                                       <xs:element name="CategoryFrame">
-                                          <xs:complexType>
-                                             <xs:sequence></xs:sequence>
-                                             <xs:attribute name="Tileset" type="xs:Name" use="prohibited" />
-                                             <xs:attribute name="Category" type="xs:Name" use="prohibited" />
-                                             <xs:attribute name="TileValue" type="xs:int" use="prohibited" />
-                                             <xs:attribute name="Frame" type="xs:short" />
-                                          </xs:complexType>
-                                       </xs:element>
-                                    </xs:sequence>
-                                    <xs:attribute name="Tileset" type="xs:Name" use="prohibited" />
-                                    <xs:attribute name="Category" type="xs:Name" use="prohibited" />
-                                    <xs:attribute name="TileValue" type="xs:int" />
-                                 </xs:complexType>
-                              </xs:element>
-                           </xs:sequence>
-                           <xs:attribute name="Tileset" type="xs:Name" />
-                           <xs:attribute name="Name" type="xs:Name" />
-                        </xs:complexType>
-                     </xs:element>
-                  </xs:sequence>
-                  <xs:attribute name="Name" type="xs:Name" />
-               </xs:complexType>
-            </xs:element>
-         </xs:choice>
-      </xs:complexType>
-      <xs:key name="GraphicSheetKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//GraphicSheet" />
-         <xs:field xpath="@Name" />
-      </xs:key>
-      <xs:keyref name="GraphicSheetFrame" refer="GraphicSheetKey" msdata:ConstraintOnly="true" msdata:UpdateRule="Cascade"
-         msdata:DeleteRule="None">
-         <xs:selector xpath=".//Frame" />
-         <xs:field xpath="@GraphicSheet" />
-      </xs:keyref>
-      <xs:key name="FramesetKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//Frameset" />
-         <xs:field xpath="@Name" />
-      </xs:key>
-      <xs:key name="TilesetKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//Tileset" />
-         <xs:field xpath="@Name" />
-      </xs:key>
-      <xs:keyref name="FramesetTileset" refer="FramesetKey" msdata:DeleteRule="Cascade" msdata:UpdateRule="Cascade">
-         <xs:selector xpath=".//Tileset" />
-         <xs:field xpath="@Frameset" />
-      </xs:keyref>
-      <xs:key name="CounterKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//Counter" />
-         <xs:field xpath="@Name" />
-      </xs:key>
-      <xs:keyref name="CounterTile" refer="CounterKey" msdata:DeleteRule="SetNull" msdata:UpdateRule="Cascade">
-         <xs:selector xpath=".//Tile" />
-         <xs:field xpath="@Counter" />
-      </xs:keyref>
-      <xs:key name="MapKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//Map" />
-         <xs:field xpath="@Name" />
-      </xs:key>
-      <xs:keyref name="TilesetLayer" refer="TilesetKey" msdata:DeleteRule="Cascade" msdata:UpdateRule="Cascade">
-         <xs:selector xpath=".//Layer" />
-         <xs:field xpath="@Tileset" />
-      </xs:keyref>
-      <xs:keyref name="TilesetTile" refer="TilesetKey" msdata:DeleteRule="Cascade" msdata:UpdateRule="Cascade"
-         msdata:IsNested="true">
-         <xs:selector xpath=".//Tile" />
-         <xs:field xpath="@Name" />
-      </xs:keyref>
-      <xs:key name="TileKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//Tile" />
-         <xs:field xpath="@Name" />
-         <xs:field xpath="@TileValue" />
-      </xs:key>
-      <xs:keyref name="TileTileFrame" refer="TileKey" msdata:DeleteRule="Cascade" msdata:UpdateRule="Cascade"
-         msdata:IsNested="true">
-         <xs:selector xpath=".//TileFrame" />
-         <xs:field xpath="@Name" />
-         <xs:field xpath="@TileValue" />
-      </xs:keyref>
-      <xs:key name="TileFrameKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//TileFrame" />
-         <xs:field xpath="@Name" />
-         <xs:field xpath="@TileValue" />
-         <xs:field xpath="@Sequence" />
-      </xs:key>
-      <xs:key name="LayerKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//Layer" />
-         <xs:field xpath="@MapName" />
-         <xs:field xpath="@Name" />
-      </xs:key>
-      <xs:keyref name="MapLayer" refer="MapKey" msdata:DeleteRule="Cascade" msdata:UpdateRule="Cascade"
-         msdata:IsNested="true">
-         <xs:selector xpath=".//Layer" />
-         <xs:field xpath="@MapName" />
-      </xs:keyref>
-      <xs:keyref name="FramesetFrame" refer="FramesetKey" msdata:DeleteRule="Cascade" msdata:UpdateRule="Cascade"
-         msdata:IsNested="true">
-         <xs:selector xpath=".//Frame" />
-         <xs:field xpath="@Name" />
-      </xs:keyref>
-      <xs:key name="FrameKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//Frame" />
-         <xs:field xpath="@Name" />
-         <xs:field xpath="@FrameValue" />
-      </xs:key>
-      <xs:keyref name="TilesetCategory" refer="TilesetKey" msdata:DeleteRule="Cascade" msdata:UpdateRule="Cascade">
-         <xs:selector xpath=".//CategorizedTileset" />
-         <xs:field xpath="@Tileset" />
-      </xs:keyref>
-      <xs:key name="CategorizedTilesetKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//CategorizedTileset" />
-         <xs:field xpath="@Tileset" />
-         <xs:field xpath="@Name" />
-      </xs:key>
-      <xs:keyref name="CategoryCategoryTile" refer="CategorizedTilesetKey" msdata:DeleteRule="Cascade"
-         msdata:UpdateRule="Cascade" msdata:IsNested="true">
-         <xs:selector xpath=".//CategoryTile" />
-         <xs:field xpath="@Tileset" />
-         <xs:field xpath="@Category" />
-      </xs:keyref>
-      <xs:key name="CategoryTileKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//CategoryTile" />
-         <xs:field xpath="@Tileset" />
-         <xs:field xpath="@Category" />
-         <xs:field xpath="@TileValue" />
-      </xs:key>
-      <xs:key name="SpriteKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//Sprite" />
-         <xs:field xpath="@LayerName" />
-         <xs:field xpath="@Name" />
-         <xs:field xpath="@MapName" />
-      </xs:key>
-      <xs:key name="SpriteStateKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//SpriteState" />
-         <xs:field xpath="@DefinitionName" />
-         <xs:field xpath="@Name" />
-      </xs:key>
-      <xs:keyref name="SpriteDefinitionSprite" refer="SpriteStateKey" msdata:DeleteRule="Cascade"
-         msdata:UpdateRule="Cascade">
-         <xs:selector xpath=".//Sprite" />
-         <xs:field xpath="@DefinitionName" />
-         <xs:field xpath="@StateName" />
-      </xs:keyref>
-      <xs:key name="SpriteFrameKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//SpriteFrame" />
-         <xs:field xpath="@DefinitionName" />
-         <xs:field xpath="@StateName" />
-         <xs:field xpath="@Sequence" />
-      </xs:key>
-      <xs:keyref name="SpriteStateFrame" refer="SpriteStateKey" msdata:DeleteRule="Cascade" msdata:UpdateRule="Cascade"
-         msdata:IsNested="true">
-         <xs:selector xpath=".//SpriteFrame" />
-         <xs:field xpath="@DefinitionName" />
-         <xs:field xpath="@StateName" />
-      </xs:keyref>
-      <xs:keyref name="SpriteDefinitionState" refer="SpriteDefinitionKey" msdata:DeleteRule="Cascade"
-         msdata:UpdateRule="Cascade" msdata:IsNested="true">
-         <xs:selector xpath=".//SpriteState" />
-         <xs:field xpath="@DefinitionName" />
-      </xs:keyref>
-      <xs:key name="SpriteRuleKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//SpriteRule" />
-         <xs:field xpath="@DefinitionName" />
-         <xs:field xpath="@Name" />
-      </xs:key>
-      <xs:key name="SpriteDefinitionKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//SpriteDefinition" />
-         <xs:field xpath="@Name" />
-      </xs:key>
-      <xs:key name="SpriteParameterKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//SpriteParameter" />
-         <xs:field xpath="@DefinitionName" />
-         <xs:field xpath="@Name" />
-      </xs:key>
-      <xs:keyref name="SpriteDefinitionSpriteParameter" refer="SpriteDefinitionKey" msdata:DeleteRule="Cascade"
-         msdata:UpdateRule="Cascade" msdata:IsNested="true">
-         <xs:selector xpath=".//SpriteParameter" />
-         <xs:field xpath="@DefinitionName" />
-      </xs:keyref>
-      <xs:key name="ParameterValueKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//ParameterValue" />
-         <xs:field xpath="@LayerName" />
-         <xs:field xpath="@SpriteName" />
-         <xs:field xpath="@ParameterName" />
-         <xs:field xpath="@MapName" />
-      </xs:key>
-      <xs:key name="SpriteKeyWithDefinition">
-         <xs:selector xpath=".//Sprite" />
-         <xs:field xpath="@DefinitionName" />
-         <xs:field xpath="@LayerName" />
-         <xs:field xpath="@Name" />
-         <xs:field xpath="@MapName" />
-      </xs:key>
-      <xs:keyref name="SpriteParameterValue" refer="SpriteKeyWithDefinition" msdata:DeleteRule="Cascade"
-         msdata:UpdateRule="Cascade" msdata:IsNested="true">
-         <xs:selector xpath=".//ParameterValue" />
-         <xs:field xpath="@DefinitionName" />
-         <xs:field xpath="@LayerName" />
-         <xs:field xpath="@SpriteName" />
-         <xs:field xpath="@MapName" />
-      </xs:keyref>
-      <xs:keyref name="SpriteParameterParameterValue" refer="SpriteParameterKey" msdata:DeleteRule="Cascade"
-         msdata:UpdateRule="Cascade">
-         <xs:selector xpath=".//ParameterValue" />
-         <xs:field xpath="@DefinitionName" />
-         <xs:field xpath="@ParameterName" />
-      </xs:keyref>
-      <xs:key name="SpriteCategorySpriteKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//SpriteCategorySprite" />
-         <xs:field xpath="@CategoryName" />
-         <xs:field xpath="@DefinitionName" />
-      </xs:key>
-      <xs:keyref name="SpriteDefinitionCategory" refer="SpriteDefinitionKey" msdata:DeleteRule="Cascade"
-         msdata:UpdateRule="Cascade">
-         <xs:selector xpath=".//SpriteCategorySprite" />
-         <xs:field xpath="@DefinitionName" />
-      </xs:keyref>
-      <xs:key name="SpriteCategoryKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//SpriteCategory" />
-         <xs:field xpath="@Name" />
-      </xs:key>
-      <xs:keyref name="SpriteCategorySpriteCategorySprite" refer="SpriteCategoryKey" msdata:DeleteRule="Cascade"
-         msdata:UpdateRule="Cascade" msdata:IsNested="true">
-         <xs:selector xpath=".//SpriteCategorySprite" />
-         <xs:field xpath="@CategoryName" />
-      </xs:keyref>
-      <xs:key name="SpritePlanKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//SpritePlan" />
-         <xs:field xpath="@MapName" />
-         <xs:field xpath="@LayerName" />
-         <xs:field xpath="@Name" />
-      </xs:key>
-      <xs:key name="CoordinateKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//Coordinate" />
-         <xs:field xpath="@MapName" />
-         <xs:field xpath="@LayerName" />
-         <xs:field xpath="@PlanName" />
-         <xs:field xpath="@Sequence" />
-      </xs:key>
-      <xs:keyref name="SpritePlanCoordinate" refer="SpritePlanKey" msdata:DeleteRule="Cascade" msdata:UpdateRule="Cascade"
-         msdata:IsNested="true">
-         <xs:selector xpath=".//Coordinate" />
-         <xs:field xpath="@MapName" />
-         <xs:field xpath="@LayerName" />
-         <xs:field xpath="@PlanName" />
-      </xs:keyref>
-      <xs:keyref name="LayerSpritePlan" refer="LayerKey" msdata:DeleteRule="Cascade" msdata:UpdateRule="Cascade"
-         msdata:IsNested="true">
-         <xs:selector xpath=".//SpritePlan" />
-         <xs:field xpath="@MapName" />
-         <xs:field xpath="@LayerName" />
-      </xs:keyref>
-      <xs:keyref name="LayerSprite" refer="LayerKey" msdata:DeleteRule="Cascade" msdata:UpdateRule="Cascade"
-         msdata:IsNested="true">
-         <xs:selector xpath=".//Sprite" />
-         <xs:field xpath="@MapName" />
-         <xs:field xpath="@LayerName" />
-      </xs:keyref>
-      <xs:key name="CategoryFrameKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//CategoryFrame" />
-         <xs:field xpath="@Tileset" />
-         <xs:field xpath="@Category" />
-         <xs:field xpath="@TileValue" />
-         <xs:field xpath="@Frame" />
-      </xs:key>
-      <xs:keyref name="CategoryTileCategoryFrame" refer="CategoryTileKey" msdata:DeleteRule="Cascade"
-         msdata:UpdateRule="Cascade" msdata:IsNested="true">
-         <xs:selector xpath=".//CategoryFrame" />
-         <xs:field xpath="@Tileset" />
-         <xs:field xpath="@Category" />
-         <xs:field xpath="@TileValue" />
-      </xs:keyref>
-      <xs:key name="SolidityKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//Solidity" />
-         <xs:field xpath="@Name" />
-      </xs:key>
-      <xs:key name="SolidityShapeKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//SolidityShape" />
-         <xs:field xpath="@SolidityName" />
-         <xs:field xpath="@CategoryName" />
-      </xs:key>
-      <xs:keyref name="CategorySolidityShape" refer="CategoryKey" msdata:DeleteRule="Cascade" msdata:UpdateRule="Cascade">
-         <xs:selector xpath=".//SolidityShape" />
-         <xs:field xpath="@CategoryName" />
-      </xs:keyref>
-      <xs:keyref name="SoliditySolidityShape" refer="SolidityKey" msdata:DeleteRule="Cascade" msdata:UpdateRule="Cascade"
-         msdata:IsNested="true">
-         <xs:selector xpath=".//SolidityShape" />
-         <xs:field xpath="@SolidityName" />
-      </xs:keyref>
-      <xs:keyref name="FramesetSpriteState" refer="FramesetKey" msdata:DeleteRule="Cascade" msdata:UpdateRule="Cascade">
-         <xs:selector xpath=".//SpriteState" />
-         <xs:field xpath="@FramesetName" />
-      </xs:keyref>
-      <xs:key name="SpriteStateFramesetKey">
-         <xs:selector xpath=".//SpriteState" />
-         <xs:field xpath="@DefinitionName" />
-         <xs:field xpath="@Name" />
-         <xs:field xpath="@FramesetName" />
-      </xs:key>
-      <xs:keyref name="SpriteDefinitionSpriteRule" refer="SpriteDefinitionKey" msdata:DeleteRule="Cascade"
-         msdata:UpdateRule="Cascade" msdata:IsNested="true">
-         <xs:selector xpath=".//SpriteRule" />
-         <xs:field xpath="@DefinitionName" />
-      </xs:keyref>
-      <xs:key name="PlanRuleKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//PlanRule" />
-         <xs:field xpath="@MapName" />
-         <xs:field xpath="@LayerName" />
-         <xs:field xpath="@PlanName" />
-         <xs:field xpath="@Name" />
-      </xs:key>
-      <xs:keyref name="SpritePlanPlanRule" refer="SpritePlanKey" msdata:DeleteRule="Cascade" msdata:UpdateRule="Cascade"
-         msdata:IsNested="true">
-         <xs:selector xpath=".//PlanRule" />
-         <xs:field xpath="@MapName" />
-         <xs:field xpath="@LayerName" />
-         <xs:field xpath="@PlanName" />
-      </xs:keyref>
-      <xs:key name="SourceCodeKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//SourceCode" />
-         <xs:field xpath="@Name" />
-      </xs:key>
-      <xs:keyref name="MapProject" refer="MapKey" msdata:ConstraintOnly="true" msdata:DeleteRule="SetNull"
-         msdata:UpdateRule="Cascade">
-         <xs:selector xpath=".//Project" />
-         <xs:field xpath="@StartMap" />
-      </xs:keyref>
-      <xs:key name="CategoryKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//TileCategory" />
-         <xs:field xpath="@Name" />
-      </xs:key>
-      <xs:keyref name="TileCategoryCategorizedTileset" refer="CategoryKey" msdata:DeleteRule="Cascade"
-         msdata:UpdateRule="Cascade" msdata:IsNested="true">
-         <xs:selector xpath=".//CategorizedTileset" />
-         <xs:field xpath="@Name" />
-      </xs:keyref>
-      <xs:keyref name="SpritePlanPlanParameterValue" refer="SpritePlanKey" msdata:DeleteRule="Cascade"
-         msdata:UpdateRule="Cascade" msdata:IsNested="true">
-         <xs:selector xpath=".//PlanParameterValue" />
-         <xs:field xpath="@MapName" />
-         <xs:field xpath="@LayerName" />
-         <xs:field xpath="@PlanName" />
-      </xs:keyref>
-      <xs:key name="PlanParameterValueKey" msdata:PrimaryKey="true">
-         <xs:selector xpath=".//PlanParameterValue" />
-         <xs:field xpath="@MapName" />
-         <xs:field xpath="@LayerName" />
-         <xs:field xpath="@PlanName" />
-         <xs:field xpath="@Name" />
-      </xs:key>
-   </xs:element>
+                  <xs:attribute name="Tileset" msprop:Generator_UserColumnName="Tileset" msprop:Generator_ColumnVarNameInTable="columnTileset" msprop:Generator_ColumnPropNameInRow="Tileset" msprop:Generator_ColumnPropNameInTable="TilesetColumn" type="xs:Name" use="required" />
+                  <xs:attribute name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:Name" use="required" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="Name" msprop:Generator_UserColumnName="Name" msprop:Generator_ColumnVarNameInTable="columnName" msprop:Generator_ColumnPropNameInRow="Name" msprop:Generator_ColumnPropNameInTable="NameColumn" type="xs:Name" use="required" />
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="GraphicSheetKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//GraphicSheet" />
+      <xs:field xpath="@Name" />
+    </xs:unique>
+    <xs:unique name="FrameKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//Frame" />
+      <xs:field xpath="@Name" />
+      <xs:field xpath="@FrameValue" />
+    </xs:unique>
+    <xs:unique name="FramesetKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//Frameset" />
+      <xs:field xpath="@Name" />
+    </xs:unique>
+    <xs:unique name="TileFrameKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//TileFrame" />
+      <xs:field xpath="@Name" />
+      <xs:field xpath="@TileValue" />
+      <xs:field xpath="@Sequence" />
+    </xs:unique>
+    <xs:unique name="TileKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//Tile" />
+      <xs:field xpath="@Name" />
+      <xs:field xpath="@TileValue" />
+    </xs:unique>
+    <xs:unique name="TilesetKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//Tileset" />
+      <xs:field xpath="@Name" />
+    </xs:unique>
+    <xs:unique name="CounterKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//Counter" />
+      <xs:field xpath="@Name" />
+    </xs:unique>
+    <xs:unique name="ParameterValueKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//ParameterValue" />
+      <xs:field xpath="@LayerName" />
+      <xs:field xpath="@SpriteName" />
+      <xs:field xpath="@ParameterName" />
+      <xs:field xpath="@MapName" />
+    </xs:unique>
+    <xs:unique name="SpriteKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//Sprite" />
+      <xs:field xpath="@LayerName" />
+      <xs:field xpath="@Name" />
+      <xs:field xpath="@MapName" />
+    </xs:unique>
+    <xs:unique name="SpriteKeyWithDefinition">
+      <xs:selector xpath=".//Sprite" />
+      <xs:field xpath="@DefinitionName" />
+      <xs:field xpath="@LayerName" />
+      <xs:field xpath="@Name" />
+      <xs:field xpath="@MapName" />
+    </xs:unique>
+    <xs:unique name="CoordinateKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//Coordinate" />
+      <xs:field xpath="@MapName" />
+      <xs:field xpath="@LayerName" />
+      <xs:field xpath="@PlanName" />
+      <xs:field xpath="@Sequence" />
+    </xs:unique>
+    <xs:unique name="PlanRuleKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//PlanRule" />
+      <xs:field xpath="@MapName" />
+      <xs:field xpath="@LayerName" />
+      <xs:field xpath="@PlanName" />
+      <xs:field xpath="@Name" />
+    </xs:unique>
+    <xs:unique name="PlanParameterValueKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//PlanParameterValue" />
+      <xs:field xpath="@MapName" />
+      <xs:field xpath="@LayerName" />
+      <xs:field xpath="@PlanName" />
+      <xs:field xpath="@Name" />
+    </xs:unique>
+    <xs:unique name="SpritePlanKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//SpritePlan" />
+      <xs:field xpath="@MapName" />
+      <xs:field xpath="@LayerName" />
+      <xs:field xpath="@Name" />
+    </xs:unique>
+    <xs:unique name="LayerKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//Layer" />
+      <xs:field xpath="@MapName" />
+      <xs:field xpath="@Name" />
+    </xs:unique>
+    <xs:unique name="MapKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//Map" />
+      <xs:field xpath="@Name" />
+    </xs:unique>
+    <xs:unique name="SpriteRuleKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//SpriteRule" />
+      <xs:field xpath="@DefinitionName" />
+      <xs:field xpath="@Name" />
+    </xs:unique>
+    <xs:unique name="SpriteParameterKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//SpriteParameter" />
+      <xs:field xpath="@DefinitionName" />
+      <xs:field xpath="@Name" />
+    </xs:unique>
+    <xs:unique name="SpriteFrameKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//SpriteFrame" />
+      <xs:field xpath="@DefinitionName" />
+      <xs:field xpath="@StateName" />
+      <xs:field xpath="@Sequence" />
+    </xs:unique>
+    <xs:unique name="SpriteStateKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//SpriteState" />
+      <xs:field xpath="@DefinitionName" />
+      <xs:field xpath="@Name" />
+    </xs:unique>
+    <xs:unique name="SpriteStateFramesetKey">
+      <xs:selector xpath=".//SpriteState" />
+      <xs:field xpath="@DefinitionName" />
+      <xs:field xpath="@Name" />
+      <xs:field xpath="@FramesetName" />
+    </xs:unique>
+    <xs:unique name="SpriteDefinitionKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//SpriteDefinition" />
+      <xs:field xpath="@Name" />
+    </xs:unique>
+    <xs:unique name="SpriteCategorySpriteKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//SpriteCategorySprite" />
+      <xs:field xpath="@CategoryName" />
+      <xs:field xpath="@DefinitionName" />
+    </xs:unique>
+    <xs:unique name="SpriteCategoryKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//SpriteCategory" />
+      <xs:field xpath="@Name" />
+    </xs:unique>
+    <xs:unique name="SolidityShapeKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//SolidityShape" />
+      <xs:field xpath="@SolidityName" />
+      <xs:field xpath="@CategoryName" />
+    </xs:unique>
+    <xs:unique name="SolidityKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//Solidity" />
+      <xs:field xpath="@Name" />
+    </xs:unique>
+    <xs:unique name="SourceCodeKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//SourceCode" />
+      <xs:field xpath="@Name" />
+    </xs:unique>
+    <xs:unique name="CategoryFrameKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//CategoryFrame" />
+      <xs:field xpath="@Tileset" />
+      <xs:field xpath="@Category" />
+      <xs:field xpath="@TileValue" />
+      <xs:field xpath="@Frame" />
+    </xs:unique>
+    <xs:unique name="CategoryTileKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//CategoryTile" />
+      <xs:field xpath="@Tileset" />
+      <xs:field xpath="@Category" />
+      <xs:field xpath="@TileValue" />
+    </xs:unique>
+    <xs:unique name="CategorizedTilesetKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//CategorizedTileset" />
+      <xs:field xpath="@Tileset" />
+      <xs:field xpath="@Name" />
+    </xs:unique>
+    <xs:unique name="CategoryKey" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//TileCategory" />
+      <xs:field xpath="@Name" />
+    </xs:unique>
+    <xs:keyref name="TilesetCategory" refer="TilesetKey" msprop:rel_Generator_UserRelationName="TilesetCategory" msprop:rel_Generator_RelationVarName="relationTilesetCategory" msprop:rel_Generator_UserChildTable="CategorizedTileset" msprop:rel_Generator_UserParentTable="Tileset" msprop:rel_Generator_ParentPropName="TilesetRow" msprop:rel_Generator_ChildPropName="GetCategorizedTilesetRows">
+      <xs:selector xpath=".//CategorizedTileset" />
+      <xs:field xpath="@Tileset" />
+    </xs:keyref>
+    <xs:keyref name="TileCategoryCategorizedTileset" refer="CategoryKey" msdata:IsNested="true" msprop:rel_Generator_UserRelationName="TileCategoryCategorizedTileset" msprop:rel_Generator_RelationVarName="relationTileCategoryCategorizedTileset" msprop:rel_Generator_UserChildTable="CategorizedTileset" msprop:rel_Generator_UserParentTable="TileCategory" msprop:rel_Generator_ParentPropName="TileCategoryRow" msprop:rel_Generator_ChildPropName="GetCategorizedTilesetRows">
+      <xs:selector xpath=".//CategorizedTileset" />
+      <xs:field xpath="@Name" />
+    </xs:keyref>
+    <xs:keyref name="CategoryCategoryTile" refer="CategorizedTilesetKey" msdata:IsNested="true" msprop:rel_Generator_UserRelationName="CategoryCategoryTile" msprop:rel_Generator_RelationVarName="relationCategoryCategoryTile" msprop:rel_Generator_UserChildTable="CategoryTile" msprop:rel_Generator_UserParentTable="CategorizedTileset" msprop:rel_Generator_ParentPropName="CategorizedTilesetRowParent" msprop:rel_Generator_ChildPropName="GetCategoryTileRows">
+      <xs:selector xpath=".//CategoryTile" />
+      <xs:field xpath="@Tileset" />
+      <xs:field xpath="@Category" />
+    </xs:keyref>
+    <xs:keyref name="CategoryTileCategoryFrame" refer="CategoryTileKey" msdata:IsNested="true" msprop:rel_Generator_UserRelationName="CategoryTileCategoryFrame" msprop:rel_Generator_RelationVarName="relationCategoryTileCategoryFrame" msprop:rel_Generator_UserChildTable="CategoryFrame" msprop:rel_Generator_UserParentTable="CategoryTile" msprop:rel_Generator_ParentPropName="CategoryTileRowParent" msprop:rel_Generator_ChildPropName="GetCategoryFrameRows">
+      <xs:selector xpath=".//CategoryFrame" />
+      <xs:field xpath="@Tileset" />
+      <xs:field xpath="@Category" />
+      <xs:field xpath="@TileValue" />
+    </xs:keyref>
+    <xs:keyref name="MapProject" refer="MapKey" msdata:ConstraintOnly="true" msdata:DeleteRule="SetNull">
+      <xs:selector xpath=".//Project" />
+      <xs:field xpath="@StartMap" />
+    </xs:keyref>
+    <xs:keyref name="CategorySolidityShape" refer="CategoryKey" msprop:rel_Generator_UserRelationName="CategorySolidityShape" msprop:rel_Generator_RelationVarName="relationCategorySolidityShape" msprop:rel_Generator_UserChildTable="SolidityShape" msprop:rel_Generator_UserParentTable="TileCategory" msprop:rel_Generator_ParentPropName="TileCategoryRow" msprop:rel_Generator_ChildPropName="GetSolidityShapeRows">
+      <xs:selector xpath=".//SolidityShape" />
+      <xs:field xpath="@CategoryName" />
+    </xs:keyref>
+    <xs:keyref name="SoliditySolidityShape" refer="SolidityKey" msdata:IsNested="true" msprop:rel_Generator_UserRelationName="SoliditySolidityShape" msprop:rel_Generator_RelationVarName="relationSoliditySolidityShape" msprop:rel_Generator_UserChildTable="SolidityShape" msprop:rel_Generator_UserParentTable="Solidity" msprop:rel_Generator_ParentPropName="SolidityRow" msprop:rel_Generator_ChildPropName="GetSolidityShapeRows">
+      <xs:selector xpath=".//SolidityShape" />
+      <xs:field xpath="@SolidityName" />
+    </xs:keyref>
+    <xs:keyref name="SpriteDefinitionCategory" refer="SpriteDefinitionKey" msprop:rel_Generator_UserRelationName="SpriteDefinitionCategory" msprop:rel_Generator_RelationVarName="relationSpriteDefinitionCategory" msprop:rel_Generator_UserChildTable="SpriteCategorySprite" msprop:rel_Generator_UserParentTable="SpriteDefinition" msprop:rel_Generator_ParentPropName="SpriteDefinitionRow" msprop:rel_Generator_ChildPropName="GetSpriteCategorySpriteRows">
+      <xs:selector xpath=".//SpriteCategorySprite" />
+      <xs:field xpath="@DefinitionName" />
+    </xs:keyref>
+    <xs:keyref name="SpriteCategorySpriteCategorySprite" refer="SpriteCategoryKey" msdata:IsNested="true" msprop:rel_Generator_UserRelationName="SpriteCategorySpriteCategorySprite" msprop:rel_Generator_RelationVarName="relationSpriteCategorySpriteCategorySprite" msprop:rel_Generator_UserChildTable="SpriteCategorySprite" msprop:rel_Generator_UserParentTable="SpriteCategory" msprop:rel_Generator_ParentPropName="SpriteCategoryRow" msprop:rel_Generator_ChildPropName="GetSpriteCategorySpriteRows">
+      <xs:selector xpath=".//SpriteCategorySprite" />
+      <xs:field xpath="@CategoryName" />
+    </xs:keyref>
+    <xs:keyref name="FramesetSpriteState" refer="FramesetKey" msprop:rel_Generator_UserRelationName="FramesetSpriteState" msprop:rel_Generator_RelationVarName="relationFramesetSpriteState" msprop:rel_Generator_UserChildTable="SpriteState" msprop:rel_Generator_UserParentTable="Frameset" msprop:rel_Generator_ParentPropName="FramesetRow" msprop:rel_Generator_ChildPropName="GetSpriteStateRows">
+      <xs:selector xpath=".//SpriteState" />
+      <xs:field xpath="@FramesetName" />
+    </xs:keyref>
+    <xs:keyref name="SpriteDefinitionState" refer="SpriteDefinitionKey" msdata:IsNested="true" msprop:rel_Generator_UserRelationName="SpriteDefinitionState" msprop:rel_Generator_RelationVarName="relationSpriteDefinitionState" msprop:rel_Generator_UserChildTable="SpriteState" msprop:rel_Generator_UserParentTable="SpriteDefinition" msprop:rel_Generator_ParentPropName="SpriteDefinitionRow" msprop:rel_Generator_ChildPropName="GetSpriteStateRows">
+      <xs:selector xpath=".//SpriteState" />
+      <xs:field xpath="@DefinitionName" />
+    </xs:keyref>
+    <xs:keyref name="SpriteStateFrame" refer="SpriteStateKey" msdata:IsNested="true" msprop:rel_Generator_UserRelationName="SpriteStateFrame" msprop:rel_Generator_RelationVarName="relationSpriteStateFrame" msprop:rel_Generator_UserChildTable="SpriteFrame" msprop:rel_Generator_UserParentTable="SpriteState" msprop:rel_Generator_ParentPropName="SpriteStateRowParent" msprop:rel_Generator_ChildPropName="GetSpriteFrameRows">
+      <xs:selector xpath=".//SpriteFrame" />
+      <xs:field xpath="@DefinitionName" />
+      <xs:field xpath="@StateName" />
+    </xs:keyref>
+    <xs:keyref name="SpriteDefinitionSpriteParameter" refer="SpriteDefinitionKey" msdata:IsNested="true" msprop:rel_Generator_UserRelationName="SpriteDefinitionSpriteParameter" msprop:rel_Generator_RelationVarName="relationSpriteDefinitionSpriteParameter" msprop:rel_Generator_UserChildTable="SpriteParameter" msprop:rel_Generator_UserParentTable="SpriteDefinition" msprop:rel_Generator_ParentPropName="SpriteDefinitionRow" msprop:rel_Generator_ChildPropName="GetSpriteParameterRows">
+      <xs:selector xpath=".//SpriteParameter" />
+      <xs:field xpath="@DefinitionName" />
+    </xs:keyref>
+    <xs:keyref name="SpriteDefinitionSpriteRule" refer="SpriteDefinitionKey" msdata:IsNested="true" msprop:rel_Generator_UserRelationName="SpriteDefinitionSpriteRule" msprop:rel_Generator_RelationVarName="relationSpriteDefinitionSpriteRule" msprop:rel_Generator_UserChildTable="SpriteRule" msprop:rel_Generator_UserParentTable="SpriteDefinition" msprop:rel_Generator_ParentPropName="SpriteDefinitionRow" msprop:rel_Generator_ChildPropName="GetSpriteRuleRows">
+      <xs:selector xpath=".//SpriteRule" />
+      <xs:field xpath="@DefinitionName" />
+    </xs:keyref>
+    <xs:keyref name="TilesetLayer" refer="TilesetKey" msprop:rel_Generator_UserRelationName="TilesetLayer" msprop:rel_Generator_RelationVarName="relationTilesetLayer" msprop:rel_Generator_UserChildTable="Layer" msprop:rel_Generator_UserParentTable="Tileset" msprop:rel_Generator_ParentPropName="TilesetRow" msprop:rel_Generator_ChildPropName="GetLayerRows">
+      <xs:selector xpath=".//Layer" />
+      <xs:field xpath="@Tileset" />
+    </xs:keyref>
+    <xs:keyref name="MapLayer" refer="MapKey" msdata:IsNested="true" msprop:rel_Generator_UserRelationName="MapLayer" msprop:rel_Generator_RelationVarName="relationMapLayer" msprop:rel_Generator_UserChildTable="Layer" msprop:rel_Generator_UserParentTable="Map" msprop:rel_Generator_ParentPropName="MapRow" msprop:rel_Generator_ChildPropName="GetLayerRows">
+      <xs:selector xpath=".//Layer" />
+      <xs:field xpath="@MapName" />
+    </xs:keyref>
+    <xs:keyref name="LayerSpritePlan" refer="LayerKey" msdata:IsNested="true" msprop:rel_Generator_UserRelationName="LayerSpritePlan" msprop:rel_Generator_RelationVarName="relationLayerSpritePlan" msprop:rel_Generator_UserChildTable="SpritePlan" msprop:rel_Generator_UserParentTable="Layer" msprop:rel_Generator_ParentPropName="LayerRowParent" msprop:rel_Generator_ChildPropName="GetSpritePlanRows">
+      <xs:selector xpath=".//SpritePlan" />
+      <xs:field xpath="@MapName" />
+      <xs:field xpath="@LayerName" />
+    </xs:keyref>
+    <xs:keyref name="SpritePlanPlanParameterValue" refer="SpritePlanKey" msdata:IsNested="true" msprop:rel_Generator_UserRelationName="SpritePlanPlanParameterValue" msprop:rel_Generator_RelationVarName="relationSpritePlanPlanParameterValue" msprop:rel_Generator_UserChildTable="PlanParameterValue" msprop:rel_Generator_UserParentTable="SpritePlan" msprop:rel_Generator_ParentPropName="SpritePlanRowParent" msprop:rel_Generator_ChildPropName="GetPlanParameterValueRows">
+      <xs:selector xpath=".//PlanParameterValue" />
+      <xs:field xpath="@MapName" />
+      <xs:field xpath="@LayerName" />
+      <xs:field xpath="@PlanName" />
+    </xs:keyref>
+    <xs:keyref name="SpritePlanPlanRule" refer="SpritePlanKey" msdata:IsNested="true" msprop:rel_Generator_UserRelationName="SpritePlanPlanRule" msprop:rel_Generator_RelationVarName="relationSpritePlanPlanRule" msprop:rel_Generator_UserChildTable="PlanRule" msprop:rel_Generator_UserParentTable="SpritePlan" msprop:rel_Generator_ParentPropName="SpritePlanRowParent" msprop:rel_Generator_ChildPropName="GetPlanRuleRows">
+      <xs:selector xpath=".//PlanRule" />
+      <xs:field xpath="@MapName" />
+      <xs:field xpath="@LayerName" />
+      <xs:field xpath="@PlanName" />
+    </xs:keyref>
+    <xs:keyref name="SpritePlanCoordinate" refer="SpritePlanKey" msdata:IsNested="true" msprop:rel_Generator_UserRelationName="SpritePlanCoordinate" msprop:rel_Generator_RelationVarName="relationSpritePlanCoordinate" msprop:rel_Generator_UserChildTable="Coordinate" msprop:rel_Generator_UserParentTable="SpritePlan" msprop:rel_Generator_ParentPropName="SpritePlanRowParent" msprop:rel_Generator_ChildPropName="GetCoordinateRows">
+      <xs:selector xpath=".//Coordinate" />
+      <xs:field xpath="@MapName" />
+      <xs:field xpath="@LayerName" />
+      <xs:field xpath="@PlanName" />
+    </xs:keyref>
+    <xs:keyref name="SpriteDefinitionSprite" refer="SpriteStateKey" msprop:rel_Generator_UserRelationName="SpriteDefinitionSprite" msprop:rel_Generator_RelationVarName="relationSpriteDefinitionSprite" msprop:rel_Generator_UserChildTable="Sprite" msprop:rel_Generator_UserParentTable="SpriteState" msprop:rel_Generator_ParentPropName="SpriteStateRowParent" msprop:rel_Generator_ChildPropName="GetSpriteRows">
+      <xs:selector xpath=".//Sprite" />
+      <xs:field xpath="@DefinitionName" />
+      <xs:field xpath="@StateName" />
+    </xs:keyref>
+    <xs:keyref name="LayerSprite" refer="LayerKey" msdata:IsNested="true" msprop:rel_Generator_UserRelationName="LayerSprite" msprop:rel_Generator_RelationVarName="relationLayerSprite" msprop:rel_Generator_UserChildTable="Sprite" msprop:rel_Generator_UserParentTable="Layer" msprop:rel_Generator_ParentPropName="LayerRowParent" msprop:rel_Generator_ChildPropName="GetSpriteRows">
+      <xs:selector xpath=".//Sprite" />
+      <xs:field xpath="@MapName" />
+      <xs:field xpath="@LayerName" />
+    </xs:keyref>
+    <xs:keyref name="SpriteParameterParameterValue" refer="SpriteParameterKey" msprop:rel_Generator_UserRelationName="SpriteParameterParameterValue" msprop:rel_Generator_RelationVarName="relationSpriteParameterParameterValue" msprop:rel_Generator_UserChildTable="ParameterValue" msprop:rel_Generator_UserParentTable="SpriteParameter" msprop:rel_Generator_ParentPropName="SpriteParameterRowParent" msprop:rel_Generator_ChildPropName="GetParameterValueRows">
+      <xs:selector xpath=".//ParameterValue" />
+      <xs:field xpath="@DefinitionName" />
+      <xs:field xpath="@ParameterName" />
+    </xs:keyref>
+    <xs:keyref name="SpriteParameterValue" refer="SpriteKeyWithDefinition" msdata:IsNested="true" msprop:rel_Generator_UserRelationName="SpriteParameterValue" msprop:rel_Generator_RelationVarName="relationSpriteParameterValue" msprop:rel_Generator_UserChildTable="ParameterValue" msprop:rel_Generator_UserParentTable="Sprite" msprop:rel_Generator_ParentPropName="SpriteRowParent" msprop:rel_Generator_ChildPropName="GetParameterValueRows">
+      <xs:selector xpath=".//ParameterValue" />
+      <xs:field xpath="@DefinitionName" />
+      <xs:field xpath="@LayerName" />
+      <xs:field xpath="@SpriteName" />
+      <xs:field xpath="@MapName" />
+    </xs:keyref>
+    <xs:keyref name="FramesetTileset" refer="FramesetKey" msprop:rel_Generator_UserRelationName="FramesetTileset" msprop:rel_Generator_RelationVarName="relationFramesetTileset" msprop:rel_Generator_UserChildTable="Tileset" msprop:rel_Generator_UserParentTable="Frameset" msprop:rel_Generator_ParentPropName="FramesetRow" msprop:rel_Generator_ChildPropName="GetTilesetRows">
+      <xs:selector xpath=".//Tileset" />
+      <xs:field xpath="@Frameset" />
+    </xs:keyref>
+    <xs:keyref name="CounterTile" refer="CounterKey" msprop:rel_Generator_UserRelationName="CounterTile" msprop:rel_Generator_RelationVarName="relationCounterTile" msprop:rel_Generator_UserChildTable="Tile" msprop:rel_Generator_UserParentTable="Counter" msprop:rel_Generator_ParentPropName="CounterRow" msprop:rel_Generator_ChildPropName="GetTileRows" msdata:DeleteRule="SetNull">
+      <xs:selector xpath=".//Tile" />
+      <xs:field xpath="@Counter" />
+    </xs:keyref>
+    <xs:keyref name="TilesetTile" refer="TilesetKey" msdata:IsNested="true" msprop:rel_Generator_UserRelationName="TilesetTile" msprop:rel_Generator_RelationVarName="relationTilesetTile" msprop:rel_Generator_UserChildTable="Tile" msprop:rel_Generator_UserParentTable="Tileset" msprop:rel_Generator_ParentPropName="TilesetRow" msprop:rel_Generator_ChildPropName="GetTileRows">
+      <xs:selector xpath=".//Tile" />
+      <xs:field xpath="@Name" />
+    </xs:keyref>
+    <xs:keyref name="TileTileFrame" refer="TileKey" msdata:IsNested="true" msprop:rel_Generator_UserRelationName="TileTileFrame" msprop:rel_Generator_RelationVarName="relationTileTileFrame" msprop:rel_Generator_UserChildTable="TileFrame" msprop:rel_Generator_UserParentTable="Tile" msprop:rel_Generator_ParentPropName="TileRowParent" msprop:rel_Generator_ChildPropName="GetTileFrameRows">
+      <xs:selector xpath=".//TileFrame" />
+      <xs:field xpath="@Name" />
+      <xs:field xpath="@TileValue" />
+    </xs:keyref>
+    <xs:keyref name="GraphicSheetFrame" refer="GraphicSheetKey" msdata:ConstraintOnly="true" msdata:DeleteRule="None">
+      <xs:selector xpath=".//Frame" />
+      <xs:field xpath="@GraphicSheet" />
+    </xs:keyref>
+    <xs:keyref name="FramesetFrame" refer="FramesetKey" msdata:IsNested="true" msprop:rel_Generator_UserRelationName="FramesetFrame" msprop:rel_Generator_RelationVarName="relationFramesetFrame" msprop:rel_Generator_UserChildTable="Frame" msprop:rel_Generator_UserParentTable="Frameset" msprop:rel_Generator_ParentPropName="FramesetRow" msprop:rel_Generator_ChildPropName="GetFrameRows">
+      <xs:selector xpath=".//Frame" />
+      <xs:field xpath="@Name" />
+    </xs:keyref>
+  </xs:element>
 </xs:schema>

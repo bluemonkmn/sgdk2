@@ -5,6 +5,7 @@
 using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
+using System.Xml;
 
 namespace SGDK2
 {
@@ -31,7 +32,7 @@ namespace SGDK2
       private const string CounterMaxFld = "m_nMax";
       private const string CounterValProp = "CurrentValue";
       private const string CounterMaxProp = "MaxValue";
-      private const string TilesetClass = "Tileset";
+      public const string TilesetClass = "Tileset";
       private const string TileListVar = "TileList";
       private const string TileBaseClass = "TileBase";
       private const string AnimTileClass = "AnimTile";
@@ -73,7 +74,6 @@ namespace SGDK2
       private const string FramesetRefClassName = "FramesetRef";
       private const string FramesetSerializeName = "FramesetName";
       private const string GameDisplayField = "GameDisplay";
-      private const string d3dx9File = "d3dx9_30.dll";
       private const string InjectStartIndexField = "m_nInjectStartIndex";
       private const string AppendStartIndexField = "m_nAppendStartIndex";
       private const string TileCategoryNameClass = "TileCategoryName";
@@ -262,10 +262,11 @@ namespace SGDK2
       }
       #endregion
 
-      public System.CodeDom.Compiler.ICodeGenerator Generator = new Microsoft.CSharp.CSharpCodeProvider().CreateGenerator();
+      public Microsoft.CSharp.CSharpCodeProvider Generator = new Microsoft.CSharp.CSharpCodeProvider();
       public CodeGeneratorOptions GeneratorOptions = new CodeGeneratorOptions();
       public bool Debug = false;
       public CodeLevel GenerateLevel = CodeLevel.IncludeAll;
+      
       private static TempAssembly m_TempAssembly = null;
 
       #region Project Level Code Generation
@@ -339,6 +340,10 @@ namespace SGDK2
             GenerateVSProject(txt);
             txt.Close();
 
+            txt = new System.IO.StreamWriter(GetMDProjectFile(FolderName));
+            GenerateMDProject(txt);
+            txt.Close();
+
             GenerateProjectSourceCode(FolderName, err);
             GenerateEmbeddedResources(FolderName);
          }
@@ -388,6 +393,17 @@ namespace SGDK2
          return (string[])(fileList.ToArray(typeof(string)));
       }
 
+      public string GetIntermediateConfigFile(string FolderName)
+      {
+         foreach (System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
+         {
+            string name = ((ProjectDataset.SourceCodeRow)drv.Row).Name;
+            if (name.EndsWith(".config"))
+               return System.IO.Path.Combine(FolderName, name);
+         }
+         return null;
+      }
+
       public static string GetIntermediateCodeFilename(string FolderName, System.Data.DataRow row)
       {
          if (!System.IO.Path.IsPathRooted(FolderName))
@@ -405,7 +421,8 @@ namespace SGDK2
          else if (row is ProjectDataset.SourceCodeRow)
          {
             ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)row;
-            if (!drCode.IsTextNull() && (drCode.Text.Trim().Length > 0) && drCode.Name.EndsWith(".cs"))
+            if (!drCode.IsTextNull() && (drCode.Text.Trim().Length > 0)
+               && drCode.Name.EndsWith(".cs"))
                return System.IO.Path.Combine(FolderName, drCode.Name);
          }
          return null;
@@ -481,27 +498,24 @@ namespace SGDK2
          {
             FolderName = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, FolderName);
          }
-         System.Reflection.Assembly asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Matrix));
-         fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)));
-         asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Device));
-         fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)));
-         asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Sprite));
-         fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)));
-         asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.DirectInput.KeyboardState));
-         fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)));
+
          foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
          {
             ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
-            if (drCode.Name.EndsWith(".dll"))
+            if (drCode.Name.EndsWith(".dll") || drCode.Name.EndsWith(".so"))
                fileList.Add(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(drCode.Name)));
          }
-         fileList.Add(System.IO.Path.Combine(FolderName, d3dx9File));
          return (string[])(fileList.ToArray(typeof(string)));
       }
 
       public string GetVSProjectFile(string FolderName)
       {
          return System.IO.Path.Combine(FolderName, System.IO.Path.GetFileNameWithoutExtension(SGDK2IDE.CurrentProjectFile) + ".csproj");
+      }
+
+      public string GetMDProjectFile(string FolderName)
+      {
+         return System.IO.Path.Combine(FolderName, System.IO.Path.GetFileNameWithoutExtension(SGDK2IDE.CurrentProjectFile) + ".mdp");
       }
 
       public string[] GenerateCodeStrings()
@@ -603,7 +617,8 @@ namespace SGDK2
          foreach (System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
          {
             ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
-            if (!drCode.IsTextNull() && (drCode.Text.Trim().Length > 0) && drCode.Name.EndsWith(".cs"))
+            if (!drCode.IsTextNull() && (drCode.Text.Trim().Length > 0) && 
+               (drCode.Name.EndsWith(".cs") || drCode.Name.EndsWith(".config")))
             {
                System.IO.TextWriter txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, drCode.Name));
                try
@@ -630,7 +645,8 @@ namespace SGDK2
                fs.Write(drCode.CustomObjectData, 0, drCode.CustomObjectData.Length);
                fs.Close();
             }
-            else if (drCode.Name.EndsWith(".dll") && !drCode.IsCustomObjectDataNull())
+            else if ((drCode.Name.EndsWith(".dll") || drCode.Name.EndsWith(".so"))
+               && !drCode.IsCustomObjectDataNull())
             {
                System.IO.FileStream fs = new System.IO.FileStream(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(drCode.Name)), System.IO.FileMode.Create);
                fs.Write(drCode.CustomObjectData, 0, drCode.CustomObjectData.Length);
@@ -682,6 +698,7 @@ namespace SGDK2
                new CodeCommentStatement("<remarks>The class is entirely generated based on the framesets defined in the project. Static members exist to create/access instances of each frameset, and each instance represents one specific frameset. Only one instance (maximum) of each frameset will ever exist per display.</remarks>", true)
             });
 
+         framesetClassDecl.IsPartial = true;
          framesetClassDecl.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
          framesetClassDecl.BaseTypes.Add(typeof(System.Runtime.Serialization.ISerializable));
          framesetClassDecl.Members.Add(new CodeMemberField(new CodeTypeReference(FrameClass, 1), "m_arFrames"));
@@ -719,6 +736,7 @@ namespace SGDK2
 
 
          CodeTypeDeclaration classFramesetRef = new CodeTypeDeclaration(FramesetRefClassName);
+         classFramesetRef.IsPartial = true;
          classFramesetRef.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
          classFramesetRef.BaseTypes.Add(typeof(System.Runtime.Serialization.IObjectReference));
          classFramesetRef.BaseTypes.Add(typeof(System.Runtime.Serialization.ISerializable));
@@ -847,19 +865,18 @@ namespace SGDK2
                CodeMethodInvokeExpression getTextureExp = new CodeMethodInvokeExpression(dispParam, "GetTextureRef", new CodePrimitiveExpression(drFrame.GraphicSheet));
                CodePrimitiveExpression cellExp = new CodePrimitiveExpression(drFrame.CellIndex);
                ProjectDataset.GraphicSheetRow g = ProjectData.GetGraphicSheet(drFrame.GraphicSheet);
-               Microsoft.DirectX.Matrix im = Microsoft.DirectX.Matrix.Identity;
                CodeObjectCreateExpression rectExp = new CodeObjectCreateExpression(
                   typeof(System.Drawing.Rectangle),
                   new CodePrimitiveExpression((drFrame.CellIndex % g.Columns) * g.CellWidth),
                   new CodePrimitiveExpression(((int)(drFrame.CellIndex / g.Columns)) * g.CellHeight),
                   new CodePrimitiveExpression(g.CellWidth),
                   new CodePrimitiveExpression(g.CellHeight));
-               if ((drFrame.m11 == im.M11) &&
-                  (drFrame.m12 == im.M12) &&
-                  (drFrame.m21 == im.M21) &&
-                  (drFrame.m22 == im.M22) &&
-                  (drFrame.dx == im.M41) &&
-                  (drFrame.dy == im.M42))
+               if ((drFrame.m11 == 1) &&
+                  (drFrame.m12 == 0) &&
+                  (drFrame.m21 == 0) &&
+                  (drFrame.m22 == 1) &&
+                  (drFrame.dx == 0) &&
+                  (drFrame.dy == 0))
                {
                   if (drFrame.color == -1)
                      frameParams.Add(new CodeObjectCreateExpression(FrameClass, getTextureExp, cellExp, rectExp));
@@ -868,16 +885,27 @@ namespace SGDK2
                }
                else
                {
-                  CodePrimitiveExpression m11Exp = new CodePrimitiveExpression(drFrame.m11);
-                  CodePrimitiveExpression m12Exp = new CodePrimitiveExpression(drFrame.m12);
-                  CodePrimitiveExpression m21Exp = new CodePrimitiveExpression(drFrame.m21);
-                  CodePrimitiveExpression m22Exp = new CodePrimitiveExpression(drFrame.m22);
-                  CodePrimitiveExpression m41Exp = new CodePrimitiveExpression(drFrame.dx);
-                  CodePrimitiveExpression m42Exp = new CodePrimitiveExpression(drFrame.dy);
+                  System.Drawing.PointF[] corners = new System.Drawing.PointF[] {
+                     new System.Drawing.PointF(0, 0),
+                     new System.Drawing.PointF(0, g.CellHeight),
+                     new System.Drawing.PointF(g.CellWidth, g.CellHeight),
+                     new System.Drawing.PointF(g.CellWidth, 0)};
+                  using (System.Drawing.Drawing2D.Matrix mtx = new System.Drawing.Drawing2D.Matrix(
+                     drFrame.m11, drFrame.m12, drFrame.m21, drFrame.m22, drFrame.dx, drFrame.dy))
+                  {
+                     mtx.TransformPoints(corners);
+                  }
+                  CodeObjectCreateExpression[] cornerPts = new CodeObjectCreateExpression[4];
+                  for (int ptIdx = 0; ptIdx < 4; ptIdx++)
+                     cornerPts[ptIdx] = new CodeObjectCreateExpression(typeof(System.Drawing.PointF),
+                        new CodePrimitiveExpression(corners[ptIdx].X),
+                        new CodePrimitiveExpression(corners[ptIdx].Y));
+                  CodeArrayCreateExpression cornerArray = new CodeArrayCreateExpression(
+                     typeof(System.Drawing.PointF), cornerPts[0], cornerPts[1], cornerPts[2], cornerPts[3]);
                   if (drFrame.color == -1)
-                     frameParams.Add(new CodeObjectCreateExpression(FrameClass, getTextureExp, cellExp, m11Exp, m12Exp, m21Exp, m22Exp, m41Exp, m42Exp, rectExp));
+                     frameParams.Add(new CodeObjectCreateExpression(FrameClass, getTextureExp, cellExp, cornerArray, rectExp));
                   else
-                     frameParams.Add(new CodeObjectCreateExpression(FrameClass, getTextureExp, cellExp, m11Exp, m12Exp, m21Exp, m22Exp, m41Exp, m42Exp, rectExp, new CodePrimitiveExpression(drFrame.color)));
+                     frameParams.Add(new CodeObjectCreateExpression(FrameClass, getTextureExp, cellExp, cornerArray, rectExp, new CodePrimitiveExpression(drFrame.color)));
                }
             }
             CodeArrayCreateExpression createArray = new CodeArrayCreateExpression(FrameClass,(CodeExpression[])frameParams.ToArray(typeof(CodeExpression)));
@@ -930,6 +958,7 @@ namespace SGDK2
       public void GenerateCounters(System.IO.TextWriter txt)
       {
          CodeTypeDeclaration counterClassDecl = new CodeTypeDeclaration(CounterClass);
+         counterClassDecl.IsPartial = true;
          CodeConstructor construct = new CodeConstructor();
          construct.Attributes = MemberAttributes.Public;
          construct.Parameters.AddRange(new CodeParameterDeclarationExpression[] {new CodeParameterDeclarationExpression(typeof(int), "nValue"), new CodeParameterDeclarationExpression(typeof(int), "nMax")});
@@ -1022,6 +1051,7 @@ namespace SGDK2
       public void GenerateTilesets(System.IO.TextWriter txt, System.IO.TextWriter err)
       {
          CodeTypeDeclaration classTileset = new CodeTypeDeclaration(TilesetClass);
+         classTileset.IsPartial = true;
          classTileset.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
          classTileset.BaseTypes.Add(typeof(System.Runtime.Serialization.ISerializable));
          CodeTypeConstructor staticConstructor = new CodeTypeConstructor();
@@ -1043,6 +1073,7 @@ namespace SGDK2
             {new CodeTypeOfExpression(TilesetRefClassName)}));            
 
          CodeTypeDeclaration classTilesetRef = new CodeTypeDeclaration(TilesetRefClassName);
+         classTilesetRef.IsPartial = true;
          classTilesetRef.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
          classTilesetRef.BaseTypes.Add(typeof(System.Runtime.Serialization.IObjectReference));
          classTilesetRef.BaseTypes.Add(typeof(System.Runtime.Serialization.ISerializable));
@@ -1442,8 +1473,9 @@ namespace SGDK2
 
       public void GenerateMap(ProjectDataset.MapRow drMap, System.IO.TextWriter txt, System.IO.TextWriter err)
       {
-         CodeTypeDeclaration clsMap = new CodeTypeDeclaration(NameToVariable(drMap.Name) + "_Map");
+         CodeTypeDeclaration clsMap = new CodeTypeDeclaration(NameToMapClass(drMap.Name));
          clsMap.BaseTypes.Add("MapBase");
+         clsMap.IsPartial = true;
          clsMap.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
          CodeConstructor constructor = new CodeConstructor();
          constructor.Attributes = MemberAttributes.Final | MemberAttributes.Public;
@@ -1460,7 +1492,7 @@ namespace SGDK2
          clsMap.Members.Add(mthDraw);
 
          CodeMemberMethod mthExecuteMapRules = new CodeMemberMethod();
-         mthExecuteMapRules.Name = "ExecuteRules";
+         mthExecuteMapRules.Name = "ExecuteRulesInternal";
          mthExecuteMapRules.Attributes = MemberAttributes.Override | MemberAttributes.Public;
          clsMap.Members.Add(mthExecuteMapRules);
 
@@ -1604,6 +1636,8 @@ namespace SGDK2
 
          foreach (ProjectDataset.LayerRow drLayer in ProjectData.GetSortedLayers(drMap))
          {
+            if (String.IsNullOrEmpty(drLayer.Tileset))
+               continue;
             CodeMemberField fldLayer;
             int nTop, nBottom, nLeft, nRight;
             ProjectData.GetTilesetOverlaps(drLayer.TilesetRow, out nRight, out nBottom, out nLeft, out nTop);
@@ -1623,6 +1657,7 @@ namespace SGDK2
 
             CodeTypeDeclaration clsLayer = new CodeTypeDeclaration(NameToVariable(drLayer.Name)+ "_Lyr");
             clsLayer.BaseTypes.Add(lyrTyp);
+            clsLayer.IsPartial = true;
             clsLayer.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
             lyrTyp = new CodeTypeReference(clsLayer.Name);
             CodeConstructor lyrConstructor = new CodeConstructor();
@@ -1733,8 +1768,8 @@ namespace SGDK2
 
             if ((plans.Length > 0) || (sprites.Length > 0))
             {
-               mthExecuteLayerRules.Attributes = MemberAttributes.Public | MemberAttributes.Final;
-               mthExecuteLayerRules.Name = "ExecuteRules";
+               mthExecuteLayerRules.Attributes = MemberAttributes.Public | MemberAttributes.Override;
+               mthExecuteLayerRules.Name = "ExecuteRulesInternal";
                clsLayer.Members.Add(mthExecuteLayerRules);
                mthExecuteMapRules.Statements.Add(
                   new CodeMethodInvokeExpression(
@@ -1746,8 +1781,9 @@ namespace SGDK2
             {
                CodeTypeDeclaration clsPlan = new CodeTypeDeclaration(NameToVariable(drPlan.Name));
                clsLayer.Members.Add(clsPlan);
+               clsPlan.IsPartial = true;
                clsPlan.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
-               clsPlan.BaseTypes.Add(PlanBaseClassName);
+               clsPlan.BaseTypes.Add(drPlan.BaseClass);
 
                clsPlan.Members.Add(new CodeMemberField(clsLayer.Name, SpritePlanParentField));
 
@@ -1864,7 +1900,7 @@ namespace SGDK2
                      for (int i = 0; i < rules.Length; i++)
                         ruleArray[i] = new RuleContent(rules[i]);
                      CodeMemberMethod mthExecuteRules = new CodeMemberMethod();
-                     mthExecuteRules.Name = "ExecuteRules";
+                     mthExecuteRules.Name = "ExecuteRulesInternal";
                      mthExecuteRules.Attributes = MemberAttributes.Override | MemberAttributes.Public;
                      try
                      {
@@ -1881,6 +1917,7 @@ namespace SGDK2
 
             CodeTypeDeclaration clsLayerSpriteCategories = new CodeTypeDeclaration(LayerSpriteCategoriesClassName);
             clsLayer.Members.Add(clsLayerSpriteCategories);
+            clsLayerSpriteCategories.IsPartial = true;
             clsLayerSpriteCategories.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
 
             CodeMemberField fldSprCatLayer = new CodeMemberField(clsLayer.Name, "m_layer");
@@ -2046,10 +2083,8 @@ namespace SGDK2
          }
          // Flush forces ScissorRectangle to apply to this batch only.
          mthDraw.Statements.Add(new CodeMethodInvokeExpression(
-            new CodePropertyReferenceExpression(
             new CodeFieldReferenceExpression(
-            new CodeThisReferenceExpression(), MapDisplayField),
-            "Sprite"), "Flush"));
+            new CodeThisReferenceExpression(), MapDisplayField), "Flush"));
          Generator.GenerateCodeFromType(clsMap, txt, GeneratorOptions);
       }
 
@@ -2100,9 +2135,11 @@ namespace SGDK2
                // If function is an operator
                if (op != CodeBinaryOperatorType.Modulus)
                {
-                  if (!rule.Parameter1.StartsWith("(") || !rule.Parameter1.EndsWith(")"))
+                  if (rule.Parameter1 != null &&
+                     (rule.Parameter1.StartsWith("(") || !rule.Parameter1.EndsWith(")")))
                      rule.Parameter1 = "(" + rule.Parameter1 + ")";
-                  if (!rule.Parameter2.StartsWith("(") || !rule.Parameter2.EndsWith(")"))
+                  if (rule.Parameter2 != null &&
+                     (!rule.Parameter2.StartsWith("(") || !rule.Parameter2.EndsWith(")")))
                      rule.Parameter2 = "(" + rule.Parameter2 + ")";
                   invokeResult = new CodeBinaryOperatorExpression(
                      new CodeSnippetExpression(rule.Parameter1),
@@ -2274,6 +2311,80 @@ namespace SGDK2
          }
       }
 
+      public string ConvertRuleToCode(ProjectDataset.SpriteRuleRow[] drRules, string name)
+      {
+         CodeNamespace nsSprites = new CodeNamespace(SpritesNamespace);
+         CodeTypeDeclaration clsSpriteDef = new CodeTypeDeclaration(NameToVariable(drRules[0].SpriteDefinitionRow.Name));
+         clsSpriteDef.IsPartial = true;
+         nsSprites.Types.Add(clsSpriteDef);
+
+         CodeMemberMethod mthRule = new CodeMemberMethod();
+         mthRule.Name = name;
+         mthRule.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+         mthRule.CustomAttributes.Add(
+            new CodeAttributeDeclaration(
+            new CodeTypeReference(typeof(System.ComponentModel.DescriptionAttribute)),
+            new CodeAttributeArgument(
+            new CodePrimitiveExpression("Executes rules converted to code from sprite " + drRules[0].SpriteDefinitionRow.Name))));
+         clsSpriteDef.Members.Add(mthRule);
+         RuleContent[] ruleArray = new RuleContent[drRules.Length];
+         for (int i = 0; i < drRules.Length; i++)
+            ruleArray[i] = new RuleContent(drRules[i]);
+         GenerateRules(ruleArray, mthRule);
+         using (System.IO.StringWriter sw = new System.IO.StringWriter())
+         {
+            if (string.IsNullOrEmpty(name))
+            {
+               foreach (CodeStatement stmt in mthRule.Statements)
+                  Generator.GenerateCodeFromStatement(stmt, sw, GeneratorOptions);
+            }
+            else
+            {
+               Generator.GenerateCodeFromNamespace(nsSprites, sw, GeneratorOptions);
+            }
+            return sw.ToString();
+         }
+      }
+
+      public string ConvertRuleToCode(ProjectDataset.PlanRuleRow[] drRules, string name)
+      {
+         CodeTypeDeclaration clsMap = new CodeTypeDeclaration(NameToMapClass(drRules[0].MapName));
+         clsMap.IsPartial = true;
+         CodeTypeDeclaration clsLayer = new CodeTypeDeclaration(NameToVariable(drRules[0].LayerName) + "_Lyr");
+         clsLayer.IsPartial = true;
+         clsMap.Members.Add(clsLayer);
+         CodeTypeDeclaration clsPlan = new CodeTypeDeclaration(NameToVariable(drRules[0].PlanName));
+         clsPlan.IsPartial = true;
+         clsLayer.Members.Add(clsPlan);
+
+         CodeMemberMethod mthRule = new CodeMemberMethod();
+         mthRule.Name = name;
+         mthRule.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+         mthRule.CustomAttributes.Add(
+            new CodeAttributeDeclaration(
+            new CodeTypeReference(typeof(System.ComponentModel.DescriptionAttribute)),
+            new CodeAttributeArgument(
+            new CodePrimitiveExpression("Executes rules converted to code from plan " + drRules[0].SpritePlanRowParent.Name))));
+         clsPlan.Members.Add(mthRule);
+         RuleContent[] ruleArray = new RuleContent[drRules.Length];
+         for (int i = 0; i < drRules.Length; i++)
+            ruleArray[i] = new RuleContent(drRules[i]);
+         GenerateRules(ruleArray, mthRule);
+         using (System.IO.StringWriter sw = new System.IO.StringWriter())
+         {
+            if (string.IsNullOrEmpty(name))
+            {
+               foreach (CodeStatement stmt in mthRule.Statements)
+                  Generator.GenerateCodeFromStatement(stmt, sw, GeneratorOptions);
+            }
+            else
+            {
+               Generator.GenerateCodeFromType(clsMap, sw, GeneratorOptions);
+            }
+            return sw.ToString();
+         }
+      }
+
       public void GenerateSpriteDef(ProjectDataset.SpriteDefinitionRow drSpriteDef, System.IO.TextWriter txt, System.IO.TextWriter err)
       {
          CodeNamespace nsSprites = new CodeNamespace(SpritesNamespace);
@@ -2281,7 +2392,8 @@ namespace SGDK2
          nsSprites.Types.Add(clsSpriteDef);
          clsSpriteDef.CustomAttributes.Add(new CodeAttributeDeclaration("System.Serializable"));
 
-         clsSpriteDef.BaseTypes.Add(SpriteBaseClass);
+         clsSpriteDef.BaseTypes.Add(drSpriteDef.BaseClass);
+         clsSpriteDef.IsPartial = true;
          CodeConstructor constructor = new CodeConstructor();
          constructor.Attributes = MemberAttributes.Public;
          constructor.Parameters.AddRange(new CodeParameterDeclarationExpression[]
@@ -2666,6 +2778,7 @@ namespace SGDK2
                new CodeCommentStatement("<summary>Provides categorized access to sprite within a layer for all categories defined in the project</summary>", true),
                new CodeCommentStatement("<remarks>Each <see cref=\"" + LayerBaseClassName + "." + SpriteCategoriesFieldName + "\"/> member of each layer contains an instance of a class derived from this that knows how to return sprites by category for the individual layer. Each sprite category is represented as a member whose name is based on a sprite category defined in the project, and returns a <see cref=\"" + SpriteCollectionClassName + "\"/> containing the sprites in that layer that are in the named category. Even categories without any members are represented in order to allow this common base class to provide the same set of categories universally regardless of the specific layer to which it applies.</remarks>", true)
             });
+         clsLayerSpriteCategoriesBase.IsPartial = true;
 
          foreach(System.Data.DataRowView drv in ProjectData.SpriteCategory.DefaultView)
          {
@@ -2717,6 +2830,7 @@ namespace SGDK2
                new CodeCommentStatement("<summary>Represents solidity definitions in the project</summary>", true),
                new CodeCommentStatement("<remarks>This class is generated based on solidity definitions defined in the project. A solidity definition defines a set of \"rules\" that associates tiles with the shapes that they should assume when these rules are active. The \"shape\" of a tile determines how sprites react to it. Each individual solidity definition is represented as a static member of this class whose name is based on the name assigned at design-time, which returns an instance of this class</remarks>", true)
             });
+         clsSolidity.IsPartial = true;
 
          CodeMemberMethod mthGetTileShape = new CodeMemberMethod();
          mthGetTileShape.Name = "GetCurrentTileShape";
@@ -2846,139 +2960,288 @@ namespace SGDK2
 
       public void GenerateVSProject(System.IO.TextWriter txt)
       {
-         System.Xml.XmlDocument xml = new System.Xml.XmlDocument();
-         System.Xml.XmlElement root = xml.CreateElement("VisualStudioProject");
+         XmlDocument xml = new XmlDocument();
+         XmlElement root = xml.CreateElement("Project");
          xml.AppendChild(root);
-         System.Xml.XmlElement csharp = xml.CreateElement("CSHARP");
-         root.AppendChild(csharp);
-         csharp.SetAttribute("ProjectType","Local");
-         csharp.SetAttribute("ProductVersion", "7.10.3077");
-         csharp.SetAttribute("SchemaVersion","2.0");
-         System.Xml.XmlElement build = xml.CreateElement("Build");
-         csharp.AppendChild(build);
-         System.Xml.XmlElement settings = xml.CreateElement("Settings");
-         build.AppendChild(settings);
-         if (SGDK2IDE.CurrentProjectFile != null)
-            settings.SetAttribute("AssemblyName", System.IO.Path.GetFileNameWithoutExtension(SGDK2IDE.CurrentProjectFile));
-         settings.SetAttribute("OutputType", "WinExe");
-         System.Xml.XmlElement configD = xml.CreateElement("Config");
-         System.Xml.XmlElement configR = xml.CreateElement("Config");
-         settings.AppendChild(configD);
-         settings.AppendChild(configR);
-         configD.SetAttribute("Name", "Debug");
-         configR.SetAttribute("Name", "Release");
-         configD.SetAttribute("AllowUnsafeBlocks", "false");
-         configR.SetAttribute("AllowUnsafeBlocks", "false");
-         //configD["BaseAddress"] = configR["BaseAddress"] = 
-         configD.SetAttribute("CheckForOverflowUnderflow", "false");
-         configR.SetAttribute("CheckforOverflowUnderflow", "false");
+         root.SetAttribute("DefaultTargets", "Build");
+         root.SetAttribute("ToolsVersion", "3.5");
+         root.SetAttribute("xmlns", "http://schemas.microsoft.com/developer/msbuild/2003");
+         XmlElement mainGroup = xml.CreateElement("PropertyGroup");
+         root.AppendChild(mainGroup);
+         AppendElem(mainGroup, "ProjectType", "Local");
+         AppendElem(mainGroup, "ProductVersion", "9.0.21022");
+         AppendElem(mainGroup, "SchemaVersion", "2.0");
+         AppendElem(mainGroup, "Configuration", "Debug",
+            new System.Collections.Generic.KeyValuePair<string, string>("Condition", " '$(Configuration)' == '' "));
+         AppendElem(mainGroup, "Platform", "x86",
+            new System.Collections.Generic.KeyValuePair<string, string>("Condition", " '$(Platform)' == '' "));
+         AppendElem(mainGroup, "AssemblyName", System.IO.Path.GetFileNameWithoutExtension(SGDK2IDE.CurrentProjectFile));
+         AppendElem(mainGroup, "OutputType", "WinExe");
+         AppendElem(mainGroup, "TargetFrameworkVersion", "2.0");
+
+         XmlElement debugGroup = xml.CreateElement("PropertyGroup");
+         XmlElement releaseGroup = xml.CreateElement("PropertyGroup");
+         root.AppendChild(debugGroup);
+         root.AppendChild(releaseGroup);
+         debugGroup.SetAttribute("Condition", " '$(Configuration)|$(Platform)' == 'Debug|x86' ");
+         releaseGroup.SetAttribute("Condition", " '$(Configuration)|$(Platform)' == 'Release|x86' ");
+         AppendElem(debugGroup, "PlatformTarget", "x86");
+         AppendElem(releaseGroup, "PlatformTarget", "x86");
+         AppendElem(debugGroup, "OutputPath", @".\");
+         AppendElem(releaseGroup, "OutputPath", @".\");
+         AppendElem(debugGroup, "AllowUnsafeBlocks", "false");
+         AppendElem(releaseGroup, "AllowUnsafeBlocks", "false");
+         AppendElem(debugGroup, "CheckForOverflowUnderflow", "false");
+         AppendElem(releaseGroup, "CheckforOverflowUnderflow", "false");
          if (SGDK2IDE.CurrentProjectFile != null)
          {
-            configD.SetAttribute("DocumentationFile", System.IO.Path.GetFileNameWithoutExtension(SGDK2IDE.CurrentProjectFile) + ".xml");
-            configR.SetAttribute("DocumentationFile", System.IO.Path.GetFileNameWithoutExtension(SGDK2IDE.CurrentProjectFile) + ".xml");
+            AppendElem(debugGroup, "DocumentationFile", System.IO.Path.GetFileNameWithoutExtension(SGDK2IDE.CurrentProjectFile) + ".xml");
+            AppendElem(releaseGroup, "DocumentationFile", System.IO.Path.GetFileNameWithoutExtension(SGDK2IDE.CurrentProjectFile) + ".xml");
          }
-         configD.SetAttribute("DebugSymbols", "true");
-         configR.SetAttribute("DebugSymbols", "false");
-         configD.SetAttribute("DefineConstants", "DEBUG");
-         configD.SetAttribute("FileAlignment", "4096");
-         configR.SetAttribute("FileAlignment", "4096");
-         configD.SetAttribute("IncrementalBuild", "false");
-         configR.SetAttribute("IncrementalBuild", "false");
-         configD.SetAttribute("NoStdLib", "false");
-         configR.SetAttribute("NoStdLib", "false");
-         configD.SetAttribute("Optimize", "false");
-         configR.SetAttribute("Optimize", "true");
-         configD.SetAttribute("OutputPath", ".\\");
-         configR.SetAttribute("OutputPath", ".\\");
-         configD.SetAttribute("RegisterForComInterop", "false");
-         configR.SetAttribute("RegisterForComInterop", "false");
-         configD.SetAttribute("RemoveIntegerChecks", "false");
-         configR.SetAttribute("RemoveIntegerChecks", "false");
-         configD.SetAttribute("TreatWarningsAsErrors", "false");
-         configR.SetAttribute("TreatWarningsAsErrors", "false");
-         configD.SetAttribute("WarningLevel", "1");
-         configR.SetAttribute("WarningLevel", "1");
-         System.Xml.XmlElement references = xml.CreateElement("References");
-         System.Reflection.Assembly[] refAssys = AppDomain.CurrentDomain.GetAssemblies();
+         AppendElem(debugGroup, "DebugSymbols", "true");
+         AppendElem(releaseGroup, "DebugSymbols", "false");
+         AppendElem(debugGroup, "DefineConstants", "DEBUG");
+         AppendElem(debugGroup, "FileAlignment", "4096");
+         AppendElem(releaseGroup, "FileAlignment", "4096");
+         AppendElem(debugGroup, "NoStdLib", "false");
+         AppendElem(releaseGroup, "NoStdLib", "false");
+         AppendElem(debugGroup, "Optimize", "false");
+         AppendElem(releaseGroup, "Optimize", "true");
+         AppendElem(debugGroup, "RegisterForComInterop", "false");
+         AppendElem(releaseGroup, "RegisterForComInterop", "false");
+         AppendElem(debugGroup, "RemoveIntegerChecks", "false");
+         AppendElem(releaseGroup, "RemoveIntegerChecks", "false");
+         AppendElem(debugGroup, "TreatWarningsAsErrors", "false");
+         AppendElem(releaseGroup, "TreatWarningsAsErrors", "false");
+         AppendElem(debugGroup, "WarningLevel", "1");
+         AppendElem(releaseGroup, "WarningLevel", "1");
+         AppendElem(debugGroup, "DebugType", "full");
+         AppendElem(releaseGroup, "DebugType", "none");
+         AppendElem(debugGroup, "ErrorReport", "prompt");
+         AppendElem(releaseGroup, "ErrorReport", "prompt");
+
+         XmlElement references = xml.CreateElement("ItemGroup");
+         root.AppendChild(references);
          foreach(string refName in new string[]
             {
-               "microsoft.directx",
-               "microsoft.directx.direct3d",
-               "microsoft.directx.direct3dx",
-               "microsoft.directx.directinput",
                "System.Drawing",
                "System.Windows.Forms",
                "System"
             })
          {
-            build.AppendChild(references);
-            System.Xml.XmlElement reference = xml.CreateElement("Reference");
-            references.AppendChild(reference);
-            reference.SetAttribute("Name", refName);
-            reference.SetAttribute("AssemblyName", refName);
-            if (refName.StartsWith("microsoft.directx"))
-            {
-               foreach(System.Reflection.Assembly refAssy in refAssys)
-               {
-                  if (string.Compare(refAssy.GetName().Name,refName,true)==0)
-                  {
-                     Microsoft.Win32.RegistryKey dn = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\.NETFramework\AssemblyFolders\DX_" + refAssy.GetName().Version, false);
-                     if (dn != null)
-                     {
-                        reference.SetAttribute("AssemblyFolderKey", @"hklm\dn\dx_" + refAssy.GetName().Version);
-                        dn.Close();
-                     }
-                     break;
-                  }
-               }
-            }
+            XmlElement assyRef = xml.CreateElement("Reference");
+            references.AppendChild(assyRef);
+            assyRef.SetAttribute("Include", refName);
+            AppendElem(assyRef, "Name", refName);
          }
          foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
          {
             ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
-            if (drCode.Name.EndsWith(".dll") && !IsOldDll(FindFullPath(drCode.Name)))
+            string fullPath = FindFullPath(drCode.Name);
+            if (drCode.Name.EndsWith(".dll") && !IsOldDll(fullPath))
             {
-               System.Reflection.Assembly refAssy = System.Reflection.Assembly.LoadWithPartialName(System.IO.Path.GetFileNameWithoutExtension(drCode.Name));
-               if (refAssy != null)
-               {
-                  System.Xml.XmlElement reference = xml.CreateElement("Reference");
-                  references.AppendChild(reference);
-                  reference.SetAttribute("Name", System.IO.Path.GetFileNameWithoutExtension(drCode.Name));
-                  reference.SetAttribute("AssemblyName", System.IO.Path.GetFileNameWithoutExtension(drCode.Name));
-                  references.SetAttribute("HintPath", refAssy.GetModules(false)[0].FullyQualifiedName);
-               }
+               string assyName = null;
+               if (System.IO.File.Exists(fullPath))
+                  assyName = System.Reflection.AssemblyName.GetAssemblyName(fullPath).FullName;
+               else
+                  assyName = System.IO.Path.GetFileNameWithoutExtension(fullPath);
+
+               XmlElement assyRef = xml.CreateElement("Reference");
+               references.AppendChild(assyRef);
+               assyRef.SetAttribute("Include", assyName);
+               AppendElem(assyRef, "Name", assyName);
+               AppendElem(assyRef, "SpecificVersion", "False");
+               AppendElem(assyRef, "HintPath", fullPath);
             }
          }
 
-         System.Xml.XmlElement files = xml.CreateElement("Files");
-         csharp.AppendChild(files);
-         System.Xml.XmlElement include = xml.CreateElement("Include");
-         files.AppendChild(include);
+         System.Xml.XmlElement files = xml.CreateElement("ItemGroup");
+         root.AppendChild(files);
 
          int filePos = SGDK2IDE.CurrentProjectFile.IndexOf(System.IO.Path.GetFileName(SGDK2IDE.CurrentProjectFile));
          foreach(string filename in GetCodeFileList(System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile)))
          {
-            System.Xml.XmlElement file = xml.CreateElement("File");
-            include.AppendChild(file);
-            file.SetAttribute("RelPath", filename.Substring(filePos));
-            file.SetAttribute("SubType", "Code");
-            file.SetAttribute("BuildAction", "Compile");
+            XmlElement compileUnit = xml.CreateElement("Compile");
+            compileUnit.SetAttribute("Include", filename.Substring(filePos));
+            files.AppendChild(compileUnit);
+         }
+
+         string cfgFile = GetIntermediateConfigFile(System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile));
+         if (cfgFile != null)
+         {
+            XmlElement compileUnit = xml.CreateElement("None");
+            compileUnit.SetAttribute("Include", cfgFile.Substring(filePos));
+            files.AppendChild(compileUnit);
+         }
+
+         foreach(string filename in GetEmbeddedResourceList(System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile)))
+         {
+            System.Xml.XmlElement file = xml.CreateElement("EmbeddedResource");
+            files.AppendChild(file);
+            file.SetAttribute("Include", filename.Substring(filePos));
+         }
+
+         foreach(string resx in GetResxFileList(System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile)))
+         {
+            System.Xml.XmlElement file = xml.CreateElement("EmbeddedResource");
+            files.AppendChild(file);
+            System.Xml.XmlElement dep = xml.CreateElement("DependentUpon");
+            file.AppendChild(dep);
+            file.SetAttribute("Include", resx.Substring(filePos));
+            dep.InnerText = System.IO.Path.GetFileNameWithoutExtension(resx) + ".cs";
+         }
+
+         XmlElement bootStrap = xml.CreateElement("ItemGroup");
+         root.AppendChild(bootStrap);
+         XmlElement pkg = xml.CreateElement("BootstrapperPackage");
+         bootStrap.AppendChild(pkg);
+         pkg.SetAttribute("Include", "Microsoft.Net.Framework.2.0");
+         AppendElem(pkg, "Visible", "False");
+         AppendElem(pkg, "ProductName", ".NET Framework 2.0 %28x86%29");
+         AppendElem(pkg, "Install", "false");
+         XmlElement importProj = xml.CreateElement("Import");
+         importProj.SetAttribute("Project", @"$(MSBuildBinPath)\Microsoft.CSharp.targets");
+         root.AppendChild(importProj);
+         System.Xml.XmlTextWriter xw = new System.Xml.XmlTextWriter(txt);
+         xw.Indentation = 2;
+         xw.IndentChar = ' ';
+         xw.Formatting = System.Xml.Formatting.Indented;
+         xml.WriteContentTo(xw);
+      }
+
+      public void GenerateMDProject(System.IO.TextWriter txt)
+      {
+         XmlDocument xml = new XmlDocument();
+         XmlElement root = xml.CreateElement("Project");
+         xml.AppendChild(root);
+         string prjName = System.IO.Path.GetFileNameWithoutExtension(SGDK2IDE.CurrentProjectFile);
+         root.SetAttribute("name", prjName);
+         root.SetAttribute("fileversion", "2.0");
+         root.SetAttribute("language", "C#");
+         root.SetAttribute("clr-version", "Net_2_0");
+         root.SetAttribute("ctype", "DotNetProject");
+         XmlElement configurations = xml.CreateElement("Configurations");
+         root.AppendChild(configurations);
+         configurations.SetAttribute("active", "Debug");
+
+         XmlElement debugCfg = xml.CreateElement("Configuration");
+         debugCfg.SetAttribute("name", "Debug");
+         debugCfg.SetAttribute("ctype", "DotNetProjectConfiguration");
+         XmlElement releaseCfg = xml.CreateElement("Configuration");
+         releaseCfg.SetAttribute("name", "Release");
+         releaseCfg.SetAttribute("ctype", "DotNetProjectConfiguration");
+         configurations.AppendChild(debugCfg);
+         configurations.AppendChild(releaseCfg);
+
+         XmlElement cfgOut = xml.CreateElement("Output");
+         debugCfg.AppendChild(cfgOut);
+         cfgOut.SetAttribute("directory", ".");
+         cfgOut.SetAttribute("assembly", prjName);
+         XmlElement cfgBuild = xml.CreateElement("Build");
+         debugCfg.AppendChild(cfgBuild);
+         cfgBuild.SetAttribute("debugmode", "True");
+         cfgBuild.SetAttribute("target", "Exe");
+         XmlElement cfgExec = xml.CreateElement("Execution");
+         debugCfg.AppendChild(cfgExec);
+         cfgExec.SetAttribute("runwithwarnings", "True");
+         cfgExec.SetAttribute("consolepause", "True");
+         cfgExec.SetAttribute("runtime", "MsNet");
+         cfgExec.SetAttribute("clr-version", "Net_2_0");
+         XmlElement cfgCodeGen = xml.CreateElement("CodeGeneration");
+         debugCfg.AppendChild(cfgCodeGen);
+         cfgCodeGen.SetAttribute("compiler", "Mcs");
+         cfgCodeGen.SetAttribute("warninglevel", "4");
+         cfgCodeGen.SetAttribute("optimize", "True");
+         cfgCodeGen.SetAttribute("unsafecodeallowed", "False");
+         cfgCodeGen.SetAttribute("generateoverflowchecks", "True");
+         cfgCodeGen.SetAttribute("mainclass", string.Empty);
+         cfgCodeGen.SetAttribute("definesymbols", "DEBUG");
+         cfgCodeGen.SetAttribute("generatexmldocumentation", "False");
+         cfgCodeGen.SetAttribute("win32Icon", ".");
+         cfgCodeGen.SetAttribute("ctype", "CSharpCompilerParameters");
+
+         releaseCfg.AppendChild(cfgOut.Clone());
+         cfgOut.SetAttribute("directory", ".");
+         cfgOut.SetAttribute("assembly", prjName);
+         cfgBuild = xml.CreateElement("Build");
+         releaseCfg.AppendChild(cfgBuild);
+         cfgBuild.SetAttribute("debugmode", "False");
+         cfgBuild.SetAttribute("target", "Exe");
+         releaseCfg.AppendChild(cfgExec);
+         cfgCodeGen = (XmlElement)cfgCodeGen.Clone();
+         releaseCfg.AppendChild(cfgCodeGen);
+         cfgCodeGen.SetAttribute("definesymbols", string.Empty);
+
+         System.Xml.XmlElement files = xml.CreateElement("Contents");
+         root.AppendChild(files);
+
+         int filePos = SGDK2IDE.CurrentProjectFile.IndexOf(System.IO.Path.GetFileName(SGDK2IDE.CurrentProjectFile));
+         foreach(string filename in GetCodeFileList(System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile)))
+         {
+            XmlElement compileUnit = xml.CreateElement("File");
+            compileUnit.SetAttribute("name", filename.Substring(filePos).Replace(System.IO.Path.DirectorySeparatorChar, '/'));
+            compileUnit.SetAttribute("subtype", "Code");
+            compileUnit.SetAttribute("buildaction", "Compile");
+            files.AppendChild(compileUnit);
+         }
+
+         string cfgFile = GetIntermediateConfigFile(System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile));
+         if (cfgFile != null)
+         {
+            XmlElement compileUnit = xml.CreateElement("File");
+            compileUnit.SetAttribute("name", cfgFile.Substring(filePos));
+            compileUnit.SetAttribute("subtype", "Code");
+            compileUnit.SetAttribute("buildaction", "FileCopy");
+            files.AppendChild(compileUnit);
          }
 
          foreach(string filename in GetEmbeddedResourceList(System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile)))
          {
             System.Xml.XmlElement file = xml.CreateElement("File");
-            include.AppendChild(file);
-            file.SetAttribute("RelPath", filename.Substring(filePos));
-            file.SetAttribute("BuildAction", "EmbeddedResource");
+            files.AppendChild(file);
+            file.SetAttribute("name", filename.Substring(filePos));
+            file.SetAttribute("subtype", "Code");
+            file.SetAttribute("buildaction", "EmbedAsResource");
          }
 
-         foreach(string resx in GetResourcesFileList(System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile)))
+         foreach(string resx in GetResxFileList(System.IO.Path.GetDirectoryName(SGDK2IDE.CurrentProjectFile)))
          {
             System.Xml.XmlElement file = xml.CreateElement("File");
-            include.AppendChild(file);
-            file.SetAttribute("RelPath", resx.Substring(filePos));
-            file.SetAttribute("BuildAction", "EmbeddedResource");
+            files.AppendChild(file);
+            file.SetAttribute("name", resx.Substring(filePos));
+            file.SetAttribute("subtype", "Code");
+            file.SetAttribute("buildaction", "EmbedAsResource");
+            file.SetAttribute("resource_id", System.IO.Path.GetFileNameWithoutExtension(resx) + ".resources");
+         }
+
+         XmlElement references = xml.CreateElement("References");
+         root.AppendChild(references);
+         foreach (string refName in new string[]
+            {
+               "System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a",
+               "System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
+               "System, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"
+            })
+         {
+            XmlElement assyRef = xml.CreateElement("ProjectReference");
+            references.AppendChild(assyRef);
+            assyRef.SetAttribute("type", "Gac");
+            assyRef.SetAttribute("localcopy", "False");
+            assyRef.SetAttribute("refto", refName);
+         }
+
+         foreach (System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
+         {
+            ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
+            string fullPath = FindFullPath(drCode.Name);
+            if (drCode.Name.EndsWith(".dll") && !IsOldDll(fullPath))
+            {
+               XmlElement assyRef = xml.CreateElement("ProjectReference");
+               references.AppendChild(assyRef);
+               assyRef.SetAttribute("type", "Assembly");
+               assyRef.SetAttribute("localcopy", "True");
+               assyRef.SetAttribute("refto", System.IO.Path.GetFileName(fullPath));
+            }
          }
 
          System.Xml.XmlTextWriter xw = new System.Xml.XmlTextWriter(txt);
@@ -3073,6 +3336,15 @@ namespace SGDK2
             typeof(System.Runtime.Serialization.StreamingContext), "context"));
          return mthGetObjectData;
       }
+      private XmlElement AppendElem(XmlElement parent, string name, string value, params System.Collections.Generic.KeyValuePair<string, string>[] attribs)
+      {
+         XmlElement result = parent.OwnerDocument.CreateElement(name);
+         result.InnerText = value;
+         foreach (var attrib in attribs)
+            result.SetAttribute(attrib.Key, attrib.Value);
+         parent.AppendChild(result);
+         return result;
+      }
       #endregion
 
       #region Compilation
@@ -3109,7 +3381,6 @@ namespace SGDK2
             readReflector.Close();
          
             Microsoft.CSharp.CSharpCodeProvider codeProvider = new Microsoft.CSharp.CSharpCodeProvider();
-            System.CodeDom.Compiler.ICodeCompiler compiler = codeProvider.CreateCompiler();
             System.CodeDom.Compiler.CompilerParameters compilerParams = new System.CodeDom.Compiler.CompilerParameters(new string[] {}, System.IO.Path.Combine(System.IO.Path.GetTempPath(), "SGDK2Tmp.dll"));
             int idx = 0;
             string reason = string.Empty;
@@ -3131,14 +3402,6 @@ namespace SGDK2
             if (idx >= 5)
                return "Unable to write temporary assembly to " + System.Windows.Forms.Application.StartupPath + "\r\n" + reason;
 
-            System.Reflection.Assembly asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Matrix));
-            compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
-            asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Device));
-            compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
-            asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Sprite));
-            compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
-            asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.DirectInput.KeyboardState));
-            compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
             compilerParams.ReferencedAssemblies.Add("System.Windows.Forms.dll");
             compilerParams.ReferencedAssemblies.Add("System.dll");
             compilerParams.ReferencedAssemblies.Add("System.Drawing.dll");
@@ -3147,18 +3410,12 @@ namespace SGDK2
             foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
             {
                ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
-               if (drCode.Name.EndsWith(".dll") && !IsOldDll(FindFullPath(drCode.Name)))
-               {
-                  System.Reflection.Assembly refAssy = System.Reflection.Assembly.LoadWithPartialName(System.IO.Path.GetFileNameWithoutExtension(drCode.Name));
-                  if (refAssy != null)
-                  {
-                     string assyPath = refAssy.GetModules(false)[0].FullyQualifiedName;
-                     compilerParams.ReferencedAssemblies.Add(assyPath);
-                  }
-               }
+               string fullPath = FindFullPath(drCode.Name);
+               if (drCode.Name.EndsWith(".dll") && !IsOldDll(fullPath))
+                  compilerParams.ReferencedAssemblies.Add(fullPath);
             }
             compilerParams.GenerateExecutable = false;
-            System.CodeDom.Compiler.CompilerResults results = compiler.CompileAssemblyFromSourceBatch(compilerParams, code);
+            System.CodeDom.Compiler.CompilerResults results = codeProvider.CompileAssemblyFromSource(compilerParams, code);
             if (results.Errors.Count > 0)
             {
                System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -3222,6 +3479,8 @@ namespace SGDK2
                FolderName = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, FolderName);
 
             string[] fileList = GetCodeFileList(FolderName);
+            string appCfgIntermediate = GetIntermediateConfigFile(FolderName);
+            string appCfgOutput = System.IO.Path.Combine(FolderName, ProjectName + ".exe.config");
             string[] resourcesList = GetResourcesFileList(FolderName);
             System.Collections.ArrayList OldDlls = new System.Collections.ArrayList();
             GenerateAllCode(FolderName, out errs);
@@ -3231,68 +3490,40 @@ namespace SGDK2
             string resourceSwitches = string.Empty;
             foreach (string resFile in resourcesList)
             {
-               resourceSwitches += " /res:\"" + resFile +"\"";
+               resourceSwitches += " /res:\"" + resFile + "\"";
             }
 
             CompileResources(FolderName);
 
             Microsoft.CSharp.CSharpCodeProvider codeProvider = new Microsoft.CSharp.CSharpCodeProvider();
-            System.CodeDom.Compiler.ICodeCompiler compiler = codeProvider.CreateCompiler();
-            System.CodeDom.Compiler.CompilerParameters compilerParams = new System.CodeDom.Compiler.CompilerParameters(new string[] {}, System.IO.Path.Combine(FolderName, ProjectName + ".exe"));
-            System.Reflection.Assembly asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Matrix));
-            System.IO.File.Copy(asmRef.GetFiles()[0].Name, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)), true);
-            compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
-            asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Device));
-            System.IO.File.Copy(asmRef.GetFiles()[0].Name, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)), true);
-            compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
-            asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.Direct3D.Sprite));
-            System.IO.File.Copy(asmRef.GetFiles()[0].Name, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)), true);
-            compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
-            asmRef = System.Reflection.Assembly.GetAssembly(typeof(Microsoft.DirectX.DirectInput.KeyboardState));
-            System.IO.File.Copy(asmRef.GetFiles()[0].Name, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(asmRef.GetFiles()[0].Name)), true);
-            compilerParams.ReferencedAssemblies.Add(asmRef.GetFiles()[0].Name);
+            System.CodeDom.Compiler.CompilerParameters compilerParams = new System.CodeDom.Compiler.CompilerParameters(new string[] { }, System.IO.Path.Combine(FolderName, ProjectName + ".exe"));
             compilerParams.ReferencedAssemblies.Add("System.Windows.Forms.dll");
             compilerParams.ReferencedAssemblies.Add("System.dll");
             compilerParams.ReferencedAssemblies.Add("System.Drawing.dll");
             compilerParams.ReferencedAssemblies.Add("System.Design.dll");
-            string d3dx9Path = null;
-            foreach(string path in new string []
-               {
-                  System.IO.Path.Combine(Environment.CurrentDirectory, d3dx9File),
-                  System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, d3dx9File),
-                  System.IO.Path.Combine(Environment.SystemDirectory, d3dx9File)
-               })
-            {
-               if (System.IO.File.Exists(path))
-               {
-                  d3dx9Path = path;
-                  break;
-               }
-            }
-            if (d3dx9Path != null)
-               if (!System.IO.File.Exists(System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(d3dx9File))))
-                  System.IO.File.Copy(d3dx9Path, System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(d3dx9File)), false);
-            foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
+            foreach (System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
             {
                ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
-               if (drCode.Name.EndsWith(".dll"))
+               if (drCode.Name.EndsWith(".dll") || drCode.Name.EndsWith(".so"))
                {
-                  if (IsOldDll(FindFullPath(drCode.Name)))
+                  string fullPath = FindFullPath(drCode.Name);
+                  if (drCode.Name.EndsWith(".so") || IsOldDll(fullPath))
                   {
-                     OldDlls.Add(FindFullPath(drCode.Name));
+                     OldDlls.Add(fullPath);
                   }
                   else
                   {
-                     try
+                     if (System.IO.File.Exists(fullPath))
                      {
-                        System.Reflection.Assembly assy = System.Reflection.Assembly.LoadWithPartialName(System.IO.Path.GetFileNameWithoutExtension(drCode.Name));
-                        string assyPath = assy.GetModules(false)[0].FullyQualifiedName;
                         string targetPath = System.IO.Path.Combine(FolderName, System.IO.Path.GetFileName(drCode.Name));
-                        System.IO.File.Copy(assyPath, targetPath, true);
+                        System.IO.File.Copy(fullPath, targetPath, true);
+                        if (System.IO.File.Exists(fullPath + ".config"))
+                           System.IO.File.Copy(fullPath + ".config", targetPath + ".config", true);
                         compilerParams.ReferencedAssemblies.Add(targetPath);
                      }
-                     catch(System.Exception)
+                     else
                      {
+                        compilerParams.ReferencedAssemblies.Add(drCode.Name);
                      }
                   }
                }
@@ -3303,12 +3534,12 @@ namespace SGDK2
             compilerParams.GenerateInMemory = false;
             compilerParams.IncludeDebugInformation = Debug;
             if (Debug)
-               compilerParams.CompilerOptions = "/define:DEBUG /target:winexe" + resourceSwitches;
+               compilerParams.CompilerOptions = "/define:DEBUG /platform:x86 /target:winexe" + resourceSwitches;
             else
-               compilerParams.CompilerOptions = " /target:winexe" + resourceSwitches;
+               compilerParams.CompilerOptions = "/platform:x86 /target:winexe" + resourceSwitches;
 
             string iconFile = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, "Prj.ico");
-            while(true)
+            while (true)
             {
                if (System.IO.File.Exists(iconFile))
                {
@@ -3323,8 +3554,11 @@ namespace SGDK2
                   iconFile = System.IO.Path.Combine(parentDir.FullName, System.IO.Path.GetFileName(iconFile));
                }
             }
-
-            System.CodeDom.Compiler.CompilerResults results = compiler.CompileAssemblyFromFileBatch(compilerParams, fileList);
+            System.CodeDom.Compiler.CompilerResults results = codeProvider.CompileAssemblyFromFile(compilerParams, fileList);
+            // MSBuild and Visual Studio automatically copy the config file, but
+            // CSharpCodeProvider operates below that and we must copy it manually.
+            if ((appCfgIntermediate != null) && System.IO.File.Exists(appCfgIntermediate))
+               System.IO.File.Copy(appCfgIntermediate, appCfgOutput, true);
             if (results.Errors.Count > 0)
             {
                System.Text.StringBuilder sb = new System.Text.StringBuilder();
@@ -3337,7 +3571,7 @@ namespace SGDK2
             }
             else
             {
-               foreach(string dllFile in OldDlls)
+               foreach (string dllFile in OldDlls)
                {
                   System.IO.File.Copy(dllFile,
                      System.IO.Path.Combine(System.IO.Path.GetDirectoryName(results.PathToAssembly),
@@ -3345,6 +3579,12 @@ namespace SGDK2
                }
             }
             return compilerParams.OutputAssembly;
+         }
+         catch (System.IO.IOException ex)
+         {
+            errs = "A failure accessing files occurred; make sure your project is not already running." + Environment.NewLine +
+               ex.Message;
+            return null;
          }
          finally
          {

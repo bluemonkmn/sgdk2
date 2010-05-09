@@ -4,8 +4,6 @@
  */
 
 using System;
-using Microsoft.DirectX;
-using Microsoft.DirectX.Direct3D;
 using System.Drawing;
 
 namespace SGDK2
@@ -15,15 +13,25 @@ namespace SGDK2
 	/// </summary>
 	public class FrameCache
 	{
-      public struct Frame
+      public class Frame
       {
-         public Display.TextureRef GraphicSheetTexture;
-         public short CellIndex;
-         public Matrix Transform;
-         public Rectangle SourceRect;
-         public ProjectDataset.GraphicSheetRow GraphicSheet;
-         private System.Drawing.Rectangle bounds;
-         public int Color;
+         public Display.TextureRef GraphicSheetTexture = null;
+         public short CellIndex = 0;
+         public Point[] corners = new Point[4];
+         public Rectangle SourceRect = Rectangle.Empty;
+         public ProjectDataset.GraphicSheetRow GraphicSheet = null;
+         private System.Drawing.Rectangle bounds = Rectangle.Empty;
+         public int Color = 0;
+
+         public Frame(short cellIndex, Rectangle source, ProjectDataset.GraphicSheetRow graphicSheet, int color, Point[] corners)
+         {
+            this.CellIndex = cellIndex;
+            this.SourceRect = source;
+            this.GraphicSheet = graphicSheet;
+            this.Color = color;
+            System.Diagnostics.Debug.Assert(corners.Length == 4);
+            this.corners = corners;
+         }
 
          /// <summary>
          /// Determine the bounding rectangle of the graphics in this frame
@@ -36,36 +44,23 @@ namespace SGDK2
             {
                if (bounds.IsEmpty)
                {
-                  Size CellSize = new Size(SourceRect.Width, SourceRect.Height);
-                  using (System.Drawing.Drawing2D.Matrix m =
-                     new System.Drawing.Drawing2D.Matrix(Transform.M11, Transform.M12, Transform.M21, Transform.M22, Transform.M41, Transform.M42))
+                  bounds = new Rectangle(corners[0], new Size(0,0));
+                  foreach (Point pt in corners)
                   {
-                     System.Drawing.Point[] ptsRect = new Point[]
+                     if(pt.X < bounds.X)
                      {
-                        new Point(0, 0),
-                        new Point(CellSize.Width, 0),
-                        new Point(CellSize.Width, CellSize.Height),
-                        new Point(0, CellSize.Height)
-                     };
-                     m.TransformPoints(ptsRect);
-                     bounds = new Rectangle(ptsRect[0], new Size(0,0));
-                     foreach (Point pt in ptsRect)
-                     {
-                        if(pt.X < bounds.X)
-                        {
-                           bounds.Width += bounds.X - pt.X;
-                           bounds.X = pt.X;
-                        }
-                        if(pt.Y < bounds.Y)
-                        {
-                           bounds.Height += bounds.Y - pt.Y;
-                           bounds.Y = pt.Y;
-                        }
-                        if (pt.X > bounds.Right)
-                           bounds.Width += pt.X - bounds.Right;
-                        if (pt.Y > bounds.Bottom)
-                           bounds.Height += pt.Y - bounds.Bottom;
+                        bounds.Width += bounds.X - pt.X;
+                        bounds.X = pt.X;
                      }
+                     if(pt.Y < bounds.Y)
+                     {
+                        bounds.Height += bounds.Y - pt.Y;
+                        bounds.Y = pt.Y;
+                     }
+                     if (pt.X > bounds.Right)
+                        bounds.Width += pt.X - bounds.Right;
+                     if (pt.Y > bounds.Bottom)
+                        bounds.Height += pt.Y - bounds.Bottom;
                   }
                }
                return bounds;
@@ -78,13 +73,15 @@ namespace SGDK2
       private Display m_Display = null;
       #endregion
 
-      private static System.Collections.Hashtable activeCaches = new System.Collections.Hashtable();
+      private static System.Collections.Generic.Dictionary<string, WeakReference> activeCaches = new System.Collections.Generic.Dictionary<string, WeakReference>();
 
       public static FrameCache GetFrameCache(string name, Display display)
       {
-         if (activeCaches.Contains(name))
+         if (String.IsNullOrEmpty(name))
+            return new FrameCache(null, display);
+         else if (activeCaches.ContainsKey(name))
          {
-            WeakReference cachedObject = (WeakReference)activeCaches[name];
+            WeakReference cachedObject = activeCaches[name];
             FrameCache result;
             if (!cachedObject.IsAlive || (null == (result = (FrameCache)cachedObject.Target)))
                return new FrameCache(ProjectData.GetFrameSet(name), display);
@@ -98,10 +95,10 @@ namespace SGDK2
 
       public static void ClearDisplayCache(Display display)
       {
-         System.Collections.ArrayList lstRemove = new System.Collections.ArrayList();
-         foreach(System.Collections.DictionaryEntry de in activeCaches)
+         System.Collections.Generic.List<string> lstRemove = new System.Collections.Generic.List<string>();
+         foreach(var de in activeCaches)
          {
-            WeakReference cachedObject = (WeakReference)de.Value;
+            WeakReference cachedObject = de.Value;
             if (!cachedObject.IsAlive)
                lstRemove.Add(de.Key);
             else if (((FrameCache)cachedObject.Target).m_Display == display)
@@ -118,8 +115,23 @@ namespace SGDK2
 
       private FrameCache(ProjectDataset.FramesetRow Frameset, Display display)
       {
-         ProjectDataset.FrameRow[] arfr = ProjectData.GetSortedFrameRows(Frameset);
          m_Display = display;
+         if (Frameset == null)
+         {
+            System.Drawing.Point[] ptsRect = new Point[]
+            {
+               new Point(0, 0),
+               new Point(0,32),
+               new Point(32, 32),
+               new Point(32,0)
+            };
+            m_arFrames = new Frame[1];
+            m_arFrames[0] = new Frame(0, new Rectangle(0, 0, 32, 32), null, -1, ptsRect);
+            if (m_Display != null)
+               m_arFrames[0].GraphicSheetTexture = m_Display.GetTextureRef(String.Empty);
+            return;
+         }
+         ProjectDataset.FrameRow[] arfr = ProjectData.GetSortedFrameRows(Frameset);
          m_arFrames = new Frame[arfr.Length];
          for (int nIdx = 0; nIdx < arfr.Length; nIdx++)
          {
@@ -130,28 +142,25 @@ namespace SGDK2
             }
             ProjectDataset.GraphicSheetRow g = ProjectData.GetGraphicSheet(arfr[nIdx].GraphicSheet);
 
-            if (m_Display != null)
-               m_arFrames[nIdx].GraphicSheetTexture = m_Display.GetTextureRef(g.Name);
-            m_arFrames[nIdx].GraphicSheet = g;
-            m_arFrames[nIdx].CellIndex = arfr[nIdx].CellIndex;
-            m_arFrames[nIdx].Transform.M11 = arfr[nIdx].m11;
-            m_arFrames[nIdx].Transform.M12 = arfr[nIdx].m12;
-            m_arFrames[nIdx].Transform.M13 = 0;
-            m_arFrames[nIdx].Transform.M14 = 0;
-            m_arFrames[nIdx].Transform.M21 = arfr[nIdx].m21;
-            m_arFrames[nIdx].Transform.M22 = arfr[nIdx].m22;
-            m_arFrames[nIdx].Transform.M23 = 0;
-            m_arFrames[nIdx].Transform.M24 = 0;
-            m_arFrames[nIdx].Transform.M41 = arfr[nIdx].dx;
-            m_arFrames[nIdx].Transform.M42 = arfr[nIdx].dy;
-            m_arFrames[nIdx].Transform.M43 = 0;
-            m_arFrames[nIdx].Transform.M44 = 1;
-            m_arFrames[nIdx].Color = arfr[nIdx].color;
-
-            m_arFrames[nIdx].SourceRect = new Rectangle(
+            Rectangle source = new Rectangle(
                (arfr[nIdx].CellIndex % g.Columns) * g.CellWidth,
                (arfr[nIdx].CellIndex / g.Columns) * g.CellHeight,
                g.CellWidth, g.CellHeight);
+            System.Drawing.Point[] ptsRect = new Point[]
+            {
+               new Point(0, 0),
+               new Point(0, source.Height),
+               new Point(source.Width, source.Height),
+               new Point(source.Width, 0)
+            };
+            using (System.Drawing.Drawing2D.Matrix m =
+               new System.Drawing.Drawing2D.Matrix(arfr[nIdx].m11, arfr[nIdx].m12, arfr[nIdx].m21, arfr[nIdx].m22, arfr[nIdx].dx, arfr[nIdx].dy))
+            {
+               m.TransformPoints(ptsRect);
+            }
+            m_arFrames[nIdx] = new Frame(arfr[nIdx].CellIndex, source, g, arfr[nIdx].color, ptsRect);
+            if (m_Display != null)
+               m_arFrames[nIdx].GraphicSheetTexture = m_Display.GetTextureRef(g.Name);
 
             activeCaches[Frameset.Name] = new WeakReference(this);
          }

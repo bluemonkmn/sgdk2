@@ -7,7 +7,7 @@ using System;
 /// <summary>
 /// Stores information about which categories a tile is in.
 /// </summary>
-public abstract class TileCategoryMembershipBase
+public abstract partial class TileCategoryMembershipBase
 {
 }
 
@@ -15,7 +15,7 @@ public abstract class TileCategoryMembershipBase
 /// Represents membership information in which the membership of a tile does not
 /// change based on its state.
 /// </summary>
-public class TileCategorySimpleMembership : TileCategoryMembershipBase
+public partial class TileCategorySimpleMembership : TileCategoryMembershipBase
 {
    private System.Collections.BitArray m_membership;
 
@@ -49,7 +49,7 @@ public class TileCategorySimpleMembership : TileCategoryMembershipBase
 /// Represents membership information for a tile whose membership changes based on
 /// which frame is active.
 /// </summary>
-public class TileCategoryFrameMembership : TileCategoryMembershipBase
+public partial class TileCategoryFrameMembership : TileCategoryMembershipBase
 {
    private System.Collections.BitArray[] m_frames;
 
@@ -103,7 +103,7 @@ public class TileCategoryFrameMembership : TileCategoryMembershipBase
 /// </summary>
 /// <remarks>Instances of this class are not retained, but rather converted into a more optimal
 /// form during the construction of the <see cref="TileCategoryFrameMembership"/>.</remarks>
-public struct TileFrameMembership
+public partial struct TileFrameMembership
 {
    /// <summary>
    /// Represents a category designated to contain one or more specific frames from an animated tile.

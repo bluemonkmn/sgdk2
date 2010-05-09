@@ -4,14 +4,12 @@
  */
 using System;
 using System.Drawing;
-using Microsoft.DirectX.Direct3D;
-using Microsoft.DirectX;
 
 /// <summary>
 /// Defines the basic operation of a layer of tiles and sprites within a map.
 /// </summary>
 [Serializable()]
-public abstract class LayerBase : System.Collections.IEnumerable
+public abstract partial class LayerBase : System.Collections.IEnumerable
 {
    #region Embedded Classes
    /// <summary>
@@ -76,10 +74,10 @@ public abstract class LayerBase : System.Collections.IEnumerable
          this.priority = priority;
          if (color == -1)
             this.color = frame.Color;
-         else if (frame.Color == -1)
+         else //if (frame.Color == -1)
             this.color = color;
-         else
-            this.color = Microsoft.DirectX.Direct3D.ColorOperator.Modulate(ColorValue.FromArgb(frame.Color), ColorValue.FromArgb(color)).ToArgb();
+         /*else
+            this.color = Microsoft.DirectX.Direct3D.ColorOperator.Modulate(ColorValue.FromArgb(frame.Color), ColorValue.FromArgb(color)).ToArgb();*/
       }
       #region IComparable Members
 
@@ -176,7 +174,13 @@ public abstract class LayerBase : System.Collections.IEnumerable
          this.m_nVirtualRows = nVirtualRows;
       this.m_AbsolutePosition = Position;
       this.m_ScrollRate = ScrollRate;
-      this.Move(new Point(0,0));
+      byte origView = Parent.CurrentViewIndex;
+      for (byte v = 0; v < Project.MaxViews; v++)
+      {
+         Parent.CurrentViewIndex = v;
+         this.Move(new Point(0, 0));
+      }
+      Parent.CurrentViewIndex = origView;
       this.m_nInjectStartIndex = nInjectStartIndex;
       this.m_nAppendStartIndex = nAppendStartIndex;
    }
@@ -360,8 +364,8 @@ public abstract class LayerBase : System.Collections.IEnumerable
          nStartRow = 0;
 
       Rectangle ViewRect = m_ParentMap.CurrentView;
-      m_ParentMap.Display.Device.RenderState.ScissorTestEnable = true;
-      m_ParentMap.Display.Device.ScissorRectangle = ViewRect;
+      Display disp = m_ParentMap.Display;
+      disp.Scissor(ViewRect);
 
       int EndCol = (ViewRect.Width - 1 + m_nRightBuffer - CurrentPosition.X) / nTileWidth;
       if (EndCol >= VirtualColumns)
@@ -379,7 +383,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
             Injected = null;
       }
 
-      Sprite spr = m_ParentMap.Display.Sprite;
+      int lastColor = 0;
 
       for (int y = nStartRow; y <= EndRow; y++)
       {
@@ -388,11 +392,15 @@ public abstract class LayerBase : System.Collections.IEnumerable
             while ((((CurFrame = (InjectedFrame)Injected.Current).y < y * nTileHeight)) && (CurFrame.priority <= 0) ||
                    (CurFrame.priority < 0))
             {
-               spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
-                  (float)CurFrame.x + CurrentPosition.X + ViewRect.X,
-                  (float)CurFrame.y + CurrentPosition.Y + ViewRect.Y, 0));
-               spr.Draw(CurFrame.frame.GraphicSheetTexture.Texture, CurFrame.frame.SourceRect,
-                  Vector3.Empty, Vector3.Empty, CurFrame.color);
+               if (CurFrame.color != lastColor)
+               {
+                  disp.SetColor(CurFrame.color);
+                  lastColor = CurFrame.color;
+               }
+               disp.DrawFrame(CurFrame.frame.GraphicSheetTexture,
+                  CurFrame.frame.SourceRect, CurFrame.frame.Corners,
+                  CurFrame.x + CurrentPosition.X + ViewRect.X,
+                  CurFrame.y + CurrentPosition.Y + ViewRect.Y);
                if (!Injected.MoveNext())
                {
                   Injected = null;
@@ -407,10 +415,14 @@ public abstract class LayerBase : System.Collections.IEnumerable
             for (int nFrame = 0; nFrame < SubFrames.Length; nFrame++)
             {
                Frame f = m_Frameset[SubFrames[nFrame]];
-               spr.Transform = Matrix.Multiply(f.Transform, Matrix.Translation(
+               if (f.Color != lastColor)
+               {
+                  disp.SetColor(f.Color);
+                  lastColor = f.Color;
+               }
+               disp.DrawFrame(f.GraphicSheetTexture, f.SourceRect, f.Corners,
                   x * nTileWidth + CurrentPosition.X + ViewRect.X,
-                  y * nTileHeight + CurrentPosition.Y + ViewRect.Y, 0));
-               spr.Draw(f.GraphicSheetTexture.Texture, f.SourceRect, Vector3.Empty, Vector3.Empty, f.Color);
+                  y * nTileHeight + CurrentPosition.Y + ViewRect.Y);
             }
          }
       }
@@ -418,17 +430,22 @@ public abstract class LayerBase : System.Collections.IEnumerable
       while (Injected != null)
       {
          CurFrame = (InjectedFrame)Injected.Current;
-         spr.Transform = Matrix.Multiply(CurFrame.frame.Transform, Matrix.Translation(
-            (float)CurFrame.x + CurrentPosition.X + ViewRect.X,
-            (float)CurFrame.y + CurrentPosition.Y + ViewRect.Y, 0));
-         spr.Draw(CurFrame.frame.GraphicSheetTexture.Texture, CurFrame.frame.SourceRect,
-            Vector3.Empty, Vector3.Empty, CurFrame.color);
+         if (CurFrame.color != lastColor)
+         {
+            disp.SetColor(CurFrame.color);
+            lastColor = CurFrame.color;
+         }
+         disp.DrawFrame(CurFrame.frame.GraphicSheetTexture,
+            CurFrame.frame.SourceRect, CurFrame.frame.Corners,
+            CurFrame.x + CurrentPosition.X + ViewRect.X,
+            CurFrame.y + CurrentPosition.Y + ViewRect.Y);
          if (!Injected.MoveNext())
          {
             Injected = null;
             break;
          }
       }
+      disp.SetColor(-1);
    }
 
    /// <summary>
@@ -572,8 +589,10 @@ public abstract class LayerBase : System.Collections.IEnumerable
    /// Execute the rules of all active sprites on this layer.
    /// </summary>
    /// <remarks>After the rules are executed, the function checks to see if
-   /// any dynamic sprites have been de-activated and removes them.</remarks>
-   public void ProcessSprites()
+   /// any dynamic sprites have been de-activated and removes them.
+   /// This function can be overridden in the derived layer to customize how
+   /// and when ProcessRules is called on each sprite.</remarks>
+   public virtual void ProcessSprites()
    {
       foreach(SpriteBase sprite in m_Sprites)
          // Assuming it's more efficient to just set them all to false rather than
@@ -586,6 +605,17 @@ public abstract class LayerBase : System.Collections.IEnumerable
    }
 
    /// <summary>
+   /// Executes the rules for all the plans on this layer
+   /// </summary>
+   /// <remarks>See <see cref="ExecuteRules"/> for information on overriding this.</remarks>
+   public virtual void ExecuteRulesInternal()
+   {
+      throw new NotImplementedException("ExecuteRules called on a layer without rules");
+   }
+
+   public virtual void ExecuteRules() { ExecuteRulesInternal(); }
+  
+   /// <summary>
    /// Retrieve the current mouse position
    /// </summary>
    /// <returns>Layer-relative coordinate representing the current position of the mouse.</returns>
@@ -595,10 +625,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
    public Point GetMousePosition()
    {
       Point dispPos;
-      if (m_ParentMap.Display.Windowed)
-         dispPos = m_ParentMap.Display.PointToClient(System.Windows.Forms.Control.MousePosition);
-      else
-         dispPos = System.Windows.Forms.Control.MousePosition;
+      dispPos = m_ParentMap.Display.PointToClient(System.Windows.Forms.Control.MousePosition);
       dispPos.Offset(-CurrentPosition.X, -CurrentPosition.Y);
       return dispPos;
    }
@@ -1067,7 +1094,7 @@ public abstract class LayerBase : System.Collections.IEnumerable
 /// Represents a layer where each tile is represented as a 32-bit integer.
 /// </summary>
 [Serializable()]
-public abstract class IntLayer : LayerBase
+public abstract partial class IntLayer : LayerBase
 {
    private int[,] m_Tiles;
 
@@ -1080,7 +1107,10 @@ public abstract class IntLayer : LayerBase
       ScrollRate, nInjectStartIndex, nAppendStartIndex)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
-      m_Tiles = (int[,])(resources.GetObject(Name));
+      if (Name != null)
+         m_Tiles = (int[,])(resources.GetObject(Name));
+      else
+         m_Tiles = new int[nColumns, nRows];
    }
 
    /// <summary>
@@ -1116,7 +1146,7 @@ public abstract class IntLayer : LayerBase
 /// Represents a layer where each tile is represented as a 16-bit integer.
 /// </summary>
 [Serializable()]
-public abstract class ShortLayer : LayerBase
+public abstract partial class ShortLayer : LayerBase
 {
    private short[,] m_Tiles;
 
@@ -1128,7 +1158,10 @@ public abstract class ShortLayer : LayerBase
       ScrollRate, nInjectStartIndex, nAppendStartIndex)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
-      m_Tiles = (short[,])(resources.GetObject(Name));
+      if (Name != null)
+         m_Tiles = (short[,])(resources.GetObject(Name));
+      else
+         m_Tiles = new short[nColumns, nRows];
    }
 
    /// <summary>
@@ -1142,17 +1175,17 @@ public abstract class ShortLayer : LayerBase
    {
       get
       {
-         return (int)(m_Tiles[x,y]);
+         return (int)(m_Tiles[x % m_nColumns, y % m_nRows]);
       }
       set
       {
-         m_Tiles[x,y] = (short)value;
+         m_Tiles[x % m_nColumns, y % m_nRows] = (short)value;
       }
    }
 
    protected override int[] GetTileFrame(int x, int y)
    {
-      return m_Tileset[m_Tiles[x,y]].CurrentFrame;
+      return m_Tileset[m_Tiles[x % m_nColumns, y % m_nRows]].CurrentFrame;
    }
 
    /// <summary>
@@ -1160,7 +1193,7 @@ public abstract class ShortLayer : LayerBase
    /// </summary>
    public override TileBase GetTile(int x, int y)
    {
-      return m_Tileset[m_Tiles[x,y]];
+      return m_Tileset[m_Tiles[x % m_nColumns, y % m_nRows]];
    }
 }
 
@@ -1168,7 +1201,7 @@ public abstract class ShortLayer : LayerBase
 /// Represents a layer where each tile is represented as a single byte.
 /// </summary>
 [Serializable()]
-public abstract class ByteLayer : LayerBase
+public abstract partial class ByteLayer : LayerBase
 {
    private byte[,] m_Tiles;
 
@@ -1180,7 +1213,10 @@ public abstract class ByteLayer : LayerBase
       ScrollRate, nInjectStartIndex, nAppendStartIndex)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
-      m_Tiles = (byte[,])(resources.GetObject(Name));
+      if (Name != null)
+         m_Tiles = (byte[,])(resources.GetObject(Name));
+      else
+         m_Tiles = new byte[nColumns, nRows];
    }
 
    /// <summary>

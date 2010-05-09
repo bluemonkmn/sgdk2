@@ -511,7 +511,7 @@ namespace SGDK2
                   }
                   else
                      ProjectData.SourceCode.Rows.Add(drCode.ItemArray);
-                  if (drCode.Name.EndsWith(".dll"))
+                  if (drCode.Name.EndsWith(".dll") || drCode.Name.EndsWith(".so"))
                   {
                      string sourceFile = System.IO.Path.GetFileName(drCode.Name);
                      string sourcePath = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(txtImportSource.Text), sourceFile);

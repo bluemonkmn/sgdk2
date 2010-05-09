@@ -165,7 +165,7 @@ namespace SGDK2
          EditRow.ScrollMarginRight = 32;
          EditRow.ScrollMarginBottom = 32;
          EditRow.BeginEdit();
-         pgrMap.SelectedObject = DataObject = new MapProperties(EditRow);         
+         pgrMap.SelectedObject = DataObject = new MapProperties(EditRow);
 
          SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"MapManager.html");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
@@ -305,6 +305,18 @@ namespace SGDK2
                try
                {
                   ProjectData.AddMapRow(DataObject.m_drMap);
+                  ProjectDataset.LayerRow bgLayer = ProjectData.NewLayer();
+                  bgLayer.Name = "Designer Background";
+                  bgLayer.Tiles = new byte[] {0};
+                  bgLayer.Height = 1;
+                  bgLayer.Width = 1;
+                  bgLayer.VirtualHeight = 4000;
+                  bgLayer.VirtualWidth = 4000;
+                  bgLayer.BytesPerTile = 1;
+                  bgLayer.ScrollRateX = 0;
+                  bgLayer.ScrollRateY = 0;
+                  bgLayer.MapRow = DataObject.m_drMap;
+                  ProjectData.AddLayerRow(bgLayer);
                   btnOK.Text = "Update";
                }
                catch (ConstraintException)

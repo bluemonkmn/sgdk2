@@ -14,7 +14,7 @@ using System;
 /// and dynamic sprites. For more information about this distinction, see remarks in
 /// <see cref="staticSize"/>.</remarks>
 [Serializable()]
-public class SpriteCollection : System.Collections.CollectionBase
+public partial class SpriteCollection : System.Collections.CollectionBase
 {
    /// <summary>
    /// Indicates the initial size of this collection, and the size below which
@@ -147,11 +147,17 @@ public class ActiveSpriteEnumerator : System.Collections.IEnumerator
 
    #region IEnumerator Members
 
+   /// <summary>
+   /// Re-start enumerating active sprites.
+   /// </summary>
    public void Reset()
    {
       SpriteEnumerator.Reset();
    }
 
+   /// <summary>
+   /// The current sprite being enumerated.
+   /// </summary>
    public object Current
    {
       get
@@ -160,6 +166,10 @@ public class ActiveSpriteEnumerator : System.Collections.IEnumerator
       }
    }
 
+   /// <summary>
+   /// Move to the next active sprite in the collection.
+   /// </summary>
+   /// <returns>True if another active sprite exists, or false if there are no more.</returns>
    public bool MoveNext()
    {
       bool result;

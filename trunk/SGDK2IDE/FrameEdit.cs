@@ -1524,7 +1524,7 @@ namespace SGDK2
       {
          ProjectDataset.FrameRow[] deleteFrames = FrameBrowser.GetSelectedFrames();
 
-         if (deleteFrames.Length == 0)
+         if ((deleteFrames == null) || (deleteFrames.Length == 0))
          {
             MessageBox.Show(this, "Select frames to delete first.", "Delete Selected Frames", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             return;

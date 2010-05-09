@@ -148,7 +148,7 @@ namespace SGDK2
       protected override void OnResize(EventArgs e)
       {
          base.OnResize(e);
-         if (GraphicsContext.CurrentContext == null)
+         if ((GraphicsContext.CurrentContext == null) || (!this.IsHandleCreated))
             return;
          MakeCurrent();
          GL.Finish();
@@ -344,7 +344,8 @@ namespace SGDK2
          set
          {
             m_GameDisplayMode = value;
-            if (this.Context != null) // Forces context to be created
+            // this.Context forces context to be created
+            if ((this.IsHandleCreated) && (this.Context != null))
             {
                GL.MatrixMode(MatrixMode.Projection);
                GL.LoadIdentity();

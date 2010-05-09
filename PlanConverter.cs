@@ -78,29 +78,25 @@ namespace SGDK2
          return base.GetPropertiesSupported (context);
       }
 
-      private string[] GetSpritesOfType(RemotingServices.RemoteTypeName type, ITypeDescriptorContext context)
+      private string[] GetSpritesOfType(SGDK2.RemotingServices.RemoteTypeName type, ITypeDescriptorContext context, SGDK2.RemotingServices.IRemoteTypeInfo reflector)
       {
          if (!(context.Instance is PlanProvider))
             return null;
 
-         if (type.FullName.StartsWith(CodeGenerator.SpritesNamespace +  ".") || (type.FullName == CodeGenerator.SpriteBaseClass))
+         RemotingServices.RemoteTypeName[] types = reflector.GetDerivedClasses(false);
+         ProjectDataset.SpriteRow[] sprites = ProjectData.GetSortedSpriteRows(((PlanProvider)context.Instance).Plan.LayerRowParent);
+         System.Collections.ArrayList result = new System.Collections.ArrayList();
+         foreach(ProjectDataset.SpriteRow sprite in sprites)
          {
-            string className;
-            if (type.FullName.StartsWith(CodeGenerator.SpritesNamespace + "."))
-               className = type.FullName.Substring(8);
-            else
-               className = type.FullName;
-            ProjectDataset.SpriteRow[] sprites = ProjectData.GetSortedSpriteRows(((PlanProvider)context.Instance).Plan.LayerRowParent);
-            System.Collections.ArrayList result = new System.Collections.ArrayList();
-            foreach(ProjectDataset.SpriteRow sprite in sprites)
+            foreach (RemotingServices.RemoteTypeName typ in types)
             {
-               if ((sprite[ProjectData.Sprite.DefinitionNameColumn].ToString() == className) ||
-                  (className == CodeGenerator.SpriteBaseClass))
+               if (CodeGenerator.SpritesNamespace + "." + sprite[ProjectData.Sprite.DefinitionNameColumn].ToString() == typ.FullName)
                   result.Add("m_" + CodeGenerator.NameToVariable(sprite.Name));
             }
-            return (string[])result.ToArray(typeof(string));
          }
-         return null;
+         if (result.Count == 0)
+            return null;
+         return (string[])result.ToArray(typeof(string));
       }
 
       private string[] GetPlans(ITypeDescriptorContext context)
@@ -182,7 +178,7 @@ namespace SGDK2
             }
             else
             {
-               string[] result = GetSpritesOfType(type, context);
+               string[] result = GetSpritesOfType(type, context, reflector);
                if (result != null)
                   return (string[])(m_RemoteTypeCache[type.FullName] = result);
                else if (type.FullName == CodeGenerator.PlanBaseClassName)
@@ -429,6 +425,9 @@ namespace SGDK2
          {
             if (ProjectData.GetSprite(m_Plan.LayerRowParent, value) != null)
                throw new ApplicationException("Plan name \"" + value + "\" conflicts with the name of a sprite.  Choose a name that does not conflict with that of a sprite or another plan.");
+            string error = ProjectData.ValidateName(value);
+            if (!string.IsNullOrEmpty(error))
+               throw new ApplicationException(error);
             m_Plan.Name = value;
          }
       }
@@ -457,7 +456,7 @@ namespace SGDK2
             }
          }
          
-         if (m_converters.ContainsKey(BaseClass))
+         if ((m_converters != null) && (m_converters.ContainsKey(BaseClass)))
          {
             PlanConverter conv = m_converters[BaseClass];
             if (conv == null)

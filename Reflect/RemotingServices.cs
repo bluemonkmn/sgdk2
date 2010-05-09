@@ -124,7 +124,6 @@ namespace SGDK2
             get;
          }
          string[] GetEnumVals();
-         RemoteTypeName[] GetSubclasses();
       }
 
       [Serializable()]

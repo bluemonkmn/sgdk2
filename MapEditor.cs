@@ -96,6 +96,8 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuAddPlan;
       private System.Windows.Forms.MenuItem mnuView;
       private System.Windows.Forms.MenuItem mnuViewLayerEdges;
+      private ToolBarButton tbbSortSprites;
+      private MenuItem mnuSortSprites;
       private System.Windows.Forms.Splitter SpriteSplitter;
       #endregion
 
@@ -181,10 +183,10 @@ namespace SGDK2
 		private void InitializeComponent()
 		{
          this.components = new System.ComponentModel.Container();
-         System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(frmMapEditor));
+         System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMapEditor));
          this.MapSplitter = new System.Windows.Forms.Splitter();
          this.MapDisplay = new SGDK2.Display();
-         this.mnuMapEditor = new System.Windows.Forms.MainMenu();
+         this.mnuMapEditor = new System.Windows.Forms.MainMenu(this.components);
          this.mnuEdit = new System.Windows.Forms.MenuItem();
          this.mnuEditDelete = new System.Windows.Forms.MenuItem();
          this.mnuSnapToTiles = new System.Windows.Forms.MenuItem();
@@ -192,6 +194,7 @@ namespace SGDK2
          this.mnuEditDetails = new System.Windows.Forms.MenuItem();
          this.mnuLocateCoordinate = new System.Windows.Forms.MenuItem();
          this.mnuSortPlans = new System.Windows.Forms.MenuItem();
+         this.mnuSortSprites = new System.Windows.Forms.MenuItem();
          this.mnuView = new System.Windows.Forms.MenuItem();
          this.mnuViewLayerEdges = new System.Windows.Forms.MenuItem();
          this.mnuLayers = new System.Windows.Forms.MenuItem();
@@ -212,6 +215,7 @@ namespace SGDK2
          this.tbSprites = new System.Windows.Forms.ToolBar();
          this.tbbDeleteSprite = new System.Windows.Forms.ToolBarButton();
          this.tbbGotoSprite = new System.Windows.Forms.ToolBarButton();
+         this.tbbSortSprites = new System.Windows.Forms.ToolBarButton();
          this.imlToolbar = new System.Windows.Forms.ImageList(this.components);
          this.tabPlans = new System.Windows.Forms.TabPage();
          this.grpPlanList = new System.Windows.Forms.GroupBox();
@@ -269,6 +273,7 @@ namespace SGDK2
          // MapDisplay
          // 
          this.MapDisplay.AutoScroll = true;
+         this.MapDisplay.BackColor = System.Drawing.Color.Black;
          this.MapDisplay.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
          this.MapDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
          this.MapDisplay.GameDisplayMode = SGDK2.GameDisplayMode.m640x480x24;
@@ -276,29 +281,31 @@ namespace SGDK2
          this.MapDisplay.Name = "MapDisplay";
          this.MapDisplay.Size = new System.Drawing.Size(483, 505);
          this.MapDisplay.TabIndex = 10;
-         this.MapDisplay.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MapDisplay_MouseUp);
+         this.MapDisplay.VSync = false;
+         this.MapDisplay.MouseLeave += new System.EventHandler(this.MapDisplay_MouseLeave);
          this.MapDisplay.Paint += new System.Windows.Forms.PaintEventHandler(this.MapDisplay_Paint);
          this.MapDisplay.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MapDisplay_MouseMove);
-         this.MapDisplay.MouseLeave += new System.EventHandler(this.MapDisplay_MouseLeave);
          this.MapDisplay.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MapDisplay_MouseDown);
+         this.MapDisplay.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MapDisplay_MouseUp);
          // 
          // mnuMapEditor
          // 
          this.mnuMapEditor.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                     this.mnuEdit,
-                                                                                     this.mnuView,
-                                                                                     this.mnuLayers});
+            this.mnuEdit,
+            this.mnuView,
+            this.mnuLayers});
          // 
          // mnuEdit
          // 
          this.mnuEdit.Index = 0;
          this.mnuEdit.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                this.mnuEditDelete,
-                                                                                this.mnuSnapToTiles,
-                                                                                this.mnuAddPlan,
-                                                                                this.mnuEditDetails,
-                                                                                this.mnuLocateCoordinate,
-                                                                                this.mnuSortPlans});
+            this.mnuEditDelete,
+            this.mnuSnapToTiles,
+            this.mnuAddPlan,
+            this.mnuEditDetails,
+            this.mnuLocateCoordinate,
+            this.mnuSortPlans,
+            this.mnuSortSprites});
          this.mnuEdit.Text = "&Edit";
          // 
          // mnuEditDelete
@@ -341,11 +348,17 @@ namespace SGDK2
          this.mnuSortPlans.Text = "So&rt Plans";
          this.mnuSortPlans.Click += new System.EventHandler(this.mnuSortPlans_Click);
          // 
+         // mnuSortSprites
+         // 
+         this.mnuSortSprites.Index = 6;
+         this.mnuSortSprites.Text = "S&ort Sprites";
+         this.mnuSortSprites.Click += new System.EventHandler(this.mnuSortSprites_Click);
+         // 
          // mnuView
          // 
          this.mnuView.Index = 1;
          this.mnuView.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                this.mnuViewLayerEdges});
+            this.mnuViewLayerEdges});
          this.mnuView.MergeOrder = 1;
          this.mnuView.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
          this.mnuView.Text = "&View";
@@ -364,21 +377,21 @@ namespace SGDK2
          // 
          // dataMonitor
          // 
-         this.dataMonitor.TileFrameRowDeleting += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
-         this.dataMonitor.SpritePlanRowDeleted += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowDeleted);
-         this.dataMonitor.LayerRowChanged += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowChanged);
-         this.dataMonitor.SpritePlanRowChanged += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowChanged);
-         this.dataMonitor.TileFrameRowChanged += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
-         this.dataMonitor.SpritePlanRowChanging += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowChanging);
          this.dataMonitor.LayerRowDeleted += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowDeleted);
-         this.dataMonitor.TileRowChanged += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowChanged);
          this.dataMonitor.TileRowDeleting += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowChanged);
+         this.dataMonitor.SpriteRowChanged += new SGDK2.ProjectDataset.SpriteRowChangeEventHandler(this.dataMonitor_SpriteRowChanged);
+         this.dataMonitor.SpritePlanRowChanging += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowChanging);
+         this.dataMonitor.TileRowChanged += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowChanged);
+         this.dataMonitor.LayerRowChanged += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowChanged);
+         this.dataMonitor.TileFrameRowDeleting += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
+         this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
+         this.dataMonitor.MapRowDeleted += new SGDK2.ProjectDataset.MapRowChangeEventHandler(this.dataMonitor_MapRowDeleted);
+         this.dataMonitor.TileFrameRowChanged += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
+         this.dataMonitor.SpritePlanRowDeleted += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowDeleted);
          this.dataMonitor.SpriteRowChanging += new SGDK2.ProjectDataset.SpriteRowChangeEventHandler(this.dataMonitor_SpriteRowChanging);
          this.dataMonitor.TileFrameRowDeleted += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
-         this.dataMonitor.MapRowDeleted += new SGDK2.ProjectDataset.MapRowChangeEventHandler(this.dataMonitor_MapRowDeleted);
-         this.dataMonitor.SpriteRowChanged += new SGDK2.ProjectDataset.SpriteRowChangeEventHandler(this.dataMonitor_SpriteRowChanged);
+         this.dataMonitor.SpritePlanRowChanged += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowChanged);
          this.dataMonitor.SpriteRowDeleting += new SGDK2.ProjectDataset.SpriteRowChangeEventHandler(this.dataMonitor_SpriteRowDeleting);
-         this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
          // 
          // tabSelector
          // 
@@ -465,11 +478,11 @@ namespace SGDK2
          this.lstAvailableSprites.Location = new System.Drawing.Point(0, 78);
          this.lstAvailableSprites.Name = "lstAvailableSprites";
          this.lstAvailableSprites.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
-         this.lstAvailableSprites.Size = new System.Drawing.Size(168, 252);
+         this.lstAvailableSprites.Size = new System.Drawing.Size(168, 196);
          this.lstAvailableSprites.TabIndex = 6;
-         this.lstAvailableSprites.DoubleClick += new System.EventHandler(this.lstAvailableSprites_DoubleClick);
-         this.lstAvailableSprites.Enter += new System.EventHandler(this.lstAvailableSprites_Enter);
          this.lstAvailableSprites.SelectedIndexChanged += new System.EventHandler(this.lstAvailableSprites_SelectedIndexChanged);
+         this.lstAvailableSprites.Enter += new System.EventHandler(this.lstAvailableSprites_Enter);
+         this.lstAvailableSprites.DoubleClick += new System.EventHandler(this.lstAvailableSprites_DoubleClick);
          // 
          // SpriteSelector
          // 
@@ -485,7 +498,7 @@ namespace SGDK2
          this.SpriteSelector.Location = new System.Drawing.Point(0, 78);
          this.SpriteSelector.Name = "SpriteSelector";
          this.SpriteSelector.SheetImage = null;
-         this.SpriteSelector.Size = new System.Drawing.Size(168, 252);
+         this.SpriteSelector.Size = new System.Drawing.Size(168, 196);
          this.SpriteSelector.TabIndex = 2;
          this.SpriteSelector.Visible = false;
          this.SpriteSelector.CurrentCellChanged += new System.EventHandler(this.SpriteSelector_CurrentCellChanged);
@@ -493,7 +506,7 @@ namespace SGDK2
          // SpriteSplitter
          // 
          this.SpriteSplitter.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.SpriteSplitter.Location = new System.Drawing.Point(0, 330);
+         this.SpriteSplitter.Location = new System.Drawing.Point(0, 274);
          this.SpriteSplitter.Name = "SpriteSplitter";
          this.SpriteSplitter.Size = new System.Drawing.Size(168, 5);
          this.SpriteSplitter.TabIndex = 3;
@@ -512,20 +525,15 @@ namespace SGDK2
          // 
          // grdSprite
          // 
-         this.grdSprite.CommandsVisibleIfAvailable = true;
          this.grdSprite.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.grdSprite.LargeButtons = false;
          this.grdSprite.LineColor = System.Drawing.SystemColors.ScrollBar;
-         this.grdSprite.Location = new System.Drawing.Point(0, 335);
+         this.grdSprite.Location = new System.Drawing.Point(0, 279);
          this.grdSprite.Name = "grdSprite";
          this.grdSprite.Size = new System.Drawing.Size(168, 200);
          this.grdSprite.TabIndex = 0;
-         this.grdSprite.Text = "PropertyGrid";
          this.grdSprite.ToolbarVisible = false;
-         this.grdSprite.ViewBackColor = System.Drawing.SystemColors.Window;
-         this.grdSprite.ViewForeColor = System.Drawing.SystemColors.WindowText;
-         this.grdSprite.Enter += new System.EventHandler(this.grdSprite_Enter);
          this.grdSprite.Leave += new System.EventHandler(this.grdSprite_Leave);
+         this.grdSprite.Enter += new System.EventHandler(this.grdSprite_Enter);
          // 
          // rdoAddSprites
          // 
@@ -552,8 +560,9 @@ namespace SGDK2
          // tbSprites
          // 
          this.tbSprites.Buttons.AddRange(new System.Windows.Forms.ToolBarButton[] {
-                                                                                     this.tbbDeleteSprite,
-                                                                                     this.tbbGotoSprite});
+            this.tbbDeleteSprite,
+            this.tbbGotoSprite,
+            this.tbbSortSprites});
          this.tbSprites.ButtonSize = new System.Drawing.Size(22, 21);
          this.tbSprites.Divider = false;
          this.tbSprites.DropDownArrows = true;
@@ -568,18 +577,30 @@ namespace SGDK2
          // tbbDeleteSprite
          // 
          this.tbbDeleteSprite.ImageIndex = 1;
+         this.tbbDeleteSprite.Name = "tbbDeleteSprite";
          this.tbbDeleteSprite.ToolTipText = "Delete selected sprite";
          // 
          // tbbGotoSprite
          // 
          this.tbbGotoSprite.ImageIndex = 4;
+         this.tbbGotoSprite.Name = "tbbGotoSprite";
          this.tbbGotoSprite.ToolTipText = "Locate the selected sprite in the map";
+         // 
+         // tbbSortSprites
+         // 
+         this.tbbSortSprites.ImageIndex = 3;
+         this.tbbSortSprites.Name = "tbbSortSprites";
+         this.tbbSortSprites.ToolTipText = "Sort sprites alphabetically";
          // 
          // imlToolbar
          // 
-         this.imlToolbar.ImageSize = new System.Drawing.Size(15, 15);
          this.imlToolbar.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imlToolbar.ImageStream")));
          this.imlToolbar.TransparentColor = System.Drawing.Color.Magenta;
+         this.imlToolbar.Images.SetKeyName(0, "");
+         this.imlToolbar.Images.SetKeyName(1, "");
+         this.imlToolbar.Images.SetKeyName(2, "");
+         this.imlToolbar.Images.SetKeyName(3, "");
+         this.imlToolbar.Images.SetKeyName(4, "");
          // 
          // tabPlans
          // 
@@ -618,10 +639,10 @@ namespace SGDK2
          this.lstPlans.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
          this.lstPlans.Size = new System.Drawing.Size(162, 121);
          this.lstPlans.TabIndex = 0;
-         this.lstPlans.DoubleClick += new System.EventHandler(this.lstPlans_DoubleClick);
+         this.lstPlans.SelectedIndexChanged += new System.EventHandler(this.lstPlans_SelectedIndexChanged);
          this.lstPlans.Leave += new System.EventHandler(this.lstPlans_Leave);
          this.lstPlans.Enter += new System.EventHandler(this.lstPlans_Enter);
-         this.lstPlans.SelectedIndexChanged += new System.EventHandler(this.lstPlans_SelectedIndexChanged);
+         this.lstPlans.DoubleClick += new System.EventHandler(this.lstPlans_DoubleClick);
          // 
          // rdoShowAllPlans
          // 
@@ -648,11 +669,11 @@ namespace SGDK2
          // tbPlans
          // 
          this.tbPlans.Buttons.AddRange(new System.Windows.Forms.ToolBarButton[] {
-                                                                                   this.tbbNewPlan,
-                                                                                   this.tbbDeletePlan,
-                                                                                   this.tbbPlanProperties,
-                                                                                   this.tbbSort,
-                                                                                   this.tbbGotoCoord});
+            this.tbbNewPlan,
+            this.tbbDeletePlan,
+            this.tbbPlanProperties,
+            this.tbbSort,
+            this.tbbGotoCoord});
          this.tbPlans.Divider = false;
          this.tbPlans.DropDownArrows = true;
          this.tbPlans.ImageList = this.imlToolbar;
@@ -666,26 +687,31 @@ namespace SGDK2
          // tbbNewPlan
          // 
          this.tbbNewPlan.ImageIndex = 0;
+         this.tbbNewPlan.Name = "tbbNewPlan";
          this.tbbNewPlan.ToolTipText = "Add a New Plan";
          // 
          // tbbDeletePlan
          // 
          this.tbbDeletePlan.ImageIndex = 1;
+         this.tbbDeletePlan.Name = "tbbDeletePlan";
          this.tbbDeletePlan.ToolTipText = "Delete Selected Plan";
          // 
          // tbbPlanProperties
          // 
          this.tbbPlanProperties.ImageIndex = 2;
+         this.tbbPlanProperties.Name = "tbbPlanProperties";
          this.tbbPlanProperties.ToolTipText = "Edit Selected Plan";
          // 
          // tbbSort
          // 
          this.tbbSort.ImageIndex = 3;
+         this.tbbSort.Name = "tbbSort";
          this.tbbSort.ToolTipText = "Sort plans alphabetically";
          // 
          // tbbGotoCoord
          // 
          this.tbbGotoCoord.ImageIndex = 4;
+         this.tbbGotoCoord.Name = "tbbGotoCoord";
          this.tbbGotoCoord.ToolTipText = "Locate the selected plan coordinate on the map";
          // 
          // CoordSplitter
@@ -721,10 +747,10 @@ namespace SGDK2
          this.lstPlanCoords.SelectionMode = System.Windows.Forms.SelectionMode.MultiExtended;
          this.lstPlanCoords.Size = new System.Drawing.Size(162, 69);
          this.lstPlanCoords.TabIndex = 17;
-         this.lstPlanCoords.DoubleClick += new System.EventHandler(this.lstPlanCoords_DoubleClick);
+         this.lstPlanCoords.SelectedIndexChanged += new System.EventHandler(this.lstPlanCoords_SelectedIndexChanged);
          this.lstPlanCoords.Leave += new System.EventHandler(this.lstPlanCoords_Leave);
          this.lstPlanCoords.Enter += new System.EventHandler(this.lstPlanCoords_Enter);
-         this.lstPlanCoords.SelectedIndexChanged += new System.EventHandler(this.lstPlanCoords_SelectedIndexChanged);
+         this.lstPlanCoords.DoubleClick += new System.EventHandler(this.lstPlanCoords_DoubleClick);
          // 
          // rdoAppendCoord
          // 
@@ -757,19 +783,14 @@ namespace SGDK2
          // 
          // grdPlan
          // 
-         this.grdPlan.CommandsVisibleIfAvailable = true;
          this.grdPlan.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.grdPlan.LargeButtons = false;
          this.grdPlan.LineColor = System.Drawing.SystemColors.ScrollBar;
          this.grdPlan.Location = new System.Drawing.Point(0, 327);
          this.grdPlan.Name = "grdPlan";
          this.grdPlan.PropertySort = System.Windows.Forms.PropertySort.Alphabetical;
          this.grdPlan.Size = new System.Drawing.Size(168, 152);
          this.grdPlan.TabIndex = 6;
-         this.grdPlan.Text = "PropertyGrid";
          this.grdPlan.ToolbarVisible = false;
-         this.grdPlan.ViewBackColor = System.Drawing.SystemColors.Window;
-         this.grdPlan.ViewForeColor = System.Drawing.SystemColors.WindowText;
          this.grdPlan.Enter += new System.EventHandler(this.grdPlan_Enter);
          this.grdPlan.PropertyValueChanged += new System.Windows.Forms.PropertyValueChangedEventHandler(this.grdPlan_PropertyValueChanged);
          // 
@@ -822,12 +843,12 @@ namespace SGDK2
          this.StatusBar.Location = new System.Drawing.Point(0, 505);
          this.StatusBar.Name = "StatusBar";
          this.StatusBar.Panels.AddRange(new System.Windows.Forms.StatusBarPanel[] {
-                                                                                     this.sbpStatus,
-                                                                                     this.sbpCtrl,
-                                                                                     this.sbpTileCoord,
-                                                                                     this.sbpPixelCoord,
-                                                                                     this.sbpTileAtCursor,
-                                                                                     this.sbpSelTile});
+            this.sbpStatus,
+            this.sbpCtrl,
+            this.sbpTileCoord,
+            this.sbpPixelCoord,
+            this.sbpTileAtCursor,
+            this.sbpSelTile});
          this.StatusBar.ShowPanels = true;
          this.StatusBar.Size = new System.Drawing.Size(664, 16);
          this.StatusBar.TabIndex = 14;
@@ -837,12 +858,14 @@ namespace SGDK2
          // 
          this.sbpStatus.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Spring;
          this.sbpStatus.BorderStyle = System.Windows.Forms.StatusBarPanelBorderStyle.None;
+         this.sbpStatus.Name = "sbpStatus";
          this.sbpStatus.Width = 564;
          // 
          // sbpCtrl
          // 
          this.sbpCtrl.Alignment = System.Windows.Forms.HorizontalAlignment.Right;
          this.sbpCtrl.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
+         this.sbpCtrl.Name = "sbpCtrl";
          this.sbpCtrl.Style = System.Windows.Forms.StatusBarPanelStyle.OwnerDraw;
          this.sbpCtrl.Text = "CTRL";
          this.sbpCtrl.Width = 44;
@@ -850,21 +873,25 @@ namespace SGDK2
          // sbpTileCoord
          // 
          this.sbpTileCoord.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
+         this.sbpTileCoord.Name = "sbpTileCoord";
          this.sbpTileCoord.Width = 10;
          // 
          // sbpPixelCoord
          // 
          this.sbpPixelCoord.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
+         this.sbpPixelCoord.Name = "sbpPixelCoord";
          this.sbpPixelCoord.Width = 10;
          // 
          // sbpTileAtCursor
          // 
          this.sbpTileAtCursor.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
+         this.sbpTileAtCursor.Name = "sbpTileAtCursor";
          this.sbpTileAtCursor.Width = 10;
          // 
          // sbpSelTile
          // 
          this.sbpSelTile.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
+         this.sbpSelTile.Name = "sbpSelTile";
          this.sbpSelTile.Width = 10;
          // 
          // frmMapEditor
@@ -880,14 +907,16 @@ namespace SGDK2
          this.Menu = this.mnuMapEditor;
          this.Name = "frmMapEditor";
          this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-         this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmMapEditor_KeyDown);
          this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.frmMapEditor_KeyUp);
+         this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.frmMapEditor_KeyDown);
          this.tabSelector.ResumeLayout(false);
          this.tabTiles.ResumeLayout(false);
          this.pnlTiles.ResumeLayout(false);
          this.tabSprites.ResumeLayout(false);
+         this.tabSprites.PerformLayout();
          this.tabPlans.ResumeLayout(false);
          this.grpPlanList.ResumeLayout(false);
+         this.grpPlanList.PerformLayout();
          this.grpPlanCoords.ResumeLayout(false);
          this.tabTools.ResumeLayout(false);
          ((System.ComponentModel.ISupportInitialize)(this.sbpStatus)).EndInit();
@@ -2468,12 +2497,24 @@ namespace SGDK2
          lstPlans.Sorted = false;
       }
 
+      private void mnuSortSprites_Click(object sender, EventArgs e)
+      {
+         lstAvailableSprites.Sorted = true;
+         lstAvailableSprites.Sorted = false;
+      }
+
       private void tbSprites_ButtonClick(object sender, System.Windows.Forms.ToolBarButtonClickEventArgs e)
       {
          if (e.Button == tbbDeleteSprite)
             DeleteSelectedObjects();
          else if (e.Button == tbbGotoSprite)
             LocateSelectedObject();
+         else if (e.Button == tbbSortSprites)
+         {
+            lstAvailableSprites.Sorted = true;
+            lstAvailableSprites.Sorted = false;
+         }
+
       }
 
       private void mnuViewLayerEdges_Click(object sender, System.EventArgs e)

@@ -32,6 +32,7 @@ namespace SGDK2
          public override System.ComponentModel.TypeConverter.StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
          {
             ArrayList TilesetNames = new ArrayList();
+            TilesetNames.Add(string.Empty);
             foreach(System.Data.DataRowView drv in ProjectData.Tileset.DefaultView)
             {
                ProjectDataset.TilesetRow tr = (ProjectDataset.TilesetRow)drv.Row;
@@ -121,6 +122,11 @@ namespace SGDK2
             }
             set
             {
+               if (value.Length == 0)
+               {
+                  m_tempLayer.Tileset = null;
+                  return;
+               }
                if (ProjectData.GetTileSet(value) == null)
                   throw new InvalidOperationException("Tileset " + value + " not found");
                m_tempLayer.Tileset = value;
@@ -453,6 +459,12 @@ namespace SGDK2
             {
                if (DialogResult.OK != MessageBox.Show(this, "Setting the BackgroundTile property will clear the entire layer to the specified tile, erasing all tiles.", "Update Layer", MessageBoxButtons.OKCancel, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2))
                   return false;
+            }
+
+            if ((DataObject.SizeInTiles.Width == 0) || (DataObject.SizeInTiles.Height == 0))
+            {
+               MessageBox.Show(this, "The SizeInTiles width or height cannot be zero", "Add/Update Layer", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+               return false;
             }
 
             foreach (ProjectDataset.LayerRow lr in DataObject.m_tempLayer.MapRow.GetLayerRows())

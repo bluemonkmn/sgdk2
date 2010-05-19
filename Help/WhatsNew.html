@@ -16,6 +16,29 @@
   version 2.0, see the <a href="Introduction.html#WhatsNew">
   What's New section of the Introduction</a>.
   </p>
+  <h2>Version 2.1.4</h2>
+  <p>This section describes updates between versions 2.1.3 and 2.1.4.</p>
+  <ol>
+    <li>Fix an error that prevented multiple displays from being open simultaneously.</li>
+    <li>Implement the ability to sort sprites in the map editor.</li>
+    <li>Improve error handling when attempting to run the project if it is already running.</li>
+    <li>Allow a layer to be created with a null tileset to represent the designer background layer (allow user-created layer to refer to no tileset).</li>
+    <li>Stop riding on a platform if it is deactivated while riding it.</li>
+    <li>Prevent debug-mode errors when a platform is deactivated and a sprite is riding on it.</li>
+    <li>Change CheckNextCoordinate to proceed to the next target if the distance from the current target exactly matches the target distance.</li>
+    <li>Prevent the user from creating a layer with zero tiles.</li>
+    <li>Implement ExecuteRulesInternal so that ExecuteRules can be overridden in an intermediate class.</li>
+    <li>Implement BaseClass property for plans and sprites to allow inheriting from customized code instead of only PlanBase and SpriteBase.</li>
+    <li>Make ProcessSprites overridable.</li>
+    <li>Implement IsSpriteWithinPolygon function for plans.</li>
+    <li>When resetting source code to a template that imports decapsulated source code files, be sure to import the referenced code because the project into which the code is being imported will not know how to find the template's decapsulated files.</li>
+    <li>Add OpenTK.dll.config to source control.</li>
+    <li>If a plan contains a SpriteBase-derived member, show a drop-down list of the appropriate sprites in the map editor when this plan is selected.</li>
+    <li>Prevent invalid sprite and plan names from being specified in the map editor.</li>
+    <li>Change most SpriteBase and PlanBase members to be protected instead of private.</li>
+    <li>Change most SpriteBase and PlanBase members to be virtual so they can be overridden by an intermediate base class.</li>
+    <li>Change SpriteBase.TouchTiles to return a strongly typed collection of results.</li>
+  </ol>
   <h2>Version 2.1.3</h2>
   <p>This section describes updates between versions 2.1.2 and 2.1.3.</p>
   <ol>

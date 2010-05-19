@@ -1,7 +1,7 @@
 /*
  * Scrolling Game Development Kit 2.0
  *
- * Copyright © 2000 - 2007 Benjamin Marty <bluemonkmn@users.sourceforge.net>
+ * Copyright © 2000 - 2010 Benjamin Marty <bluemonkmn@users.sourceforge.net>
  * 
  * Distributed under the GNU General Public License (GPL)
  *   - see included file COPYING.txt for details, or visit:
@@ -36,10 +36,10 @@ using System.Runtime.CompilerServices;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("2.1.3.0")]
+[assembly: AssemblyVersion("2.1.4.0")]
 
 // Displayed on splash screen
-[assembly: AssemblyFileVersion("2.1.3")]
+[assembly: AssemblyFileVersion("2.1.4")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 

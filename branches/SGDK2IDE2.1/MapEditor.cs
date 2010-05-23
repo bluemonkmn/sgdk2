@@ -1413,20 +1413,29 @@ namespace SGDK2
 
       private void DisableDelete()
       {
-         mnuEditDelete.Text = "Delete Selected Objects";
-         mnuEditDelete.Enabled = false;      
+         if (!Disposing)
+         {
+            mnuEditDelete.Text = "Delete Selected Objects";
+            mnuEditDelete.Enabled = false;
+         }
       }
 
       private void DeleteCoordinatesMode()
       {
-         mnuEditDelete.Text = "Delete Selected Coordinates";
-         mnuEditDelete.Enabled = true;
+         if (!Disposing)
+         {
+            mnuEditDelete.Text = "Delete Selected Coordinates";
+            mnuEditDelete.Enabled = true;
+         }
       }
 
       private void DeleteSpriteMode()
       {
-         mnuEditDelete.Text = "Delete Selected Sprites";
-         mnuEditDelete.Enabled = true;
+         if (!Disposing)
+         {
+            mnuEditDelete.Text = "Delete Selected Sprites";
+            mnuEditDelete.Enabled = true;
+         }
       }
 
       private void DeleteSelectedPlans()

@@ -402,6 +402,7 @@ namespace SGDK2
          // 
          // tabSprites
          // 
+         this.tabSprites.Controls.Add(this.SpriteSelector);
          this.tabSprites.Controls.Add(this.lstAvailableSprites);
          this.tabSprites.Controls.Add(this.SpriteSplitter);
          this.tabSprites.Controls.Add(this.cboSpriteCategory);
@@ -409,7 +410,6 @@ namespace SGDK2
          this.tabSprites.Controls.Add(this.rdoAddSprites);
          this.tabSprites.Controls.Add(this.rdoSelectSprites);
          this.tabSprites.Controls.Add(this.tbSprites);
-         this.tabSprites.Controls.Add(this.SpriteSelector);
          this.tabSprites.Location = new System.Drawing.Point(4, 22);
          this.tabSprites.Name = "tabSprites";
          this.tabSprites.Size = new System.Drawing.Size(168, 479);
@@ -528,6 +528,25 @@ namespace SGDK2
          this.imlToolbar.Images.SetKeyName(2, "");
          this.imlToolbar.Images.SetKeyName(3, "");
          this.imlToolbar.Images.SetKeyName(4, "");
+         // 
+         // SpriteSelector
+         // 
+         this.SpriteSelector.BorderStyle = SGDK2.DragPanelBorderStyle.FixedInset;
+         this.SpriteSelector.CellBorders = false;
+         this.SpriteSelector.CellPadding = new System.Drawing.Size(0, 0);
+         this.SpriteSelector.CellSize = new System.Drawing.Size(0, 0);
+         this.SpriteSelector.CurrentCellIndex = -1;
+         this.SpriteSelector.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.SpriteSelector.Frameset = null;
+         this.SpriteSelector.FramesToDisplay = null;
+         this.SpriteSelector.GraphicSheet = null;
+         this.SpriteSelector.Location = new System.Drawing.Point(0, 78);
+         this.SpriteSelector.Name = "SpriteSelector";
+         this.SpriteSelector.SheetImage = null;
+         this.SpriteSelector.Size = new System.Drawing.Size(168, 176);
+         this.SpriteSelector.TabIndex = 2;
+         this.SpriteSelector.Visible = false;
+         this.SpriteSelector.CurrentCellChanged += new System.EventHandler(this.SpriteSelector_CurrentCellChanged);
          // 
          // tabPlans
          // 
@@ -856,25 +875,6 @@ namespace SGDK2
          this.TileSelector.Size = new System.Drawing.Size(168, 438);
          this.TileSelector.TabIndex = 9;
          this.TileSelector.CurrentCellChanged += new System.EventHandler(this.TileSelector_CurrentCellChanged);
-         // 
-         // SpriteSelector
-         // 
-         this.SpriteSelector.BorderStyle = SGDK2.DragPanelBorderStyle.FixedInset;
-         this.SpriteSelector.CellBorders = false;
-         this.SpriteSelector.CellPadding = new System.Drawing.Size(0, 0);
-         this.SpriteSelector.CellSize = new System.Drawing.Size(0, 0);
-         this.SpriteSelector.CurrentCellIndex = -1;
-         this.SpriteSelector.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.SpriteSelector.Frameset = null;
-         this.SpriteSelector.FramesToDisplay = null;
-         this.SpriteSelector.GraphicSheet = null;
-         this.SpriteSelector.Location = new System.Drawing.Point(0, 0);
-         this.SpriteSelector.Name = "SpriteSelector";
-         this.SpriteSelector.SheetImage = null;
-         this.SpriteSelector.Size = new System.Drawing.Size(168, 479);
-         this.SpriteSelector.TabIndex = 2;
-         this.SpriteSelector.Visible = false;
-         this.SpriteSelector.CurrentCellChanged += new System.EventHandler(this.SpriteSelector_CurrentCellChanged);
          // 
          // dataMonitor
          // 

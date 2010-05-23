@@ -376,6 +376,7 @@ namespace SGDK2
             GL.TexEnv(TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (float)TextureEnvMode.Modulate);
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+            GL.Disable(EnableCap.PolygonSmooth);
             GL.Enable(texCap);
             GL.Disable(EnableCap.DepthTest);
             GL.Disable(EnableCap.Lighting);

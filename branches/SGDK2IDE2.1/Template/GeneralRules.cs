@@ -162,7 +162,7 @@ public abstract partial class GeneralRules
    {
       System.Type source = Project.GameWindow.CurrentMap.m_CameFromMapType;
       if (source == null)
-         return;
+         source = Project.GameWindow.CurrentMap.GetType();
       if (UnloadCurrent)
          Project.GameWindow.UnloadMap(Project.GameWindow.CurrentMap.GetType());
       Project.GameWindow.CurrentMap = Project.GameWindow.GetMap(source);

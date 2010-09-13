@@ -960,7 +960,7 @@ public abstract partial class SpriteBase : GeneralRules
       int result = -1;
       for (int i = 0; i < Target.Count; i++)
       {
-         if (!Target[i].isActive)
+         if ((!Target[i].isActive) || (Target[i] == this))
             continue;
          int xOff = Target[i].PixelX - PixelX;
          int yOff = Target[i].PixelY - PixelY;
@@ -1019,7 +1019,7 @@ public abstract partial class SpriteBase : GeneralRules
    {
       double vx = Target.PixelX - PixelX + (Target.SolidWidth - SolidWidth) / 2;
       double vy = Target.PixelY - PixelY + (Target.SolidHeight - SolidHeight) / 2;
-      double dist = Math.Sqrt(vx * vx + vy + vy);
+      double dist = Math.Sqrt(vx * vx + vy * vy);
       if (dist >= 1)
       {
          dx += vx * Force / dist / 10.0;
@@ -1487,7 +1487,10 @@ public abstract partial class SpriteBase : GeneralRules
       if (Index < 0)
          Index = GetNearestSpriteIndex(Target);
       if (Index < 0)
+      {
+         inputs &= ~(InputBits.Left | InputBits.Right | InputBits.Up | InputBits.Down);
          return;
+      }
 
       SetInputsTowardSprite(Target[Index]);
    }

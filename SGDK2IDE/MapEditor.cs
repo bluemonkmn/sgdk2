@@ -185,7 +185,6 @@ namespace SGDK2
          this.components = new System.ComponentModel.Container();
          System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMapEditor));
          this.MapSplitter = new System.Windows.Forms.Splitter();
-         this.MapDisplay = new SGDK2.Display();
          this.mnuMapEditor = new System.Windows.Forms.MainMenu(this.components);
          this.mnuEdit = new System.Windows.Forms.MenuItem();
          this.mnuEditDelete = new System.Windows.Forms.MenuItem();
@@ -198,15 +197,12 @@ namespace SGDK2
          this.mnuView = new System.Windows.Forms.MenuItem();
          this.mnuViewLayerEdges = new System.Windows.Forms.MenuItem();
          this.mnuLayers = new System.Windows.Forms.MenuItem();
-         this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.tabSelector = new System.Windows.Forms.TabControl();
          this.tabTiles = new System.Windows.Forms.TabPage();
          this.pnlTiles = new System.Windows.Forms.Panel();
-         this.TileSelector = new SGDK2.GraphicBrowser();
          this.cboCategory = new System.Windows.Forms.ComboBox();
          this.tabSprites = new System.Windows.Forms.TabPage();
          this.lstAvailableSprites = new System.Windows.Forms.ListBox();
-         this.SpriteSelector = new SGDK2.GraphicBrowser();
          this.SpriteSplitter = new System.Windows.Forms.Splitter();
          this.cboSpriteCategory = new System.Windows.Forms.ComboBox();
          this.grdSprite = new System.Windows.Forms.PropertyGrid();
@@ -246,6 +242,10 @@ namespace SGDK2
          this.sbpPixelCoord = new System.Windows.Forms.StatusBarPanel();
          this.sbpTileAtCursor = new System.Windows.Forms.StatusBarPanel();
          this.sbpSelTile = new System.Windows.Forms.StatusBarPanel();
+         this.MapDisplay = new SGDK2.Display();
+         this.TileSelector = new SGDK2.GraphicBrowser();
+         this.SpriteSelector = new SGDK2.GraphicBrowser();
+         this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.tabSelector.SuspendLayout();
          this.tabTiles.SuspendLayout();
          this.pnlTiles.SuspendLayout();
@@ -266,27 +266,9 @@ namespace SGDK2
          // 
          this.MapSplitter.Location = new System.Drawing.Point(176, 0);
          this.MapSplitter.Name = "MapSplitter";
-         this.MapSplitter.Size = new System.Drawing.Size(5, 505);
+         this.MapSplitter.Size = new System.Drawing.Size(5, 485);
          this.MapSplitter.TabIndex = 8;
          this.MapSplitter.TabStop = false;
-         // 
-         // MapDisplay
-         // 
-         this.MapDisplay.AutoScroll = true;
-         this.MapDisplay.BackColor = System.Drawing.Color.Black;
-         this.MapDisplay.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-         this.MapDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.MapDisplay.GameDisplayMode = SGDK2.GameDisplayMode.m640x480x24;
-         this.MapDisplay.Location = new System.Drawing.Point(181, 0);
-         this.MapDisplay.Name = "MapDisplay";
-         this.MapDisplay.Size = new System.Drawing.Size(483, 505);
-         this.MapDisplay.TabIndex = 10;
-         this.MapDisplay.VSync = false;
-         this.MapDisplay.MouseLeave += new System.EventHandler(this.MapDisplay_MouseLeave);
-         this.MapDisplay.Paint += new System.Windows.Forms.PaintEventHandler(this.MapDisplay_Paint);
-         this.MapDisplay.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MapDisplay_MouseMove);
-         this.MapDisplay.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MapDisplay_MouseDown);
-         this.MapDisplay.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MapDisplay_MouseUp);
          // 
          // mnuMapEditor
          // 
@@ -375,24 +357,6 @@ namespace SGDK2
          this.mnuLayers.MergeOrder = 2;
          this.mnuLayers.Text = "&Layers";
          // 
-         // dataMonitor
-         // 
-         this.dataMonitor.LayerRowDeleted += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowDeleted);
-         this.dataMonitor.TileRowDeleting += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowChanged);
-         this.dataMonitor.SpriteRowChanged += new SGDK2.ProjectDataset.SpriteRowChangeEventHandler(this.dataMonitor_SpriteRowChanged);
-         this.dataMonitor.SpritePlanRowChanging += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowChanging);
-         this.dataMonitor.TileRowChanged += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowChanged);
-         this.dataMonitor.LayerRowChanged += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowChanged);
-         this.dataMonitor.TileFrameRowDeleting += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
-         this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
-         this.dataMonitor.MapRowDeleted += new SGDK2.ProjectDataset.MapRowChangeEventHandler(this.dataMonitor_MapRowDeleted);
-         this.dataMonitor.TileFrameRowChanged += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
-         this.dataMonitor.SpritePlanRowDeleted += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowDeleted);
-         this.dataMonitor.SpriteRowChanging += new SGDK2.ProjectDataset.SpriteRowChangeEventHandler(this.dataMonitor_SpriteRowChanging);
-         this.dataMonitor.TileFrameRowDeleted += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
-         this.dataMonitor.SpritePlanRowChanged += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowChanged);
-         this.dataMonitor.SpriteRowDeleting += new SGDK2.ProjectDataset.SpriteRowChangeEventHandler(this.dataMonitor_SpriteRowDeleting);
-         // 
          // tabSelector
          // 
          this.tabSelector.Controls.Add(this.tabTiles);
@@ -403,7 +367,7 @@ namespace SGDK2
          this.tabSelector.Location = new System.Drawing.Point(0, 0);
          this.tabSelector.Name = "tabSelector";
          this.tabSelector.SelectedIndex = 0;
-         this.tabSelector.Size = new System.Drawing.Size(176, 505);
+         this.tabSelector.Size = new System.Drawing.Size(176, 485);
          this.tabSelector.TabIndex = 13;
          this.tabSelector.SelectedIndexChanged += new System.EventHandler(this.tabSelector_SelectedIndexChanged);
          // 
@@ -412,7 +376,7 @@ namespace SGDK2
          this.tabTiles.Controls.Add(this.pnlTiles);
          this.tabTiles.Location = new System.Drawing.Point(4, 22);
          this.tabTiles.Name = "tabTiles";
-         this.tabTiles.Size = new System.Drawing.Size(168, 479);
+         this.tabTiles.Size = new System.Drawing.Size(168, 459);
          this.tabTiles.TabIndex = 0;
          this.tabTiles.Text = "Tiles";
          // 
@@ -423,26 +387,8 @@ namespace SGDK2
          this.pnlTiles.Dock = System.Windows.Forms.DockStyle.Fill;
          this.pnlTiles.Location = new System.Drawing.Point(0, 0);
          this.pnlTiles.Name = "pnlTiles";
-         this.pnlTiles.Size = new System.Drawing.Size(168, 479);
+         this.pnlTiles.Size = new System.Drawing.Size(168, 459);
          this.pnlTiles.TabIndex = 14;
-         // 
-         // TileSelector
-         // 
-         this.TileSelector.BorderStyle = SGDK2.DragPanelBorderStyle.FixedInset;
-         this.TileSelector.CellBorders = false;
-         this.TileSelector.CellPadding = new System.Drawing.Size(2, 2);
-         this.TileSelector.CellSize = new System.Drawing.Size(0, 0);
-         this.TileSelector.CurrentCellIndex = -1;
-         this.TileSelector.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.TileSelector.Frameset = null;
-         this.TileSelector.FramesToDisplay = null;
-         this.TileSelector.GraphicSheet = null;
-         this.TileSelector.Location = new System.Drawing.Point(0, 21);
-         this.TileSelector.Name = "TileSelector";
-         this.TileSelector.SheetImage = null;
-         this.TileSelector.Size = new System.Drawing.Size(168, 458);
-         this.TileSelector.TabIndex = 9;
-         this.TileSelector.CurrentCellChanged += new System.EventHandler(this.TileSelector_CurrentCellChanged);
          // 
          // cboCategory
          // 
@@ -456,8 +402,8 @@ namespace SGDK2
          // 
          // tabSprites
          // 
-         this.tabSprites.Controls.Add(this.lstAvailableSprites);
          this.tabSprites.Controls.Add(this.SpriteSelector);
+         this.tabSprites.Controls.Add(this.lstAvailableSprites);
          this.tabSprites.Controls.Add(this.SpriteSplitter);
          this.tabSprites.Controls.Add(this.cboSpriteCategory);
          this.tabSprites.Controls.Add(this.grdSprite);
@@ -483,25 +429,6 @@ namespace SGDK2
          this.lstAvailableSprites.SelectedIndexChanged += new System.EventHandler(this.lstAvailableSprites_SelectedIndexChanged);
          this.lstAvailableSprites.Enter += new System.EventHandler(this.lstAvailableSprites_Enter);
          this.lstAvailableSprites.DoubleClick += new System.EventHandler(this.lstAvailableSprites_DoubleClick);
-         // 
-         // SpriteSelector
-         // 
-         this.SpriteSelector.BorderStyle = SGDK2.DragPanelBorderStyle.FixedInset;
-         this.SpriteSelector.CellBorders = false;
-         this.SpriteSelector.CellPadding = new System.Drawing.Size(0, 0);
-         this.SpriteSelector.CellSize = new System.Drawing.Size(0, 0);
-         this.SpriteSelector.CurrentCellIndex = -1;
-         this.SpriteSelector.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.SpriteSelector.Frameset = null;
-         this.SpriteSelector.FramesToDisplay = null;
-         this.SpriteSelector.GraphicSheet = null;
-         this.SpriteSelector.Location = new System.Drawing.Point(0, 78);
-         this.SpriteSelector.Name = "SpriteSelector";
-         this.SpriteSelector.SheetImage = null;
-         this.SpriteSelector.Size = new System.Drawing.Size(168, 196);
-         this.SpriteSelector.TabIndex = 2;
-         this.SpriteSelector.Visible = false;
-         this.SpriteSelector.CurrentCellChanged += new System.EventHandler(this.SpriteSelector_CurrentCellChanged);
          // 
          // SpriteSplitter
          // 
@@ -601,6 +528,25 @@ namespace SGDK2
          this.imlToolbar.Images.SetKeyName(2, "");
          this.imlToolbar.Images.SetKeyName(3, "");
          this.imlToolbar.Images.SetKeyName(4, "");
+         // 
+         // SpriteSelector
+         // 
+         this.SpriteSelector.BorderStyle = SGDK2.DragPanelBorderStyle.FixedInset;
+         this.SpriteSelector.CellBorders = false;
+         this.SpriteSelector.CellPadding = new System.Drawing.Size(0, 0);
+         this.SpriteSelector.CellSize = new System.Drawing.Size(0, 0);
+         this.SpriteSelector.CurrentCellIndex = -1;
+         this.SpriteSelector.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.SpriteSelector.Frameset = null;
+         this.SpriteSelector.FramesToDisplay = null;
+         this.SpriteSelector.GraphicSheet = null;
+         this.SpriteSelector.Location = new System.Drawing.Point(0, 78);
+         this.SpriteSelector.Name = "SpriteSelector";
+         this.SpriteSelector.SheetImage = null;
+         this.SpriteSelector.Size = new System.Drawing.Size(168, 176);
+         this.SpriteSelector.TabIndex = 2;
+         this.SpriteSelector.Visible = false;
+         this.SpriteSelector.CurrentCellChanged += new System.EventHandler(this.SpriteSelector_CurrentCellChanged);
          // 
          // tabPlans
          // 
@@ -840,7 +786,7 @@ namespace SGDK2
          // 
          // StatusBar
          // 
-         this.StatusBar.Location = new System.Drawing.Point(0, 505);
+         this.StatusBar.Location = new System.Drawing.Point(0, 485);
          this.StatusBar.Name = "StatusBar";
          this.StatusBar.Panels.AddRange(new System.Windows.Forms.StatusBarPanel[] {
             this.sbpStatus,
@@ -894,10 +840,64 @@ namespace SGDK2
          this.sbpSelTile.Name = "sbpSelTile";
          this.sbpSelTile.Width = 10;
          // 
+         // MapDisplay
+         // 
+         this.MapDisplay.AutoScroll = true;
+         this.MapDisplay.BackColor = System.Drawing.Color.Black;
+         this.MapDisplay.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+         this.MapDisplay.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.MapDisplay.GameDisplayMode = SGDK2.GameDisplayMode.m640x480x24;
+         this.MapDisplay.Location = new System.Drawing.Point(181, 0);
+         this.MapDisplay.Name = "MapDisplay";
+         this.MapDisplay.Size = new System.Drawing.Size(483, 485);
+         this.MapDisplay.TabIndex = 10;
+         this.MapDisplay.VSync = false;
+         this.MapDisplay.MouseLeave += new System.EventHandler(this.MapDisplay_MouseLeave);
+         this.MapDisplay.Paint += new System.Windows.Forms.PaintEventHandler(this.MapDisplay_Paint);
+         this.MapDisplay.MouseMove += new System.Windows.Forms.MouseEventHandler(this.MapDisplay_MouseMove);
+         this.MapDisplay.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MapDisplay_MouseDown);
+         this.MapDisplay.MouseUp += new System.Windows.Forms.MouseEventHandler(this.MapDisplay_MouseUp);
+         // 
+         // TileSelector
+         // 
+         this.TileSelector.BorderStyle = SGDK2.DragPanelBorderStyle.FixedInset;
+         this.TileSelector.CellBorders = false;
+         this.TileSelector.CellPadding = new System.Drawing.Size(2, 2);
+         this.TileSelector.CellSize = new System.Drawing.Size(0, 0);
+         this.TileSelector.CurrentCellIndex = -1;
+         this.TileSelector.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.TileSelector.Frameset = null;
+         this.TileSelector.FramesToDisplay = null;
+         this.TileSelector.GraphicSheet = null;
+         this.TileSelector.Location = new System.Drawing.Point(0, 21);
+         this.TileSelector.Name = "TileSelector";
+         this.TileSelector.SheetImage = null;
+         this.TileSelector.Size = new System.Drawing.Size(168, 438);
+         this.TileSelector.TabIndex = 9;
+         this.TileSelector.CurrentCellChanged += new System.EventHandler(this.TileSelector_CurrentCellChanged);
+         // 
+         // dataMonitor
+         // 
+         this.dataMonitor.LayerRowDeleted += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowDeleted);
+         this.dataMonitor.TileRowDeleting += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowChanged);
+         this.dataMonitor.SpriteRowChanged += new SGDK2.ProjectDataset.SpriteRowChangeEventHandler(this.dataMonitor_SpriteRowChanged);
+         this.dataMonitor.SpritePlanRowChanging += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowChanging);
+         this.dataMonitor.TileRowChanged += new SGDK2.ProjectDataset.TileRowChangeEventHandler(this.dataMonitor_TileRowChanged);
+         this.dataMonitor.LayerRowChanged += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowChanged);
+         this.dataMonitor.TileFrameRowDeleting += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
+         this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
+         this.dataMonitor.MapRowDeleted += new SGDK2.ProjectDataset.MapRowChangeEventHandler(this.dataMonitor_MapRowDeleted);
+         this.dataMonitor.TileFrameRowChanged += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
+         this.dataMonitor.SpritePlanRowDeleted += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowDeleted);
+         this.dataMonitor.SpriteRowChanging += new SGDK2.ProjectDataset.SpriteRowChangeEventHandler(this.dataMonitor_SpriteRowChanging);
+         this.dataMonitor.TileFrameRowDeleted += new SGDK2.ProjectDataset.TileFrameRowChangeEventHandler(this.dataMonitor_TileFrameRowChanged);
+         this.dataMonitor.SpritePlanRowChanged += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowChanged);
+         this.dataMonitor.SpriteRowDeleting += new SGDK2.ProjectDataset.SpriteRowChangeEventHandler(this.dataMonitor_SpriteRowDeleting);
+         // 
          // frmMapEditor
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-         this.ClientSize = new System.Drawing.Size(664, 521);
+         this.ClientSize = new System.Drawing.Size(664, 501);
          this.Controls.Add(this.MapDisplay);
          this.Controls.Add(this.MapSplitter);
          this.Controls.Add(this.tabSelector);
@@ -1413,20 +1413,29 @@ namespace SGDK2
 
       private void DisableDelete()
       {
-         mnuEditDelete.Text = "Delete Selected Objects";
-         mnuEditDelete.Enabled = false;      
+         if (!Disposing)
+         {
+            mnuEditDelete.Text = "Delete Selected Objects";
+            mnuEditDelete.Enabled = false;
+         }
       }
 
       private void DeleteCoordinatesMode()
       {
-         mnuEditDelete.Text = "Delete Selected Coordinates";
-         mnuEditDelete.Enabled = true;
+         if (!Disposing)
+         {
+            mnuEditDelete.Text = "Delete Selected Coordinates";
+            mnuEditDelete.Enabled = true;
+         }
       }
 
       private void DeleteSpriteMode()
       {
-         mnuEditDelete.Text = "Delete Selected Sprites";
-         mnuEditDelete.Enabled = true;
+         if (!Disposing)
+         {
+            mnuEditDelete.Text = "Delete Selected Sprites";
+            mnuEditDelete.Enabled = true;
+         }
       }
 
       private void DeleteSelectedPlans()

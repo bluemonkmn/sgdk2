@@ -91,6 +91,7 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuTools;
       private System.Windows.Forms.MenuItem mnuToolsReset;
       internal System.Windows.Forms.Timer tmrInitComplete;
+      private MenuItem chkDeploymentOptions;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -188,6 +189,7 @@ namespace SGDK2
          this.lblProjectTree = new System.Windows.Forms.Label();
          this.sbMain = new System.Windows.Forms.StatusBar();
          this.tmrInitComplete = new System.Windows.Forms.Timer(this.components);
+         this.chkDeploymentOptions = new System.Windows.Forms.MenuItem();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.pnlProjectTree.SuspendLayout();
          this.SuspendLayout();
@@ -209,7 +211,7 @@ namespace SGDK2
          this.tbrMain.Location = new System.Drawing.Point(0, 0);
          this.tbrMain.Name = "tbrMain";
          this.tbrMain.ShowToolTips = true;
-         this.tbrMain.Size = new System.Drawing.Size(870, 27);
+         this.tbrMain.Size = new System.Drawing.Size(965, 27);
          this.tbrMain.TabIndex = 1;
          this.tbrMain.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tbrMain_ButtonClick);
          this.tbrMain.ButtonDropDown += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tbrMain_ButtonDropDown);
@@ -341,13 +343,13 @@ namespace SGDK2
          this.tvwMain.Location = new System.Drawing.Point(0, 16);
          this.tvwMain.Name = "tvwMain";
          this.tvwMain.SelectedImageIndex = 0;
-         this.tvwMain.Size = new System.Drawing.Size(222, 508);
+         this.tvwMain.Size = new System.Drawing.Size(222, 447);
          this.tvwMain.TabIndex = 3;
          this.tvwMain.DoubleClick += new System.EventHandler(this.tvwMain_DoubleClick);
-         this.tvwMain.MouseUp += new System.Windows.Forms.MouseEventHandler(this.tvwMain_MouseUp);
          this.tvwMain.Leave += new System.EventHandler(this.tvwMain_Leave);
-         this.tvwMain.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Mdi_MouseMove);
          this.tvwMain.MouseDown += new System.Windows.Forms.MouseEventHandler(this.tvwMain_MouseUp);
+         this.tvwMain.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Mdi_MouseMove);
+         this.tvwMain.MouseUp += new System.Windows.Forms.MouseEventHandler(this.tvwMain_MouseUp);
          // 
          // mnuTreeView
          // 
@@ -388,7 +390,7 @@ namespace SGDK2
          this.splitterMDI.Location = new System.Drawing.Point(222, 27);
          this.splitterMDI.MinSize = 20;
          this.splitterMDI.Name = "splitterMDI";
-         this.splitterMDI.Size = new System.Drawing.Size(6, 524);
+         this.splitterMDI.Size = new System.Drawing.Size(6, 463);
          this.splitterMDI.TabIndex = 4;
          this.splitterMDI.TabStop = false;
          // 
@@ -595,7 +597,8 @@ namespace SGDK2
          // 
          this.mnuTools.Index = 2;
          this.mnuTools.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.mnuToolsReset});
+            this.mnuToolsReset,
+            this.chkDeploymentOptions});
          this.mnuTools.MergeOrder = 3;
          this.mnuTools.MergeType = System.Windows.Forms.MenuMerge.Replace;
          this.mnuTools.Text = "&Tools";
@@ -663,7 +666,7 @@ namespace SGDK2
          this.pnlProjectTree.Dock = System.Windows.Forms.DockStyle.Left;
          this.pnlProjectTree.Location = new System.Drawing.Point(0, 27);
          this.pnlProjectTree.Name = "pnlProjectTree";
-         this.pnlProjectTree.Size = new System.Drawing.Size(222, 524);
+         this.pnlProjectTree.Size = new System.Drawing.Size(222, 463);
          this.pnlProjectTree.TabIndex = 6;
          // 
          // lblProjectTree
@@ -681,81 +684,87 @@ namespace SGDK2
          this.lblProjectTree.TabIndex = 4;
          this.lblProjectTree.Text = "Project Tree";
          this.lblProjectTree.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+         this.lblProjectTree.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lblProjectTree_MouseMove);
          this.lblProjectTree.MouseLeave += new System.EventHandler(this.MainPanel_MouseLeave);
          this.lblProjectTree.MouseMove += new System.Windows.Forms.MouseEventHandler(this.lblProjectTree_MouseMove);
-         this.lblProjectTree.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lblProjectTree_MouseMove);
          this.lblProjectTree.MouseUp += new System.Windows.Forms.MouseEventHandler(this.lblProjectTree_MouseUp);
          // 
          // sbMain
          // 
-         this.sbMain.Location = new System.Drawing.Point(0, 551);
+         this.sbMain.Location = new System.Drawing.Point(0, 490);
          this.sbMain.Name = "sbMain";
-         this.sbMain.Size = new System.Drawing.Size(870, 20);
+         this.sbMain.Size = new System.Drawing.Size(965, 20);
          this.sbMain.TabIndex = 8;
          // 
          // tmrInitComplete
          // 
          this.tmrInitComplete.Tick += new System.EventHandler(this.tmrInitComplete_Tick);
          // 
+         // chkDeploymentOptions
+         // 
+         this.chkDeploymentOptions.Index = 1;
+         this.chkDeploymentOptions.Text = "Download Updates...";
+         this.chkDeploymentOptions.Click += new System.EventHandler(this.chkDeploymentOptions_Click);
+         // 
          // dataMonitor
          // 
-         this.dataMonitor.SpriteDefinitionRowDeleted += new SGDK2.ProjectDataset.SpriteDefinitionRowChangeEventHandler(this.dataMonitor_SpriteDefinitionRowDeleted);
-         this.dataMonitor.CounterRowChanging += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowChanging);
-         this.dataMonitor.FramesetRowDeleting += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.dataMonitor_FramesetRowDeleting);
-         this.dataMonitor.LayerRowDeleted += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowDeleted);
-         this.dataMonitor.TileCategoryRowChanged += new SGDK2.ProjectDataset.TileCategoryRowChangeEventHandler(this.dataMonitor_TileCategoryRowChanged);
-         this.dataMonitor.SpriteDefinitionRowDeleting += new SGDK2.ProjectDataset.SpriteDefinitionRowChangeEventHandler(this.dataMonitor_SpriteDefinitionRowDeleting);
-         this.dataMonitor.GraphicSheetRowDeleted += new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(this.dataMonitor_GraphicSheetRowDeleted);
-         this.dataMonitor.TilesetRowChanged += new SGDK2.ProjectDataset.TilesetRowChangeEventHandler(this.dataMonitor_TilesetRowChanged);
-         this.dataMonitor.CategorizedTilesetRowChanged += new SGDK2.ProjectDataset.CategorizedTilesetRowChangeEventHandler(this.dataMonitor_CategorizedTilesetRowChanged);
-         this.dataMonitor.SpriteCategoryRowChanging += new SGDK2.ProjectDataset.SpriteCategoryRowChangeEventHandler(this.dataMonitor_SpriteCategoryRowChanging);
-         this.dataMonitor.CounterRowDeleting += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowDeleting);
          this.dataMonitor.GraphicSheetRowChanged += new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(this.dataMonitor_GraphicSheetRowChanged);
-         this.dataMonitor.SpritePlanRowChanging += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowChanging);
-         this.dataMonitor.MapRowChanging += new SGDK2.ProjectDataset.MapRowChangeEventHandler(this.dataMonitor_MapRowChanging);
-         this.dataMonitor.TilesetRowChanging += new SGDK2.ProjectDataset.TilesetRowChangeEventHandler(this.dataMonitor_TilesetRowChanging);
-         this.dataMonitor.SpriteCategoryRowDeleted += new SGDK2.ProjectDataset.SpriteCategoryRowChangeEventHandler(this.dataMonitor_SpriteCategoryRowDeleted);
-         this.dataMonitor.TileCategoryRowDeleted += new SGDK2.ProjectDataset.TileCategoryRowChangeEventHandler(this.dataMonitor_TileCategoryRowDeleted);
-         this.dataMonitor.FramesetRowDeleted += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.dataMonitor_FramesetRowDeleted);
-         this.dataMonitor.SpriteDefinitionRowChanging += new SGDK2.ProjectDataset.SpriteDefinitionRowChangeEventHandler(this.dataMonitor_SpriteDefinitionRowChanging);
-         this.dataMonitor.SolidityRowDeleting += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.dataMonitor_SolidityRowDeleting);
-         this.dataMonitor.LayerRowChanged += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowChanged);
-         this.dataMonitor.SourceCodeRowDeleted += new SGDK2.ProjectDataset.SourceCodeRowChangeEventHandler(this.dataMonitor_SourceCodeRowDeleted);
-         this.dataMonitor.CategorizedTilesetRowDeleted += new SGDK2.ProjectDataset.CategorizedTilesetRowChangeEventHandler(this.dataMonitor_CategorizedTilesetRowDeleted);
-         this.dataMonitor.SourceCodeRowDeleting += new SGDK2.ProjectDataset.SourceCodeRowChangeEventHandler(this.dataMonitor_SourceCodeRowDeleting);
-         this.dataMonitor.TileCategoryRowChanging += new SGDK2.ProjectDataset.TileCategoryRowChangeEventHandler(this.dataMonitor_TileCategoryRowChanging);
-         this.dataMonitor.MapRowDeleted += new SGDK2.ProjectDataset.MapRowChangeEventHandler(this.dataMonitor_MapRowDeleted);
-         this.dataMonitor.TilesetRowDeleting += new SGDK2.ProjectDataset.TilesetRowChangeEventHandler(this.dataMonitor_TilesetRowDeleting);
-         this.dataMonitor.FramesetRowChanged += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.dataMonitor_FramesetRowChanged);
-         this.dataMonitor.CategorizedTilesetRowChanging += new SGDK2.ProjectDataset.CategorizedTilesetRowChangeEventHandler(this.dataMonitor_CategorizedTilesetRowChanging);
-         this.dataMonitor.SolidityRowChanging += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.dataMonitor_SolidityRowChanging);
-         this.dataMonitor.SourceCodeRowChanged += new SGDK2.ProjectDataset.SourceCodeRowChangeEventHandler(this.dataMonitor_SourceCodeRowChanged);
-         this.dataMonitor.SolidityRowChanged += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.dataMonitor_SolidityRowChanged);
-         this.dataMonitor.SpriteCategoryRowDeleting += new SGDK2.ProjectDataset.SpriteCategoryRowChangeEventHandler(this.dataMonitor_SpriteCategoryRowDeleting);
-         this.dataMonitor.CategorizedTilesetRowDeleting += new SGDK2.ProjectDataset.CategorizedTilesetRowChangeEventHandler(this.dataMonitor_CategorizedTilesetRowDeleting);
-         this.dataMonitor.SpritePlanRowDeleted += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowDeleted);
-         this.dataMonitor.FramesetRowChanging += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.dataMonitor_FramesetRowChanging);
-         this.dataMonitor.SpriteCategoryRowChanged += new SGDK2.ProjectDataset.SpriteCategoryRowChangeEventHandler(this.dataMonitor_SpriteCategoryRowChanged);
-         this.dataMonitor.SourceCodeRowChanging += new SGDK2.ProjectDataset.SourceCodeRowChangeEventHandler(this.dataMonitor_SourceCodeRowChanging);
-         this.dataMonitor.CounterRowDeleted += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowDeleted);
-         this.dataMonitor.TilesetRowDeleted += new SGDK2.ProjectDataset.TilesetRowChangeEventHandler(this.dataMonitor_TilesetRowDeleted);
-         this.dataMonitor.MapRowDeleting += new SGDK2.ProjectDataset.MapRowChangeEventHandler(this.dataMonitor_MapRowDeleting);
-         this.dataMonitor.SpritePlanRowDeleting += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowDeleting);
-         this.dataMonitor.LayerRowChanging += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowChanging);
-         this.dataMonitor.LayerRowDeleting += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowDeleting);
-         this.dataMonitor.CounterRowChanged += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowChanged);
-         this.dataMonitor.TileCategoryRowDeleting += new SGDK2.ProjectDataset.TileCategoryRowChangeEventHandler(this.dataMonitor_TileCategoryRowDeleting);
-         this.dataMonitor.SpriteDefinitionRowChanged += new SGDK2.ProjectDataset.SpriteDefinitionRowChangeEventHandler(this.dataMonitor_SpriteDefinitionRowChanged);
-         this.dataMonitor.SolidityRowDeleted += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.dataMonitor_SolidityRowDeleted);
-         this.dataMonitor.SpritePlanRowChanged += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowChanged);
-         this.dataMonitor.GraphicSheetRowDeleting += new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(this.dataMonitor_GraphicSheetRowDeleting);
          this.dataMonitor.GraphicSheetRowChanging += new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(this.dataMonitor_GraphicSheetRowChanging);
+         this.dataMonitor.GraphicSheetRowDeleted += new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(this.dataMonitor_GraphicSheetRowDeleted);
+         this.dataMonitor.GraphicSheetRowDeleting += new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(this.dataMonitor_GraphicSheetRowDeleting);
+         this.dataMonitor.FramesetRowChanged += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.dataMonitor_FramesetRowChanged);
+         this.dataMonitor.FramesetRowChanging += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.dataMonitor_FramesetRowChanging);
+         this.dataMonitor.FramesetRowDeleted += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.dataMonitor_FramesetRowDeleted);
+         this.dataMonitor.FramesetRowDeleting += new SGDK2.ProjectDataset.FramesetRowChangeEventHandler(this.dataMonitor_FramesetRowDeleting);
+         this.dataMonitor.TilesetRowChanged += new SGDK2.ProjectDataset.TilesetRowChangeEventHandler(this.dataMonitor_TilesetRowChanged);
+         this.dataMonitor.TilesetRowChanging += new SGDK2.ProjectDataset.TilesetRowChangeEventHandler(this.dataMonitor_TilesetRowChanging);
+         this.dataMonitor.TilesetRowDeleted += new SGDK2.ProjectDataset.TilesetRowChangeEventHandler(this.dataMonitor_TilesetRowDeleted);
+         this.dataMonitor.TilesetRowDeleting += new SGDK2.ProjectDataset.TilesetRowChangeEventHandler(this.dataMonitor_TilesetRowDeleting);
+         this.dataMonitor.CounterRowChanged += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowChanged);
+         this.dataMonitor.CounterRowChanging += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowChanging);
+         this.dataMonitor.CounterRowDeleted += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowDeleted);
+         this.dataMonitor.CounterRowDeleting += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowDeleting);
          this.dataMonitor.MapRowChanged += new SGDK2.ProjectDataset.MapRowChangeEventHandler(this.dataMonitor_MapRowChanged);
+         this.dataMonitor.MapRowChanging += new SGDK2.ProjectDataset.MapRowChangeEventHandler(this.dataMonitor_MapRowChanging);
+         this.dataMonitor.MapRowDeleted += new SGDK2.ProjectDataset.MapRowChangeEventHandler(this.dataMonitor_MapRowDeleted);
+         this.dataMonitor.MapRowDeleting += new SGDK2.ProjectDataset.MapRowChangeEventHandler(this.dataMonitor_MapRowDeleting);
+         this.dataMonitor.LayerRowChanged += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowChanged);
+         this.dataMonitor.LayerRowChanging += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowChanging);
+         this.dataMonitor.LayerRowDeleted += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowDeleted);
+         this.dataMonitor.LayerRowDeleting += new SGDK2.ProjectDataset.LayerRowChangeEventHandler(this.dataMonitor_LayerRowDeleting);
+         this.dataMonitor.SpriteDefinitionRowChanged += new SGDK2.ProjectDataset.SpriteDefinitionRowChangeEventHandler(this.dataMonitor_SpriteDefinitionRowChanged);
+         this.dataMonitor.SpriteDefinitionRowChanging += new SGDK2.ProjectDataset.SpriteDefinitionRowChangeEventHandler(this.dataMonitor_SpriteDefinitionRowChanging);
+         this.dataMonitor.SpriteDefinitionRowDeleted += new SGDK2.ProjectDataset.SpriteDefinitionRowChangeEventHandler(this.dataMonitor_SpriteDefinitionRowDeleted);
+         this.dataMonitor.SpriteDefinitionRowDeleting += new SGDK2.ProjectDataset.SpriteDefinitionRowChangeEventHandler(this.dataMonitor_SpriteDefinitionRowDeleting);
+         this.dataMonitor.SpriteCategoryRowChanged += new SGDK2.ProjectDataset.SpriteCategoryRowChangeEventHandler(this.dataMonitor_SpriteCategoryRowChanged);
+         this.dataMonitor.SpriteCategoryRowChanging += new SGDK2.ProjectDataset.SpriteCategoryRowChangeEventHandler(this.dataMonitor_SpriteCategoryRowChanging);
+         this.dataMonitor.SpriteCategoryRowDeleted += new SGDK2.ProjectDataset.SpriteCategoryRowChangeEventHandler(this.dataMonitor_SpriteCategoryRowDeleted);
+         this.dataMonitor.SpriteCategoryRowDeleting += new SGDK2.ProjectDataset.SpriteCategoryRowChangeEventHandler(this.dataMonitor_SpriteCategoryRowDeleting);
+         this.dataMonitor.SolidityRowChanged += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.dataMonitor_SolidityRowChanged);
+         this.dataMonitor.SolidityRowChanging += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.dataMonitor_SolidityRowChanging);
+         this.dataMonitor.SolidityRowDeleted += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.dataMonitor_SolidityRowDeleted);
+         this.dataMonitor.SolidityRowDeleting += new SGDK2.ProjectDataset.SolidityRowChangeEventHandler(this.dataMonitor_SolidityRowDeleting);
+         this.dataMonitor.SourceCodeRowChanged += new SGDK2.ProjectDataset.SourceCodeRowChangeEventHandler(this.dataMonitor_SourceCodeRowChanged);
+         this.dataMonitor.SourceCodeRowChanging += new SGDK2.ProjectDataset.SourceCodeRowChangeEventHandler(this.dataMonitor_SourceCodeRowChanging);
+         this.dataMonitor.SourceCodeRowDeleted += new SGDK2.ProjectDataset.SourceCodeRowChangeEventHandler(this.dataMonitor_SourceCodeRowDeleted);
+         this.dataMonitor.SourceCodeRowDeleting += new SGDK2.ProjectDataset.SourceCodeRowChangeEventHandler(this.dataMonitor_SourceCodeRowDeleting);
+         this.dataMonitor.SpritePlanRowChanged += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowChanged);
+         this.dataMonitor.SpritePlanRowChanging += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowChanging);
+         this.dataMonitor.SpritePlanRowDeleted += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowDeleted);
+         this.dataMonitor.SpritePlanRowDeleting += new SGDK2.ProjectDataset.SpritePlanRowChangeEventHandler(this.dataMonitor_SpritePlanRowDeleting);
+         this.dataMonitor.CategorizedTilesetRowChanged += new SGDK2.ProjectDataset.CategorizedTilesetRowChangeEventHandler(this.dataMonitor_CategorizedTilesetRowChanged);
+         this.dataMonitor.CategorizedTilesetRowChanging += new SGDK2.ProjectDataset.CategorizedTilesetRowChangeEventHandler(this.dataMonitor_CategorizedTilesetRowChanging);
+         this.dataMonitor.CategorizedTilesetRowDeleted += new SGDK2.ProjectDataset.CategorizedTilesetRowChangeEventHandler(this.dataMonitor_CategorizedTilesetRowDeleted);
+         this.dataMonitor.CategorizedTilesetRowDeleting += new SGDK2.ProjectDataset.CategorizedTilesetRowChangeEventHandler(this.dataMonitor_CategorizedTilesetRowDeleting);
+         this.dataMonitor.TileCategoryRowChanged += new SGDK2.ProjectDataset.TileCategoryRowChangeEventHandler(this.dataMonitor_TileCategoryRowChanged);
+         this.dataMonitor.TileCategoryRowChanging += new SGDK2.ProjectDataset.TileCategoryRowChangeEventHandler(this.dataMonitor_TileCategoryRowChanging);
+         this.dataMonitor.TileCategoryRowDeleted += new SGDK2.ProjectDataset.TileCategoryRowChangeEventHandler(this.dataMonitor_TileCategoryRowDeleted);
+         this.dataMonitor.TileCategoryRowDeleting += new SGDK2.ProjectDataset.TileCategoryRowChangeEventHandler(this.dataMonitor_TileCategoryRowDeleting);
          // 
          // frmMain
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-         this.ClientSize = new System.Drawing.Size(870, 571);
+         this.ClientSize = new System.Drawing.Size(965, 510);
          this.Controls.Add(this.splitterMDI);
          this.Controls.Add(this.pnlProjectTree);
          this.Controls.Add(this.tbrMain);
@@ -1677,6 +1686,53 @@ namespace SGDK2
       #endregion
 
       #region Public Methods
+      public void CreateTemplateMenuItems()
+      {
+         try
+         {
+            string libFolder = GetLibraryFolder();
+            if (libFolder == null)
+            {
+               MessageBox.Show(this, "Cannot locate template library");
+            }
+            else
+            {
+               System.IO.DirectoryInfo diTemplates = new System.IO.DirectoryInfo(
+                  System.IO.Path.Combine(libFolder, @"Projects"));
+               while(mnuFileNewPrj.MenuItems.Count > 1)
+                  mnuFileNewPrj.MenuItems.RemoveAt(mnuFileNewPrj.MenuItems.Count - 1);
+               while(mnuFileResetCode.MenuItems.Count > 1)
+                  mnuFileResetCode.MenuItems.RemoveAt(mnuFileResetCode.MenuItems.Count - 1);
+               EventHandler newHandler = new EventHandler(mnuFileNewPrj_Click);
+               EventHandler resetHandler = new EventHandler(mnuFileResetCode_Click);
+               foreach (System.IO.FileInfo fiTemplate in diTemplates.GetFiles("*.sgdk2"))
+               {
+                  using (System.IO.FileStream tplFile = new System.IO.FileStream(fiTemplate.FullName, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite))
+                  {
+                     System.Xml.XmlReader xml = new System.Xml.XmlTextReader(tplFile);
+                     while (xml.Read())
+                     {
+                        if (xml.Name == "Project")
+                        {
+                           m_MenuToTemplateMap.Add(
+                              mnuFileNewPrj.MenuItems.Add(xml.GetAttribute("TitleText"), newHandler),
+                              fiTemplate.FullName);
+                           m_MenuToTemplateMap.Add(
+                              mnuFileResetCode.MenuItems.Add(xml.GetAttribute("TitleText"), resetHandler),
+                              fiTemplate.FullName);
+                           break;
+                        }
+                     }
+                  }
+               }
+            }
+         }
+         catch (System.Exception ex)
+         {
+            MessageBox.Show(this, "Failed to read project templates from Library\\Projects\\*.sgdk2: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+         }
+      }
+
       public void SelectByContext(string Context)
       {
          TreeNode ndSel = m_TreeNodes[Context] as TreeNode;
@@ -1747,46 +1803,8 @@ namespace SGDK2
          {
             MessageBox.Show(this, "Error loading user preferences: " + ex.ToString(), "Scrolling Game Development Kit", MessageBoxButtons.OK, MessageBoxIcon.Error);
          }
-         
-         try
-         {
-            string libFolder = GetLibraryFolder();
-            if (libFolder == null)
-            {
-               MessageBox.Show(this, "Cannot locate template library");
-            }
-            else
-            {
-               System.IO.DirectoryInfo diTemplates = new System.IO.DirectoryInfo(
-                  System.IO.Path.Combine(libFolder, @"Projects"));
-               EventHandler newHandler = new EventHandler(mnuFileNewPrj_Click);
-               EventHandler resetHandler = new EventHandler(mnuFileResetCode_Click);
-               foreach(System.IO.FileInfo fiTemplate in diTemplates.GetFiles("*.sgdk2"))
-               {
-                  using (System.IO.FileStream tplFile = new System.IO.FileStream(fiTemplate.FullName, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite))
-                  {
-                     System.Xml.XmlReader xml = new System.Xml.XmlTextReader(tplFile);
-                     while(xml.Read())
-                     {
-                        if (xml.Name == "Project")
-                        {
-                           m_MenuToTemplateMap.Add(
-                              mnuFileNewPrj.MenuItems.Add(xml.GetAttribute("TitleText"), newHandler),
-                              fiTemplate.FullName);
-                           m_MenuToTemplateMap.Add(
-                              mnuFileResetCode.MenuItems.Add(xml.GetAttribute("TitleText"), resetHandler),
-                              fiTemplate.FullName);
-                           break;
-                        }
-                     }
-                  }
-               }
-            }
-         }
-         catch(System.Exception ex)
-         {
-            MessageBox.Show(this, "Failed to read project templates from Library\\Projects\\*.sgdk2: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-         }
+
+         CreateTemplateMenuItems();
 
          if (SGDK2IDE.g_CommandLine.ProjectFile == null)
          {
@@ -3051,9 +3069,25 @@ namespace SGDK2
          }
       }
 
+      public static bool GetHelp()
+      {
+         if (System.Deployment.Application.ApplicationDeployment.IsNetworkDeployed)
+         {
+            if (!System.Deployment.Application.ApplicationDeployment.CurrentDeployment.IsFileGroupDownloaded("Online Help"))
+            {
+               System.Deployment.Application.ApplicationDeployment.CurrentDeployment.DownloadFileGroup("Online Help");
+               SGDK2IDE.FindHelpFile();
+            }
+            return System.Deployment.Application.ApplicationDeployment.CurrentDeployment.IsFileGroupDownloaded("Online Help");
+         }
+         else
+            return true;
+      }
+
       private void mnuHelpContents_Click(object sender, System.EventArgs e)
       {
-         Help.ShowHelp(this, SGDK2IDE.g_HelpProvider.HelpNamespace, HelpNavigator.TableOfContents);
+         if (GetHelp())
+            Help.ShowHelp(this, SGDK2IDE.g_HelpProvider.HelpNamespace, HelpNavigator.TableOfContents);
       }
 
       private void mnuHelpIndex_Click(object sender, System.EventArgs e)
@@ -3075,9 +3109,12 @@ namespace SGDK2
       private void tmrInitComplete_Tick(object sender, System.EventArgs e)
       {
          tmrInitComplete.Enabled = false;
+         frmDeployment.CheckDeploymentOptions(false, this);
+
          if (DialogResult.Yes == frmSwitchableMessage.GetResult("NewUserHelp", DialogResult.Cancel, "If you are new to SGDK2, you should know that pressing the F1 will usually display a page with detailed help for the currently displayed task.  To get started, you may also want to browse the tutorials and other documentation.  Do you want to display the documentation now?", "Suggestions", MessageBoxButtons.YesNo, this))
          {
-            Help.ShowHelp(this, SGDK2IDE.g_HelpProvider.HelpNamespace, HelpNavigator.TableOfContents);
+            if(GetHelp())
+               Help.ShowHelp(this, SGDK2IDE.g_HelpProvider.HelpNamespace, HelpNavigator.TableOfContents);
          }      
       }
 
@@ -3143,6 +3180,11 @@ namespace SGDK2
          {
             AddNewSpriteMenus(tbbNew.DropDownMenu);
          }
+      }
+
+      private void chkDeploymentOptions_Click(object sender, EventArgs e)
+      {
+         frmDeployment.CheckDeploymentOptions(true, this);
       }
       #endregion
    }

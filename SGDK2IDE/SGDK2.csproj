@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" ToolsVersion="3.5" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectType>Local</ProjectType>
     <ProductVersion>9.0.21022</ProductVersion>
@@ -6,12 +7,12 @@
     <ProjectGuid>{A1F1DF5A-C16F-4439-BC2B-E99FE2904941}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ApplicationIcon>App.ico</ApplicationIcon>
+    <ApplicationIcon>
+    </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
     <AssemblyName>SGDK2IDE</AssemblyName>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>SGDK2_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
@@ -22,24 +23,34 @@
     <StartupObject>SGDK2.SGDK2IDE</StartupObject>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <OldToolsVersion>0.0</OldToolsVersion>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
-    <PublishUrl>publish\</PublishUrl>
+    <IsWebBootstrapper>true</IsWebBootstrapper>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <PublishUrl>C:\Users\Ben\Documents\Development\IDE\</PublishUrl>
     <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
+    <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
+    <UpdateMode>Background</UpdateMode>
     <UpdateInterval>7</UpdateInterval>
     <UpdateIntervalUnits>Days</UpdateIntervalUnits>
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <InstallUrl>http://sgdk2.enigmadream.com/clickonce/</InstallUrl>
+    <SupportUrl>http://gamedev.enigmadream.com/</SupportUrl>
+    <ErrorReportUrl>http://gamedev.enigmadream.com/</ErrorReportUrl>
+    <ProductName>Scrolling Game Development Kit 2</ProductName>
+    <PublisherName>Benjamin Marty</PublisherName>
+    <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
+    <WebPage>default.html</WebPage>
+    <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
+    <ApplicationRevision>12</ApplicationRevision>
+    <ApplicationVersion>2.1.5.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -107,6 +118,29 @@
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>529F7BF6C8A1315777D447CCD95DC179D2E518D1</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>SGDK2_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <Win32Resource>C:\Users\Ben\Documents\Visual Studio 2010\Projects\SGDK20IDE\SGDK2IDE.res</Win32Resource>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualC">
       <Name>Microsoft.VisualC</Name>
@@ -125,6 +159,8 @@
     <Reference Include="System.Data">
       <Name>System.Data</Name>
     </Reference>
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing">
       <Name>System.Drawing</Name>
     </Reference>
@@ -213,6 +249,12 @@
     <Compile Include="fmod.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Deployment.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Deployment.Designer.cs">
+      <DependentUpon>Deployment.cs</DependentUpon>
+    </Compile>
     <Compile Include="FrameCache.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -264,6 +306,8 @@
     <Compile Include="LayerWizard.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Content Include="Library\Sound\fmod.cs" />
+    <Content Include="Library\Sound\fmodbase.cs" />
     <Compile Include="LogView.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -358,6 +402,9 @@
     <EmbeddedResource Include="EditMessageChar.resx">
       <DependentUpon>EditMessageChar.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Deployment.resx">
+      <DependentUpon>Deployment.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SpriteFunctionSelector.resx">
       <DependentUpon>SpriteFunctionSelector.cs</DependentUpon>
@@ -647,15 +694,40 @@
     <Content Include="fmodex.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Library\Graphics\Lettering.png" />
+    <Content Include="Library\Graphics\SHFL32x32.png" />
+    <Content Include="Library\Sprites\SHFLSprites.png" />
+    <Content Include="Prj.ico" />
     <Content Include="ProjectDataset.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <CustomToolNamespace>SGDK2</CustomToolNamespace>
       <LastGenOutput>ProjectDataset.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </Content>
-    <None Include="libfmodex-4.22.01.so">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="app.config" />
+    <Content Include="Help\SGDK2Help.chm" />
+    <Content Include="Library\Graphics\SHFL.sgdk2" />
+    <Content Include="Library\Graphics\SMHFL.sgdk2" />
+    <Content Include="Library\Projects\Default.sgdk2" />
+    <Content Include="Library\Projects\SHFL.sgdk2" />
+    <Content Include="Library\Sound\Ben.sgdk2" />
+    <Content Include="Library\Sound\Ceekayed.sgdk2" />
+    <Content Include="Library\Sound\Effects.sgdk2" />
+    <Content Include="Library\SourceCode\Message.sgdk2" />
+    <Content Include="Library\SourceCode\Online.sgdk2" />
+    <Content Include="Library\SourceCode\SpriteRecorder.sgdk2" />
+    <Content Include="Library\SourceCode\Video.sgdk2" />
+    <Content Include="Library\Sprites\Cannon.sgdk2" />
+    <Content Include="Library\Sprites\LeftRightFlat.sgdk2" />
+    <Content Include="Library\Sprites\LeftRightJump.sgdk2" />
+    <Content Include="Library\Sprites\LeftRightSlope.sgdk2" />
+    <Content Include="Library\Sprites\RotatingCar.sgdk2" />
+    <Content Include="Library\Sprites\SimplePlatform.sgdk2" />
+    <Content Include="Library\Sprites\SimplePlayer.sgdk2" />
+    <Content Include="Library\Sprites\SpaceShip.sgdk2" />
+    <Content Include="Library\Tiles\Lettering.sgdk2" />
+    <Content Include="Library\Tiles\SHFL.sgdk2" />
+    <Content Include="Library\Tiles\Simple Ground.sgdk2" />
     <None Include="OpenTK.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -669,8 +741,23 @@
       <DependentUpon>ProjectDataset.xsd</DependentUpon>
     </None>
     <EmbeddedResource Include="Template\app.config" />
+    <None Include="Properties\app.manifest">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="SGDK2IDE.res" />
+    <None Include="SGDK2_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
       <Visible>False</Visible>
       <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
@@ -684,7 +771,12 @@
     <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5</ProductName>
-      <Install>true</Install>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
     </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
       <Visible>False</Visible>
@@ -692,8 +784,269 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="Properties\" />
+    <FileAssociation Include=".sgdk2">
+      <Visible>False</Visible>
+      <Description>Scrolling Game Development Kit 2 Project</Description>
+      <Progid>sgdk2file</Progid>
+      <DefaultIcon>Prj.ico</DefaultIcon>
+    </FileAssociation>
+  </ItemGroup>
+  <ItemGroup>
+    <PublishFile Include="Help\SGDK2Help.chm">
+      <Visible>False</Visible>
+      <Group>Online Help</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Graphics\Lettering.png">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Graphics\SHFL.sgdk2">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Graphics\SHFL32x32.png">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Graphics\SMHFL.sgdk2">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Projects\SHFL.sgdk2">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Sound\Ben.sgdk2">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Sound\Ceekayed.sgdk2">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Sound\Effects.sgdk2">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Sound\fmod.cs">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Sound\fmodbase.cs">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\SourceCode\Message.sgdk2">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\SourceCode\Online.sgdk2">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\SourceCode\SpriteRecorder.sgdk2">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\SourceCode\Video.sgdk2">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Sprites\Cannon.sgdk2">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Sprites\LeftRightFlat.sgdk2">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Sprites\LeftRightJump.sgdk2">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Sprites\LeftRightSlope.sgdk2">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Sprites\RotatingCar.sgdk2">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Sprites\SHFLSprites.png">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Sprites\SimplePlatform.sgdk2">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Sprites\SimplePlayer.sgdk2">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Sprites\SpaceShip.sgdk2">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Tiles\Lettering.sgdk2">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Tiles\SHFL.sgdk2">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Tiles\Simple Ground.sgdk2">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="ProjectDataset.xsd">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

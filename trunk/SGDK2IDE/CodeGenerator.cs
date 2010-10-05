@@ -249,7 +249,7 @@ namespace SGDK2
          {
             return m_tempDomain.CreateInstanceFromAndUnwrap(m_assemblyFile, typeName, false,
                System.Reflection.BindingFlags.CreateInstance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance,
-               null, constructorParams, null, null, null);
+               null, constructorParams, null, null);
          }
 
          #region IDisposable Members
@@ -3348,6 +3348,11 @@ namespace SGDK2
       #endregion
 
       #region Compilation
+      public string GetTempAssemblyPath()
+      {
+         return System.Windows.Forms.Application.UserAppDataPath;
+      }
+
       /// <summary>
       /// Compile a the temporary instance of the project to use for reflection
       /// (retrieving function names and parameter info, etc).
@@ -3381,7 +3386,7 @@ namespace SGDK2
             readReflector.Close();
          
             Microsoft.CSharp.CSharpCodeProvider codeProvider = new Microsoft.CSharp.CSharpCodeProvider();
-            System.CodeDom.Compiler.CompilerParameters compilerParams = new System.CodeDom.Compiler.CompilerParameters(new string[] {}, System.IO.Path.Combine(System.IO.Path.GetTempPath(), "SGDK2Tmp.dll"));
+            System.CodeDom.Compiler.CompilerParameters compilerParams = new System.CodeDom.Compiler.CompilerParameters(new string[] {}, System.IO.Path.Combine(GetTempAssemblyPath(), "SGDK2Tmp.dll"));
             int idx = 0;
             string reason = string.Empty;
             do
@@ -3394,7 +3399,7 @@ namespace SGDK2
                }
                catch(System.Exception ex)
                {
-                  compilerParams.OutputAssembly = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "SGDK2Tm" + (++idx).ToString() + ".dll");
+                  compilerParams.OutputAssembly = System.IO.Path.Combine(GetTempAssemblyPath(), "SGDK2Tm" + (++idx).ToString() + ".dll");
                   reason = ex.Message;
                }
             } while(idx < 5);
@@ -3405,7 +3410,6 @@ namespace SGDK2
             compilerParams.ReferencedAssemblies.Add("System.Windows.Forms.dll");
             compilerParams.ReferencedAssemblies.Add("System.dll");
             compilerParams.ReferencedAssemblies.Add("System.Drawing.dll");
-            compilerParams.ReferencedAssemblies.Add("System.Design.dll");
             compilerParams.ReferencedAssemblies.Add(System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, "Reflect.dll"));
             foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
             {
@@ -3500,7 +3504,6 @@ namespace SGDK2
             compilerParams.ReferencedAssemblies.Add("System.Windows.Forms.dll");
             compilerParams.ReferencedAssemblies.Add("System.dll");
             compilerParams.ReferencedAssemblies.Add("System.Drawing.dll");
-            compilerParams.ReferencedAssemblies.Add("System.Design.dll");
             foreach (System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
             {
                ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;

@@ -1,35 +1,35 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <siteMap xmlns="http://schemas.microsoft.com/AspNet/SiteMap-File-1.0">
   <siteMapNode title="User Interface" url="">
-    <siteMapNode title="Introduction" url=".\Introduction.html" isDefault="true" />
-    <siteMapNode title="What's New" url=".\WhatsNew.html" />
-    <siteMapNode title="Main Window" url=".\MainWindow.html" />
-    <siteMapNode title="Project Properties" url=".\ProjectProperties.html" />
-    <siteMapNode title="Graphic Sheet Properties" url=".\GfxSheet.html" />
-    <siteMapNode title="Graphics Editor" url=".\GfxEdit.html" />
-    <siteMapNode title="Frameset Editor" url=".\Frameset.html" />
-    <siteMapNode title="Tileset Editor" url=".\TileEdit.html" />
-    <siteMapNode title="Tile Categories" url=".\TileCategories.html" />
-    <siteMapNode title="Counters" url=".\EditCounters.html" />
-    <siteMapNode title="Map Manager" url=".\MapManager.html" />
-    <siteMapNode title="Layer Manager" url=".\LayerManager.html" />
-    <siteMapNode title="Map Editor" url=".\MapEditor.html" />
-    <siteMapNode title="Edit Plans" url=".\PlanEdit.html" />
-    <siteMapNode title="Edit Message" url=".\EditMessage.html" />
-    <siteMapNode title="Solidity" url=".\Solidity.html" />
-    <siteMapNode title="Sprite Definition" url=".\SpriteDefinition.html">
-      <siteMapNode title="Sprite Parameters" url=".\SpriteParam.html" />
-      <siteMapNode title="Sprite Rules" url=".\SpriteRule.html" />
+    <siteMapNode title="Introduction" url="Introduction.html" isDefault="true" />
+    <siteMapNode title="What's New" url="WhatsNew.html" />
+    <siteMapNode title="Main Window" url="MainWindow.html" />
+    <siteMapNode title="Project Properties" url="ProjectProperties.html" />
+    <siteMapNode title="Graphic Sheet Properties" url="GfxSheet.html" />
+    <siteMapNode title="Graphics Editor" url="GfxEdit.html" />
+    <siteMapNode title="Frameset Editor" url="Frameset.html" />
+    <siteMapNode title="Tileset Editor" url="TileEdit.html" />
+    <siteMapNode title="Tile Categories" url="TileCategories.html" />
+    <siteMapNode title="Counters" url="EditCounters.html" />
+    <siteMapNode title="Map Manager" url="MapManager.html" />
+    <siteMapNode title="Layer Manager" url="LayerManager.html" />
+    <siteMapNode title="Map Editor" url="MapEditor.html" />
+    <siteMapNode title="Edit Plans" url="PlanEdit.html" />
+    <siteMapNode title="Edit Message" url="EditMessage.html" />
+    <siteMapNode title="Solidity" url="Solidity.html" />
+    <siteMapNode title="Sprite Definition" url="SpriteDefinition.html">
+      <siteMapNode title="Sprite Parameters" url="SpriteParam.html" />
+      <siteMapNode title="Sprite Rules" url="SpriteRule.html" />
     </siteMapNode>
-    <siteMapNode title="Sprite Category" url=".\SpriteCategory.html" />
-    <siteMapNode title="Source Code Editor" url=".\CodeEdit.html" />
-    <siteMapNode title="Frequenty Asked Questions" url=".\FAQ.html" />
+    <siteMapNode title="Sprite Category" url="SpriteCategory.html" />
+    <siteMapNode title="Source Code Editor" url="CodeEdit.html" />
+    <siteMapNode title="Frequenty Asked Questions" url="FAQ.html" />
   </siteMapNode>
   <siteMapNode title="Tutorials" url="">
-    <siteMapNode title="Functional Game without Importing" url=".\Tutorial1.html" />
-    <siteMapNode title="Multi-Player Game from Template" url=".\Tutorial2.html" />
-    <siteMapNode title="Creating New Tiles and Shapes" url=".\Tutorial3.html" />
-    <siteMapNode title="Sound and Music" url=".\Tutorial4.html" />
-    <siteMapNode title="Importing Sprites" url=".\Tutorial5.html" />
+    <siteMapNode title="Functional Game without Importing" url="Tutorial1.html" />
+    <siteMapNode title="Multi-Player Game from Template" url="Tutorial2.html" />
+    <siteMapNode title="Creating New Tiles and Shapes" url="Tutorial3.html" />
+    <siteMapNode title="Sound and Music" url="Tutorial4.html" />
+    <siteMapNode title="Importing Sprites" url="Tutorial5.html" />
   </siteMapNode>
 </siteMap>

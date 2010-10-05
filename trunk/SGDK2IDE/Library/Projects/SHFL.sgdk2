@@ -113,6 +113,7 @@
                       <xs:element name="SpritePlan" minOccurs="0" maxOccurs="unbounded">
                         <xs:complexType>
                           <xs:sequence>
+                            <xs:element name="BaseClass" type="xs:string" default="PlanBase" msdata:Ordinal="4" />
                             <xs:element name="Coordinate" minOccurs="0" maxOccurs="unbounded">
                               <xs:complexType>
                                 <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
@@ -191,6 +192,7 @@
           <xs:element name="SpriteDefinition">
             <xs:complexType>
               <xs:sequence>
+                <xs:element name="BaseClass" type="xs:string" default="SpriteBase" msdata:Ordinal="1" />
                 <xs:element name="SpriteRule" minOccurs="0" maxOccurs="unbounded">
                   <xs:complexType>
                     <xs:attribute name="DefinitionName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
@@ -2513,53 +2515,57 @@
     <Layer Name="Letters" Width="25" Height="19" Tileset="LetterTiles" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="1" ScrollRateY="1" ZIndex="0" Priority="0" VirtualWidth="0" VirtualHeight="0">
       <Tiles>z8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8XFGhEjzwInHBgNJREezxMNGRHGxs/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Px8caESPPAyccGA0lER7PEw0ZEcjIz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/JyQ8bGiAVGiERzxMNGRHKys/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8vLHSEVIMzMz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pzw==</Tiles>
       <SpritePlan Name="Select Menu Items" Priority="1">
-        <PlanRule Name="If down is pressed" Sequence="1" Type="If" Function="IsKeyPressed" Parameter1="Key.Down" Parameter2="" EndIf="false" Suspended="false" />
-        <PlanRule Name="If down key repeat check matches" Sequence="2" Type="If" Function="==" Parameter1="Counter.KeyRepeat.CurrentValue" Parameter2="0" EndIf="false" Suspended="false" />
-        <PlanRule Name="If not on last menu item" Sequence="3" Type="If" Function="&lt;" Parameter1="Counter.MenuPointerIndex.CurrentValue" Parameter2="3" EndIf="false" Suspended="false" />
-        <PlanRule Name="Go to next menu item" Sequence="4" Type="Do" Function="+" Parameter1="Counter.MenuPointerIndex.CurrentValue" Parameter2="1" ResultParameter="Counter.MenuPointerIndex.CurrentValue" EndIf="false" Suspended="false" />
-        <PlanRule Name="Else if down key repeat time elapsed" Sequence="9" Type="ElseIf" Function="&gt;=" Parameter1="Counter.KeyRepeat.CurrentValue" Parameter2="15" EndIf="false" Suspended="false" />
-        <PlanRule Name="Reset down key repeat" Sequence="10" Type="Do" Function="=" Parameter1="0" ResultParameter="Counter.KeyRepeat.CurrentValue" EndIf="false" Suspended="false" />
-        <PlanRule Name="Else wait for down key repeat time to elapse" Sequence="11" Type="Else" Function="+" Parameter1="Counter.KeyRepeat.CurrentValue" Parameter2="1" ResultParameter="Counter.KeyRepeat.CurrentValue" EndIf="true" Suspended="false" />
-        <PlanRule Name="Else if up is pressed" Sequence="13" Type="ElseIf" Function="IsKeyPressed" Parameter1="Key.Up" EndIf="false" Suspended="false" />
-        <PlanRule Name="If up key repeat check matches" Sequence="14" Type="If" Function="==" Parameter1="Counter.KeyRepeat.CurrentValue" Parameter2="0" EndIf="false" Suspended="false" />
-        <PlanRule Name="If not on first menu item" Sequence="15" Type="If" Function="&gt;" Parameter1="Counter.MenuPointerIndex.CurrentValue" Parameter2="0" EndIf="false" Suspended="false" />
-        <PlanRule Name="Go to previous menu item" Sequence="16" Type="Do" Function="-" Parameter1="Counter.MenuPointerIndex.CurrentValue" Parameter2="1" ResultParameter="Counter.MenuPointerIndex.CurrentValue" EndIf="false" Suspended="false" />
-        <PlanRule Name="Else if up key repeat time elapsed" Sequence="21" Type="ElseIf" Function="&gt;" Parameter1="Counter.KeyRepeat.CurrentValue" Parameter2="15" EndIf="false" Suspended="false" />
-        <PlanRule Name="Reset up key repeat" Sequence="22" Type="Do" Function="=" Parameter1="0" ResultParameter="Counter.KeyRepeat.CurrentValue" EndIf="false" Suspended="false" />
-        <PlanRule Name="Else wait for up key repeat time to elapse" Sequence="23" Type="Else" Function="+" Parameter1="Counter.KeyRepeat.CurrentValue" Parameter2="1" ResultParameter="Counter.KeyRepeat.CurrentValue" EndIf="true" Suspended="false" />
-        <PlanRule Name="Else if Return/Enter is pressed" Sequence="25" Type="ElseIf" Function="IsKeyPressed" Parameter1="Key.Enter" EndIf="true" Suspended="false" />
-        <PlanRule Name="End down key repeat check" Sequence="12" Type="End" Function="End" EndIf="true" Suspended="false" />
-        <PlanRule Name="Begin down key repeat" Sequence="8" Type="Do" Function="+" Parameter1="Counter.KeyRepeat.CurrentValue" Parameter2="1" ResultParameter="Counter.KeyRepeat.CurrentValue" EndIf="true" Suspended="false" />
-        <PlanRule Name="End up key repeat" Sequence="24" Type="End" Function="End" EndIf="true" Suspended="false" />
-        <PlanRule Name="Begin up key repeat" Sequence="20" Type="Do" Function="+" Parameter1="Counter.KeyRepeat.CurrentValue" Parameter2="1" ResultParameter="Counter.KeyRepeat.CurrentValue" EndIf="true" Suspended="false" />
-        <PlanRule Name="Else reset key repeat" Sequence="41" Type="Else" Function="=" Parameter1="0" ResultParameter="Counter.KeyRepeat.CurrentValue" EndIf="false" Suspended="false" />
-        <PlanRule Name="If 1 player game selected" Sequence="26" Type="If" Function="==" Parameter1="Counter.MenuPointerIndex.CurrentValue" Parameter2="0" EndIf="false" Suspended="false" />
-        <PlanRule Name="Set 1 player" Sequence="27" Type="Do" Function="=" Parameter1="1" ResultParameter="Counter.Players.CurrentValue" EndIf="false" Suspended="false" />
-        <PlanRule Name="Else if 2 player game selected" Sequence="31" Type="ElseIf" Function="==" Parameter1="Counter.MenuPointerIndex.CurrentValue" Parameter2="1" EndIf="false" Suspended="false" />
-        <PlanRule Name="Set 2 players" Sequence="32" Type="Do" Function="=" Parameter1="2" ResultParameter="Counter.Players.CurrentValue" EndIf="false" Suspended="false" />
-        <PlanRule Name="Else if continue selected" Sequence="36" Type="ElseIf" Function="==" Parameter1="Counter.MenuPointerIndex.CurrentValue" Parameter2="2" EndIf="false" Suspended="false" />
-        <PlanRule Name="Return to game" Sequence="37" Type="Do" Function="ReturnToPreviousMap" Parameter1="true" EndIf="false" Suspended="false" />
-        <PlanRule Name="Else quit" Sequence="38" Type="Else" Function="QuitGame" EndIf="true" Suspended="false" />
-        <PlanRule Name="End 2 player" Sequence="39" Type="End" Function="End" EndIf="true" Suspended="false" />
-        <PlanRule Name="End 1 player" Sequence="40" Type="End" Function="End" EndIf="true" Suspended="false" />
-        <PlanRule Name="Go to level 1 with 1 player" Sequence="30" Type="Do" Function="SwitchToMap" Parameter1="typeof(Level_1_Map)" Parameter2="true" EndIf="false" Suspended="false" />
-        <PlanRule Name="Go to level 1 with 2 players" Sequence="35" Type="Do" Function="SwitchToMap" Parameter1="typeof(Level_1_Map)" Parameter2="true" EndIf="false" Suspended="false" />
-        <PlanRule Name="Clear for 1 player game" Sequence="28" Type="Do" Function="UnloadBackgroundMaps" EndIf="false" Suspended="false" />
-        <PlanRule Name="Clear for 2 player game" Sequence="33" Type="Do" Function="UnloadBackgroundMaps" EndIf="false" Suspended="false" />
-        <PlanRule Name="If went down to Continue Game" Sequence="5" Type="If" Function="==" Parameter1="Counter.MenuPointerIndex.CurrentValue" Parameter2="2" EndIf="false" Suspended="false" />
-        <PlanRule Name="And down to Continue Game is disabled" Sequence="6" Type="And" Function="!CanReturnToPreviousMap" EndIf="false" Suspended="false" />
-        <PlanRule Name="Skip down" Sequence="7" Type="Do" Function="=" Parameter1="3" ResultParameter="Counter.MenuPointerIndex.CurrentValue" EndIf="true" Suspended="false" />
-        <PlanRule Name="If went up to Continue Game" Sequence="17" Type="If" Function="==" Parameter1="Counter.MenuPointerIndex.CurrentValue" Parameter2="2" ResultParameter="" EndIf="false" Suspended="false" />
-        <PlanRule Name="And up to Continue Game is disabled" Sequence="18" Type="And" Function="!CanReturnToPreviousMap" EndIf="false" Suspended="false" />
-        <PlanRule Name="Skip up" Sequence="19" Type="Do" Function="=" Parameter1="1" ResultParameter="Counter.MenuPointerIndex.CurrentValue" EndIf="true" Suspended="false" />
-        <PlanRule Name="Reset counters for 1 player" Sequence="29" Type="Do" Function="LoadGame" Parameter1="0" Parameter2="true" EndIf="false" Suspended="false" />
-        <PlanRule Name="Reset counters for 2 player" Sequence="34" Type="Do" Function="LoadGame" Parameter1="0" Parameter2="true" EndIf="false" Suspended="false" />
+        <BaseClass>PlanBase</BaseClass>
+        <PlanRule Name="If down is pressed" Sequence="2" Type="If" Function="IsKeyPressed" Parameter1="Key.Down" Parameter2="" EndIf="false" Suspended="false" />
+        <PlanRule Name="If down key repeat check matches" Sequence="3" Type="If" Function="==" Parameter1="Counter.KeyRepeat.CurrentValue" Parameter2="0" EndIf="false" Suspended="false" />
+        <PlanRule Name="If not on last menu item" Sequence="4" Type="If" Function="&lt;" Parameter1="Counter.MenuPointerIndex.CurrentValue" Parameter2="3" EndIf="false" Suspended="false" />
+        <PlanRule Name="Go to next menu item" Sequence="5" Type="Do" Function="+" Parameter1="Counter.MenuPointerIndex.CurrentValue" Parameter2="1" ResultParameter="Counter.MenuPointerIndex.CurrentValue" EndIf="false" Suspended="false" />
+        <PlanRule Name="Else if down key repeat time elapsed" Sequence="10" Type="ElseIf" Function="&gt;=" Parameter1="Counter.KeyRepeat.CurrentValue" Parameter2="15" EndIf="false" Suspended="false" />
+        <PlanRule Name="Reset down key repeat" Sequence="11" Type="Do" Function="=" Parameter1="0" ResultParameter="Counter.KeyRepeat.CurrentValue" EndIf="false" Suspended="false" />
+        <PlanRule Name="Else wait for down key repeat time to elapse" Sequence="12" Type="Else" Function="+" Parameter1="Counter.KeyRepeat.CurrentValue" Parameter2="1" ResultParameter="Counter.KeyRepeat.CurrentValue" EndIf="true" Suspended="false" />
+        <PlanRule Name="Else if up is pressed" Sequence="14" Type="ElseIf" Function="IsKeyPressed" Parameter1="Key.Up" EndIf="false" Suspended="false" />
+        <PlanRule Name="If up key repeat check matches" Sequence="15" Type="If" Function="==" Parameter1="Counter.KeyRepeat.CurrentValue" Parameter2="0" EndIf="false" Suspended="false" />
+        <PlanRule Name="If not on first menu item" Sequence="16" Type="If" Function="&gt;" Parameter1="Counter.MenuPointerIndex.CurrentValue" Parameter2="0" EndIf="false" Suspended="false" />
+        <PlanRule Name="Go to previous menu item" Sequence="17" Type="Do" Function="-" Parameter1="Counter.MenuPointerIndex.CurrentValue" Parameter2="1" ResultParameter="Counter.MenuPointerIndex.CurrentValue" EndIf="false" Suspended="false" />
+        <PlanRule Name="Else if up key repeat time elapsed" Sequence="22" Type="ElseIf" Function="&gt;" Parameter1="Counter.KeyRepeat.CurrentValue" Parameter2="15" EndIf="false" Suspended="false" />
+        <PlanRule Name="Reset up key repeat" Sequence="23" Type="Do" Function="=" Parameter1="0" ResultParameter="Counter.KeyRepeat.CurrentValue" EndIf="false" Suspended="false" />
+        <PlanRule Name="Else wait for up key repeat time to elapse" Sequence="24" Type="Else" Function="+" Parameter1="Counter.KeyRepeat.CurrentValue" Parameter2="1" ResultParameter="Counter.KeyRepeat.CurrentValue" EndIf="true" Suspended="false" />
+        <PlanRule Name="Else if Return/Enter is pressed" Sequence="26" Type="ElseIf" Function="IsKeyPressed" Parameter1="Key.Enter" EndIf="true" Suspended="false" />
+        <PlanRule Name="End down key repeat check" Sequence="13" Type="End" Function="End" EndIf="true" Suspended="false" />
+        <PlanRule Name="Begin down key repeat" Sequence="9" Type="Do" Function="+" Parameter1="Counter.KeyRepeat.CurrentValue" Parameter2="1" ResultParameter="Counter.KeyRepeat.CurrentValue" EndIf="true" Suspended="false" />
+        <PlanRule Name="End up key repeat" Sequence="25" Type="End" Function="End" EndIf="true" Suspended="false" />
+        <PlanRule Name="Begin up key repeat" Sequence="21" Type="Do" Function="+" Parameter1="Counter.KeyRepeat.CurrentValue" Parameter2="1" ResultParameter="Counter.KeyRepeat.CurrentValue" EndIf="true" Suspended="false" />
+        <PlanRule Name="Else reset key repeat" Sequence="42" Type="Else" Function="=" Parameter1="0" ResultParameter="Counter.KeyRepeat.CurrentValue" EndIf="false" Suspended="false" />
+        <PlanRule Name="If 1 player game selected" Sequence="27" Type="If" Function="==" Parameter1="Counter.MenuPointerIndex.CurrentValue" Parameter2="0" EndIf="false" Suspended="false" />
+        <PlanRule Name="Set 1 player" Sequence="28" Type="Do" Function="=" Parameter1="1" ResultParameter="Counter.Players.CurrentValue" EndIf="false" Suspended="false" />
+        <PlanRule Name="Else if 2 player game selected" Sequence="32" Type="ElseIf" Function="==" Parameter1="Counter.MenuPointerIndex.CurrentValue" Parameter2="1" EndIf="false" Suspended="false" />
+        <PlanRule Name="Set 2 players" Sequence="33" Type="Do" Function="=" Parameter1="2" ResultParameter="Counter.Players.CurrentValue" EndIf="false" Suspended="false" />
+        <PlanRule Name="Else if continue selected" Sequence="37" Type="ElseIf" Function="==" Parameter1="Counter.MenuPointerIndex.CurrentValue" Parameter2="2" EndIf="false" Suspended="false" />
+        <PlanRule Name="Return to game" Sequence="38" Type="Do" Function="ReturnToPreviousMap" Parameter1="true" EndIf="false" Suspended="false" />
+        <PlanRule Name="Else quit" Sequence="39" Type="Else" Function="QuitGame" EndIf="true" Suspended="false" />
+        <PlanRule Name="End 2 player" Sequence="40" Type="End" Function="End" EndIf="true" Suspended="false" />
+        <PlanRule Name="End 1 player" Sequence="41" Type="End" Function="End" EndIf="true" Suspended="false" />
+        <PlanRule Name="Go to level 1 with 1 player" Sequence="31" Type="Do" Function="SwitchToMap" Parameter1="typeof(Level_1_Map)" Parameter2="true" EndIf="false" Suspended="false" />
+        <PlanRule Name="Go to level 1 with 2 players" Sequence="36" Type="Do" Function="SwitchToMap" Parameter1="typeof(Level_1_Map)" Parameter2="true" EndIf="false" Suspended="false" />
+        <PlanRule Name="Clear for 1 player game" Sequence="29" Type="Do" Function="UnloadBackgroundMaps" EndIf="false" Suspended="false" />
+        <PlanRule Name="Clear for 2 player game" Sequence="34" Type="Do" Function="UnloadBackgroundMaps" EndIf="false" Suspended="false" />
+        <PlanRule Name="If went down to Continue Game" Sequence="6" Type="If" Function="==" Parameter1="Counter.MenuPointerIndex.CurrentValue" Parameter2="2" EndIf="false" Suspended="false" />
+        <PlanRule Name="And down to Continue Game is disabled" Sequence="7" Type="And" Function="!CanReturnToPreviousMap" EndIf="false" Suspended="false" />
+        <PlanRule Name="Skip down" Sequence="8" Type="Do" Function="=" Parameter1="3" ResultParameter="Counter.MenuPointerIndex.CurrentValue" EndIf="true" Suspended="false" />
+        <PlanRule Name="If went up to Continue Game" Sequence="18" Type="If" Function="==" Parameter1="Counter.MenuPointerIndex.CurrentValue" Parameter2="2" ResultParameter="" EndIf="false" Suspended="false" />
+        <PlanRule Name="And up to Continue Game is disabled" Sequence="19" Type="And" Function="!CanReturnToPreviousMap" EndIf="false" Suspended="false" />
+        <PlanRule Name="Skip up" Sequence="20" Type="Do" Function="=" Parameter1="1" ResultParameter="Counter.MenuPointerIndex.CurrentValue" EndIf="true" Suspended="false" />
+        <PlanRule Name="Reset counters for 1 player" Sequence="30" Type="Do" Function="LoadGame" Parameter1="0" Parameter2="true" EndIf="false" Suspended="false" />
+        <PlanRule Name="Reset counters for 2 player" Sequence="35" Type="Do" Function="LoadGame" Parameter1="0" Parameter2="true" EndIf="false" Suspended="false" />
+        <PlanRule Name="Limit frame rate" Sequence="1" Type="Do" Function="LimitFrameRate" Parameter1="60" EndIf="false" Suspended="false" />
       </SpritePlan>
       <SpritePlan Name="Continue Game" Priority="1">
+        <BaseClass>PlanBase</BaseClass>
         <Coordinate Sequence="1" X="128" Y="288" Weight="0" />
         <Coordinate Sequence="2" X="544" Y="320" Weight="0" />
       </SpritePlan>
       <SpritePlan Name="Initial Save" Priority="1">
+        <BaseClass>PlanBase</BaseClass>
         <PlanRule Name="Include counters" Sequence="2" Type="Do" Function="IncludeInSaveUnit" Parameter1="SaveUnitInclusion.AllCounters" EndIf="false" Suspended="false" />
         <PlanRule Name="Exclude player count" Sequence="3" Type="Do" Function="ExcludeCounterFromSaveUnit" Parameter1="Counter.Players" EndIf="false" Suspended="false" />
         <PlanRule Name="Save counters" Sequence="4" Type="Do" Function="SaveGame" Parameter1="0" Parameter2="true" EndIf="false" Suspended="false" />
@@ -2569,6 +2575,7 @@
     <Layer Name="DisabledContinue" Width="20" Height="1" Tileset="LetterTiles" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="1" ScrollRateY="1" Priority="0" VirtualWidth="0" VirtualHeight="0">
       <Tiles>oq6ts6ittKQApqCspAAAAAAAAAA=</Tiles>
       <SpritePlan Name="Initialize map" Priority="1">
+        <BaseClass>PlanBase</BaseClass>
         <Coordinate Sequence="1" X="0" Y="0" Weight="0" />
         <Coordinate Sequence="2" X="416" Y="32" Weight="0" />
         <PlanRule Name="If not initialized" Sequence="1" Type="If" Function="!IsMapFlagOn" Parameter1="0" EndIf="false" Suspended="false" />
@@ -2606,6 +2613,7 @@
         <ParameterValue ParameterName="WaitCounter" Value="0" />
       </Sprite>
       <SpritePlan Name="ManagePlayers" Priority="1">
+        <BaseClass>PlanBase</BaseClass>
         <PlanRule Name="If 2 player initialization needed" Sequence="5" Type="If" Function="&gt;=" Parameter1="Counter.Players.CurrentValue" Parameter2="2" EndIf="false" Suspended="false" />
         <PlanRule Name="Activate second player" Sequence="6" Type="Do" Function="ActivateSprite" Parameter1="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
         <PlanRule Name="Side by side view" Sequence="7" Type="Do" Function="SetViewLayout" Parameter1="ViewLayout.LeftRight" EndIf="false" Suspended="false" />
@@ -2627,16 +2635,19 @@
         <PlanRule Name="Set overlay initialized" Sequence="15" Type="Do" Function="SetMapFlag" Parameter1="1" Parameter2="true" EndIf="false" Suspended="false" />
       </SpritePlan>
       <SpritePlan Name="Player Inputs" Priority="1">
+        <BaseClass>PlanBase</BaseClass>
         <PlanRule Name="Read player 1 inputs" Sequence="1" Type="Do" Function="MapPlayerToInputs" Parameter1="1" Parameter2="m_ParentLayer.m_Player_1" EndIf="false" Suspended="false" />
         <PlanRule Name="Read player 2 inputs" Sequence="3" Type="Do" Function="MapPlayerToInputs" Parameter1="2" Parameter2="m_ParentLayer.m_Player_2" EndIf="true" Suspended="false" />
         <PlanRule Name="If player 2 is active" Sequence="2" Type="If" Function="&gt;=" Parameter1="Counter.Players.CurrentValue" Parameter2="2" EndIf="false" Suspended="false" />
       </SpritePlan>
       <SpritePlan Name="Platform 1 Path" Priority="1">
+        <BaseClass>PlanBase</BaseClass>
         <Coordinate Sequence="1" X="300" Y="600" Weight="30" />
         <Coordinate Sequence="2" X="600" Y="300" Weight="30" />
         <PlanRule Name="Follow path" Sequence="1" Type="Do" Function="FollowPath" Parameter1="m_ParentLayer.m_Platform_1" Parameter2="ref m_ParentLayer.m_Platform_1.CoordIndex" Parameter3="ref m_ParentLayer.m_Platform_1.WaitCounter" EndIf="false" Suspended="false" />
       </SpritePlan>
       <SpritePlan Name="Door Left" Priority="1">
+        <BaseClass>PlanBase</BaseClass>
         <Coordinate Sequence="1" X="1088" Y="832" Weight="0" />
         <Coordinate Sequence="2" X="1120" Y="864" Weight="0" />
         <PlanRule Name="And player 1 pressing up" Sequence="2" Type="And" Function="IsInputPressed" Parameter1="m_ParentLayer.m_Player_1" Parameter2="SpriteBase.InputBits.Up" Parameter3="true" EndIf="false" Suspended="false" />
@@ -2651,6 +2662,7 @@
         <PlanRule Name="Ensure up is now seen as an old keypress for player 2" Sequence="9" Type="Do" Function="CopyInputsToOld" Parameter1="m_ParentLayer.m_Player_2" EndIf="false" Suspended="false" />
       </SpritePlan>
       <SpritePlan Name="Door Right" Priority="1">
+        <BaseClass>PlanBase</BaseClass>
         <Coordinate Sequence="1" X="1248" Y="960" Weight="0" />
         <Coordinate Sequence="2" X="1280" Y="992" Weight="0" />
         <PlanRule Name="And player 1 pressing up" Sequence="2" Type="And" Function="IsInputPressed" Parameter1="m_ParentLayer.m_Player_1" Parameter2="SpriteBase.InputBits.Up" Parameter3="true" EndIf="false" Suspended="false" />
@@ -2668,6 +2680,7 @@
     <Layer Name="Spectrum" Width="32" Height="24" Tileset="Spectrum" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="0" ScrollRateY="0" ZIndex="0" Priority="0" VirtualWidth="0" VirtualHeight="0">
       <Tiles>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</Tiles>
       <SpritePlan Name="Spectrum Handler" Priority="1">
+        <BaseClass>PlanBase</BaseClass>
         <PlanRule Name="Draw Spectrum" Sequence="1" Type="Do" Function="CustomObjects.DrawSpectrum.Draw" Parameter1="CustomObjects.Signal94.Value" Parameter2="ParentLayer" EndIf="false" Suspended="false" />
       </SpritePlan>
     </Layer>
@@ -2679,44 +2692,54 @@
     <Layer Name="Inventory" Width="25" Height="19" Tileset="SHFLTileset" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="0" ScrollRateY="0" ZIndex="0" Priority="0" VirtualWidth="0" VirtualHeight="0">
       <Tiles>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==</Tiles>
       <SpritePlan Name="Player 1 Grapes" Priority="1">
+        <BaseClass>PlanBase</BaseClass>
         <Coordinate Sequence="1" X="32" Y="0" Weight="0" />
         <Coordinate Sequence="2" X="352" Y="32" Weight="0" />
         <PlanRule Name="Draw player 1 grape inventory" Sequence="1" Type="Do" Function="DrawCounterAsTile" Parameter1="55" Parameter2="Counter.Player_1_grapes" Parameter3="PlanBase.DrawStyle.RepeatRightToCounter" EndIf="false" Suspended="false" />
       </SpritePlan>
       <SpritePlan Name="Player 2 Grapes" Priority="1">
+        <BaseClass>PlanBase</BaseClass>
         <Coordinate Sequence="1" X="448" Y="0" Weight="0" />
         <Coordinate Sequence="2" X="768" Y="32" Weight="0" />
         <PlanRule Name="Draw player 2 grape inventory" Sequence="1" Type="Do" Function="DrawCounterAsTile" Parameter1="55" Parameter2="Counter.Player_2_grapes" Parameter3="PlanBase.DrawStyle.RepeatRightToCounter" EndIf="false" Suspended="false" />
       </SpritePlan>
       <SpritePlan Name="Player 1 Cherries" Priority="1">
+        <BaseClass>PlanBase</BaseClass>
         <Coordinate Sequence="1" X="32" Y="32" Weight="0" />
         <Coordinate Sequence="2" X="352" Y="64" Weight="0" />
         <PlanRule Name="Draw player 1 cherry inventory" Sequence="1" Type="Do" Function="DrawCounterAsTile" Parameter1="54" Parameter2="Counter.Player_1_cherries" Parameter3="PlanBase.DrawStyle.RepeatRightToCounter" EndIf="false" Suspended="false" />
       </SpritePlan>
       <SpritePlan Name="Player 1 Ice Creams" Priority="1">
+        <BaseClass>PlanBase</BaseClass>
         <Coordinate Sequence="1" X="32" Y="64" Weight="0" />
         <Coordinate Sequence="2" X="352" Y="96" Weight="0" />
         <PlanRule Name="Draw player 1 ice cream inventory" Sequence="1" Type="Do" Function="DrawCounterAsTile" Parameter1="56" Parameter2="Counter.Player_1_ice_cream" Parameter3="PlanBase.DrawStyle.RepeatRightToCounter" EndIf="false" Suspended="false" />
       </SpritePlan>
       <SpritePlan Name="Player 2 Cherries" Priority="1">
+        <BaseClass>PlanBase</BaseClass>
         <Coordinate Sequence="1" X="448" Y="32" Weight="0" />
         <Coordinate Sequence="2" X="768" Y="64" Weight="0" />
         <PlanRule Name="Draw player 2 cherry inventory" Sequence="1" Type="Do" Function="DrawCounterAsTile" Parameter1="54" Parameter2="Counter.Player_2_cherries" Parameter3="PlanBase.DrawStyle.RepeatRightToCounter" EndIf="false" Suspended="false" />
       </SpritePlan>
       <SpritePlan Name="Player 2 Ice Creams" Priority="1">
+        <BaseClass>PlanBase</BaseClass>
         <Coordinate Sequence="1" X="448" Y="64" Weight="0" />
         <Coordinate Sequence="2" X="768" Y="96" Weight="0" />
         <PlanRule Name="Draw player 2 ice cream inventory" Sequence="1" Type="Do" Function="DrawCounterAsTile" Parameter1="56" Parameter2="Counter.Player_2_ice_cream" Parameter3="PlanBase.DrawStyle.RepeatRightToCounter" EndIf="false" Suspended="false" />
       </SpritePlan>
       <SpritePlan Name="Animate" Priority="1">
+        <BaseClass>PlanBase</BaseClass>
         <PlanRule Name="Increment FrameCounter" Sequence="1" Type="Do" Function="+" Parameter1="Counter.FrameCounter.CurrentValue" Parameter2="1" ResultParameter="Counter.FrameCounter.CurrentValue" EndIf="false" Suspended="false" />
+        <PlanRule Name="Limit frame rate" Sequence="2" Type="Do" Function="LimitFrameRate" Parameter1="80" Parameter2="" EndIf="false" Suspended="false" />
       </SpritePlan>
       <SpritePlan Name="Player 1 score" Priority="1">
+        <BaseClass>PlanBase</BaseClass>
         <Coordinate Sequence="1" X="32" Y="96" Weight="0" />
         <Coordinate Sequence="2" X="192" Y="128" Weight="0" />
         <PlanRule Name="Draw player 1 score" Sequence="1" Type="Do" Function="DrawCounterWithLabel" Parameter1="&quot;Score: &quot;" Parameter2="Counter.Player_1_Score" Parameter3="System.Drawing.KnownColor.White" EndIf="false" Suspended="false" />
       </SpritePlan>
       <SpritePlan Name="Player 2 score" Priority="1">
+        <BaseClass>PlanBase</BaseClass>
         <Coordinate Sequence="1" X="448" Y="96" Weight="0" />
         <Coordinate Sequence="2" X="608" Y="128" Weight="0" />
         <PlanRule Name="Draw player 2 score" Sequence="1" Type="Do" Function="DrawCounterWithLabel" Parameter1="&quot;Score: &quot;" Parameter2="Counter.Player_2_Score" Parameter3="System.Drawing.KnownColor.White" EndIf="false" Suspended="false" />
@@ -2727,31 +2750,38 @@
     <Layer Name="Inventory" Width="25" Height="19" Tileset="SHFLTileset" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="0" ScrollRateY="0" ZIndex="0" Priority="0" VirtualWidth="0" VirtualHeight="0">
       <Tiles>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==</Tiles>
       <SpritePlan Name="Grapes" Priority="1">
+        <BaseClass>PlanBase</BaseClass>
         <Coordinate Sequence="1" X="32" Y="0" Weight="0" />
         <Coordinate Sequence="2" X="352" Y="32" Weight="0" />
         <PlanRule Name="Draw grape inventory" Sequence="1" Type="Do" Function="DrawCounterAsTile" Parameter1="55" Parameter2="Counter.Player_1_grapes" Parameter3="PlanBase.DrawStyle.RepeatRightToCounter" EndIf="false" Suspended="false" />
       </SpritePlan>
       <SpritePlan Name="Cherries" Priority="1">
+        <BaseClass>PlanBase</BaseClass>
         <Coordinate Sequence="1" X="384" Y="0" Weight="0" />
         <Coordinate Sequence="2" X="704" Y="32" Weight="0" />
         <PlanRule Name="Draw cherries" Sequence="1" Type="Do" Function="DrawCounterAsTile" Parameter1="54" Parameter2="Counter.Player_1_cherries" Parameter3="PlanBase.DrawStyle.RepeatRightToCounter" EndIf="false" Suspended="false" />
       </SpritePlan>
       <SpritePlan Name="Ice cream" Priority="1">
+        <BaseClass>PlanBase</BaseClass>
         <Coordinate Sequence="1" X="32" Y="32" Weight="0" />
         <Coordinate Sequence="2" X="352" Y="64" Weight="0" />
         <PlanRule Name="Draw ice cream" Sequence="1" Type="Do" Function="DrawCounterAsTile" Parameter1="56" Parameter2="Counter.Player_1_ice_cream" Parameter3="PlanBase.DrawStyle.RepeatRightToCounter" EndIf="false" Suspended="false" />
       </SpritePlan>
       <SpritePlan Name="Score" Priority="1">
+        <BaseClass>PlanBase</BaseClass>
         <Coordinate Sequence="1" X="385" Y="45" Weight="0" />
         <Coordinate Sequence="2" X="602" Y="64" Weight="0" />
         <PlanRule Name="Draw score" Sequence="1" Type="Do" Function="DrawCounterWithLabel" Parameter1="&quot;Score: &quot;" Parameter2="Counter.Player_1_Score" Parameter3="System.Drawing.KnownColor.White" EndIf="false" Suspended="false" />
       </SpritePlan>
       <SpritePlan Name="Animate" Priority="1">
+        <BaseClass>PlanBase</BaseClass>
         <PlanRule Name="Increase FrameCounter" Sequence="1" Type="Do" Function="+" Parameter1="Counter.FrameCounter.CurrentValue" Parameter2="1" ResultParameter="Counter.FrameCounter.CurrentValue" EndIf="false" Suspended="false" />
+        <PlanRule Name="Limit frame rate" Sequence="2" Type="Do" Function="LimitFrameRate" Parameter1="80" Parameter2="" EndIf="false" Suspended="false" />
       </SpritePlan>
     </Layer>
   </Map>
   <SpriteDefinition Name="Platform">
+    <BaseClass>SpriteBase</BaseClass>
     <SpriteRule Name="Limit" Sequence="1" Type="Do" Function="LimitVelocity" Parameter1="5" EndIf="false" Suspended="false" />
     <SpriteRule Name="React" Sequence="2" Type="Do" Function="ReactToSolid" EndIf="false" Suspended="false" />
     <SpriteRule Name="Move" Sequence="3" Type="Do" Function="MoveByVelocity" EndIf="false" Suspended="false" />
@@ -2762,6 +2792,7 @@
     </SpriteState>
   </SpriteDefinition>
   <SpriteDefinition Name="Player">
+    <BaseClass>SpriteBase</BaseClass>
     <SpriteRule Name="If climbing" Sequence="1" Type="If" Function="IsInState" Parameter1="(int)Sprites.Player.State.Climbing" Parameter2="(int)Sprites.Player.State.Climbing" EndIf="false" Suspended="false" />
     <SpriteRule Name="Check if player left ladder" Sequence="2" Type="If" Function="!IsOnTile" Parameter1="TileCategoryName.Ladder" Parameter2="RelativePosition.BottomCenter" EndIf="true" Suspended="false" />
     <SpriteRule Name="Leave ladder" Sequence="4" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Right" Parameter2="RelativePosition.CenterMiddle" EndIf="true" Suspended="false" />
@@ -2865,6 +2896,7 @@
     </SpriteState>
   </SpriteDefinition>
   <SpriteDefinition Name="Points">
+    <BaseClass>SpriteBase</BaseClass>
     <SpriteRule Name="Animate" Sequence="1" Type="Do" Function="+" Parameter1="frame" Parameter2="1" ResultParameter="frame" EndIf="false" Suspended="false" />
     <SpriteRule Name="If expired" Sequence="4" Type="If" Function="&gt;=" Parameter1="frame" Parameter2="135" EndIf="false" Suspended="false" />
     <SpriteRule Name="Deactivate" Sequence="5" Type="Do" Function="Deactivate" EndIf="false" Suspended="false" />

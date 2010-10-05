@@ -51,6 +51,8 @@ namespace SGDK2
       [STAThread]
       static int Main(params string[] args)
       {
+         if ((args.Length == 0) && (System.AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData != null))
+            args = System.AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData;
          int result = GetCommandLine(args);
          if (result != 0)
             return result;
@@ -61,28 +63,7 @@ namespace SGDK2
          frmSp.Show();
          try
          {
-            g_HelpProvider = new System.Windows.Forms.HelpProvider();
-            g_HelpProvider.HelpNamespace = System.IO.Path.Combine(Application.StartupPath, "SGDK2Help.chm");
-            if (!System.IO.File.Exists(g_HelpProvider.HelpNamespace))
-            {            
-               string helpParentDir = Application.StartupPath;
-               do
-               {
-                  if (System.IO.File.Exists(System.IO.Path.Combine(helpParentDir, @"Help\SGDK2Help.chm")))
-                  {
-                     g_HelpProvider.HelpNamespace = System.IO.Path.Combine(helpParentDir, @"Help\SGDK2Help.chm");
-                     break;
-                  }
-                  else
-                  {
-                     System.IO.DirectoryInfo diHelp = System.IO.Directory.GetParent(helpParentDir);
-                     if (diHelp == null)
-                        helpParentDir = null;
-                     else
-                        helpParentDir = diHelp.FullName;
-                  }
-               } while (helpParentDir != null);
-            }
+            FindHelpFile();
 
             Application.Run(mainWindow = new frmMain());
          }
@@ -159,63 +140,57 @@ namespace SGDK2
       {
          try
          {
-            Microsoft.Win32.RegistryKey testKey = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(".sgdk2", false);
-            if (testKey == null)
+            bool alreadyRegistered = false;
+            Microsoft.Win32.RegistryKey testKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\Classes\.sgdk2", false);
+            if (testKey != null)
             {
-               Microsoft.Win32.RegistryKey extKey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey(".sgdk2");
-               try
+               alreadyRegistered = true;
+               testKey.Close();
+               testKey.Dispose();
+            }
+            if (!alreadyRegistered)
+            {
+               using (Microsoft.Win32.RegistryKey classesKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(@"Software\Classes", true))
                {
-                  Microsoft.Win32.RegistryKey progIdKey = Microsoft.Win32.Registry.ClassesRoot.CreateSubKey("sgdk2file");
-                  try
+                  using (Microsoft.Win32.RegistryKey extKey = classesKey.CreateSubKey(".sgdk2"))
                   {
-                     extKey.SetValue(null, "sgdk2file");
-                     progIdKey.SetValue(null, "Scrolling Game Development Kit 2 Project");
-                     Microsoft.Win32.RegistryKey shellKey = progIdKey.CreateSubKey("shell");
-                     try
+                     using (Microsoft.Win32.RegistryKey progIdKey = classesKey.CreateSubKey("sgdk2file"))
                      {
-                        Microsoft.Win32.RegistryKey editKey = shellKey.CreateSubKey("edit");
-                        try
+                        extKey.SetValue(null, "sgdk2file");
+                        progIdKey.SetValue(null, "Scrolling Game Development Kit 2 Project");
+                        string exeFile = Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
+                        using (Microsoft.Win32.RegistryKey iconKey = progIdKey.CreateSubKey("DefaultIcon"))
                         {
-                           Microsoft.Win32.RegistryKey commandKey = editKey.CreateSubKey("command");
-                           try
-                           {
-                              string exeFile = Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
-                              commandKey.SetValue(null, "\"" + exeFile + "\" \"%1\"");
-                           }
-                           finally
-                           {
-                              commandKey.Close();
-                           }
+                           iconKey.SetValue(null, "\"" + exeFile + "\",1");
                         }
-                        finally
+                        using (Microsoft.Win32.RegistryKey shellKey = progIdKey.CreateSubKey("shell"))
                         {
-                           editKey.Close();
+                           using (Microsoft.Win32.RegistryKey editKey = shellKey.CreateSubKey("edit"))
+                           {
+                              using (Microsoft.Win32.RegistryKey commandKey = editKey.CreateSubKey("command"))
+                              {
+                                 commandKey.SetValue(null, "\"" + exeFile + "\" \"%1\"");
+                                 commandKey.Close();
+                              }
+                              editKey.Close();
+                           }
+                           shellKey.Close();
                         }
+                        progIdKey.Close();
                      }
-                     finally
-                     {
-                        shellKey.Close();
-                     }
+                     extKey.Close();
                   }
-                  finally
-                  {
-                     progIdKey.Close();
-                  }
-               }
-               finally
-               {
-                  extKey.Close();
+                  classesKey.Close();
                }
             }
-            else
-               testKey.Close();
          }
-         catch(System.Security.SecurityException)
+         catch (System.Security.SecurityException)
          {
          }
-         catch(System.Exception ex)
+         catch (System.Exception ex)
          {
-            MessageBox.Show(ex.Message, "Register File Association", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            MessageBox.Show(ex.Message + "\r\nThis error is not critical, and will only prevent you from starting SGDK2 by opening a *.sgdk2 file. You may be able to work around it by running as administrator once.",
+               "Register File Association", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
          }
       }
 
@@ -255,6 +230,32 @@ namespace SGDK2
       #endregion
 
       #region Public Functions
+      public static void FindHelpFile()
+      {
+         g_HelpProvider = new System.Windows.Forms.HelpProvider();
+         g_HelpProvider.HelpNamespace = System.IO.Path.Combine(Application.StartupPath, "SGDK2Help.chm");
+         if (!System.IO.File.Exists(g_HelpProvider.HelpNamespace))
+         {
+            string helpParentDir = Application.StartupPath;
+            do
+            {
+               if (System.IO.File.Exists(System.IO.Path.Combine(helpParentDir, @"Help\SGDK2Help.chm")))
+               {
+                  g_HelpProvider.HelpNamespace = System.IO.Path.Combine(helpParentDir, @"Help\SGDK2Help.chm");
+                  break;
+               }
+               else
+               {
+                  System.IO.DirectoryInfo diHelp = System.IO.Directory.GetParent(helpParentDir);
+                  if (diHelp == null)
+                     helpParentDir = null;
+                  else
+                     helpParentDir = diHelp.FullName;
+               }
+            } while (helpParentDir != null);
+         }
+      }
+
       /// <summary>
       /// GDI+ has a bug copying bitmaps.  Change this method
       /// when it is fixed. (near-opaque pixels lose 1 RGB during DrawImage)

@@ -1691,7 +1691,7 @@ namespace SGDK2
       {
          base.OnLoad (e);
          ConnectData();
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"Frameset.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/c60ec2ed-663d-4774-b9b8-d6ae452a8b25.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 

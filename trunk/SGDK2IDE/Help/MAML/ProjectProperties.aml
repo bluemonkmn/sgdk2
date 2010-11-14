@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="b2f49025-f318-4428-b580-4c0f21ad00e8" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>This window defines properties that apply to the overall project. These can be edited 
+         by double-clicking the top root node in the project tree or selecting it and 
+         choosing "Properties" from the view menu.</para>
+    </introduction>
+
+<section><!--h2-->
+  <title>Credits</title>
+  <content>
+      <para>These credits are embedded in the generated game and can be viewed in the 
+         generated game by selecting "About..." from the help menu when the game is in 
+         windowed mode. Credits are automatically updated when importing objects. The 
+         credits of an imported object will be merged with the project's credits as it 
+         is imported. Note, however, that they are not removed if the object is later 
+         deleted. Therefore it is recommended that you remember to verify the 
+         correctness of the credits before releasing a game. To directly edit the 
+         credits, click on this line, and then click the "..." button to display a text 
+         editor with the credits.</para>
+        </content>
+</section>
+
+<section><!--h2-->
+  <title>DisplayMode</title>
+  <content>
+      <para>This determines size of the window or display resolution for the game. All map 
+         views (defined by the view property in the <link xlink:href="03872e63-7ce8-444e-8811-ae71524bc343">Map Manager</link>) 
+         must fit within this size. The game display cannot be resized at runtime.</para>
+        </content>
+</section>
+
+<section><!--h2-->
+  <title>MaxPlayers</title>
+  <content>
+      <para>This determines the number of players displayed in the options dialog of the 
+         generated game. If the number is 1, then there is no dropdown list to select 
+         which player's settings to edit. The remainder of the responsibility for 
+         handling the actual number of current players and mapping their input to the 
+         sprites falls to the rules defined in the project.</para>
+        </content>
+</section>
+
+<section><!--h2-->
+  <title>MaxViews</title>
+  <content>
+      <para>This determines how many views can be displayed by the maps in this project. If 
+         there are multiple views, each map will track distinct scroll positions
+         for the different views that are currently active.</para>
+        </content>
+</section>
+
+<section><!--h2-->
+  <title>OverlayMap</title>
+  <content>
+      <para>If you have a map that you want to draw in front of the map where gameplay is 
+         happening (for instance, a map to represent the player's current inventory and 
+         status that is visible at most or all times), select it here. The overlay map 
+         can be changed at runtime, but this will set the initial value. To remove the 
+         overlay map, select the first (empty) item from the dropdown list.</para>
+        </content>
+</section>
+
+<section><!--h2-->
+  <title>StartMap</title>
+  <content>
+      <para>Indicates the map that will initially be active as the main map when the game 
+         begins running. (This could be a regular map where the game runs, or it could 
+         be a menu map that has options to transfer control to various other maps.)</para>
+        </content>
+</section>
+
+<section><!--h2-->
+  <title>TitleText</title>
+  <content>
+      <para>The text entered here appears on the title bar of the running game. It is also used
+      to store the text that appears when importing from a template file. To provide
+      additional information that will appear when the SGDK2 file is selected as an
+      import source (displayed by various import wizards), enter it here.</para>
+        </content>
+</section>
+
+<section><!--h2-->
+  <title>Windowed</title>
+  <content>
+      <para>Selecting True here will start the game in a window by default. Selecting False 
+         will start the game in full screen mode by default. The mode can be switched at 
+         runtime by pressing Alt+Enter.</para>
+   
+  </content>
+</section>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

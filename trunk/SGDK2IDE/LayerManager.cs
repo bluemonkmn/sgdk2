@@ -317,7 +317,7 @@ namespace SGDK2
          pgrLayer.SelectedObject = DataObject = new LayerProperties(EditRow);
          DataObject.BackgroundTile = 0;
 
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"LayerManager.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/325f2dfb-983a-463d-b3e4-825be8ddc578.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
@@ -329,7 +329,7 @@ namespace SGDK2
          EditRow.BeginEdit();
          pgrLayer.SelectedObject = DataObject = new LayerProperties(EditRow);
 
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"LayerManager.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/325f2dfb-983a-463d-b3e4-825be8ddc578.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 

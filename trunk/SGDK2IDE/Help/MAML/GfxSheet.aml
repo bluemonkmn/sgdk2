@@ -1,54 +1,72 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-   <head>
-      <title>Scrolling Game Development Kit 2 - Graphic Sheet Properties</title>
-      <meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1" />
-      <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5" />
-      <link href="SGDK2Help.css" type="text/css" rel="stylesheet" />
-   </head>
-   <body>
-      <h1>Graphic Sheet Properties</h1>
-      <p>A graphic sheet is an array of graphic "cells" all the same size, stored in a 
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="76ac66ea-2071-486c-a830-d5da8e27d33c" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>A graphic sheet is an array of graphic "cells" all the same size, stored in a 
          single image with a fixed number of rows and columns. Almost all graphics in a 
          game are based on the graphics defined in a graphic sheet. The only readily 
          apparent exceptions would be some of the text (in cases where text drawing 
          functions are used instead of drawing the text into graphic cells) and the 
          window frame and secondary windows (options and about dialogs) when playing the 
-         game in windowed mode.</p>
-      <p>Before graphics can be edited, some parameters must be provided about the 
+         game in windowed mode.</para>
+      <para>Before graphics can be edited, some parameters must be provided about the 
          layout of the graphics so the environment knows, for example, how large they 
          will be. This window is used to supply these parameters before proceeding to 
-         the <a href="GfxEdit.html">graphics editor</a>. These parameters can also be 
+         the <link xlink:href="2d575c3e-dff1-484e-8f48-6109b0f79028">graphics editor</link>. These parameters can also be 
          updated later, but be careful when doing so because this can drastically affect 
-         the graphics.</p>
-      <h2>Properties</h2>
-      <p>The properties of the graphic sheet are edited in the main grid area of the 
-         window.</p>
-      <h3>BackgroundColor</h3>
-      <p class="SubPara">This defines a solid color that will initially fill all the 
+         the graphics.</para>
+    </introduction>
+
+<section><!--h2-->
+  <title>Properties</title>
+  <content>
+      <para>The properties of the graphic sheet are edited in the main grid area of the 
+         window.</para>
+
+<section><!--h3-->
+  <title>BackgroundColor</title>
+  <content>
+      <para>This defines a solid color that will initially fill all the 
          graphics. For graphics that will be used on the background layer, an opaque 
          color should be chosen. For graphics that will be used in a foreground layer, 
          especially sprites, choosing "Transparent" from the "Web" tab of the dropdown 
          is probably best. If the dropdown does not display the desired color, the color 
          can also be specified by typing a comma-separated list of values to specify the 
          Alpha, Red, Green and Blue components of the color respectively. For example, 
-         to specify a half-transparent red color, enter "128,255,0,0" into this control.</p>
-      <h3>Name</h3>
-      <p class="SubPara">The name of a graphic sheet must be unique among all graphic 
+         to specify a half-transparent red color, enter "128,255,0,0" into this control.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Name</title>
+  <content>
+      <para>The name of a graphic sheet must be unique among all graphic 
          sheets in the project. Names must begin with a letter and contain only letters, 
-         digits and spaces.</p>
-      <h3>CellHeight, CellWidth</h3>
-      <p class="SubPara">These properties define the size of each cell in the sheet. The 
+         digits and spaces.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>CellHeight, CellWidth</title>
+  <content>
+      <para>These properties define the size of each cell in the sheet. The 
          size is specified in pixels. The size of the overall sheet can be calculated by 
          multiplying this size by the number of rows and columns (there is no padding 
          between graphics). Changing these values on an existing graphic sheet 
          (containing graphics) is not advised except to correct an alignment problem 
          with an imported graphic sheet image because changing this value does not move 
          or change any of the graphics, so the divisions between the tiles will all be 
-         shifted and will likely no longer line up with the graphics on the sheet.</p>
-      <h3>Columns, Rows</h3>
-      <p class="SubPara">These properties define how many rows and columns of graphic 
+         shifted and will likely no longer line up with the graphics on the sheet.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Columns, Rows</title>
+  <content>
+      <para>These properties define how many rows and columns of graphic 
          cells are in the graphic sheet. Multiplying these together will result in the 
          overall number of cells. If this result is greater than 255, and you want to 
          use each graphic as a separate tile, the layers that use the tileset based on 
@@ -69,16 +87,31 @@
          different image. So it's best to settle on a reasonable number of columns for a 
          graphic sheet, and if cells need to be added or if the size needs to be 
          reduced, add and remove rows, not columns.
-      </p>
-      <h2>Commands</h2>
-      <p>All the commands available in this window are represented as buttons along the 
-         side.</p>
-      <h3>Add/Update</h3>
-      <p class="SubPara">Depending on whether a new graphic sheet is being added or an 
+      </para>
+        </content>
+</section>
+        </content>
+</section>
+
+<section><!--h2-->
+  <title>Commands</title>
+  <content>
+      <para>All the commands available in this window are represented as buttons along the 
+         side.</para>
+
+<section><!--h3-->
+  <title>Add/Update</title>
+  <content>
+      <para>Depending on whether a new graphic sheet is being added or an 
          existing one updated, this button will read "Add" or "Update". The changes are 
-         not committed to the project until this button is clicked.</p>
-      <h3>Export</h3>
-      <p class="SubPara">This will export the graphic sheet in SGDK2 format for use in 
+         not committed to the project until this button is clicked.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Export</title>
+  <content>
+      <para>This will export the graphic sheet in SGDK2 format for use in 
          an SGDK2 graphics library or for use in other projects. (SGDK2 format is simply 
          a project file format. The format is exactly the same as that of a project, but 
          only the exported data is included rather than all the components required to 
@@ -86,9 +119,14 @@
          into the graphic sheet file, so make sure they are appropriate to the graphic 
          sheet being exported. Any project that imports the exported graphic sheet will 
          also import the credits associated with it and merge them with the project's 
-         credits.</p>
-      <h3>Decapsulate</h3>
-      <p class="SubPara">This is an advanced feature and should not be commonly used in 
+         credits.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Decapsulate</title>
+  <content>
+      <para>This is an advanced feature and should not be commonly used in 
          projects. Decapsulating a graphic sheet will save the image as an independent 
          file and temporarily store only a reference to that file within the project. 
          The purpose of this feature is to allow a single copy of a graphic sheet to be 
@@ -102,10 +140,24 @@
          reference to the external file. The path to the decapsulated graphic sheet is 
          relative to the location of the SGDK2 file containing it. A graphic sheet 
          cannot be decapsulated until the graphic sheet has been added to the project, 
-         and the project containing it has been saved.</p>
-      <h3>Cancel</h3>
-      <p class="SubPara">Any un-commited changes are discarded and the window is closed. 
+         and the project containing it has been saved.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Cancel</title>
+  <content>
+      <para>Any un-commited changes are discarded and the window is closed. 
          If a graphic sheet was being added, it is discarded and no new graphic sheet 
-         will exist in the project.</p>
-   </body>
-</html>
+         will exist in the project.</para>
+   
+  </content>
+</section>
+        </content>
+</section>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

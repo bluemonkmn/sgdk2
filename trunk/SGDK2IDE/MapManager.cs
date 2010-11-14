@@ -167,7 +167,7 @@ namespace SGDK2
          EditRow.BeginEdit();
          pgrMap.SelectedObject = DataObject = new MapProperties(EditRow);
 
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"MapManager.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/03872e63-7ce8-444e-8811-ae71524bc343.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
@@ -179,7 +179,7 @@ namespace SGDK2
          EditRow.BeginEdit();
          pgrMap.SelectedObject = DataObject = new MapProperties(EditRow);
 
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"MapManager.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/03872e63-7ce8-444e-8811-ae71524bc343.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 

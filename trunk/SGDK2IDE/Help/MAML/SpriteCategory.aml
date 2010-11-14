@@ -1,15 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-   <head>
-      <title>Scrolling Game Development Kit 2 - Sprite Category</title>
-      <meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR" />
-      <meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema" />
-      <link href="SGDK2Help.css" type="text/css" rel="stylesheet" />
-   </head>
-   <body>
-      <h1>Sprite Category</h1>
-      <p>A sprite category classifies sprites into categories based on their sprite 
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="225ac8d2-37be-4dd0-a566-1b4b4b7b1ff8" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>A sprite category classifies sprites into categories based on their sprite 
          definition. Any number of definitions can be added to a single sprite category, 
          and any sprite definition may be added to any number of categories. Sprite 
          categories enable sprite definitions to define rules about how sprites interact 
@@ -18,19 +14,38 @@
          want to explicitly check every platform on every level to see if the sprite has 
          landed on it. Instead you define a rule that checks if the player sprite is 
          landing on any sprite that is categorized as a "platform". This window is used 
-         to define the categories used in such rules.</p>
-      <h2>Name</h2>
-      <p>The name must be unique among all sprite categories in the project. Names begin 
-         with a letter and must contain only letters, digits and spaces.</p>
-      <h2>Only Show Checked Items</h2>
-      <p>When checked, the list of sprite definitions below will be filtered to only 
-         show the items that are checked (included in the category).</p>
-      <h2>Sprite Definition List</h2>
-      <p>The main portion of this window is a list of all sprite definitions in the 
+         to define the categories used in such rules.</para>
+    </introduction>
+
+<section><!--h2-->
+  <title>Name</title>
+  <content>
+      <para>The name must be unique among all sprite categories in the project. Names begin 
+         with a letter and must contain only letters, digits and spaces.</para>
+        </content>
+</section>
+
+<section><!--h2-->
+  <title>Only Show Checked Items</title>
+  <content>
+      <para>When checked, the list of sprite definitions below will be filtered to only 
+         show the items that are checked (included in the category).</para>
+        </content>
+</section>
+
+<section><!--h2-->
+  <title>Sprite Definition List</title>
+  <content>
+      <para>The main portion of this window is a list of all sprite definitions in the 
          project. Check the sprite definitions whose sprites should be included in this 
-         category.</p>
-      <h2>Programming Details</h2>
-      <p>A sprite category is internally represented as an array/list of sprite 
+         category.</para>
+        </content>
+</section>
+
+<section><!--h2-->
+  <title>Programming Details</title>
+  <content>
+      <para>A sprite category is internally represented as an array/list of sprite 
          instances. But it's not a single global list with all the sprites of that 
          category. Each layer has its own set of categories that lists the sprites of 
          each category for the current layer. Since sprites from one map don't interact 
@@ -41,14 +56,14 @@
          with which they can't interact anyway. So in saying that a sprite category is 
          an array, what is really meant is that a sprite category within the context of 
          a layer is represented as an array, and each layer has their own array for the 
-         same category (and other arrays for all the other categories).</p>
-      <p>Generally, a sprite category (for a particular layer) is a static list of 
+         same category (and other arrays for all the other categories).</para>
+      <para>Generally, a sprite category (for a particular layer) is a static list of 
          sprite instances, and the sequence of sprites within the category never 
          changes, nor does the number of sprites in the list. Activating a sprite simply 
          turns on the "active" property of the sprite and de-activating a sprite turns 
          it off. However, it's apparent that pre-defining every possible instance of 
          every sprite on every map can be tedious for sprites of an especially dynamic 
-         nature, such as bullets or explosions. It <strong>can</strong> be done, and 
+         nature, such as bullets or explosions. It <legacyBold>can</legacyBold> be done, and 
          there are rules to activate the next available instance of a sprite within a 
          category. You can define a "bullet" category full of inactive sprites on each 
          map, and then call the rule to activate the next available bullet sprite. But 
@@ -71,14 +86,21 @@
          sprites are drawn, which is determined by the sprite's priority. This also 
          determines the order of the sprites in their respective categories, which in 
          turn determines the order that they are drawn and how far in the background or 
-         foreground they appear.</p>
-      <p>There is one implicit sprite collection which can also be thought of as an 
+         foreground they appear.</para>
+      <para>There is one implicit sprite collection which can also be thought of as an 
          implicit sprite category. It contains all the sprites within the layer (for the 
          purpose of enumerating all the sprites in order to process their rules and draw 
          them if they're active). Whereas a normal category would be referred to using a 
-         syntax like this:</p>
-      <p><code>this.m_SpriteCategories.Enemies</code></p>
-      <p>This implicit category containing all sprites would be referred to like this:</p>
-      <p><code>this.m_Sprites</code></p>
-   </body>
-</html>
+         syntax like this:</para>
+      <para><codeInline>this.m_SpriteCategories.Enemies</codeInline></para>
+      <para>This implicit category containing all sprites would be referred to like this:</para>
+      <para><codeInline>this.m_Sprites</codeInline></para>
+   
+  </content>
+</section>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

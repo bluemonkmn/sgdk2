@@ -144,8 +144,10 @@ namespace SGDK2
          PopulateAvailableSprites();
          PopulatePlans();
 
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"MapEditor.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/249dea4e-371e-47e9-991e-ca9036022c0c.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
+
+         frmMain.EnableComposition(false);
       }
 
       protected override void OnLoad(EventArgs e)
@@ -1608,6 +1610,7 @@ namespace SGDK2
       {
          base.OnClosing (e);
          SGDK2IDE.SaveFormSettings(this);
+         frmMain.EnableComposition(true);
       }
       #endregion
 

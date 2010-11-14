@@ -1,0 +1,454 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="c60ec2ed-663d-4774-b9b8-d6ae452a8b25" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>Framesets allow you to re-use the same graphic cells in different orientations 
+         at different sizes or through a different color filter. Whether you want to 
+         re-use graphics or not, though, you do need to create a Frameset before using 
+         any of the graphics in a sprite or tile, which in turn is necessary before 
+         seeing the graphics on a map. A single frameset may contain graphics from any 
+         number of graphic sheets (yes, that means they can even be different sizes). 
+         Performance may be improved, however, if you ensure that the graphics being 
+         drawn on the screen at any particular point in time are from a limited number 
+         of graphic sheet sources.</para>
+      <para>The frameset editor assists you in creating a frameset and manipulating the 
+         graphic cells to desired orientations that you plan to use in your project. 
+         There are two main features of this screen represented on the two tabs: 
+         Frameset and Frame Editor. There are also a number of commands accessible in 
+         the Frameset menu.</para>
+    </introduction>
+
+<section><!--h2-->
+  <title>Frameset Tab</title>
+  <content>
+
+<section><!--h3-->
+  <title>Graphic sheet</title>
+  <content>
+      <para>The left side of this tab allows you to select graphic cells 
+         that will serve as the source graphics for the frames in the frameset. Select a 
+         graphic sheet from the dropdown list at the top. The cells within the graphic 
+         sheet are displayed in the panel below. You can select which cells you would 
+         like to add to the frameset directly, or select a cell and manipulate it before 
+         adding it to the frameset.</para>
+      <para>In many cases, you'll want to start out by adding many or all 
+         frames from a graphic sheet to the frameset. To do this, select the first cell 
+         in the graphic sheet by clicking on it, and then hold shift while clicking on 
+         the last cell. One all the cells are selected, you can press Ctrl-A or select 
+         "Add selected cells to frameset" from the Frameset menu or toolbar.</para>
+      <para>If you'd like to manipulate a graphic cell before adding it to 
+         the frameset, select a single cell, and then click on the "Frame Editor" tab. 
+         From there you can save the manipulated graphic as a new frame on the end of 
+         the frameset. (See below for more information about the Frame Editor tab.)</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Frameset</title>
+  <content>
+      <para>The right side of this tab displays the contents of the 
+         frameset (all the frames). At the top you can see and change the frameset's 
+         name. In the panel below the name, is a list of all the frames. If there are 
+         different size frames or frames that are offset differently from the origin, 
+         the space allocated for each frame will be larger than the graphics in the 
+         frame itself. The properties of the selected frame or frames are displayed at
+         the bottom and 
+         can be edited directly. These properties include all the information about the 
+         frame, which means you can also change the transformation matrix directly on 
+         this tab if you know which numbers to put where. The "Frame Editor" tab 
+         functions mainly as a convenience to come up with these numbers with a visual 
+         editor, but the actual data for the frames transformation is stored and 
+         displayed here. Here is a listing of the properties and their descriptions:</para>
+      <list class="bullet">
+         <listItem>
+            <legacyBold>ModuleateAlpha</legacyBold> - Affects how transparently the frame is drawn. 
+            A value of 0 results in an invisible frame, a value of 255 results in the frame
+            being drawn with its original tranlucency (as defined by the graphic cell), and
+            a value of 128 results in a 50% transparent frame.</listItem>
+         <listItem>
+            <legacyBold>ModulateBlue</legacyBold> - Affects how much of the graphic cell's blue is 
+            drawn. A value of 0 removes all blue from the image (blue becomes black, white 
+            becomes yellow, cyan becomes green, etc). A value of 255 retains all the blue 
+            in the image (leaving it unaffected), and a value of 128 removes half the blue 
+            from the image (blue becomes dark blue, white becomes light yellow, etc).</listItem>
+         <listItem>
+            <legacyBold>ModulateGreen</legacyBold> - Affects how much of the graphic cell's green 
+            is drawn. A value of 0 removes all green from the image (green becomes black, 
+            white becomes magenta, cyan becomes blue, etc). A value of 255 retains all the 
+            green in the image (leaving it unaffected), and a value of 128 removes half the 
+            green from the image (green becomes dark green, white becomes pink, etc).</listItem>
+         <listItem>
+            <legacyBold>ModulateRed</legacyBold> - Affects how much of the graphic cell's red is 
+            drawn. A value of 0 removes all red from the image (red becomes black, white 
+            becomes cyan, yellow becomes green, etc). A value of 255 retains all the red in 
+            the image (leaving it unaffected), and a value of 128 removes half the red from 
+            the image (red becomes dark red, white becomes light cyan, etc).</listItem>
+         <listItem>
+            <legacyBold>FrameValue</legacyBold> - Shows the index of the frame within the frameset. 
+            You can change this only by dragging the frame to a new position in the 
+            frameset.</listItem>
+         <listItem>
+            <legacyBold>dx</legacyBold> - Represents the part of the transformation matrix that 
+            determines how far the graphic is offset horizontally when drawn.</listItem>
+         <listItem>
+            <legacyBold>dy</legacyBold> - Represents the part of the transformation matrix that 
+            determines how far the graphic is offset vertically when drawn.</listItem>
+         <listItem>
+            <legacyBold>m11</legacyBold> - Represents the part of the transformation matrix that 
+            affects horizontal scaling.</listItem>
+         <listItem>
+            <legacyBold>m12</legacyBold> - Represents the part of the transformation matrix that 
+            affects vertical shearing.</listItem>
+         <listItem>
+            <legacyBold>m21</legacyBold> - Represents the part of the transformation matrix that 
+            affects horizontal shearing.</listItem>
+         <listItem>
+            <legacyBold>m22</legacyBold> - Represents the part of the transformation matrix that 
+            affects vertical scaling.</listItem>
+         <listItem>
+            <legacyBold>CellIndex</legacyBold> - This represents the index of the cell in the 
+            graphic sheet on which the frame is based. Changing this will cause the 
+            selected frame to apply all the same transformations to a different image in the 
+            graphic sheet.</listItem>
+         <listItem>
+            <legacyBold>GraphicSheet</legacyBold> - This represents the graphic sheet from which 
+            the frame's image is taken. Changing this will use a cell from another graphic 
+            sheet with all the same transfomrations applied to this frame.</listItem>
+      </list>
+      <para>You can move and copy frames by dragging them. Pressing control 
+         while dragging will make a copy of the frame instead of moving it. You can also 
+         select multiple frames and mass-change properties. For example, if you want to 
+         make a set of frames use graphics from another graphic sheet (at the same 
+         indexes they're using now), you could select the frames, then select the new 
+         graphic sheet.</para>
+      <para><legacyBold>Notes:</legacyBold></para>
+      <list class="bullet">
+         <listItem>
+            Changing CellIndex to a number beyond the number of cells in the selected 
+            graphic sheet will result in an error.</listItem>
+         <listItem>
+            Changing GraphicSheet to a sheet that doesn't have cells numbering up to 
+            CellIndex will also result in an error.</listItem>
+         <listItem>
+            Moving frames around in the frame sequence may cause undesirable results on 
+            tiles and sprites that use this frameset. If you move frame 1 to frame 3, then 
+            anything referencing frames 1, 2 and 3 will now refer to former frames 2, 3 and 
+            1 respectively. The frame indexes in referring objects are not changed to 
+            reflect new frame positions. The former frame 2 is now at position 1, and 
+            anything referencing frame 1 will display what used to be frame 2.</listItem>
+      </list>
+      <para>See information about menu commands below for more information 
+         about mass-changing/copying frames with the Frame Remapping wizard.</para>
+        </content>
+</section>
+        </content>
+</section>
+
+<section address="FrameEditTab"><!--h2-->
+  <title>Frame Editor Tab</title>
+  <content>
+      <para>The frame editor tab allows you to visually manipulate the shape and 
+         orientation of a graphic cell and update a frameset frame with the results. If 
+         you select a graphic cell on the left half of the Frameset tab before switching 
+         to this tab, then saving the frame will add a new frame to the frameset. 
+         Othwerwise the edited frame will be saved back to the frame that was selected 
+         before switching to the Frame Editor tab.</para>
+<section><!--h3-->
+  <title>Coordinate Preview</title>
+  <content>
+      <para>This view covering the main portion of the frame editor tab 
+         shows how the graphic will appear relative to the coordinates at which it is 
+         drawn (its origin). By moving the mouse over the graphic you can drag it to a 
+         new position relative to this origin. Most sprites and tiles are drawn below 
+         and to the right of their origin, but here you can designate certain graphics 
+         to draw beyond those usual boundaries. By moving the mouse over the drag 
+         handles on the surrounding frame, and dragging them, you can scale the frame to 
+         a new size. Similar operations can be achieved by entering specific numbers in 
+         the controls below or selecting commands from the context menu.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Rotation</title>
+  <content>
+      <para>Below the Coordinate preview is a slider that you can drag to 
+         any position to rotate the graphic from a range of -179 degrees to +180 
+         degrees. If you know a specific rotation that you'd like to apply to the 
+         graphic you can also enter it in the text box below the rotation slider. 
+         Rotation can be applied either around the origin or around the center of the 
+         image. Generally rotation is desired around the center of the image, but you 
+         can un-check the box if you want to rotate (by slider or text entry) around the 
+         origin. Positive rotations are clockwise and negative rotations are 
+         counter-clockwise.</para>
+      <para>Note that if you scale or move the image after rotating, all 
+         the controls are reset (but the transformation is retained), so make sure your 
+         rotation is correct before proceeding with other transformations. This is done 
+         because scaling and translation do not always behave intuitively when they are 
+         being applied at the same time as rotation, therefore the rotation is applied 
+         before any other types of operations are introduced.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Scaling</title>
+  <content>
+      <para>Below the rotation controls you can manually enter a precice 
+         scaling value. Negative values for "X Scale" will flip the image horizontally 
+         accross the origin. Negative values for "Y Scale" will flip the image 
+         vertically accross the origin. Note that when the image is flipped accross one 
+         axis and you are applying a rotation on top of that, rotation occurs in the 
+         opposite direction.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Offset</title>
+  <content>
+      <para>At the bottom of the Frame Editor you can enter specific 
+         offsets to move the frames position relative to its origin. These numbers are 
+         measured in pixels. Entering fractional values will cause the frame to draw 
+         anti-aliased "between" pixel positions.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Background Frame</title>
+  <content>
+      <para>When the "Background Frame" item in the view menu is checked, a
+      floating window containing all the frameset's frames is visible on this tab. Selecting
+      a frame from this window will display that frame according to its defined position
+      along with the frame being edited in the frame editor. This can be useful for positioning
+      a frame relative to another existing frame.  To hide the background frame, un-check the
+      "Background Frame" item in the view menu.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Reset</title>
+  <content>
+      <para>This button will clear all matrix transformations applied to 
+         the frame. Note that this does not just reset the image to the state it was in 
+         when you entered the Frame Editor, but to the completely un-transformed graphic 
+         cell.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>OK</title>
+  <content>
+      <para>Apply the current transformations and return to the Frameset 
+         tab.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Cancel</title>
+  <content>
+      <para>Return to the Frameset tab without applying any 
+         transformations.</para>
+      <para>Note, if you return to the Frameset tab without clicking OK or Cancel, you will 
+         be prompted to update or discard the changes.</para>
+        </content>
+</section>
+        </content>
+</section>
+
+<section><!--h2-->
+  <title>View Menu</title>
+  <content>
+      <para>A couple items in the view menu apply specifically to the Frameset Editor</para>
+
+<section><!--h3-->
+  <title>Cell Borders</title>
+  <content>
+      <para>Displays dashed borders around the graphics in the Graphic Sheet pane on the left to clarify the size of each graphic cell and the position of the graphics within it.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Frame Borders</title>
+  <content>
+      <para>Displays dashed borders around the graphics in the Frameset pane on the right to clarify the size of each frame and the position of the graphics within it.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Background Frame</title>
+  <content>
+      <para>Shows or hides the floating "Background Frame" window on the <link xlink:href="#FrameEditTab">Frame Editing Tab</link>, as well as any currently active background frame selection.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Frame Sizing Border</title>
+  <content>
+      <para>Shows or hides the sizable border drawn around the frame in the <link xlink:href="#FrameEditTab">Frame Editing Tab</link>. The frame is still sizable and movable, but the border is hidden, allowing better visibility of the background frame.</para>
+        </content>
+</section>
+        </content>
+</section>
+
+<section><!--h2-->
+  <title>Frameset Menu</title>
+  <content>
+<section><!--h3-->
+  <title>Add Selected Cells to Frameset</title>
+  <content>
+      <para>Add the cells currently selected in the graphic sheet pane of 
+         the Frameset tab to the frameset without immediately applying any 
+         transformations.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Delete Selected Frames</title>
+  <content>
+      <para>Removes the currently selected frames in the Frameset pane from 
+         the frameset. If your attempt to remove frames would result in a tileset or 
+         sprite definition referring to frame indexes beyond the bounds of the new 
+         frameset, you will be notified and unable to delete the frames until you 
+         address the issue in the appropriate tileset or sprite definition. Note that 
+         deleting frames causes all the frame indexes after the deleted frames to 
+         change, which can impact the related tilesets and sprite definitions 
+         undesirably. Therefore, if you have tilesets and sprite definitions based on 
+         the frameset, it's recommended that you simply leave the frame unused (possibly 
+         mark it with a particular cell), instead of deleting it. Then if/when you want 
+         to insert or add a frame, re-use that unused frame for a new purpose.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Transform Selected Frames</title>
+  <content>
+      <para>The commands in this menu can be used on either the Frameset 
+         tab or the Frame Editor tab to apply pre-defined transformations to frames. On 
+         the Frameset tab you can select one or more frames and immediately apply a 
+         transformation to them without visiting the Frame Editor tab if it's a 
+         transformation represented by one of the commands in this menu. On the Frame 
+         Editor tab, the transformation will apply to the frame being edited. Most of 
+         the commands are self-explanatory; here is a list:</para>
+      <list class="bullet">
+         <listItem>
+            Horizontal Flip
+            <list class="bullet">
+               <listItem>
+                  Accross origin</listItem>
+               <listItem>
+                  Across center</listItem>
+            </list>
+         </listItem>
+         <listItem>
+            Vertical Flip
+            <list class="bullet">
+               <listItem>
+                  Across origin</listItem>
+               <listItem>
+                  Across center</listItem>
+            </list>
+         </listItem>
+         <listItem>
+            Double Width</listItem>
+         <listItem>
+            Double Height</listItem>
+         <listItem>
+            Halve Width</listItem>
+         <listItem>
+            Halve Height</listItem>
+         <listItem>
+            Move Left 1/2 Width</listItem>
+         <listItem>
+            Move Right 1/2 Width</listItem>
+         <listItem>
+            Move Up 1/2 Height</listItem>
+         <listItem>
+            Move Down 1/2 Height</listItem>
+         <listItem>
+            Clockwise 90 Degrees
+            <list class="bullet">
+               <listItem>
+                  Around origin</listItem>
+               <listItem>
+                  Around Center</listItem>
+            </list>
+         </listItem>
+         <listItem>
+            Counter-clockwise 90 degrees
+            <list class="bullet">
+               <listItem>
+                  Around origin</listItem>
+               <listItem>
+                  Around center</listItem>
+            </list>
+         </listItem>
+         <listItem>
+            Custom... - Switches to the Frame Editor tab</listItem>
+         <listItem>
+            Reset - Clears all matrix transformations for the selected frame(s), resulting 
+            in the un-transformed graphic cell being drawn.</listItem>
+      </list>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Frame Remapping Wizard</title>
+  <content>
+      <para>This wizard walks you through the steps of copying or remapping 
+         frames in a frameset to use different graphics. This wizard can perform the 
+         following operations:</para>
+      <list class="bullet">
+         <listItem>
+            Change the graphic sheet referenced by frames.</listItem>
+         <listItem>
+            Offset the graphic sheet cell index referenced by frames.</listItem>
+         <listItem>
+            Set the graphic sheet cell index referenced by frames.</listItem>
+      </list>
+      <para>The results of the wizard can either change existing frames in 
+         place or copy the frames to the end of the current frameset or a new frameset.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Frame Tweening Wizard</title>
+  <content>
+      <para>This wizard walks you through the steps of creating a series of
+         frames with a continuous progression of rotation, offset or scaling values. This
+         wizard can perform the following operations:</para>
+      <list class="bullet">
+         <listItem>
+            Append a series of frames based on a progression of transformations applied
+            to a graphic cell. The series of transformations is based on the parameters
+            specified for two endpoints, and the number of frames to generate is specified
+            in the wizard.</listItem>
+         <listItem>
+            Update a series of existing frames by transforming them according to a series
+            of transformations. The series of transformations is based on the parameters
+            specified for two endpoints.</listItem>
+      </list>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Edit Graphic Cell...</title>
+  <content>
+      <para>You can jump directly to the graphic sheet editor to change the 
+         graphics used by a particular frame by selecting this command from the Frameset 
+         menu or the context menu. Note that since you are editing the cell, edits will 
+         affect all frames that reference the same graphic cell.</para>
+      <para>The context menu available with a right-click in the frames panel in the 
+         Frameset tab or in the Frame Editor displays all the items from the "Transform 
+         Selected Frames" menu and the "Edit Graphic Cell..." menu item for easy access.</para>
+   
+  </content>
+</section>
+        </content>
+</section>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

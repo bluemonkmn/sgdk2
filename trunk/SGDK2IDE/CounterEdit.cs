@@ -46,7 +46,7 @@ namespace SGDK2
          nudValue.Value = m_Counter.Value;
          txtCounterName.Text = sName;
 
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"EditCounters.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/7daf123d-d3de-4ad1-bbbe-458794f94077.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
@@ -62,7 +62,7 @@ namespace SGDK2
          nudMaximum.Value = drCounter.Max;
          nudValue.Value = drCounter.Value;
 
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"EditCounters.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/7daf123d-d3de-4ad1-bbbe-458794f94077.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 

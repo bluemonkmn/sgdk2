@@ -217,7 +217,7 @@ namespace SGDK2
       {
          PopulateSpriteDefs();
 
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"SpriteCategory.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/225ac8d2-37be-4dd0-a566-1b4b4b7b1ff8.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
 
          base.OnLoad (e);

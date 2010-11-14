@@ -17,6 +17,15 @@ namespace SGDK2
    /// </summary>
    public class frmMain : System.Windows.Forms.Form
    {
+      #region Win32 API declarations
+      const uint DWM_EC_DISABLECOMPOSITION = 0;
+      const uint DWM_EC_ENABLECOMPOSITION = 1;
+      [System.Runtime.InteropServices.DllImport("dwmapi.dll", EntryPoint = "DwmEnableComposition")]
+      private extern static uint DwmEnableComposition(uint compositionAction);
+      [System.Runtime.InteropServices.DllImport("dwmapi.dll", EntryPoint = "DwmIsCompositionEnabled")]
+      private extern static uint DwmIsCompositionEnabled(out bool enabled);
+      #endregion
+
       #region Non-Control Members
       private System.Collections.Specialized.HybridDictionary m_TreeNodes;
       Int32 m_nPinStatus; // 0 == Pinned, 1 == Unpinned Collapsed, 2 = Unpinned Expanded
@@ -28,6 +37,7 @@ namespace SGDK2
       private System.Collections.Hashtable m_MenuToTemplateMap = new Hashtable();
       private DateTime errorStatusTime = DateTime.MinValue;
       const string rootNode = "Project";
+      static int compositionDisabledCount = 0;
       #endregion
 
       #region Windows Form Designer Members
@@ -1686,6 +1696,22 @@ namespace SGDK2
       #endregion
 
       #region Public Methods
+      public static void EnableComposition(bool enable)
+      {
+         if (enable)
+         {
+            if ((compositionDisabledCount > 0) && (--compositionDisabledCount == 0))
+               DwmEnableComposition(DWM_EC_ENABLECOMPOSITION);
+         }
+         else
+         {
+            bool wasEnabled;
+            if (DwmIsCompositionEnabled(out wasEnabled) != 0) return;
+            if (wasEnabled && (++compositionDisabledCount == 1))
+               DwmEnableComposition(DWM_EC_DISABLECOMPOSITION);
+         }
+      }
+
       public void CreateTemplateMenuItems()
       {
          try
@@ -1786,7 +1812,7 @@ namespace SGDK2
       {
          base.OnLoad (e);
 
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"MainWindow.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/f10c13c9-f26e-49da-b42e-3264bbd6bf41.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
 
          try

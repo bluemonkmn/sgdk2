@@ -149,7 +149,7 @@ namespace SGDK2
          txtPriority.Text = m_Plan.Priority.ToString();
          PopulateBaseClasses();
 
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"PlanEdit.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/9cc40393-eb18-4a5d-b579-a2006b78e398.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
@@ -167,7 +167,7 @@ namespace SGDK2
          
          QueuePopulateRules();
 
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"PlanEdit.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/9cc40393-eb18-4a5d-b579-a2006b78e398.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 

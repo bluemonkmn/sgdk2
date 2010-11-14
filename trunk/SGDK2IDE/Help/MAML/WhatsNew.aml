@@ -1,0 +1,219 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="344ca14d-b435-4a1f-b94d-6640f99096ce" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+  <para>This page documents updates between various updates to SGDK 2.0.
+  If you're interested in the differences between the 1.x versions and
+  version 2.0, see the <link xlink:href="75aaa98a-3dae-49d2-9cd3-dbd618954be9#WhatsNew">
+  What's New section of the Introduction</link>.
+  </para>
+    </introduction>
+
+<section>
+  <title>Version 2.1.6</title>
+  <content>
+  <para>This section describes updates between versions 2.1.5 and 2.1.6.</para>
+  <list class="ordered">
+    <listItem>Upgrade to Visual C# 2010 Express.</listItem>
+    <listItem>Upgrade IDE to .NET 4.0 (projects should still work on
+    	2.0).</listItem>
+    <listItem>Updates for Windows 7 compatibility
+    <list class="bullet">
+      <listItem>Compile temp assembly is UserAppDataPath instead of
+        %temp%.</listItem>
+      <listItem>Register file association to current user instead of
+        system.</listItem>
+      <listItem>Turn off Windows 7 Aero when entering map editor to eliminate
+        flickering when scrolling map editor.</listItem>
+    </list>
+    </listItem>
+    <listItem>Eliminate unused System.Design.dll reference from generated
+      game compiles.</listItem>
+    <listItem>Implement support for ClickOnce deployment.</listItem>
+    <listItem>Upgrade to latest SandCastle Help File Builder. Use
+      MAML content to define help files instead of HTML.</listItem>
+    <listItem>Limit Frame Rate to 30 FPS in sample project.</listItem>
+    <listItem>Change <codeEntityReference qualifyHint="false" autoUpgrade="true">M:GeneralRules.ReturnToPreviousMap(System.Boolean)</codeEntityReference>
+      function to re-load map if unload = true and no previous map exists
+      instead of ignoring the request.</listItem>
+    <listItem>Change <codeEntityReference qualifyHint="false" autoUpgrade="true">M:SpriteBase.GetNearestSpriteIndex(SpriteCollection)</codeEntityReference>
+      to ignore the current sprite.</listItem>
+    <listItem>Correct distance calculation in
+      <codeEntityReference qualifyHint="false" autoUpgrade="true">M:SpriteBase.PushTowardSprite(SpriteBase,System.Int32)</codeEntityReference>.
+      </listItem>
+    <listItem>Change
+      <codeEntityReference qualifyHint="false" autoUpgrade="true">M:SpriteBase.SetInputsTowardCategory(SpriteCollection,System.Int32)</codeEntityReference>
+      to turn off all directional inputs if no sprite in target category
+      exists.</listItem>
+    </list>
+  </content>
+</section>
+
+<section><!--h2-->
+  <title>Version 2.1.5</title>
+  <content>
+  <para>This section describes updates between versions 2.1.4 and 2.1.5.</para>
+  <list class="ordered">
+    <listItem>Fix sprite selector in map editor so other controls don't overlap it making some
+    sprites unselectable.</listItem>
+    <listItem>Correct tile drawing in map editor so it doesn't exhibit glitch after drawing plan paths.</listItem>
+    <listItem>Prevent error when closing map editor when plan selection list is active.</listItem>
+  </list>
+    </content>
+</section>
+
+<section><!--h2-->
+  <title>Version 2.1.4</title>
+  <content>
+  <para>This section describes updates between versions 2.1.3 and 2.1.4.</para>
+  <list class="ordered">
+    <listItem>Fix an error that prevented multiple displays from being open simultaneously.</listItem>
+    <listItem>Implement the ability to sort sprites in the map editor.</listItem>
+    <listItem>Improve error handling when attempting to run the project if it is already running.</listItem>
+    <listItem>Allow a layer to be created with a null tileset to represent the designer background layer (allow user-created layer to refer to no tileset).</listItem>
+    <listItem>Stop riding on a platform if it is deactivated while riding it.</listItem>
+    <listItem>Prevent debug-mode errors when a platform is deactivated and a sprite is riding on it.</listItem>
+    <listItem>Change CheckNextCoordinate to proceed to the next target if the distance from the current target exactly matches the target distance.</listItem>
+    <listItem>Prevent the user from creating a layer with zero tiles.</listItem>
+    <listItem>Implement ExecuteRulesInternal so that ExecuteRules can be overridden in an intermediate class.</listItem>
+    <listItem>Implement BaseClass property for plans and sprites to allow inheriting from customized code instead of only PlanBase and SpriteBase.</listItem>
+    <listItem>Make ProcessSprites overridable.</listItem>
+    <listItem>Implement IsSpriteWithinPolygon function for plans.</listItem>
+    <listItem>When resetting source code to a template that imports decapsulated source code files, be sure to import the referenced code because the project into which the code is being imported will not know how to find the template's decapsulated files.</listItem>
+    <listItem>Add OpenTK.dll.config to source control.</listItem>
+    <listItem>If a plan contains a SpriteBase-derived member, show a drop-down list of the appropriate sprites in the map editor when this plan is selected.</listItem>
+    <listItem>Prevent invalid sprite and plan names from being specified in the map editor.</listItem>
+    <listItem>Change most SpriteBase and PlanBase members to be protected instead of private.</listItem>
+    <listItem>Change most SpriteBase and PlanBase members to be virtual so they can be overridden by an intermediate base class.</listItem>
+    <listItem>Change SpriteBase.TouchTiles to return a strongly typed collection of results.</listItem>
+  </list>
+    </content>
+</section>
+
+<section><!--h2-->
+  <title>Version 2.1.3</title>
+  <content>
+  <para>This section describes updates between versions 2.1.2 and 2.1.3.</para>
+  <list class="ordered">
+    <listItem>Upgrade to OpenTK 1.0.0 beta 2.</listItem>
+    <listItem> Fix dropper tool to also function on row 0 and column 0 of graphic editor pane.</listItem>
+    <listItem> Eliminate a couple compiler warnings on generated projects.</listItem>
+    <listItem> Fix TestCollisionRect so that it can be used from the Plan and Sprite rule editors.</listItem>
+    <listItem> Implement default designer-only background layer in map editor.  When no opaque layer exists, the map editor will still draw nicely with this design-mode-only layer active.</listItem>
+    <listItem> Automatically default new layers to next available Z-Index.</listItem>
+    <listItem> Change Reflect.dll to build with .NET 2.0.</listItem>
+    <listItem> Add SpriteRecorder code object to library for recording scripted sprite movements.</listItem>
+    <listItem> Implement PlayMusic function that cross-fades background music.</listItem>
+    <listItem> Implement FadeMusic function to fade out background music.</listItem>
+    <listItem> Specify REUSE instead of FREE when playing FMOD sound to try to avoid sound scrambling occurring in some project(s).</listItem>
+    <listItem> Improve FMOD code reuse - fmodbase.cs and fmod.cs are now delivered only in the Sound directory of the library, and all delivered templates refer to these files.</listItem>
+    <listItem> Automatically sort main tree view.</listItem>
+    <listItem> Correct bug that updated all children of a tile category in the tree view when the parent name was changed.</listItem>
+    <listItem> Avoid error when pressing delete key on frameset editor when nothing has been selected.</listItem>
+  </list>
+    </content>
+</section>
+
+<section><!--h2-->
+  <title>Version 2.1.2</title>
+  <content>
+  <para>This section describes updates between versions 2.1 and 2.1.2.</para>
+  <list class="ordered">
+    <listItem>Upgrade to OpenTK 0.9.8.</listItem>
+    <listItem>Check if graphic sheet (texture) is larger than supported by the OpenGL
+    driver in order to provide a better error message if it's too big.</listItem>
+    <listItem>Add TileCategoryTouched function to provide simpler ability to check
+    when a sprite touches a tile in a category.</listItem>
+    <listItem>Use frame's color modulation when drawing the frame with
+    DrawCounterAsTile.</listItem>
+    <listItem>Correct handling of TouchTiles for non-square sprites.</listItem>
+    <listItem>Correct TileAddSprite to register old position as initial position.</listItem>
+    <listItem>Create TileChangeTouched function to change one tile at a time.</listItem>
+    <listItem>Deliver standard functions for pushing and repelling sprites.</listItem>
+    <listItem>Improve error handling when converting rules to source code.</listItem>
+    <listItem>Remove dllmap from configuration file because Microsoft .NET
+    cannot handle it.  Plan to use a hard link or symbolic link to new filename
+    libfmodex.so instead (linked to versioned libfmodex-v.so).</listItem>
+    <listItem>Improve some sprite rule function implementations.</listItem>
+    <listItem>Implement limited support for generating Linux projects.</listItem>
+    <listItem>Prevent errors when null rule parameters are encountered while
+    compiling.</listItem>
+    <listItem>Improve drawing of gradient rings (2-D torus) in graphics editor.</listItem>
+    <listItem>Upgrade FMOD to stable version 4.20.06.</listItem>
+  </list>
+    </content>
+</section>
+
+<section><!--h2-->
+  <title>Version 2.1</title>
+  <content>
+  <para>This section describes updates between versions 2.0 and 2.1.</para>
+  <list class="ordered">
+    <listItem>Upgrade to .NET 2.0: SGDK2 and the projects it generates now rely
+    on .NET Framework version 2.0 and take advantage of new features added
+    in this version. The SGDK2 Project itself requires Visual C# 2008 or .NET
+    3.0 to compile, but can run on any system that has .NET Framework 2.0.
+    It also knows how to compile game projects on any system with .NET 2.0.</listItem>
+    <listItem>OpenGL Framework: Version 2.0 was based on Managed DirectX. SGDK 2.1 uses
+    the OpenTK library to access the OpenGL interface to video hardware, 
+    allowing SGDK2 to and the projects created with it to potentially
+    be more easily ported to other platforms.  This also provided an
+    apparent performance boost.</listItem>
+    <listItem>Improved Message Functions: Displaying messages is now an integrated
+    function in SGDK2 instead of a custom object.  Furthermore, it now uses
+    a tileset as the font instead of using the fonst support provided by the
+    system (because as of this writing, OpenTK does not properly support
+    fonts).  This means, however, that you can use graphics and animated
+    tiles/characters in your messages.  A new message preview window is
+    provided to assist in laying out the message at design time.</listItem>
+    <listItem>Frame Rate Limit: If your game runs too fast on some systems,
+    you can now use the <codeEntityReference qualifyHint="false" autoUpgrade="true">M:GeneralRules.LimitFrameRate(System.Int32)</codeEntityReference>
+    function to control the speed.</listItem>
+    <listItem>Cut Rules: It's now possible to cut a group of rules when using
+    a rule editor. This can also be used to delete hierarchies of rules.</listItem>
+    <listItem>Upgrade Documentation: This help file is now being built with <externalLink>
+  <linkText>Sandcastle</linkText>
+  <linkUri>http://www.microsoft.com/downloads/details.aspx?FamilyID=E82EA71D-DA89-42EE-A715-696E3A4873B2&amp;displaylang=en</linkUri>
+</externalLink>
+    and <externalLink>
+  <linkText>Sandcastle Help File Builder</linkText>
+  <linkUri>http://www.codeplex.com/SHFB</linkUri>
+</externalLink>
+    instead of NDOC because NDOC did not support .NET 2.0.  As a result the
+    build process is somewhat simplified and the content is better linked with
+    some other improvements wrapped in too.</listItem>
+    <listItem>
+      Convert Rules: In the sprite rule editor and plan rule editor, you may
+      now select the &quot;Convert to Function&quot; command to convert rules into
+      source code that can be directly maintained in the code editor.  If you have
+      huge trees of complex rules, this may help you significantly simplify your
+      sprite definitions, and make them more managable.
+    </listItem>
+    <listItem>
+      Call Sprite Functions from Plan Rules: Now you can select &quot;&lt;Select
+      sprite function...&gt;&quot; from the function list in the plan rule editor if
+      you want to directly call a function on a sprite from a plan.  This can be
+      particularly handy if you've converted a set of rules on a sprite into
+      a function that you want a plan to be able to easily trigger directly.
+    </listItem>
+  </list>
+
+  <para>
+    If this list seems short, notice that the first two items are relatively
+    large, and also that the goal was to get the major update out to folks and
+    in use before proceeding with a multitude of smaller updates.  That way
+    everyone doesn't have to wait for all the small updates to be complete before
+    being able to use the updated framework.
+  </para>  
+
+  </content>
+</section>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

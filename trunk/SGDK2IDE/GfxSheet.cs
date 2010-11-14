@@ -151,7 +151,7 @@ namespace SGDK2
          ProjectData.GraphicSheetRowDeleted += m_RowChangeEvent;
          pgrGfxSheet.SelectedObject = DataObject = new GfxSheetProperties(EditRow);
 
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"GfxSheet.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/76ac66ea-2071-486c-a830-d5da8e27d33c.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
@@ -165,7 +165,7 @@ namespace SGDK2
          ProjectData.GraphicSheetRowDeleted += m_RowChangeEvent;
          pgrGfxSheet.SelectedObject = DataObject = new GfxSheetProperties(EditRow);
 
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"GfxSheet.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/76ac66ea-2071-486c-a830-d5da8e27d33c.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 

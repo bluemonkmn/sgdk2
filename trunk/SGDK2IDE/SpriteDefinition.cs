@@ -223,7 +223,7 @@ namespace SGDK2
          FillBaseClasses();
          InitParameters();
 
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"SpriteDefinition.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/b70a3d81-1ff7-429f-b4f9-d65bafe1f09d.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
@@ -243,7 +243,7 @@ namespace SGDK2
          FillBaseClasses();
          InitParameters();
 
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"SpriteDefinition.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/b70a3d81-1ff7-429f-b4f9-d65bafe1f09d.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
@@ -3225,12 +3225,12 @@ namespace SGDK2
          if (tabSpriteDefinition.SelectedTab==tabRules)
          {
             QueuePopulateRules();
-            SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"SpriteRule.html");
+            SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/476b45aa-2b60-4be3-9887-643de3cc421c.htm");
          }
          else if (tabSpriteDefinition.SelectedTab==tabStates)
-            SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"SpriteDefinition.html");
+            SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/b70a3d81-1ff7-429f-b4f9-d65bafe1f09d.htm");
          else
-            SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"SpriteParam.html");
+            SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/1b29c16a-1be0-4a46-b0b2-1f023b465b15.htm");
       }
 
       private void txtRuleName_Validating(object sender, System.ComponentModel.CancelEventArgs e)

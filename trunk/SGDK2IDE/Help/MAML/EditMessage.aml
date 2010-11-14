@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="cd49bb62-e269-483c-b7e3-527c99770b47" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+     <para>
+       When you use the
+       <codeEntityReference qualifyHint="false" autoUpgrade="true">M:GeneralRules.ShowMessage(System.String)</codeEntityReference>
+       function, only one parameter is provided,
+       and it specifies all the content of the message.  Trying to lay out the
+       content of the message manually can be tedious, so the message editor is
+       provided to help edit message content while showing a preview that
+       approximates how the message will appear at runtime.  This editor
+       can be accessed by selecting &lt;Message Editor...&gt; from the
+       parameter's dropdown list.
+     </para>
+    </introduction>
+
+  <section><!--h1-->
+  <title>Message Editor</title>
+  <content>
+  <para>
+    <legacyBold>Tileset:</legacyBold> Before any preview will be displayed, you must select the
+    tileset that the preview will use.  If you are using the
+    <!-- TODO: Unknown topic link: html\M_GeneralRules_SetMessageFont.htm -->SetMessageFont function
+    to set the font for the message, you should select the same tileset here
+    as you specified for SetMessageFont.  If not, select the first tileset, which
+    is the default.  Because the execution of rules cannot be predicted at design
+    time, there may be more than one tileset that could be the active font when
+    ShowMessage executes, so it's up to you to select the tileset with which the
+    message preview will operate.
+  </para>
+  <para>
+    <legacyBold>Message:</legacyBold> This is the parameter value exactly is it appeared in the
+    sprite definition window.  It represents the content of the message as a
+    quoted string.  If any part of the message is not in quotes, the message
+    preview will display "[Variable]" for that portion of the message, and you
+    should be aware that the preview will not be accurate because it can't
+    predict the content of portions of the message that are not within quotes.
+  </para>
+  <para>There are a number of escape sequences that can be embedded within the
+  Message string that the preview will properly display:</para>
+  <table>
+    <tableHeader>
+      <row>
+        <entry>Escape sequence</entry>
+        <entry>Description</entry>
+      </row>
+    </tableHeader>
+    
+      <row>
+        <entry>\r\n</entry>
+        <entry>Inserts a line break into the message.  You should use these to
+        ensure that your message is not too wide because there is no automatic
+        word wrap available in the message functions.</entry>
+      </row>
+      <row>
+        <entry>\t</entry>
+        <entry>This represents a tab character, which has no meaning to ShowMessage,
+        but could be used as a shortcut for character number 9.  If you have a
+        frequently used graphic that you want to insert in your messages, you
+        could make it number 9 and use this shorthand instead of the full
+        escape sequence for the extended character as described below</entry>
+      </row>
+      <row>
+        <entry>\u00xx</entry>
+        <entry>You can use this sequence to insert extended characters or graphics
+        into your message.  The "xx" portion of the code represents a 2-character
+        <externalLink>
+  <linkText>hexadecimal</linkText>
+  <linkUri>http://en.wikipedia.org/wiki/Hexadecimal</linkUri>
+</externalLink> code.
+        For example \u001f would insert character number 31 into the message
+        (this is the last character right before the normal printable characters
+        in the CoolFont and FireFont tilesets).  You can use this code to insert
+        any tile number from 0 through 255 from the current font tileset into the
+        message.  Use the "..." button to select the tile from a list and have
+        this code generated for you.</entry>
+      </row>
+    
+  </table>
+
+  <para>One other feature of the message editor you will see in the preview area is
+  the presence of width guides.  There are two vertical lines labeled "320"
+  indicating the width of a 320-pixel-wide view.  If the message fits within
+  these guides, it will fit similarly on a single-view display with a width of
+  320 pixels, or within a horizontally split display of 640 pixels where each
+  view is 320 pixels.  Similarly, there are guides for 400, 640 and 800 pixel
+  widths.  They will only be visible of the form is large enough to fit them in
+  the viewing area.</para>
+
+  </content>
+</section>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

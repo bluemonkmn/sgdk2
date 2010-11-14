@@ -2347,7 +2347,7 @@ namespace SGDK2
          m_frmMagnify.GraphicChanged += new frmGraphicPane.GraphicChangedEvent(ChildPane_GraphicChanged);
          m_frmActual.GraphicChanged += new frmGraphicPane.GraphicChangedEvent(ChildPane_GraphicChanged);
 
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"GfxEdit.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/2d575c3e-dff1-484e-8f48-6109b0f79028.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
 
          base.OnLoad (e);

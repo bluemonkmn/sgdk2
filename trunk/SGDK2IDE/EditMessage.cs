@@ -134,7 +134,7 @@ namespace SGDK2
       public frmEditMessage()
       {
          InitializeComponent();
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"EditMessage.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/cd49bb62-e269-483c-b7e3-527c99770b47.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
          foreach (DataRowView drv in ProjectData.Tileset.DefaultView)
          {

@@ -1,111 +1,137 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-   <head>
-      <title>Scrolling Game Development Kit 2 - Edit Plans</title>
-      <meta content="Microsoft Visual Studio .NET 7.1" name="GENERATOR" />
-      <meta content="http://schemas.microsoft.com/intellisense/ie5" name="vs_targetSchema" />
-      <link href="SGDK2Help.css" type="text/css" rel="stylesheet" />
-   </head>
-   <body>
-      <h1>Edit Plans</h1>
-      <p>Plans can be used to perform very specific tasks within the context of a 
-         particular layer in a particular map. When provided with coordinates in the <a href="MapEditor.html">
-            map editor</a>, a plan can even implement rules for a specific location on a 
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="9cc40393-eb18-4a5d-b579-a2006b78e398" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>Plans can be used to perform very specific tasks within the context of a 
+         particular layer in a particular map. When provided with coordinates in the <link xlink:href="249dea4e-371e-47e9-991e-ca9036022c0c">
+         map editor</link>, a plan can even implement rules for a specific location on a
          layer. That doesn't necessarily mean, however, that a plan can't be used for 
          global purposes. Since a project can have an "overlay" map defined (a map which 
          is always active in the foreground regardless of which map is the primary focus 
          at the moment) plans can be added to this map, and will always be applied as 
          long as the overlay map is active. One kind of plan that might fit well in that 
          context is a plan that increments a global animation counter (that is linked to 
-         all animated tiles).</p>
-      <p>Two different aspects of plans are edited in two contexts:</p>
-      <ol>
-         <li>
+         all animated tiles).</para>
+    </introduction>
+
+      <section><!--h1-->
+  <title>Edit Plans</title>
+  <content>
+      <para>Two different aspects of plans are edited in two contexts:</para>
+      <list class="ordered">
+         <listItem>
             The rules defining the actions a plan takes, and under which conditions, are 
-            defined in the edit plans window described here.</li>
-         <li>
+            defined in the edit plans window described here.</listItem>
+         <listItem>
             The data contained by the plan, namely the coordinates that make up a plan's 
             path or rectangle, and the properties associated with the plan and its 
-            coordinates are maintained in the <a href="MapEditor.html">map editor</a>.</li>
-      </ol>
-      <p>To open the edit plans window, you can:</p>
-      <ul>
-         <li>
+            coordinates are maintained in the <link xlink:href="249dea4e-371e-47e9-991e-ca9036022c0c">map editor</link>.</listItem>
+      </list>
+      <para>To open the edit plans window, you can:</para>
+      <list class="bullet">
+         <listItem>
             Right-click on the "Plans" folder within any layer in the project tree and 
-            select new to create a new plan.</li>
-         <li>
+            select new to create a new plan.</listItem>
+         <listItem>
             Select the "Plans" folder and choose "New Object" from the File menu or toolbar 
-            to create a new plan.</li>
-         <li>
-            Double-click an existing plan in the "Plans" folder to edit an existing plan.</li>
-         <li>
+            to create a new plan.</listItem>
+         <listItem>
+            Double-click an existing plan in the "Plans" folder to edit an existing plan.</listItem>
+         <listItem>
             Select an existing plan in the "Plans" folder and choose "Properties" from the 
-            View menu or "Edit" from the context (right-mouse) menu.</li>
-         <li>
+            View menu or "Edit" from the context (right-mouse) menu.</listItem>
+         <listItem>
             Select an existing plan in the map editor and choose "Selected Plan Details" 
-            from the map editor's "Edit" menu or toolbar.</li>
-      </ul>
-      <p>There are two levels to understanding the process of editing plans. This page 
+            from the map editor's "Edit" menu or toolbar.</listItem>
+      </list>
+      <para>There are two levels to understanding the process of editing plans. This page 
          will describe the user interface itself - generally how plans are edited in 
          this window. However, the more interesting detailed aspects of editing plans 
          are in the individual rule functions that a plan can use. For more information
-         about details of the individual rule functions that a plan can use, see:</p>
-      <h3><a href="html/R_Project.htm">Coding Reference</a></h3>
-      <p>The root page of the coding reference summarizes the process of using the individual
+         about details of the individual rule functions that a plan can use, see:</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Coding Reference</title>
+  <content>
+      <para>The <externalLink><linkText>root page of the coding reference</linkText>
+      <linkUri>N_.htm</linkUri><linkTarget>_self</linkTarget>
+      </externalLink> summarizes the process of using the individual
          rule functions. The remainder of the reference contains detailed descriptions of
-         individual functions.</p>
-      <h2>Defining Plans</h2>
-      <h3>Name</h3>
-      <p class="SubPara">A plan name must be unique among all plans on the same layer. 
-         Names must begin with a letter and contain only letters, digits and spaces.</p>
-      <h3>Priority</h3>
-      <p class="SubPara">In most cases, a plan should not care when it is executed in 
+         individual functions.</para>
+        </content>
+</section>
+
+<section><!--h2-->
+  <title>Defining Plans</title>
+  <content>
+
+<section><!--h3-->
+  <title>Name</title>
+  <content>
+      <para>A plan name must be unique among all plans on the same layer. 
+         Names must begin with a letter and contain only letters, digits and spaces.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Priority</title>
+  <content>
+      <para>In most cases, a plan should not care when it is executed in 
          relation to other plans, so this setting can be ignored. However, if such a 
          case does arise, this value can be set to control the sequence in which plans 
          are processed. Plans with higher numbers will execute after plans with lower 
-         numbers.</p>
-      <h3>Rules Toolbar</h3>
-      <p class="SubPara">A toolbar appears above the hierarchical list of rules to 
+         numbers.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Rules Toolbar</title>
+  <content>
+      <para>A toolbar appears above the hierarchical list of rules to 
          manage the creating, deleting and moving of rules in the list. The same 
-         commands appear in the "Plan" menu.</p>
-      <ul class="SubList">
-         <li class="SubPara">
+         commands appear in the "Plan" menu.</para>
+      <list class="bullet">
+         <listItem>
             Add New Rule: Create a new rule with a default name including a uniquely 
             identifying number. The rule is inserted after the currently highlighted rule 
-            in the list, or at the end if no rule is highlighted.</li>
-         <li class="SubPara">
-            Delete Rule: Delete the selected rule. <strong>Note</strong> that only one rule 
+            in the list, or at the end if no rule is highlighted.</listItem>
+         <listItem>
+            Delete Rule: Delete the selected rule. <legacyBold>Note</legacyBold> that only one rule 
             can be deleted at a time, and subordinate rules are not deleted when a parent 
             rule is deleted. If a rule represents a condition, and contains a number of 
             rules inside it, and you delete the condition, then all the rules inside it 
             move up a level and are executed without checking the condition (because the 
             condition has been deleted and is gone). The rule marking the end of the 
             condition, however, will not be deleted and should be updated appropriately if 
-            it is no longer to mark the end of a block.</li>
-         <li class="SubPara">
-            Move Rule Up: Swaps the selected rule with the rule above it. <strong>Note</strong>
+            it is no longer to mark the end of a block.</listItem>
+         <listItem>
+            Move Rule Up: Swaps the selected rule with the rule above it. <legacyBold>Note</legacyBold>
             that this does not skip over nested rules, or move nested rules as a group. If 
             you move the beginning of a condition, the rule preceding the condition will be 
             moved into the condition block rather than after the end of the entire 
             condition block. Likewise, if you move a rule after the end of the condition 
-            up, it will move into the condition instead of jumping over the entire block.</li>
-         <li class="SubPara">
-            Move Rule Down: Swaps the selected rule with the rule below it. <strong>Note</strong>
+            up, it will move into the condition instead of jumping over the entire block.</listItem>
+         <listItem>
+            Move Rule Down: Swaps the selected rule with the rule below it. <legacyBold>Note</legacyBold>
             that this does not skip over nested rules, or move nested rules as a group. If 
             you move the beginning of a condition, the first rule nested within the 
             condition will be moved outside the condition block rather than moving the 
             entire condition block down. Likewise, if you move the rule representing the 
-            end of the condition down, it will move the following rule into the condition.</li>
-         <li class="SubPara">
+            end of the condition down, it will move the following rule into the condition.</listItem>
+         <listItem>
             Copy Rules: Various copy commands will copy all the details of the specified rule
             or rules so that the rule can be easily transferred, for example, to another plan.
             The rule can also be pasted to a sprite definition, but since plan rules are not
             always compatible with sprite rules, some tweaking may be necessary when doing so.
             The sub-items in this menu allow you to copy the currently highlighted rule
             including all the rules contained within it (in the tree node), or excluding them,
-            or copy all the rules displayed in the tree.</li>
-        <li class="SubPara">
+            or copy all the rules displayed in the tree.</listItem>
+        <listItem>
           Cut Rules: Various cut commands will cut all the details of the specified rule
           or rules so that the rules can be easily transferred or deleted.  This is the
           same as Copy Rules, but also deletes the rules from their current location as
@@ -113,23 +139,23 @@
           the currently highlighted rule including all the rules contained within it
           (in the tree node), or excluding them, or affect all the rules displayed in the
           tree.
-        </li>
-        <li class="SubPara">
+        </listItem>
+        <listItem>
             Paste Rules: Once rules have been copied from a plan or a sprite definition, they
             can be pasted into a plan using this command. Note that when pasting
             sprite definition rules into a plan, some tweaking may be necessary to make the
             rules conform to the features supported by plans. Not all functions
             available in a sprite definition are available for plans. The sub-items in this
             menu allow you to paste the copied rules either before or after the selected rule.
-            If no rule is selected, they will be pasted at the end of the list.</li>
-         <li class="SubPara">
+            If no rule is selected, they will be pasted at the end of the list.</listItem>
+         <listItem>
             Toggle Suspend for This and Child Rules: This will toggle the state of the
             &quot;Suspend this rule&quot; checkbox for the current rule, and set all the
             child rules' state to be the same. Normally, toggling the checkbox affects
             only the current rule, but it often doesn't make sense to turn off a parent
             rule without also turning off all the children, so this toggle can come in
-            handy for disabling (or re-enabling) entire branches of rules.</li>
-        <li class="SubPara">
+            handy for disabling (or re-enabling) entire branches of rules.</listItem>
+        <listItem>
           Convert Rules to Function: There are two versions of this command.  One will
           convert all enabled rules in the tree and the other will convert the currently
           selected rule and all its children. The command to convert all rules is only
@@ -141,25 +167,30 @@
           reversed, so make sure the rules are set up how you would like, and that you do
           not want to edit the rules in the tree view any more before converting them.
           Once the rules are converted, they can only be edited as source code in the
-          <a href="CodeEdit.html">Code Editor</a>. Another reason to do this is if you
+          <link xlink:href="8dc5b7ca-9900-4b6d-a51b-9de648e0da18">Code Editor</link>. Another reason to do this is if you
           need more control over your rules that the rule editor cannot provide. Editing
           them directly exposes the full power of the C# language. The converted rules
           will be implemented as a function specifically available to this plan only.
           You may manually add up to 3 parameters to the converted function (in the code
           editor, assuming you are familiar with C#) if you would like to be able to create
           rules that pass different parameter values to this function (you can use functions
-          from <a href="html/T_PlanBase.htm">PlanBase</a> as an example), but it will
+          from <codeEntityReference qualifyHint="false">T:PlanBase</codeEntityReference> as an example), but it will
           still only be accessible to this plan. However, if your rules are not dependent
           on anything specific to this plan, layer or map, you may move the code or change
           the code declaration to put the function in the
-          <a href="html/T_PlanBase.htm">PlanBase</a> class. Then it will be accessible
-          to all Plans.</li>
-      </ul>
-      <h3>Rule List</h3>
-      <p class="SubPara">This displays a list of rules associated with the current plan 
+          <codeEntityReference qualifyHint="false">T:PlanBase</codeEntityReference> class.
+          Then it will be accessible to all Plans.</listItem>
+      </list>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Rule List</title>
+  <content>
+      <para>This displays a list of rules associated with the current plan 
          in a hierarchical view. When a rule represents a condition or a loop that 
          affects a number of nested rules, the nested rules are indented under that rule 
-         and can be collapsed into it. <strong>Note</strong> that a condition (a rule of 
+         and can be collapsed into it. <legacyBold>Note</legacyBold> that a condition (a rule of 
          type "If") can also include an "Else" rule, which defines a series of rules to 
          apply when the "If" condition was false. Since the else also depends on the 
          same condition described in the "If" rule, it (and the statements applying to 
@@ -169,9 +200,14 @@
          un-indented to the same level as the "If". But when displaying the rules in a 
          hierarchy it truly is part of the same condition, and therefore is nested 
          within the condition. (The code generated by the rules when the project is 
-         compiled *is* indented as a programmer would expect, however.)</p>
-      <h3>Rule Name</h3>
-      <p class="SubPara">The name of a rule is used to uniquely identify the rule within 
+         compiled *is* indented as a programmer would expect, however.)</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Rule Name</title>
+  <content>
+      <para>The name of a rule is used to uniquely identify the rule within 
          the plan. Therefore the name must be unique among all rules within the same 
          plan. A rule name is not constrained by the same limitations as most names 
          because it does ot represent the name of an object that gets converted into 
@@ -179,39 +215,44 @@
          when the project is compiled. The name of a rule can contain any characters 
          that can be typed into a single line. Some good guildelines or considerations 
          for naming rules will help to quickly understand rules when looking at them in 
-         the rule list:</p>
-      <ul class="SubList">
-         <li>
+         the rule list:</para>
+      <list class="bullet">
+         <listItem>
             Use the word "Else" at the beginning of rules of type "Else" so it's easy to 
             tell when statements in a conditional rule apply to the false case of the 
-            condition.</li>
-         <li>
+            condition.</listItem>
+         <listItem>
             Use the word "And" at the beginning of rules of type "And" so its easy to 
             distinguish components of the initial condition from rules that apply within 
-            the condition.</li>
-         <li>
+            the condition.</listItem>
+         <listItem>
             Use the word "Or" at the beginning of rules of type "Or" so its easy to 
             distinguish components of the initial condition from rules that apply within 
-            the condition.</li>
-         <li>
+            the condition.</listItem>
+         <listItem>
             Prepend a "* " to the names of rules that have been suspended so its easy to 
-            find rules that are not active but could easily be turned on.</li>
-         <li>
+            find rules that are not active but could easily be turned on.</listItem>
+         <listItem>
             Include details about the context of a rule in its name so that it won't 
             collide with the names of other rules performing similar things in a different 
             context. For example, instead of naming a rule "Teleport", name it "Teleport 
             player 1" if you will be handling teleportation of multiple players within the 
-            same rule.</li>
-         <li>
+            same rule.</listItem>
+         <listItem>
             Keep in mind, the more details that are included in the rule names, the more 
             information will be available when reading the rule list. But also keep in mind 
-            that there is no word wrapping in the rule list, so space is limited.</li>
-      </ul>
-      <p class="SubPara">Of course you are free to devise your own guidelines as well, 
+            that there is no word wrapping in the rule list, so space is limited.</listItem>
+      </list>
+      <para>Of course you are free to devise your own guidelines as well, 
          but these guidelines are used in the included samples and following them will 
-         make your rules consistent with any imported samples.</p>
-      <h3>Suspend this rule</h3>
-      <p class="SubPara">This will exclude the rule from being included in the generated 
+         make your rules consistent with any imported samples.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Suspend this rule</title>
+  <content>
+      <para>This will exclude the rule from being included in the generated 
          project. It will be treated as if it does not exist when compiling and running 
          the project. One reason to do this is to easily turn on and turn off debugging 
          rules. There may be a rule to give the player some object or teleport the 
@@ -221,14 +262,19 @@
          be used in other projects. If there is a rule that specifically applies to 
          supporting the use of ladders, but the project doesn't use ladders, the rule 
          can be suspended and then only turned on when using the template to create a 
-         project that implements ladders.</p>
-      <p class="SubPara"><strong>Note:</strong> It is strongly recommended when 
+         project that implements ladders.</para>
+      <para><legacyBold>Note:</legacyBold> It is strongly recommended when 
          suspending a rule that contains nested rules, all the nested rules also be 
          suspended. Unexpected behavior may occur if a rule is suspended without 
          suspending all of the rules nested within it. See the &quot;Toggle Suspend
-         for This and Child Rules&quot; command above.</p>
-      <h3>Rule Type</h3>
-      <p class="SubPara">There are 8 fundamental classes of rules that can be defined 
+         for This and Child Rules&quot; command above.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Rule Type</title>
+  <content>
+      <para>There are 8 fundamental classes of rules that can be defined 
          using the first dropdown list. If the descriptions of these types seem 
          overwhelming or confusing, skip them for now and just try out some examples 
          (look at some existing sample rules in other projects). These should be 
@@ -237,45 +283,45 @@
          proceeding, let's establish some terminology. A "Rule Type" is one of these 8 
          types selected in the first dropdown list. And the term "Rule Function" 
          (described in more detail below) will be used to refer to a specific function 
-         selected in the second dropdown list.</p>
-      <table id="Table1" class="SubPara" cellspacing="1" cellpadding="1" border="1" summary="First column lists a rules type, second lists the description of the type">
-         <tr>
-            <td>Do</td>
-            <td>This simplest of rule types indicates that some action will be performed 
+         selected in the second dropdown list.</para>
+      <table>
+         <row>
+            <entry>Do</entry>
+            <entry>This simplest of rule types indicates that some action will be performed 
                rather than defining a condition or loop. Note that rule functions that are 
                normally associated with "If" type rules can also be used with "Do", and any 
                action that they perform will be executed, but the result will be ignored 
-               instead of used to define a condition.</td>
-         </tr>
-         <tr>
-            <td>If</td>
-            <td>This defines the beginning of a condition. Rules that come after an "If" rule 
+               instead of used to define a condition.</entry>
+         </row>
+         <row>
+            <entry>If</entry>
+            <entry>This defines the beginning of a condition. Rules that come after an "If" rule 
                will be nested within it until one of the rules uses the "End If" checkbox to 
                end the condition. The set of rule functions available with an "If" type rule 
                is limited. Only functions that return a true or false value can be used with 
                "If". (In the source code, the function must return "bool".) When the rule 
                returns success/true, the conditions nested in the "If" conditions will also 
-               apply, otherwise they are skipped. (There are exceptions, see "Else" below.)</td>
-         </tr>
-         <tr>
-            <td>And</td>
-            <td>This rule type can only be used immediately after an "If", "ElseIf", "While", 
+               apply, otherwise they are skipped. (There are exceptions, see "Else" below.)</entry>
+         </row>
+         <row>
+            <entry>And</entry>
+            <entry>This rule type can only be used immediately after an "If", "ElseIf", "While", 
                "And" or "Or" type rule, to extend the condition. The rules contained inside 
                the condition will only be applied if all the rules combined with "And" return 
                success/true. The same list of rule functions will be available for this rule 
-               type as are available for the "If" rule type.</td>
-         </tr>
-         <tr>
-            <td>Or</td>
-            <td>This rule type can only be used immediately after an "If", "ElseIf", "While", 
+               type as are available for the "If" rule type.</entry>
+         </row>
+         <row>
+            <entry>Or</entry>
+            <entry>This rule type can only be used immediately after an "If", "ElseIf", "While", 
                "And" or "Or" type rule, to extend the condition. The rules contained inside 
                the condition will be applied if any one of the rules combined with "Or" return 
                success/true. The same list of rule functions will be available for this rule 
-               type as are available for the "If" rule type.</td>
-         </tr>
-         <tr>
-            <td>ElseIf</td>
-            <td>This rule type can only be used within a block of rules started by "If" or 
+               type as are available for the "If" rule type.</entry>
+         </row>
+         <row>
+            <entry>ElseIf</entry>
+            <entry>This rule type can only be used within a block of rules started by "If" or 
                another "ElseIf". It begins a new condition block nested yet another level 
                below that of the current rule. The condition is only checked when the initial 
                condition failed (returned false), and the statements nested under this rule 
@@ -285,19 +331,19 @@
                the nested condition and one to finish the initial condition. If there are 
                rules between the end of the inner condition and the end of the outer 
                condition, they will be executed when the outer condition's expression is false 
-               regardless of the result of the inner condition.</td>
-         </tr>
-         <tr>
-            <td>Else</td>
-            <td>This rule type can only be used within a block of rules started by an "If". It 
+               regardless of the result of the inner condition.</entry>
+         </row>
+         <row>
+            <entry>Else</entry>
+            <entry>This rule type can only be used within a block of rules started by an "If". It 
                causes the rules within the block after this one to be applied only if the 
                condition specified with "If" failed. This is actually more like an "Else Do" 
                than a plain "Else" because it also includes the ability to perform a function 
-               within the same rule.</td>
-         </tr>
-         <tr>
-            <td>End</td>
-            <td>Normally when you create a rule, in order to make it the last rule in a nested 
+               within the same rule.</entry>
+         </row>
+         <row>
+            <entry>End</entry>
+            <entry>Normally when you create a rule, in order to make it the last rule in a nested 
                block of statements (the last rule that depends on an "If" condition, for 
                example) you can check the "End If/End While" box. However, there is no way to 
                indicate that a statement should be the last statement of two nested conditions 
@@ -305,89 +351,103 @@
                that). That's the purpose of the "End" rule type. It's the only rule type that 
                doesn't perfom any action in itself (there's no rule function associated with 
                it). It just ends a block of nested statements that was started by an "If", 
-               "ElseIf" or "While".</td>
-         </tr>
-         <tr>
-            <td>While</td>
-            <td>This begins a block of statements that will execute repeatedly ("loop") as 
+               "ElseIf" or "While".</entry>
+         </row>
+         <row>
+            <entry>While</entry>
+            <entry>This begins a block of statements that will execute repeatedly ("loop") as 
                long as a rule function returns success/true. This can be used in conjunction 
                with "And" and "Or" rule types to form complex conditions that must be met to 
                continue the loop. The same list of rule functions will be available for this 
                rule type as are available for the "If" rule type. It cannot be used in 
-               conjunction with ElseIf or Else rules. In other words, you <strong>can</strong> 
-               nest a "While" inside and "If" or an "ElseIf" block, and you <strong>can</strong>
+               conjunction with ElseIf or Else rules. In other words, you <legacyBold>can</legacyBold> 
+               nest a "While" inside and "If" or an "ElseIf" block, and you <legacyBold>can</legacyBold>
                nest an "Else" or "ElseIf" rule inside an "If" block contained within a 
-               "While", but you <strong>cannot</strong> directly include an "Else" or "ElseIf" 
+               "While", but you <legacyBold>cannot</legacyBold> directly include an "Else" or "ElseIf" 
                rule within a "While" block. Be careful with this rule type because it could 
                easily result in endless loops that will make the game freeze if used 
-               incorrectly. It can also make the game run slowly.</td>
-         </tr>
+               incorrectly. It can also make the game run slowly.</entry>
+         </row>
       </table>
-      <h3>Not</h3>
-      <p class="SubPara">This checkbox can be used with the "If", "ElseIf", "While", 
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Not</title>
+  <content>
+      <para>This checkbox can be used with the "If", "ElseIf", "While", 
          "And" or "Or" rule type to invert the result of the rule. For example, you can 
          check the "Not" box on a rule that reads "If - IsInputPressed" and then the 
-         rules contained in this block will only apply when the specified key is <strong>not</strong>
-         pressed.</p>
-      <h3>Rule Function</h3>
-      <p class="SubPara">The second dropdown list on this form represents the rule 
+         rules contained in this block will only apply when the specified key is <legacyBold>not</legacyBold>
+         pressed.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Rule Function</title>
+  <content>
+      <para>The second dropdown list on this form represents the rule 
          function associated with the rule. Here you can select one of the many 
          functions available to define plan behavior, including functions defined 
          yourself by editing files in the "Source Code" folder of the project. For more 
-         details about defining your own rule functions, see the <a href="html/R_Project.htm">
-            coding reference</a> . A number of pre-defined functions exist to perform 
-         simple comparisons, calculations and copying of values:</p>
-      <table id="Table4" class="SubPara" cellspacing="1" cellpadding="1" border="1" summary="First column lists a pre-defined function name, second column lists its description">
-         <tr>
-            <td>-</td>
-            <td>Subtract the "left operand" in the second parameter from the "right operand" 
+         details about defining your own rule functions, see the
+         <externalLink>
+         <linkText>coding reference</linkText>
+      	 <linkUri>N_.htm</linkUri>
+      	 <linkTarget>_self</linkTarget>
+         </externalLink>. A number of pre-defined functions exist to perform
+         simple comparisons, calculations and copying of values:</para>
+      <table>
+         <row>
+            <entry>-</entry>
+            <entry>Subtract the "left operand" in the second parameter from the "right operand" 
                in the first parameter and put the result in the variable provided in "Output 
-               to".</td>
-         </tr>
-         <tr>
-            <td>!=</td>
-            <td>Compare the values of the first two parameters and return true/success if they 
-               are different, or false/failure if they are equal.</td>
-         </tr>
-         <tr>
-            <td>+</td>
-            <td>Compute the sum of the first two parameters and output the result to the 
-               variable provided in "Output to"</td>
-         </tr>
-         <tr>
-            <td>&lt;</td>
-            <td>Compare the values of the first two parameters and return true/success if 
-               "left operand" is less than "right operand", or false/failure otherwise.</td>
-         </tr>
-         <tr>
-            <td>&lt;=</td>
-            <td>Compare the values of the first two parameters and return true/success if 
+               to".</entry>
+         </row>
+         <row>
+            <entry>!=</entry>
+            <entry>Compare the values of the first two parameters and return true/success if they 
+               are different, or false/failure if they are equal.</entry>
+         </row>
+         <row>
+            <entry>+</entry>
+            <entry>Compute the sum of the first two parameters and output the result to the 
+               variable provided in "Output to"</entry>
+         </row>
+         <row>
+            <entry>&lt;</entry>
+            <entry>Compare the values of the first two parameters and return true/success if 
+               "left operand" is less than "right operand", or false/failure otherwise.</entry>
+         </row>
+         <row>
+            <entry>&lt;=</entry>
+            <entry>Compare the values of the first two parameters and return true/success if 
                "left operand" is less than or equal to "right operand", or false/failure 
-               otherwise.</td>
-         </tr>
-         <tr>
-            <td>=</td>
-            <td>Copy the value provided in the first parameter to the variable provided in 
-               "Output to"</td>
-         </tr>
-         <tr>
-            <td>==</td>
-            <td>Compare the values of the first two parameters and return true/success if they 
-               are equal, or false/failure if they are different.</td>
-         </tr>
-         <tr>
-            <td>&gt;</td>
-            <td>Compare the values of the first two parameters and return true/success if 
-               "left operand" is greater than "right operand", or false/failure otherwise.</td>
-         </tr>
-         <tr>
-            <td>&gt;=</td>
-            <td>Compare the values of the first two parameters and return true/success if 
+               otherwise.</entry>
+         </row>
+         <row>
+            <entry>=</entry>
+            <entry>Copy the value provided in the first parameter to the variable provided in 
+               "Output to"</entry>
+         </row>
+         <row>
+            <entry>==</entry>
+            <entry>Compare the values of the first two parameters and return true/success if they 
+               are equal, or false/failure if they are different.</entry>
+         </row>
+         <row>
+            <entry>&gt;</entry>
+            <entry>Compare the values of the first two parameters and return true/success if 
+               "left operand" is greater than "right operand", or false/failure otherwise.</entry>
+         </row>
+         <row>
+            <entry>&gt;=</entry>
+            <entry>Compare the values of the first two parameters and return true/success if 
                "left operand" is greater than or equal to "right operand", or false/failure 
-               otherwise.</td>
-         </tr>
+               otherwise.</entry>
+         </row>
       </table>
-      <p class="SubPara">When defining an "If", "While", "And", "Or", "ElseIf", or 
+      <para>When defining an "If", "While", "And", "Or", "ElseIf", or 
          "While" type rule, the list of functions displays only rules that return a true 
          or false value (sometimes thought of as success or failure). These rule 
          functions are referred to as "boolean" functions. When defining a "Do" type 
@@ -395,8 +455,8 @@
          used, the function will perform its usual work (if any) but the result will 
          simply be ignored. This might be useful because some functions actually do 
          something that affects the game and then return a value indicating some true or 
-         false value.</p>
-      <p class="SubPara">After selecting a function, some or all of the parameter fields 
+         false value.</para>
+      <para>After selecting a function, some or all of the parameter fields 
          below will open up for input. Each function has its own set of parameters, and 
          depending on how many parameters it uses and what types of parameters they are, 
          the boxes below will become available and present different options in the 
@@ -404,21 +464,31 @@
          display a brief description of what the function is and how to use it. 
          Furthermore, if the function can output a number, the "Output to" box will open 
          up and allow you to select a counter, plan parameter or sprite parameter in which
-         to store the result.</p>
-      <p class="SubPara">If there is an error compiling the project or processing the 
+         to store the result.</para>
+      <para>If there is an error compiling the project or processing the 
          function name (it's possible to type an arbitrary name into the function field 
          in case you want to call an undocumented function) then the description field 
          will contain a generic error message and all the parameters will be available 
          for input, but without names. This is to allow a function to be specified even 
-         if the environment doesn't know that it's valid.</p>
-      <h3>Function Description</h3>
-      <p class="SubPara">After a function is selected, a brief description of the 
+         if the environment doesn't know that it's valid.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Function Description</title>
+  <content>
+      <para>After a function is selected, a brief description of the 
          function is displayed in the box below. Don't forget that this box can scroll 
          and there may be more information than is initially displayed. Usually a 
          description will also include information about the meaning of the parameters 
-         and output value if any.</p>
-      <h3>Function Parameters</h3>
-      <p class="SubPara">Many rule functions can accept parameters that specify details 
+         and output value if any.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Function Parameters</title>
+  <content>
+      <para>Many rule functions can accept parameters that specify details 
          about how they should operate or what they should affect. In most cases a 
          helpful list of suggested values is provided in the dropdown list for each 
          parameter based on the type of the parameter, but any value can be manually 
@@ -429,127 +499,131 @@
          "string") you must enclose the text in quotes. This (indirectly) allows you to 
          include special formatting characters in the text. These are inserted with 
          "escape codes". Here are the most important escape codes with which you should 
-         be familiar when entering a string into a parameter value:</p>
-      <table id="Table2" class="SubPara" cellspacing="1" cellpadding="1" border="1" summary="Four columns each with a header describing the content, illustrating how escape codes in strings are used">
-         <tr>
-            <td>Code</td>
-            <td>Result</td>
-            <td>Example parameter</td>
-            <td>Example result</td>
-         </tr>
-         <tr>
-            <td>\r\n</td>
-            <td>Inserts a line break</td>
-            <td>"Display me on\r\nTwo Lines"</td>
-            <td>Display me on<br />
-               Two Lines</td>
-         </tr>
-         <tr>
-            <td>\"</td>
-            <td>Embeds a double-quote in the text</td>
-            <td>"He said his name was \"Little John\""</td>
-            <td>He said his name was "Little John"</td>
-         </tr>
+         be familiar when entering a string into a parameter value:</para>
+      <table>
+         <tableHeader>
+         <row>
+            <entry>Code</entry>
+            <entry>Result</entry>
+            <entry>Example parameter</entry>
+            <entry>Example result</entry>
+         </row>
+         </tableHeader>
+         <row>
+            <entry>\r\n</entry>
+            <entry>Inserts a line break</entry>
+            <entry>"Display me on\r\nTwo Lines"</entry>
+            <entry>Display me on<para/>
+               Two Lines</entry>
+         </row>
+         <row>
+            <entry>\"</entry>
+            <entry>Embeds a double-quote in the text</entry>
+            <entry>"He said his name was \"Little John\""</entry>
+            <entry>He said his name was "Little John"</entry>
+         </row>
       </table>
-      <p class="SubPara">Many other parameter types are available when defining rules 
+      <para>Many other parameter types are available when defining rules 
          for plans. Below is a list, but it is by no means comprehensive because the 
          list is customizable. It can be expanded by adding your own enumerations in the 
-         game project's source code folder:</p>
-      <table id="Table3" class="SubPara" cellspacing="1" cellpadding="1" border="1" summary="First column lists the type of a parameter to a rule function, second describes it, and last provides an example">
-         <tr>
-            <td>Type Name / Summary</td>
-            <td>Description/Source</td>
-            <td>Example</td>
-         </tr>
-         <tr>
-            <td>Keypress</td>
-            <td>Preset list of static values, each value representing a key on the keyboard</td>
-            <td>Key.A</td>
-         </tr>
-         <tr>
-            <td>Color Channel</td>
-            <td>Preset list of color channels that can be affected (Red, Green, Blue or 
-               Alpha).</td>
-            <td>PlanBase.ColorChannel.Blue</td>
-         </tr>
-         <tr>
-            <td>Relative Position</td>
-            <td>Preset list of pre-defined corner or centered positions within a rectangle.</td>
-            <td>RelativePosition.BottomCenter</td>
-         </tr>
-         <tr>
-            <td>Sprite</td>
-            <td>Can refer to any sprite instance. The dropdown list will contain a list of 
-               sprites on the plan's layer.</td>
-            <td>m_ParentLayer.m_Platform_1</td>
-         </tr>
-         <tr>
-            <td>Sprite of type &lt;X&gt;</td>
-            <td>Some custom rules added for a specific project may refer to a specific type of 
+         game project's source code folder:</para>
+      <table>
+        <tableHeader>
+         <row>
+            <entry>Type Name / Summary</entry>
+            <entry>Description/Source</entry>
+            <entry>Example</entry>
+         </row>
+        </tableHeader>
+         <row>
+            <entry>Keypress</entry>
+            <entry>Preset list of static values, each value representing a key on the keyboard</entry>
+            <entry>Key.A</entry>
+         </row>
+         <row>
+            <entry>Color Channel</entry>
+            <entry>Preset list of color channels that can be affected (Red, Green, Blue or 
+               Alpha).</entry>
+            <entry>PlanBase.ColorChannel.Blue</entry>
+         </row>
+         <row>
+            <entry>Relative Position</entry>
+            <entry>Preset list of pre-defined corner or centered positions within a rectangle.</entry>
+            <entry>RelativePosition.BottomCenter</entry>
+         </row>
+         <row>
+            <entry>Sprite</entry>
+            <entry>Can refer to any sprite instance. The dropdown list will contain a list of 
+               sprites on the plan's layer.</entry>
+            <entry>m_ParentLayer.m_Platform_1</entry>
+         </row>
+         <row>
+            <entry>Sprite of type &lt;X&gt;</entry>
+            <entry>Some custom rules added for a specific project may refer to a specific type of 
                sprite. In this case, the dropdown list will only display sprite instances for 
-               a particular sprite definition.</td>
-            <td>m_ParentLayer.m_Platform_1</td>
-         </tr>
-         <tr>
-            <td>Sprite Collection</td>
-            <td>Displays a list of sprite categories defined in the project.</td>
-            <td>ParentLayer.m_SpriteCategories.Enemies</td>
-         </tr>
-         <tr>
-            <td>Point</td>
-            <td>Displays a list of the first coordinates of each plan in the layer; only plans 
+               a particular sprite definition.</entry>
+            <entry>m_ParentLayer.m_Platform_1</entry>
+         </row>
+         <row>
+            <entry>Sprite Collection</entry>
+            <entry>Displays a list of sprite categories defined in the project.</entry>
+            <entry>ParentLayer.m_SpriteCategories.Enemies</entry>
+         </row>
+         <row>
+            <entry>Point</entry>
+            <entry>Displays a list of the first coordinates of each plan in the layer; only plans 
                with exactly 1 coordinate are listed. A point representing the mouse position 
-               is also listed.</td>
-            <td>m_ParentLayer.m_Door_1[0]</td>
-         </tr>
-         <tr>
-            <td>Plan</td>
-            <td>Displays a list of all the plans on the same map.</td>
-            <td>m_ParentLayer.m_Door_1</td>
-         </tr>
-         <tr>
-            <td>Counter</td>
-            <td>Displays a list of counters in the project.</td>
-            <td>Counter.Lives</td>
-         </tr>
-         <tr>
-            <td>Bar drawing style</td>
-            <td>Displays a preset list of ways that a bar can be drawn.</td>
-            <td>PlanBase.DrawStyle.RepeatRightToCounter</td>
-         </tr>
-         <tr>
-            <td>Color</td>
-            <td>Displays a preset list of colors.</td>
-            <td>System.Drawing.KnownColor.Crimson</td>
-         </tr>
-         <tr>
-            <td>Sprite InputBits</td>
-            <td>Displays a preset list of inputs that can affect a sprite.</td>
-            <td>SpriteBase.InputBits.Button1</td>
-         </tr>
-         <tr>
-            <td>Map</td>
-            <td>Displays a list of maps defined in the project. (They are referred to by type 
+               is also listed.</entry>
+            <entry>m_ParentLayer.m_Door_1[0]</entry>
+         </row>
+         <row>
+            <entry>Plan</entry>
+            <entry>Displays a list of all the plans on the same map.</entry>
+            <entry>m_ParentLayer.m_Door_1</entry>
+         </row>
+         <row>
+            <entry>Counter</entry>
+            <entry>Displays a list of counters in the project.</entry>
+            <entry>Counter.Lives</entry>
+         </row>
+         <row>
+            <entry>Bar drawing style</entry>
+            <entry>Displays a preset list of ways that a bar can be drawn.</entry>
+            <entry>PlanBase.DrawStyle.RepeatRightToCounter</entry>
+         </row>
+         <row>
+            <entry>Color</entry>
+            <entry>Displays a preset list of colors.</entry>
+            <entry>System.Drawing.KnownColor.Crimson</entry>
+         </row>
+         <row>
+            <entry>Sprite InputBits</entry>
+            <entry>Displays a preset list of inputs that can affect a sprite.</entry>
+            <entry>SpriteBase.InputBits.Button1</entry>
+         </row>
+         <row>
+            <entry>Map</entry>
+            <entry>Displays a list of maps defined in the project. (They are referred to by type 
                instead of specific map instances because it's conceivable that you could have 
-               multiple copies of the same map loaded.)</td>
-            <td>typeof(Level_1_Map)</td>
-         </tr>
-         <tr>
-            <td>Sprite Definition</td>
-            <td>Displays a list of Sprite Definitions. This differs from the other sprite 
+               multiple copies of the same map loaded.)</entry>
+            <entry>typeof(Level_1_Map)</entry>
+         </row>
+         <row>
+            <entry>Sprite Definition</entry>
+            <entry>Displays a list of Sprite Definitions. This differs from the other sprite 
                parameter types because they require a specific sprite instance on the layer 
-               whereas this lists Sprite Definitions which are independent of the maps.</td>
-            <td>typeof(Sprites.Explosion)</td>
-         </tr>
-         <tr>
-            <td>Sprite State</td>
-            <td>Displays a list of all states in a particular sprite (if no previously 
-               specified parameters have specified a sprite, this won't display a list).</td>
-            <td>(int)Sprites.Player.State.Left</td>
-         </tr>
-         <tr>
-            <td>Integer</td>
-            <td>Displays a list of all counters, all parameters of any sprite that has been 
+               whereas this lists Sprite Definitions which are independent of the maps.</entry>
+            <entry>typeof(Sprites.Explosion)</entry>
+         </row>
+         <row>
+            <entry>Sprite State</entry>
+            <entry>Displays a list of all states in a particular sprite (if no previously 
+               specified parameters have specified a sprite, this won't display a list).</entry>
+            <entry>(int)Sprites.Player.State.Left</entry>
+         </row>
+         <row>
+            <entry>Integer</entry>
+            <entry>Displays a list of all counters, all parameters of any sprite that has been 
                specified in another parameter, and miscellaneous other shared integer 
                variables (CurrentView, for example, represents the currently active view 
                number in projects where there are multiple views, and is included in this 
@@ -560,17 +634,22 @@
                reference where a reference is required will result in an error.) Counters 
                cannot be provided to a parameter requiring a reference to an integer, but 
                another version of the rule function may be available that accepts a counter, 
-               or the value can subsequently be copied into the counter with an "=" rule.</td>
-            <td>Counter.Lives.CurrentValue</td>
-         </tr>
-         <tr>
-            <td>Tileset</td>
-            <td>Displays a list of Tilesets defined within the project.</td>
-            <td>Tileset.FireText</td>
-         </tr>
+               or the value can subsequently be copied into the counter with an "=" rule.</entry>
+            <entry>Counter.Lives.CurrentValue</entry>
+         </row>
+         <row>
+            <entry>Tileset</entry>
+            <entry>Displays a list of Tilesets defined within the project.</entry>
+            <entry>Tileset.FireText</entry>
+         </row>
       </table>
-      <h3>Output to</h3>
-      <p class="SubPara">Some functions output integer values. For those that do, this 
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>Output to</title>
+  <content>
+      <para>Some functions output integer values. For those that do, this 
          field is enabled to allow you to specify where to put the result. If you don't 
          need to put it any place permanent, but just want to use it in a subsequent 
          rule (if nothing else interferes) you can use a temporary variable that is 
@@ -580,24 +659,38 @@
          while variables declared without "static" are specific to the current plan and 
          can be set with a particular initial value in the map editor. Any counter value 
          and many other values listed after "Integer" type parameters above are also 
-         available.</p>
-      <p class="SubPara">Whereas parameters are all required, the "Output to" box can be 
+         available.</para>
+      <para>Whereas parameters are all required, the "Output to" box can be 
          left blank if you don't care about storing or using the result of a rule 
-         function.</p>
-      <h3>End If / End While</h3>
-      <p class="SubPara">If you want to mark this rule as the last rule in a block that 
+         function.</para>
+        </content>
+</section>
+
+<section><!--h3-->
+  <title>End If / End While</title>
+  <content>
+      <para>If you want to mark this rule as the last rule in a block that 
          was started with an "If", "ElseIf", or "While" type rule, check this box. Note 
          that if you need to end two (or more) blocks at once, you will need to also add 
          an "End" type rule after this. The "End" type rule will allow you to add 
          another rule that has no function or parameters, and just checks the "End If / 
-         End While" box.</p>
-      <p class="SubPara">Take care to match every "If", "ElseIf" and "While" with one 
+         End While" box.</para>
+      <para>Take care to match every "If", "ElseIf" and "While" with one 
          and only one matching rule that has the "End If / End While" box checked. The 
          code generator will automatically close the remainder of your blocks if you 
          have some unfinished blocks at the end of your plan, but other failures to 
          match the beginnings of blocks with an end could result in unwanted behavior. 
          One occasion when this can be particularly tricky is when deleting a rule that 
          begins or ends a block. Be careful to find the corresponding rule at the other 
-         end of the block and delete or adjust it appropriately too.</p>
-   </body>
-</html>
+         end of the block and delete or adjust it appropriately too.</para>
+   
+  </content>
+</section>
+        </content>
+</section>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

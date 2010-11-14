@@ -47,7 +47,7 @@ namespace SGDK2
 
          InitializeGrid();
 
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"Solidity.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/95ec1f57-2963-4dc1-87e8-872d8651c4e3.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 
@@ -64,7 +64,7 @@ namespace SGDK2
          txtName.Text = solidity.Name;
          InitializeGrid();
 
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"Solidity.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/95ec1f57-2963-4dc1-87e8-872d8651c4e3.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 

@@ -44,7 +44,7 @@ namespace SGDK2
 			//
 			InitializeComponent();
 
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"TileEdit.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/06b8e858-111f-479d-872f-2c256640d50d.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 

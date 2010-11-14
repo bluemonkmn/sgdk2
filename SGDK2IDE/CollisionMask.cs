@@ -40,7 +40,7 @@ namespace SGDK2
          trbAlphaLevel.Value = ProjectData.GetSortedSpriteFrames(drSpriteState)[SelectedSequences[0]].MaskAlphaLevel;
          cboMode.SelectedIndex = 0;
 
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"SpriteDefinition.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/1b29c16a-1be0-4a46-b0b2-1f023b465b15.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
 		}
 

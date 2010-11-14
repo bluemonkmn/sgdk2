@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Topics>
+  <Topic id="75aaa98a-3dae-49d2-9cd3-dbd618954be9" visible="True" isDefault="true" title="Introduction" />
+  <Topic id="344ca14d-b435-4a1f-b94d-6640f99096ce" visible="True" title="What's New" />
+  <Topic id="32238653-0ab0-420a-b4e2-7b1f99207c0c" visible="True" title="FAQ" />
+  <Topic id="0de59df1-fd1a-467f-92e7-6d5cb3e36457" visible="True" noFile="true" title="User Interface">
+    <Topic id="f10c13c9-f26e-49da-b42e-3264bbd6bf41" visible="True" title="Main Window" />
+    <Topic id="b2f49025-f318-4428-b580-4c0f21ad00e8" visible="True" title="Project Properties" />
+    <Topic id="76ac66ea-2071-486c-a830-d5da8e27d33c" visible="True" title="Graphic Sheet Properties" />
+    <Topic id="2d575c3e-dff1-484e-8f48-6109b0f79028" visible="True" title="Graphics Editor" />
+    <Topic id="c60ec2ed-663d-4774-b9b8-d6ae452a8b25" visible="True" title="Frameset Editor" />
+    <Topic id="06b8e858-111f-479d-872f-2c256640d50d" visible="True" title="Tileset Editor" />
+    <Topic id="6e241d52-6648-478c-b66d-41d004b1821d" visible="True" title="Tile Categories" />
+    <Topic id="7daf123d-d3de-4ad1-bbbe-458794f94077" visible="True" title="Counters" />
+    <Topic id="03872e63-7ce8-444e-8811-ae71524bc343" visible="True" title="Map Manager" />
+    <Topic id="249dea4e-371e-47e9-991e-ca9036022c0c" visible="True" title="Map Editor" />
+    <Topic id="325f2dfb-983a-463d-b3e4-825be8ddc578" visible="True" title="Layer Manager" />
+    <Topic id="9cc40393-eb18-4a5d-b579-a2006b78e398" visible="True" title="Edit Plans" />
+    <Topic id="cd49bb62-e269-483c-b7e3-527c99770b47" visible="True" title="Message Editor" />
+    <Topic id="95ec1f57-2963-4dc1-87e8-872d8651c4e3" visible="True" title="Solidity" />
+    <Topic id="b70a3d81-1ff7-429f-b4f9-d65bafe1f09d" visible="True" title="Sprite Definition">
+      <Topic id="1b29c16a-1be0-4a46-b0b2-1f023b465b15" visible="True" title="Sprite Parameters" />
+      <Topic id="476b45aa-2b60-4be3-9887-643de3cc421c" visible="True" title="Sprite Rules" />
+    </Topic>
+    <Topic id="225ac8d2-37be-4dd0-a566-1b4b4b7b1ff8" visible="True" title="Sprite Category" />
+    <Topic id="8dc5b7ca-9900-4b6d-a51b-9de648e0da18" visible="True" title="Source Code Editor" />
+  </Topic>
+  <Topic id="c481af15-d1ef-4039-b44e-39f4e7637788" visible="True" noFile="true" title="Tutorials">
+    <Topic id="44d5e991-27a6-4800-9657-6ff749f22206" visible="True" title="Simple Tutorial" />
+    <Topic id="c93a5843-a79d-4489-aee9-40cd9b4c7d5c" visible="True" title="Multi-Player Tutorial" />
+    <Topic id="9d346bae-01a5-49b1-8eb3-72ed6c177609" visible="True" title="New Tile Tutorial" />
+    <Topic id="c3ce346a-100c-40f9-a23a-5680596d6cda" visible="True" title="Sound and Music Tutorial" />
+    <Topic id="cac52525-8d2a-4c90-9c60-fff86eae1128" visible="True" title="Sprite Import Tutorial" />
+  </Topic>
+</Topics>

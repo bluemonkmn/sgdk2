@@ -1,22 +1,19 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-   <head>
-      <title>Scrolling Game Development Kit 2 - FAQ</title>
-      <meta name="GENERATOR" content="Microsoft Visual Studio .NET 7.1">
-      <meta name="vs_targetSchema" content="http://schemas.microsoft.com/intellisense/ie5">
-      <link href="SGDK2Help.css" type="text/css" rel="stylesheet">
-      <style> th {background-color:lightgrey}
-	td {background-color:linen}
-      </style>
-   </head>
-   <body>
-      <h1>Frequently Asked Questions</h1>
-      <p>This document contains important and frequently asked questions and answers 
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="32238653-0ab0-420a-b4e2-7b1f99207c0c" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>This document contains important and frequently asked questions and answers 
          that explain aspects of Scrolling Game Development Kit 2 that most users should 
-         be familiar with in order to effectively use the program.</p>
-      <h2>How Do Plan Rules and Sprite Definition Rules interact?</h2>
-      <p>It's important to understand how the rules defined in plans and the rules 
+         be familiar with in order to effectively use the program.</para>
+    </introduction>
+
+<section><!--h2-->
+  <title>How Do Plan Rules and Sprite Definition Rules interact?</title>
+  <content>
+      <para>It's important to understand how the rules defined in plans and the rules 
          defined in sprite definitions interact, in order to understand why sprites 
          behave the way they do in many cases. During each loop of the game, all the 
          rules for all plans are executed in sequence (one plan's rules execute, then 
@@ -27,20 +24,30 @@
          the effects of a sprite rule to be available during a plan rule's execution 
          until the next frame. By executing the rules in this order, it's possible to 
          have a specific plan provide input to a specific sprite, and then allow the 
-         sprite definition to act on the input.</p>
-      <h2>How Do I Change the Default Keyboard Settings?</h2>
-      <p>Open the "Player.cs" file from the "Source Code" folder in your project. Search 
+         sprite definition to act on the input.</para>
+        </content>
+</section>
+
+<section><!--h2-->
+  <title>How Do I Change the Default Keyboard Settings?</title>
+  <content>
+      <para>Open the "Player.cs" file from the "Source Code" folder in your project. Search 
          for "UpArrow" and you will find the first of many values that you can change to 
          alter the default keyboard layouts. Look at all the keyboard layouts defined in 
          the function for examples of valid values that you can use for key 
-         specifications.</p>
-      <h2>What's the difference between a Graphic Sheet a Frameset and Tileset? Why do I 
-         need them?</h2>
-      <p>These 3 objects are used to define graphics at different levels/layers in a 
+         specifications.</para>
+        </content>
+</section>
+
+<section><!--h2-->
+  <title>What's the difference between a Graphic Sheet a Frameset and Tileset? Why do I 
+         need them?</title>
+  <content>
+      <para>These 3 objects are used to define graphics at different levels/layers in a 
          project. At the lowest, most basic level are graphic sheets. Practically all 
          graphics that will be used in a game will be contained in a graphic sheet in 
-         some form.</p>
-      <p>The next level up is the Frameset. A frameset can be used to define how 
+         some form.</para>
+      <para>The next level up is the Frameset. A frameset can be used to define how 
          graphics in a graphic sheet can be transformed. This allows you to, for 
          example, draw a single graphic (in a graphic sheet) to represent a creature 
          facing in one direction, but rotate it to 4 different directions in a Frameset 
@@ -49,8 +56,8 @@
          implicitly reflect the same change. Another benefit of the Frameset is that the 
          size of the project is smaller because each rotation (or other transformation) 
          doesn't have to be stored as a separate graphic when it can be transformed 
-         dynamically by the frameset.</p>
-      <p>Finally, a Tileset is another layer of abstraction that is used for defining 
+         dynamically by the frameset.</para>
+      <para>Finally, a Tileset is another layer of abstraction that is used for defining 
          graphics on a map layer. Since a tile on a layer needs to support the ability 
          to animate or display graphics from multiple frames simultaneously, and a 
          frameset does not allow this, the Tileset is introduced. A tileset associates 
@@ -58,8 +65,8 @@
          the ability for a single tile number to refer to different frames depending on 
          a counter value (so the tile can animate as the counter changes) and to refer 
          to multiple frames for the same counter value (so a single tile can display 
-         multiple graphics overlapping).</p>
-      <p>If this seems like a lot of effort to create a simple set of tiles that can be 
+         multiple graphics overlapping).</para>
+      <para>If this seems like a lot of effort to create a simple set of tiles that can be 
          used on a map layer, keep in mind there are shortcuts. If you just want to use 
          a graphic sheet's graphics directly on a map layer, it's relatively easy to 
          create a frameset, select all graphic sheet cells and add them to the frameset, 
@@ -67,12 +74,17 @@
          tileset without any tiles defined will default to associating each numeric 
          value with a frame in the associated frameset at that index. So it's not 
          necessary in a tileset to explicitly map every (or any) tile to a frameset 
-         frame because each tile value will, by default, map to a frameset frame.</p>
-         <h2>How can I control how sprites react to obstacles?</h2>
-         <p>Most sprites will need to walk on solid ground or be prevented from walking
+         frame because each tile value will, by default, map to a frameset frame.</para>
+           </content>
+</section>
+
+<section><!--h2-->
+  <title>How can I control how sprites react to obstacles?</title>
+  <content>
+         <para>Most sprites will need to walk on solid ground or be prevented from walking
          through solid walls.  Sometimes they even need to be able to walk up hills.  To do
          this, SGDK2 provides "Solidity". The "Solidity" folder in an SGDK2 project contains
-         <b>solidity definitions</b> which define how various categories of tiles should be shaped.
+         <legacyBold>solidity definitions</legacyBold> which define how various categories of tiles should be shaped.
          For example, you can have one solidity definition that defines all cloud tiles as
          solid, so some cloud-walking sprites can use that definition and be allowed to walk on
          clouds. Another solidity definition could define the cloud tiles as empty, allowing
@@ -82,83 +94,98 @@
          required to define how a sprite interacts with tiles no matter how many shapes
          or types of tiles you're dealing with. The purpose of multiple solidity definitions
          is to allow different sprites to respond in different ways to the same tiles. Often
-         times, only one solidity definition is required in a project.</p>
-         <p>A solidity definition consists of a simple list of associations between two other
-         objects: <b>tile categories</b> and <b>tile shapes</b>. Each tile category can be
+         times, only one solidity definition is required in a project.</para>
+         <para>A solidity definition consists of a simple list of associations between two other
+         objects: <legacyBold>tile categories</legacyBold> and <legacyBold>tile shapes</legacyBold>. Each tile category can be
          associated with one tile shape, indicating that every tile in the category should
          assume the specified shape. While a tile category can only be associated with one
          shape, multiple categories can be associated with the same tile shape. So before
          defining solidity, it's necessary to define tile categories. You can include all tiles
          from all tilesets that represent a particular tile shape in a single category. See
-         details of the <a href="TileCategories.html">Tile Categories UI</a> for information
+         details of the <link xlink:href="6e241d52-6648-478c-b66d-41d004b1821d">Tile Categories UI</link> for information
          about this process. Tile Shapes, on the other hand are built-in to SGDK2 to some extent.
          A pre-defined set of shapes is provided in the default source code generated for a
          project. You can, however, add your own tile shapes. Each tile shape is defined by
-         a set of 4 functions: <ol>
-         <li>GetTopSolidPixel - Returns the y-coordinate of the top-most solid pixel within a tile
-         given the tile's size and the left and right boundaries of the area in question.</li>
-         <li>GetBottomSolidPixel - Returns the y-coordinate of the bottom-most solid pixel
-         within a tile given the tile's size and the left and right boundaries of the area in question.</li>
-         <li>GetLeftSolidPixel - Returns the x-coordinate of the left-most solid pixel
-         within a tile given the tile's size and the top and bottom boundaries of the area in question.</li>
-         <li>GetRightSolidPixel - Returns the x-coordinate of the right-most solid pixel
-         within a tile given the tile's size and the top and bottom boundaries of the area in question.</li>
-         </ol>
-         <p>To define a new tile shape, edit TileShapes.cs (in the project's source code folder),
+         a set of 4 functions: <list class="ordered">
+         <listItem>GetTopSolidPixel - Returns the y-coordinate of the top-most solid pixel within a tile
+         given the tile's size and the left and right boundaries of the area in question.</listItem>
+         <listItem>GetBottomSolidPixel - Returns the y-coordinate of the bottom-most solid pixel
+         within a tile given the tile's size and the left and right boundaries of the area in question.</listItem>
+         <listItem>GetLeftSolidPixel - Returns the x-coordinate of the left-most solid pixel
+         within a tile given the tile's size and the top and bottom boundaries of the area in question.</listItem>
+         <listItem>GetRightSolidPixel - Returns the x-coordinate of the right-most solid pixel
+         within a tile given the tile's size and the top and bottom boundaries of the area in question.</listItem>
+         </list></para>
+         <para>To define a new tile shape, edit TileShapes.cs (in the project's source code folder),
          and start by creating a copy of an existing tile shape with a new
          name. For example, make another copy of the entire SolidTileShape class, and change
          all occurrences of SolidTileShape in the new copy to whatever shape you want to create.
          Then change the implementation in the 4 functions mentioned above to define how your
          shape should behave. After recompiling the project, the new shape should show up in the
          Solidity Definition editor.
-         </p>
-      <h2>Can I run under Linux?</h2>
-      <p>The SGDK2 IDE itself does not run (at least not well) under Linux, but the projects created by
+         </para>
+        </content>
+</section>
+
+<section><!--h2-->
+  <title>Can I run under Linux?</title>
+  <content>
+      <para>The SGDK2 IDE itself does not run (at least not well) under Linux, but the projects created by
          SGDK2 can run under Linux as of SGDK version 2.1.1. In order to make the projects run
          under Linux some modifications had to be made to the default framework code for SGDK2 projects
          because some of it was relying on Windows-specific behavior.  The new code, however, will work
          universally under Linux and Windows.  (Mainly this code relates to keyboard input, and as of this
          writing, there is no support for Joystick input under Linux, so the new code disables the
-         Joystick input under Linux, but leaves it enabled when running under Windows.)</p>
-      <ol>
-         <li>Make sure you have all the Linux Project support files. These are delivered as a separate
+         Joystick input under Linux, but leaves it enabled when running under Windows.)</para>
+      <list class="ordered">
+         <listItem>Make sure you have all the Linux Project support files. These are delivered as a separate
          package because they are relatively large, and some people may not want to download the extra
          content if they don't plan to distribute or run their projects in Linux. See the
-         <a href="http://sgdk2.sourceforge.net/download.shtml">Scrolling Game Development Kit 2 Downloads Page</a>
-         for details.</li>
-         <li>The easiest method to make a project that runs under Linux is to start with the new
+         <externalLink>
+  <linkText>Scrolling Game Development Kit 2 Downloads Page</linkText>
+  <linkUri>http://sgdk2.sourceforge.net/download.shtml</linkUri>
+</externalLink>
+         for details.</listItem>
+         <listItem>The easiest method to make a project that runs under Linux is to start with the new
          &quot;Scrolling Game Development Kit Linux Sample&quot; project listed among the available
          new project templates (after the Linux package has been properly installed).
          However, it is possible to convert existing projects to run under Linux as well. The
-         Remaining steps will describe this process.</li>
-         <li>Load the project to be converted, and select &lt;Blank&gt; from the &quot;Reset Source
+         Remaining steps will describe this process.</listItem>
+         <listItem>Load the project to be converted, and select &lt;Blank&gt; from the &quot;Reset Source
          Code&quot; pop-up menu in the file menu. If any of the framework code for the project has been
-         modified, these modifications will be lost when resetting the source code.</li>
-         <li>After this is taken care of, if your project has sound, the fmodex.dll file in the Source
+         modified, these modifications will be lost when resetting the source code.</listItem>
+         <listItem>After this is taken care of, if your project has sound, the fmodex.dll file in the Source
          Code folder of the SGDK2 project tree needs to be renamed to &quot;libfmodex-4.22.01.so&quot;.
          This is the Linux version of the FMODEx library with which SGDK2 has been tested. To do this,
          open the file for editing and select the Rename command from the file menu. Renaming that
          file actually causes SGDK2 to pick up a different file when generating the project output.
          Instead of copying FMODEx.dll from the directory where SGDK2 is running, it will copy the new
          filename. Of course that assumes that you have to have that file available from the Linux
-         support package.</li>
-         <li>Notice that after the code was reset, a new file called app.config was added to the Source
+         support package.</listItem>
+         <listItem>Notice that after the code was reset, a new file called app.config was added to the Source
          Code folder in the project tree.  There is one configuration setting in here that will force
          Mono (the Linux implementation of the .NET Framework) to re-map every request for FMODEx.dll to
          the new filename.  If you happen to be trying a different version/name of fmod in Linux, you will
          need to modify this configuration file.  When the project compiles, it will be copied to the
          output directory as Project.exe.config where Project.exe is the name of your project executable
-         file.</li>
-         <li>If you are using any other unmanaged DLLs you may need to perform similar conversions for
+         file.</listItem>
+         <listItem>If you are using any other unmanaged DLLs you may need to perform similar conversions for
          these, using FMODEx.dll as an example. Of course there needs to be a Linux version of each
-         available.</li>
-      </ol><p>After all this has been done, when you compile your project, the output directory will contain
+         available.</listItem>
+      </list><para>After all this has been done, when you compile your project, the output directory will contain
          all the files necessary to run your project under Linux. It will also contain all the files
          necessary to develop, edit and re-compile your project using MonoDevelop in case further debugging
          is necessary under Linux.  Note that you may no longer be able to run your project in the Windows
          environment simply because FMODEx.dll may no longer exist in the project's output directory.  You
          can manually add it. Also, be aware that you can delete the intermediate output files (a command
          in the File menu) if you don't care to have all the source code available, and then only the
-         files to run your project under Linux will remain.</p>
-   </body>
-</html>
+         files to run your project under Linux will remain.</para>
+   
+  </content>
+</section>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

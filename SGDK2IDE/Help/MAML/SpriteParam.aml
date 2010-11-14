@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="1b29c16a-1be0-4a46-b0b2-1f023b465b15" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>This page describes the Sprite Parameter tab of the Sprite Definitions dialog. 
+         For information about other pages of the Sprite Definition Window, see:</para>
+         <list class="bullet">
+			<listItem><link xlink:href="b70a3d81-1ff7-429f-b4f9-d65bafe1f09d">Sprite Definition</link></listItem>
+			<listItem><link xlink:href="476b45aa-2b60-4be3-9887-643de3cc421c">Sprite Rules</link></listItem>
+		</list>
+    </introduction>
+      <section><!--h1-->
+  <title>Sprite Parameters</title>
+  <content>
+      <para>Defining sprite parameters is relatively simple because all that's required for 
+         each parameter is a name. (See more about picking the name at the bottom.) Each 
+         sprite parameter represents a numeric (integer) value that can be associated 
+         with each instance of this sprite type. A common use for this is to add a 
+         "CoordIndex" parameter to a sprite type that usually follows a path. The 
+         specific name isn't important, but some numeric value is required when calling 
+         rule functions that make the sprite follow a path. The parameter is used to 
+         track which coordinate of the path the sprite is corrently heading toward. But 
+         parameters can be used for a variety of purposes, so long as they can be 
+         represented as an integer.</para>
+      <para>To add a parameter, type a new name into the last line of the grid. To delete a 
+         parameter, select a line in the grid and press the delete key. Deleting a 
+         parameter will delete all values provided for this parameter on all instances 
+         of this sprite type.</para>
+      <para>For each parameter defined for a particular sprite definition, every instance 
+         of that sprite will show a row in the sprite properties grid in the <!-- TODO: Unknown topic link: MapEdit.html -->             map editor. This allows initial values to be set for every parameter 
+         (intrinsic and user-defined) of every sprite instance.</para>
+      <para>The name of a parameter must follow the rules of most names. It must be unique 
+         within the sprite definition (other sprite definitions' parameters can reuse 
+         the same names). It must start with a letter and contain only letters, digits 
+         and spaces. However, because sprites also support many other properties and 
+         functions, the name is restricted further because the parameters cannot 
+         conflict with these. The name of a sprite parameter must not conflict with any 
+         intrinsic parameter or with any rule function that applies to sprite 
+         definitions. Below is a list of reserved names that cannot be used for sprite 
+         parameters. This list may not be complete because the list of rule functions is 
+         always expanding, and can be customized by updating GeneralRules.cs or 
+         SpriteBase.cs. But if a parameter name conflicts with an existing "reserved" 
+         name, the problem will be readily apparent when the project is 
+         generated/compiled. The output window will show obvious errors. (Names are 
+         case-sensitive so a title-cased name would not conflict with an all-lowercase 
+         name.)</para>
+      <table>
+         <row>
+            <entry>AccelerateByInputs</entry>
+            <entry>AlterXVelocity</entry>
+            <entry>AlterYVelocity</entry>
+            <entry>Animate</entry>
+            <entry>Blocked</entry>
+         </row>
+         <row>
+            <entry>CanReturnToPreviousMap</entry>
+            <entry>ClearInputs</entry>
+            <entry>ClearOverlay</entry>
+            <entry>color</entry>
+            <entry>CurrentState</entry>
+         </row>
+         <row>
+            <entry>CurrentView</entry>
+            <entry>Deactivate</entry>
+            <entry>DeleteSave</entry>
+            <entry>dx</entry>
+            <entry>dy</entry>
+         </row>
+         <row>
+            <entry>ExcludeCounterFromSaveUnit</entry>
+            <entry>ExcludeMapFromSaveUnit</entry>
+            <entry>frame</entry>
+            <entry>GetPolarStateByVector</entry>
+            <entry>IncludeCounterInSaveUnit</entry>
+         </row>
+         <row>
+            <entry>IncludeInSaveUnit</entry>
+            <entry>IncludeMapInSaveUnit</entry>
+            <entry>inputs</entry>
+            <entry>isActive</entry>
+            <entry>IsInputPressed</entry>
+         </row>
+         <row>
+            <entry>IsInState</entry>
+            <entry>IsKeyPressed</entry>
+            <entry>IsMapFlagOn</entry>
+            <entry>IsMoving</entry>
+            <entry>IsOnTile</entry>
+         </row>
+         <row>
+            <entry>IsRidingPlatform</entry>
+            <entry>Item</entry>
+            <entry>LandDownOnPlatform</entry>
+            <entry>lastCreatedSprite</entry>
+            <entry>LimitVelocity</entry>
+         </row>
+         <row>
+            <entry>LoadGame</entry>
+            <entry>LocalDX</entry>
+            <entry>LocalDY</entry>
+            <entry>LogDebugLabel</entry>
+            <entry>LogDebugValue</entry>
+         </row>
+         <row>
+            <entry>MapKeyToInput</entry>
+            <entry>MapPlayerToInputs</entry>
+            <entry>ModulateAlpha</entry>
+            <entry>ModulateBlue</entry>
+            <entry>ModulateGreen</entry>
+         </row>
+         <row>
+            <entry>ModulateRed</entry>
+            <entry>MoveByVelocity</entry>
+            <entry>oldinputs</entry>
+            <entry>OldPixelX</entry>
+            <entry>OldPixelY</entry>
+         </row>
+         <row>
+            <entry>oldX</entry>
+            <entry>oldY</entry>
+            <entry>ParentLayer</entry>
+            <entry>PixelX</entry>
+            <entry>PixelY</entry>
+         </row>
+         <row>
+            <entry>PolarAccelerate</entry>
+            <entry>Processed</entry>
+            <entry>ProposedPixelX</entry>
+            <entry>ProposedPixelY</entry>
+            <entry>PushSpriteIntoView</entry>
+         </row>
+         <row>
+            <entry>QuitGame</entry>
+            <entry>ReactToInertia</entry>
+            <entry>ReactToPlatform</entry>
+            <entry>ReactToSolid</entry>
+            <entry>ReturnToPreviousMap</entry>
+         </row>
+         <row>
+            <entry>RidingOn</entry>
+            <entry>RotateVelocity</entry>
+            <entry>SaveExists</entry>
+            <entry>SaveGame</entry>
+            <entry>ScrollSpriteIntoView</entry>
+         </row>
+         <row>
+            <entry>SetCategorySpriteState</entry>
+            <entry>SetInputState</entry>
+            <entry>SetMapFlag</entry>
+            <entry>SetOverlay</entry>
+            <entry>SetSolidity</entry>
+         </row>
+         <row>
+            <entry>SetTargetMapFlag</entry>
+            <entry>SetViewLayout</entry>
+            <entry>SnapToGround</entry>
+            <entry>SolidHeight</entry>
+            <entry>SolidWidth</entry>
+         </row>
+         <row>
+            <entry>state</entry>
+            <entry>StopRiding</entry>
+            <entry>SwitchToMap</entry>
+            <entry>SwitchToState</entry>
+            <entry>TestCollisionMask</entry>
+         </row>
+         <row>
+            <entry>TileActivateSprite</entry>
+            <entry>TileAddSprite</entry>
+            <entry>TileChange</entry>
+            <entry>TileTake</entry>
+            <entry>TileTouchingIndex</entry>
+         </row>
+         <row>
+            <entry>TileUseUp</entry>
+            <entry>TouchTiles</entry>
+            <entry>UnloadBackgroundMaps</entry>
+            <entry>UnloadMap</entry>
+            <entry>x</entry>
+         </row>
+         <row>
+            <entry>y</entry>
+         </row>
+      </table>
+   
+  </content>
+</section>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

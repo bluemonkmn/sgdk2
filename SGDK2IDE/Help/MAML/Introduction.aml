@@ -1,65 +1,58 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="75aaa98a-3dae-49d2-9cd3-dbd618954be9" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <title>Scrolling Game Development Kit 2 - Introduction</title>
-  <meta name="vs_targetSchema" content=
-  "http://schemas.microsoft.com/intellisense/ie5" />
-  <link rel="stylesheet" href="SGDK2Help.css" type="text/css" />
-</head>
-
-<body>
-  <h1>Scrolling Game Development Kit 2</h1>
-
-  <h2>Introduction</h2>
-
-  <p>Scrolling Game Development Kit 2 (SGDK2) is designed to simplify and speed
+    <introduction>
+  <para>Scrolling Game Development Kit 2 (SGDK2) is designed to simplify and speed
   the development of 2D scrolling games for beginning game developers and
   experts. Although this program can be used for other types of games, it's
   primary design is to assist in the creation of scrolling games, especially
   side-scrollers. This is the second major release of this program, and is a
   total rewrite from the ground up. If you are a new user you may want to focus
-  on the <a href="#MainFeatures"><strong>Main Features</strong></a> section
+  on the <link xlink:href="#MainFeatures">Main Features</link> section
   below. If you are familiar with the old version, you might be more interested
-  in the <a href="#WhatsNew"><strong>What's New</strong></a> section.</p>
+  in the <link xlink:href="#WhatsNew">What's New</link> section.</para>
+    </introduction>
 
-  <h2><a name="MainFeatures" id="MainFeatures">Main Features</a></h2>
-
-  <p>The design of SGDK2 attempts to maximize both flexibility and
+<section address="MainFeatures"><!--h2-->
+  <title>Main Features</title>
+  <content>
+  <para>The design of SGDK2 attempts to maximize both flexibility and
   user-friendly design. Here are some of the high level features that make
   SGDK2 a powerful and interesting environment for new and experienced game
-  developers.</p>
+  developers.</para>
 
-  <ul>
-    <li>User friendly interface: Rather than requiring the user to become
+  <list class="bullet">
+    <listItem>User friendly interface: Rather than requiring the user to become
     familiar with coding, the environment provides many wizards, selection
     lists and templates to make it possible to create complete games without
-    requiring the writing of any code.</li>
+    requiring the writing of any code.</listItem>
 
-    <li>Extensive customizability: The vast majority of the generated game's
+    <listItem>Extensive customizability: The vast majority of the generated game's
     source code is exposed in the IDE's "Source Code" folder and can be
     customized beyond recognition. This is theoretically flexible enough to
     allow you to go as far as creating a project whose source code generates a
     3D game instead of a 2D game, or compiles to a web component instead of a
     Windows application. Furthermore a saved project file is nothing more than
     XML, so you can conceivably write your own programs to process, edit or
-    re-use project data.</li>
+    re-use project data.</listItem>
 
-    <li>Embedded Graphics Editor: Although you can import images from external
+    <listItem>Embedded Graphics Editor: Although you can import images from external
     sources, it's not necessary to flip back and forth between programs as you
     create or edit images. SGDK2 has a powerful graphics editor built in with
     tools sophisticated enough to handle alpha translucency, rotation,
     anti-aliasing and color re-mapping, among many other tasks. You can even
-    add your own tools.</li>
+    add your own tools.</listItem>
 
-    <li>Integrated Map Editor: The main foundation of a 2D game is the data
+    <listItem>Integrated Map Editor: The main foundation of a 2D game is the data
     contained in its maps. The map editor in SGDK2 includes abilities to select
     and place tiles, copy blocks of tiles, easily add and edit sprites and
     groups of sprites, and add/edit "plans" which define areas or coordinates
-    where events happen on the map.</li>
+    where events happen on the map.</listItem>
 
-    <li>Sprite Editor: The sprite editing system is very flexible, allowing you
+    <listItem>Sprite Editor: The sprite editing system is very flexible, allowing you
     to define any number of states and frames that compose a sprite, and define
     rules that determine how the sprite behaves and transitions between its
     states. All these rules are based on C# source code which you can edit or
@@ -68,189 +61,201 @@
     sprites, or get down to the lowest levels by editing the source code on
     which the rules are based. All this can be done within the IDE and saved
     with your individual project... no re-compiling SGDK2 code is
-    necessary.</li>
+    necessary.</listItem>
 
-    <li>High performace graphics: In version 2.0, the games generated by this
+    <listItem>High performace graphics: In version 2.0, the games generated by this
     program were based on DirectX by default (though a project can theoretically
     be customized to use other technologies). The main update with version 2.1
     is a switch to using OpenGL as the graphics library of choice. This also
     improved performance even more.  As such, you get crisp, smooth graphics
     performance on systems with adequate hardware support, whether you're
-    playing in a window of full-screen.</li>
+    playing in a window of full-screen.</listItem>
 
-    <li>Real-time transforms: Rather than pre-rendering your sprite with 8
+    <listItem>Real-time transforms: Rather than pre-rendering your sprite with 8
     different color schemes at 72 rotations, you can draw the image once and
     then adjust the color (to a limited extent) and rotation in a Frameset.
     Then if you decide to change your sprite's appearance, you only have to
     change the graphic on which it's based, and all variations will be
-    automatically affected.</li>
+    automatically affected.</listItem>
 
-    <li>Collision Detection: Collisions between sprites and tiles are based on
+    <listItem>Collision Detection: Collisions between sprites and tiles are based on
     an optimized algorithm that allows the game to efficiently make a sprite
     respond to slopes and walls. Collisions between sprites can either be based
     on a user-defined rectangular area within the sprite, or on a collision
     mask that is in turn based on a certain level of opacity in the sprite's
     graphic. Again this is optimized for reasonable performance with larger
-    numbers of sprites.</li>
+    numbers of sprites.</listItem>
 
-    <li>Animated Tiles: Not only can your sprites be animated, but so can your
+    <listItem>Animated Tiles: Not only can your sprites be animated, but so can your
     backgrounds. You can define a series of frames for each tile value that you
     want to animate, and link the tile to a global counter object that defines
     how fast the tile is animating (which frame it's displaying). Each
     animation can be linked to its own counter, or you can have many or all
-    tile animations share a common counter.</li>
+    tile animations share a common counter.</listItem>
 
-    <li>Multi-layered Maps: you can create multi-layered parallax-scrolling
+    <listItem>Multi-layered Maps: you can create multi-layered parallax-scrolling
     maps by adding layers that scroll at different rates horizontally and
-    vertically.</li>
+    vertically.</listItem>
 
-    <li>Compiled output: The games generated in this environment are internally
+    <listItem>Compiled output: The games generated in this environment are internally
     transformed into .NET applications and then compiled to binary executables.
     That means they don't rely on runtime processing of script/code, but are
     compiled to a form optimized for performance. Furthermore, it's possible to
     create entirely self-contained games that generate a single EXE file with
-    all the data embedded.</li>
+    all the data embedded.</listItem>
 
-    <li>Sound/Music support: The environment includes support for playing OGG,
+    <listItem>Sound/Music support: The environment includes support for playing OGG,
     MP3, MOD and other formats of music and sounds (provided by the third-party
-    FMOD library).</li>
+    FMOD library).</listItem>
 
-    <li>Scalability: Maps created in SGDK2 can opt to use 1, 2 or 4 bytes per
+    <listItem>Scalability: Maps created in SGDK2 can opt to use 1, 2 or 4 bytes per
     tile depending on how many types of tiles you intend to support, and
     because you can have as little as 1-byte per tile, you can create some very
     large maps with very low memory requirements. A map representing more than
     a billon pixels of viewable space could be created in under a megabyte
-    using 32x32-pixel tiles.</li>
-  </ul>
+    using 32x32-pixel tiles.</listItem>
+  </list>
 
-  <h2><a name="WhatsNew" id="WhatsNew">What's New</a></h2>
+    </content>
+</section>
 
-  <p>For details about what's new in the current release, see the
-  <a href="WhatsNew.html">What's New</a> page. The section below
-  is mainly an introduction to SGDK2 for users of version 1.x.</p>
+<section address="WhatsNew"><!--h2-->
+  <title>What's New</title>
+  <content>
+
+  <para>For details about what's new in the current release, see the
+  <link xlink:href="344ca14d-b435-4a1f-b94d-6640f99096ce">What's New</link> page. The section below
+  is mainly an introduction to SGDK2 for users of version 1.x.</para>
   
-  <p>Many features have been greatly improved during the total rewrite in .NET
+  <para>Many features have been greatly improved during the total rewrite in .NET
   that was done for version 2.0. Here are a few of the more interesting
-  differences since the last 1.x version.</p>
+  differences since the last 1.x version.</para>
 
-  <ul>
-    <li>Shared Sprite Definitions: Sprite templates no longer have to be
+  <list class="bullet">
+    <listItem>Shared Sprite Definitions: Sprite templates no longer have to be
     re-defined from scratch for each map. Sprite Definitions, which are the
     replacement for most of the features formerly found in a sprite template,
-    are shared accross the whole project.</li>
+    are shared accross the whole project.</listItem>
 
-    <li>Run Windowed or Full-Screen: The graphics and map editors run in a
+    <listItem>Run Windowed or Full-Screen: The graphics and map editors run in a
     window with a much more friendly interface than that found in version 1.x.
     But more importantly, the games created in this environment can run either
-    in full screen or windowed mode.</li>
+    in full screen or windowed mode.</listItem>
 
-    <li>Run-time customizable controls: The default project template includes
+    <listItem>Run-time customizable controls: The default project template includes
     an options menu that allows the player to customize the controls instead of
-    requiring the designer to pre-set them.</li>
+    requiring the designer to pre-set them.</listItem>
 
-    <li>Multi-player Support: It's much easier to create multi-player
-    games.</li>
+    <listItem>Multi-player Support: It's much easier to create multi-player
+    games.</listItem>
 
-    <li>Customizable scrolling: Scrolling is no longer hard-linked to the
+    <listItem>Customizable scrolling: Scrolling is no longer hard-linked to the
     player sprite. You can design a game that forces the map to automatically
-    scroll by following an invisible non-player sprite.</li>
+    scroll by following an invisible non-player sprite.</listItem>
 
-    <li>Easier Sprite Placement: You no longer have to create a path for every
+    <listItem>Easier Sprite Placement: You no longer have to create a path for every
     sprite, and you no longer have to exit the map editor to add sprites. Now
     you can simply select a sprite in the map editor and place it on the map
-    with a single click like you would a tile.</li>
+    with a single click like you would a tile.</listItem>
 
-    <li>Integrated Customization: No more editing VBScript in a separate window
+    <listItem>Integrated Customization: No more editing VBScript in a separate window
     in a separate file. To customize game behavior in SGDK2, use the integrated
     code editor, and see your customizations (in C# code) saved as part of the
     project. Furthermore, you can not only add your own code now (as you had to
     do before), but also edit almost all of the pre-existing code that goes
     into generating a running game, giving you much more control over the
-    overall behavior of a game.</li>
+    overall behavior of a game.</listItem>
 
-    <li>Build Your Own Sprite Types: You no longer have a limited selection of
+    <listItem>Build Your Own Sprite Types: You no longer have a limited selection of
     sprite types such as "left/right" or "8-direction" sprites to choose from
     when creating a new sprite definition. You can import, customize or create
     your own sprite types by creating any number of states, and define your own
     rules for how they behave. You can do this without even writing any
-    code.</li>
+    code.</listItem>
 
-    <li>PNG support: PNG is now the native graphics format of SGDK2 internally.
+    <listItem>PNG support: PNG is now the native graphics format of SGDK2 internally.
     This also means that you can have translucent graphics. Instead of only
     having transparent or opaque pixels, you can have 255 levels of
-    translucency.</li>
+    translucency.</listItem>
 
-    <li>Simplified File Management: Project data is now all embedded into a
+    <listItem>Simplified File Management: Project data is now all embedded into a
     single SGDK2 file instead of having a GDP file that references all sorts of
     external files. No more confusion when moving projects around or backing
-    them up.</li>
+    them up.</listItem>
 
-    <li>Sound Support: You now have the ability to play OGG and MOD files. MOD
+    <listItem>Sound Support: You now have the ability to play OGG and MOD files. MOD
     will be good for compact representations of long pieces of music without
-    relying on the quality of the sound card's sound table.</li>
+    relying on the quality of the sound card's sound table.</listItem>
 
-    <li>Overlapping Graphics: Your tiles are no longer confined the space they
+    <listItem>Overlapping Graphics: Your tiles are no longer confined the space they
     occupy on the map. You can have graphics of one tile overlapping those of
-    another.</li>
+    another.</listItem>
 
-    <li>Composite Graphics: Your tiles and sprite frames can be composed of
+    <listItem>Composite Graphics: Your tiles and sprite frames can be composed of
     multiple graphics without having to pre-render all the possible
-    combinations as their own graphics.</li>
+    combinations as their own graphics.</listItem>
 
-    <li>Offsetting Layers: You can now create layers that have a position not
+    <listItem>Offsetting Layers: You can now create layers that have a position not
     "anchored" to the top left corner of the map. A layer does not have to
     cover the entire map, so you can have a layer that just represents some
-    tiles for a small part of the map.</li>
+    tiles for a small part of the map.</listItem>
 
-    <li>Overlay Map: The player's inventory and other features can now be
+    <listItem>Overlay Map: The player's inventory and other features can now be
     represented on an "Overlay" map, a map that is drawn in front of the main
-    map, and generally does not scroll.</li>
+    map, and generally does not scroll.</listItem>
 
-    <li>Counters: Instead of "Inventory" a more general-purpose concept of
-    "Counters" have been introduced as global numeric variables.</li>
+    <listItem>Counters: Instead of "Inventory" a more general-purpose concept of
+    "Counters" have been introduced as global numeric variables.</listItem>
 
-    <li>Independent Tile Animation: Tile animation is now linked to a
+    <listItem>Independent Tile Animation: Tile animation is now linked to a
     particular counter instead of an internal global counter, so not all your
     animations need to be based on the same value. You can, for example, have a
     counter that only switches to a particular value when the player
     accomplishes a task, which in turn changes all of tile X to tile Y via the
-    linked counter.</li>
+    linked counter.</listItem>
 
-    <li>New Tile Solidity: You are no longer confined to 6 tile solidity
+    <listItem>New Tile Solidity: You are no longer confined to 6 tile solidity
     shapes. 11 shapes are provided by default, (including a new shape that
     allows the player to jump upward through a tile and then land on it) and
     you can write your own by customizing the code that defines the tile
-    shapes.</li>
+    shapes.</listItem>
 
-    <li>Save to Memory: When saving a game to a slot, you no longer have to
+    <listItem>Save to Memory: When saving a game to a slot, you no longer have to
     write it to a file. The saved game can be stored to a "memory" slot which
     only exists for the duration of the game. This is handy for resetting the
-    game to an initial state without requiring a file.</li>
+    game to an initial state without requiring a file.</listItem>
 
-    <li>Partial Save: You now have some choice about which data you want to
+    <listItem>Partial Save: You now have some choice about which data you want to
     save. You can save just data for the current map or just the counter values
-    or everything.</li>
+    or everything.</listItem>
 
-    <li>Collision Detection: In order to give the user more control over the
+    <listItem>Collision Detection: In order to give the user more control over the
     collision detection process, tests for colliding sprites are now performed
     more explicitly. Test for collisions between a specific sprite and all
     sprites in a specific category. Also, the collision test can be a simple
-    rectangular collision test or the fancier pixel/mask-based test.</li>
+    rectangular collision test or the fancier pixel/mask-based test.</listItem>
 
-    <li>Global Tile Categories: You can now include tiles from multiple
+    <listItem>Global Tile Categories: You can now include tiles from multiple
     tilesets in a single tile category. This allows, for example, a single
     sprite definition to treat ladders from different kinds of layers the same
     way. A "winter" map might use a "winter" tileset that looks completely
     different from the "summer" tileset, yet the player could have rules to
-    treat them both as ladders.</li>
+    treat them both as ladders.</listItem>
 
-    <li>Sprite Categories: Sprites can also be categorized now for the purposes
+    <listItem>Sprite Categories: Sprites can also be categorized now for the purposes
     of testing collisions or creating instances of sprites of a particular
-    type/group.</li>
+    type/group.</listItem>
 
-    <li>No Tile Matching or Maze Generator Yet: In the interest of getting
+    <listItem>No Tile Matching or Maze Generator Yet: In the interest of getting
     SGDK2 into the hands of users as soon as possible, some of the less
-    critical features are left to a later release.</li>
-  </ul>
-</body>
-</html>
+    critical features are left to a later release.</listItem>
+  </list>
+
+  </content>
+</section>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

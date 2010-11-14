@@ -491,7 +491,7 @@ namespace SGDK2
          SendMessage(rtfCode.Handle, EM_SETUNDOLIMIT, 0, 0);
          base.OnLoad (e);
 
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"CodeEdit.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/8dc5b7ca-9900-4b6d-a51b-9de648e0da18.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 

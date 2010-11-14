@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<stockSharedContentDefinitions fileAssetGuid="a7e98e5c-9231-4940-b51d-caa514f904f2" assetTypeId="MediaContent">
+  <item id="GfxEdit">
+    <image file="GfxEdit.PNG">
+      <altText>Graphics Editor</altText>
+    </image>
+  </item>
+</stockSharedContentDefinitions>

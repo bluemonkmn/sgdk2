@@ -1,0 +1,1079 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="44d5e991-27a6-4800-9657-6ff749f22206" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>
+        This page describes some steps to get a simple game running in SGDK2 without
+        importing any external data. This is a very simple game, but steps through a
+        few features of SGDK2 that are interesting and important to understand in the
+        process of learning SGDK2.  Keep in mind that creating a game from scratch
+        (without importing anything) may look significantly more complicated than
+        importing some key pieces (especially sprite definitions), but in the interest
+        of completeness, this tutorial will expose all the details of re-creating
+        this data rather than simply importing it.
+      </para>
+    </introduction>
+
+    <section>
+      <!--h1-->
+      <title>Tutorial 1 - Functional Game Without Importing</title>
+      <content>
+        <list class="ordered">
+          <listItem>
+            Start with the new/default project (select "&lt;Blank&gt;" from the File-&gt;New menu if
+            necessary).
+          </listItem>
+          <listItem>
+            Create a new graphic sheet.
+            <list class="bullet">
+              <listItem>
+                Right-click on "Graphic Sheets" and select "New", <legacyBold>or</legacyBold>
+                select "Graphic Sheets" and select "New Object" from the File menu or toolbar.
+              </listItem>
+              <listItem>
+                Enter "My Graphics" as the sheet name.
+              </listItem>
+              <listItem>
+                Click the "Add" button or press Enter a second time.
+              </listItem>
+              <listItem>
+                Double-Click on the new "Edit Images" node that appeared under "My Graphics" in
+                the tree, <legacyBold>or</legacyBold>
+                select it and press F4 (or select "Properties" from the View menu).
+              </listItem>
+              <listItem>
+                Select "Flood Fill" from the tools menu, <legacyBold>or</legacyBold>
+                the paint bucket from the toolbar.
+              </listItem>
+              <listItem>
+                Select dark blue as the "Solids" color from the lower-left corner of the color
+                palette window in the graphics editor by left-clicking on it.
+              </listItem>
+              <listItem>
+                Click in the magnified edit area at the upper left of the graphics editor.
+              </listItem>
+              <listItem>
+                Click the "Store to Selected Cell(s)" button in the Cell Manager window. This
+                will be our background tile.
+              </listItem>
+              <listItem>
+                Select the next cell in the Cell Manager (the one to the right of the first),
+                and click "Load Selected Cell(s)".
+              </listItem>
+              <listItem>
+                Repeat the previous 5 steps with Green as the "Solids" color. This will be our
+                solid "wall" tile.
+              </listItem>
+              <listItem>
+                Select the custom tool button (this looks like a star by default), <legacyBold>or</legacyBold>
+                select "Star" from the "Custom Tool" menu in the "Tools" menu.
+              </listItem>
+              <listItem>
+                Select the outlined shapes button from the toolbar, <legacyBold>or</legacyBold>
+                select "Draw Outlined Shapes" from the tools menu. This will ensure that the
+                star we're about to draw will have an outline.
+              </listItem>
+              <listItem>
+                Select the gradient fill button from the toolbar, <legacyBold>or</legacyBold>
+                select "Gradient Fills" from the tools menu. This will make a smooth gradient
+                star from the fill in the center to the outline color around the edge.
+              </listItem>
+              <listItem>
+                Click the yellow color in the recently used colors list to set the solid color
+                to yellow.
+              </listItem>
+              <listItem>
+                Move the mouse to a coordinate of approximately "15.5,17" in the magnified view
+                (the coordinate is displayed in the magnified view's title bar) and drag a star
+                upward to about 15.5, 1.5. Since the last step in the process above was to load
+                an empty cell, you should be doing this on a transparent background represented
+                ad grey and white diamonds.
+              </listItem>
+              <listItem>
+                Store the tile in the third cell by clicking "Store to selected Cell(s)". This
+                will be the image for an item the player will pick up.
+              </listItem>
+              <listItem>
+                Select the fourth cell (the next empty cell) and load it with "Load Selected
+                Cells(s)".
+              </listItem>
+              <listItem>
+                Click the drop-down arrow next to the custom tool button and select "Triangle"
+                from it, <legacyBold>or</legacyBold>
+                select "Triangle" from the "Custom Tool" menu in the "Tools" menu.
+              </listItem>
+              <listItem>
+                Left-click on Red in the recent colors list to select it as the "Solids" color.
+              </listItem>
+              <listItem>
+                Move the mouse to a coordinate of approximately "15.5, 20" in the magnified
+                view and drag a red triangle shape upward to about 15.5, 3.
+              </listItem>
+              <listItem>
+                Store the triangle in the fourth cell (the next empty cell) by clicking "Store
+                to Selected Cell(s)". This will be the image for our player sprite.
+              </listItem>
+              <listItem>
+                Close the Graphics editor.
+              </listItem>
+            </list>
+          </listItem>
+          <listItem>
+            Create a frameset.
+            <list class="bullet">
+              <listItem>
+                Right-click on the "Framesets" folder and select "New", <legacyBold>or </legacyBold>
+                select the "Framesets" folder and then select "New Object" from the file menu
+                or toolbar.
+              </listItem>
+              <listItem>
+                Replace the frameset name with "My Frameset".
+              </listItem>
+              <listItem>
+                Select "My Graphics" from the "Graphic Sheet" dropdown list.
+              </listItem>
+              <listItem>
+                Select the first (blue) frame by left-clicking on it.
+              </listItem>
+              <listItem>
+                Hold shift and select the star by left-clicking on it. This should also select
+                the green frame.
+              </listItem>
+              <listItem>
+                Add the three graphics to the frameset by pressing the toolbar button with the
+                image of the right arrow, or by pressing Ctrl+A, or by selecting "Add Selected
+                Cells to Frameset" from the "Frameset" menu.
+              </listItem>
+              <listItem>
+                Close the Frameset Editor.
+              </listItem>
+            </list>
+          </listItem>
+          <listItem>
+            Add a rotating sprite in the same frameset.
+            <list class="bullet">
+              <listItem>
+                Right-click on "Sprite Definitions" and select "New", <legacyBold>or</legacyBold>
+                select "Sprite Definitions" and then select "New Object" from the File menu or
+                toolbar.
+              </listItem>
+              <listItem>
+                Enter "Player" for the sprite definitions name.
+              </listItem>
+              <listItem>
+                Select "Rotating Sprite Wizard" from the "Sprite Definition" menu.
+              </listItem>
+              <listItem>
+                Select "My Graphics" from the Graphic Sheet dropdown list.
+              </listItem>
+              <listItem>
+                Select the Red Triangle and click Next.
+              </listItem>
+              <listItem>
+                Leave the default value of 72 states, and click Next.
+              </listItem>
+              <listItem>
+                Leave the default values of 1 repeat and 0 mask alpha level and click Next.
+              </listItem>
+              <listItem>
+                Enter a prefix of "Norm" and click Next.
+              </listItem>
+              <listItem>
+                Select "My Frameset" from the "Frameset" dropdown list and click Next.
+              </listItem>
+              <listItem>
+                Select "Use a fixed size for all states" and click Next.
+              </listItem>
+              <listItem>
+                Leave the default values of 32 and 32 for width and height, and click Next.
+              </listItem>
+              <listItem>
+                Click Finish.
+              </listItem>
+              <listItem>
+                Close the Sprite Definition editor.
+              </listItem>
+            </list>
+          </listItem>
+          <listItem>
+            Create a Tileset. You can't create maps or define solidity without tiles.
+            <list class="bullet">
+              <listItem>
+                Create a new Tileset in the "Tilesets" folder; you should know how to create
+                new objects by now.
+              </listItem>
+              <listItem>
+                Enter "My Tileset" for the Tileset name.
+              </listItem>
+              <listItem>
+                Leave the default width and height of 32 and 32; leave the default frameset of
+                "My Frameset".
+              </listItem>
+              <listItem>
+                Close the Tileset Editor.
+              </listItem>
+            </list>
+          </listItem>
+          <listItem>
+            Create a solid tile category.
+            <list class="bullet">
+              <listItem>
+                Create a new tile category in the "Tile Categories" folder.
+              </listItem>
+              <listItem>
+                Enter "Solid" for the new category name.
+              </listItem>
+              <listItem>
+                Select "My Tileset" from the "Tileset" dropdown list.
+              </listItem>
+              <listItem>
+                Click edit to define which tiles from "My Tileset" are in this category (tiles
+                from multiple tilesets can be in the same category).
+              </listItem>
+              <listItem>
+                Select the green wall tile.
+              </listItem>
+              <listItem>
+                Drag it into the bottom pane or select "Add to Category" from the "Tiles" menu.
+              </listItem>
+              <listItem>
+                Close the Tile Category window.
+              </listItem>
+              <listItem>
+                Close the Tile Category Name window.
+              </listItem>
+            </list>
+          </listItem>
+          <listItem>
+            Create a Map. The project can't compile without a default map, and if the
+            project can't compile, you can't create a solidity definition.
+            <list class="bullet">
+              <listItem>
+                Create a new Map object in the "Maps" folder.
+              </listItem>
+              <listItem>
+                Change the name to "Level 1"
+              </listItem>
+              <listItem>
+                Click Add or press Enter again.
+              </listItem>
+            </list>
+          </listItem>
+          <listItem>
+            Set the startup map.
+            <list class="bullet">
+              <listItem>
+                Right-click on the top-level "Project" node in the tree and select "Edit", <legacyBold>
+                  or
+                </legacyBold>
+                select the "Project" node and press the F4 key or select "Properties" from the
+                View menu.
+              </listItem>
+              <listItem>
+                Select "Level 1" from the "StartMap" dropdown list.
+              </listItem>
+              <listItem>
+                Close the Project Properties window.
+              </listItem>
+            </list>
+          </listItem>
+          <listItem>
+            Create a solidity definition.
+            <list class="bullet">
+              <listItem>
+                Create a new Solidity Definition in the "Solidity" folder.
+              </listItem>
+              <listItem>
+                Enter "Standard" for the name.
+              </listItem>
+              <listItem>
+                Select "Solid" from the dropdown list in the first row of the "Category"
+                column.
+              </listItem>
+              <listItem>
+                Select "SolidTileShape" from the dropdown list in the first row of the "Shape"
+                column.
+              </listItem>
+              <listItem>
+                Close the "Solidity" window.
+              </listItem>
+            </list>
+          </listItem>
+          <listItem>
+            Define the rules for the player sprite.
+            <list class="bullet">
+              <listItem>
+                Display the sprite definition editor for the "Player" sprite definition, by
+                double-clicking it, right-clicking it and selecting "Edit", or selecting it and
+                pressing F4 or selecting "Properties" from the view menu.
+              </listItem>
+              <listItem>
+                Select the "Rules" tab.
+              </listItem>
+              <listItem>
+                Add a new rule by selecting "Add Rule" from the "Sprite Definition" menu, or by
+                selecting the New button from the toolbar in the Rules tab.
+                <list class="bullet">
+                  <listItem>
+                    Enter "If player is pressing left" as the rule name.
+                  </listItem>
+                  <listItem>
+                    Select "If" from the first dropdown list to indicate that the type of this rule
+                    is a condition.
+                  </listItem>
+                  <listItem>
+                    Select "IsInputPressed" from the next dropdown list.
+                  </listItem>
+                  <listItem>
+                    Select "SpriteBase.InputBits.Left" from the "Input" dropdown list.
+                  </listItem>
+                  <listItem>
+                    Select "false" from the "InitialOnly" dropdown list. This allows the player to
+                    keep turning while holding the left arrow.
+                  </listItem>
+                </list>
+              </listItem>
+              <listItem>
+                Add another new rule named "Turn left"
+                <list class="bullet">
+                  <listItem>
+                    Select "Do" from the first dropdown and "CalculateRotatedState" from the second
+                    dropdown.
+                  </listItem>
+                  <listItem>
+                    Select "(int)Sprites.Player.State.Norm0" in the "FirstState" combo box.
+                  </listItem>
+                  <listItem>
+                    Type "72" in the "StateCount" combo box. You may recall this is the number of
+                    states we created for the player.
+                  </listItem>
+                  <listItem>
+                    Type "state+1" into the "NewState" combo box. Adding to the state rotates it
+                    to the left, while subtracting rotates it to the right. Keep in mind that you
+                    could normally import a rotating sprite instead of having to know
+                    these parameters, but this tutorial will show you all the details.
+                  </listItem>
+                  <listItem>
+                    Select "state" from the "Output To" combo box. This ensures that, after the new
+                    state is calculated, it is set as the player sprite's current state. Note that
+                    we use CalculateRotatedState instead of simply adding or subtracting 1 to ensure
+                    that the state never goes outside the range of 0 to 71.
+                  </listItem>
+                  <listItem>
+                    Check the "End If/End While" checkbox to end the first rule's condition.
+                  </listItem>
+                </list>
+              </listItem>
+              <listItem>
+                Add a new rule named "If player is pressing right"
+                <list class="bullet">
+                  <listItem>
+                    Select "If" from the first dropdown and "IsInputPressed" from the next
+                    dropdown.
+                  </listItem>
+                  <listItem>
+                    Select "SpriteBase.InputBits.Right" from the "Input" dropdown list.
+                  </listItem>
+                  <listItem>
+                    Select "false" from the "InitialOnly" dropdown list.
+                  </listItem>
+                </list>
+              </listItem>
+              <listItem>
+                Add a new rule named "Turn right"
+                <list class="bullet">
+                  <listItem>
+                    Select "Do" from the first dropdown and "CalculateRotatedState" from the second
+                    dropdown.
+                  </listItem>
+                  <listItem>
+                    Select "(int)Sprites.Player.State.Norm0" in the "FirstState" combo box.
+                  </listItem>
+                  <listItem>
+                    Type "72" in the "StateCount" combo box.
+                  </listItem>
+                  <listItem>
+                    Type "state-1" into the "NewState" combo box. This will rotate to the previous state,
+                    which is one click to the right.
+                  </listItem>
+                  <listItem>
+                    Select "state" from the "Output To" combo box.
+                  </listItem>
+                  <listItem>
+                    Check the "End If/End While" checkbox to end the "If player is pressing right"
+                    condition.
+                  </listItem>
+                </list>
+              </listItem>
+              <listItem>
+                Add a new rule named "If the player is pressing up"
+                <list class="bullet">
+                  <listItem>
+                    Select "If" from the first dropdown and "IsInputPressed" from the next
+                    dropdown.
+                  </listItem>
+                  <listItem>
+                    Select "SpriteBase.InputBits.Up" from the "Input" dropdown list.
+                  </listItem>
+                  <listItem>
+                    Select "false" from the "InitialOnly" dropdown list.
+                  </listItem>
+                </list>
+              </listItem>
+              <listItem>
+                Add a new rule named "Accelerate"
+                <list class="bullet">
+                  <listItem>
+                    Select "Do" from the first dropdown and "PolarAccelerate" from the second
+                    dropdown.
+                  </listItem>
+                  <listItem>
+                    Enter "5" in the "Acceleration" combo box.
+                  </listItem>
+                  <listItem>
+                    Select "(int)Sprites.Player.State.Norm0" from the "FirstState" dropdown.
+                  </listItem>
+                  <listItem>
+                    Enter "72" in the "StateCount" combo box.
+                  </listItem>
+                  <listItem>
+                    Check the "End If/End While" checkbox.
+                  </listItem>
+                </list>
+              </listItem>
+              <listItem>
+                Add a new rule named "React to solidity"
+                <list class="bullet">
+                  <listItem>
+                    Select "Do" from the first dropdown and "ReactToSolid" from the second
+                    dropdown.
+                  </listItem>
+                </list>
+              </listItem>
+              <listItem>
+                Add a new rule named "Move"
+                <list class="bullet">
+                  <listItem>
+                    Select "Do" from the first dropdown and "MoveByVelocity" from the second
+                    dropdown.
+                  </listItem>
+                </list>
+              </listItem>
+              <listItem>
+                Add a new rule named "Inertia"
+                <list class="bullet">
+                  <listItem>
+                    Select "Do" from the first dropdown and "ReactToInertia" from the second
+                    dropdown.
+                  </listItem>
+                  <listItem>
+                    Select the "Parameters" tab.
+                  </listItem>
+                  <listItem>
+                    In the first row of the grid, type "My inertia".  This adds a parameter to
+                    this sprite type that can be specified on each sprite instance in the map
+                    editor.
+                  </listItem>
+                  <listItem>
+                    Switch back to the "Rules" tab.
+                  </listItem>
+                  <listItem>
+                    Select "My_inertia" from the "RetainPercentVertical" and
+                    "RetainPercentHorizontal" dropdown lists.
+                  </listItem>
+                </list>
+              </listItem>
+              <listItem>
+                Close the sprite definition editor.
+              </listItem>
+            </list>
+          </listItem>
+          <listItem>
+            Create a new layer.
+            <list class="bullet">
+              <listItem>
+                Locate the "Layers" folder under "Level 1" in the project tree and create a new
+                layer in it.
+              </listItem>
+              <listItem>
+                Enter "My Layer" for the layer name.
+              </listItem>
+              <listItem>
+                Note the deault selection of "My Tileset" for the Tileset, and the default
+                values of 100 and 15 for the layer width and height.
+              </listItem>
+              <listItem>
+                Click Add.
+              </listItem>
+            </list>
+          </listItem>
+          <listItem>
+            Edit the layer
+            <list class="bullet">
+              <listItem>
+                The layer editor should appear automatically when the layer is added, but if
+                you need to re-display it, you can locate the "Editor" node inside the new
+                "My Layer" node in the project tree, and double-click it.
+              </listItem>
+              <listItem>
+                Scroll to the bottom of the layer.
+              </listItem>
+              <listItem>
+                Select the green tile from the "Tiles" pane.
+              </listItem>
+              <listItem>
+                Draw a floor accross the bottom of this layer by moving the mouse to tile
+                coordinates "0,14" and dragging a straight row of green tiles to the right edge
+                of the window. The tile coordinate is displayed in the map editor's status bar.
+              </listItem>
+              <listItem>
+                Scroll to the right and repeat the previous step until there is a green floor
+                across the entire bottom of the map.
+              </listItem>
+              <listItem>
+                Select the star tile from the Tiles pane.
+              </listItem>
+              <listItem>
+                Place the star on the blue background somewhere. Notice that it has a black
+                (actually transparent) background. If we want to create tiles like this on the
+                same layer as the background, they need to have their own background. We'll do
+                this in the next step, "Define a tile mapping."
+              </listItem>
+              <listItem>
+                Select the "Sprites" tab.
+              </listItem>
+              <listItem>
+                Select "Add Sprites".
+              </listItem>
+              <listItem>
+                Select "&lt;All&gt;" from the dropdown list of sprite categories.
+              </listItem>
+              <listItem>
+                Select the red triangle sprite.
+              </listItem>
+              <listItem>
+                In the sprite properties pane at the bottom of the sprites pane, enter "1" into
+                the "Priority" field, and press Enter.  This ensures that the sprite will
+                draw after the layer it's in instead of before or instead of interleaving with
+                the tiles. You probably won't have to change the default value because it is already
+                1, but be aware of this value for controlling how sprites draw.
+              </listItem>
+              <listItem>
+                Scroll to the left end of the map and click the sprite onto the layer's blue
+                background somewhere.  Notice that the sprite doesn't need to worry about
+                the background because it is drawn independently of the tiles in the layer,
+                rather than replacing tiles in the layer.
+              </listItem>
+              <listItem>
+                Select "Select Sprites" from the sprites pane.
+              </listItem>
+              <listItem>
+                Click on the sprite that was just added to select it.
+              </listItem>
+              <listItem>
+                In the sprite properties pane, select "Standard" in the "Solidity" field.
+                Defining the solidity on the individual sprite instance allows different
+                instances of the same sprite definition to react differently to map solidity or
+                allows the same instance to act differently at different times.
+              </listItem>
+              <listItem>
+                In the sprite properties pane, enter "98" for "My inertia".  Notice that
+                this is the parameter added to the sprite definition for this sprite type.
+              </listItem>
+              <listItem>
+                Close the map editor.
+              </listItem>
+            </list>
+          </listItem>
+          <listItem>
+            Define a tile mapping.
+            <list class="bullet">
+              <listItem>
+                Double-click "My Tileset" in the Tilesets folder (or select it and open it with
+                F4 or the Properties command).
+              </listItem>
+              <listItem>
+                Select the star tile in the bottom pane and notice that its frameset index is
+                #2 in the status bar.
+              </listItem>
+              <listItem>
+                In order to replace this tile with one that has a background, we'll override
+                tile number 2: Select "New Tile" from the Tileset menu or the toolbar next to
+                the "Mapped Tiles" dropdown box.
+              </listItem>
+              <listItem>
+                Select "Custom", enter "2" into the Tile Value field, and click OK.
+              </listItem>
+              <listItem>
+                Select and drag the blue frame from the bottom pane to the top pane and drop it
+                on the left side of the star. Alternatively, you can select the blue tile in
+                the bottom frame and press Ctrl-A to add it to the tile.  If it gets added
+                after the star, then select the star frame in the bottom pane and add that
+                (with Ctrl-A) too.  Then select the first star in the top pane and press
+                the delete key to delete that frame from the tile.
+              </listItem>
+              <listItem>
+                With only the blue frame in the top pane selected, replace the default value of
+                "1" in the "Repeat Count" field with a "0". This causes the blue background
+                frame to be merged with the star frame so they display at the same time.
+              </listItem>
+              <listItem>
+                Feel free to go back to the map editor (double-click on "Editor" under the "My
+                Layer" node in the project tree) and verify that the star has a blue background
+                now.
+              </listItem>
+              <listItem>
+                Close the Tileset Editor.
+              </listItem>
+            </list>
+          </listItem>
+          <listItem>
+            Add a new plan to select a player sprite (map keyboard input to the sprite and
+            scroll it into view).
+            <list class="bullet">
+              <listItem>
+                Add a new plan to the "Plans" folder under Maps - Level 1 - Layers - My Layer.
+              </listItem>
+              <listItem>
+                Enter the name "Manage player sprite" in the Name field of the plan.
+              </listItem>
+              <listItem>
+                Select "Add New Rule" from the "Plan" menu or the toolbar above the rule list.
+                <list class="bullet">
+                  <listItem>
+                    Enter the rule name "Map input to player sprite".
+                  </listItem>
+                  <listItem>
+                    Select "Do" from the first dropdown and "MapPlayerToInputs" from the second
+                    dropdown.
+                  </listItem>
+                  <listItem>
+                    Enter 1 in the PlayerNumber field.
+                  </listItem>
+                  <listItem>
+                    Select m_ParentLayer.m_Player_1 from the Target dropdown list.
+                  </listItem>
+                </list>
+              </listItem>
+              <listItem>
+                Add another new rule named "Scroll player sprite into view".  Note: this
+                could be done on the sprite definition instead (so you don't have to repeat
+                this on every map) but if you want multiple players, it's better to see that it
+                can be done here too.
+                <list class="bullet">
+                  <listItem>
+                    Select "Do" from the first dropdown and "ScrollSpriteIntoView" from the second.
+                  </listItem>
+                  <listItem>
+                    Select "m_ParentLayer.m_Player_1" from the "Sprite" dropdown list.
+                  </listItem>
+                  <listItem>
+                    Select "true" from the "UseScrollMargins" dropdown list.
+                  </listItem>
+                </list>
+              </listItem>
+              <listItem>
+                Close the plan editing window.
+              </listItem>
+            </list>
+          </listItem>
+          <listItem>
+            Set the appropriate scrolling size for the map.
+            <list class="bullet">
+              <listItem>
+                Open the properties window for Level 1 (double-click on "Level 1" in the
+                project tree).
+              </listItem>
+              <listItem>
+                Click the "Wizard..." button.
+              </listItem>
+              <listItem>
+                Click Next.
+              </listItem>
+              <listItem>
+                Check the box for "My Layer" and click Next.
+              </listItem>
+              <listItem>
+                Click Finish.
+              </listItem>
+              <listItem>
+                Click Update.
+              </listItem>
+            </list>
+          </listItem>
+          <listItem>
+            Press F5 or select "Run Project in Debug Mode" from the File menu
+          </listItem>
+        </list>
+        <para>
+          At this point you should be able to move the player around using the arrow keys
+          and see the map scroll (although you might not notice it scrolling until you
+          get to the star because the graphics are so uniform).  If you'd like to
+          further enhance the game to pick up the star, add some walls and introduce
+          gravity, you can proceed with the steps below.  After each step you can
+          run the game again to see your progress (if any is visible) by pressing
+          F5.  Note that you will be un-able to re-compile (re-run) your game if
+          it's still running, so it's a good idea to quit before proceeding to the next
+          step.
+        </para>
+        <list class="bullet">
+          <listItem>
+            Close the running game window.
+          </listItem>
+          <listItem>
+            Add a rule for gravity.
+            <list class="bullet">
+              <listItem>
+                Open the "Player" sprite definition for editing.
+              </listItem>
+              <listItem>
+                Go to the Rules tab.
+              </listItem>
+              <listItem>
+                Expand "If the player is pressing up" and select "Accelerate".  This is to
+                ensure that the new rule gets added in the right position (right before "React
+                to solidity").  New rules are always added below the selected rule.
+                Alternatively you could simply create the rule and then use the up and down
+                arrow buttons on the toolbar to position it.
+              </listItem>
+              <listItem>
+                Add a new rule before "React to solidity" named "Gravity"
+                <list class="bullet">
+                  <listItem>
+                    Select "Do" from the first dropdown and "AlterYVelocity" from the second
+                    dropdown.
+                  </listItem>
+                  <listItem>
+                    Enter 0.1 in the "delta" field.
+                  </listItem>
+                </list>
+              </listItem>
+              <listItem>
+                Close the sprite definition editor
+              </listItem>
+            </list>
+          </listItem>
+          <listItem>
+            Create a counter to represent collected stars.
+            <list class="bullet">
+              <listItem>
+                Create a new counter in the "Counters" folder.
+              </listItem>
+              <listItem>
+                Enter the name "Stars".
+              </listItem>
+              <listItem>
+                Enter a maximum of 18.
+              </listItem>
+              <listItem>
+                Leave the default Value of 1.  This will allow you to see/test the
+                inventory display as soon as it's implemented instead of waiting until the
+                player has the ability to pick up stars.
+              </listItem>
+              <listItem>
+                Close the Edit Counter window.
+              </listItem>
+            </list>
+          </listItem>
+          <listItem>
+            Create an overlay map to display inventory.
+            <list class="bullet">
+              <listItem>
+                Create a new map in the "Maps" folder and name it "My Overlay".
+              </listItem>
+              <listItem>
+                Remember to click the "Add" button after entering the name to add the map.
+              </listItem>
+              <listItem>
+                Create a new layer in the new map's "Layers" folder named "Inventory".
+              </listItem>
+              <listItem>
+                Before adding the layer, click the "Wizard..." button.
+              </listItem>
+              <listItem>
+                Accept the default of "My Tileset" and click Next.
+              </listItem>
+              <listItem>
+                Accept the default of 1 byte per tile and click Next.
+              </listItem>
+              <listItem>
+                Check the box to delete all tiles and use a new background (this is required
+                when adding a new layer).  Select the first red triangle and click
+                Next.  We don't have a transparent background tile but we need one.
+                We'll go back and replace the first red triangle tile with an empty tile in a
+                moment.
+              </listItem>
+              <listItem>
+                Accept the default scroll rate and click Next.
+              </listItem>
+              <listItem>
+                At this point in the wizard there is sometimes a step that would allow you to
+                position the layer within the map with a helpful preview window. However, since
+                this layer is new and has no tiles yet, no preview is possible, and this step
+                is skipped.
+              </listItem>
+              <listItem>
+                Accept the default priority and click Next.
+              </listItem>
+              <listItem>
+                Check the box to "Size the layer to fill the map's scrollable area." and click
+                Next.
+              </listItem>
+              <listItem>
+                Accept the default virtual size and click next.
+              </listItem>
+              <listItem>
+                Click Finish.
+              </listItem>
+              <listItem>
+                Click "Add" to add the layer.
+              </listItem>
+              <listItem>
+                The layer full of red triangles will be displayed. We'll replace these with
+                an empty tile in the next step. Close the layer editor.
+              </listItem>
+            </list>
+          </listItem>
+          <listItem>
+            Define an empty tile
+            <list class="bullet">
+              <listItem>
+                Open "My Tileset" for editing.
+              </listItem>
+              <listItem>
+                Add a new tile mapping (select "New Tile" from the Tileset menu).
+              </listItem>
+              <listItem>
+                Select "Custom", enter "3" as the value and click OK.
+              </listItem>
+              <listItem>
+                Select the triangle frame in the top "Frame Properties" pane.
+              </listItem>
+              <listItem>
+                Press the delete key (or select "Delete Selected Frames" from the Tileset menu)
+                and confirm the delete operation.  Note that a tile without any frames is
+                somewhat more efficient than a tile with a graphic cell that is all
+                transparent.
+              </listItem>
+              <listItem>
+                Close the Tileset Editor.
+              </listItem>
+            </list>
+          </listItem>
+          <listItem>
+            Activate the overlay map as an overlay.
+            <list class="bullet">
+              <listItem>
+                Double-click on the top level "Project" node to open the project properties
+                window.
+              </listItem>
+              <listItem>
+                Select "My Overlay" from the "OverlayMap" dropdown list.
+              </listItem>
+              <listItem>
+                Close the Project Properties window.
+              </listItem>
+            </list>
+          </listItem>
+          <listItem>
+            Draw the Stars counter on the overlay map.
+            <list class="bullet">
+              <listItem>
+                Open the map editor for the "Inventory" layer of "My Overlay".
+              </listItem>
+              <listItem>
+                Select the "Plans" tab.
+              </listItem>
+              <listItem>
+                Add a new plan by clicking the "Add a New Plan" toolbar button inside the
+                "Plans" frame.
+              </listItem>
+              <listItem>
+                Select the plan that was added.
+              </listItem>
+              <listItem>
+                Select "Snap to Tiles" from the Edit menu.
+              </listItem>
+              <listItem>
+                Move the mouse to tile coordinate 1,1 (see status bar).
+              </listItem>
+              <listItem>
+                Left click to add a point.
+              </listItem>
+              <listItem>
+                Move the mouse to tile coordinate 19,2. Note that the size of the rectangle
+                combined with the maximum value of the counter has an effect on how the
+                inventory will be drawn.  Notice that the maximum for stars was set to 18,
+                and 18 is also the width (in tiles) of the rectangle.
+              </listItem>
+              <listItem>
+                Left click to define a rectangle where stars will be drawn.  Note that
+                after you click the rectangle will go away and propose a third coordinate as
+                you move the mouse around, but if you do not add another point and do move the
+                mouse out of the map editor the rectangle will re-appear demonstrating that the
+                plan in its saved form has two points defining a rectangle.
+              </listItem>
+              <listItem>
+                Enter the name "Draw Stars" for the plan in the plan properties pane
+                at the bottom left, and press Enter.
+              </listItem>
+              <listItem>
+                Click the "Edit Selected Plan" button in toolbar in the "Plans" frame, or
+                select "Selected Plan Details" from the Edit menu.
+              </listItem>
+              <listItem>
+                Add a rule named "Draw stars at top of screen". (Click toolbar button to add a
+                new rule or select "Add New Rule" from the "Plan" menu.)
+              </listItem>
+              <listItem>
+                Select "Do" from the first dropdown and "DrawCounterAsTile" from the second
+                dropdown.
+              </listItem>
+              <listItem>
+                Enter 2 for the TileIndex parameter.
+              </listItem>
+              <listItem>
+                Select "Counter.Stars" from the "Counter" dropdown list.
+              </listItem>
+              <listItem>
+                Select "PlanBase.DrawStyle.RepeatRightToCounter" from the "style" dropdown
+                list.  This style will draw a bar filled with un-stretched (normal-size)
+                stars and cut it off based <legacyBold>not</legacyBold>
+                on the number of stars displayed, but on the ratios of owned stars to maximum
+                stars and drawn bar size to total bar size.  For example, if your bar were
+                3 tiles wide, and your max quantity were 2, but you only owned 1, then
+                the bar would draw one and a half tiles because 1 is half of 2 and
+                half of 3 is one and a half.
+              </listItem>
+              <listItem>
+                Close the Plan Editor.
+              </listItem>
+              <listItem>
+                Close the Map Editor.
+              </listItem>
+            </list>
+          </listItem>
+          <listItem>
+            Define a category of tiles that should react to the player.
+            <list class="bullet">
+              <listItem>
+                Create a new category in the "Tile Categories" folder in the project tree.
+              </listItem>
+              <listItem>
+                Enter the category name "Touchable".
+              </listItem>
+              <listItem>
+                Select "My Tileset" and click "Edit...".
+              </listItem>
+              <listItem>
+                Add the star tile to the category (drag it down or select it and select "Add to
+                category" from the Tiles menu.
+              </listItem>
+              <listItem>
+                Close the Tile Category window.
+              </listItem>
+              <listItem>
+                Close the Tile Category Name window.
+              </listItem>
+              <listItem>
+                Press the F7 key or select "Generate Project" from the file menu.  If you
+                don't do this, the new category might not show up as an available option when
+                defining the sprite rule.  If that happens, remember that F7 will
+                re-compile the project, making all the recent changes available to the
+                environment for "reflection" (reflection is a term used often in
+                .NET programming that refers to the kind of process that SGDK2 uses to examine
+                the generated code to see what objects are in a compiled project).
+              </listItem>
+            </list>
+          </listItem>
+          <listItem>
+            Define a rule to allow player sprites to acquire stars.
+          <list class="bullet">
+            <listItem>
+              Open the "Player" Sprite Definition for editing.
+            </listItem>
+            <listItem>
+              Go to the Rules tab.
+            </listItem>
+            <listItem>
+              Select "Move".
+            </listItem>
+            <listItem>
+              Add a new rule called "Touch tiles".  Touch tiles is required once if
+              the sprite interacts with tiles based on their category or tile numbers rather
+              than simply their solidity.  It creates a list of tiles that the sprite is
+              touching that can be processed by other rules.
+              <list class="bullet">
+                <listItem>
+                  Select "Do" in the first dropdown and "TouchTiles" in the second dropdown.
+                </listItem>
+                <listItem>
+                  Select "TileCategoryName.Touchable" in the "Category" dropdown list.
+                </listItem>
+              </list>
+            </listItem>
+            <listItem>
+              Add a new rule called "Get stars".
+              <list class="bullet">
+                <listItem>
+                  Select "Do" from the first dropdown and "TileTake" from the second dropdown.
+                </listItem>
+                <listItem>
+                  Enter the value 2 into the TileValue combo box.  Remember that 2 was the
+                  number of the star tile we defined (with the blue background) in the TileSet
+                  editor.
+                </listItem>
+                <listItem>
+                  Select "Counter.Stars" from the "Counter" dropdown list.
+                </listItem>
+                <listItem>
+                  Enter "0" (zero) in the "NewValue" combo box. This indicates that when a star tile
+                  is removed, it should be replaced with tile number 0 (the empty background tile).
+                </listItem>
+                <listItem>
+                  Leave "Output to" empty.
+                </listItem>
+              </list>
+            </listItem>
+            <listItem>
+              Close the sprite definition editor.
+            </listItem>
+          </list>
+          </listItem>
+          <listItem>
+            Add walls to the map.
+          <list class="bullet">
+            <listItem>
+              Open "My Layer" from map "Level 1" in the editor.
+            </listItem>
+            <listItem>
+              Select the green tile.
+            </listItem>
+            <listItem>
+              Draw some walls between the player and the star. (Don't block the player
+              completely of course.)
+            </listItem>
+            <listItem>
+              Add some more stars if you like.
+            </listItem>
+            <listItem>
+              Close the map editor.
+            </listItem>
+          </list>
+          </listItem>
+          <listItem>
+            Run the project (press F5).
+          </listItem>
+        </list>
+
+      </content>
+    </section>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

@@ -1,0 +1,484 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="c93a5843-a79d-4489-aee9-40cd9b4c7d5c" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+  <para>Using templates can greatly simplify the process of creating or adding elements to a game. As such, this tutorial turns out to be trivial, but you may want to review it so you are aware of what is available.</para>
+    </introduction>
+
+<section>
+   <content>
+  <list class="ordered">
+    <listItem>Open the File menu, and from the "New" pop-up menu, select "Scrolling Game Development Kit Sample Project".</listItem>
+
+    <listItem>Save the project by selecting "Save Project" from the file menu. The environment needs to know where to put all the project-related files (including the compiled executable), so it's necessary to save the project to a particular location before running it in order to determine where the project's files will reside.</listItem>
+  </list>
+
+  <para>When you run the project, you will notice that you have the option to begin a single or multi-player game. If you begin a multi-player game, the controls for the second player (which can be seen and adjusted in the Tools-&gt;Options menu) will control a second player in the right-hand pane. You can define your own project templates that appear in the New menu by saving a project in the Library\Projects folder. It is recommended that source code that is the same as the default be deleted from the template project because the environment will automatically add the built-in source code when creating a project from a template.</para>
+
+    </content>
+</section>
+
+<section><!--h2-->
+  <title>Adding another player</title>
+  <content>
+
+  <para>To demonstrate a bit more about how multi-player games work, consider the following steps that are required to change the "2 player game" option into a "3 player game" option:</para>
+
+  <list class="ordered">
+    <listItem>Change the 2 to a 3 on the menu screen
+
+      <list class="bullet">
+        <listItem>In the main project tree view, expand "Maps", "Menu", "Layers", "Letters" and double-click on "Editor".</listItem>
+
+        <listItem>Select the "3" tile in the "Tiles" tab.</listItem>
+
+        <listItem>Click on the "2" to replace it with "3".</listItem>
+      </list>
+    </listItem>
+
+    <listItem>Increase maximum number of players and views to 3.
+
+      <list class="bullet">
+        <listItem>From the project tree, Expand "Counters" and select "Players".</listItem>
+
+        <listItem>Edit the "Players" counter by selecting "Properties" from the view menu or "Edit" from the context menu, or by double-clicking "Players".</listItem>
+
+        <listItem>Change "Maximum" from 2 to 3.</listItem>
+
+        <listItem>Select the top/root node of the project tree. This node contains project-wide properties.</listItem>
+
+        <listItem>Edit this node by selecting "Properties" from the view menu, selecting "Edit" fromt he context menu, or double-clicking it.</listItem>
+
+        <listItem>Change MaxPlayers to 3.</listItem>
+
+        <listItem>Change MaxViews to 4. (There is no 3-player view layout.)</listItem>
+      </list>
+    </listItem>
+
+    <listItem>Create a graphic to split views horizontally
+
+      <list class="bullet">
+        <listItem>Create a new graphic sheet by selecting "Graphic Sheets" in the project tree and selecting "New Object" from the File menu or "New" from the context menu or toolbar.</listItem>
+
+        <listItem>Enter the name "HSplitter", and specify a CellHeight of 15, CellWidth of 128, Columns of 1 and Rows of 2.</listItem>
+
+        <listItem>Add the graphic sheet and edit it.</listItem>
+
+        <listItem>Select "Gradient Fill" from the Tools menu.</listItem>
+
+        <listItem>Un-check "Anti-Alias" in the tools menu.</listItem>
+
+        <listItem>Right-click on the color white in the color selector panel so select white as the "Solids" color.</listItem>
+
+        <listItem>In the magnified view pane, drag the mouse from coordinate 0,7 to 0,15 and release.</listItem>
+
+        <listItem>Select the bottom cell from "Cell Manager"</listItem>
+
+        <listItem>Click the "Store to Selected Cell(s)" button in the Cell Manager pane.</listItem>
+
+        <listItem>Add a new Frameset in the project tree.</listItem>
+
+        <listItem>Enter the name "HSplitterFrames" for the new frameset.</listItem>
+
+        <listItem>Select "HSplitter" the the "Graphic Sheet" dropdown list.</listItem>
+
+        <listItem>Select both cells from the "HSplitter" graphic sheet and add them to the frameset by clicking the arrow button in the toolbar or selecting "Add Selected Cells to Frameset" from the "Frameset" menu.</listItem>
+
+        <listItem>Add a new Tileset in the project tree.</listItem>
+
+        <listItem>Enter the name "HSplitterTiles".</listItem>
+
+        <listItem>Select "HSplitterFrames" in the "Frameset" dropdown list.</listItem>
+
+        <listItem>Enter 128 as the tile width and 15 as the tile height.</listItem>
+
+        <listItem>The graphics are now ready for use on a map. Close all the open child windows.</listItem>
+      </list>
+    </listItem>
+
+    <listItem>Add a new layer with a horizontal splitter to the overlay map.
+
+      <list class="bullet">
+        <listItem>In the project tree, under Maps-&gt;Overlay for 2 players, select the "Layers" node.</listItem>
+
+        <listItem>Select "New" to add a new layer for this map.</listItem>
+
+        <listItem>Enter a name of "HorizontalSplitter" for the new layer.</listItem>
+
+        <listItem>Change "ScrollRateX" and "ScrollRateY" to 0.</listItem>
+
+        <listItem>Select "HSplitterTiles" as teh value for "Tileset".</listItem>
+
+        <listItem>Set OffsetY to 293 (half the height of the display minus half the height of the splitter graphic).</listItem>
+
+        <listItem>Set SizeInTiles to 7,1.</listItem>
+
+        <listItem>Set ZIndex to 1.</listItem>
+
+        <listItem>Click the "Add" button to add the layer.</listItem>
+
+        <listItem>When the layer editor appears, select the horizontal splitter graphic from the "Tiles" tab.</listItem>
+
+        <listItem>Across the top of the layer, draw a horizontal splitter in all 7 tiles of the layer. (If you need help seeing where the layer is, select "Layer Edges" from the View menu.)</listItem>
+
+        <listItem>The splitter is done. Close all child windows.</listItem>
+      </list>
+    </listItem>
+
+    <listItem>Change rules on menu screen to correspond to 3-players instead of 2.
+
+      <list class="bullet">
+        <listItem>Open the "Select Menu Items" plan from Maps-&gt;Menu-&gt;Layers-&gt;Letters-&gt;Plans.</listItem>
+
+        <listItem>Expand "If down is pressed".</listItem>
+
+        <listItem>Expand "Else if up is pressed".</listItem>
+
+        <listItem>Expand "Else if Return/Enter is pressed".</listItem>
+
+        <listItem>Expand "If 1 player game selected".</listItem>
+
+        <listItem>Expand "Else if 2 player game selected".</listItem>
+
+        <listItem>Select "Set 2 players".</listItem>
+
+        <listItem>Change the Value parameter to "3" instead of "2".</listItem>
+
+        <listItem>Optional: Change the names of all the rules that refer to 2 players to 3 instead.</listItem>
+      </list>
+    </listItem>
+
+    <listItem>Change the 2 player overlay map to a 3 player overlay map.
+
+      <list class="bullet">
+        <listItem>Select Maps-&gt;Overlay for 2 players.</listItem>
+
+        <listItem>Edit the map parameters by double-clicking, by selecting Properties from the view menu, or selecting Edit from the context menu.</listItem>
+
+        <listItem>Change the name of the map from "Overlay for 2 players" to "Overlay for 3 players".</listItem>
+
+        <listItem>Click the Update button.</listItem>
+
+        <listItem>Open the map editor from Layers-&gt;Inventory-&gt;Editor below the "Overlay for 3 players" node.</listItem>
+
+        <listItem>Select "Snap to Tiles" from the Edit menu.</listItem>
+
+        <listItem>Select "Add Plan" from the Edit menu.</listItem>
+
+        <listItem>Select the new plan "Overlay for 3 players Plan 1" from the top listbox.</listItem>
+
+        <listItem>Change the name of the plan in the property grid to "Player 3 Cherries".</listItem>
+
+        <listItem>Move the mouse so the second status bar panel reads "Tile X,Y: 1,10" and click once.</listItem>
+
+        <listItem>Move the mouse to Tile 11,11 and click once more.</listItem>
+
+        <listItem>Add another plan by select "Add Plan" from the Edit menu, naming it "Player 3 Grapes" and adding corner points at tiles 1,11 and 11,12.</listItem>
+
+        <listItem>Add a third plan with the name "Player 3 Ice Creams" and corners at tile 1,12 and 11,13.</listItem>
+
+        <listItem>Add a fourth plan with the name "Player 3 score" and corners at tile 1,13 and 6,14.</listItem>
+      </list>
+    </listItem>
+
+    <listItem>Add counters to track player 3's inventory.
+
+      <list class="bullet">
+        <listItem>Select "Counters" in the project tree pane.</listItem>
+
+        <listItem>Select "New Object" from the file menu or "New" from the context menu.</listItem>
+
+        <listItem>Enter the name "Player 3 grapes", set the maximum to 10 and the value to 0.</listItem>
+
+        <listItem>Select "New Object" from the file menu or "New" from the context menu.</listItem>
+
+        <listItem>Enter the name "Player 3 cherries", set the maximum to 10 and the value to 0.</listItem>
+
+        <listItem>Select "New Object" from the file menu or "New" from the context menu.</listItem>
+
+        <listItem>Enter the name "Player 3 ice cream", set the maximum to 10 and the value to 0.</listItem>
+
+        <listItem>Select "New Object" from the file menu or "New" from the context menu.</listItem>
+
+        <listItem>Enter the name "Player 3 score", set the maximum to 10000000 and the value to 0.</listItem>
+      </list>
+    </listItem>
+
+    <listItem>Draw player 3's inventory.
+
+      <list class="bullet">
+        <listItem>In the project tree, locate and edit Maps-&gt;Overlay for 3 players-&gt;Layers-&gt;Inventory-&gt;Plans-&gt;Player 3 Grapes.</listItem>
+
+        <listItem>Select "Add New Rule" from the Plan menu.</listItem>
+
+        <listItem>Set the Rule name to "Draw player 3 grape inventory".</listItem>
+
+        <listItem>Select "DrawCounterAsTile" from the rule function dropdown combo box.</listItem>
+
+        <listItem>Set TileIndex to 55 (the grape tile), counter to Counter.Player_3_grapes (from the dropdown list), and style to PlanBase.DrawStyle.RepeatRightToCounter (from the dropdown list).</listItem>
+
+        <listItem>In the project tree, locate and edit Maps-&gt;Overlay for 3 players-&gt;Layers-&gt;Inventory-&gt;Plans-&gt;Player 3 Cherries.</listItem>
+
+        <listItem>Select "Add New Rule" from the Plan menu.</listItem>
+
+        <listItem>Set the Rule name to "Draw player 3 cherry inventory".</listItem>
+
+        <listItem>Select "DrawCounterAsTile" from the rule function dropdown combo box.</listItem>
+
+        <listItem>Set TileIndex to 54 (the cherry tile), counter to Counter.Player_3_cherries, and style to PlanBase.DrawStyle.RepeatRightToCounter.</listItem>
+
+        <listItem>In the project tree, locate and edit Maps-&gt;Overlay for 3 players-&gt;Layers-&gt;Inventory-&gt;Plans-&gt;Player 3 Ice Creams.</listItem>
+
+        <listItem>Select "Add New Rule" from the Plan menu.</listItem>
+
+        <listItem>Set the Rule name to "Draw player 3 ice cream inventory".</listItem>
+
+        <listItem>Select "DrawCounterAsTile" from the rule function dropdown combo box.</listItem>
+
+        <listItem>Set TileIndex to 56 (the ice cream tile), counter to Counter.Player_3_ice_cream, and style to PlanBase.DrawStyle.RepeatRightToCounter.</listItem>
+
+        <listItem>In the project tree, locate and edit Maps-&gt;Overlay for 3 players-&gt;Layers-&gt;Inventory-&gt;Plans-&gt;Player 3 score.</listItem>
+
+        <listItem>Select "Add New Rule" from the Plan menu.</listItem>
+
+        <listItem>Set the Rule name to "Draw player 3 score".</listItem>
+
+        <listItem>Select "DrawCounterWithLabel" from the rule function dropdown combo box.</listItem>
+
+        <listItem>Set Label to "Score: " <legacyBold>including</legacyBold> the double-quotes, counter to Counter.Player_3_score, and color to System.Drawing.KnownColor.White.</listItem>
+      </list>
+    </listItem>
+
+    <listItem>Add a sprite for player 3 to the map.
+
+      <list class="bullet">
+        <listItem>In the project tree, locate and edit Maps-&gt;Level 1-&gt;Layers-&gt;Main-&gt;Editor.</listItem>
+
+        <listItem>Select the "Sprites" tab.</listItem>
+
+        <listItem>Select "Add Sprites".</listItem>
+
+        <listItem>Select "&lt;All&gt;" from the dropdown list of sprite categories.</listItem>
+
+        <listItem>Select the second sprite (the one that looks like the player sprite).</listItem>
+
+        <listItem>Give the sprite a distinctive color by entering 128 into the ModulateGreen entry in the property grid.</listItem>
+
+        <listItem>Set the "Active" property to "False" because player 3 should be inactive by default.</listItem>
+
+        <listItem>Set the "ViewNum" property to 2. This tells the rules in the Player sprite definition that this sprite should appear in view number 2 (the third view of the 4-way split view).</listItem>
+
+        <listItem>Select the value "Standard" as the value for the "Solidity" property.</listItem>
+
+        <listItem>Select "Snap to Tiles" from the Edit menu.</listItem>
+
+        <listItem>Move the mouse to position the new player sprite to the left of the existing 2 player sprites, and click once to add it. (Note the default name Player 3).</listItem>
+      </list>
+    </listItem>
+
+    <listItem>Fix scroll margins for smaller views.
+
+      <list class="bullet">
+        <listItem>Under Maps edit the "Level1" map parameters.</listItem>
+
+        <listItem>Change ScrollMarginTop and ScrollMarginBottom from 256 to 128.</listItem>
+
+        <listItem>Click Update.</listItem>
+      </list>
+    </listItem>
+
+    <listItem>Change the Level 1 map initialization logic to initialize for 3 players.
+
+      <list class="bullet">
+        <listItem>Edit the "ManagePlayers" plan from Maps-&gt;Level 1-&gt;Layers-&gt;Main-&gt;Plans.</listItem>
+
+        <listItem>Expand "If map needs initialization".</listItem>
+
+        <listItem>Select "If 2 players".</listItem>
+
+        <listItem>Change the name to "If 3 players".</listItem>
+
+        <listItem>Change the "right operand" parameter from "2" to "3".</listItem>
+
+        <listItem>Select the "Activate second player" rule.</listItem>
+
+        <listItem>Select "Add new rule" from the plan menu.</listItem>
+
+        <listItem>Enter the name "Activate third player" for the new rule, and verify that the rule's function is ActivateSprite.</listItem>
+
+        <listItem>Select "m_ParentLayer.m_Player_3" for the value of the "Target" parameter.</listItem>
+
+        <listItem>Select the "Side by side view" rule. (Change the name to "Four corners view" to avoid confusion.)</listItem>
+
+        <listItem>Change the "Layout" parameter to ViewLayout.FourCorners.</listItem>
+
+        <listItem>Select the "Activate 2 player overlay" rule, (and change its name to "Activate 3 player overlay" to avoid confusion).</listItem>
+
+        <listItem>Change the MapType parameter to typeof(Overlay_for_3_players_Map).</listItem>
+
+        <listItem>Select the "Hello Player 2" rule.</listItem>
+
+        <listItem>Select "Add new rule" from the Plan menu.</listItem>
+
+        <listItem>Name the new rule "Hello player 3".</listItem>
+
+        <listItem>In the "message" parameter, enter the value "Hello player 3" <legacyBold>including</legacyBold> the quotes.</listItem>
+
+        <listItem>In the "options" parameter, select &lt;Specify multiple Options values&gt; and check the boxes for CustomObjects.Message.Options.Player3 and CustomObjects.Message.Options.Button2Dismiss to indicate that this message will appear in player 3's view and will be dismissed with player 3's button 2 input.</listItem>
+      </list>
+    </listItem>
+
+    <listItem>Map the inputs for player 3 to the player 3 sprite.
+
+      <list class="bullet">
+        <listItem>Under Level 1-&gt;Layers-&gt;Main-&gt;Plans, edit the "Player Inputs" plan.</listItem>
+
+        <listItem>From the Plan menu, select "Add new rule". If no rule is selected, it should add at the end of the list. If you did not add it to the end of the rule list, make sure the rule gets moved to the end.</listItem>
+
+        <listItem>Set the name of the new rule to "If player 3 is active".</listItem>
+
+        <listItem>Change the rule type from "Do" to "If".</listItem>
+
+        <listItem>Select "&gt;=" as the rule function.</listItem>
+
+        <listItem>Select "Counter.Players.CurrentValue" as the left operand and enter 3 for the right operand.</listItem>
+
+        <listItem>Select "Add new rule" from the Plan menu.</listItem>
+
+        <listItem>Enter the name "Read player 3 inputs" for the rule name.</listItem>
+
+        <listItem>Select "CustomObjects.Message.MapPlayerToInputs" as the rule function. This customized version of MapPlayerToInputs prevents the player from moving while a message is displayed.</listItem>
+
+        <listItem>Enter 3 as the value for PlayerNumber and select m_ParentLayer.m_Player_3 as the value for Target.</listItem>
+
+        <listItem>Check the "End If/End While" box.</listItem>
+      </list>
+    </listItem>
+
+    <listItem>Route player 3's inventory interactions to player 3's inventory counters.
+
+      <list class="bullet">
+        <listItem>Under Sprite Definitions, edit "Player".</listItem>
+
+        <listItem>On the Rules tab, expand "Tile Interactions" and expand "If player 1".</listItem>
+
+        <listItem>Select "Player 1 take ice cream".</listItem>
+
+        <listItem>Select "Add Rule" from the "Sprite Definition" menu to add a new rule between "Player 1 take ice cream" and "Else player 2 take grapes".</listItem>
+
+        <listItem>Enter the name "Else if player 2".</listItem>
+
+        <listItem>Change the rule type to "ElseIf".</listItem>
+
+        <listItem>Select "==" as the rule function.</listItem>
+
+        <listItem>Select "ViewNum" as the left operand and 1 as the right operand.</listItem>
+
+        <listItem>Select "Else player 2 take grapes (the first rule inside "Else if player 2")</listItem>
+
+        <listItem>Change the name to "Player 2 take grapes" and change the type to "Do".</listItem>
+
+        <listItem>Select "Else if player 2"</listItem>
+
+        <listItem>From the "Sprite Definition" menu, select Copy Rule-&gt;Copy Selected Rule Including Children.</listItem>
+
+        <listItem>Select "Player 2 take ice cream"</listItem>
+
+        <listItem>Un-check the "End If/End While" box.</listItem>
+
+        <listItem>From the "Sprite Definition" menu, select Paste Rules-&gt;Paste Below Selected Rule.</listItem>
+
+        <listItem>Select "Else if player 21" and select "Remove Rule" from the Sprite Definition menu. Note that this will only remove the parent rule, and will cause all the children to move up a level.</listItem>
+
+        <listItem>Expand "Tile Interactions..."-&gt;"If Player 1"-&gt;"Else If Player 2"</listItem>
+
+        <listItem>Select "Player 2 take grapes1"</listItem>
+
+        <listItem>Change the name to "Else player 3 take grapes" and select "Else" as the rule type.</listItem>
+
+        <listItem>Change the "Counter" parameter from "Counter.Player_2_grapes" to "Counter.Player_3_grapes".</listItem>
+
+        <listItem>Select and expand "Get player 2 grape points1" (change the name to "Get player 3 grape points" to avoid confusion).</listItem>
+
+        <listItem>Select "Add grape points to player 2 score1" (change the name to "Add grape points to player 3 score" to avoid confusion).</listItem>
+
+        <listItem>Change both paremeters that refer to "Counter.Player_2_Score.CurrentValue" to refer to "Counter.Player_3_score.CurrentValue" instead.</listItem>
+
+        <listItem>Repeat steps r through w for the rules relating to cherries (but this time without using "Else" -- Leave "Do" instead).</listItem>
+
+        <listItem>Select "Player 2 take ice cream1" and select "Add Rule" from the "Sprite Definition" menu to add a new rule before "End Tile Interactions".</listItem>
+
+        <listItem>Enter the name "End if player 1" and Select "End" as the rule type.</listItem>
+      </list>
+    </listItem>
+
+    <listItem>Allow player 3 to use doors.
+
+      <list class="bullet">
+        <listItem>Under Maps-&gt;Level1-&gt;Layers-&gt;Main-&gt;Plans, Edit "Door Left".</listItem>
+
+        <listItem>Select "If player 1 is active".</listItem>
+
+        <listItem>Select Copy Rules-&gt;Copy Selected Rule Including Children from the Plan menu.</listItem>
+
+        <listItem>Expand "If player 2 is active".</listItem>
+
+        <listItem>Select the last rule ("Transport player 2 to right door") and check the "End If" box for this rule if it is not checked.</listItem>
+
+        <listItem>Select Paste Rules-&gt;Paste Below Selected Rule from the Plan menu.</listItem>
+
+        <listItem>Select "If player 1 is active1" and change the name to "If player 3 is active".</listItem>
+
+        <listItem>Change the Sprite parameter to "m_ParentLayer.m_Player_3".</listItem>
+
+        <listItem>Select "And player 1 pressing up1" and change the name to "And player 3 pressing up".</listItem>
+
+        <listItem>Change the Sprite parameter to "m_ParentLayer.m_Player_3".</listItem>
+
+        <listItem>Select "And player 1 in front of door1" and change the name to "And player 3 in front of door".</listItem>
+
+        <listItem>Change the Sprite parameter to "m_ParentLayer.m_Player_3".</listItem>
+
+        <listItem>Select "Ensure up is now seen as an old keypress for player 11" and change the name to "Ensure up is now seen as an old keypress for player 3".</listItem>
+
+        <listItem>Change the Sprite parameter to "m_ParentLayer.m_Player_3".</listItem>
+
+        <listItem>Select "Transport player 1 to right door1" and change the name to "Transport player 3 to right door".</listItem>
+
+        <listItem>Change the Sprite parameter to "m_ParentLayer.m_Player_3".</listItem>
+      </list>
+    </listItem>
+
+    <listItem>Delete the tile "animation" for the vertical splitter. (The vertical splitter tile was set to be invisible when the number of players was an odd number so that no splitter would show up when there was only 1 player. This is not necessary and interferes with the ability to display the vertical splitter when 3 players are active.)
+
+      <list class="bullet">
+        <listItem>In the project tree, expand "Tilesets" and edit the "ViewSplitterTiles" tileset.</listItem>
+
+        <listItem>From the "Mapped Tiles" dropdown list, select tile number 1.</listItem>
+
+        <listItem>Select "Delete/Reset Tile" from the Tileset menu, and confirm.</listItem>
+      </list>
+    </listItem>
+  </list>
+
+  <para>The following activities are left as exercises for the reader:</para>
+
+  <list class="bullet">
+    <listItem>Routing player 3 ice cream interactions to player 3's inventory.</listItem>
+
+    <listItem>Correcting the remainder of the rule names.</listItem>
+
+    <listItem>Allowing player 3 to use the other door.</listItem>
+  </list>
+
+  </content>
+</section>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

@@ -127,9 +127,9 @@ namespace SGDK2
          gc.DrawString(sCopyright, fnt, Brushes.White, rcFmt, fmt);
          fnt.Dispose();
          fnt = new Font("Tahoma", 8);
-         AssemblyFileVersionAttribute ver = (AssemblyFileVersionAttribute)Attribute.GetCustomAttribute(Assembly.GetExecutingAssembly(), typeof(AssemblyFileVersionAttribute));
+         string ver = Application.ProductVersion;
          rcFmt = new Rectangle(88, 151, 27, 10);
-         gc.DrawString("v" + ver.Version, fnt, Brushes.White, rcFmt, fmt);
+         gc.DrawString("v" + ver, fnt, Brushes.White, rcFmt, fmt);
          fmt.Dispose();
          fnt.Dispose();
          gc.Dispose();

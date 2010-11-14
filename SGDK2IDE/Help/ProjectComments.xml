@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<doc>
+  <assembly>
+    <name>_SharedItems_</name>
+  </assembly>
+  <members>
+    <member name="N:">
+            <summary>
+            <p>Projects are generated and compiled by the IDE in C# using a combination of
+             code from the project's Source Code folder and code that is generated based on
+             the content of the project. In order to facilitate writing code for the Source
+             Code folder, and to better understand the rules provided by the Sprite Rule and
+             Plan Rule systems, this reference provides detailed documentation of the
+             structure of the generated project.</p>
+             </summary>
+             <remarks>
+             <p>Some useful places to start:</p>
+             <table class="members"><thead><tr><th>Page</th><th>Description</th></tr></thead>
+             <tbody><tr><td valign="top"><see cref="T:SpriteBase"/></td>
+             <td>Lists all properties and methods that are immediately available on the
+             Sprite Definition Rules tab. From here you can see a summary of all the
+             functions available and easily link to detailed descriptions of how each
+             sprite rule function can be used.</td></tr>
+             <tr><td valign="top"><see cref="T:PlanBase"/></td>
+             <td>Lists all properties and methods that are immediately available when
+             defining plan rules in the plan editor. From here you can see a summary of all
+             the functions available and easily link to detailed descriptions of how
+             each plan rule function can be used.</td></tr>
+             </tbody></table>
+             <p>Of course there is much more to the API reference, but these are the most
+             frequently used starting points even for those who aren't doing any formal
+             coding, just to understand how to define rules.</p>
+             <p>When using the coding reference primarily to understand how to use the
+             various sprite and plan rule functions, it's important to understand how
+             the UI for entering rules corresponds to the code. The following examples
+             should clarify this.</p>
+             <h3>Rule Definition (for Sprite Definition)</h3>
+             <img src="../RefImages/SpriteRuleSample.GIF"/>
+             <h3>Corresponding Generated Code</h3>
+             <p>Generated in Sprites\Player.cs (for sprite named "Player") in function "ExecuteRules":</p>
+             <code>// Show player 1 grape points
+TempNum = this.TileActivateSprite(0, ParentLayer.m_SpriteCategories.Points, true);</code>
+             <h3>Rule Definition (for Plan)</h3>
+             <img src="../RefImages/PlanRuleSample.GIF"/>
+             <h3>Corresponding Generated Code</h3>
+             <p>Generated in Level_1_Map.cs (for a plan in a map named "Level 1")
+             in class "Main_Lyr" (for a layer named "Main") in a nested class named
+             "ManagePlayers" (for a plan named "ManagePlayers") in function "ExecuteRules":</p>
+             <code>// If 2 players
+if ((Counter.Players.CurrentValue &gt;= 2))
+{</code>
+             </remarks>
+    </member>
+  </members>
+</doc>

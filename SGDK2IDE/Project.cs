@@ -187,7 +187,7 @@ namespace SGDK2
 
          grdProject.SelectedObject = new ProjectProperties(ProjectData.ProjectRow);
 
-         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"ProjectProperties.html");
+         SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/b2f49025-f318-4428-b580-4c0f21ad00e8.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
 

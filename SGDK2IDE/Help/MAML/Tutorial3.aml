@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="9d346bae-01a5-49b1-8eb3-72ed6c177609" revisionNumber="1">
+  <developerConceptualDocument
+    xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5"
+    xmlns:xlink="http://www.w3.org/1999/xlink">
+
+    <introduction>
+      <para>This page details some of the aspects of creating new tiles, and includes steps for:</para>
+      <list class="bullet"><listItem>Drawing new tile graphics</listItem>
+      <listItem>Defining frames offset from the default position</listItem>
+      <listItem>Defining tiles that overlap other tiles</listItem>
+      <listItem>Defining new tile solidity shapes</listItem></list>
+      <para>A single task has been selected to illustrate these steps. This tutorial will walk through
+      defining 4 new tiles that represent the pieces of a sloped gangplank. Specifically, we will
+      define 2 tiles that represent the left and right half of an inclined surface on which the
+      player can walk (a slope of 1/2), and two more tiles to represent the same tiles flipped
+      (a slope of -1/2).  Furthermore, the shapes defined for these tiles will allow the player
+      to jump upward through the tiles, but land down on a solid surface from above.</para>
+    </introduction>
+
+<section><!--h2-->
+  <title>Drawing the graphics</title>
+  <content>
+      <list class="ordered"><listItem>Begin with the sample project (select Scrolling Game Development Kit Sample Project
+      from the "New Project" pop-up menu in the File menu).</listItem>
+      <listItem>Expand the SHFL32x32 graphic sheet to make room for additional tiles.
+      <list class="bullet"><listItem>In the project tree, select the SHFL32x32 node under the Graphic Sheets node.</listItem>
+      <listItem>Double-click the node or select Edit from the context menu or Properties from the View menu.</listItem>
+      <listItem>Update the "Rows" property to 17.</listItem>
+      <listItem>Click the Update button.</listItem></list></listItem>
+      <listItem>Draw an image of an inclined ramp with a railing.
+      <list class="bullet"><listItem>Select the "Edit Images" node under SHFL32x32</listItem>
+      <listItem>Double-click it or select Edit from the context menu or Properties from the View menu.</listItem>
+      <listItem>Scroll to the bottom of the Cell Manager pane and select the first cell in the last row
+      (the first blank cell in the sheet).</listItem>
+      <listItem>Select "Line" from the Tools menu.</listItem>
+      <listItem>Drag a black line from 0,31 to 31,16 in the cell editor (see the title bar of the editor
+      pane to track the coordinate of the mouse cursor). This will represent the dark underside of
+      the ramp.</listItem>
+      <listItem>Select "Solid Gray" from the Backdrop popup menu in the Edit menu.</listItem>
+      <listItem>Select white as the line color from the color palette by left-clicking on the white square.</listItem>
+      <listItem>Drag a line from 0,30 to 31,15. This will represent the light top side of the ramp.</listItem>
+      <listItem>Select the medium gray color from the color palette (red, green and blue = 169).</listItem>
+      <listItem>Drag a line from 0,16 to 31,1. This will represent the handrail.</listItem>
+      <listItem>Drag a line from 15,8 to 15,22. This will represent handrail supports.</listItem>
+      <listItem>Click the "Store to Selected Cell(s)" button in the Cell Manager pane.</listItem>
+      </list></listItem>
+      </list>
+        </content>
+</section>
+
+<section><!--h2-->
+  <title>Defining Frames</title>
+  <content>
+      <list class="nobullet">
+      <listItem>Define 4 frames based on the new graphic.
+      <list class="ordered"><listItem>Edit the SHFLTiles Frameset.</listItem>
+      <listItem>Select SHFL32x32 from the "Graphic Sheet" dropdown list.</listItem>
+      <listItem>Select the image of the ramp at the end of the list of cells.</listItem>
+      <listItem>Select "Add Selected Cells to Frameset" from the Frameset menu 4 times.</listItem>
+      <listItem>Scroll to the end of the frames in the right-hand pane.</listItem>
+      <listItem>Of the last 4 frames that were just added, select the second and third frames (hold the Ctrl
+      key while clikcing on a frame to add it to the selection).</listItem>
+      <listItem>Enter "-16" into the "dy" property for these frames. This will raise these frames vertically to
+      represent the other half of the half-inclined ramp.</listItem>
+      <listItem>Select the last frame (deselecting the others) and then Ctrl-select the next-to-last frame
+      to select only the last 2 frames.</listItem>
+      <listItem>In the Frameset menu, select Transform Selected Frames->Horizontal Flip->Accross Center</listItem>
+      </list></listItem>
+      </list>
+        </content>
+</section>
+
+<section><!--h2-->
+  <title>Defining Tiles</title>
+  <content>
+      <para>The new frames added to the frameset will automatically be included in the SHFLTileset tileset.
+      Therefore it is not necessary to do anything additional to add these frames to the tileset. However,
+      it is worth noting at this point that you can see the numeric indexes assigned to the new tiles
+      by viewing SHFLTileset and selecting the frames in the "Available Frames" list. The first number in
+      the status bar represents the numeric index of the frame in the frameset, and because this number
+      does not appear in the dropdown list of "Mapped Tiles" above, this means that those frames will be
+      available as-is in the map editor. The number will also represent the index of the tile in the
+      tileset.  You should also note that the width and height are 32x32.  Because some of the new frames
+      have been offset by -16, and because the height of the original graphics were 32x32, tht means that
+      the tiles that are offset will overlap the tiles above them (some of the handrail can draw over the
+      tile above it).</para>
+        </content>
+</section>
+
+<section><!--h2-->
+  <title>Define New Tile Shapes</title>
+  <content>
+      <para>Now we have to define new shapes for the new tiles because there are no pre-packaged shapes that
+      allow a sprite to move freely through a sloped tile, but land on it as if it were solid from above.
+      The new shapes will be:
+      <list class="bullet"><listItem>UphillRightTopTileShape - Same as UphillRightTileShape, except the tile will behave like
+      an empty tile when approached from the right side or below.</listItem>
+      <listItem>UphillLeftTopTileShape - Same as UphillLeftTileShape, except the tile will behave like an
+      empty tile when approached from the right or below.</listItem>
+      <listItem>DownhillLeftTopTileShape - Same as DownhillLeftTileShape, except the tile will behave like an
+      empty tile when approached from the left or below.</listItem>
+      <listItem>DownhillRightTopTileShape - Same as DownhillRightTileShape, except the tile will behave like an
+      empty tile when approached from the left or below.</listItem></list></para>
+      <list class="ordered"><listItem>Copy the existing implementations of the half-slope shapes.
+      <list class="bullet"><listItem>Open TileShapes.cs from the SourceCode folder of the Project Tree.</listItem>
+      <listItem>Starting from shortly after line 500 should be the implementation of UphillRightTileShape. Select the entire
+      implementation of this class and the 3 classes that follow, which define the half-slope shapes. Do not include
+      TopSolidTileShape, which follows the next 3.</listItem>
+      <listItem>Press Ctrl-C to copy the code.</listItem>
+      <listItem>Press Ctrl-End to go to the end of the file.</listItem>
+      <listItem>Press Ctrl-V to paste the copied code.</listItem></list></listItem>
+      <listItem>Rename the copies to represent the new tile shapes.
+      <list class="bullet"><listItem>Find and replace all occurrences of RightTileShape and LeftTileShape <legacyBold>After</legacyBold> the
+      end of the TopSolidTileShape class with RightTopTileShape and LeftTopTileShape respectively.</listItem></list></listItem>
+      <listItem>Make the new shapes behave like the empty shape for the appropriate directions
+      <list class="bullet"><listItem>Replace each occurrence of ": TileShape" <legacyBold>after</legacyBold> TopSolidTileShape with
+      ": EmptyTileShape" (there should be 4).</listItem>
+      <listItem>Delete the GetBottomSolidPixel and GetRightSolidPixel functions from UphillRightTopTileShape
+      (select the line with GetBottomSolidPixel in it and delete it and everything between the following set
+      of curly braces.  Repeat for GetRightSolidPixel). You can also delete the comments for these functions.
+      Note that deleting these functions causes the UphillRightTopTileShape to inherit the behavior of
+      the empty shape (base class) for sprites approaching the tile from below or to the right.</listItem>
+      <listItem>Delete the GetBottomSolidPixel and GetRightSolidPixel functions from UphillLeftTopTileShape.</listItem>
+      <listItem>Delete the GetBottomSolidPixel and GetLeftSolidPixel functions from DownhillLeftTopTileShape.</listItem>
+      <listItem>Delete the GetBottomSolidPixel and GetLeftSolidPixel functions from DownhillRightTopTileShape.</listItem>
+      </list></listItem></list>
+        </content>
+</section>
+
+<section><!--h2-->
+  <title>Define Solidity</title>
+  <content>
+      <list class="ordered"><listItem>Create new tile categories for the 4 new tile shapes.
+      <list class="bullet"><listItem>Select "Tile Categories" and select "New Object" from the file menu or toolbar.</listItem>
+      <listItem>Enter the name "UphillLeftTop" for the category name.</listItem>
+      <listItem>Select "SHFLTileset" in the Tileset dropdown list and click the Edit button.</listItem>
+      <listItem>Select the first of the 4 new tiles and select "Add to category" from the "Tiles"
+      menu, or drag it into the lower pane.</listItem>
+      <listItem>Repeat the process to add a new "UphillRightTop" category</listItem>
+      <listItem>Add the second new tile to this category.</listItem>
+      <listItem>Repeat the process to add "DownhillLeftTop" and "DownhillRightTop",
+      adding the third and fourth new tiles to those categories respectively.</listItem></list></listItem>
+      <listItem>Associate the new categories with the respective shapes
+      <list class="bullet"><listItem>Edit "Standard" from the Solidity folder in the project tree.</listItem>
+      <listItem>Add a new row to the grid to associate the "UphillLeftTop" category with
+      "UphillLeftTopTileShape"</listItem>
+      <listItem>Add a new row to the grid to associate the "UphillRightTop" category with
+      "UphillRightTopTileShape"</listItem>
+      <listItem>Add a new row to the grid to associate the "DownhillLeftTop" category with
+      "DownhillLeftTopTileShape"</listItem>
+      <listItem>Add a new row to the grid to associate the "DownhillRightTop" category with
+      "DownhillRightTopTileShape"</listItem></list></listItem></list>
+        </content>
+</section>
+
+<section><!--h2-->
+  <title>Test</title>
+  <content>
+      <para>At this point you should be able to go into the map editor, add some ramp tiles to
+      the map, then play the project and see the new behavior in action.  The player
+      should be abel to jump upward through the new ramp tiles and land on them and walk
+      up and down the ramps.</para>
+   
+  </content>
+</section>
+
+    <relatedTopics>
+    </relatedTopics>
+
+  </developerConceptualDocument>
+</topic>

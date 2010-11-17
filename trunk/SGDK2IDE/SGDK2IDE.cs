@@ -51,7 +51,10 @@ namespace SGDK2
       [STAThread]
       static int Main(params string[] args)
       {
-         if ((args.Length == 0) && (System.AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData != null))
+         if ((args.Length == 0) 
+            && (System.AppDomain.CurrentDomain.SetupInformation != null)
+            && (System.AppDomain.CurrentDomain.SetupInformation.ActivationArguments != null)
+            && (System.AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData != null))
             args = System.AppDomain.CurrentDomain.SetupInformation.ActivationArguments.ActivationData;
          int result = GetCommandLine(args);
          if (result != 0)
@@ -159,9 +162,11 @@ namespace SGDK2
                         extKey.SetValue(null, "sgdk2file");
                         progIdKey.SetValue(null, "Scrolling Game Development Kit 2 Project");
                         string exeFile = Assembly.GetExecutingAssembly().GetModules()[0].FullyQualifiedName;
+                        string exeDir = System.IO.Path.GetDirectoryName(exeFile);
+                        string prjIconFile = System.IO.Path.Combine(exeDir, "Prj.ico");
                         using (Microsoft.Win32.RegistryKey iconKey = progIdKey.CreateSubKey("DefaultIcon"))
                         {
-                           iconKey.SetValue(null, "\"" + exeFile + "\",1");
+                           iconKey.SetValue(null, "\"" + prjIconFile + "\"");
                         }
                         using (Microsoft.Win32.RegistryKey shellKey = progIdKey.CreateSubKey("shell"))
                         {

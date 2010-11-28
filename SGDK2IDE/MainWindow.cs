@@ -1706,7 +1706,14 @@ namespace SGDK2
          else
          {
             bool wasEnabled;
-            if (DwmIsCompositionEnabled(out wasEnabled) != 0) return;
+            try
+            {
+               if (DwmIsCompositionEnabled(out wasEnabled) != 0) return;
+            }
+            catch
+            {
+               return;
+            }
             if (wasEnabled && (++compositionDisabledCount == 1))
                DwmEnableComposition(DWM_EC_DISABLECOMPOSITION);
          }

@@ -751,7 +751,6 @@
     <None Include="Properties\app.manifest">
       <SubType>Designer</SubType>
     </None>
-    <None Include="SGDK2IDE.res" />
     <None Include="SGDK2_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

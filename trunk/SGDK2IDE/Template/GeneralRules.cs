@@ -466,6 +466,41 @@ public abstract partial class GeneralRules
             else
                foreach(System.Collections.DictionaryEntry de in unit.Maps)
                   Project.GameWindow.LoadedMaps[de.Key] = de.Value;
+            // If sprites exist on any layer of any map whose static state cache has not
+            // been initialized, initialize them now.
+            foreach (MapBase mb in Project.GameWindow.LoadedMaps.Values)
+            {
+               // Loop through each property of each map class
+               foreach (System.Reflection.PropertyInfo lpi in mb.GetType().GetProperties())
+               {
+                  // If the property represents a map layer
+                  if (lpi.PropertyType.IsSubclassOf(typeof(LayerBase)))
+                  {
+                     // Retrieve the layer object
+                     LayerBase l = (LayerBase)lpi.GetValue(mb, null);
+                     // Loop though each sprite in the layer's sprite collection
+                     foreach (SpriteBase sp in l.m_Sprites)
+                     {
+                        Type spriteType = sp.GetType();
+                        // Get the property containing the sprite type's cached list of states
+                        System.Reflection.FieldInfo statesField = spriteType.GetField("m_SpriteStates",
+                           System.Reflection.BindingFlags.GetField |
+                           System.Reflection.BindingFlags.NonPublic |
+                           System.Reflection.BindingFlags.Static);
+                        // If the sprite has not initialized its states
+                        if (statesField.GetValue(sp) == null)
+                        {
+                           // Call the static method that initializes the sprite's states.
+                           System.Reflection.MethodInfo initMethod = spriteType.GetMethod("InitializeStates",
+                              System.Reflection.BindingFlags.InvokeMethod |
+                              System.Reflection.BindingFlags.NonPublic |
+                              System.Reflection.BindingFlags.Static);
+                           initMethod.Invoke(null, new object[] { Project.GameWindow.GameDisplay });
+                        }
+                     }
+                  }
+               }
+            }
          }
          if (unit.CurrentMapType != null)
             Project.GameWindow.CurrentMap = Project.GameWindow.GetMap(unit.CurrentMapType);

@@ -1057,10 +1057,18 @@ namespace SGDK2
             }
             else if (e.Button == tbbPreview)
             {
-               m_CurrentPreview = new frmAnimPreview(GetCurrentTile());
-               m_CurrentPreview.Owner = this;
-               m_CurrentPreview.Closed += new EventHandler(frmAnimPreview_Closed);
-               m_CurrentPreview.Show();
+               ProjectDataset.TileRow tile = GetCurrentTile();
+               if (tile.GetTileFrameRows().Length == 0)
+               {
+                  MessageBox.Show(this, "Add some frames to the tile first.", "Preview Tile Animation", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+               }
+               else
+               {
+                  m_CurrentPreview = new frmAnimPreview(tile);
+                  m_CurrentPreview.Owner = this;
+                  m_CurrentPreview.Closed += new EventHandler(frmAnimPreview_Closed);
+                  m_CurrentPreview.Show();
+               }
             }
          }
          catch (System.Exception ex)
@@ -1359,10 +1367,18 @@ namespace SGDK2
       {
          try
          {
-            m_CurrentPreview = new frmAnimPreview(GetCurrentTile());
-            m_CurrentPreview.Owner = this;
-            m_CurrentPreview.Closed += new EventHandler(frmAnimPreview_Closed);
-            m_CurrentPreview.Show();
+            ProjectDataset.TileRow tile = GetCurrentTile();
+            if (tile.GetTileFrameRows().Length == 0)
+            {
+               MessageBox.Show(this, "Add some frames to the tile first.", "Preview Tile Animation", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+            else
+            {
+               m_CurrentPreview = new frmAnimPreview(tile);
+               m_CurrentPreview.Owner = this;
+               m_CurrentPreview.Closed += new EventHandler(frmAnimPreview_Closed);
+               m_CurrentPreview.Show();
+            }
          }
          catch (System.Exception ex)
          {

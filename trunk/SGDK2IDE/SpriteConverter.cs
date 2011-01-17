@@ -152,7 +152,7 @@ namespace SGDK2
       {
          m_Sprite = sprite;
          m_SpriteRow = row;
-         ProjectDataset.SpriteParameterRow[] parmrows = ProjectData.GetSortedSpriteParameters(row.SpriteStateRowParent.SpriteDefinitionRow);
+         ProjectDataset.SpriteParameterRow[] parmrows = ProjectData.GetSortedSpriteParameters(row.SpriteStateRowParent.SpriteDefinitionRow, true);
          m_ParameterRows = new ProjectDataset.ParameterValueRow[parmrows.Length];
          for(int i = 0; i < parmrows.Length; i++)
             m_ParameterRows[i] = ProjectData.GetSpriteParameterValueRow(row, parmrows[i].Name);

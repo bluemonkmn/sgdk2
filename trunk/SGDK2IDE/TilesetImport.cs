@@ -1348,7 +1348,7 @@ namespace SGDK2
             {
                System.Data.DataRow dr = dtCounterNames.Rows.Find(counter.Name);
                if (ProjectData.GetCounter(dr[dcNewCtrName].ToString()) == null)
-                  ProjectData.AddCounter(dr[dcNewCtrName].ToString(), counter.Value, counter.Max);
+                  ProjectData.AddCounter(dr[dcNewCtrName].ToString(), counter.Value, counter.Max, counter.Min);
             }
 
             ProjectData.EnforceConstraints = true;

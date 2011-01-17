@@ -3299,8 +3299,8 @@ namespace SGDK2
                   dsExport.Merge(new System.Data.DataRow[] {ProjectData.GetGraphicSheet(frame.GraphicSheet)});
                }
             }
-            dsExport.Merge(ProjectData.GetSortedSpriteParameters(m_SpriteDef));
-            dsExport.Merge(ProjectData.GetSortedSpriteRules(m_SpriteDef,true));
+            dsExport.Merge(ProjectData.GetSortedSpriteParameters(m_SpriteDef,false));
+            dsExport.Merge(ProjectData.GetSortedSpriteRules(m_SpriteDef,false));
             dsExport.EnforceConstraints = true;
 
             string comment = frmInputBox.GetInput(this, "Export Sprite Definition", "Enter any comments to save with the template", "Exported sprite definition \"" + m_SpriteDef.Name + "\"");
@@ -3336,15 +3336,24 @@ namespace SGDK2
 
       private void OnPreviewAnimation(object sender, System.EventArgs e)
       {
-         if (lstSpriteStates.SelectedIndex >= 0)
+         if (lstSpriteStates.SelectedIndex < 0)
          {
-            frmAnimPreview frm = new frmAnimPreview(GetCurrentState());
-            frm.Owner = this;
-            frm.Show();
+            MessageBox.Show(this, "Select a sprite state first.", "Preview State Animation", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
          }
          else
          {
-            MessageBox.Show(this, "Select a sprite state first.", "Preview State Animation", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            ProjectDataset.SpriteStateRow state = GetCurrentState();
+
+            if (state.GetSpriteFrameRows().Length == 0)
+            {
+               MessageBox.Show(this, "Add frames to the selected sprite state first.", "Preview State Animation", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+            else
+            {
+               frmAnimPreview frm = new frmAnimPreview(state);
+               frm.Owner = this;
+               frm.Show();
+            }
          }
       }
  

@@ -760,7 +760,7 @@ public abstract partial class GeneralRules
                return true;
             return false;
          case CounterOperation.DecrementAndStop:
-            if (Counter.CurrentValue > 0)
+            if (Counter.CurrentValue > Counter.MinValue)
                Counter.CurrentValue -= 1;
             else
                return true;
@@ -771,10 +771,10 @@ public abstract partial class GeneralRules
                Counter.CurrentValue += 1;
                return false;
             }
-            Counter.CurrentValue = 0;
+            Counter.CurrentValue = Counter.MinValue;
             return true;
          case CounterOperation.DecrementAndLoop:
-            if (Counter.CurrentValue > 0)
+            if (Counter.CurrentValue > Counter.MinValue)
             {
                Counter.CurrentValue -= 1;
                return false;
@@ -782,9 +782,9 @@ public abstract partial class GeneralRules
             Counter.CurrentValue = Counter.MaxValue;
             return true;
          case CounterOperation.SetToMinimum:
-            if (Counter.CurrentValue == 0)
+            if (Counter.CurrentValue == Counter.MinValue)
                return true;
-            Counter.CurrentValue = 0;
+            Counter.CurrentValue = Counter.MinValue;
             return false;
          case CounterOperation.SetToMaximum:
             if (Counter.CurrentValue == Counter.MaxValue)
@@ -807,7 +807,19 @@ public abstract partial class GeneralRules
    }
 
    #region Collections
-   protected static SpriteBase selectedTarget;
+   protected static System.Collections.Specialized.HybridDictionary selectedSprites = new System.Collections.Specialized.HybridDictionary();
+
+   /// <summary>
+   /// Returns the sprite currently selected for the specified target name.
+   /// </summary>
+   /// <param name="TargetName">Which target name's currently selected sprite will be returned.</param>
+   /// <returns>SpriteBase object or null if no sprite is selected for the specified target.</returns>
+   public SpriteBase GetSelectedTargetFor(string TargetName)
+   {
+      if (selectedSprites.Contains(TargetName))
+         return (SpriteBase)selectedSprites[TargetName];
+      return null;
+   }
 
    /// <summary>
    /// Selects a sprite within a collection, using a 0-based index, to be the target of <see cref="SetTargetParameter"/>.
@@ -815,32 +827,86 @@ public abstract partial class GeneralRules
    /// <param name="Sprites">Collection from which sprite is selected</param>
    /// <param name="Index">0-based index within the collection of the sprite to be selected</param>
    /// <returns>True if the specified index is within the bounds of the collection, False otherwise.</returns>
-   /// <remarks>If the Index is beyond the bounds of the collection, the target reference cleared.
-   /// This function is useful in conjunction with <see cref="SetTargetParameter"/> to set properties
-   /// of arbitrary sprites within a collection to trigger various behaviors based on their rules.
-   /// </remarks>
-   [Description("Selects a sprite within a collection, using a 0-based index, to be the target of SetTargetParameter.")]
+   /// <remarks>This function is provided for compatibility; see <see cref="SelectTargetSpriteFor"/>.
+   /// This function in equivalent to <see cref="SelectTargetSpriteFor"/> with an empty string as TargetName.</remarks>
+   [Description("Selects a sprite within a collection, using a 0-based index, to be the target of SetTargetParameter. This function is provided for compatibility; see SelectTargetSpriteFor.")]
    public virtual bool SelectTargetSprite(SpriteCollection Sprites, int Index)
    {
-      if (Sprites.Count > Index)
+      return SelectTargetSpriteFor(Sprites, Index, String.Empty);
+   }
+
+   /// <summary>
+   /// Selects a sprite within a collection, using a 0-based index, to be the target of <see cref="SetTargetParameterFor"/>.
+   /// <paramref name="TargetName"/> allows any number of unique targets to be selected by assigning unique names.
+   /// </summary>
+   /// <param name="Sprites">Collection from which sprite is selected</param>
+   /// <param name="Index">0-based index within the collection of the sprite to be selected</param>
+   /// <param name="TargetName">A global name (quoted string) to indicate for what this sprite is being selected</param>
+   /// <returns>True if the specified index is within the bounds of the collection, False otherwise.</returns>
+   /// <remarks>If the Index is beyond the bounds of the collection, the target reference cleared.
+   /// This function is useful in conjunction with <see cref="SetTargetParameterFor"/> and
+   /// <see cref="GetTargetParameterFor"/> to set properties of arbitrary sprites within a
+   /// collection to trigger various behaviors based on their rules, or get properties to affect
+   /// the currently executing rules based on other sprites.
+   /// <paramref name="TargetName"/> allows you to select any number of sprites by assigning each a globally
+   /// unique name to be used by any plan or sprite rules. Only one sprite can ever be associated with that
+   /// target name at a time. Assigning another to that name will replace the existing target with the new
+   /// one. Specify -1 for <paramref name="Index"/> to clear the specified target.
+   /// <seealso cref="SelectLastCreatedSpriteFor"/>
+   /// <seealso cref="SetTargetParameterFor"/>
+   /// <seealso cref="GetTargetParameterFor"/>
+   /// <seealso cref="DeactivateTargetSpriteFor"/></remarks>
+   [Description("Selects a sprite within a collection, using a 0-based index, to be the target of SetTargetParameterFor. TargetName allows any number of unique targets to be selected by assigning unique names.")]
+   public virtual bool SelectTargetSpriteFor(SpriteCollection Sprites, int Index, string TargetName)
+   {
+      if ((Index >= 0) && (Sprites.Count > Index))
       {
-         selectedTarget = Sprites[Index];
+         selectedSprites[TargetName] = Sprites[Index];
          return true;
       }
       else
       {
-         selectedTarget = null;
+         selectedSprites[TargetName] = null;
          return false;
       }
    }
 
    /// <summary>
-   /// Selects the most recently created sprite to be the target of <see cref="SetTargetParameter"/>.
+   /// Select the most recently created sprite to be the target of <see cref="SetTargetParameter"/>.
    /// </summary>
+   /// <remarks>This is the same as <see cref="SelectLastCreatedSpriteFor"/> using an empty string
+   /// as the Target Name. This function is provided for compatibility; use SelectLastCreatedSpriteFor.
+   /// </remarks>
    [Description("Selects the most recently created sprite to be the target of SetTargetParameter.")]
    public virtual void SelectLastCreatedSprite()
    {
-      selectedTarget = lastCreatedSprite;
+      SelectLastCreatedSpriteFor(String.Empty);
+   }
+
+   /// <summary>
+   /// Selects the most recently created sprite to be the target of <see cref="SetTargetParameterFor"/>
+   /// or <see cref="GetTargetParameterFor"/>.
+   /// </summary>
+   /// <remarks><seealso cref="SetTargetParameterFor"/>
+   /// <seealso cref="GetTargetParameterFor"/>
+   /// <seealso cref="SelectTargetSpriteFor"/>
+   /// <seealso cref="DeactivateTargetSpriteFor"/></remarks>
+   [Description("Selects the most recently created sprite to be the target of SetTargetParameterFor.")]
+   public virtual void SelectLastCreatedSpriteFor(string TargetName)
+   {
+      selectedSprites[TargetName] = lastCreatedSprite;
+   }
+
+   /// <summary>
+   /// Determine if a sprite has been selected with <see cref="SelectLastCreatedSpriteFor"/> 
+   /// or <see cref="SelectTargetSpriteFor"/>.
+   /// </summary>
+   /// <param name="TargetName">Check on whether a sprite has been selected for this target name.</param>
+   /// <remarks><seealso cref="SelectTargetSpriteFor"/></remarks>
+   [Description("Determines if a sprite has been selected with SelectLastCreatedSpriteFor or SelectTargetSpriteFor.")]
+   public virtual bool IsTargetSpriteSelectedFor(string TargetName)
+   {
+      return selectedSprites.Contains(TargetName);
    }
 
    /// <summary>
@@ -848,14 +914,43 @@ public abstract partial class GeneralRules
    /// </summary>
    /// <param name="ParameterName">Name of the parameter on the target sprite that will be affected.</param>
    /// <param name="Value">Numeric value that will be assigned to the specified parameter</param>
-   /// <remarks>This is useful for a wide range of effects on sprites in collections. For example,
-   /// after determining that some sprite in a collection is within a plan using
-   /// <see cref="PlanBase.GetSpriteWithin"/>, you could use this to set some parameter on that
-   /// sprite to trigger its rules to react. Remember that ParameterName is provided as a string,
-   /// and must be quoted assuming the name is provided directly.</remarks>
-   [Description("Set the value of a numeric property or parameter (given its name as a string) on a sprite selected with SelectTargetSprite to the specified value.")]
+   /// <remarks>This function is provided for compatibility; see <see cref="SetTargetParameterFor"/>.
+   /// This is equivalent to <see cref="SetTargetParameterFor"/> passing an empty string as Target Name.</remarks>
+   [Description("Set the value of a numeric property or parameter (given its name as a string) on a sprite selected with SelectTargetSprite to the specified value. This function is provided for compatibility; see SetTargetParameterFor.")]
    public virtual void SetTargetParameter(string ParameterName, int Value)
    {
+      SetTargetParameterFor(ParameterName, Value, String.Empty);
+   }
+
+   /// <summary>
+   /// Set the value of a numeric property or parameter on a sprite selected with <see cref="SelectTargetSpriteFor"/> to the specified value.
+   /// </summary>
+   /// <param name="ParameterName">Name of the parameter on the target sprite that will be affected.</param>
+   /// <param name="Value">Numeric value that will be assigned to the specified parameter.</param>
+   /// <param name="TargetName">Determines which target's currently selected sprite will be affected.</param>
+   /// <remarks>This is useful for a wide range of effects on sprites in collections. For example,
+   /// after determining that some sprite in a collection is within a plan using
+   /// <see cref="PlanBase.GetSpriteWithin"/>, you could use <see cref="SelectTargetSpriteFor"/> and
+   /// this to set some parameter on that sprite to trigger its rules to react.
+   /// Remember that ParameterName and TargetName are provided as strings,
+   /// and must be quoted assuming the names are provided as literal values.
+   /// <seealso cref="GetTargetParameterFor"/>
+   /// <seealso cref="SelectTargetSpriteFor"/>
+   /// <seealso cref="SelectLastCreatedSpriteFor"/></remarks>
+   [Description("Set the value of a numeric property or parameter (given its name as a string) on a sprite selected with SelectTargetSpriteFor to the specified value.")]
+   public virtual void SetTargetParameterFor(string ParameterName, int Value, string TargetName)
+   {
+      if (!selectedSprites.Contains(TargetName))
+      {
+         Debug.Fail("Tried to set parameter for non-existent target \"" + TargetName + "\".");
+         return;
+      }
+      object selectedTarget = selectedSprites[TargetName];
+      if (selectedTarget == null)
+      {
+         Debug.Fail("Tried to set parameter for target \"" + TargetName + "\" that was cleared.");
+         return;
+      }
       System.Reflection.PropertyInfo pi = selectedTarget.GetType().GetProperty(ParameterName);
       if (pi == null)
       {
@@ -866,6 +961,84 @@ public abstract partial class GeneralRules
       }
       else
          pi.SetValue(selectedTarget, Value, null);
+   }
+
+   /// <summary>
+   /// Get the value of a numeric property or parameter on a sprite selected with <see cref="SelectTargetSpriteFor"/>.
+   /// </summary>
+   /// <param name="ParameterName">Name of the parameter on the target sprite that will be returned.</param>
+   /// <returns>Integer property value of specified property.</returns>
+   /// <remarks>Remember that ParameterName is provided as a string,
+   /// and must be quoted assuming the name is provided directly.
+   /// <seealso cref="SetTargetParameterFor"/>
+   /// <seealso cref="SelectTargetSpriteFor"/>
+   /// <seealso cref="SelectLastCreatedSpriteFor"/></remarks>
+   [Description("Get the value of a numeric property or parameter (given its name as a string) from a sprite selected with SelectTargetSprite.")]
+   public virtual int GetTargetParameterFor(string ParameterName, string TargetName)
+   {
+      if (!selectedSprites.Contains(TargetName))
+      {
+         Debug.Fail("Tried to get parameter for non-existent target \"" + TargetName +"\".");
+         return 0;
+      }
+      object selectedTarget = selectedSprites[TargetName];
+      if (selectedTarget == null)
+      {
+         Debug.Fail("Tried to get parameter for target \"" + TargetName + "\" that was cleared.");
+         return 0;
+      }
+      System.Reflection.PropertyInfo pi = selectedTarget.GetType().GetProperty(ParameterName);
+      if (pi == null)
+      {
+         System.Reflection.FieldInfo fi = selectedTarget.GetType().GetField(ParameterName);
+         Debug.Assert(fi != null, "Invalid property name in GetTargetParameter");
+         if (fi != null)
+            return (int)fi.GetValue(selectedTarget);
+      }
+      else
+         return (int)pi.GetValue(selectedTarget, null);
+      return 0;
+   }
+
+   /// <summary>
+   /// Deactivate the sprite currently selected as the target for the specified name and clear the sprite selected for that target name.
+   /// </summary>
+   /// <param name="TargetName">For which target name the currently selected sprite should be terminated.</param>
+   /// <returns>True if a sprite was deactivated, false otherwise.</returns>
+   /// <remarks>Does nothing if the sprite is already inactive or no sprite is selected for the specified target name.
+   /// <seealso cref="SelectTargetSpriteFor"/>
+   /// <seealso cref="SelectLastCreatedSpriteFor"/></remarks>
+   [Description("Deactivate the sprite currently selected as the target for the specified name.")]
+   public virtual bool DeactivateTargetSpriteFor(string TargetName)
+   {
+      if (selectedSprites.Contains(TargetName))
+      {
+         object s = selectedSprites[TargetName];
+         if (s == null)
+            return false;
+         bool result;
+         SpriteBase sb = (SpriteBase)s;
+         result = sb.isActive;
+         sb.Deactivate();
+         selectedSprites.Remove(TargetName);
+         return result;
+      }
+      return false;
+   }
+
+   /// <summary>
+   /// Determine if the sprite selected for the specified target (selected with SelectTargetSpriteFor)
+   /// is of the specified type.
+   /// </summary>
+   /// <returns>
+   /// True if the selected target is of the specified type, false otherwise.
+   /// </returns>
+   [Description("Determine if the sprite selected for the specified target (selected with SelectTargetSpriteFor) is of the specified type.")]
+   public bool IsSpriteForTargetOfType(string TargetName, [Editor("SpriteDefinition", "UITypeEditor")] System.Type SpriteDefinition)
+   {
+      if (!selectedSprites.Contains(TargetName))
+         return false;
+      return SpriteDefinition.IsInstanceOfType(selectedSprites[TargetName]);
    }
    #endregion
 

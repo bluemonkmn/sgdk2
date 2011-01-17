@@ -84,7 +84,7 @@ namespace SGDK2
             return null;
 
          RemotingServices.RemoteTypeName[] types = reflector.GetDerivedClasses(false);
-         ProjectDataset.SpriteRow[] sprites = ProjectData.GetSortedSpriteRows(((PlanProvider)context.Instance).Plan.LayerRowParent);
+         ProjectDataset.SpriteRow[] sprites = ProjectData.GetSortedSpriteRows(((PlanProvider)context.Instance).Plan.LayerRowParent, true);
          System.Collections.ArrayList result = new System.Collections.ArrayList();
          foreach(ProjectDataset.SpriteRow sprite in sprites)
          {
@@ -104,7 +104,7 @@ namespace SGDK2
          if (!(context.Instance is PlanProvider))
             return null;
 
-         ProjectDataset.SpritePlanRow[] plans = ((PlanProvider)context.Instance).Plan.LayerRowParent.GetSpritePlanRows();
+         ProjectDataset.SpritePlanRow[] plans = ProjectData.GetSortedSpritePlans(((PlanProvider)context.Instance).Plan.LayerRowParent, true);
          string[] result = new string[plans.Length];
          for(int i=0; i<plans.Length; i++)
             result[i] = "m_" + CodeGenerator.NameToVariable(plans[i].Name);

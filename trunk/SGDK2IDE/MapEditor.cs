@@ -1116,13 +1116,13 @@ namespace SGDK2
       private void PopulateAvailableSprites()
       {
          lstAvailableSprites.Items.Clear();
-         foreach(ProjectDataset.SpriteRow drSprite in ProjectData.GetSortedSpriteRows(m_Layers[m_nCurLayer].LayerRow))
+         foreach(ProjectDataset.SpriteRow drSprite in ProjectData.GetSortedSpriteRows(m_Layers[m_nCurLayer].LayerRow, true))
             lstAvailableSprites.Items.Add(drSprite);
       }
       private void PopulatePlans()
       {
          lstPlans.Items.Clear();
-         foreach(ProjectDataset.SpritePlanRow drPlan in ProjectData.GetSortedSpritePlans(m_Layers[m_nCurLayer].LayerRow))
+         foreach(ProjectDataset.SpritePlanRow drPlan in ProjectData.GetSortedSpritePlans(m_Layers[m_nCurLayer].LayerRow, true))
             lstPlans.Items.Add(drPlan);
       }
 
@@ -1325,7 +1325,7 @@ namespace SGDK2
          object[] VisiblePlanList;
 
          if (rdoShowAllPlans.Checked)
-            VisiblePlanList = ProjectData.GetSortedSpritePlans(m_Layers[m_nCurLayer].LayerRow);
+            VisiblePlanList = ProjectData.GetSortedSpritePlans(m_Layers[m_nCurLayer].LayerRow, false);
          else
          {
             VisiblePlanList = new object[lstPlans.SelectedItems.Count];
@@ -2098,7 +2098,7 @@ namespace SGDK2
                         bIncludeMouse = true;
 
                      if (rdoShowAllPlans.Checked)
-                        foreach (ProjectDataset.SpritePlanRow plan in ProjectData.GetSortedSpritePlans(m_Layers[m_nCurLayer].LayerRow))
+                        foreach (ProjectDataset.SpritePlanRow plan in ProjectData.GetSortedSpritePlans(m_Layers[m_nCurLayer].LayerRow, false))
                            DrawPath(plan, bIncludeMouse && (plan == lstPlans.SelectedItem));
                      else
                         foreach (ProjectDataset.SpritePlanRow plan in lstPlans.SelectedItems)

@@ -118,6 +118,15 @@ namespace SGDK2
       {
          m_dsPrj.SpriteDefinition.DefaultView.Sort = ProjectData.SpriteDefinition.NameColumn.ColumnName;
          m_dsPrj.Solidity.DefaultView.Sort = ProjectData.Solidity.NameColumn.ColumnName;
+         m_dsPrj.Counter.DefaultView.Sort = ProjectData.Counter.NameColumn.ColumnName;
+         m_dsPrj.Map.DefaultView.Sort = ProjectData.Map.NameColumn.ColumnName;
+         m_dsPrj.Frameset.DefaultView.Sort = ProjectData.Frameset.NameColumn.ColumnName;
+         m_dsPrj.Tileset.DefaultView.Sort = ProjectData.Tileset.NameColumn.ColumnName;
+         m_dsPrj.TileCategory.DefaultView.Sort = ProjectData.TileCategory.NameColumn.ColumnName;
+         m_dsPrj.GraphicSheet.DefaultView.Sort = ProjectData.GraphicSheet.NameColumn.ColumnName;
+         m_dsPrj.Solidity.DefaultView.Sort = ProjectData.Solidity.NameColumn.ColumnName;
+         m_dsPrj.SpritePlan.DefaultView.Sort = ProjectData.SpritePlan.NameColumn.ColumnName;
+         m_dsPrj.SpriteCategory.DefaultView.Sort = ProjectData.SpriteCategory.NameColumn.ColumnName;
       }
 
       #region General/Dataset
@@ -238,6 +247,29 @@ namespace SGDK2
                return ((ProjectDataset.SpriteRuleRow)x).Sequence.CompareTo(((ProjectDataset.SpriteRuleRow)y).Sequence);
             else if (x is ProjectDataset.SpriteStateRow)
                return ((ProjectDataset.SpriteStateRow)x).Sequence.CompareTo(((ProjectDataset.SpriteStateRow)y).Sequence);
+            else
+               throw new ApplicationException("Unknown data row type for comparing");
+         }
+         #endregion
+      }
+
+      private class DataRowNameComparer : IComparer
+      {
+         #region IComparer Members
+         public int Compare(object x, object y)
+         {
+            if (x is ProjectDataset.LayerRow)
+               return ((ProjectDataset.LayerRow)x).Name.CompareTo(((ProjectDataset.LayerRow)y).Name);
+            else if (x is ProjectDataset.SpriteRow)
+               return ((ProjectDataset.SpriteRow)x).Name.CompareTo(((ProjectDataset.SpriteRow)y).Name);
+            else if (x is ProjectDataset.SpriteParameterRow)
+               return ((ProjectDataset.SpriteParameterRow)x).Name.CompareTo(((ProjectDataset.SpriteParameterRow)y).Name);
+            else if (x is ProjectDataset.SpritePlanRow)
+               return ((ProjectDataset.SpritePlanRow)x).Name.CompareTo(((ProjectDataset.SpritePlanRow)y).Name);
+            else if (x is ProjectDataset.PlanRuleRow)
+               return ((ProjectDataset.PlanRuleRow)x).Name.CompareTo(((ProjectDataset.PlanRuleRow)y).Name);
+            else if (x is ProjectDataset.SpriteStateRow)
+               return ((ProjectDataset.SpriteStateRow)x).Name.CompareTo(((ProjectDataset.SpriteStateRow)y).Name);
             else
                throw new ApplicationException("Unknown data row type for comparing");
          }
@@ -1015,9 +1047,9 @@ namespace SGDK2
       {
          return m_dsPrj.Counter.FindByName(Name);
       }
-      public static ProjectDataset.CounterRow AddCounter(string Name, int Value, int Max)
+      public static ProjectDataset.CounterRow AddCounter(string Name, int Value, int Max, int Min)
       {
-         return m_dsPrj.Counter.AddCounterRow(Name, Value, Max);
+         return m_dsPrj.Counter.AddCounterRow(Name, Value, Max, Min);
       }
       #endregion
 
@@ -1159,10 +1191,10 @@ namespace SGDK2
             return m_dsPrj.Layer;
          }
       }
-      public static ProjectDataset.SpriteRow[] GetSortedSpriteRows(ProjectDataset.LayerRow row)
+      public static ProjectDataset.SpriteRow[] GetSortedSpriteRows(ProjectDataset.LayerRow row, bool sortByName)
       {
          ProjectDataset.SpriteRow[] result = row.GetSpriteRows();
-         Array.Sort(result, new DataRowComparer());
+         Array.Sort(result, sortByName ? (IComparer)new DataRowNameComparer() : (IComparer)new DataRowComparer());
          return result;
       }
       #endregion
@@ -1432,10 +1464,10 @@ namespace SGDK2
       {
          return m_dsPrj.SpriteDefinition.AddSpriteDefinitionRow(Name, BaseClass);
       }
-      public static ProjectDataset.SpriteParameterRow[] GetSortedSpriteParameters(ProjectDataset.SpriteDefinitionRow row)
+      public static ProjectDataset.SpriteParameterRow[] GetSortedSpriteParameters(ProjectDataset.SpriteDefinitionRow row, bool sortByName)
       {
          ProjectDataset.SpriteParameterRow[] result = row.GetSpriteParameterRows();
-         Array.Sort(result, new DataRowComparer());
+         Array.Sort(result, sortByName ? (IComparer)new DataRowNameComparer() : (IComparer)new DataRowComparer());
          return result;
       }
       public static ProjectDataset.SpriteStateRow[] GetSortedSpriteStates(ProjectDataset.SpriteDefinitionRow row)
@@ -2226,10 +2258,10 @@ namespace SGDK2
       {
          return m_dsPrj.SpritePlan.FindByMapNameLayerNameName(MapName, LayerName, Name);
       }
-      public static ProjectDataset.SpritePlanRow[] GetSortedSpritePlans(ProjectDataset.LayerRow ParentLayer)
+      public static ProjectDataset.SpritePlanRow[] GetSortedSpritePlans(ProjectDataset.LayerRow ParentLayer, bool sortByName)
       {
          ProjectDataset.SpritePlanRow[] result = ParentLayer.GetSpritePlanRows();
-         Array.Sort(result, new DataRowComparer());
+         Array.Sort(result, sortByName ? (IComparer)new DataRowNameComparer() : (IComparer)new DataRowComparer());
          return result;
       }
       #endregion

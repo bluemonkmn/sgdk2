@@ -1143,7 +1143,7 @@ namespace SGDK2
          if (m_SpriteContext != null)
          {
             ProjectDataset.SpriteDefinitionRow spriteDef = m_SpriteContext.SpriteRow.SpriteStateRowParent.SpriteDefinitionRow;
-            foreach(ProjectDataset.SpriteParameterRow prow in ProjectData.GetSortedSpriteParameters(spriteDef))
+            foreach(ProjectDataset.SpriteParameterRow prow in ProjectData.GetSortedSpriteParameters(spriteDef, true))
             {
                cboParams.Items.Add((isRef ? "ref " : "") + m_SpriteContext.ToString() + "." + CodeGenerator.NameToVariable(prow.Name));
             }
@@ -1192,7 +1192,7 @@ namespace SGDK2
       private void FillComboWithSpriteInstances(ComboBox cboTarget)
       {
          cboTarget.Items.Add("lastCreatedSprite");
-         foreach(ProjectDataset.SpriteRow drSprite in ProjectData.GetSortedSpriteRows(m_Plan.LayerRowParent))
+         foreach(ProjectDataset.SpriteRow drSprite in ProjectData.GetSortedSpriteRows(m_Plan.LayerRowParent, true))
          {
             cboTarget.Items.Add(new SpriteCodeRef(drSprite));
          }
@@ -1214,7 +1214,7 @@ namespace SGDK2
       {
          foreach(ProjectDataset.LayerRow drLayer in m_Plan.LayerRowParent.MapRow.GetLayerRows())
          {
-            foreach(ProjectDataset.SpritePlanRow drPlan in drLayer.GetSpritePlanRows())
+            foreach (ProjectDataset.SpritePlanRow drPlan in ProjectData.GetSortedSpritePlans(drLayer, true))
             {
                if (drLayer == m_Plan.LayerRowParent)
                   cboTarget.Items.Add("m_ParentLayer.m_" + CodeGenerator.NameToVariable(drPlan.Name));
@@ -1280,7 +1280,7 @@ namespace SGDK2
          }
          else if (string.Compare(param.Type.FullName, typeof(System.Drawing.Point).FullName) == 0)
          {
-            foreach(ProjectDataset.SpritePlanRow drPlan in ProjectData.GetSortedSpritePlans(m_Plan.LayerRowParent))
+            foreach(ProjectDataset.SpritePlanRow drPlan in ProjectData.GetSortedSpritePlans(m_Plan.LayerRowParent, true))
             {
                ProjectDataset.CoordinateRow[] drCoords = ProjectData.GetSortedCoordinates(drPlan);
                if (drCoords.Length == 1)
@@ -1341,7 +1341,7 @@ namespace SGDK2
          }
          else if (param.Type.FullName.StartsWith("Sprites."))
          {
-            foreach (ProjectDataset.SpriteRow drSprite in ProjectData.GetSortedSpriteRows(m_Plan.LayerRowParent))
+            foreach (ProjectDataset.SpriteRow drSprite in ProjectData.GetSortedSpriteRows(m_Plan.LayerRowParent, true))
                if (param.Type.FullName.EndsWith("." + drSprite.DefinitionName))
                   cboParameter.Items.Add(new SpriteCodeRef(drSprite));
          }

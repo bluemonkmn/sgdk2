@@ -85,6 +85,7 @@
          // 
          // btnExtended
          // 
+         btnExtended.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
          btnExtended.Location = new System.Drawing.Point(582, 39);
          btnExtended.Name = "btnExtended";
          btnExtended.Size = new System.Drawing.Size(27, 20);

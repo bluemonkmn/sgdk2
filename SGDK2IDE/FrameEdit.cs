@@ -236,7 +236,7 @@ namespace SGDK2
 		private void InitializeComponent()
 		{
          this.components = new System.ComponentModel.Container();
-         System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(frmFrameEdit));
+         System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmFrameEdit));
          this.pnlFrames = new System.Windows.Forms.Panel();
          this.FrameBrowser = new SGDK2.GraphicBrowser();
          this.mnuContext = new System.Windows.Forms.ContextMenu();
@@ -295,11 +295,12 @@ namespace SGDK2
          this.cboGraphicSheet = new System.Windows.Forms.ComboBox();
          this.ttFrameset = new System.Windows.Forms.ToolTip(this.components);
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
-         this.mnuFrameset = new System.Windows.Forms.MainMenu();
+         this.mnuFrameset = new System.Windows.Forms.MainMenu(this.components);
          this.mnuView = new System.Windows.Forms.MenuItem();
          this.mnuCellBorders = new System.Windows.Forms.MenuItem();
          this.mnuFrameBorders = new System.Windows.Forms.MenuItem();
          this.mnuBackgroundFrame = new System.Windows.Forms.MenuItem();
+         this.mnuFrameSizingBorder = new System.Windows.Forms.MenuItem();
          this.mnuFramesetPop = new System.Windows.Forms.MenuItem();
          this.mnuAddCell = new System.Windows.Forms.MenuItem();
          this.mnuDeleteFrames = new System.Windows.Forms.MenuItem();
@@ -334,7 +335,6 @@ namespace SGDK2
          this.tpgFrameset = new System.Windows.Forms.TabPage();
          this.splitterGraphics = new System.Windows.Forms.Splitter();
          this.tpgFrameEditor = new System.Windows.Forms.TabPage();
-         this.mnuFrameSizingBorder = new System.Windows.Forms.MenuItem();
          this.pnlFrames.SuspendLayout();
          this.pnlFrameAction.SuspendLayout();
          this.pnlTransform.SuspendLayout();
@@ -381,36 +381,37 @@ namespace SGDK2
          this.FrameBrowser.SheetImage = null;
          this.FrameBrowser.Size = new System.Drawing.Size(235, 218);
          this.FrameBrowser.TabIndex = 6;
-         this.FrameBrowser.Resize += new System.EventHandler(this.FrameBrowser_Resize);
          this.FrameBrowser.CurrentCellChanged += new System.EventHandler(this.FrameBrowser_CurrentCellChanged);
          this.FrameBrowser.DragDrop += new System.Windows.Forms.DragEventHandler(this.FrameBrowser_DragDrop);
-         this.FrameBrowser.DoubleClick += new System.EventHandler(this.FrameBrowser_DoubleClick);
          this.FrameBrowser.DragOver += new System.Windows.Forms.DragEventHandler(this.FrameBrowser_DragOver);
+         this.FrameBrowser.DoubleClick += new System.EventHandler(this.FrameBrowser_DoubleClick);
+         this.FrameBrowser.KeyDown += new System.Windows.Forms.KeyEventHandler(this.FrameBrowser_KeyDown);
+         this.FrameBrowser.Resize += new System.EventHandler(this.FrameBrowser_Resize);
          // 
          // mnuContext
          // 
          this.mnuContext.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                   this.mnuHFlip,
-                                                                                   this.mnuVFlip,
-                                                                                   this.mnuDoubleWidth,
-                                                                                   this.mnuDoubleHeight,
-                                                                                   this.mnuHalveWidth,
-                                                                                   this.mnuHalveHeight,
-                                                                                   this.mnuLeftHalf,
-                                                                                   this.mnuRightHalf,
-                                                                                   this.mnuUpHalf,
-                                                                                   this.mnuDownHalf,
-                                                                                   this.mnuClockwise90,
-                                                                                   this.mnuCounter90,
-                                                                                   this.mnuReset,
-                                                                                   this.mnuEditGraphicCell});
+            this.mnuHFlip,
+            this.mnuVFlip,
+            this.mnuDoubleWidth,
+            this.mnuDoubleHeight,
+            this.mnuHalveWidth,
+            this.mnuHalveHeight,
+            this.mnuLeftHalf,
+            this.mnuRightHalf,
+            this.mnuUpHalf,
+            this.mnuDownHalf,
+            this.mnuClockwise90,
+            this.mnuCounter90,
+            this.mnuReset,
+            this.mnuEditGraphicCell});
          // 
          // mnuHFlip
          // 
          this.mnuHFlip.Index = 0;
          this.mnuHFlip.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                 this.mnuHFlipOrigin,
-                                                                                 this.mnuHFlipCenter});
+            this.mnuHFlipOrigin,
+            this.mnuHFlipCenter});
          this.mnuHFlip.Text = "Horizontal Flip";
          // 
          // mnuHFlipOrigin
@@ -429,8 +430,8 @@ namespace SGDK2
          // 
          this.mnuVFlip.Index = 1;
          this.mnuVFlip.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                 this.mnuVFlipOrigin,
-                                                                                 this.mnuVFlipCenter});
+            this.mnuVFlipOrigin,
+            this.mnuVFlipCenter});
          this.mnuVFlip.Text = "Vertical Flip";
          // 
          // mnuVFlipOrigin
@@ -497,8 +498,8 @@ namespace SGDK2
          // 
          this.mnuClockwise90.Index = 10;
          this.mnuClockwise90.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                       this.mnuClockwise90Origin,
-                                                                                       this.mnuClockwise90Center});
+            this.mnuClockwise90Origin,
+            this.mnuClockwise90Center});
          this.mnuClockwise90.Text = "Clockwise 90 degrees";
          // 
          // mnuClockwise90Origin
@@ -517,8 +518,8 @@ namespace SGDK2
          // 
          this.mnuCounter90.Index = 11;
          this.mnuCounter90.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                     this.mnuCounter90Origin,
-                                                                                     this.mnuCounter90Center});
+            this.mnuCounter90Origin,
+            this.mnuCounter90Center});
          this.mnuCounter90.Text = "Counter-clockwise 90 degrees";
          // 
          // mnuCounter90Origin
@@ -566,13 +567,12 @@ namespace SGDK2
          // 
          // txtFramesetName
          // 
-         this.txtFramesetName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+         this.txtFramesetName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                     | System.Windows.Forms.AnchorStyles.Right)));
          this.txtFramesetName.Location = new System.Drawing.Point(120, 0);
          this.txtFramesetName.Name = "txtFramesetName";
          this.txtFramesetName.Size = new System.Drawing.Size(107, 20);
          this.txtFramesetName.TabIndex = 1;
-         this.txtFramesetName.Text = "";
          this.txtFramesetName.Validating += new System.ComponentModel.CancelEventHandler(this.txtFramesetName_Validating);
          this.txtFramesetName.Validated += new System.EventHandler(this.txtFramesetName_Validated);
          // 
@@ -587,18 +587,13 @@ namespace SGDK2
          // 
          // FrameProperties
          // 
-         this.FrameProperties.CommandsVisibleIfAvailable = true;
          this.FrameProperties.Dock = System.Windows.Forms.DockStyle.Bottom;
-         this.FrameProperties.LargeButtons = false;
          this.FrameProperties.LineColor = System.Drawing.SystemColors.ScrollBar;
          this.FrameProperties.Location = new System.Drawing.Point(0, 247);
          this.FrameProperties.Name = "FrameProperties";
          this.FrameProperties.Size = new System.Drawing.Size(235, 200);
          this.FrameProperties.TabIndex = 0;
-         this.FrameProperties.Text = "PropertyGrid";
          this.FrameProperties.ToolbarVisible = false;
-         this.FrameProperties.ViewBackColor = System.Drawing.SystemColors.Window;
-         this.FrameProperties.ViewForeColor = System.Drawing.SystemColors.WindowText;
          this.FrameProperties.Enter += new System.EventHandler(this.FrameProperties_Enter);
          this.FrameProperties.Leave += new System.EventHandler(this.FrameProperties_Leave);
          // 
@@ -629,11 +624,11 @@ namespace SGDK2
          this.pnlTransform.Name = "pnlTransform";
          this.pnlTransform.Size = new System.Drawing.Size(456, 447);
          this.pnlTransform.TabIndex = 0;
-         this.pnlTransform.Resize += new System.EventHandler(this.pnlTransform_Resize);
-         this.pnlTransform.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnlTransform_MouseUp);
          this.pnlTransform.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlTransform_Paint);
-         this.pnlTransform.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnlTransform_MouseMove);
          this.pnlTransform.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pnlTransform_MouseDown);
+         this.pnlTransform.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnlTransform_MouseMove);
+         this.pnlTransform.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnlTransform_MouseUp);
+         this.pnlTransform.Resize += new System.EventHandler(this.pnlTransform_Resize);
          // 
          // BGFrameSelector
          // 
@@ -679,105 +674,105 @@ namespace SGDK2
          // 
          this.nudYScale.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
          this.nudYScale.DecimalPlaces = 2;
-         this.nudYScale.Increment = new System.Decimal(new int[] {
-                                                                    1,
-                                                                    0,
-                                                                    0,
-                                                                    65536});
+         this.nudYScale.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
          this.nudYScale.Location = new System.Drawing.Point(232, 392);
-         this.nudYScale.Maximum = new System.Decimal(new int[] {
-                                                                  128,
-                                                                  0,
-                                                                  0,
-                                                                  0});
-         this.nudYScale.Minimum = new System.Decimal(new int[] {
-                                                                  128,
-                                                                  0,
-                                                                  0,
-                                                                  -2147483648});
+         this.nudYScale.Maximum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            0});
+         this.nudYScale.Minimum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            -2147483648});
          this.nudYScale.Name = "nudYScale";
          this.nudYScale.Size = new System.Drawing.Size(64, 20);
          this.nudYScale.TabIndex = 7;
-         this.nudYScale.Value = new System.Decimal(new int[] {
-                                                                1,
-                                                                0,
-                                                                0,
-                                                                0});
-         this.nudYScale.Validated += new System.EventHandler(this.TransformControl_Validated);
+         this.nudYScale.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
          this.nudYScale.ValueChanged += new System.EventHandler(this.TransformControl_ValueChanged);
+         this.nudYScale.Validated += new System.EventHandler(this.TransformControl_Validated);
          // 
          // nudXScale
          // 
          this.nudXScale.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
          this.nudXScale.DecimalPlaces = 2;
-         this.nudXScale.Increment = new System.Decimal(new int[] {
-                                                                    1,
-                                                                    0,
-                                                                    0,
-                                                                    65536});
+         this.nudXScale.Increment = new decimal(new int[] {
+            1,
+            0,
+            0,
+            65536});
          this.nudXScale.Location = new System.Drawing.Point(64, 392);
-         this.nudXScale.Maximum = new System.Decimal(new int[] {
-                                                                  128,
-                                                                  0,
-                                                                  0,
-                                                                  0});
-         this.nudXScale.Minimum = new System.Decimal(new int[] {
-                                                                  128,
-                                                                  0,
-                                                                  0,
-                                                                  -2147483648});
+         this.nudXScale.Maximum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            0});
+         this.nudXScale.Minimum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            -2147483648});
          this.nudXScale.Name = "nudXScale";
          this.nudXScale.Size = new System.Drawing.Size(64, 20);
          this.nudXScale.TabIndex = 5;
-         this.nudXScale.Value = new System.Decimal(new int[] {
-                                                                1,
-                                                                0,
-                                                                0,
-                                                                0});
-         this.nudXScale.Validated += new System.EventHandler(this.TransformControl_Validated);
+         this.nudXScale.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
          this.nudXScale.ValueChanged += new System.EventHandler(this.TransformControl_ValueChanged);
+         this.nudXScale.Validated += new System.EventHandler(this.TransformControl_Validated);
          // 
          // nudXOffset
          // 
          this.nudXOffset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
          this.nudXOffset.DecimalPlaces = 1;
          this.nudXOffset.Location = new System.Drawing.Point(64, 416);
-         this.nudXOffset.Maximum = new System.Decimal(new int[] {
-                                                                   128,
-                                                                   0,
-                                                                   0,
-                                                                   0});
-         this.nudXOffset.Minimum = new System.Decimal(new int[] {
-                                                                   128,
-                                                                   0,
-                                                                   0,
-                                                                   -2147483648});
+         this.nudXOffset.Maximum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            0});
+         this.nudXOffset.Minimum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            -2147483648});
          this.nudXOffset.Name = "nudXOffset";
          this.nudXOffset.Size = new System.Drawing.Size(64, 20);
          this.nudXOffset.TabIndex = 9;
-         this.nudXOffset.Validated += new System.EventHandler(this.TransformControl_Validated);
          this.nudXOffset.ValueChanged += new System.EventHandler(this.TransformControl_ValueChanged);
+         this.nudXOffset.Validated += new System.EventHandler(this.TransformControl_Validated);
          // 
          // nudYOffset
          // 
          this.nudYOffset.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
          this.nudYOffset.DecimalPlaces = 1;
          this.nudYOffset.Location = new System.Drawing.Point(232, 416);
-         this.nudYOffset.Maximum = new System.Decimal(new int[] {
-                                                                   128,
-                                                                   0,
-                                                                   0,
-                                                                   0});
-         this.nudYOffset.Minimum = new System.Decimal(new int[] {
-                                                                   128,
-                                                                   0,
-                                                                   0,
-                                                                   -2147483648});
+         this.nudYOffset.Maximum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            0});
+         this.nudYOffset.Minimum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            -2147483648});
          this.nudYOffset.Name = "nudYOffset";
          this.nudYOffset.Size = new System.Drawing.Size(64, 20);
          this.nudYOffset.TabIndex = 11;
-         this.nudYOffset.Validated += new System.EventHandler(this.TransformControl_Validated);
          this.nudYOffset.ValueChanged += new System.EventHandler(this.TransformControl_ValueChanged);
+         this.nudYOffset.Validated += new System.EventHandler(this.TransformControl_Validated);
          // 
          // lblXOffset
          // 
@@ -870,19 +865,18 @@ namespace SGDK2
          this.txtRotate.Name = "txtRotate";
          this.txtRotate.Size = new System.Drawing.Size(64, 20);
          this.txtRotate.TabIndex = 2;
-         this.txtRotate.Text = "";
          this.txtRotate.TextChanged += new System.EventHandler(this.txtRotate_TextChanged);
          // 
          // trbRotate
          // 
-         this.trbRotate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+         this.trbRotate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+                     | System.Windows.Forms.AnchorStyles.Right)));
          this.trbRotate.LargeChange = 15;
          this.trbRotate.Location = new System.Drawing.Point(64, 323);
          this.trbRotate.Maximum = 180;
          this.trbRotate.Minimum = -179;
          this.trbRotate.Name = "trbRotate";
-         this.trbRotate.Size = new System.Drawing.Size(290, 34);
+         this.trbRotate.Size = new System.Drawing.Size(290, 45);
          this.trbRotate.TabIndex = 0;
          this.trbRotate.TickFrequency = 15;
          this.trbRotate.Scroll += new System.EventHandler(this.trbRotate_Scroll);
@@ -909,10 +903,10 @@ namespace SGDK2
          this.CellBrowser.Frameset = null;
          this.CellBrowser.FramesToDisplay = null;
          this.CellBrowser.GraphicSheet = null;
-         this.CellBrowser.Location = new System.Drawing.Point(0, 51);
+         this.CellBrowser.Location = new System.Drawing.Point(0, 65);
          this.CellBrowser.Name = "CellBrowser";
          this.CellBrowser.SheetImage = null;
-         this.CellBrowser.Size = new System.Drawing.Size(216, 396);
+         this.CellBrowser.Size = new System.Drawing.Size(216, 382);
          this.CellBrowser.TabIndex = 2;
          this.CellBrowser.CurrentCellChanged += new System.EventHandler(this.CellBrowser_CurrentCellChanged);
          this.CellBrowser.DoubleClick += new System.EventHandler(this.CellBrowser_DoubleClick);
@@ -920,28 +914,29 @@ namespace SGDK2
          // tbrGraphicSheet
          // 
          this.tbrGraphicSheet.Buttons.AddRange(new System.Windows.Forms.ToolBarButton[] {
-                                                                                           this.tbbAddToFrameset});
+            this.tbbAddToFrameset});
          this.tbrGraphicSheet.ButtonSize = new System.Drawing.Size(22, 21);
          this.tbrGraphicSheet.DropDownArrows = true;
          this.tbrGraphicSheet.ImageList = this.imlFrameset;
          this.tbrGraphicSheet.Location = new System.Drawing.Point(0, 24);
          this.tbrGraphicSheet.Name = "tbrGraphicSheet";
          this.tbrGraphicSheet.ShowToolTips = true;
-         this.tbrGraphicSheet.Size = new System.Drawing.Size(216, 27);
+         this.tbrGraphicSheet.Size = new System.Drawing.Size(216, 41);
          this.tbrGraphicSheet.TabIndex = 5;
          this.tbrGraphicSheet.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tbrGraphicSheet_ButtonClick);
          // 
          // tbbAddToFrameset
          // 
          this.tbbAddToFrameset.ImageIndex = 0;
+         this.tbbAddToFrameset.Name = "tbbAddToFrameset";
          this.tbbAddToFrameset.Text = "Add to Frameset";
          this.tbbAddToFrameset.ToolTipText = "Add selected cells to frameset";
          // 
          // imlFrameset
          // 
-         this.imlFrameset.ImageSize = new System.Drawing.Size(15, 15);
          this.imlFrameset.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imlFrameset.ImageStream")));
          this.imlFrameset.TransparentColor = System.Drawing.Color.Magenta;
+         this.imlFrameset.Images.SetKeyName(0, "");
          // 
          // pnlGraphicSheetName
          // 
@@ -964,8 +959,8 @@ namespace SGDK2
          // 
          // cboGraphicSheet
          // 
-         this.cboGraphicSheet.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+         this.cboGraphicSheet.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                     | System.Windows.Forms.AnchorStyles.Right)));
          this.cboGraphicSheet.DisplayMember = "Name";
          this.cboGraphicSheet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
          this.cboGraphicSheet.Location = new System.Drawing.Point(96, 0);
@@ -986,17 +981,17 @@ namespace SGDK2
          // mnuFrameset
          // 
          this.mnuFrameset.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                    this.mnuView,
-                                                                                    this.mnuFramesetPop});
+            this.mnuView,
+            this.mnuFramesetPop});
          // 
          // mnuView
          // 
          this.mnuView.Index = 0;
          this.mnuView.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                this.mnuCellBorders,
-                                                                                this.mnuFrameBorders,
-                                                                                this.mnuBackgroundFrame,
-                                                                                this.mnuFrameSizingBorder});
+            this.mnuCellBorders,
+            this.mnuFrameBorders,
+            this.mnuBackgroundFrame,
+            this.mnuFrameSizingBorder});
          this.mnuView.MergeOrder = 1;
          this.mnuView.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
          this.mnuView.Text = "&View";
@@ -1020,17 +1015,24 @@ namespace SGDK2
          this.mnuBackgroundFrame.Text = "&Background Frame";
          this.mnuBackgroundFrame.Click += new System.EventHandler(this.mnuBackgroundFrame_Click);
          // 
+         // mnuFrameSizingBorder
+         // 
+         this.mnuFrameSizingBorder.Checked = true;
+         this.mnuFrameSizingBorder.Index = 3;
+         this.mnuFrameSizingBorder.Text = "Frame &Sizing Border";
+         this.mnuFrameSizingBorder.Click += new System.EventHandler(this.mnuFrameSizingBorder_Click);
+         // 
          // mnuFramesetPop
          // 
          this.mnuFramesetPop.Index = 1;
          this.mnuFramesetPop.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                       this.mnuAddCell,
-                                                                                       this.mnuDeleteFrames,
-                                                                                       this.mnuFramesetTransform,
-                                                                                       this.mnuFramesetSeparator,
-                                                                                       this.mnuFrameRemappingWizard,
-                                                                                       this.mnuFrameTweening,
-                                                                                       this.mnuFsEditGraphicCell});
+            this.mnuAddCell,
+            this.mnuDeleteFrames,
+            this.mnuFramesetTransform,
+            this.mnuFramesetSeparator,
+            this.mnuFrameRemappingWizard,
+            this.mnuFrameTweening,
+            this.mnuFsEditGraphicCell});
          this.mnuFramesetPop.MergeOrder = 2;
          this.mnuFramesetPop.Text = "F&rameset";
          // 
@@ -1044,7 +1046,7 @@ namespace SGDK2
          // mnuDeleteFrames
          // 
          this.mnuDeleteFrames.Index = 1;
-         this.mnuDeleteFrames.Shortcut = System.Windows.Forms.Shortcut.Del;
+         this.mnuDeleteFrames.Shortcut = System.Windows.Forms.Shortcut.CtrlD;
          this.mnuDeleteFrames.Text = "&Delete Selected Frames";
          this.mnuDeleteFrames.Click += new System.EventHandler(this.mnuDeleteFrames_Click);
          // 
@@ -1052,28 +1054,28 @@ namespace SGDK2
          // 
          this.mnuFramesetTransform.Index = 2;
          this.mnuFramesetTransform.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                             this.mnuXHFlip,
-                                                                                             this.mnuXVFlip,
-                                                                                             this.mnuXDoubleWidth,
-                                                                                             this.mnuXDoubleHeight,
-                                                                                             this.mnuXHalveWidth,
-                                                                                             this.mnuXHalveHeight,
-                                                                                             this.mnuXLeftHalf,
-                                                                                             this.mnuXRightHalf,
-                                                                                             this.mnuXUpHalf,
-                                                                                             this.mnuXDownHalf,
-                                                                                             this.mnuXClockwise90,
-                                                                                             this.mnuXCounter90,
-                                                                                             this.mnuTransformCustom,
-                                                                                             this.mnuXReset});
+            this.mnuXHFlip,
+            this.mnuXVFlip,
+            this.mnuXDoubleWidth,
+            this.mnuXDoubleHeight,
+            this.mnuXHalveWidth,
+            this.mnuXHalveHeight,
+            this.mnuXLeftHalf,
+            this.mnuXRightHalf,
+            this.mnuXUpHalf,
+            this.mnuXDownHalf,
+            this.mnuXClockwise90,
+            this.mnuXCounter90,
+            this.mnuTransformCustom,
+            this.mnuXReset});
          this.mnuFramesetTransform.Text = "&Transform Selected Frames";
          // 
          // mnuXHFlip
          // 
          this.mnuXHFlip.Index = 0;
          this.mnuXHFlip.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                  this.mnuXHFlipOrigin,
-                                                                                  this.mnuXHFlipCenter});
+            this.mnuXHFlipOrigin,
+            this.mnuXHFlipCenter});
          this.mnuXHFlip.Text = "Horizontal Flip";
          // 
          // mnuXHFlipOrigin
@@ -1092,8 +1094,8 @@ namespace SGDK2
          // 
          this.mnuXVFlip.Index = 1;
          this.mnuXVFlip.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                  this.mnuXVFlipOrigin,
-                                                                                  this.mnuXVFlipCenter});
+            this.mnuXVFlipOrigin,
+            this.mnuXVFlipCenter});
          this.mnuXVFlip.Text = "Vertical Flip";
          // 
          // mnuXVFlipOrigin
@@ -1160,8 +1162,8 @@ namespace SGDK2
          // 
          this.mnuXClockwise90.Index = 10;
          this.mnuXClockwise90.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                        this.mnuXClockwise90Origin,
-                                                                                        this.mnuXClockwise90Center});
+            this.mnuXClockwise90Origin,
+            this.mnuXClockwise90Center});
          this.mnuXClockwise90.Text = "Clockwise 90 degrees";
          // 
          // mnuXClockwise90Origin
@@ -1180,8 +1182,8 @@ namespace SGDK2
          // 
          this.mnuXCounter90.Index = 11;
          this.mnuXCounter90.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                      this.mnuXCounter90Origin,
-                                                                                      this.mnuXCounter90Center});
+            this.mnuXCounter90Origin,
+            this.mnuXCounter90Center});
          this.mnuXCounter90.Text = "Counter-clockwise 90 degrees";
          // 
          // mnuXCounter90Origin
@@ -1273,13 +1275,6 @@ namespace SGDK2
          this.tpgFrameEditor.TabIndex = 1;
          this.tpgFrameEditor.Text = "Frame Editor";
          // 
-         // mnuFrameSizingBorder
-         // 
-         this.mnuFrameSizingBorder.Checked = true;
-         this.mnuFrameSizingBorder.Index = 3;
-         this.mnuFrameSizingBorder.Text = "Frame &Sizing Border";
-         this.mnuFrameSizingBorder.Click += new System.EventHandler(this.mnuFrameSizingBorder_Click);
-         // 
          // frmFrameEdit
          // 
          this.AcceptButton = this.btnOK;
@@ -1293,13 +1288,16 @@ namespace SGDK2
          this.Text = "Frameset Editor";
          this.pnlFrames.ResumeLayout(false);
          this.pnlFrameAction.ResumeLayout(false);
+         this.pnlFrameAction.PerformLayout();
          this.pnlTransform.ResumeLayout(false);
+         this.pnlTransform.PerformLayout();
          ((System.ComponentModel.ISupportInitialize)(this.nudYScale)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.nudXScale)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.nudXOffset)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.nudYOffset)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.trbRotate)).EndInit();
          this.pnlGraphicSheet.ResumeLayout(false);
+         this.pnlGraphicSheet.PerformLayout();
          this.pnlGraphicSheetName.ResumeLayout(false);
          this.tabFrameset.ResumeLayout(false);
          this.tpgFrameset.ResumeLayout(false);
@@ -2452,6 +2450,14 @@ namespace SGDK2
       {
          mnuFrameSizingBorder.Checked = !mnuFrameSizingBorder.Checked;
          pnlTransform.Invalidate();
+      }
+
+      private void FrameBrowser_KeyDown(object sender, KeyEventArgs e)
+      {
+         if (e.KeyCode == Keys.Delete)
+         {
+            DeleteSelectedFrames();
+         }
       }
       #endregion
    }

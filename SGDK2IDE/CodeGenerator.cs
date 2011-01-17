@@ -30,7 +30,9 @@ namespace SGDK2
       public const string CounterClass = "Counter";
       private const string CounterValFld = "m_nValue";
       private const string CounterMaxFld = "m_nMax";
+      private const string CounterMinFld = "m_nMin";
       private const string CounterValProp = "CurrentValue";
+      private const string CounterMinProp = "MinValue";
       private const string CounterMaxProp = "MaxValue";
       public const string TilesetClass = "Tileset";
       private const string TileListVar = "TileList";
@@ -961,8 +963,9 @@ namespace SGDK2
          counterClassDecl.IsPartial = true;
          CodeConstructor construct = new CodeConstructor();
          construct.Attributes = MemberAttributes.Public;
-         construct.Parameters.AddRange(new CodeParameterDeclarationExpression[] {new CodeParameterDeclarationExpression(typeof(int), "nValue"), new CodeParameterDeclarationExpression(typeof(int), "nMax")});
+         construct.Parameters.AddRange(new CodeParameterDeclarationExpression[] { new CodeParameterDeclarationExpression(typeof(int), "nValue"), new CodeParameterDeclarationExpression(typeof(int), "nMin"), new CodeParameterDeclarationExpression(typeof(int), "nMax") });
          construct.Statements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), CounterValFld), new CodeArgumentReferenceExpression("nValue")));
+         construct.Statements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), CounterMinFld), new CodeArgumentReferenceExpression("nMin")));
          construct.Statements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), CounterMaxFld), new CodeArgumentReferenceExpression("nMax")));
          counterClassDecl.Members.Add(construct);
          counterClassDecl.Comments.AddRange(new CodeCommentStatement[]
@@ -974,6 +977,7 @@ namespace SGDK2
             {
                new CodeCommentStatement("<summary>Constructs a new counter instance given all its parameters</summary>", true),
                new CodeCommentStatement("<param name=\"nValue\">Initial value of this counter</param>", true),
+               new CodeCommentStatement("<param name=\"nMin\">Minimum value of this counter</param>", true),
                new CodeCommentStatement("<param name=\"nMax\">Maximum value of this counter</param>", true),
                new CodeCommentStatement("<remarks>This is called by the generated code that creates all the counter instances to initialize all the projects' counters</remarks>", true)
             });
@@ -981,7 +985,11 @@ namespace SGDK2
          CodeMemberField fld = new CodeMemberField(typeof(int), CounterValFld);
          fld.Attributes = MemberAttributes.Private | MemberAttributes.Final;
          counterClassDecl.Members.Add(fld);
-         
+
+         fld = new CodeMemberField(typeof(int), CounterMinFld);
+         fld.Attributes = MemberAttributes.Private | MemberAttributes.Final;
+         counterClassDecl.Members.Add(fld);
+
          fld = new CodeMemberField(typeof(int), CounterMaxFld);
          fld.Attributes = MemberAttributes.Private | MemberAttributes.Final;
          counterClassDecl.Members.Add(fld);
@@ -996,7 +1004,7 @@ namespace SGDK2
          propDecl.GetStatements.Add(new CodeMethodReturnStatement(fldRef));
          CodePropertySetValueReferenceExpression propVal = new CodePropertySetValueReferenceExpression();
          CodeFieldReferenceExpression maxValue = new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), CounterMaxFld);
-         CodePrimitiveExpression minValue = new CodePrimitiveExpression((int)0);
+         CodeFieldReferenceExpression minValue = new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), CounterMinFld);
          CodeAssignStatement assignToProp = new CodeAssignStatement(fldRef, propVal);
          CodeConditionStatement testMin = new CodeConditionStatement(
             new CodeBinaryOperatorExpression(new CodePropertySetValueReferenceExpression(),
@@ -1013,8 +1021,18 @@ namespace SGDK2
          propDecl.Comments.AddRange(new CodeCommentStatement[]
             {
                new CodeCommentStatement("<summary>Gets or sets the current value of the counter to a specified integer</summary>", true),
-               new CodeCommentStatement("<remarks>If the value is less than zero, it is set to zero.  If it is greater than <see cref=\"" + CounterMaxProp + "\"/>, it is set to <see cref=\"" + CounterMaxProp + "\"/></remarks>.", true)
+               new CodeCommentStatement("<remarks>If the value is less than <see cref=\"" + CounterMinProp + "\"/>, it is set to <see cref=\"" + CounterMinProp + "\"/>.  If it is greater than <see cref=\"" + CounterMaxProp + "\"/>, it is set to <see cref=\"" + CounterMaxProp + "\"/></remarks>.", true)
             });
+
+         propDecl = new CodeMemberProperty();
+         propDecl.Attributes = MemberAttributes.Public | MemberAttributes.Final;
+         propDecl.HasGet = true;
+         propDecl.HasSet = false;
+         propDecl.Name = CounterMinProp;
+         propDecl.Type = new CodeTypeReference(typeof(int));
+         propDecl.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), CounterMinFld)));
+         counterClassDecl.Members.Add(propDecl);
+         propDecl.Comments.Add(new CodeCommentStatement("<summary>Returns the minimum value of this counter <seealso cref=\"" + CounterValProp + "\"/><seealso cref=\"" + CounterMaxProp + "\"/></summary>", true));
 
          propDecl = new CodeMemberProperty();
          propDecl.Attributes = MemberAttributes.Public | MemberAttributes.Final;
@@ -1024,14 +1042,14 @@ namespace SGDK2
          propDecl.Type = new CodeTypeReference(typeof(int));
          propDecl.GetStatements.Add(new CodeMethodReturnStatement(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), CounterMaxFld)));
          counterClassDecl.Members.Add(propDecl);
-         propDecl.Comments.Add(new CodeCommentStatement("<summary>Returns the maximum value of this counter <seealso cref=\"" + CounterValProp + "\"/></summary>", true));
+         propDecl.Comments.Add(new CodeCommentStatement("<summary>Returns the maximum value of this counter <seealso cref=\"" + CounterValProp + "\"/><seealso cref=\"" + CounterMinProp + "\"/></summary>", true));
 
 
          foreach(System.Data.DataRowView drv in ProjectData.Counter.DefaultView)
          {
             ProjectDataset.CounterRow drCounter = (ProjectDataset.CounterRow)drv.Row;
             CodeMemberField fldCounter = new CodeMemberField("Counter", "m_" + NameToVariable(drCounter.Name));
-            fldCounter.InitExpression = new CodeObjectCreateExpression("Counter", new CodePrimitiveExpression(drCounter.Value), new CodePrimitiveExpression(drCounter.Max));
+            fldCounter.InitExpression = new CodeObjectCreateExpression("Counter", new CodePrimitiveExpression(drCounter.Value), new CodePrimitiveExpression(drCounter.Min), new CodePrimitiveExpression(drCounter.Max));
             fldCounter.Attributes = MemberAttributes.Final | MemberAttributes.Private | MemberAttributes.Static;
             counterClassDecl.Members.Add(fldCounter);
 
@@ -1762,8 +1780,8 @@ namespace SGDK2
                new CodeThisReferenceExpression(), fldLayerParent.Name),
                new CodeArgumentReferenceExpression(LayerParentArg)));
 
-            ProjectDataset.SpritePlanRow[] plans = ProjectData.GetSortedSpritePlans(drLayer);
-            ProjectDataset.SpriteRow[] sprites = ProjectData.GetSortedSpriteRows(drLayer);
+            ProjectDataset.SpritePlanRow[] plans = ProjectData.GetSortedSpritePlans(drLayer, false);
+            ProjectDataset.SpriteRow[] sprites = ProjectData.GetSortedSpriteRows(drLayer, false);
             CodeMemberMethod mthExecuteLayerRules = new CodeMemberMethod();
 
             if ((plans.Length > 0) || (sprites.Length > 0))
@@ -1987,7 +2005,7 @@ namespace SGDK2
                      SpriteCreateParams.Add(new CodeFieldReferenceExpression(
                         new CodeTypeReferenceExpression("Solidity"), UndefinedSolidityProperty));
                   SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.Color));
-                  ProjectDataset.SpriteParameterRow[] sprParams = ProjectData.GetSortedSpriteParameters(drDef);
+                  ProjectDataset.SpriteParameterRow[] sprParams = ProjectData.GetSortedSpriteParameters(drDef, false);
                   if (sprParams.Length > 0)
                   {
                      foreach (ProjectDataset.SpriteParameterRow drParam in sprParams)
@@ -2464,7 +2482,7 @@ namespace SGDK2
          mthClearParams.Attributes = MemberAttributes.Override | MemberAttributes.Public;
          clsSpriteDef.Members.Add(mthClearParams);
 
-         foreach(ProjectDataset.SpriteParameterRow drParam in ProjectData.GetSortedSpriteParameters(drSpriteDef))
+         foreach(ProjectDataset.SpriteParameterRow drParam in ProjectData.GetSortedSpriteParameters(drSpriteDef, false))
          {
             CodeMemberField fldParam = new CodeMemberField(typeof(int), NameToVariable(drParam.Name));
             fldParam.Attributes = MemberAttributes.Public;

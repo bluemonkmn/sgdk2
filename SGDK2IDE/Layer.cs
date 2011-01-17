@@ -452,7 +452,7 @@ namespace SGDK2
 
       public void RefreshLayerSprites(SpriteCache cache)
       {
-         ProjectDataset.SpriteRow[] SpriteRows = ProjectData.GetSortedSpriteRows(m_Layer);
+         ProjectDataset.SpriteRow[] SpriteRows = ProjectData.GetSortedSpriteRows(m_Layer, false);
          m_CachedSprites = new System.Collections.ArrayList(SpriteRows.Length);
          foreach(ProjectDataset.SpriteRow drSprite in SpriteRows)
          {

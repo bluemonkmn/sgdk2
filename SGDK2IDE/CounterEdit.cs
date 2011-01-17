@@ -25,6 +25,8 @@ namespace SGDK2
       private System.Windows.Forms.Label lblCounterName;
       private System.Windows.Forms.NumericUpDown nudMaximum;
       private SGDK2.DataChangeNotifier dataMonitor;
+      private Label lblMinimum;
+      private NumericUpDown nudMinimum;
 		private System.ComponentModel.IContainer components = null;
       #endregion
 
@@ -41,7 +43,8 @@ namespace SGDK2
             sName = "New Counter " + (nIdx++).ToString();
          while (ProjectData.GetCounter(sName) != null);
 
-         m_Counter = ProjectData.AddCounter(sName, 1, 100);
+         m_Counter = ProjectData.AddCounter(sName, 1, 100, 0);
+         nudMinimum.Value = m_Counter.Min;
          nudMaximum.Value = m_Counter.Max;
          nudValue.Value = m_Counter.Value;
          txtCounterName.Text = sName;
@@ -59,6 +62,7 @@ namespace SGDK2
 
          m_Counter = drCounter;
          txtCounterName.Text = drCounter.Name;
+         nudMinimum.Value = drCounter.Min;
          nudMaximum.Value = drCounter.Max;
          nudValue.Value = drCounter.Value;
 
@@ -96,58 +100,61 @@ namespace SGDK2
          this.txtCounterName = new System.Windows.Forms.TextBox();
          this.lblCounterName = new System.Windows.Forms.Label();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
+         this.lblMinimum = new System.Windows.Forms.Label();
+         this.nudMinimum = new System.Windows.Forms.NumericUpDown();
          ((System.ComponentModel.ISupportInitialize)(this.nudMaximum)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.nudValue)).BeginInit();
+         ((System.ComponentModel.ISupportInitialize)(this.nudMinimum)).BeginInit();
          this.SuspendLayout();
          // 
          // nudMaximum
          // 
-         this.nudMaximum.Location = new System.Drawing.Point(72, 32);
-         this.nudMaximum.Maximum = new System.Decimal(new int[] {
-                                                                   2000000000,
-                                                                   0,
-                                                                   0,
-                                                                   0});
-         this.nudMaximum.Minimum = new System.Decimal(new int[] {
-                                                                   1,
-                                                                   0,
-                                                                   0,
-                                                                   0});
+         this.nudMaximum.Location = new System.Drawing.Point(72, 60);
+         this.nudMaximum.Maximum = new decimal(new int[] {
+            2000000000,
+            0,
+            0,
+            0});
+         this.nudMaximum.Minimum = new decimal(new int[] {
+            2000000000,
+            0,
+            0,
+            -2147483648});
          this.nudMaximum.Name = "nudMaximum";
          this.nudMaximum.Size = new System.Drawing.Size(88, 20);
-         this.nudMaximum.TabIndex = 4;
-         this.nudMaximum.Value = new System.Decimal(new int[] {
-                                                                 1,
-                                                                 0,
-                                                                 0,
-                                                                 0});
-         this.nudMaximum.Validated += new System.EventHandler(this.nudMaximum_Validated);
+         this.nudMaximum.TabIndex = 6;
+         this.nudMaximum.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
          this.nudMaximum.ValueChanged += new System.EventHandler(this.nudMaximum_ValueChanged);
+         this.nudMaximum.Validated += new System.EventHandler(this.nudMaximum_Validated);
          // 
          // lblMaximum
          // 
-         this.lblMaximum.Location = new System.Drawing.Point(8, 32);
+         this.lblMaximum.Location = new System.Drawing.Point(8, 60);
          this.lblMaximum.Name = "lblMaximum";
          this.lblMaximum.Size = new System.Drawing.Size(64, 20);
-         this.lblMaximum.TabIndex = 3;
-         this.lblMaximum.Text = "&Maximum:";
+         this.lblMaximum.TabIndex = 5;
+         this.lblMaximum.Text = "Ma&ximum:";
          this.lblMaximum.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
          // 
          // nudValue
          // 
-         this.nudValue.Location = new System.Drawing.Point(72, 56);
+         this.nudValue.Location = new System.Drawing.Point(72, 86);
          this.nudValue.Name = "nudValue";
          this.nudValue.Size = new System.Drawing.Size(88, 20);
-         this.nudValue.TabIndex = 6;
-         this.nudValue.Validated += new System.EventHandler(this.nudValue_Validated);
+         this.nudValue.TabIndex = 8;
          this.nudValue.ValueChanged += new System.EventHandler(this.nudValue_ValueChanged);
+         this.nudValue.Validated += new System.EventHandler(this.nudValue_Validated);
          // 
          // lblValue
          // 
-         this.lblValue.Location = new System.Drawing.Point(8, 56);
+         this.lblValue.Location = new System.Drawing.Point(8, 86);
          this.lblValue.Name = "lblValue";
          this.lblValue.Size = new System.Drawing.Size(64, 20);
-         this.lblValue.TabIndex = 5;
+         this.lblValue.TabIndex = 7;
          this.lblValue.Text = "&Value:";
          this.lblValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
          // 
@@ -157,7 +164,6 @@ namespace SGDK2
          this.txtCounterName.Name = "txtCounterName";
          this.txtCounterName.Size = new System.Drawing.Size(168, 20);
          this.txtCounterName.TabIndex = 2;
-         this.txtCounterName.Text = "";
          this.txtCounterName.Validating += new System.ComponentModel.CancelEventHandler(this.txtCounterName_Validating);
          this.txtCounterName.Validated += new System.EventHandler(this.txtCounterName_Validated);
          // 
@@ -175,10 +181,40 @@ namespace SGDK2
          this.dataMonitor.CounterRowDeleted += new SGDK2.ProjectDataset.CounterRowChangeEventHandler(this.dataMonitor_CounterRowDeleted);
          this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
          // 
+         // lblMinimum
+         // 
+         this.lblMinimum.Location = new System.Drawing.Point(8, 34);
+         this.lblMinimum.Name = "lblMinimum";
+         this.lblMinimum.Size = new System.Drawing.Size(64, 20);
+         this.lblMinimum.TabIndex = 3;
+         this.lblMinimum.Text = "&Minimum:";
+         this.lblMinimum.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+         // 
+         // nudMinimum
+         // 
+         this.nudMinimum.Location = new System.Drawing.Point(72, 34);
+         this.nudMinimum.Maximum = new decimal(new int[] {
+            2000000000,
+            0,
+            0,
+            0});
+         this.nudMinimum.Minimum = new decimal(new int[] {
+            2000000000,
+            0,
+            0,
+            -2147483648});
+         this.nudMinimum.Name = "nudMinimum";
+         this.nudMinimum.Size = new System.Drawing.Size(88, 20);
+         this.nudMinimum.TabIndex = 4;
+         this.nudMinimum.ValueChanged += new System.EventHandler(this.nudMinimum_ValueChanged);
+         this.nudMinimum.Validated += new System.EventHandler(this.nudMinimum_Validated);
+         // 
          // frmCounterEdit
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-         this.ClientSize = new System.Drawing.Size(264, 87);
+         this.ClientSize = new System.Drawing.Size(251, 119);
+         this.Controls.Add(this.nudMinimum);
+         this.Controls.Add(this.lblMinimum);
          this.Controls.Add(this.nudMaximum);
          this.Controls.Add(this.lblMaximum);
          this.Controls.Add(this.nudValue);
@@ -192,7 +228,9 @@ namespace SGDK2
          this.Text = "Edit Counter";
          ((System.ComponentModel.ISupportInitialize)(this.nudMaximum)).EndInit();
          ((System.ComponentModel.ISupportInitialize)(this.nudValue)).EndInit();
+         ((System.ComponentModel.ISupportInitialize)(this.nudMinimum)).EndInit();
          this.ResumeLayout(false);
+         this.PerformLayout();
 
       }
 		#endregion
@@ -230,6 +268,9 @@ namespace SGDK2
       #region Event Handlers
       private void nudMaximum_ValueChanged(object sender, System.EventArgs e)
       {
+         if (nudMaximum.Value < nudMinimum.Value)
+            nudMinimum.Value = nudMaximum.Value;
+         nudMinimum.Maximum = nudMaximum.Value;
          if (nudValue.Value > nudMaximum.Value)
             nudValue.Value = nudMaximum.Value;
          nudValue.Maximum = nudMaximum.Value;
@@ -284,6 +325,22 @@ namespace SGDK2
       private void nudValue_Validated(object sender, System.EventArgs e)
       {
          decimal dummy = nudValue.Value; // Force control to fire ValueChanged      
+      }
+
+      private void nudMinimum_Validated(object sender, EventArgs e)
+      {
+         decimal dummy = nudMinimum.Value; // Force control to fire ValueChanged
+      }
+
+      private void nudMinimum_ValueChanged(object sender, EventArgs e)
+      {
+         if (nudMaximum.Value < nudMinimum.Value)
+            nudMaximum.Value = nudMinimum.Value;
+         nudMaximum.Minimum = nudMinimum.Value;
+         if (nudValue.Value < nudMinimum.Value)
+            nudValue.Value = nudMinimum.Value;
+         nudValue.Minimum = nudMinimum.Value;
+         m_Counter.Min = (int)nudMinimum.Value;
       }
       #endregion
    }

@@ -15,7 +15,8 @@ public abstract partial class GeneralRules
    protected static SaveUnit saveUnit = null;
    protected static System.Collections.Hashtable memorySaveSlots = new System.Collections.Hashtable();
    protected static System.Random randomGen = new System.Random();
-   protected static long previousFrame = 0;
+   protected static long fpsStartTime;
+   protected static long fpsFrameCount;
 
    /// <summary>
    /// Contains the last sprite created with <see cref="PlanBase.AddSpriteAtPlan"/>,
@@ -51,13 +52,17 @@ public abstract partial class GeneralRules
       long frame;
       freq = System.Diagnostics.Stopwatch.Frequency;
       frame = System.Diagnostics.Stopwatch.GetTimestamp();
-      while ((frame - previousFrame) * fps < freq)
+      while ((frame - fpsStartTime) * fps < freq * fpsFrameCount)
       {
-         int sleepTime = (int)((previousFrame * fps + freq - frame * fps) * 1000 / (freq * fps));
-         System.Threading.Thread.Sleep(sleepTime);
+         int sleepTime = (int)((fpsStartTime * fps + freq * fpsFrameCount - frame * fps) * 1000 / (freq * fps));
+         if (sleepTime > 0) System.Threading.Thread.Sleep(sleepTime);
          frame = System.Diagnostics.Stopwatch.GetTimestamp();
       }
-      previousFrame = frame;
+      if (++fpsFrameCount > fps)
+      {
+         fpsFrameCount = 0;
+         fpsStartTime = frame;
+      }
    }
 
 
@@ -229,22 +234,22 @@ public abstract partial class GeneralRules
       if (saveUnit == null)
          saveUnit = new SaveUnit();
 
-      switch(Include)
+      switch (Include)
       {
          case SaveUnitInclusion.AllMaps:
             saveUnit.Maps = Project.GameWindow.LoadedMaps;
             saveUnit.AllMaps = true;
             break;
          case SaveUnitInclusion.AllCounters:
-         {
-            saveUnit.Counters = new System.Collections.ArrayList();
-            System.Reflection.PropertyInfo[] counterProps = typeof(Counter).GetProperties(
-               System.Reflection.BindingFlags.Public |
-               System.Reflection.BindingFlags.GetProperty |
-               System.Reflection.BindingFlags.Static);
-            foreach(System.Reflection.PropertyInfo counterProp in counterProps)
-               saveUnit.Counters.Add(new CounterRef((Counter)counterProp.GetValue(null, null)));
-         }
+            {
+               saveUnit.Counters = new System.Collections.ArrayList();
+               System.Reflection.PropertyInfo[] counterProps = typeof(Counter).GetProperties(
+                  System.Reflection.BindingFlags.Public |
+                  System.Reflection.BindingFlags.GetProperty |
+                  System.Reflection.BindingFlags.Static);
+               foreach (System.Reflection.PropertyInfo counterProp in counterProps)
+                  saveUnit.Counters.Add(new CounterRef((Counter)counterProp.GetValue(null, null)));
+            }
             break;
          case SaveUnitInclusion.WhichMapIsCurrent:
             saveUnit.CurrentMapType = Project.GameWindow.CurrentMap.GetType();
@@ -286,7 +291,7 @@ public abstract partial class GeneralRules
          saveUnit.Counters.Add(new CounterRef(Counter));
          return;
       }
-      foreach(CounterRef cr in saveUnit.Counters)
+      foreach (CounterRef cr in saveUnit.Counters)
       {
          if (cr.instance == Counter)
             return;
@@ -311,14 +316,14 @@ public abstract partial class GeneralRules
    {
       if ((saveUnit == null) || (saveUnit.Counters == null))
          return;
-      for(int i = 0; i < saveUnit.Counters.Count; i++)
+      for (int i = 0; i < saveUnit.Counters.Count; i++)
       {
          if (((CounterRef)(saveUnit.Counters[i])).instance == Counter)
          {
             saveUnit.Counters.RemoveAt(i);
             return;
          }
-      }      
+      }
    }
 
    /// <summary>
@@ -406,7 +411,7 @@ public abstract partial class GeneralRules
          stm = new System.IO.FileStream(System.IO.Path.Combine(
             System.Windows.Forms.Application.UserAppDataPath, Slot.ToString() + ".sav"),
             System.IO.FileMode.Create, System.IO.FileAccess.Write);
-      using(stm)
+      using (stm)
       {
          if (saveUnit == null)
          {
@@ -455,7 +460,7 @@ public abstract partial class GeneralRules
             System.Windows.Forms.Application.UserAppDataPath, Slot.ToString() + ".sav"),
             System.IO.FileMode.Open, System.IO.FileAccess.Read);
 
-      using(stm)
+      using (stm)
       {
          System.Runtime.Serialization.Formatters.Binary.BinaryFormatter bf = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
          SaveUnit unit = (SaveUnit)bf.Deserialize(stm);
@@ -464,7 +469,7 @@ public abstract partial class GeneralRules
             if (unit.AllMaps)
                Project.GameWindow.LoadedMaps = unit.Maps;
             else
-               foreach(System.Collections.DictionaryEntry de in unit.Maps)
+               foreach (System.Collections.DictionaryEntry de in unit.Maps)
                   Project.GameWindow.LoadedMaps[de.Key] = de.Value;
             // If sprites exist on any layer of any map whose static state cache has not
             // been initialized, initialize them now.
@@ -688,7 +693,7 @@ public abstract partial class GeneralRules
    [Description("Determine if the specified map-specific flag on the current map is on.")]
    public virtual bool IsMapFlagOn(int FlagIndex)
    {
-      return ((ParentLayer.ParentMap.MapFlags & (1<<FlagIndex)) != 0);
+      return ((ParentLayer.ParentMap.MapFlags & (1 << FlagIndex)) != 0);
    }
 
    /// <summary>
@@ -733,7 +738,7 @@ public abstract partial class GeneralRules
    [Description("Return a random number greater than or equal to Minimum and less than Maximum.")]
    public virtual int GetRandomNumber(int Minimum, int Maximum)
    {
-      return randomGen.Next(Minimum,Maximum);
+      return randomGen.Next(Minimum, Maximum);
    }
 
    /// <summary>
@@ -751,7 +756,7 @@ public abstract partial class GeneralRules
    [Description("Change a counter's value with a pre-defined operation. Return true if the counter hits a limit or is left unchanged.")]
    public virtual bool ChangeCounter(Counter Counter, CounterOperation Operation)
    {
-      switch(Operation)
+      switch (Operation)
       {
          case CounterOperation.IncrementAndStop:
             if (Counter.CurrentValue < Counter.MaxValue)
@@ -851,7 +856,7 @@ public abstract partial class GeneralRules
    /// <paramref name="TargetName"/> allows you to select any number of sprites by assigning each a globally
    /// unique name to be used by any plan or sprite rules. Only one sprite can ever be associated with that
    /// target name at a time. Assigning another to that name will replace the existing target with the new
-   /// one. Specify -1 for <paramref name="Index"/> to clear the specified target.
+   /// one. Specify -1 for <paramref name="Index"/> to clear selection for the specified target.
    /// <seealso cref="SelectLastCreatedSpriteFor"/>
    /// <seealso cref="SetTargetParameterFor"/>
    /// <seealso cref="GetTargetParameterFor"/>
@@ -967,9 +972,12 @@ public abstract partial class GeneralRules
    /// Get the value of a numeric property or parameter on a sprite selected with <see cref="SelectTargetSpriteFor"/>.
    /// </summary>
    /// <param name="ParameterName">Name of the parameter on the target sprite that will be returned.</param>
+   /// <param name="TargetName">Which target's currently selected sprite contains the parameter being retrieved.</param>
    /// <returns>Integer property value of specified property.</returns>
-   /// <remarks>Remember that ParameterName is provided as a string,
-   /// and must be quoted assuming the name is provided directly.
+   /// <remarks>Remember that ParameterName and TargetName are provided as strings,
+   /// and must be quoted assuming the names are provided directly.
+   /// A target is an arbitrary name that distinguishes a sprite selected for one purpose from
+   /// sprites selected for other purposes.  A target is defined by calling <see cref="SelectTargetSpriteFor"/>.
    /// <seealso cref="SetTargetParameterFor"/>
    /// <seealso cref="SelectTargetSpriteFor"/>
    /// <seealso cref="SelectLastCreatedSpriteFor"/></remarks>
@@ -978,7 +986,7 @@ public abstract partial class GeneralRules
    {
       if (!selectedSprites.Contains(TargetName))
       {
-         Debug.Fail("Tried to get parameter for non-existent target \"" + TargetName +"\".");
+         Debug.Fail("Tried to get parameter for non-existent target \"" + TargetName + "\".");
          return 0;
       }
       object selectedTarget = selectedSprites[TargetName];
@@ -1082,7 +1090,7 @@ public abstract partial class GeneralRules
       /// <summary>
       /// The first button as defined by the player options
       /// </summary>
-      First=1,
+      First = 1,
       /// <summary>
       /// The second button as defined by the player options
       /// </summary>
@@ -1099,7 +1107,7 @@ public abstract partial class GeneralRules
       /// Disable input from the player while waiting for a button;
       /// prevent it from affecting the player's sprite.
       /// </summary>
-      FreezeInputs=16
+      FreezeInputs = 16
    }
 
    protected static Tileset FontTileset = null;
@@ -1187,7 +1195,7 @@ public abstract partial class GeneralRules
       for (int i = 0; i < activeMessageCount; i++)
       {
          MessageLayer msg = activeMessages[i];
-         if (msg.player == playerNumber-1)
+         if (msg.player == playerNumber - 1)
          {
             bool dismissPressed = false;
             if ((0 != (msg.dismissButton & ButtonSpecifier.First)) && player.Button1)
@@ -1383,7 +1391,7 @@ public abstract partial class GeneralRules
       Display disp = ParentLayer.ParentMap.Display;
       int x = 0, y = 1;
       int maxWidth = 1;
-      for (int charIdx = 0; charIdx < charBytes.Length; charIdx+=2)
+      for (int charIdx = 0; charIdx < charBytes.Length; charIdx += 2)
       {
          if (Message[charIdx / 2] == '\n')
          {
@@ -1455,7 +1463,7 @@ public abstract partial class GeneralRules
 
       x = 0;
       y = 0;
-      for (int charIdx = 0; charIdx < charBytes.Length; charIdx+=2)
+      for (int charIdx = 0; charIdx < charBytes.Length; charIdx += 2)
       {
          if (Message[charIdx / 2] == '\n')
          {
@@ -1649,7 +1657,7 @@ public partial class CounterRef : System.Runtime.Serialization.ISerializable
          System.Reflection.BindingFlags.Public |
          System.Reflection.BindingFlags.GetProperty |
          System.Reflection.BindingFlags.Static);
-      foreach(System.Reflection.PropertyInfo counterProp in counterProps)
+      foreach (System.Reflection.PropertyInfo counterProp in counterProps)
       {
          Counter inst = (Counter)counterProp.GetValue(null, null);
          if (inst == counter)

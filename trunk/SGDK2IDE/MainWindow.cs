@@ -2902,10 +2902,11 @@ namespace SGDK2
          CodeGenerator g = new CodeGenerator();
          g.GeneratorOptions.BracingStyle = "C";
          string errs;
-         string outFile = g.CompileProject(System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath), strFolder, out errs);
+         System.Collections.Generic.IEnumerable<CodeGenerator.ObjectErrorInfo> errorRules;
+         string outFile = g.CompileProject(System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath), strFolder, out errs, out errorRules);
          if (errs.Length > 0)
          {
-            frmLogView frm = new frmLogView(errs);
+            frmLogView frm = new frmLogView(errs, errorRules);
             frm.MdiParent = this;
             frm.Show();
             return;
@@ -2938,10 +2939,11 @@ namespace SGDK2
          CodeGenerator g = new CodeGenerator();
          g.GeneratorOptions.BracingStyle = "C";
          string errs;
-         string outFile = g.CompileProject(System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath), strFolder, out errs);
+         System.Collections.Generic.IEnumerable<CodeGenerator.ObjectErrorInfo> errorRules;
+         string outFile = g.CompileProject(System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath), strFolder, out errs, out errorRules);
          if (errs.Length > 0)
          {
-            frmLogView frm = new frmLogView(errs);
+            frmLogView frm = new frmLogView(errs, errorRules);
             frm.MdiParent = this;
             frm.Show();
             return;
@@ -3014,10 +3016,11 @@ namespace SGDK2
          g.GeneratorOptions.BracingStyle = "C";
          g.Debug = true;
          string errs;
-         string outFile = g.CompileProject(System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath), strFolder, out errs);
+         System.Collections.Generic.IEnumerable<CodeGenerator.ObjectErrorInfo> errorRules;
+         string outFile = g.CompileProject(System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath), strFolder, out errs, out errorRules);
          if (errs.Length > 0)
          {
-            frmLogView frm = new frmLogView(errs);
+            frmLogView frm = new frmLogView(errs, errorRules);
             frm.MdiParent = this;
             frm.Show();
             return;

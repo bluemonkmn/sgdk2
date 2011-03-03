@@ -79,6 +79,7 @@ namespace SGDK2
       private const string InjectStartIndexField = "m_nInjectStartIndex";
       private const string AppendStartIndexField = "m_nAppendStartIndex";
       private const string TileCategoryNameClass = "TileCategoryName";
+      private const string SpritesDir = "Sprites";
       #endregion
 
       #region Embedded Types
@@ -314,7 +315,7 @@ namespace SGDK2
                txt.Close();
             }
 
-            string SpritesFolder = System.IO.Path.Combine(FolderName, "Sprites");
+            string SpritesFolder = System.IO.Path.Combine(FolderName, SpritesDir);
             if (!System.IO.Directory.Exists(SpritesFolder))
                System.IO.Directory.CreateDirectory(SpritesFolder);
             foreach (System.Data.DataRowView drv in ProjectData.SpriteDefinition.DefaultView)
@@ -413,7 +414,7 @@ namespace SGDK2
 
          if (row is ProjectDataset.SpriteDefinitionRow)
          {
-            return System.IO.Path.Combine(System.IO.Path.Combine(FolderName, "Sprites"),
+            return System.IO.Path.Combine(System.IO.Path.Combine(FolderName, SpritesDir),
                NameToVariable(((ProjectDataset.SpriteDefinitionRow)row).Name) + ".cs");
          }
          else if (row is ProjectDataset.MapRow)
@@ -3492,9 +3493,57 @@ namespace SGDK2
          }
       }
 
-      public string CompileProject(string ProjectName, string FolderName, out string errs)
+      public class ObjectErrorInfo
+      {
+         public System.Data.DataRow source { get; private set; }
+         public CompilerError error { get; private set; }
+
+         public ObjectErrorInfo(System.Data.DataRow source, CompilerError error)
+         {
+            this.source = source;
+            this.error = error;
+         }
+
+         public string GetSourceType()
+         {
+            if (source is ProjectDataset.PlanRuleRow)
+               return "Plan Rule";
+            else if (source is ProjectDataset.SpriteRuleRow)
+               return "Sprite Rule";
+            else
+               return source.GetType().Name;
+         }
+
+         public string GetSourceName()
+         {
+            if (source is ProjectDataset.PlanRuleRow)
+            {
+               ProjectDataset.PlanRuleRow drPlanRule = (ProjectDataset.PlanRuleRow)source;
+               return drPlanRule.MapName + "/" + drPlanRule.LayerName + "/" + drPlanRule.PlanName + "/" + drPlanRule.Name;
+            }
+            else if (source is ProjectDataset.SpriteRuleRow)
+            {
+               ProjectDataset.SpriteRuleRow drSpriteRule = (ProjectDataset.SpriteRuleRow)source;
+               return drSpriteRule.DefinitionName + "/" + drSpriteRule.Name;
+            }
+            else
+               return null;
+         }
+
+         public string Message
+         {
+            get
+            {
+               return error.ErrorText;
+            }
+         }
+      }
+
+      public string CompileProject(string ProjectName, string FolderName, out string errs, out System.Collections.Generic.IEnumerable<ObjectErrorInfo> errorRules)
       {
          SGDK2IDE.PushStatus("Compiling " + ProjectName + " to " + FolderName, true);
+         errorRules = null;
+         var errorRows = new System.Collections.Generic.List<ObjectErrorInfo>();
          try
          {
             if (!System.IO.Path.IsPathRooted(FolderName))
@@ -3586,7 +3635,18 @@ namespace SGDK2
                for (int i = 0; i < results.Errors.Count; i++)
                {
                   sb.Append(results.Errors[i].ToString() + Environment.NewLine);
+                  ProjectDataset.SpriteRuleRow errSpriteRule = GetSpriteRuleErr(results.Errors[i]);
+                  if (errSpriteRule != null)
+                  {
+                     errorRows.Add(new ObjectErrorInfo(errSpriteRule, results.Errors[i]));
+                  }
+                  ProjectDataset.PlanRuleRow errPlanRule = GetPlanRuleErr(results.Errors[i]);
+                  if (errPlanRule != null)
+                  {
+                     errorRows.Add(new ObjectErrorInfo(errPlanRule, results.Errors[i]));
+                  }
                }
+               errorRules = errorRows.ToArray();
                errs = sb.ToString();
                return null;
             }
@@ -3611,6 +3671,108 @@ namespace SGDK2
          {
             SGDK2IDE.PopStatus();
          }
+      }
+
+      private ProjectDataset.SpriteRuleRow GetSpriteRuleErr(CompilerError err)
+      {
+         string errFile = System.IO.Path.GetFileName(err.FileName);
+         string errDir = System.IO.Path.GetDirectoryName(err.FileName);
+         if (!errDir.EndsWith(SpritesDir))
+            return null;
+         foreach (System.Data.DataRowView drv in ProjectData.SpriteDefinition.DefaultView)
+         {
+            ProjectDataset.SpriteDefinitionRow drSpriteDef = (ProjectDataset.SpriteDefinitionRow)drv.Row;
+            string spriteFileName = NameToVariable(drSpriteDef.Name) + ".cs";
+            using (System.IO.StreamReader sr = new System.IO.StreamReader(err.FileName))
+            {
+               System.Collections.Generic.List<string> fileLines = new System.Collections.Generic.List<string>();
+               if (errFile == spriteFileName)
+               {
+                  var ruleMap = System.Linq.Enumerable.ToDictionary(drSpriteDef.GetSpriteRuleRows(), k => k.Name, v => v);
+                  do
+                  {
+                     fileLines.Add(sr.ReadLine().TrimStart());
+                  } while ((sr.EndOfStream == false) && (fileLines.Count <= err.Line));
+                  for (int i = fileLines.Count - 1; i > 0; i--)
+                  {
+                     if (fileLines[i].StartsWith("//"))
+                     {
+                        ProjectDataset.SpriteRuleRow spriteRule;
+                        if (ruleMap.TryGetValue(fileLines[i].Substring(2).TrimStart(), out spriteRule))
+                        {
+                           return spriteRule;
+                        }
+                     }
+                  }
+               }
+            }
+         }
+         return null;
+      }
+      private ProjectDataset.PlanRuleRow GetPlanRuleErr(CompilerError err)
+      {
+         string errFile = System.IO.Path.GetFileName(err.FileName);
+         string errDir = System.IO.Path.GetDirectoryName(err.FileName);
+         foreach (System.Data.DataRowView drv in ProjectData.Map.DefaultView)
+         {
+            ProjectDataset.MapRow drMap = (ProjectDataset.MapRow)drv.Row;
+            string fileName = NameToVariable(((ProjectDataset.MapRow)drMap).Name) + "_Map.cs";
+            using (System.IO.StreamReader sr = new System.IO.StreamReader(err.FileName))
+            {
+               System.Collections.Generic.List<string> fileLines = new System.Collections.Generic.List<string>();
+               if (errFile == fileName)
+               {
+                  System.Text.RegularExpressions.Regex reLayerDecl = new System.Text.RegularExpressions.Regex(@"class (\S+)_Lyr\s*\:\s*\S*Layer$");
+                  System.Text.RegularExpressions.Regex rePlanDecl = new System.Text.RegularExpressions.Regex(@"class (\S+)\s*\:\s*PlanBase$");
+                  string curLayer = null;
+                  string curPlan = null;
+                  int lineNum = 0;
+                  do
+                  {
+                     string lineText = sr.ReadLine().TrimStart();
+                     lineNum++;
+                     fileLines.Add(lineText);
+
+                     System.Text.RegularExpressions.Match match = reLayerDecl.Match(lineText);
+                     if (match.Success)
+                     {
+                        fileLines.Clear();
+                        curLayer = match.Groups[1].Captures[0].Value;
+                     }
+                     else
+                     {
+                        match = rePlanDecl.Match(lineText);
+                        if (match.Success)
+                        {
+                           fileLines.Clear();
+                           curPlan = match.Groups[1].Captures[0].Value;
+                        }
+                     }
+                  } while ((sr.EndOfStream == false) && (lineNum <= err.Line));
+
+                  ProjectDataset.SpritePlanRow drSpritePlan = null;
+                  foreach (ProjectDataset.LayerRow lyr in drMap.GetLayerRows())
+                     if ((drSpritePlan == null) && (NameToVariable(lyr.Name) == curLayer))
+                        foreach (ProjectDataset.SpritePlanRow pln in lyr.GetSpritePlanRows())
+                           if ((drSpritePlan == null) && (NameToVariable(pln.Name) == curPlan))
+                              drSpritePlan = pln;
+
+                  var ruleMap = System.Linq.Enumerable.ToDictionary(drSpritePlan.GetPlanRuleRows(), k => k.Name, v => v);
+                  for (int i = fileLines.Count - 1; i > 0; i--)
+                  {
+                     if (fileLines[i].TrimStart().StartsWith("//"))
+                     {
+                        ProjectDataset.PlanRuleRow planRule;
+                        if (ruleMap.TryGetValue(fileLines[i].Substring(2).TrimStart(), out planRule))
+                        {
+                           return planRule;
+                        }
+                     }
+                  }
+               }
+            }
+         }
+         return null;
       }
       #endregion
    }

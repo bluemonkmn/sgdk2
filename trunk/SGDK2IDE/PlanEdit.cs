@@ -1885,7 +1885,7 @@ namespace SGDK2
       #endregion
 
       #region Public Static Members
-      public static void Edit(Form MdiParent, ProjectDataset.SpritePlanRow EditRow)
+      public static frmPlanEdit Edit(Form MdiParent, ProjectDataset.SpritePlanRow EditRow)
       {
          foreach(Form frm in MdiParent.MdiChildren)
          {
@@ -1895,7 +1895,7 @@ namespace SGDK2
                if (f.m_Plan == EditRow)
                {
                   f.Activate();
-                  return;
+                  return f;
                }
             }
          }
@@ -1903,6 +1903,15 @@ namespace SGDK2
          frmPlanEdit frmNew = new frmPlanEdit(EditRow);
          frmNew.MdiParent = MdiParent;
          frmNew.Show();
+         return frmNew;
+      }
+
+      public static frmPlanEdit Edit(Form MdiParent, ProjectDataset.PlanRuleRow EditRow)
+      {
+         frmPlanEdit frm = Edit(MdiParent, EditRow.SpritePlanRowParent);
+         frm.PopulateRules();
+         frm.tvwRules.SelectedNode = frm.GetNodeFromRow(EditRow);
+         return frm;
       }
       #endregion
 

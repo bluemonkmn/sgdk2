@@ -72,6 +72,8 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       private string m_Name;
       private int m_Texture = 0;
       private Display m_Display;
+      private int m_Width = 0;
+      private int m_Height = 0;
 
       public TextureRef(Display Disp, string Name)
       {
@@ -102,6 +104,26 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
                m_Texture = m_Display.GetTexture(m_Name);
             }
             return m_Texture;
+         }
+      }
+
+      public int Width
+      {
+         get
+         {
+            if (m_Width <= 0)
+               m_Width = m_Display.m_TextureSizes[m_Name].Width;
+            return m_Width;
+         }
+      }
+
+      public int Height
+      {
+         get
+         {
+            if (m_Height <= 0)
+               m_Height = m_Display.m_TextureSizes[m_Name].Height;
+            return m_Height;
          }
       }
 
@@ -136,12 +158,13 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
 
    #region Fields
    private System.Collections.Generic.Dictionary<string, WeakReference> m_TextureRefs = null;
+   private System.Collections.Generic.Dictionary<string, System.Drawing.Size> m_TextureSizes = null;
    private GameDisplayMode m_GameDisplayMode;
    private DisplayOperation m_currentOp;
    private TextureRef m_currentTexture = null;
    private bool scaleNativeSize = false;
-   private const TextureTarget texTarget = TextureTarget.TextureRectangleArb;
-   private const EnableCap texCap = (EnableCap)ArbTextureRectangle.TextureRectangleArb;
+   private const TextureTarget texTarget = TextureTarget.Texture2D;
+   private const EnableCap texCap = EnableCap.Texture2D;
    private static TextureRef m_DefaultFont = null;
    private static byte[] shadedStipple = new byte[] {
       0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
@@ -219,6 +242,14 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    #endregion
 
    #region Private members
+   static int NextPow2(int value)
+   {
+      int result;
+      for (result = 1; result < value; result <<= 1)
+         ;
+      return result;
+   }
+
    private int GetTexture(string Name)
    {
       int texture;
@@ -226,20 +257,41 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       GL.BindTexture(texTarget, texture);
       GL.TexParameter(texTarget, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
       GL.TexParameter(texTarget, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+      GL.TexParameter(texTarget, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Clamp);
+      GL.TexParameter(texTarget, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Clamp);
+
       System.Drawing.Bitmap bmpTexture = (System.Drawing.Bitmap)Project.Resources.GetObject(Name);
+
+      int useWidth = NextPow2(bmpTexture.Width);
+      int useHeight = NextPow2(bmpTexture.Height);
+
+      bool useSubTexture = (useWidth != bmpTexture.Width) || (useHeight != bmpTexture.Height);
 
       int texSize;
       GL.GetInteger(GetPName.MaxTextureSize, out texSize);
-      if ((texSize < bmpTexture.Width) ||
-          (texSize < bmpTexture.Height))
-         throw new System.ApplicationException("Texture " + Name + " is size " + bmpTexture.Width + "x" + bmpTexture.Height +
-            ", but the current OpenGL video drivers only support textures up to " + texSize.ToString());
+      if ((texSize < useWidth) ||
+          (texSize < useHeight))
+         throw new System.ApplicationException("Texture " + Name + " is size " + useWidth + "x" + useHeight +
+            " (after rounding up to power of 2), but the current OpenGL video drivers only support textures up to " + texSize.ToString());
+
+      if (m_TextureSizes == null)
+         m_TextureSizes = new System.Collections.Generic.Dictionary<string, System.Drawing.Size>();
+      if (!m_TextureSizes.ContainsKey(Name))
+         m_TextureSizes[Name] = new System.Drawing.Size(useWidth, useHeight);
 
       System.Drawing.Imaging.BitmapData bits = bmpTexture.LockBits(new System.Drawing.Rectangle(0, 0, bmpTexture.Width, bmpTexture.Height),
          System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
       try
       {
-         GL.TexImage2D(texTarget, 0, PixelInternalFormat.Rgba8, bmpTexture.Width, bmpTexture.Height, 0, PixelFormat.Bgra, PixelType.UnsignedByte, bits.Scan0);
+         if (useSubTexture)
+         {
+            GL.TexImage2D(texTarget, 0, PixelInternalFormat.Rgba8, useWidth, useHeight, 0, PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
+            GL.TexSubImage2D(texTarget, 0, 0, 0, bmpTexture.Width, bmpTexture.Height, PixelFormat.Bgra, PixelType.UnsignedByte, bits.Scan0);
+         }
+         else
+         {
+            GL.TexImage2D(texTarget, 0, PixelInternalFormat.Rgba8, useWidth, useHeight, 0, PixelFormat.Bgra, PixelType.UnsignedByte, bits.Scan0);
+         }
       }
       finally
       {
@@ -319,7 +371,6 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    /// Checks that the current video drivers support features required by the framework code,
    /// and didplays a message if not.
    /// </summary>
-   /// <remarks>Checks that the driver supports the GL_ARB_texture_rectangle extension.</remarks>
    public void CheckRequirements()
    {
       if (!requirementsChecked)
@@ -341,10 +392,6 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
             }
             if (System.Windows.Forms.DialogResult.Cancel == System.Windows.Forms.MessageBox.Show(this, errString + "\r\nTry updating your video drivers.", "Requirement Check Warning", System.Windows.Forms.MessageBoxButtons.OKCancel, System.Windows.Forms.MessageBoxIcon.Exclamation, System.Windows.Forms.MessageBoxDefaultButton.Button2))
                throw new ApplicationException(errString);
-         }
-         if (!GL.GetString(StringName.Extensions).Contains("GL_ARB_texture_rectangle"))
-         {
-            System.Windows.Forms.MessageBox.Show(this, "GL_ARB_texture_rectangle may be required for proper operation. The current video driver does not support this feature. Try updating your video drivers.", "Requirement Check Warning", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Exclamation);
          }
       }
    }
@@ -478,13 +525,13 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
          m_currentOp = DisplayOperation.DrawFrames;
          m_currentTexture = texture;
       }
-      GL.TexCoord2(sourceRect.Left, sourceRect.Top);
+      GL.TexCoord2((float)sourceRect.Left / texture.Width, (float)sourceRect.Top / texture.Height);
       GL.Vertex2(corners[0].X + offsetX, corners[0].Y + offsetY);
-      GL.TexCoord2(sourceRect.Left, sourceRect.Top + sourceRect.Height);
+      GL.TexCoord2((float)sourceRect.Left / texture.Width, (float)(sourceRect.Top + sourceRect.Height) / texture.Height);
       GL.Vertex2(corners[1].X + offsetX, corners[1].Y + offsetY);
-      GL.TexCoord2(sourceRect.Left + sourceRect.Width, sourceRect.Top + sourceRect.Height);
+      GL.TexCoord2((float)(sourceRect.Left + sourceRect.Width) / texture.Width, (float)(sourceRect.Top + sourceRect.Height) / texture.Height);
       GL.Vertex2(corners[2].X + offsetX, corners[2].Y + offsetY);
-      GL.TexCoord2(sourceRect.Left + sourceRect.Width, sourceRect.Top);
+      GL.TexCoord2((float)(sourceRect.Left + sourceRect.Width) / texture.Width, (float)sourceRect.Top / texture.Height);
       GL.Vertex2(corners[3].X + offsetX, corners[3].Y + offsetY);
    }
 

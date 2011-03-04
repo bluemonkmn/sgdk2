@@ -22,6 +22,7 @@ namespace SGDK2
       private MenuItem mnuErrorLog;
       private MenuItem mnuJumpToError;
       private GroupBox grpDetails;
+      private ImageList imgIcons;
       private IContainer components;
 
 		public frmLogView(string text, System.Collections.Generic.IEnumerable<CodeGenerator.ObjectErrorInfo> errorRows)
@@ -37,7 +38,7 @@ namespace SGDK2
 
          lvwObjectErrors.Items.AddRange(System.Linq.Enumerable.ToArray(
             System.Linq.Enumerable.Select(errorRows,
-            i => new ListViewItem(new string[] { i.GetSourceType(), i.GetSourceName(), i.Message }) { Tag = i })));
+            i => new ListViewItem(new string[] { i.GetSourceType(), i.GetSourceName(), i.Message }) { Tag = i, ImageIndex = i.error.IsWarning ? 1 : 0 })));
 		}
 
 		/// <summary>
@@ -67,6 +68,7 @@ namespace SGDK2
          System.Windows.Forms.ColumnHeader colObjName;
          System.Windows.Forms.ColumnHeader colMessage;
          System.Windows.Forms.MainMenu mnuLog;
+         System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmLogView));
          this.mnuErrorLog = new System.Windows.Forms.MenuItem();
          this.mnuJumpToError = new System.Windows.Forms.MenuItem();
          this.txtLogView = new System.Windows.Forms.TextBox();
@@ -74,6 +76,7 @@ namespace SGDK2
          this.grpErrorList = new System.Windows.Forms.GroupBox();
          this.lvwObjectErrors = new System.Windows.Forms.ListView();
          this.grpDetails = new System.Windows.Forms.GroupBox();
+         this.imgIcons = new System.Windows.Forms.ImageList(this.components);
          colErrObjType = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
          colObjName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
          colMessage = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -89,7 +92,7 @@ namespace SGDK2
          // colErrObjType
          // 
          colErrObjType.Text = "Object Type";
-         colErrObjType.Width = 70;
+         colErrObjType.Width = 90;
          // 
          // colObjName
          // 
@@ -99,7 +102,7 @@ namespace SGDK2
          // colMessage
          // 
          colMessage.Text = "Error Message";
-         colMessage.Width = 379;
+         colMessage.Width = 350;
          // 
          // mnuLog
          // 
@@ -172,6 +175,7 @@ namespace SGDK2
          this.lvwObjectErrors.Location = new System.Drawing.Point(3, 16);
          this.lvwObjectErrors.Name = "lvwObjectErrors";
          this.lvwObjectErrors.Size = new System.Drawing.Size(793, 179);
+         this.lvwObjectErrors.SmallImageList = this.imgIcons;
          this.lvwObjectErrors.TabIndex = 0;
          this.lvwObjectErrors.UseCompatibleStateImageBehavior = false;
          this.lvwObjectErrors.View = System.Windows.Forms.View.Details;
@@ -187,6 +191,13 @@ namespace SGDK2
          this.grpDetails.TabIndex = 1;
          this.grpDetails.TabStop = false;
          this.grpDetails.Text = "Detailed Compiler Output";
+         // 
+         // imgIcons
+         // 
+         this.imgIcons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imgIcons.ImageStream")));
+         this.imgIcons.TransparentColor = System.Drawing.Color.Magenta;
+         this.imgIcons.Images.SetKeyName(0, "ErrIcon.bmp");
+         this.imgIcons.Images.SetKeyName(1, "WarnIcon.bmp");
          // 
          // frmLogView
          // 
@@ -235,6 +246,11 @@ namespace SGDK2
          {
             ProjectDataset.PlanRuleRow drPlanRule = (ProjectDataset.PlanRuleRow)err.source;
             frmPlanEdit.Edit(MdiParent, drPlanRule);
+         }
+         else if (err.source is ProjectDataset.SourceCodeRow)
+         {
+            ProjectDataset.SourceCodeRow drSourceCode = (ProjectDataset.SourceCodeRow)err.source;
+            frmCodeEditor.Edit(MdiParent, drSourceCode).GotoLine(err.error.Line);
          }
       }
       #endregion

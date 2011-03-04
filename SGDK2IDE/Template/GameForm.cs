@@ -115,7 +115,6 @@ public partial class GameForm : Form
 #if DEBUG
       MessageBox.Show("You are running in debug mode.  Unexpected runtime conditions may cause the game to halt, and if an error occurs you will have the opportunity to debug into it if you have a debugger installed and the project's source code handy", "Debug Mode Active");
 #endif
-      AutoScale = false;
       ClientSize = Display.GetScreenSize(mode);
       GameDisplay = new Display(mode, windowed);
       GameDisplay.BorderStyle = System.Windows.Forms.BorderStyle.None;

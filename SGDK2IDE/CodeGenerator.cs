@@ -3510,6 +3510,8 @@ namespace SGDK2
                return "Plan Rule";
             else if (source is ProjectDataset.SpriteRuleRow)
                return "Sprite Rule";
+            else if (source is ProjectDataset.SourceCodeRow)
+               return "Source Code";
             else
                return source.GetType().Name;
          }
@@ -3525,6 +3527,10 @@ namespace SGDK2
             {
                ProjectDataset.SpriteRuleRow drSpriteRule = (ProjectDataset.SpriteRuleRow)source;
                return drSpriteRule.DefinitionName + "/" + drSpriteRule.Name;
+            }
+            else if (source is ProjectDataset.SourceCodeRow)
+            {
+               return ((ProjectDataset.SourceCodeRow)source).Name;
             }
             else
                return null;
@@ -3640,10 +3646,21 @@ namespace SGDK2
                   {
                      errorRows.Add(new ObjectErrorInfo(errSpriteRule, results.Errors[i]));
                   }
-                  ProjectDataset.PlanRuleRow errPlanRule = GetPlanRuleErr(results.Errors[i]);
-                  if (errPlanRule != null)
+                  else
                   {
-                     errorRows.Add(new ObjectErrorInfo(errPlanRule, results.Errors[i]));
+                     ProjectDataset.PlanRuleRow errPlanRule = GetPlanRuleErr(results.Errors[i]);
+                     if (errPlanRule != null)
+                     {
+                        errorRows.Add(new ObjectErrorInfo(errPlanRule, results.Errors[i]));
+                     }
+                     else
+                     {
+                        ProjectDataset.SourceCodeRow errSrcCode = ProjectData.GetSourceCode(System.IO.Path.GetFileName(results.Errors[i].FileName));
+                        if (errSrcCode != null)
+                        {
+                           errorRows.Add(new ObjectErrorInfo(errSrcCode, results.Errors[i]));
+                        }
+                     }
                   }
                }
                errorRules = errorRows.ToArray();

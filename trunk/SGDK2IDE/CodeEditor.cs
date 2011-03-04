@@ -1029,7 +1029,7 @@ namespace SGDK2
       #endregion
 
       #region Public Static Members
-      public static void Edit(Form MdiParent, ProjectDataset.SourceCodeRow EditRow)
+      public static frmCodeEditor Edit(Form MdiParent, ProjectDataset.SourceCodeRow EditRow)
       {
          foreach(Form frm in MdiParent.MdiChildren)
          {
@@ -1039,7 +1039,7 @@ namespace SGDK2
                if (f.m_SourceCode == EditRow)
                {
                   f.Activate();
-                  return;
+                  return f;
                }
             }
          }
@@ -1047,6 +1047,7 @@ namespace SGDK2
          frmCodeEditor frmNew = new frmCodeEditor(EditRow);
          frmNew.MdiParent = MdiParent;
          frmNew.Show();
+         return frmNew;
       }
 
       public static void CloseIfEditing(Form MdiParent, ProjectDataset.SourceCodeRow CloseRow)
@@ -1145,6 +1146,12 @@ namespace SGDK2
          else
             MessageBox.Show(this, "Replaced " + replacements.ToString() + " occurrences.", "Replace All", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
+         UpdateStatus();
+      }
+
+      public void GotoLine(int lineNum)
+      {
+         rtfCode.Select(rtfCode.GetLineStartCharIndex(lineNum - 1), 0);
          UpdateStatus();
       }
       #endregion
@@ -1321,8 +1328,7 @@ namespace SGDK2
             double lineNum;
             if (!double.TryParse(line, System.Globalization.NumberStyles.Integer, System.Threading.Thread.CurrentThread.CurrentCulture, out lineNum) || lineNum < 0)
                MessageBox.Show(this, "Invalid line number", "Go To Line", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            rtfCode.Select(rtfCode.GetLineStartCharIndex((int)lineNum-1), 0);
-            UpdateStatus();
+            GotoLine((int)lineNum);
          }
 
       }

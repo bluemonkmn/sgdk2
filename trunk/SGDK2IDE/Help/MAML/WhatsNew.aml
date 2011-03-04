@@ -13,6 +13,39 @@
     </introduction>
 
 <section>
+  <title>Version 2.1.9</title>
+  <content>
+  <para>This section describes updates between versions 2.1.6 and 2.1.9.</para>
+  <list class="ordered">
+    <listItem>Restore compatibility with Windows XP (avoid error when opening map editor on non-Windows 7 system).</listItem>
+    <listItem>Improve LimitFrameRate function to be more accurate while still yielding some CPU time.</listItem>
+    <listItem>Implement minimum value for counters.</listItem>
+    <listItem>Sort all objects by name in the UI where appropriate.</listItem>
+    <listItem>Don't try to delete frame when textbox has focus and pressing delete key on frameset editor.</listItem>
+    <listItem>Display a better error when attempting to preview an animated sprite or tile without any frames.</listItem>
+    <listItem>Add <codeEntityReference qualifyHint="false" autoUpgrade="true">M:GeneralRules.SelectTargetSpriteFor(SpriteCollection,System.Int32,System.String)</codeEntityReference>
+      function and other functions ending with "For"
+      to enhance existing selected target sprite functions so that any number of target
+      sprites may be simultaneously selected for different global target/operation names.</listItem>
+    <listItem>Add <codeEntityReference qualifyHint="false" autoUpgrade="true">M:GeneralRules.GetSelectedTargetFor(System.String)</codeEntityReference>
+      function to retrieve the currently selected target sprite.</listItem>
+    <listItem>Add <codeEntityReference qualifyHint="false" autoUpgrade="true">M:GeneralRules.GetTargetParameterFor(System.String,System.String)</codeEntityReference>
+      function to allow other sprites' parameter values to be retrieved.</listItem>
+    <listItem>Add <codeEntityReference qualifyHint="false" autoUpgrade="true">M:GeneralRules.DeactivateTargetSpriteFor(System.String)</codeEntityReference>
+      to allow a target sprite to be deactivated.</listItem>
+    <listItem>Add <codeEntityReference qualifyHint="false" autoUpgrade="true">M:GeneralRules.IsSpriteForTargetOfType(System.String,System.Type)</codeEntityReference>
+      to determine if the selected target sprite is of a specific type.</listItem>
+    <listItem>When loading a saved game, initialize sprite types that are active
+      that aren't active in a new game</listItem>
+    <listItem>Show compile errors in a list that allows the user to jump to the source
+      of the error if it is caused by a sprite rule, plan rule or source code item.</listItem>
+    <listItem>Update graphics framework to support video drivers that don't support
+      GL_ARB_texture_rectangle.</listItem>
+    </list>
+  </content>
+</section>
+
+<section>
   <title>Version 2.1.6</title>
   <content>
   <para>This section describes updates between versions 2.1.5 and 2.1.6.</para>

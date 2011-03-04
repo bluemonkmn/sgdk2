@@ -160,7 +160,7 @@ namespace CustomObjects
             }
             return FMOD.RESULT.OK;
          }
-         catch(System.Exception ex)
+         catch(System.Exception)
          {
             return FMOD.RESULT.ERR_UPDATE;
          }

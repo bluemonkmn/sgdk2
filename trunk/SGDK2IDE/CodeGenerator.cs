@@ -3705,18 +3705,42 @@ namespace SGDK2
                System.Collections.Generic.List<string> fileLines = new System.Collections.Generic.List<string>();
                if (errFile == spriteFileName)
                {
-                  var ruleMap = System.Linq.Enumerable.ToDictionary(drSpriteDef.GetSpriteRuleRows(), k => k.Name, v => v);
+                  ProjectDataset.SpriteRuleRow[] spriteRules = ProjectData.GetSortedSpriteRules(drSpriteDef, false);
+                  var ruleMap = System.Linq.Enumerable.ToDictionary(spriteRules, k => k.Name, v => v);
                   do
                   {
                      fileLines.Add(sr.ReadLine().TrimStart());
-                  } while ((sr.EndOfStream == false) && (fileLines.Count <= err.Line));
+                  } while ((sr.EndOfStream == false) && (fileLines.Count < err.Line));
                   for (int i = fileLines.Count - 1; i > 0; i--)
                   {
+                     string errLine = fileLines[fileLines.Count - 1];
                      if (fileLines[i].StartsWith("//"))
                      {
                         ProjectDataset.SpriteRuleRow spriteRule;
                         if (ruleMap.TryGetValue(fileLines[i].Substring(2).TrimStart(), out spriteRule))
                         {
+                           System.Collections.Generic.List<string> funcParts = new System.Collections.Generic.List<string>();
+                           int ruleIndex = spriteRule.Sequence;
+                           while ((ruleIndex >= spriteRules.Length) || ((ruleIndex > 0) && (spriteRules[ruleIndex].Sequence > spriteRule.Sequence)))
+                              ruleIndex--;
+                           for (; ruleIndex < spriteRules.Length; ruleIndex++)
+                           {
+                              funcParts.Add(spriteRules[ruleIndex].Function);
+                              if (!spriteRules[ruleIndex].IsParameter1Null()) funcParts.Add(spriteRules[ruleIndex].Parameter1);
+                              if (!spriteRules[ruleIndex].IsParameter2Null()) funcParts.Add(spriteRules[ruleIndex].Parameter2);
+                              if (!spriteRules[ruleIndex].IsParameter3Null()) funcParts.Add(spriteRules[ruleIndex].Parameter3);
+                              if (!spriteRules[ruleIndex].IsResultParameterNull()) funcParts.Add(spriteRules[ruleIndex].ResultParameter);
+                              bool found = true;
+                              foreach (string fp in funcParts)
+                                 if (!errLine.Contains(fp))
+                                 {
+                                    found = false;
+                                    break;
+                                 }
+                              if (found)
+                                 return spriteRules[ruleIndex];
+                              funcParts.Clear();
+                           }
                            return spriteRule;
                         }
                      }
@@ -3765,7 +3789,7 @@ namespace SGDK2
                            curPlan = match.Groups[1].Captures[0].Value;
                         }
                      }
-                  } while ((sr.EndOfStream == false) && (lineNum <= err.Line));
+                  } while ((sr.EndOfStream == false) && (lineNum < err.Line));
 
                   ProjectDataset.SpritePlanRow drSpritePlan = null;
                   foreach (ProjectDataset.LayerRow lyr in drMap.GetLayerRows())
@@ -3773,8 +3797,9 @@ namespace SGDK2
                         foreach (ProjectDataset.SpritePlanRow pln in lyr.GetSpritePlanRows())
                            if ((drSpritePlan == null) && (NameToVariable(pln.Name) == curPlan))
                               drSpritePlan = pln;
-
-                  var ruleMap = System.Linq.Enumerable.ToDictionary(drSpritePlan.GetPlanRuleRows(), k => k.Name, v => v);
+                  string errLine = fileLines[fileLines.Count - 1];
+                  ProjectDataset.PlanRuleRow[] planRules = ProjectData.GetSortedPlanRules(drSpritePlan, false);
+                  var ruleMap = System.Linq.Enumerable.ToDictionary(planRules, k => k.Name, v => v);
                   for (int i = fileLines.Count - 1; i > 0; i--)
                   {
                      if (fileLines[i].TrimStart().StartsWith("//"))
@@ -3782,6 +3807,28 @@ namespace SGDK2
                         ProjectDataset.PlanRuleRow planRule;
                         if (ruleMap.TryGetValue(fileLines[i].Substring(2).TrimStart(), out planRule))
                         {
+                           System.Collections.Generic.List<string> funcParts = new System.Collections.Generic.List<string>();
+                           int ruleIndex = planRule.Sequence;
+                           while ((ruleIndex >= planRules.Length) || ((ruleIndex > 0) && (planRules[ruleIndex].Sequence > planRule.Sequence)))
+                              ruleIndex--;
+                           for (; ruleIndex < planRules.Length; ruleIndex++)
+                           {
+                              funcParts.Add(planRules[ruleIndex].Function);
+                              if (!planRules[ruleIndex].IsParameter1Null()) funcParts.Add(planRules[ruleIndex].Parameter1);
+                              if (!planRules[ruleIndex].IsParameter2Null()) funcParts.Add(planRules[ruleIndex].Parameter2);
+                              if (!planRules[ruleIndex].IsParameter3Null()) funcParts.Add(planRules[ruleIndex].Parameter3);
+                              if (!planRules[ruleIndex].IsResultParameterNull()) funcParts.Add(planRules[ruleIndex].ResultParameter);
+                              bool found = true;
+                              foreach (string fp in funcParts)
+                                 if (!errLine.Contains(fp))
+                                 {
+                                    found = false;
+                                    break;
+                                 }
+                              if (found)
+                                 return planRules[ruleIndex];
+                              funcParts.Clear();
+                           }
                            return planRule;
                         }
                      }

@@ -19,6 +19,7 @@ namespace SGDK2
    {
       #region Win32 API declarations
       const uint DWM_EC_DISABLECOMPOSITION = 0;
+      private MenuItem mnuFileGenHtml5;
       const uint DWM_EC_ENABLECOMPOSITION = 1;
       [System.Runtime.InteropServices.DllImport("dwmapi.dll", EntryPoint = "DwmEnableComposition")]
       private extern static uint DwmEnableComposition(uint compositionAction);
@@ -180,6 +181,7 @@ namespace SGDK2
          this.mnuFileGenerate = new System.Windows.Forms.MenuItem();
          this.mnuFileDeleteIntermediateFiles = new System.Windows.Forms.MenuItem();
          this.mnuFileDeleteOutputFiles = new System.Windows.Forms.MenuItem();
+         this.mnuFileGenHtml5 = new System.Windows.Forms.MenuItem();
          this.mnuFileSep3 = new System.Windows.Forms.MenuItem();
          this.mnuFileSep4 = new System.Windows.Forms.MenuItem();
          this.mnuFileExit = new System.Windows.Forms.MenuItem();
@@ -188,6 +190,7 @@ namespace SGDK2
          this.mnuViewChanges = new System.Windows.Forms.MenuItem();
          this.mnuTools = new System.Windows.Forms.MenuItem();
          this.mnuToolsReset = new System.Windows.Forms.MenuItem();
+         this.chkDeploymentOptions = new System.Windows.Forms.MenuItem();
          this.mnuWindows = new System.Windows.Forms.MenuItem();
          this.mnuHelp = new System.Windows.Forms.MenuItem();
          this.mnuHelpContents = new System.Windows.Forms.MenuItem();
@@ -199,7 +202,6 @@ namespace SGDK2
          this.lblProjectTree = new System.Windows.Forms.Label();
          this.sbMain = new System.Windows.Forms.StatusBar();
          this.tmrInitComplete = new System.Windows.Forms.Timer(this.components);
-         this.chkDeploymentOptions = new System.Windows.Forms.MenuItem();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.pnlProjectTree.SuspendLayout();
          this.SuspendLayout();
@@ -432,6 +434,7 @@ namespace SGDK2
             this.mnuFileGenerate,
             this.mnuFileDeleteIntermediateFiles,
             this.mnuFileDeleteOutputFiles,
+            this.mnuFileGenHtml5,
             this.mnuFileSep3,
             this.mnuFileSep4,
             this.mnuFileExit});
@@ -561,21 +564,28 @@ namespace SGDK2
          this.mnuFileDeleteOutputFiles.Text = "Delete All Output &Files";
          this.mnuFileDeleteOutputFiles.Click += new System.EventHandler(this.mnuFileDeleteOutputFiles_Click);
          // 
+         // mnuFileGenHtml5
+         // 
+         this.mnuFileGenHtml5.Index = 15;
+         this.mnuFileGenHtml5.MergeOrder = 27;
+         this.mnuFileGenHtml5.Text = "Generate &HTML 5 Code";
+         this.mnuFileGenHtml5.Click += new System.EventHandler(this.mnuFileGenHtml5_Click);
+         // 
          // mnuFileSep3
          // 
-         this.mnuFileSep3.Index = 15;
+         this.mnuFileSep3.Index = 16;
          this.mnuFileSep3.MergeOrder = 27;
          this.mnuFileSep3.Text = "-";
          // 
          // mnuFileSep4
          // 
-         this.mnuFileSep4.Index = 16;
+         this.mnuFileSep4.Index = 17;
          this.mnuFileSep4.MergeOrder = 98;
          this.mnuFileSep4.Text = "-";
          // 
          // mnuFileExit
          // 
-         this.mnuFileExit.Index = 17;
+         this.mnuFileExit.Index = 18;
          this.mnuFileExit.MergeOrder = 99;
          this.mnuFileExit.Text = "E&xit";
          this.mnuFileExit.Click += new System.EventHandler(this.mnuFileExit_Click);
@@ -618,6 +628,12 @@ namespace SGDK2
          this.mnuToolsReset.Index = 0;
          this.mnuToolsReset.Text = "Reset Optional Messages...";
          this.mnuToolsReset.Click += new System.EventHandler(this.mnuToolsReset_Click);
+         // 
+         // chkDeploymentOptions
+         // 
+         this.chkDeploymentOptions.Index = 1;
+         this.chkDeploymentOptions.Text = "Download Updates...";
+         this.chkDeploymentOptions.Click += new System.EventHandler(this.chkDeploymentOptions_Click);
          // 
          // mnuWindows
          // 
@@ -709,12 +725,6 @@ namespace SGDK2
          // tmrInitComplete
          // 
          this.tmrInitComplete.Tick += new System.EventHandler(this.tmrInitComplete_Tick);
-         // 
-         // chkDeploymentOptions
-         // 
-         this.chkDeploymentOptions.Index = 1;
-         this.chkDeploymentOptions.Text = "Download Updates...";
-         this.chkDeploymentOptions.Click += new System.EventHandler(this.chkDeploymentOptions_Click);
          // 
          // dataMonitor
          // 
@@ -2912,6 +2922,22 @@ namespace SGDK2
             return;
          }
          MessageBox.Show(this, outFile + " Compiled", "Generate Project", MessageBoxButtons.OK, MessageBoxIcon.Information);
+      }
+
+      private void mnuFileGenHtml5_Click(object sender, EventArgs e)
+      {
+         CodeGenerator g = new CodeGenerator();
+         string errs;
+         System.Collections.Generic.IEnumerable<CodeGenerator.ObjectErrorInfo> errorRules;
+         string outFile = g.GenerateHtml5(System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath), GetProjectOutFolder(), out errs, out errorRules);
+         if (errs.Length > 0)
+         {
+            frmLogView frm = new frmLogView(errs, errorRules);
+            frm.MdiParent = this;
+            frm.Show();
+            return;
+         }
+         MessageBox.Show(this, outFile + " Written", "Generate HTML5 Code", MessageBoxButtons.OK, MessageBoxIcon.Information);
       }
 
       private void mnuViewChanges_Click(object sender, System.EventArgs e)

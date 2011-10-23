@@ -3839,5 +3839,611 @@ namespace SGDK2
          return null;
       }
       #endregion
+
+      #region HTML5 Code Generation
+      public string GenerateHtml5(string ProjectName, string FolderName, out string errs, out System.Collections.Generic.IEnumerable<ObjectErrorInfo> errorRules)
+      {
+         System.IO.TextWriter err = new System.IO.StringWriter();
+         System.IO.TextWriter txt = null;
+         errorRules = null;
+         var errorRows = new System.Collections.Generic.List<ObjectErrorInfo>();
+         try
+         {
+            if (!System.IO.Path.IsPathRooted(FolderName))
+            {
+               FolderName = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, FolderName);
+            }
+            if (!System.IO.Directory.Exists(FolderName))
+               System.IO.Directory.CreateDirectory(FolderName);
+            string htmlFileName = System.IO.Path.Combine(FolderName, ProjectName + ".html");
+            txt = new System.IO.StreamWriter(htmlFileName);
+            GenerateHtmlProject(ProjectName, txt, err);
+            txt.Close();
+            errs = err.ToString();
+            err.Close();
+            if (errorRows.Count > 0)
+               errorRules = errorRows.ToArray();
+            return htmlFileName;
+         }
+         catch (System.Exception ex)
+         {
+            if (txt != null)
+               txt.Close();
+            errs = ex.Message + "\r\n" + err.ToString();
+            err.Close();
+            if (errorRows.Count > 0)
+               errorRules = errorRows.ToArray();
+            return null;
+         }
+      }
+
+      private void GenerateHtmlProject(string ProjectName, System.IO.TextWriter txt, System.IO.TextWriter err)
+      {
+         txt.WriteLine("<!DOCTYPE html>\r\n" +
+            "<html>\r\n" +
+            "<head>\r\n" +
+            "<title>" + ProjectName + "</title>\r\n" +
+            "<script type=\"text/javascript\">\r\n" +
+            "var gameViewContext;\r\n" +
+            "var dragX, dragY;\r\n" +
+            "var currentMap;\r\n" +
+            "function Run() {\r\n" +
+            "   InitFramesets();\r\n" +
+            "   InitTilesets();\r\n" +
+            "   InitMaps();\r\n" +
+            "   currentMap = " + NameToMapClass(ProjectData.ProjectRow.StartMap) + ";\r\n" +
+            "   var gameView = document.getElementById('gameView');\r\n" +
+            "   gameViewContext = gameView.getContext('2d');\r\n" +
+            "   gameView.onmousedown = beginDrag;\r\n" +
+            "   gameView.onmouseup = endDrag;\r\n" +
+            "   gameView.onmouseout = endDrag;\r\n" +
+            "   currentMap.draw(gameViewContext);\r\n" +
+            "}");
+         txt.WriteLine(
+            "function beginDrag(e) {\r\n" +
+            "   dragX = e.offsetX;\r\n" +
+            "   dragY = e.offsetY;\r\n" +
+            "   e.srcElement.onmousemove = processDrag;\r\n" +
+            "}");
+         txt.WriteLine(
+            "function endDrag(e) {\r\n" +
+            "   e.srcElement.onmousemove = null;\r\n" +
+            "}");
+         txt.WriteLine(
+            "function processDrag(e) {\r\n" +
+            "   currentMap.scroll(currentMap.scrollX + e.offsetX - dragX, currentMap.scrollY + e.offsetY - dragY);\r\n" +
+            "   dragX = e.offsetX;\r\n" +
+            "   dragY = e.offsetY;\r\n" +
+            "   currentMap.draw(gameViewContext);\r\n" +
+            "}");
+
+         GenerateHtmlFramesets(txt);
+         GenerateHtmlCounters(txt);
+         GenerateHtmlTilesets(txt, err);
+         GenerateHtmlMaps(txt);
+         System.Drawing.Size dispSize = Display.GetScreenSize((GameDisplayMode)Enum.Parse(typeof(GameDisplayMode), ProjectData.ProjectRow.DisplayMode));
+         txt.WriteLine("</script>\r\n" +
+            "</head>\r\n" +
+            "<body onload=\"Run()\">\r\n" + 
+            "<canvas id=\"gameView\" width=\"" + dispSize.Width.ToString() + "\" height=\"" + dispSize.Height.ToString() + "\">\r\n" +
+            "   Your browser does not support HTML5 canvases.\r\n" +
+            "</canvas>");
+         GenerateHtmlGraphicSheets(txt);
+         GenerateHtmlMapButtons(txt);
+         txt.WriteLine("</body>\r\n" +
+            "</html>");
+      }
+
+      private void GenerateHtmlGraphicSheets(System.IO.TextWriter txt)
+      {
+         foreach (System.Data.DataRowView drv in ProjectData.GraphicSheet.DefaultView)
+         {
+            ProjectDataset.GraphicSheetRow drGfx = (ProjectDataset.GraphicSheetRow)drv.Row;
+            txt.Write("<img id=\"" + NameToVariable(drGfx.Name) + "\" style=\"display:none\" src=\"data:image/png;base64,");
+            txt.Write(Convert.ToBase64String(ProjectData.GetGraphicSheet(drGfx.Name).Image, Base64FormattingOptions.InsertLineBreaks));
+            txt.WriteLine("\" />");
+         }
+         txt.WriteLine("<script type=\"text/javascript\">\r\n" +
+            "function GraphicSheet(image, cellWidth, cellHeight, columns, rows) {\r\n" +
+            "   this.image = image;\r\n" +
+            "   this.cellWidth = cellWidth;\r\n" +
+            "   this.cellHeight = cellHeight;\r\n" +
+            "   this.columns = columns;\r\n" +
+            "   this.rows = rows;\r\n" +
+            "}");
+         txt.WriteLine("var graphicSheets = {");
+         bool first = true;
+         foreach (System.Data.DataRowView drv in ProjectData.GraphicSheet.DefaultView)
+         {
+            ProjectDataset.GraphicSheetRow drGfx = (ProjectDataset.GraphicSheetRow)drv.Row;
+            if (first)
+               txt.Write("   ");
+            else
+               txt.Write(",\r\n   ");
+            txt.Write(NameToVariable(drGfx.Name) +
+               ": new GraphicSheet(document.getElementById('" + NameToVariable(drGfx.Name) + "'), " +
+               drGfx.CellWidth.ToString() + "," + drGfx.CellHeight.ToString() + "," +
+               drGfx.Columns.ToString() + "," + drGfx.Rows.ToString() + ")");
+            first = false;
+         }
+         txt.WriteLine("};\r\n</script>");
+      }
+
+      private void GenerateHtmlFramesets(System.IO.TextWriter txt)
+      {
+         txt.WriteLine("function Frameset(name, frames) {\r\n" +
+            "   this.name = name;\r\n" +
+            "   this.frames = frames;\r\n" +
+            "}");
+         txt.WriteLine("function drawFrame(ctx, x, y) {\r\n" +
+            "   if(this.isIdentity) {\r\n" +
+            "      ctx.drawImage(this.imageSource, (this.cellIndex % this.graphicSheet.columns) * this.graphicSheet.cellWidth,\r\n" +
+            "         Math.floor(this.cellIndex / this.graphicSheet.columns) * this.graphicSheet.cellHeight,\r\n" +
+            "         this.graphicSheet.cellWidth, this.graphicSheet.cellHeight, x, y, this.graphicSheet.cellWidth, this.graphicSheet.cellHeight);\r\n" +
+            "   } else {\r\n" +
+            "      ctx.save();\r\n" +
+            "      ctx.transform(this.m11, this.m12, this.m21, this.m22, this.dx+x, this.dy+y);\r\n" +
+            "      ctx.drawImage(this.imageSource, (this.cellIndex % this.graphicSheet.columns) * this.graphicSheet.cellWidth,\r\n" +
+            "         Math.floor(this.cellIndex / this.graphicSheet.columns) * this.graphicSheet.cellHeight,\r\n" +
+            "         this.graphicSheet.cellWidth, this.graphicSheet.cellHeight, 0, 0, this.graphicSheet.cellWidth, this.graphicSheet.cellHeight);\r\n" +
+            "      ctx.restore();\r\n" +
+            "   }\r\n" +
+            "}");
+         txt.WriteLine("function XFrame(m11, m12, m21, m22, dx, dy, graphicSheet, imageSource, cellIndex) {\r\n" +
+            "   this.m11 = m11;\r\n" +
+            "   this.m12 = m12;\r\n" +
+            "   this.m21 = m21;\r\n" +
+            "   this.m22 = m22;\r\n" +
+            "   this.dx = dx;\r\n" +
+            "   this.dy = dy;\r\n" +
+            "   this.graphicSheet = graphicSheet;\r\n" +
+            "   this.imageSource = imageSource;\r\n" +
+            "   this.cellIndex = cellIndex;\r\n" +
+            "   this.isIdentity = false;\r\n" +
+            "}");
+         txt.WriteLine("function Frame(graphicSheet, imageSource, cellIndex) {\r\n" +
+            "   this.isIdentity = true;\r\n" +
+            "   this.graphicSheet = graphicSheet;\r\n" +
+            "   this.imageSource = imageSource;\r\n" +
+            "   this.cellIndex = cellIndex;\r\n" +
+            "}");
+         txt.WriteLine("XFrame.prototype.draw = drawFrame;");
+         txt.WriteLine("Frame.prototype.draw = drawFrame;");
+         txt.WriteLine("function ModulateCelColor(target, x, y, width, height, r, g, b, a) {\r\n" +
+            "   var cel = target.getImageData(x, y, width, height);\r\n" +
+            "   var celData = cel.data;\r\n" +
+            "   for (yi = 0; yi < height; yi++) {\r\n" +
+            "      for (xi = 0; xi < width; xi++) {\r\n" +
+            "         var byteIdx = (yi * width + xi) * 4;\r\n" +
+            "         celData[byteIdx] = Math.floor(celData[byteIdx] * r / 255);\r\n" +
+            "         celData[byteIdx+1] = Math.floor(celData[byteIdx+1] * g / 255);\r\n" +
+            "         celData[byteIdx+2] = Math.floor(celData[byteIdx+2] * b / 255);\r\n" +
+            "         celData[byteIdx+3] = Math.floor(celData[byteIdx+3] * a / 255);\r\n" +
+            "      }\r\n" +
+            "   }\r\n" +
+            "   target.putImageData(cel, x, y);\r\n" +
+            "}");
+         var coloredFrameMap = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<Tuple<int, short>, short>>();
+         foreach (System.Data.DataRowView drv in ProjectData.Frameset.DefaultView)
+         {
+            ProjectDataset.FramesetRow drFrameset = (ProjectDataset.FramesetRow)drv.Row;
+            foreach (ProjectDataset.FrameRow fr in ProjectData.GetSortedFrameRows(drFrameset))
+            {
+               if (fr.IscolorNull() || (fr.color == -1))
+                  continue;
+               System.Collections.Generic.Dictionary<Tuple<int, short>, short> mapping;
+               if (!coloredFrameMap.TryGetValue(fr.GraphicSheet, out mapping))
+               {
+                  mapping = new System.Collections.Generic.Dictionary<Tuple<int, short>, short>();
+                  coloredFrameMap[fr.GraphicSheet] = mapping;
+               }
+               var key = new Tuple<int, short>(fr.color, fr.CellIndex);
+               if (!mapping.ContainsKey(key))
+                  mapping[key] = (short)mapping.Count;
+            }
+         }
+
+         txt.WriteLine("var frameSets = new Object();");
+         txt.WriteLine("function InitFramesets() {\r\n" +
+            "   var ctx;\r\n" +
+            "   var gfx;");
+         foreach (var gsExt in coloredFrameMap)
+         {
+            var gs = ProjectData.GetGraphicSheet(gsExt.Key);
+            txt.WriteLine("   gfx = graphicSheets." + NameToVariable(gs.Name) + ";");
+            txt.WriteLine("   gfx.extra = document.createElement('canvas');\r\n" +
+               "   gfx.extra.width = " + (gs.CellWidth * gs.Columns).ToString() + ";\r\n" +
+               "   gfx.extra.height = " + ((int)Math.Ceiling((decimal)gsExt.Value.Count / gs.Columns) * gs.CellHeight).ToString() + ";\r\n" +
+               "   ctx = gfx.extra.getContext('2d');\r\n");
+            foreach (var ci in gsExt.Value)
+            {
+               int sx = (ci.Key.Item2 % gs.Columns) * gs.CellWidth;
+               int sy = ((int)(ci.Key.Item2 / gs.Columns)) * gs.CellHeight;
+               int tx = (ci.Value % gs.Columns) * gs.CellWidth;
+               int ty = ((int)(ci.Value / gs.Columns)) * gs.CellHeight;
+               byte[] cb = BitConverter.GetBytes(ci.Key.Item1);
+
+               txt.WriteLine("   ctx.drawImage(gfx.image," + sx.ToString() + "," + sy.ToString() +
+                  "," + gs.CellWidth.ToString() + "," + gs.CellHeight.ToString() + "," + 
+                  tx.ToString() + "," + ty.ToString() + "," +
+                  gs.CellWidth.ToString() + "," + gs.CellHeight.ToString() + ");");
+               txt.WriteLine("   ModulateCelColor(ctx," + tx.ToString() + "," + ty.ToString() + "," +
+                  gs.CellWidth.ToString() + "," + gs.CellHeight.ToString() + "," +
+                  cb[2].ToString() + "," + cb[1].ToString() + "," + cb[0].ToString() + "," + cb[3].ToString() + ");");
+            }
+         }
+
+         foreach (System.Data.DataRowView drv in ProjectData.Frameset.DefaultView)
+         {
+            ProjectDataset.FramesetRow drFrameset = (ProjectDataset.FramesetRow)drv.Row;
+            txt.WriteLine("   frameSets." + NameToVariable(drFrameset.Name) + " = new Frameset('" + drFrameset.Name + "', [");
+            bool first = true;
+            foreach (ProjectDataset.FrameRow fr in ProjectData.GetSortedFrameRows(drFrameset))
+            {
+               System.Collections.Generic.Dictionary<Tuple<int, short>, short> mapping;
+               string graphicSheetRef = "graphicSheets." + NameToVariable(fr.GraphicSheet);
+               string imageSrcRef = graphicSheetRef;
+               short cellIndex = fr.CellIndex;
+               if (coloredFrameMap.TryGetValue(fr.GraphicSheet, out mapping))
+               {
+                  if (!fr.IscolorNull() && fr.color != -1)
+                  {
+                     imageSrcRef += ".extra";
+                     cellIndex = mapping[new Tuple<int, short>(fr.color, fr.CellIndex)];
+                  }
+                  else
+                  {
+                     imageSrcRef += ".image";
+                  }
+               }
+               else
+               {
+                  imageSrcRef += ".image";
+               }
+
+               if (first)
+                  txt.Write("      ");
+               else
+                  txt.Write(",\r\n      ");
+
+               if ((fr.m11 == 1) &&
+                  (fr.m12 == 0) &&
+                  (fr.m21 == 0) &&
+                  (fr.m22 == 1) &&
+                  (fr.dx == 0) &&
+                  (fr.dy == 0))
+               {
+                  txt.Write("new Frame(" + graphicSheetRef + "," + imageSrcRef + "," + cellIndex.ToString() + ")");
+               }
+               else
+               {
+                  txt.Write("new XFrame(" + fr.m11.ToString() + "," + fr.m12.ToString() + "," +
+                     fr.m21.ToString() + "," + fr.m22.ToString() + "," + fr.dx.ToString() + "," +
+                     fr.dy.ToString() + "," + graphicSheetRef + "," + imageSrcRef + "," + cellIndex.ToString() + ")");
+               }
+               first = false;
+            }
+            txt.WriteLine("]);");
+         }
+         txt.WriteLine("}");
+      }
+
+      private void GenerateHtmlCounters(System.IO.TextWriter txt)
+      {
+         txt.WriteLine("function Counter(value, min, max) {\r\n" +
+            "   this.value = value;\r\n" +
+            "   this.min = min;\r\n" +
+            "   this.max = max;\r\n" +
+            "}");
+         txt.WriteLine("var Counters = {");
+         bool first = true;
+         foreach (System.Data.DataRowView drv in ProjectData.Counter.DefaultView)
+         {
+            ProjectDataset.CounterRow drCounter = (ProjectDataset.CounterRow)drv.Row;
+            if (first)
+               txt.Write("   ");
+            else
+               txt.Write(",\r\n   ");
+
+            txt.Write(NameToVariable(drCounter.Name) + ": new Counter(" + drCounter.Value.ToString() +
+               ", " + drCounter.Min.ToString() + ", " + drCounter.Max.ToString() + ")");
+            first = false;
+         }
+         txt.WriteLine("\r\n};");
+      }
+
+      private void GenerateHtmlTilesets(System.IO.TextWriter txt, System.IO.TextWriter err)
+      {
+         txt.WriteLine("function Tileset(tileWidth, tileHeight, frameSet, tiles) {\r\n" +
+            "   this.tileWidth = tileWidth;\r\n" +
+            "   this.tileHeight = tileHeight;\r\n" +
+            "   this.frameSet = frameSet;\r\n" +
+            "   this.tiles = tiles;\r\n" +
+            "}");
+         txt.WriteLine("function TileFrame(accumulatedDuration, subFrames) {\r\n" +
+            "   this.accumulatedDuration = accumulatedDuration;\r\n" +
+            "   this.subFrames = subFrames;\r\n" +
+            "}");
+         txt.WriteLine("function AnimTile(counter, frames) {\r\n" +
+            "   this.counter = counter;\r\n" +
+            "   this.frames = frames;\r\n" +
+            "   this.totalDuration = frames[frames.length - 1].accumulatedDuration;\r\n" +
+            "   this.getCurFrames = function() {\r\n" +
+            "      for(var i = 0; i < frames.length; i++) {\r\n" +
+            "         if((this.counter.value % this.totalDuration) < frames[i].accumulatedDuration) return frames[i].subFrames;\r\n" +
+            "      }\r\n" +
+            "      return frames[frames.length - 1].subFrames;\r\n" +
+            "   };\r\n" +
+            "}");
+         txt.WriteLine("var Tilesets = new Object();");
+         txt.WriteLine("function InitTilesets() {");
+         foreach (System.Data.DataRowView drv in ProjectData.Tileset.DefaultView)
+         {
+            ProjectDataset.TilesetRow drTileset = (ProjectDataset.TilesetRow)drv.Row;
+            ProjectDataset.TileRow[] arTiles = ProjectData.GetSortedTileRows(drTileset);
+            int nCurIdx = 0;
+            int nMax = 0;
+            if (arTiles.Length > 0)
+               nMax = arTiles[arTiles.Length - 1].TileValue;
+            if (drTileset.FramesetRow.GetFrameRows().Length > nMax)
+               nMax = drTileset.FramesetRow.GetFrameRows().Length - 1;
+            bool firstTile = true;
+            txt.Write("   Tilesets." + NameToVariable(drTileset.Name) + " = new Tileset(" +
+               drTileset.TileWidth.ToString() + "," + drTileset.TileHeight.ToString() +
+               ", frameSets." + NameToVariable(drTileset.Frameset) + ",[");
+            for (int i = 0; i <= nMax; i++)
+            {
+               int nFrameSequenceCount = 0;
+               string TileExpr;
+               if ((nCurIdx < arTiles.Length) && (arTiles[nCurIdx].TileValue == i))
+               {
+                  ProjectDataset.TileRow drTile = arTiles[nCurIdx];
+                  nCurIdx++;
+                  ProjectDataset.TileFrameRow[] arFrames = ProjectData.GetSortedTileFrames(drTile);
+                  nFrameSequenceCount = arFrames.Length;
+                  int nAccumulatedDuration = 0;
+                  var frames = new System.Collections.Generic.List<Tuple<string, string>>();
+                  System.Collections.ArrayList subFrames = null;
+                  foreach (ProjectDataset.TileFrameRow drTileFrame in arFrames)
+                  {
+                     if (subFrames == null)
+                        subFrames = new System.Collections.ArrayList();
+                     subFrames.Add(drTileFrame.FrameValue.ToString());
+                     if (drTileFrame.Duration > 0)
+                     {
+                        nAccumulatedDuration += drTileFrame.Duration;
+                        if (subFrames.Count == 1)
+                        {
+                           frames.Add(new Tuple<string, string>(nAccumulatedDuration.ToString(), subFrames[0].ToString()));
+                        }
+                        else
+                        {
+                           frames.Add(new Tuple<string, string>(nAccumulatedDuration.ToString(), "[" + String.Join(",", subFrames.ToArray()) + "]"));
+                        }
+                        subFrames.Clear();
+                     }
+                  }
+                  if (frames.Count == 0)
+                     TileExpr = "null";
+                  else if (frames.Count == 1)
+                     TileExpr = frames[0].Item2;
+                  else
+                  {
+                     string counterArg;
+                     System.Collections.ArrayList animArgs = new System.Collections.ArrayList();
+                     if (drTile.CounterRow == null)
+                     {
+                        err.WriteLine("Tileset " + drTileset.Name + " tile " + drTile.TileValue + " requires a counter");
+                        counterArg = string.Empty;
+                     }
+                     else
+                     {
+                        counterArg = "Counters." + NameToVariable(drTile.Counter);
+                     }
+                     foreach (var f in frames)
+                        animArgs.Add("new TileFrame(" + f.Item1 + "," + f.Item2 + ")");
+
+                     TileExpr = "new AnimTile(" + counterArg + ",[" + String.Join(",", animArgs.ToArray()) + "])";
+                  }
+               }
+               else
+                  TileExpr = i.ToString();
+
+               if (!firstTile)
+                  txt.Write(",");
+               txt.Write(TileExpr);
+               firstTile = false;
+            }
+            txt.WriteLine("]);");
+         }
+         txt.WriteLine("};");
+      }
+
+      const string jsEncodedDigits = " 1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^*()_+-=[]{}|:;,./?`~";
+      private void GenerateHtmlMaps(System.IO.TextWriter txt)
+      {
+         txt.WriteLine("// Cardinality 1-" + jsEncodedDigits.Length.ToString() + "\r\n" +
+            "var dataDigits = '" + jsEncodedDigits + "';\r\n" +
+            "function DecodeData1(data) {\r\n" +
+            "   var result = new Array();\r\n" +
+            "   for(var i = 0; i < data.length; i++) {\r\n" +
+            "      result[i] = dataDigits.indexOf(data[i]);\r\n" +
+            "   }\r\n" +
+            "   return result;\r\n" +
+            "}\r\n\r\n" +
+            "// Cardinality " + (jsEncodedDigits.Length + 1).ToString() + "-" + (jsEncodedDigits.Length * jsEncodedDigits.Length).ToString() + "\r\n" +
+            "function DecodeData2(data) {\r\n" +
+            "   var result = new Array();\r\n" +
+            "   for(var i = 0; i < data.length/2; i++) {\r\n" +
+            "      result[i] = dataDigits.indexOf(data[i*2]) * " + jsEncodedDigits.Length.ToString() + " + dataDigits.indexOf(data[i*2+1]);\r\n" +
+            "   }\r\n" +
+            "   return result;\r\n" +
+            "}\r\n");
+
+         txt.WriteLine("function MapLayer(tileset, columns, rows, tileData) {\r\n" +
+            "   this.tileset = tileset;\r\n" +
+            "   this.columns = columns;\r\n" +
+            "   this.rows = rows;\r\n" +
+            "   this.currentX = 0;\r\n" +
+            "   this.currentY = 0;\r\n" +
+            "   if(tileData.length < columns * rows * 2)\r\n" +
+            "      this.tiles = DecodeData1(tileData);\r\n" +
+            "   else\r\n" +
+            "      this.tiles = DecodeData2(tileData);\r\n" +
+            "}");
+
+         System.Drawing.Size dispSize = Display.GetScreenSize((GameDisplayMode)Enum.Parse(typeof(GameDisplayMode), ProjectData.ProjectRow.DisplayMode));
+
+         txt.WriteLine("MapLayer.prototype.draw = function(ctx) {\r\n" +
+            "   var tileWidth = this.tileset.tileWidth;\r\n" +
+            "   var tileHeight = this.tileset.tileHeight;\r\n" +
+            "   var width = " + dispSize.Width.ToString() + ";\r\n" +
+            "   var height = " + dispSize.Height.ToString() + ";\r\n" +
+            "   var lastRow = (height - this.currentY - 1) / tileHeight;\r\n" +
+            "   var lastCol = (width - this.currentX - 1) / tileWidth;\r\n" +
+            "   for(y = Math.floor(-this.currentY / tileWidth); y <= lastRow; y++) {\r\n" +
+            "      for(x = Math.floor(-this.currentX / tileWidth); x <= lastCol; x++) {\r\n" +
+            "         var tile = this.tileset.tiles[this.tiles[((y % this.rows) * this.columns) + (x % this.columns)]];\r\n" +
+            "         if (tile == null) continue;\r\n" +
+            "         var drx = x * tileWidth + this.currentX;\r\n" +
+            "         var dry = y * tileHeight + this.currentY;\r\n" +
+            "         if (typeof tile == 'number')\r\n" +
+            "            this.tileset.frameSet.frames[tile % this.tileset.frameSet.frames.length].draw(ctx, drx, dry);\r\n" +
+            "         else {\r\n" +
+            "            var frames;\r\n" +
+            "            if (tile instanceof AnimTile)\r\n" +
+            "               frames = tile.getCurFrames();\r\n" +
+            "            else\r\n" +
+            "               frames = tile;\r\n" +
+            "            if (typeof frames == 'number')\r\n" +
+            "               this.tileset.frameSet.frames[frames % this.tileset.frameSet.frames.length].draw(ctx, drx, dry);\r\n" +
+            "            else\r\n" +
+            "               for(var fi = 0; fi < frames.length; fi++)\r\n" +
+            "                  this.tileset.frameSet.frames[frames[fi] % this.tileset.frameSet.frames.length].draw(ctx, drx, dry);\r\n" +
+            "         }\r\n" +
+            "      }\r\n" +
+            "   }\r\n" +
+            "};");
+
+         System.Text.StringBuilder sbLayer = new System.Text.StringBuilder();
+         System.Text.StringBuilder sbScroll = new System.Text.StringBuilder();
+         System.Text.StringBuilder sbDraw = new System.Text.StringBuilder();
+         foreach (System.Data.DataRowView drv in ProjectData.Map.DefaultView)
+         {
+            ProjectDataset.MapRow drMap = (ProjectDataset.MapRow)drv.Row;
+            int maxX = dispSize.Width - drMap.ScrollWidth;
+            int maxY = dispSize.Height - drMap.ScrollHeight;
+            sbScroll.AppendLine(
+               "   " + NameToMapClass(drMap.Name) + ".scroll = function(x, y) {\r\n" +
+               "      if(x < " + maxX.ToString() + ") x = " + maxX.ToString() + ";\r\n" +
+               "      if(x > 0) x = 0;\r\n" +
+               "      if(y < " + maxY.ToString() + ") y = " + maxY.ToString() + ";\r\n" +
+               "      if(y > 0) y = 0;\r\n" +
+               "      this.scrollX = x;\r\n" +
+               "      this.scrollY = y;");
+            sbDraw.AppendLine(
+               "   " + NameToMapClass(drMap.Name) + ".draw = function(ctx) {");
+            txt.WriteLine("var " + NameToMapClass(drMap.Name) + " = {scrollX: 0, scrollY: 0};");
+            foreach(ProjectDataset.LayerRow lyr in ProjectData.GetSortedLayers(drMap))
+            {
+               if (lyr.Tileset == null)
+                  continue;
+               string lyrRef = NameToMapClass(drMap.Name) + "." + NameToVariable(lyr.Name) + "_Lyr";
+               sbLayer.AppendLine(lyrRef + " = new MapLayer(\r\n" +
+                  "   Tilesets." + NameToVariable(lyr.Tileset) + "," +
+                  lyr.Width.ToString() + "," + lyr.Height.ToString() + ",\r\n" +
+                  "   " + EncodeTilesToJavascript(lyr, "   ") + ");");
+               if ((lyr.ScrollRateX != 0) || (lyr.ScrollRateY != 0))
+               {
+                  sbScroll.AppendLine("      " + lyrRef + ".currentX = " + ((lyr.OffsetX != 0) ? lyr.OffsetX.ToString() + " + " : string.Empty) + 
+                     "Math.floor(x * " + lyr.ScrollRateX.ToString() + ");");
+                  sbScroll.AppendLine("      " + lyrRef + ".currentY = " + ((lyr.OffsetY != 0) ? lyr.OffsetY.ToString() + " + " : string.Empty) +
+                     "Math.floor(y * " + lyr.ScrollRateY.ToString() + ");");
+               }
+               sbDraw.AppendLine("      " + lyrRef + ".draw(ctx);");
+            }
+            sbScroll.AppendLine("   };");
+            sbDraw.AppendLine("   };");
+         }
+         txt.WriteLine("function InitMaps() {\r\n" + sbLayer.ToString() + sbScroll.ToString() + sbDraw.ToString() + "}");
+      }
+
+      void GenerateHtmlMapButtons(System.IO.TextWriter txt)
+      {
+         int counter = 0;
+         txt.WriteLine("<script type=\"text/javascript\">\r\n" +
+            "function switchToMap(m) { currentMap=m; m.draw(gameViewContext); }\r\n" +
+            "</script>");
+         foreach (System.Data.DataRowView drv in ProjectData.Map.DefaultView)
+         {
+            ProjectDataset.MapRow drMap = (ProjectDataset.MapRow)drv.Row;
+            if ((counter % 5) == 0)
+               txt.WriteLine("<br />");
+            txt.WriteLine("<input id=\"btn" + NameToMapClass(drMap.Name) + "\" type=\"button\" onclick=\"switchToMap(" +
+               NameToMapClass(drMap.Name) + ")\" value=\"" + drMap.Name + "\"/>");
+         }
+      }
+
+      private int GetLayerCardinality(ProjectDataset.LayerRow lr)
+      {
+         int cardinality = 1;
+         for (int i = 0; i < lr.Tiles.Length; i += lr.BytesPerTile)
+         {
+            int tileVal;
+            switch (lr.BytesPerTile)
+            {
+               case 1:
+                  tileVal = lr.Tiles[i];
+                  break;
+               case 2:
+                  tileVal = BitConverter.ToInt16(lr.Tiles, i);
+                  break;
+               case 4:
+                  tileVal = BitConverter.ToInt32(lr.Tiles, i);
+                  break;
+               default:
+                  throw new NotImplementedException();
+            }
+            if (tileVal + 1 > cardinality) cardinality = tileVal + 1;
+         }
+         return cardinality;
+      }
+
+      private string EncodeTilesToJavascript(ProjectDataset.LayerRow lr, string indent)
+      {
+         int cardinality = GetLayerCardinality(lr);
+         int tileCount = lr.Width * lr.Height;
+         System.Text.StringBuilder sb = new System.Text.StringBuilder("'");
+         for (int i = 0; i < tileCount; i++)
+         {
+            int tileVal;
+            switch (lr.BytesPerTile)
+            {
+               case 1:
+                  tileVal = lr.Tiles[i];
+                  break;
+               case 2:
+                  tileVal = BitConverter.ToInt16(lr.Tiles, i * 2);
+                  break;
+               case 4:
+                  tileVal = BitConverter.ToInt32(lr.Tiles, i * 4);
+                  break;
+               default:
+                  throw new NotImplementedException();
+            }
+            if (cardinality <= jsEncodedDigits.Length)
+               sb.Append(jsEncodedDigits[tileVal]);
+            else
+               sb.Append(jsEncodedDigits[(int)(tileVal / jsEncodedDigits.Length)].ToString() + jsEncodedDigits[tileVal % jsEncodedDigits.Length].ToString());
+            if (i % lr.Width == lr.Width - 1)
+            {
+               sb.Append("'");
+               if (i != tileCount - 1)
+                  sb.Append(" + \r\n" + indent + "'");
+            }
+         }
+         return sb.ToString();
+      }
+      #endregion
    }
 }

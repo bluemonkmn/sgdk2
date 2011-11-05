@@ -20,6 +20,11 @@ namespace SGDK2
       #region Win32 API declarations
       const uint DWM_EC_DISABLECOMPOSITION = 0;
       private MenuItem mnuFileGenHtml5;
+      private MenuItem mnuHtmlGenMulti;
+      private MenuItem mnuHtmlGenSingle;
+      private MenuItem mnuHtmlSep;
+      private MenuItem mnuHtmlFullBrowser;
+      private MenuItem mnuHtmlFixed;
       const uint DWM_EC_ENABLECOMPOSITION = 1;
       [System.Runtime.InteropServices.DllImport("dwmapi.dll", EntryPoint = "DwmEnableComposition")]
       private extern static uint DwmEnableComposition(uint compositionAction);
@@ -203,6 +208,11 @@ namespace SGDK2
          this.sbMain = new System.Windows.Forms.StatusBar();
          this.tmrInitComplete = new System.Windows.Forms.Timer(this.components);
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
+         this.mnuHtmlGenMulti = new System.Windows.Forms.MenuItem();
+         this.mnuHtmlGenSingle = new System.Windows.Forms.MenuItem();
+         this.mnuHtmlFullBrowser = new System.Windows.Forms.MenuItem();
+         this.mnuHtmlFixed = new System.Windows.Forms.MenuItem();
+         this.mnuHtmlSep = new System.Windows.Forms.MenuItem();
          this.pnlProjectTree.SuspendLayout();
          this.SuspendLayout();
          // 
@@ -567,6 +577,12 @@ namespace SGDK2
          // mnuFileGenHtml5
          // 
          this.mnuFileGenHtml5.Index = 15;
+         this.mnuFileGenHtml5.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.mnuHtmlGenMulti,
+            this.mnuHtmlGenSingle,
+            this.mnuHtmlSep,
+            this.mnuHtmlFullBrowser,
+            this.mnuHtmlFixed});
          this.mnuFileGenHtml5.MergeOrder = 27;
          this.mnuFileGenHtml5.Text = "Generate &HTML 5 Code";
          this.mnuFileGenHtml5.Click += new System.EventHandler(this.mnuFileGenHtml5_Click);
@@ -780,6 +796,37 @@ namespace SGDK2
          this.dataMonitor.TileCategoryRowChanging += new SGDK2.ProjectDataset.TileCategoryRowChangeEventHandler(this.dataMonitor_TileCategoryRowChanging);
          this.dataMonitor.TileCategoryRowDeleted += new SGDK2.ProjectDataset.TileCategoryRowChangeEventHandler(this.dataMonitor_TileCategoryRowDeleted);
          this.dataMonitor.TileCategoryRowDeleting += new SGDK2.ProjectDataset.TileCategoryRowChangeEventHandler(this.dataMonitor_TileCategoryRowDeleting);
+         // 
+         // mnuHtmlGenMulti
+         // 
+         this.mnuHtmlGenMulti.Index = 0;
+         this.mnuHtmlGenMulti.Text = "To &Multiple Files";
+         this.mnuHtmlGenMulti.Click += new System.EventHandler(this.mnuFileGenHtml5_Click);
+         // 
+         // mnuHtmlGenSingle
+         // 
+         this.mnuHtmlGenSingle.Index = 1;
+         this.mnuHtmlGenSingle.Text = "To a &Single File";
+         this.mnuHtmlGenSingle.Click += new System.EventHandler(this.mnuFileGenHtml5_Click);
+         // 
+         // mnuHtmlFullBrowser
+         // 
+         this.mnuHtmlFullBrowser.Index = 3;
+         this.mnuHtmlFullBrowser.RadioCheck = true;
+         this.mnuHtmlFullBrowser.Text = "&Full Browser";
+         this.mnuHtmlFullBrowser.Click += new System.EventHandler(this.mnuHtmlGenOpt_Click);
+         // 
+         // mnuHtmlFixed
+         // 
+         this.mnuHtmlFixed.Checked = true;
+         this.mnuHtmlFixed.Index = 4;
+         this.mnuHtmlFixed.RadioCheck = true;
+         this.mnuHtmlFixed.Text = "Fixed &View";
+         // 
+         // mnuHtmlSep
+         // 
+         this.mnuHtmlSep.Index = 2;
+         this.mnuHtmlSep.Text = "-";
          // 
          // frmMain
          // 
@@ -2929,7 +2976,7 @@ namespace SGDK2
          CodeGenerator g = new CodeGenerator();
          string errs;
          System.Collections.Generic.IEnumerable<CodeGenerator.ObjectErrorInfo> errorRules;
-         string outFile = g.GenerateHtml5(System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath), GetProjectOutFolder(), out errs, out errorRules);
+         string outFile = g.GenerateHtml5(System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath), GetProjectOutFolder(), sender == mnuHtmlGenSingle, out errs, out errorRules);
          if (errs.Length > 0)
          {
             frmLogView frm = new frmLogView(errs, errorRules);
@@ -2938,6 +2985,20 @@ namespace SGDK2
             return;
          }
          MessageBox.Show(this, outFile + " Written", "Generate HTML5 Code", MessageBoxButtons.OK, MessageBoxIcon.Information);
+      }
+
+      private void mnuHtmlGenOpt_Click(object sender, EventArgs e)
+      {
+         if (mnuHtmlFullBrowser.Checked && (sender == mnuHtmlFixed))
+         {
+            mnuHtmlFullBrowser.Checked = false;
+            mnuHtmlFixed.Checked = true;
+         }
+         else if (mnuHtmlFixed.Checked && (sender == mnuHtmlFullBrowser))
+         {
+            mnuHtmlFixed.Checked = false;
+            mnuHtmlFullBrowser.Checked = true;
+         }
       }
 
       private void mnuViewChanges_Click(object sender, System.EventArgs e)
@@ -3011,7 +3072,7 @@ namespace SGDK2
          System.Collections.Specialized.StringCollection deleteFiles = new System.Collections.Specialized.StringCollection();
          deleteFiles.AddRange(g.GetLocalReferenceFileList(strFolder));
          deleteFiles.Add(System.IO.Path.Combine(strFolder, System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath) + ".exe"));
-         deleteFiles.Add(System.IO.Path.Combine(strFolder, System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath) + ".exe.config"));
+         deleteFiles.AddRange(g.GetHtmlFileList(System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath), strFolder));
          foreach(string deleteFile in deleteFiles)
          {
             if (System.IO.File.Exists(deleteFile))

@@ -3841,10 +3841,26 @@ namespace SGDK2
       #endregion
 
       #region HTML5 Code Generation
-      public string GenerateHtml5(string ProjectName, string FolderName, out string errs, out System.Collections.Generic.IEnumerable<ObjectErrorInfo> errorRules)
+      public string[] GetHtmlFileList(string ProjectName, string FolderName)
+      {
+         if (!System.IO.Path.IsPathRooted(FolderName))
+         {
+            FolderName = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, FolderName);
+         }
+         System.Collections.Generic.List<string> result = new System.Collections.Generic.List<string>();
+         result.Add(System.IO.Path.Combine(FolderName, ProjectName + ".html"));
+         result.Add(System.IO.Path.Combine(FolderName, ProjectName + ".js"));
+         foreach (System.Data.DataRowView drv in ProjectData.GraphicSheet.DefaultView)
+         {
+            ProjectDataset.GraphicSheetRow drGfx = (ProjectDataset.GraphicSheetRow)drv.Row;
+            string gsFileName = System.IO.Path.Combine(FolderName, drGfx.Name + ".png");
+            result.Add(gsFileName);
+         }
+         return result.ToArray();
+      }
+      public string GenerateHtml5(string ProjectName, string FolderName, bool singleFile, out string errs, out System.Collections.Generic.IEnumerable<ObjectErrorInfo> errorRules)
       {
          System.IO.TextWriter err = new System.IO.StringWriter();
-         System.IO.TextWriter txt = null;
          errorRules = null;
          var errorRows = new System.Collections.Generic.List<ObjectErrorInfo>();
          try
@@ -3856,9 +3872,25 @@ namespace SGDK2
             if (!System.IO.Directory.Exists(FolderName))
                System.IO.Directory.CreateDirectory(FolderName);
             string htmlFileName = System.IO.Path.Combine(FolderName, ProjectName + ".html");
-            txt = new System.IO.StreamWriter(htmlFileName);
-            GenerateHtmlProject(ProjectName, txt, err);
-            txt.Close();
+            using (System.IO.StreamWriter txt = new System.IO.StreamWriter(htmlFileName))
+            {
+               GenerateHtmlProject(ProjectName, txt, singleFile, err);
+               txt.Close();
+            }
+            if (!singleFile)
+            {
+               string jsFileName = System.IO.Path.Combine(FolderName, ProjectName + ".js");
+               using (System.IO.StreamWriter txt = new System.IO.StreamWriter(jsFileName))
+               {
+                  GenerateHtmlJavascript(txt, err);
+               }
+               foreach (System.Data.DataRowView drv in ProjectData.GraphicSheet.DefaultView)
+               {
+                  ProjectDataset.GraphicSheetRow drGfx = (ProjectDataset.GraphicSheetRow)drv.Row;
+                  string gsFileName = System.IO.Path.Combine(FolderName, drGfx.Name + ".png");
+                  ProjectData.GetGraphicSheetImage(drGfx.Name, false).Save(gsFileName);
+               }
+            }
             errs = err.ToString();
             err.Close();
             if (errorRows.Count > 0)
@@ -3867,8 +3899,6 @@ namespace SGDK2
          }
          catch (System.Exception ex)
          {
-            if (txt != null)
-               txt.Close();
             errs = ex.Message + "\r\n" + err.ToString();
             err.Close();
             if (errorRows.Count > 0)
@@ -3877,96 +3907,155 @@ namespace SGDK2
          }
       }
 
-      private void GenerateHtmlProject(string ProjectName, System.IO.TextWriter txt, System.IO.TextWriter err)
+      private void GenerateHtmlProject(string ProjectName, System.IO.TextWriter txt, bool singleFile, System.IO.TextWriter err)
       {
+         System.Drawing.Size dispSize = Display.GetScreenSize((GameDisplayMode)Enum.Parse(typeof(GameDisplayMode), ProjectData.ProjectRow.DisplayMode));
          txt.WriteLine("<!DOCTYPE html>\r\n" +
             "<html>\r\n" +
             "<head>\r\n" +
+            "<meta charset=\"utf-8\" />\r\n" +
             "<title>" + ProjectName + "</title>\r\n" +
-            "<script type=\"text/javascript\">\r\n" +
-            "var gameViewContext;\r\n" +
-            "var dragX, dragY;\r\n" +
-            "var currentMap;\r\n" +
-            "function Run() {\r\n" +
-            "   InitFramesets();\r\n" +
-            "   InitTilesets();\r\n" +
-            "   InitMaps();\r\n" +
-            "   currentMap = " + NameToMapClass(ProjectData.ProjectRow.StartMap) + ";\r\n" +
-            "   var gameView = document.getElementById('gameView');\r\n" +
-            "   gameViewContext = gameView.getContext('2d');\r\n" +
-            "   gameView.onmousedown = beginDrag;\r\n" +
-            "   gameView.onmouseup = endDrag;\r\n" +
-            "   gameView.onmouseout = endDrag;\r\n" +
-            "   currentMap.draw(gameViewContext);\r\n" +
-            "}");
-         txt.WriteLine(
-            "function beginDrag(e) {\r\n" +
-            "   dragX = e.offsetX;\r\n" +
-            "   dragY = e.offsetY;\r\n" +
-            "   e.srcElement.onmousemove = processDrag;\r\n" +
-            "}");
-         txt.WriteLine(
-            "function endDrag(e) {\r\n" +
-            "   e.srcElement.onmousemove = null;\r\n" +
-            "}");
-         txt.WriteLine(
-            "function processDrag(e) {\r\n" +
-            "   currentMap.scroll(currentMap.scrollX + e.offsetX - dragX, currentMap.scrollY + e.offsetY - dragY);\r\n" +
-            "   dragX = e.offsetX;\r\n" +
-            "   dragY = e.offsetY;\r\n" +
-            "   currentMap.draw(gameViewContext);\r\n" +
-            "}");
-
-         GenerateHtmlFramesets(txt);
-         GenerateHtmlCounters(txt);
-         GenerateHtmlTilesets(txt, err);
-         GenerateHtmlMaps(txt);
-         System.Drawing.Size dispSize = Display.GetScreenSize((GameDisplayMode)Enum.Parse(typeof(GameDisplayMode), ProjectData.ProjectRow.DisplayMode));
-         txt.WriteLine("</script>\r\n" +
-            "</head>\r\n" +
-            "<body onload=\"Run()\">\r\n" + 
-            "<canvas id=\"gameView\" width=\"" + dispSize.Width.ToString() + "\" height=\"" + dispSize.Height.ToString() + "\">\r\n" +
+            "<style>\r\n" +
+            "   .unselectable {\r\n" +
+            "      user-select:none;\r\n" +
+            "      -moz-user-select:-moz-none;\r\n" +
+            "      -khtml-user-select:none;\r\n" +
+            "      -webkit-user-select:none;\r\n" +
+            "      -o-user-select:none;\r\n" +
+            "   }\r\n" +
+            "</style>\r\n");
+         if (singleFile)
+         {
+            txt.WriteLine("<script type=\"text/javascript\">\r\n");
+            GenerateHtmlJavascript(txt, err);
+            txt.WriteLine("</script>\r\n");
+         }
+         else
+         {
+            txt.WriteLine("<script type=\"text/javascript\" src=\"" + ProjectName + ".js\"></script>");
+         }
+         txt.WriteLine("</head>\r\n" +
+            "<body class=\"unselectable\" unselectable=\"on\">\r\n" + 
+            "<canvas id=\"gameView\" width=\"" + dispSize.Width.ToString() + "\" height=\"" + dispSize.Height.ToString() + "\" " +
+            "onmousedown=\"beginDrag(event)\" ontouchstart=\"beginTouchDrag(event)\" onmouseup=\"endDrag(event)\" " +
+            "onmouseout=\"endDrag(event)\" ontouchmove=\"processTouchDrag(event)\" unselectable=\"on\" " +
+            "class=\"unselectable\" unselectable=\"on\">\r\n" +
             "   Your browser does not support HTML5 canvases.\r\n" +
             "</canvas>");
-         GenerateHtmlGraphicSheets(txt);
+         foreach (System.Data.DataRowView drv in ProjectData.GraphicSheet.DefaultView)
+         {
+            ProjectDataset.GraphicSheetRow drGfx = (ProjectDataset.GraphicSheetRow)drv.Row;
+            if (singleFile)
+            {
+               txt.Write("<img id=\"" + NameToVariable(drGfx.Name) + "\" style=\"display:none\" src=\"data:image/png;base64,");
+               txt.Write(Convert.ToBase64String(ProjectData.GetGraphicSheet(drGfx.Name).Image, Base64FormattingOptions.InsertLineBreaks));
+            }
+            else
+               txt.Write("<img id=\"" + NameToVariable(drGfx.Name) + "\" style=\"display:none\" src=\"" + drGfx.Name + ".png");
+            txt.WriteLine("\" />");
+         }
          GenerateHtmlMapButtons(txt);
          txt.WriteLine("</body>\r\n" +
             "</html>");
       }
 
+      private void GenerateHtmlJavascript(System.IO.TextWriter txt, System.IO.TextWriter err)
+      {
+         System.Drawing.Size dispSize = Display.GetScreenSize((GameDisplayMode)Enum.Parse(typeof(GameDisplayMode), ProjectData.ProjectRow.DisplayMode));
+         txt.WriteLine(
+            "var gameViewContext;\r\n" +
+            "var dragX, dragY;\r\n" +
+            "var currentMap;\r\n" +
+            "var viewWidth = " + dispSize.Width.ToString() + ";\r\n" +
+            "var viewHeight = " + dispSize.Height.ToString() + ";\r\n" +
+            "function Run() {\r\n" +
+            "   InitGraphicSheets();\r\n" +
+            "   InitFramesets();\r\n" +
+            "   InitTilesets();\r\n" +
+            "   InitSprites();\r\n" +
+            "   InitMaps();\r\n" +
+            "   currentMap = " + NameToMapClass(ProjectData.ProjectRow.StartMap) + ";\r\n" +
+            "   var gameView = document.getElementById('gameView');\r\n" +
+            "   gameViewContext = gameView.getContext('2d');\r\n" +
+            "   currentMap.draw(gameViewContext);\r\n" +
+            "}");
+         txt.WriteLine(
+            "function beginDrag(e) {\r\n" +
+            "   dragX = e.clientX;\r\n" +
+            "   dragY = e.clientY;\r\n" +
+            "   var srcEl = e.srcElement ? e.srcElement : e.target;\r\n" +
+            "   srcEl.onmousemove = processDrag;\r\n" +
+            "   return false;\r\n" +
+            "}");
+         txt.WriteLine(
+            "function endDrag(e) {\r\n" +
+            "   var srcEl = e.srcElement ? e.srcElement : e.target;\r\n" +
+            "   srcEl.onmousemove = null;\r\n" +
+            "}");
+         txt.WriteLine(
+            "function processDrag(e) {\r\n" +
+            "   e = e || window.event;\r\n" +
+            "   drag(e.clientX, e.clientY);\r\n" +
+            "   return false;\r\n" +
+            "}");
+         txt.WriteLine(
+            "function drag(newX, newY) {\r\n" +
+            "   currentMap.scroll(currentMap.scrollX + newX - dragX, currentMap.scrollY + newY - dragY);\r\n" +
+            "   dragX = newX;\r\n" +
+            "   dragY = newY;\r\n" +
+            "   currentMap.draw(gameViewContext);\r\n" +
+            "}");
+         txt.WriteLine(
+            "function beginTouchDrag(e) {\r\n" +
+            "   var touches = e.touches;\r\n" +
+            "   var touch = touches.item(0);\r\n" +
+            "   dragX = touch.clientX;\r\n" +
+            "   dragY = touch.clientY;\r\n" +
+            "   return false;\r\n" +
+            "}");
+         txt.WriteLine(
+            "function processTouchDrag(e) {\r\n" +
+            "   var touches = e.touches;\r\n" +
+            "   var touch = touches.item(0);\r\n" +
+            "   drag(touch.clientX, touch.clientY);\r\n" +
+            "   return false;\r\n" +
+            "}");
+         GenerateHtmlGraphicSheets(txt);
+         GenerateHtmlFramesets(txt);
+         GenerateHtmlCounters(txt);
+         GenerateHtmlTilesets(txt, err);
+         GenerateHtmlSprites(txt);
+         GenerateHtmlMaps(txt);
+         txt.WriteLine("window.onload = Run;");
+      }
+
       private void GenerateHtmlGraphicSheets(System.IO.TextWriter txt)
       {
-         foreach (System.Data.DataRowView drv in ProjectData.GraphicSheet.DefaultView)
-         {
-            ProjectDataset.GraphicSheetRow drGfx = (ProjectDataset.GraphicSheetRow)drv.Row;
-            txt.Write("<img id=\"" + NameToVariable(drGfx.Name) + "\" style=\"display:none\" src=\"data:image/png;base64,");
-            txt.Write(Convert.ToBase64String(ProjectData.GetGraphicSheet(drGfx.Name).Image, Base64FormattingOptions.InsertLineBreaks));
-            txt.WriteLine("\" />");
-         }
-         txt.WriteLine("<script type=\"text/javascript\">\r\n" +
-            "function GraphicSheet(image, cellWidth, cellHeight, columns, rows) {\r\n" +
+         txt.WriteLine("function GraphicSheet(image, cellWidth, cellHeight, columns, rows) {\r\n" +
             "   this.image = image;\r\n" +
             "   this.cellWidth = cellWidth;\r\n" +
             "   this.cellHeight = cellHeight;\r\n" +
             "   this.columns = columns;\r\n" +
             "   this.rows = rows;\r\n" +
             "}");
-         txt.WriteLine("var graphicSheets = {");
+         txt.WriteLine("var graphicSheets;");
+         txt.WriteLine("function InitGraphicSheets() {\r\n" +
+            "   graphicSheets = {");
          bool first = true;
          foreach (System.Data.DataRowView drv in ProjectData.GraphicSheet.DefaultView)
          {
             ProjectDataset.GraphicSheetRow drGfx = (ProjectDataset.GraphicSheetRow)drv.Row;
             if (first)
-               txt.Write("   ");
+               txt.Write("      ");
             else
-               txt.Write(",\r\n   ");
+               txt.Write(",\r\n      ");
             txt.Write(NameToVariable(drGfx.Name) +
                ": new GraphicSheet(document.getElementById('" + NameToVariable(drGfx.Name) + "'), " +
                drGfx.CellWidth.ToString() + "," + drGfx.CellHeight.ToString() + "," +
                drGfx.Columns.ToString() + "," + drGfx.Rows.ToString() + ")");
             first = false;
          }
-         txt.WriteLine("};\r\n</script>");
+         txt.WriteLine("\r\n   };\r\n}");
       }
 
       private void GenerateHtmlFramesets(System.IO.TextWriter txt)
@@ -3974,20 +4063,6 @@ namespace SGDK2
          txt.WriteLine("function Frameset(name, frames) {\r\n" +
             "   this.name = name;\r\n" +
             "   this.frames = frames;\r\n" +
-            "}");
-         txt.WriteLine("function drawFrame(ctx, x, y) {\r\n" +
-            "   if(this.isIdentity) {\r\n" +
-            "      ctx.drawImage(this.imageSource, (this.cellIndex % this.graphicSheet.columns) * this.graphicSheet.cellWidth,\r\n" +
-            "         Math.floor(this.cellIndex / this.graphicSheet.columns) * this.graphicSheet.cellHeight,\r\n" +
-            "         this.graphicSheet.cellWidth, this.graphicSheet.cellHeight, x, y, this.graphicSheet.cellWidth, this.graphicSheet.cellHeight);\r\n" +
-            "   } else {\r\n" +
-            "      ctx.save();\r\n" +
-            "      ctx.transform(this.m11, this.m12, this.m21, this.m22, this.dx+x, this.dy+y);\r\n" +
-            "      ctx.drawImage(this.imageSource, (this.cellIndex % this.graphicSheet.columns) * this.graphicSheet.cellWidth,\r\n" +
-            "         Math.floor(this.cellIndex / this.graphicSheet.columns) * this.graphicSheet.cellHeight,\r\n" +
-            "         this.graphicSheet.cellWidth, this.graphicSheet.cellHeight, 0, 0, this.graphicSheet.cellWidth, this.graphicSheet.cellHeight);\r\n" +
-            "      ctx.restore();\r\n" +
-            "   }\r\n" +
             "}");
          txt.WriteLine("function XFrame(m11, m12, m21, m22, dx, dy, graphicSheet, imageSource, cellIndex) {\r\n" +
             "   this.m11 = m11;\r\n" +
@@ -3999,18 +4074,33 @@ namespace SGDK2
             "   this.graphicSheet = graphicSheet;\r\n" +
             "   this.imageSource = imageSource;\r\n" +
             "   this.cellIndex = cellIndex;\r\n" +
-            "   this.isIdentity = false;\r\n" +
             "}");
          txt.WriteLine("function Frame(graphicSheet, imageSource, cellIndex) {\r\n" +
-            "   this.isIdentity = true;\r\n" +
             "   this.graphicSheet = graphicSheet;\r\n" +
             "   this.imageSource = imageSource;\r\n" +
             "   this.cellIndex = cellIndex;\r\n" +
             "}");
-         txt.WriteLine("XFrame.prototype.draw = drawFrame;");
-         txt.WriteLine("Frame.prototype.draw = drawFrame;");
+         txt.WriteLine("Frame.prototype.draw = function(ctx, x, y) {\r\n" +
+            "   if (this.imageSource == null) return;\r\n" +
+            "   ctx.drawImage(this.imageSource, (this.cellIndex % this.graphicSheet.columns) * this.graphicSheet.cellWidth,\r\n" +
+            "   Math.floor(this.cellIndex / this.graphicSheet.columns) * this.graphicSheet.cellHeight,\r\n" +
+            "   this.graphicSheet.cellWidth, this.graphicSheet.cellHeight, x, y, this.graphicSheet.cellWidth, this.graphicSheet.cellHeight);\r\n" +
+            "};");
+         txt.WriteLine("XFrame.prototype.draw = function(ctx, x, y) {\r\n" +
+            "   ctx.save();\r\n" +
+            "   ctx.transform(this.m11, this.m12, this.m21, this.m22, this.dx+x, this.dy+y);\r\n" +
+            "   ctx.drawImage(this.imageSource, (this.cellIndex % this.graphicSheet.columns) * this.graphicSheet.cellWidth,\r\n" +
+            "      Math.floor(this.cellIndex / this.graphicSheet.columns) * this.graphicSheet.cellHeight,\r\n" +
+            "      this.graphicSheet.cellWidth, this.graphicSheet.cellHeight, 0, 0, this.graphicSheet.cellWidth, this.graphicSheet.cellHeight);\r\n" +
+            "   ctx.restore();\r\n" +
+            "};");
          txt.WriteLine("function ModulateCelColor(target, x, y, width, height, r, g, b, a) {\r\n" +
-            "   var cel = target.getImageData(x, y, width, height);\r\n" +
+            "   var cel;\r\n" +
+            "   try { cel = target.getImageData(x, y, width, height); }\r\n" +
+            "   catch(e) { document.write('Failed to process images. This may occur when running from local files; see" +
+            " <a href=\"http://stackoverflow.com/questions/2704929/uncaught-error-security-err-dom-exception-18\">see details</a>');\r\n" +
+            "      throw(e);\r\n" +
+            "   }\r\n" +
             "   var celData = cel.data;\r\n" +
             "   for (yi = 0; yi < height; yi++) {\r\n" +
             "      for (xi = 0; xi < width; xi++) {\r\n" +
@@ -4029,7 +4119,7 @@ namespace SGDK2
             ProjectDataset.FramesetRow drFrameset = (ProjectDataset.FramesetRow)drv.Row;
             foreach (ProjectDataset.FrameRow fr in ProjectData.GetSortedFrameRows(drFrameset))
             {
-               if (fr.IscolorNull() || (fr.color == -1))
+               if (fr.IscolorNull() || (fr.color == -1) || ((fr.color & 0xFF000000) == 0))
                   continue;
                System.Collections.Generic.Dictionary<Tuple<int, short>, short> mapping;
                if (!coloredFrameMap.TryGetValue(fr.GraphicSheet, out mapping))
@@ -4086,15 +4176,25 @@ namespace SGDK2
                short cellIndex = fr.CellIndex;
                if (coloredFrameMap.TryGetValue(fr.GraphicSheet, out mapping))
                {
-                  if (!fr.IscolorNull() && fr.color != -1)
+                  if (!fr.IscolorNull() && (fr.color != -1))
                   {
-                     imageSrcRef += ".extra";
-                     cellIndex = mapping[new Tuple<int, short>(fr.color, fr.CellIndex)];
+                     if ((fr.color & 0xFF000000) == 0)
+                     {
+                        imageSrcRef = "null";
+                     } else {
+                        imageSrcRef += ".extra";
+                        cellIndex = mapping[new Tuple<int, short>(fr.color, fr.CellIndex)];
+                     }
                   }
                   else
                   {
                      imageSrcRef += ".image";
                   }
+               }
+               else if (!fr.IscolorNull() && ((fr.color & 0xFF000000) == 0))
+               {
+                  // 0 alpha means don't draw anything
+                  imageSrcRef = "null";
                }
                else
                {
@@ -4106,12 +4206,10 @@ namespace SGDK2
                else
                   txt.Write(",\r\n      ");
 
-               if ((fr.m11 == 1) &&
-                  (fr.m12 == 0) &&
-                  (fr.m21 == 0) &&
-                  (fr.m22 == 1) &&
-                  (fr.dx == 0) &&
-                  (fr.dy == 0))
+               if (imageSrcRef == "null" ||
+                  ((fr.m11 == 1) && (fr.m12 == 0) &&
+                   (fr.m21 == 0) && (fr.m22 == 1) &&
+                   (fr.dx == 0) && (fr.dy == 0)))
                {
                   txt.Write("new Frame(" + graphicSheetRef + "," + imageSrcRef + "," + cellIndex.ToString() + ")");
                }
@@ -4168,13 +4266,13 @@ namespace SGDK2
             "   this.counter = counter;\r\n" +
             "   this.frames = frames;\r\n" +
             "   this.totalDuration = frames[frames.length - 1].accumulatedDuration;\r\n" +
-            "   this.getCurFrames = function() {\r\n" +
-            "      for(var i = 0; i < frames.length; i++) {\r\n" +
-            "         if((this.counter.value % this.totalDuration) < frames[i].accumulatedDuration) return frames[i].subFrames;\r\n" +
-            "      }\r\n" +
-            "      return frames[frames.length - 1].subFrames;\r\n" +
-            "   };\r\n" +
             "}");
+         txt.WriteLine("AnimTile.prototype.getCurFrames = function() {\r\n" +
+            "   for(var i = 0; i < this.frames.length; i++) {\r\n" +
+            "      if((this.counter.value % this.totalDuration) < this.frames[i].accumulatedDuration) return this.frames[i].subFrames;\r\n" +
+            "   }\r\n" +
+            "   return this.frames[this.frames.length - 1].subFrames;\r\n" +
+            "};");
          txt.WriteLine("var Tilesets = new Object();");
          txt.WriteLine("function InitTilesets() {");
          foreach (System.Data.DataRowView drv in ProjectData.Tileset.DefaultView)
@@ -4187,12 +4285,13 @@ namespace SGDK2
                nMax = arTiles[arTiles.Length - 1].TileValue;
             if (drTileset.FramesetRow.GetFrameRows().Length > nMax)
                nMax = drTileset.FramesetRow.GetFrameRows().Length - 1;
-            bool firstTile = true;
             txt.Write("   Tilesets." + NameToVariable(drTileset.Name) + " = new Tileset(" +
                drTileset.TileWidth.ToString() + "," + drTileset.TileHeight.ToString() +
                ", frameSets." + NameToVariable(drTileset.Frameset) + ",[");
+            int outputState = 0; // 0 = No previous output, 1 = Previous output wants to share line, 2 = previous output wants its own line
             for (int i = 0; i <= nMax; i++)
             {
+               bool ownLine = false;
                int nFrameSequenceCount = 0;
                string TileExpr;
                if ((nCurIdx < arTiles.Length) && (arTiles[nCurIdx].TileValue == i))
@@ -4244,15 +4343,26 @@ namespace SGDK2
                         animArgs.Add("new TileFrame(" + f.Item1 + "," + f.Item2 + ")");
 
                      TileExpr = "new AnimTile(" + counterArg + ",[" + String.Join(",", animArgs.ToArray()) + "])";
+                     ownLine = true;
                   }
                }
                else
                   TileExpr = i.ToString();
 
-               if (!firstTile)
-                  txt.Write(",");
+               switch (outputState)
+               {
+                  case 1:
+                     if (ownLine)
+                        txt.Write(",\r\n      ");
+                     else
+                        txt.Write(",");
+                     break;
+                  case 2:
+                     txt.Write(",\r\n      ");
+                     break;
+               }
                txt.Write(TileExpr);
-               firstTile = false;
+               outputState = ownLine ? 2 : 1;
             }
             txt.WriteLine("]);");
          }
@@ -4280,29 +4390,31 @@ namespace SGDK2
             "   return result;\r\n" +
             "}\r\n");
 
-         txt.WriteLine("function MapLayer(tileset, columns, rows, tileData) {\r\n" +
+         txt.WriteLine("function MapLayer(tileset, columns, rows, virtualColumns, virtualRows, offsetX, offsetY, priority, tileData) {\r\n" +
             "   this.tileset = tileset;\r\n" +
             "   this.columns = columns;\r\n" +
             "   this.rows = rows;\r\n" +
-            "   this.currentX = 0;\r\n" +
-            "   this.currentY = 0;\r\n" +
+            "   this.offsetX = offsetX;\r\n" +
+            "   this.offsetY = offsetY;\r\n" +
+            "   this.currentX = offsetX;\r\n" +
+            "   this.currentY = offsetY;\r\n" +
             "   if(tileData.length < columns * rows * 2)\r\n" +
             "      this.tiles = DecodeData1(tileData);\r\n" +
             "   else\r\n" +
             "      this.tiles = DecodeData2(tileData);\r\n" +
+            "   this.virtualColumns = virtualColumns ? virtualColumns : columns;\r\n" +
+            "   this.virtualRows = virtualRows ? virtualRows : rows;\r\n" +
             "}");
-
-         System.Drawing.Size dispSize = Display.GetScreenSize((GameDisplayMode)Enum.Parse(typeof(GameDisplayMode), ProjectData.ProjectRow.DisplayMode));
 
          txt.WriteLine("MapLayer.prototype.draw = function(ctx) {\r\n" +
             "   var tileWidth = this.tileset.tileWidth;\r\n" +
             "   var tileHeight = this.tileset.tileHeight;\r\n" +
-            "   var width = " + dispSize.Width.ToString() + ";\r\n" +
-            "   var height = " + dispSize.Height.ToString() + ";\r\n" +
-            "   var lastRow = (height - this.currentY - 1) / tileHeight;\r\n" +
-            "   var lastCol = (width - this.currentX - 1) / tileWidth;\r\n" +
-            "   for(y = Math.floor(-this.currentY / tileWidth); y <= lastRow; y++) {\r\n" +
-            "      for(x = Math.floor(-this.currentX / tileWidth); x <= lastCol; x++) {\r\n" +
+            "   var lastRow = Math.floor((viewHeight - this.currentY - 1) / tileHeight);\r\n" +
+            "   if (lastRow >= this.virtualRows) lastRow = this.virtualRows - 1;\r\n" +
+            "   var lastCol = Math.floor((viewWidth - this.currentX - 1) / tileWidth);\r\n" +
+            "   if (lastCol >= this.virtualColumns) lastCol = this.virtualColumns - 1;\r\n" +
+            "   for(y = Math.floor(-this.currentY / tileHeight), y = y < 0 ? 0 : y; y <= lastRow; y++) {\r\n" +
+            "      for(x = Math.floor(-this.currentX / tileWidth), x = x < 0 ? 0 : x; x <= lastCol; x++) {\r\n" +
             "         var tile = this.tileset.tiles[this.tiles[((y % this.rows) * this.columns) + (x % this.columns)]];\r\n" +
             "         if (tile == null) continue;\r\n" +
             "         var drx = x * tileWidth + this.currentX;\r\n" +
@@ -4323,27 +4435,39 @@ namespace SGDK2
             "         }\r\n" +
             "      }\r\n" +
             "   }\r\n" +
+            "   for(si = 0; si < this.sprites.length; si++) {\r\n" +
+            "      var curSprite = this.sprites[si];\r\n" +
+            "      if (!curSprite.active) continue;\r\n" +
+            "      var frames = curSprite.getCurFrames();\r\n" +
+            "      if (frames == null) continue;\r\n" +
+            "      var frameSet = curSprite.states[curSprite.state].frameSet;\r\n" +
+            "      if (typeof frames == 'number')\r\n" +
+            "         frameSet.frames[frames % frameSet.frames.length].draw(ctx, curSprite.x + this.currentX, curSprite.y + this.currentY);\r\n" +
+            "      else\r\n" +
+            "         for(var fi = 0; fi < frames.length; fi++)\r\n" +
+            "            frameSet.frames[frames[fi] % frameSet.frames.length].draw(ctx, curSprite.x + this.currentX, curSprite.y + this.currentY);\r\n" +
+            "   }\r\n" +
             "};");
 
          System.Text.StringBuilder sbLayer = new System.Text.StringBuilder();
          System.Text.StringBuilder sbScroll = new System.Text.StringBuilder();
          System.Text.StringBuilder sbDraw = new System.Text.StringBuilder();
+         System.Text.StringBuilder sbSprites = new System.Text.StringBuilder();
          foreach (System.Data.DataRowView drv in ProjectData.Map.DefaultView)
          {
             ProjectDataset.MapRow drMap = (ProjectDataset.MapRow)drv.Row;
-            int maxX = dispSize.Width - drMap.ScrollWidth;
-            int maxY = dispSize.Height - drMap.ScrollHeight;
             sbScroll.AppendLine(
                "   " + NameToMapClass(drMap.Name) + ".scroll = function(x, y) {\r\n" +
-               "      if(x < " + maxX.ToString() + ") x = " + maxX.ToString() + ";\r\n" +
+               "      if(x < viewWidth - this.scrollWidth) x = viewWidth - this.scrollWidth;\r\n" +
                "      if(x > 0) x = 0;\r\n" +
-               "      if(y < " + maxY.ToString() + ") y = " + maxY.ToString() + ";\r\n" +
+               "      if(y < viewHeight - this.scrollHeight) y = viewHeight - this.scrollHeight;\r\n" +
                "      if(y > 0) y = 0;\r\n" +
                "      this.scrollX = x;\r\n" +
                "      this.scrollY = y;");
             sbDraw.AppendLine(
                "   " + NameToMapClass(drMap.Name) + ".draw = function(ctx) {");
-            txt.WriteLine("var " + NameToMapClass(drMap.Name) + " = {scrollX: 0, scrollY: 0};");
+            txt.WriteLine("var " + NameToMapClass(drMap.Name) + " = {scrollX: 0, scrollY: 0, scrollWidth: " +
+               drMap.ScrollWidth.ToString() + ", scrollHeight: " + drMap.ScrollHeight.ToString() + "};");
             foreach(ProjectDataset.LayerRow lyr in ProjectData.GetSortedLayers(drMap))
             {
                if (lyr.Tileset == null)
@@ -4351,21 +4475,47 @@ namespace SGDK2
                string lyrRef = NameToMapClass(drMap.Name) + "." + NameToVariable(lyr.Name) + "_Lyr";
                sbLayer.AppendLine(lyrRef + " = new MapLayer(\r\n" +
                   "   Tilesets." + NameToVariable(lyr.Tileset) + "," +
-                  lyr.Width.ToString() + "," + lyr.Height.ToString() + ",\r\n" +
+                  lyr.Width.ToString() + "," + lyr.Height.ToString() + "," +
+                  lyr.VirtualWidth.ToString() + "," + lyr.VirtualHeight.ToString() + "," +
+                  lyr.OffsetX.ToString() + "," + lyr.OffsetY.ToString() + "," +
+                  lyr.Priority.ToString() + ",\r\n" +
                   "   " + EncodeTilesToJavascript(lyr, "   ") + ");");
                if ((lyr.ScrollRateX != 0) || (lyr.ScrollRateY != 0))
                {
-                  sbScroll.AppendLine("      " + lyrRef + ".currentX = " + ((lyr.OffsetX != 0) ? lyr.OffsetX.ToString() + " + " : string.Empty) + 
-                     "Math.floor(x * " + lyr.ScrollRateX.ToString() + ");");
-                  sbScroll.AppendLine("      " + lyrRef + ".currentY = " + ((lyr.OffsetY != 0) ? lyr.OffsetY.ToString() + " + " : string.Empty) +
-                     "Math.floor(y * " + lyr.ScrollRateY.ToString() + ");");
+                  sbScroll.AppendLine("      " + lyrRef + ".currentX = " + ((lyr.OffsetX != 0) ? lyrRef + ".offsetX + " : string.Empty) + 
+                     ((lyr.ScrollRateX == 1) ? "x" : "Math.floor(x * " + lyr.ScrollRateX.ToString() + ")") + ";");
+                  sbScroll.AppendLine("      " + lyrRef + ".currentY = " + ((lyr.OffsetY != 0) ? lyrRef + ".offsetY + " : string.Empty) +
+                     ((lyr.ScrollRateY == 1) ? "y" : "Math.floor(y * " + lyr.ScrollRateY.ToString() + ")") + ";");
                }
                sbDraw.AppendLine("      " + lyrRef + ".draw(ctx);");
+               sbSprites.AppendLine("   " + lyrRef + ".initSprites = function() {");
+               System.Collections.Generic.List<string> spriteNames = new System.Collections.Generic.List<string>();
+               foreach (ProjectDataset.SpriteRow spr in ProjectData.GetSortedSpriteRows(lyr, false))
+               {
+                  ProjectDataset.SpriteDefinitionRow sprDef = ProjectData.GetSpriteDefinition(spr.DefinitionName);
+                  sbSprites.Append("      this." + NameToVariable(spr.Name) + " = new spriteDefinitions." + NameToVariable(sprDef.Name) + "(this," +
+                     spr.X.ToString() + "," + spr.Y.ToString() + "," + spr.DX.ToString() + "," + spr.DY.ToString() + "," +
+                     "spriteDefinitions." + NameToVariable(sprDef.Name) + ".statesEnum." + NameToVariable(spr.StateName) + "," +
+                     spr.CurrentFrame.ToString() + "," + (spr.Active ? "true" : "false") + "," + spr.Priority.ToString());
+                  foreach(ProjectDataset.SpriteParameterRow spp in ProjectData.GetSortedSpriteParameters(sprDef, false))
+                  {
+                     ProjectDataset.ParameterValueRow drValue = ProjectData.GetSpriteParameterValueRow(spr, spp.Name);
+                     if (drValue == null)
+                        sbSprites.Append(",0");
+                     else
+                        sbSprites.Append("," + drValue.Value.ToString());
+                  }
+                  sbSprites.AppendLine(");");
+                  spriteNames.Add("this." + NameToVariable(spr.Name));
+               }
+               sbSprites.AppendLine("      this.sprites = [" + string.Join(",", spriteNames.ToArray()) + "];");
+               sbSprites.AppendLine("   };\r\n" +
+                  "   " + lyrRef + ".initSprites();");
             }
             sbScroll.AppendLine("   };");
             sbDraw.AppendLine("   };");
          }
-         txt.WriteLine("function InitMaps() {\r\n" + sbLayer.ToString() + sbScroll.ToString() + sbDraw.ToString() + "}");
+         txt.WriteLine("function InitMaps() {\r\n" + sbLayer.ToString() + sbScroll.ToString() + sbDraw.ToString() + sbSprites.ToString() + "}");
       }
 
       void GenerateHtmlMapButtons(System.IO.TextWriter txt)
@@ -4377,7 +4527,7 @@ namespace SGDK2
          foreach (System.Data.DataRowView drv in ProjectData.Map.DefaultView)
          {
             ProjectDataset.MapRow drMap = (ProjectDataset.MapRow)drv.Row;
-            if ((counter % 5) == 0)
+            if ((counter++ % 5) == 0)
                txt.WriteLine("<br />");
             txt.WriteLine("<input id=\"btn" + NameToMapClass(drMap.Name) + "\" type=\"button\" onclick=\"switchToMap(" +
                NameToMapClass(drMap.Name) + ")\" value=\"" + drMap.Name + "\"/>");
@@ -4443,6 +4593,125 @@ namespace SGDK2
             }
          }
          return sb.ToString();
+      }
+
+      private void GenerateHtmlSprites(System.IO.TextWriter txt)
+      {
+         txt.WriteLine("function SpriteState(solidWidth, solidHeight, frameSet, bounds, frames) {\r\n" +
+            "   this.solidWidth = solidWidth;\r\n" +
+            "   this.solidHeight = solidHeight;\r\n" +
+            "   this.frameSet = frameSet;\r\n" +
+            "   this.bounds = bounds;\r\n" +
+            "   this.frames = frames;\r\n" +
+            "   this.totalDuration = frames ? frames[frames.length - 1].accumulatedDuration : 0;\r\n" +
+            "}");
+         txt.WriteLine("function Sprite(layer, x, y, dx, dy, state, frame, active, priority) {\r\n" +
+               "   this.layer = layer;\r\n" +
+               "   this.x = x;\r\n" +
+               "   this.y = y;\r\n" +
+               "   this.dx = dx;\r\n" +
+               "   this.dy = dy;\r\n" +
+               "   this.state = state;\r\n" +
+               "   this.frame = frame;\r\n" +
+               "   this.active = active;\r\n" +
+               "   this.priority = priority;\r\n" +
+               "}");
+         txt.WriteLine("Sprite.prototype.getCurFrames = function() {\r\n" +
+            "   var curState = this.states[this.state];\r\n" +
+            "   if (curState.frames == null) return null;\r\n" +
+            "   for(var i = 0; i < curState.frames.length; i++) {\r\n" +
+            "      if((this.frame % curState.totalDuration) < curState.frames[i].accumulatedDuration) return curState.frames[i].subFrames;\r\n" +
+            "   }\r\n" +
+            "   return curState.frames[curState.frames.length - 1].subFrames;\r\n" +
+            "}");
+         txt.WriteLine("var spriteDefinitions = new Object();");
+         foreach (System.Data.DataRowView drv in ProjectData.SpriteDefinition.DefaultView)
+         {
+            ProjectDataset.SpriteDefinitionRow drSpriteDef = (ProjectDataset.SpriteDefinitionRow)drv.Row;
+            txt.Write("spriteDefinitions." + NameToVariable(drSpriteDef.Name) + " = function(layer, x, y, dx, dy, state, frame, active, priority");
+            foreach (ProjectDataset.SpriteParameterRow drParam in ProjectData.GetSortedSpriteParameters(drSpriteDef, false))
+               txt.Write(", " + NameToVariable(drParam.Name));
+            txt.WriteLine(") {");
+            txt.WriteLine("   Sprite.call(this, layer, x, y, dx, dy, state, frame, active, priority);");
+            foreach(ProjectDataset.SpriteParameterRow drParam in ProjectData.GetSortedSpriteParameters(drSpriteDef, false))
+            {
+               txt.WriteLine("   this." + NameToVariable(drParam.Name) + " = " + NameToVariable(drParam.Name));
+            }
+            txt.WriteLine("};");
+            txt.WriteLine("spriteDefinitions." + NameToVariable(drSpriteDef.Name) + ".prototype = new Sprite();\r\n" +
+               "spriteDefinitions." + NameToVariable(drSpriteDef.Name) + ".prototype.constructor = spriteDefinitions." + NameToVariable(drSpriteDef.Name) + ";");
+         }
+         txt.WriteLine("function InitSprites() {\r\n" +
+            "   var bounds;");
+         foreach (System.Data.DataRowView drv in ProjectData.SpriteDefinition.DefaultView)
+         {
+            ProjectDataset.SpriteDefinitionRow drSpriteDef = (ProjectDataset.SpriteDefinitionRow)drv.Row;
+            txt.WriteLine("   spriteDefinitions." + NameToVariable(drSpriteDef.Name) + ".prototype.states = new Array();");
+
+            CachedSpriteDef sprCached = new CachedSpriteDef(drSpriteDef, null);
+            System.Drawing.Rectangle bounds = System.Drawing.Rectangle.Empty;
+            int stateIndex = 0;
+            System.Collections.Generic.List<string> statesEnum = new System.Collections.Generic.List<string>();
+
+            foreach (ProjectDataset.SpriteStateRow drState in ProjectData.GetSortedSpriteStates(drSpriteDef))
+            {
+               StateInfo sinf = sprCached[drState.Name];
+
+               if ((bounds.IsEmpty) ||
+                  (bounds.X != sinf.Bounds.X) || (bounds.Y != sinf.Bounds.Y) ||
+                  (bounds.Width != sinf.Bounds.Width) || (bounds.Height != sinf.Bounds.Height))
+               {
+                  bounds = new System.Drawing.Rectangle(sinf.Bounds.X, sinf.Bounds.Y, sinf.Bounds.Width, sinf.Bounds.Height);
+                  txt.WriteLine("   bounds = {x: " + bounds.X.ToString() + ", y: " + bounds.Y.ToString() +
+                     ", width: " + bounds.Width.ToString() + ", height: " + bounds.Height.ToString() + "};");
+               }
+
+               statesEnum.Add(NameToVariable(drState.Name) + ": " + stateIndex.ToString());
+               int nAccumulatedDuration = 0;
+               System.Collections.ArrayList stateParams = new System.Collections.ArrayList();
+               txt.Write("   spriteDefinitions." + NameToVariable(drSpriteDef.Name) + ".prototype.states[" + stateIndex + "] = new SpriteState(" +
+                  drState.SolidWidth.ToString() + "," + drState.SolidHeight.ToString() + "," +
+                  "frameSets." + NameToVariable(drState.FramesetName) + ",bounds,");
+ 
+               System.Collections.Generic.List<string> subFrames = null;
+               bool firstFrame = true;
+               ProjectDataset.SpriteFrameRow[] frames = ProjectData.GetSortedSpriteFrames(drState);
+               if (frames.Length == 0)
+                  txt.Write("null");
+               else
+               {
+                  txt.Write("[");
+                  foreach (ProjectDataset.SpriteFrameRow drFrame in frames)
+                  {
+                     if (subFrames == null)
+                        subFrames = new System.Collections.Generic.List<string>();
+                     subFrames.Add(drFrame.FrameValue.ToString());
+                     if (drFrame.Duration > 0)
+                     {
+                        nAccumulatedDuration += drFrame.Duration;
+                        if (!firstFrame)
+                           txt.Write(",");
+                        if (subFrames.Count == 1)
+                        {
+                           txt.Write("new TileFrame(" + nAccumulatedDuration.ToString() + "," + subFrames[0] + ")");
+                        }
+                        else
+                        {
+                           txt.Write("new TileFrame(" + nAccumulatedDuration.ToString() + ",[" +
+                              string.Join(",", subFrames.ToArray()) + "])");
+                        }
+                        subFrames.Clear();
+                        firstFrame = false;
+                     }
+                  }
+                  txt.Write("]");
+               }
+               stateIndex++;
+               txt.WriteLine(");");
+            }
+            txt.WriteLine("   spriteDefinitions." + NameToVariable(drSpriteDef.Name) + ".statesEnum = {" + string.Join(",", statesEnum.ToArray()) + "};");
+         }
+         txt.WriteLine("}");
       }
       #endregion
    }

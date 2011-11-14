@@ -312,6 +312,11 @@
     <Compile Include="LayerWizard.cs">
       <SubType>Form</SubType>
     </Compile>
+    <EmbeddedResource Include="HTML5\Tile.js" />
+    <EmbeddedResource Include="HTML5\MapLayer.js" />
+    <EmbeddedResource Include="HTML5\Sprite.js" />
+    <EmbeddedResource Include="HTML5\Main.js" />
+    <EmbeddedResource Include="HTML5\Frame.js" />
     <Content Include="Library\Sound\fmod.cs" />
     <Content Include="Library\Sound\fmodbase.cs" />
     <Compile Include="LogView.cs">

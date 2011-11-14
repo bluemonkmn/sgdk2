@@ -25,6 +25,8 @@ namespace SGDK2
       private MenuItem mnuHtmlSep;
       private MenuItem mnuHtmlFullBrowser;
       private MenuItem mnuHtmlFixed;
+      private MenuItem mnuHtmlSep2;
+      private MenuItem mnuHtmlGenMapButtons;
       const uint DWM_EC_ENABLECOMPOSITION = 1;
       [System.Runtime.InteropServices.DllImport("dwmapi.dll", EntryPoint = "DwmEnableComposition")]
       private extern static uint DwmEnableComposition(uint compositionAction);
@@ -187,6 +189,11 @@ namespace SGDK2
          this.mnuFileDeleteIntermediateFiles = new System.Windows.Forms.MenuItem();
          this.mnuFileDeleteOutputFiles = new System.Windows.Forms.MenuItem();
          this.mnuFileGenHtml5 = new System.Windows.Forms.MenuItem();
+         this.mnuHtmlGenMulti = new System.Windows.Forms.MenuItem();
+         this.mnuHtmlGenSingle = new System.Windows.Forms.MenuItem();
+         this.mnuHtmlSep = new System.Windows.Forms.MenuItem();
+         this.mnuHtmlFullBrowser = new System.Windows.Forms.MenuItem();
+         this.mnuHtmlFixed = new System.Windows.Forms.MenuItem();
          this.mnuFileSep3 = new System.Windows.Forms.MenuItem();
          this.mnuFileSep4 = new System.Windows.Forms.MenuItem();
          this.mnuFileExit = new System.Windows.Forms.MenuItem();
@@ -208,11 +215,8 @@ namespace SGDK2
          this.sbMain = new System.Windows.Forms.StatusBar();
          this.tmrInitComplete = new System.Windows.Forms.Timer(this.components);
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
-         this.mnuHtmlGenMulti = new System.Windows.Forms.MenuItem();
-         this.mnuHtmlGenSingle = new System.Windows.Forms.MenuItem();
-         this.mnuHtmlFullBrowser = new System.Windows.Forms.MenuItem();
-         this.mnuHtmlFixed = new System.Windows.Forms.MenuItem();
-         this.mnuHtmlSep = new System.Windows.Forms.MenuItem();
+         this.mnuHtmlSep2 = new System.Windows.Forms.MenuItem();
+         this.mnuHtmlGenMapButtons = new System.Windows.Forms.MenuItem();
          this.pnlProjectTree.SuspendLayout();
          this.SuspendLayout();
          // 
@@ -582,10 +586,44 @@ namespace SGDK2
             this.mnuHtmlGenSingle,
             this.mnuHtmlSep,
             this.mnuHtmlFullBrowser,
-            this.mnuHtmlFixed});
+            this.mnuHtmlFixed,
+            this.mnuHtmlSep2,
+            this.mnuHtmlGenMapButtons});
          this.mnuFileGenHtml5.MergeOrder = 27;
          this.mnuFileGenHtml5.Text = "Generate &HTML 5 Code";
          this.mnuFileGenHtml5.Click += new System.EventHandler(this.mnuFileGenHtml5_Click);
+         // 
+         // mnuHtmlGenMulti
+         // 
+         this.mnuHtmlGenMulti.Index = 0;
+         this.mnuHtmlGenMulti.Text = "To &Multiple Files";
+         this.mnuHtmlGenMulti.Click += new System.EventHandler(this.mnuFileGenHtml5_Click);
+         // 
+         // mnuHtmlGenSingle
+         // 
+         this.mnuHtmlGenSingle.Index = 1;
+         this.mnuHtmlGenSingle.Text = "To a &Single File";
+         this.mnuHtmlGenSingle.Click += new System.EventHandler(this.mnuFileGenHtml5_Click);
+         // 
+         // mnuHtmlSep
+         // 
+         this.mnuHtmlSep.Index = 2;
+         this.mnuHtmlSep.Text = "-";
+         // 
+         // mnuHtmlFullBrowser
+         // 
+         this.mnuHtmlFullBrowser.Index = 3;
+         this.mnuHtmlFullBrowser.RadioCheck = true;
+         this.mnuHtmlFullBrowser.Text = "&Full Browser";
+         this.mnuHtmlFullBrowser.Click += new System.EventHandler(this.mnuHtmlGenOpt_Click);
+         // 
+         // mnuHtmlFixed
+         // 
+         this.mnuHtmlFixed.Checked = true;
+         this.mnuHtmlFixed.Index = 4;
+         this.mnuHtmlFixed.RadioCheck = true;
+         this.mnuHtmlFixed.Text = "Fixed &View";
+         this.mnuHtmlFixed.Click += new System.EventHandler(this.mnuHtmlGenOpt_Click);
          // 
          // mnuFileSep3
          // 
@@ -797,36 +835,17 @@ namespace SGDK2
          this.dataMonitor.TileCategoryRowDeleted += new SGDK2.ProjectDataset.TileCategoryRowChangeEventHandler(this.dataMonitor_TileCategoryRowDeleted);
          this.dataMonitor.TileCategoryRowDeleting += new SGDK2.ProjectDataset.TileCategoryRowChangeEventHandler(this.dataMonitor_TileCategoryRowDeleting);
          // 
-         // mnuHtmlGenMulti
+         // mnuHtmlSep2
          // 
-         this.mnuHtmlGenMulti.Index = 0;
-         this.mnuHtmlGenMulti.Text = "To &Multiple Files";
-         this.mnuHtmlGenMulti.Click += new System.EventHandler(this.mnuFileGenHtml5_Click);
+         this.mnuHtmlSep2.Index = 5;
+         this.mnuHtmlSep2.Text = "-";
          // 
-         // mnuHtmlGenSingle
+         // mnuHtmlGenMapButtons
          // 
-         this.mnuHtmlGenSingle.Index = 1;
-         this.mnuHtmlGenSingle.Text = "To a &Single File";
-         this.mnuHtmlGenSingle.Click += new System.EventHandler(this.mnuFileGenHtml5_Click);
-         // 
-         // mnuHtmlFullBrowser
-         // 
-         this.mnuHtmlFullBrowser.Index = 3;
-         this.mnuHtmlFullBrowser.RadioCheck = true;
-         this.mnuHtmlFullBrowser.Text = "&Full Browser";
-         this.mnuHtmlFullBrowser.Click += new System.EventHandler(this.mnuHtmlGenOpt_Click);
-         // 
-         // mnuHtmlFixed
-         // 
-         this.mnuHtmlFixed.Checked = true;
-         this.mnuHtmlFixed.Index = 4;
-         this.mnuHtmlFixed.RadioCheck = true;
-         this.mnuHtmlFixed.Text = "Fixed &View";
-         // 
-         // mnuHtmlSep
-         // 
-         this.mnuHtmlSep.Index = 2;
-         this.mnuHtmlSep.Text = "-";
+         this.mnuHtmlGenMapButtons.Checked = true;
+         this.mnuHtmlGenMapButtons.Index = 6;
+         this.mnuHtmlGenMapButtons.Text = "&Generate Buttons to Switch Maps";
+         this.mnuHtmlGenMapButtons.Click += new System.EventHandler(this.mnuHtmlGenOpt_Click);
          // 
          // frmMain
          // 
@@ -2973,10 +2992,22 @@ namespace SGDK2
 
       private void mnuFileGenHtml5_Click(object sender, EventArgs e)
       {
+         if (string.IsNullOrEmpty(m_strProjectPath))
+         {
+            MessageBox.Show("You must save the project before generating HTML code.", "Generate HTML", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+         }
          CodeGenerator g = new CodeGenerator();
          string errs;
          System.Collections.Generic.IEnumerable<CodeGenerator.ObjectErrorInfo> errorRules;
-         string outFile = g.GenerateHtml5(System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath), GetProjectOutFolder(), sender == mnuHtmlGenSingle, out errs, out errorRules);
+         CodeGenerator.HtmlGeneratorOptions options = 0;
+         if (sender == mnuHtmlGenSingle)
+            options = CodeGenerator.HtmlGeneratorOptions.SingleFile;
+         if (mnuHtmlFullBrowser.Checked)
+            options |= CodeGenerator.HtmlGeneratorOptions.FillBrowser;
+         if (mnuHtmlGenMapButtons.Checked)
+            options |= CodeGenerator.HtmlGeneratorOptions.GenerateMapButtons;
+         string outFile = g.GenerateHtml5(System.IO.Path.GetFileNameWithoutExtension(m_strProjectPath), GetProjectOutFolder(), options, out errs, out errorRules);
          if (errs.Length > 0)
          {
             frmLogView frm = new frmLogView(errs, errorRules);
@@ -2998,6 +3029,10 @@ namespace SGDK2
          {
             mnuHtmlFixed.Checked = false;
             mnuHtmlFullBrowser.Checked = true;
+         }
+         else if (sender == mnuHtmlGenMapButtons)
+         {
+            mnuHtmlGenMapButtons.Checked = !mnuHtmlGenMapButtons.Checked;
          }
       }
 

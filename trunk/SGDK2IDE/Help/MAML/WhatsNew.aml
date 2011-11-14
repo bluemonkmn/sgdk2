@@ -13,6 +13,27 @@
     </introduction>
 
 <section>
+  <title>Version 2.2.0</title>
+  <content>
+  <para>This section describes updates between versions 2.1.9 and 2.2.0.</para>
+  <list class="ordered">
+    <listItem>Implement the ability to output project data to HTML5 files (details below).</listItem>
+    <listItem>Output all graphic sheets as hidden img elements.</listItem>
+    <listItem>Output all Framesets as instances of a Frameset object, which may generate additional hidden canvases to host color-modulated frames.</listItem>
+    <listItem>Output all maps and tile layers encoded as Javascript strings.</listItem>
+    <listItem>Output all counters as instances of a Counter object.</listItem>
+    <listItem>Output all sprite definitions and sprites such that each frame of each state can be accurately represented.</listItem>
+    <listItem>Output all tile categories and tile solidity information such that the Sprite object's ReactToSolid function will work,
+      and honor solidity that changes per frame of an animated tile.</listItem>
+    <listItem>Allow HTML5 project to be output to a view that is confined to the size defined by the project, or resizes to fill the browser.</listItem>
+    <listItem>Allow HTML5 project to be output to a single file or multiple files, splitting the Javascript and images to separate files.</listItem>
+    <listItem>Allow HTML5 project to include buttons that automatically switch to the selected map.</listItem>
+    <listItem>Allow mouse or touch events to scroll around the displayed map in HTML5 output.</listItem>
+    </list>
+  </content>
+</section>
+
+<section>
   <title>Version 2.1.9</title>
   <content>
   <para>This section describes updates between versions 2.1.6 and 2.1.9.</para>

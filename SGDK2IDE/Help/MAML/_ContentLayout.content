@@ -5,6 +5,7 @@
   <Topic id="32238653-0ab0-420a-b4e2-7b1f99207c0c" visible="True" title="FAQ" />
   <Topic id="0de59df1-fd1a-467f-92e7-6d5cb3e36457" visible="True" noFile="true" title="User Interface">
     <Topic id="f10c13c9-f26e-49da-b42e-3264bbd6bf41" visible="True" title="Main Window" />
+    <Topic id="d07a3ab3-7056-48e4-9700-1b54d8205acc" visible="True" title="HTML 5 Export" />
     <Topic id="b2f49025-f318-4428-b580-4c0f21ad00e8" visible="True" title="Project Properties" />
     <Topic id="76ac66ea-2071-486c-a830-d5da8e27d33c" visible="True" title="Graphic Sheet Properties" />
     <Topic id="2d575c3e-dff1-484e-8f48-6109b0f79028" visible="True" title="Graphics Editor" />

@@ -294,6 +294,12 @@
     <Compile Include="GraphicBrowser.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="HTML5Export.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="HTML5Export.Designer.cs">
+      <DependentUpon>HTML5Export.cs</DependentUpon>
+    </Compile>
     <Compile Include="HueMapParams.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -312,6 +318,9 @@
     <Compile Include="LayerWizard.cs">
       <SubType>Form</SubType>
     </Compile>
+    <EmbeddedResource Include="HTML5Export.resx">
+      <DependentUpon>HTML5Export.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="HTML5\Tile.js" />
     <EmbeddedResource Include="HTML5\MapLayer.js" />
     <EmbeddedResource Include="HTML5\Sprite.js" />

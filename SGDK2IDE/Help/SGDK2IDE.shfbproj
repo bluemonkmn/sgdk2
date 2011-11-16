@@ -85,6 +85,7 @@
     <Folder Include="MAML\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="MAML\HTML5Export.aml" />
     <None Include="MAML\Media\_MediaFiles.xml">
       <ImageId>_MediaFiles</ImageId>
       <AlternateText>Media Files</AlternateText>

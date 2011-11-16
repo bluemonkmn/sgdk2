@@ -191,32 +191,12 @@
                      from the extra files.</entry>
                </row>
                <row>
-                  <entry>Generate HTML 5 Code</entry>
+                  <entry>Export to HTML 5 Code</entry>
                   <entry>New with SGDK version 2.2, this option builds on the new features available in
-                     HTML5 to generate a web page which is capable of displaying the maps, tiles, and
-                     sprites defined in your project. As of version 2.2.0, the generated projects are
-                     not fully functional; they mainly display the data defined in the project, but allow
-                     little interactivity (that's up to the user to add in the form of Javascript). By
-                     default, the interactivity amounts to dragging to scroll around the map, and clicking
-                     on buttons to switch to different maps. Adding code to increment counters and move
-                     sprites in reaction to inputs is relatively simple, though.
-                     However, future versions of SGDK2 may improve the HTML 5 code generator to include
-                     more of the functionality of the game as defined in the SGDK2 IDE. This menu provides
-                     a number of options.
-                     <list class="bullet">
-                     <listItem>To Multiple Files: The images are generated to PNG files instead of embedded
-                     in the HTML. This is not advised if you intend to play the game from a local file because
-                     security restrictions tend to prevent the generated code from fully accessing local data
-                     stored in separate files for some operations. The same restriction does not apply when
-                     the files are fully hosted on a web site, however.</listItem>
-                     <listItem>To Single File: All code and data, including images, are embedded into a single
-                     HTML file.</listItem>
-                     <listItem>Full Browser: Make the display fill the browser window. This is ideal for games
-                     to be played on a browser within mobile device.</listItem>
-                     <listItem>Fixed View: Retains the display size defined in the project settings.</listItem>
-                     <listItem>Generate Buttons to Switch Maps: Outputs a list of buttons below the game view
-                     that allows you to activate (display) different maps from within the project.</listItem>
-                     </list>
+                     HTML 5 to generate a web page which is capable of displaying the maps, tiles, and
+                     sprites defined in your project. See
+                     <link xlink:href="d07a3ab3-7056-48e4-9700-1b54d8205acc"/>
+                     for details.
                   </entry>
                </row>
                <row>

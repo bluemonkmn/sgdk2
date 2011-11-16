@@ -3841,8 +3841,10 @@ namespace SGDK2
       #endregion
 
       #region HTML5 Code Generation
-      public string[] GetHtmlFileList(string ProjectName, string FolderName)
+      public string[] GetHtmlFileList(string htmlFileName)
       {
+         string FolderName = System.IO.Path.GetDirectoryName(htmlFileName);
+         string ProjectName = System.IO.Path.GetFileNameWithoutExtension(htmlFileName);
          if (!System.IO.Path.IsPathRooted(FolderName))
          {
             FolderName = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, FolderName);
@@ -3867,20 +3869,21 @@ namespace SGDK2
          GenerateMapButtons=4
       }
 
-      public string GenerateHtml5(string ProjectName, string FolderName, HtmlGeneratorOptions options, out string errs, out System.Collections.Generic.IEnumerable<ObjectErrorInfo> errorRules)
+      public string GenerateHtml5(string htmlFileName, HtmlGeneratorOptions options, out string errs, out System.Collections.Generic.IEnumerable<ObjectErrorInfo> errorRules)
       {
          System.IO.TextWriter err = new System.IO.StringWriter();
          errorRules = null;
          var errorRows = new System.Collections.Generic.List<ObjectErrorInfo>();
          try
          {
+            string FolderName = System.IO.Path.GetDirectoryName(htmlFileName);
             if (!System.IO.Path.IsPathRooted(FolderName))
             {
                FolderName = System.IO.Path.Combine(System.Windows.Forms.Application.StartupPath, FolderName);
             }
             if (!System.IO.Directory.Exists(FolderName))
                System.IO.Directory.CreateDirectory(FolderName);
-            string htmlFileName = System.IO.Path.Combine(FolderName, ProjectName + ".html");
+            string ProjectName = System.IO.Path.GetFileNameWithoutExtension(htmlFileName);
             using (System.IO.StreamWriter txt = new System.IO.StreamWriter(htmlFileName))
             {
                GenerateHtmlProject(ProjectName, txt, options, err);

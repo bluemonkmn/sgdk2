@@ -1,6 +1,7 @@
 ﻿var gameViewContext;
 var dragX, dragY;
 var currentMap;
+var overlayMap;
 function startGame() {
    initGraphicSheets();
    initFramesets();
@@ -11,8 +12,21 @@ function startGame() {
    firstMap();
    var gameView = document.getElementById('gameView');
    gameViewContext = gameView.getContext('2d');
-   currentMap.draw(gameViewContext);
+   setInterval("pulse()", 20);
 }
+function pulse() {
+   if (currentMap != null)
+   {
+      currentMap.draw(gameViewContext);
+      currentMap.executeRules();
+   }
+   if (overlayMap != null)
+   {
+      overlayMap.draw(gameViewContext);
+      overlayMap.executeRules();
+   }
+}
+
 function resizeView() {
    viewWidth = window.innerWidth;
    viewHeight = window.innerHeight;
@@ -56,4 +70,7 @@ function processTouchDrag(e) {
    var touch = touches.item(0);
    drag(touch.clientX, touch.clientY);
    return false;
+}
+function truncate(n) {
+   return n | 0;
 }

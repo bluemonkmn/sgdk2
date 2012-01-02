@@ -1,4 +1,21 @@
-﻿function MapLayer(tileset, columns, rows, virtualColumns, virtualRows, offsetX, offsetY, priority, tileData) {
+﻿function decodeData1(data) {
+   var result = new Array();
+   for(var i = 0; i < data.length; i++) {
+      result[i] = dataDigits.indexOf(data[i]);
+   }
+   return result;
+}
+
+function decodeData2(data) {
+   var result = new Array();
+   for(var i = 0; i < data.length/2; i++) {
+      result[i] = dataDigits.indexOf(data[i*2]) * dataDigits.length + dataDigits.indexOf(data[i*2+1]);
+   }
+   return result;
+}
+
+function MapLayer(map, tileset, columns, rows, virtualColumns, virtualRows, offsetX, offsetY, scrollRateX, scrollRateY, priority, tileData) {
+   this.map = map;
    this.tileset = tileset;
    this.columns = columns;
    this.rows = rows;
@@ -6,12 +23,73 @@
    this.offsetY = offsetY;
    this.currentX = offsetX;
    this.currentY = offsetY;
+   this.scrollRateX = scrollRateX;
+   this.scrollRateY = scrollRateY;
+   this.priority = priority;
    if(tileData.length < columns * rows * 2)
-      this.tiles = DecodeData1(tileData);
+      this.tiles = decodeData1(tileData);
    else
-      this.tiles = DecodeData2(tileData);
+      this.tiles = decodeData2(tileData);
    this.virtualColumns = virtualColumns ? virtualColumns : columns;
    this.virtualRows = virtualRows ? virtualRows : rows;
+}
+
+MapLayer.prototype.encodeTileData2 = function() {
+   var result = '';
+   for(var i = 0; i < this.tiles.length; i++) {
+      result += dataDigits[Math.floor(this.tiles[i] / dataDigits.length)] + dataDigits[this.tiles[i] % dataDigits.length];
+   }
+   return result;
+}
+
+MapLayer.prototype.getState = function() {
+   var result = {currentX:this.currentX,currentY:this.currentY,tiles:this.encodeTileData2()};
+   var staticSpriteIndices = [];
+   for(var key in this)
+   {
+      if(this[key] instanceof Sprite)
+      {
+         result["~1" + key] = this[key].serialize();
+         var staticIndex = this.sprites.indexOf(this[key]);
+         if (staticIndex >= 0)
+            staticSpriteIndices[staticIndex] = true;
+      }
+   }
+   var dynamicSprites = [];
+   for(spriteIndex = 0; spriteIndex < this.sprites.length; spriteIndex++)
+   {
+      if (staticSpriteIndices[spriteIndex] !== true)
+      {
+         dynamicSprites.push("\"" + this.sprites[spriteIndex].serialize().replace("\\", "\\\\").replace("\"", "\\\"") + "\"");
+      }
+   }
+   result.dynamicSprites = "[" + dynamicSprites.join(",") + "]";
+   return result;
+}
+
+MapLayer.prototype.setState = function(source) {
+   this.tiles = decodeData2(source.tiles);
+   this.sprites = [];
+   for(var key in source)
+   {
+      if (key.substr(0,2) == "~1")
+      {
+         var s = Sprite.deserialize(this,source[key]);
+         this[key.substr(2)] = s;
+         this.sprites.push(s);
+      }
+   }
+   if (source["dynamicSprites"] != null)
+   {
+      var dynamicSprites = JSON.parse(source["dynamicSprites"]);
+      for(s in dynamicSprites)
+      {
+         this.sprites.push(Sprite.deserialize(this,dynamicSprites[s]));
+      }
+   }
+   this.spriteCategories = Sprite.categorize(this.sprites);
+   this.currentX = source.currentX;
+   this.currentY = source.currentY;
 }
 
 MapLayer.prototype.getTile = function(x, y) {
@@ -49,7 +127,7 @@ MapLayer.prototype.draw = function(ctx) {
    }
    for(si = 0; si < this.sprites.length; si++) {
       var curSprite = this.sprites[si];
-      if (!curSprite.active) continue;
+      if (!curSprite.isActive) continue;
       var frames = curSprite.getCurFrames();
       if (frames == null) continue;
       var frameSet = curSprite.states[curSprite.state].frameSet;
@@ -72,7 +150,7 @@ MapLayer.prototype.getTopSolidPixel = function(areaX, areaY, areaWidth, areaHeig
    if ((topTile < 0) || (topTile >= this.virtualRows) || (bottomTile < 0) || (bottomTile >= this.virtualRows)
       || (leftTile < 0) || (leftTile >= this.virtualColumns) || (rightTile < 0) || (rightTile >= this.virtualColumns))
       outOfBounds = true;
-   var minTileTop = areaY % this.tileset.tileHeight;
+   var minTileTop = (areaY+this.tileset.tileHeight) % this.tileset.tileHeight;
    var tileLeft = leftTile * this.tileset.tileWidth;
    for (var y = topTile; y <= bottomTile; y++) {
       if (rightTile == leftTile) {
@@ -137,7 +215,7 @@ MapLayer.prototype.getBottomSolidPixel = function(areaX, areaY, areaWidth, areaH
    if ((topTile < 0) || (topTile >= this.virtualRows) || (bottomTile < 0) || (bottomTile >= this.virtualRows)
       || (leftTile < 0) || (leftTile >= this.virtualColumns) || (rightTile < 0) || (rightTile >= this.virtualColumns))
       outOfBounds = true;
-   var maxTileBottom = (areaY + areaHeight - 1) % this.tileset.tileHeight;
+   var maxTileBottom = (areaY + areaHeight - 1 + this.tileset.tileHeight) % this.tileset.tileHeight;
    var tileLeft = leftTile * this.tileset.tileWidth;
    for (var y = bottomTile; y >= topTile; y--) {
       if (rightTile == leftTile) {
@@ -202,7 +280,7 @@ MapLayer.prototype.getLeftSolidPixel = function(areaX, areaY, areaWidth, areaHei
    if ((topTile < 0) || (topTile >= this.virtualRows) || (bottomTile < 0) || (bottomTile >= this.virtualRows)
       || (leftTile < 0) || (leftTile >= this.virtualColumns) || (rightTile < 0) || (rightTile >= this.virtualColumns))
       outOfBounds = true;
-   var minTileLeft = areaX % this.tileset.tileWidth;
+   var minTileLeft = (areaX + this.tileset.tileWidth) % this.tileset.tileWidth;
    var tileTop = topTile * this.tileset.tileHeight;
    for (var x = leftTile; x <= rightTile; x++) {
       if (bottomTile == topTile){
@@ -267,7 +345,7 @@ MapLayer.prototype.getRightSolidPixel = function(areaX, areaY, areaWidth, areaHe
    if ((topTile < 0) || (topTile >= this.virtualRows) || (bottomTile < 0) || (bottomTile >= this.virtualRows)
       || (leftTile < 0) || (leftTile >= this.virtualColumns) || (rightTile < 0) || (rightTile >= this.virtualColumns))
       outOfBounds = true;
-   var maxTileRight = (areaX + areaWidth - 1) % this.tileset.tileWidth;
+   var maxTileRight = (areaX + areaWidth - 1 + this.tileset.tileWidth) % this.tileset.tileWidth;
    var tileTop = topTile * this.tileset.tileHeight;
    for (var x = rightTile; x >= leftTile; x--) {
       if (bottomTile == topTile){
@@ -322,3 +400,71 @@ MapLayer.prototype.getRightSolidPixel = function(areaX, areaY, areaWidth, areaHe
    }
    return MapLayer.noSolid;
 };
+
+MapLayer.prototype.scrollSpriteIntoView = function(sprite, useScrollMargins)
+{
+   var newX = null;
+   var newY = null;
+   var marginLeft;
+   var marginTop;
+   var marginRight;
+   var marginBottom;
+   if (useScrollMargins)
+   {
+      marginLeft = this.map.scrollMarginLeft;
+      marginTop = this.map.scrollMarginTop;
+      marginRight = this.map.scrollMarginRight;
+      marginBottom = this.map.scrollMarginBottom;
+   }
+   else
+   {
+      marginLeft = 0;
+      marginTop = 0;
+      marginRight = 0;
+      marginBottom = 0;
+   }
+   if (sprite.x + this.currentX < marginLeft)
+   {
+      if (this.scrollRateX > 0)
+         newX = Math.floor((-sprite.x + marginLeft - this.offsetX) / this.scrollRateX);
+      else
+         this.currentX = -sprite.x + marginLeft;
+   }
+   else if (sprite.x + sprite.getSolidWidth() - 1 + this.currentX > viewWidth - marginRight)
+   {
+      if (this.scrollRateX > 0)
+         newX = Math.floor((-sprite.x - sprite.getSolidWidth() + 1 + viewWidth - marginRight - this.offsetX) / this.scrollRateX);
+      else
+         this.currentX = -sprite.x - sprite.getSolidWidth() + 1 + viewWidth - marginRight;
+   }
+
+   if (sprite.y + this.currentY < marginTop)
+   {
+      if (this.scrollRateY > 0)
+         newY = Math.floor((-sprite.y + marginTop - this.offsetY) / this.scrollRateY);
+      else
+         this.currentY = -sprite.y + marginTop;
+   }
+   else if (sprite.y + sprite.getSolidHeight() - 1 + this.currentY > viewHeight - marginBottom)
+   {
+      if (this.scrollRateY > 0)
+         newY = Math.floor((-sprite.y - sprite.getSolidHeight() + 1 + viewHeight - marginBottom - this.offsetY) / this.scrollRateY);
+      else
+         this.currentY = -sprite.Y - sprite.getSolidHeight() + 1 + viewHeight - marginBottom;
+   }
+   if ((newX != null) || (newY != null))
+   {
+      if (newX == null) newX = this.currentX;
+      if (newY == null) newY = this.currentY;
+      this.map.scroll(newX, newY);
+   }
+}
+
+MapLayer.prototype.processSprites = function() {
+   for(var si = 0; si < this.sprites.length; si++)
+      this.sprites[si].processed = false;
+   for(var si = 0; si < this.sprites.length; si++)
+      if (this.sprites[si].isActive)
+         this.sprites[si].processRules();
+}
+

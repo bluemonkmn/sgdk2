@@ -34,8 +34,8 @@ TileShape.downCeiling.getLeftSolidPixel = function(width, height, min, max) { re
 TileShape.downCeiling.getBottomSolidPixel = function(width, height, min, max) { return Math.floor(height - (width - max - 1) * height / width - 1); };
 
 TileShape.uphillRight = new TileShape();
-TileShape.uphillRight.getTopSolidPixel = function(width, height, min, max) { Math.floor(height * (width - max - 1) / width / 2); };
-TileShape.uphillRight.getLeftSolidPixel = function(width, height, min, max) { Math.floor((max * 2 >= height - 2) ? 0 : width * (height - max * 2 - 2) / height); };
+TileShape.uphillRight.getTopSolidPixel = function(width, height, min, max) { return Math.floor(height * (width - max - 1) / width / 2); };
+TileShape.uphillRight.getLeftSolidPixel = function(width, height, min, max) { return Math.floor((max * 2 >= height - 2) ? 0 : width * (height - max * 2 - 2) / height); };
 
 TileShape.uphillLeft = new TileShape();
 TileShape.uphillLeft.getTopSolidPixel = function(width, height, min, max) { return Math.floor(height * (width - max - 1) / width / 2 + height / 2); };
@@ -72,7 +72,10 @@ function TileCategory(tilesetMembership) {
 }
 
 TileCategory.prototype.isTileMember = function(tileset, tileIndex) {
-   var member = this.membership[tileset.name][tileIndex];
+   var membership = this.membership[tileset.name];
+   if (membership == null)
+      return false;
+   var member = membership[tileIndex];
    if (member == true) return true;
    if (member == null) return false;
    return member.indexOf(tileset.tiles[tileIndex].getCurFrameIndex()) > -1;

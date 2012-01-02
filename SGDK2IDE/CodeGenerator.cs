@@ -3866,8 +3866,10 @@ namespace SGDK2
       {
          SingleFile=1,
          FillBrowser=2,
-         GenerateMapButtons=4
+         GenerateMapButtons=4,
+         CamelCase=8
       }
+      private HtmlGeneratorOptions options;
 
       public string GenerateHtml5(string htmlFileName, HtmlGeneratorOptions options, out string errs, out System.Collections.Generic.IEnumerable<ObjectErrorInfo> errorRules)
       {
@@ -3884,9 +3886,10 @@ namespace SGDK2
             if (!System.IO.Directory.Exists(FolderName))
                System.IO.Directory.CreateDirectory(FolderName);
             string ProjectName = System.IO.Path.GetFileNameWithoutExtension(htmlFileName);
+            this.options = options;
             using (System.IO.StreamWriter txt = new System.IO.StreamWriter(htmlFileName))
             {
-               GenerateHtmlProject(ProjectName, txt, options, err);
+               GenerateHtmlProject(ProjectName, txt, err);
                txt.Close();
             }
             if (0 == (options & HtmlGeneratorOptions.SingleFile))
@@ -3894,7 +3897,7 @@ namespace SGDK2
                string jsFileName = System.IO.Path.Combine(FolderName, ProjectName + ".js");
                using (System.IO.StreamWriter txt = new System.IO.StreamWriter(jsFileName))
                {
-                  GenerateHtmlJavascript(options, txt, err);
+                  GenerateHtmlJavascript(txt, err);
                }
                foreach (System.Data.DataRowView drv in ProjectData.GraphicSheet.DefaultView)
                {
@@ -3919,7 +3922,20 @@ namespace SGDK2
          }
       }
 
-      private void GenerateHtmlProject(string ProjectName, System.IO.TextWriter txt, HtmlGeneratorOptions options, System.IO.TextWriter err)
+      private string GetJavascriptFile(string name)
+      {
+         ProjectDataset.SourceCodeRow sc = ProjectData.GetSourceCode(name);
+         if (sc != null) return sc.Text;
+         string code;
+         using (System.IO.StreamReader sr = new System.IO.StreamReader(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("SGDK2.HTML5." + name)))
+         {
+            code = sr.ReadToEnd();
+         }
+         ProjectData.AddSourceCode(name, code, null, false, null);
+         return code;
+      }
+
+      private void GenerateHtmlProject(string ProjectName, System.IO.TextWriter txt, System.IO.TextWriter err)
       {
          System.Drawing.Size dispSize = Display.GetScreenSize((GameDisplayMode)Enum.Parse(typeof(GameDisplayMode), ProjectData.ProjectRow.DisplayMode));
          txt.WriteLine("<!DOCTYPE html>\r\n" +
@@ -3941,7 +3957,7 @@ namespace SGDK2
          if (0 != (options & HtmlGeneratorOptions.SingleFile))
          {
             txt.WriteLine("<script type=\"text/javascript\">\r\n");
-            GenerateHtmlJavascript(options, txt, err);
+            GenerateHtmlJavascript(txt, err);
             txt.WriteLine("</script>\r\n");
          }
          else
@@ -3950,11 +3966,11 @@ namespace SGDK2
          }
          txt.WriteLine("</head>\r\n" +
             "<body class=\"unselectable\" unselectable=\"on\"" + ((0 != (options & HtmlGeneratorOptions.FillBrowser))
-            ? " onresize=\"resizeView()\"" : string.Empty) + ">\r\n" + 
+            ? " onresize=\"resizeView()\"" : string.Empty) + "  onkeydown=\"keyboardState.handleKeyDown(event)\" onkeyup=\"keyboardState.handleKeyUp(event)\">\r\n" + 
             "<canvas id=\"gameView\" width=\"" + dispSize.Width.ToString() + "\" height=\"" + dispSize.Height.ToString() + "\" " +
             "onmousedown=\"beginDrag(event)\" ontouchstart=\"beginTouchDrag(event)\" onmouseup=\"endDrag(event)\" " +
-            "onmouseout=\"endDrag(event)\" ontouchmove=\"processTouchDrag(event)\" unselectable=\"on\" " +
-            "class=\"unselectable\">\r\n" +
+            "onmouseout=\"endDrag(event)\" ontouchmove=\"processTouchDrag(event)\" " +
+            "unselectable=\"on\" class=\"unselectable\">\r\n" +
             "   Your browser does not support HTML5 canvases.\r\n" +
             "</canvas>");
          foreach (System.Data.DataRowView drv in ProjectData.GraphicSheet.DefaultView)
@@ -3975,7 +3991,7 @@ namespace SGDK2
             "</html>");
       }
 
-      private void GenerateHtmlJavascript(HtmlGeneratorOptions options, System.IO.TextWriter txt, System.IO.TextWriter err)
+      private void GenerateHtmlJavascript(System.IO.TextWriter txt, System.IO.TextWriter err)
       {
          System.Drawing.Size dispSize = Display.GetScreenSize((GameDisplayMode)Enum.Parse(typeof(GameDisplayMode), ProjectData.ProjectRow.DisplayMode));
          txt.WriteLine(
@@ -3983,19 +3999,22 @@ namespace SGDK2
             "var viewHeight = " + dispSize.Height.ToString() + ";\r\n" +
             "function firstMap() {\r\n" +
             "   currentMap = " + NameToMapClass(ProjectData.ProjectRow.StartMap) + ";\r\n" +
+            (string.IsNullOrEmpty(ProjectData.ProjectRow.OverlayMap)?string.Empty:"   overlayMap = " + NameToMapClass(ProjectData.ProjectRow.OverlayMap) + ";\r\n") +
             (0 != (options & HtmlGeneratorOptions.FillBrowser) ? "   resizeView();\r\n" : string.Empty) +
             "}");
-         using (System.IO.StreamReader sr = new System.IO.StreamReader(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("SGDK2.HTML5.Main.js")))
-         {
-            txt.WriteLine(sr.ReadToEnd());
-         }
+
+         txt.WriteLine(GetJavascriptFile("Main.js"));
+
          GenerateHtmlGraphicSheets(txt);
          GenerateHtmlFramesets(txt);
          GenerateHtmlCounters(txt);
          GenerateHtmlTilesets(txt, err);
-         GenerateHtmlSprites(txt);
+         txt.WriteLine(GetJavascriptFile("KeyboardState.js"));
+         txt.WriteLine(GetJavascriptFile("Player.js"));
+         txt.WriteLine(GetJavascriptFile("GeneralRules.js"));
+         GenerateHtmlSprites(txt, err);
          GenerateHtmlTileCategories(txt);
-         GenerateHtmlMaps(txt);
+         GenerateHtmlMaps(txt, err);
          txt.WriteLine("window.onload = startGame;");
       }
 
@@ -4030,10 +4049,7 @@ namespace SGDK2
 
       private void GenerateHtmlFramesets(System.IO.TextWriter txt)
       {
-         using (System.IO.StreamReader sr = new System.IO.StreamReader(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("SGDK2.HTML5.Frame.js")))
-         {
-            txt.WriteLine(sr.ReadToEnd());
-         }
+         txt.WriteLine(GetJavascriptFile("Frame.js"));
          var coloredFrameMap = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<Tuple<int, short>, short>>();
          foreach (System.Data.DataRowView drv in ProjectData.Frameset.DefaultView)
          {
@@ -4296,35 +4312,23 @@ namespace SGDK2
       }
 
       const string jsEncodedDigits = " 1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^*()_+-=[]{}|:;,./?`~";
-      private void GenerateHtmlMaps(System.IO.TextWriter txt)
+      private void GenerateHtmlMaps(System.IO.TextWriter txt, System.IO.TextWriter err)
       {
-         txt.WriteLine("// Cardinality 1-" + jsEncodedDigits.Length.ToString() + "\r\n" +
-            "var dataDigits = '" + jsEncodedDigits + "';\r\n" +
-            "function DecodeData1(data) {\r\n" +
-            "   var result = new Array();\r\n" +
-            "   for(var i = 0; i < data.length; i++) {\r\n" +
-            "      result[i] = dataDigits.indexOf(data[i]);\r\n" +
-            "   }\r\n" +
-            "   return result;\r\n" +
-            "}\r\n\r\n" +
-            "// Cardinality " + (jsEncodedDigits.Length + 1).ToString() + "-" + (jsEncodedDigits.Length * jsEncodedDigits.Length).ToString() + "\r\n" +
-            "function DecodeData2(data) {\r\n" +
-            "   var result = new Array();\r\n" +
-            "   for(var i = 0; i < data.length/2; i++) {\r\n" +
-            "      result[i] = dataDigits.indexOf(data[i*2]) * " + jsEncodedDigits.Length.ToString() + " + dataDigits.indexOf(data[i*2+1]);\r\n" +
-            "   }\r\n" +
-            "   return result;\r\n" +
-            "}\r\n");
+         txt.WriteLine("// DecodeData1 = Cardinality 1-" + jsEncodedDigits.Length.ToString() + "\r\n" +
+            "// DecodeData2 = Cardinality " + (jsEncodedDigits.Length + 1).ToString() + "-" + (jsEncodedDigits.Length * jsEncodedDigits.Length).ToString()+ "\r\n" +
+            "var dataDigits = '" + jsEncodedDigits + "';\r\n");
 
-         using (System.IO.StreamReader sr = new System.IO.StreamReader(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("SGDK2.HTML5.MapLayer.js")))
-         {
-            txt.WriteLine(sr.ReadToEnd());
-         }
+         txt.WriteLine(GetJavascriptFile("MapLayer.js"));
+         txt.WriteLine(GetJavascriptFile("Plan.js"));
 
          System.Text.StringBuilder sbLayer = new System.Text.StringBuilder();
          System.Text.StringBuilder sbScroll = new System.Text.StringBuilder();
          System.Text.StringBuilder sbDraw = new System.Text.StringBuilder();
          System.Text.StringBuilder sbSprites = new System.Text.StringBuilder();
+         System.Text.StringBuilder sbPlans = new System.Text.StringBuilder();
+         System.Text.StringBuilder sbSave = new System.Text.StringBuilder();
+         System.Text.StringBuilder sbLoad = new System.Text.StringBuilder();
+         System.Collections.Generic.List<String> mapList = new System.Collections.Generic.List<String>();
          foreach (System.Data.DataRowView drv in ProjectData.Map.DefaultView)
          {
             ProjectDataset.MapRow drMap = (ProjectDataset.MapRow)drv.Row;
@@ -4338,39 +4342,137 @@ namespace SGDK2
                "      this.scrollY = y;");
             sbDraw.AppendLine(
                "   " + NameToMapClass(drMap.Name) + ".draw = function(ctx) {");
+            mapList.Add(NameToMapClass(drMap.Name) + ":" + NameToMapClass(drMap.Name));
             txt.WriteLine("var " + NameToMapClass(drMap.Name) + " = {scrollX: 0, scrollY: 0, scrollWidth: " +
-               drMap.ScrollWidth.ToString() + ", scrollHeight: " + drMap.ScrollHeight.ToString() + "};");
-            foreach(ProjectDataset.LayerRow lyr in ProjectData.GetSortedLayers(drMap))
+               drMap.ScrollWidth.ToString() + ", scrollHeight: " + drMap.ScrollHeight.ToString() + ", scrollMarginLeft: " +
+               drMap.ScrollMarginLeft.ToString() + ", scrollMarginTop: " + drMap.ScrollMarginTop.ToString() + ", scrollMarginRight: " +
+               drMap.ScrollMarginRight.ToString() + ", scrollMarginBottom: " + drMap.ScrollMarginBottom.ToString() + "};");
+            txt.WriteLine(NameToMapClass(drMap.Name) + ".executeRules = function() {");
+            sbSave.AppendLine("   " + NameToMapClass(drMap.Name) + ".getState = function() {\r\n" +
+               "      var result = {};");
+            sbLoad.AppendLine("   " + NameToMapClass(drMap.Name) + ".setState = function(data) {");
+
+            foreach (ProjectDataset.LayerRow lyr in ProjectData.GetSortedLayers(drMap))
             {
                if (lyr.Tileset == null)
                   continue;
                string lyrRef = NameToMapClass(drMap.Name) + "." + NameToVariable(lyr.Name) + "_Lyr";
-               sbLayer.AppendLine(lyrRef + " = new MapLayer(\r\n" +
-                  "   tilesets." + NameToVariable(lyr.Tileset) + "," +
+
+               txt.WriteLine("   " + lyrRef + ".executeRules();");
+               sbLayer.AppendLine("   " + lyrRef + " = new MapLayer(\r\n" +
+                  "      " + NameToMapClass(drMap.Name) +
+                  ", tilesets." + NameToVariable(lyr.Tileset) + "," +
                   lyr.Width.ToString() + "," + lyr.Height.ToString() + "," +
                   lyr.VirtualWidth.ToString() + "," + lyr.VirtualHeight.ToString() + "," +
                   lyr.OffsetX.ToString() + "," + lyr.OffsetY.ToString() + "," +
+                  lyr.ScrollRateX.ToString() + "," + lyr.ScrollRateY.ToString() + "," +
                   lyr.Priority.ToString() + ",\r\n" +
-                  "   " + EncodeTilesToJavascript(lyr, "   ") + ");");
+                  "      " + EncodeTilesToJavascript(lyr, "      ") + ");");
                if ((lyr.ScrollRateX != 0) || (lyr.ScrollRateY != 0))
                {
-                  sbScroll.AppendLine("      " + lyrRef + ".currentX = " + ((lyr.OffsetX != 0) ? lyrRef + ".offsetX + " : string.Empty) + 
+                  sbScroll.AppendLine("      " + lyrRef + ".currentX = " + ((lyr.OffsetX != 0) ? lyrRef + ".offsetX + " : string.Empty) +
                      ((lyr.ScrollRateX == 1) ? "x" : "Math.floor(x * " + lyr.ScrollRateX.ToString() + ")") + ";");
                   sbScroll.AppendLine("      " + lyrRef + ".currentY = " + ((lyr.OffsetY != 0) ? lyrRef + ".offsetY + " : string.Empty) +
                      ((lyr.ScrollRateY == 1) ? "y" : "Math.floor(y * " + lyr.ScrollRateY.ToString() + ")") + ";");
                }
                sbDraw.AppendLine("      " + lyrRef + ".draw(ctx);");
+               sbSave.AppendLine("      result." + NameToVariable(lyr.Name) + "_Lyr = " + lyrRef + ".getState();");
+               sbLoad.AppendLine("      " + lyrRef + ".setState(data." + NameToVariable(lyr.Name) + "_Lyr);");
+               ProjectDataset.SpritePlanRow[] plans = ProjectData.GetSortedSpritePlans(lyr, false);
+
+               sbLayer.AppendLine("   " + lyrRef + ".executeRules = function() {");
+
+               foreach (ProjectDataset.SpritePlanRow drPlan in plans)
+               {
+                  string planRef = lyrRef + "." + NameToVariable(drPlan.Name);
+                  sbPlans.AppendLine("   " + planRef + " = new PlanBase();");
+                  sbPlans.AppendLine("   " + planRef + ".layer = " + lyrRef + ";");
+
+                  ProjectDataset.CoordinateRow[] drCoords = ProjectData.GetSortedCoordinates(drPlan);
+                  if (drCoords.Length == 2)
+                  {
+                     int minX = drCoords[0].X;
+                     int maxX;
+                     if (drCoords[1].X >= minX)
+                        maxX = drCoords[1].X;
+                     else
+                     {
+                        maxX = minX;
+                        minX = drCoords[1].X;
+                     }
+                     int minY = drCoords[0].Y;
+                     int maxY;
+                     if (drCoords[1].Y >= minY)
+                        maxY = drCoords[1].Y;
+                     else
+                     {
+                        maxY = minY;
+                        minY = drCoords[1].Y;
+                     }
+                     sbPlans.AppendLine("   " + planRef + ".left = " + minX + ";");
+                     sbPlans.AppendLine("   " + planRef + ".top = " + minY + ";");
+                     sbPlans.AppendLine("   " + planRef + ".width = " + (maxX - minX).ToString() + ";");
+                     sbPlans.AppendLine("   " + planRef + ".height = " + (maxY - minY).ToString() + ";");
+                  }
+                  if (drCoords.Length > 0)
+                  {
+                     sbPlans.Append("   (" + planRef + ".m_Coords=[");
+                     bool firstCoord = true;
+                     foreach (ProjectDataset.CoordinateRow drCoord in drCoords)
+                     {
+                        if (firstCoord)
+                           firstCoord = false;
+                        else
+                           sbPlans.Append(",");
+                        sbPlans.Append("{x:" + drCoord.X.ToString() + ", y:" + drCoord.Y.ToString() + ((drCoord.Weight == 0)?"" : ", weight:" + drCoord.Weight.ToString()) + "}");
+                     }
+                     sbPlans.AppendLine("]).forEach(function(element, index, array) {" + planRef + "[index] = element});");
+                  }
+
+                  ProjectDataset.PlanParameterValueRow[] planParams = drPlan.GetPlanParameterValueRows();
+                  if (planParams.Length > 0)
+                  {
+                     foreach (ProjectDataset.PlanParameterValueRow planParam in planParams)
+                     {
+                        sbPlans.AppendLine("   " + planRef + "." + planParam.Name + " = " + planParam.Value);
+                     }
+                  }
+
+                  ProjectDataset.PlanRuleRow[] rules = ProjectData.GetSortedPlanRules(drPlan, false);
+                  if (rules.Length > 0)
+                  {
+                     sbPlans.AppendLine("   " + planRef + ".executeRules = function() {");
+                     sbLayer.AppendLine("      " + planRef + ".executeRules();");
+                     RuleContent[] ruleArray = new RuleContent[rules.Length];
+                     for (int i = 0; i < rules.Length; i++)
+                        ruleArray[i] = new RuleContent(rules[i]);
+                     CodeMemberMethod mthExecuteRules = new CodeMemberMethod();
+                     try
+                     {
+                        PreProcessHtmlRules(ruleArray, null); 
+                        GenerateRules(ruleArray, mthExecuteRules);
+                        sbPlans.AppendLine(GenerateHtmlRules(mthExecuteRules.Statements, 6));
+                     }
+                     catch (System.ApplicationException ex)
+                     {
+                        err.WriteLine("Error generating plan \"" + drPlan.Name + "\" on layer \"" + lyr.Name + "\" of map \"" + drMap.Name + "\": " + ex.Message);
+                     }
+                     sbPlans.AppendLine("   };");
+                  }
+               }
+
                sbSprites.AppendLine("   " + lyrRef + ".initSprites = function() {");
                System.Collections.Generic.List<string> spriteNames = new System.Collections.Generic.List<string>();
+               System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<ProjectDataset.SpriteDefinitionRow>> categorySprites = new System.Collections.Generic.Dictionary<string,System.Collections.Generic.List<ProjectDataset.SpriteDefinitionRow>>();
                foreach (ProjectDataset.SpriteRow spr in ProjectData.GetSortedSpriteRows(lyr, false))
                {
                   ProjectDataset.SpriteDefinitionRow sprDef = ProjectData.GetSpriteDefinition(spr.DefinitionName);
-                  sbSprites.Append("      this." + NameToVariable(spr.Name) + " = new spriteDefinitions." + NameToVariable(sprDef.Name) + "(this," +
+                  sbSprites.Append("      this.m_" + NameToVariable(spr.Name) + " = new spriteDefinitions." + NameToVariable(sprDef.Name) + "(this," +
                      spr.X.ToString() + "," + spr.Y.ToString() + "," + spr.DX.ToString() + "," + spr.DY.ToString() + "," +
                      "spriteDefinitions." + NameToVariable(sprDef.Name) + ".statesEnum." + NameToVariable(spr.StateName) + "," +
                      spr.CurrentFrame.ToString() + "," + (spr.Active ? "true" : "false") + "," + spr.Priority.ToString() + "," +
-                     ((spr.IsSolidityNull() || string.IsNullOrEmpty(spr.Solidity))? "null" : "solidity." + NameToVariable(spr.Solidity)));
-                  foreach(ProjectDataset.SpriteParameterRow spp in ProjectData.GetSortedSpriteParameters(sprDef, false))
+                     ((spr.IsSolidityNull() || string.IsNullOrEmpty(spr.Solidity)) ? "null" : "solidity." + NameToVariable(spr.Solidity)));
+                  foreach (ProjectDataset.SpriteParameterRow spp in ProjectData.GetSortedSpriteParameters(sprDef, false))
                   {
                      ProjectDataset.ParameterValueRow drValue = ProjectData.GetSpriteParameterValueRow(spr, spp.Name);
                      if (drValue == null)
@@ -4379,18 +4481,119 @@ namespace SGDK2
                         sbSprites.Append("," + drValue.Value.ToString());
                   }
                   sbSprites.AppendLine(");");
-                  spriteNames.Add("this." + NameToVariable(spr.Name));
+                  spriteNames.Add("this.m_" + NameToVariable(spr.Name));
                }
                sbSprites.AppendLine("      this.sprites = [" + string.Join(",", spriteNames.ToArray()) + "];");
+               sbSprites.AppendLine("      this.spriteCategories = Sprite.categorize(this.sprites);");
                sbSprites.AppendLine("   };\r\n" +
                   "   " + lyrRef + ".initSprites();");
+               sbLayer.AppendLine("      " + lyrRef + ".processSprites();");
+               sbLayer.AppendLine("   };");
             }
+            txt.WriteLine("};"); // End Map's executeRules function
             sbScroll.AppendLine("   };");
             sbDraw.AppendLine("   };");
+            sbSave.AppendLine("      return result;\r\n" +
+               "   };");
+            sbLoad.AppendLine("   };");
          }
-         txt.WriteLine("function initMaps() {\r\n" + sbLayer.ToString() + sbScroll.ToString() + sbDraw.ToString() + sbSprites.ToString() + "}");
+         txt.WriteLine("function initMaps() {\r\n" + sbLayer.ToString() + sbScroll.ToString() + sbDraw.ToString() + sbPlans.ToString() + sbSprites.ToString() + 
+            sbSave.ToString() + sbLoad.ToString() + "}");
+         txt.WriteLine("var maps = {" + string.Join(",", mapList) + "};");
       }
 
+      void PreProcessHtmlRules(RuleContent[] rules, ProjectDataset.SpriteDefinitionRow sprite)
+      {
+         System.Collections.Generic.HashSet<string> spriteParams = null;
+         if (sprite != null)
+         {
+            spriteParams = new System.Collections.Generic.HashSet<string>();
+            foreach (ProjectDataset.SpriteParameterRow p in sprite.GetSpriteParameterRows())
+               spriteParams.Add(p.Name);
+            RemotingServices.RemotePropertyInfo[] spriteProperties = GetSpriteProperties(sprite);
+            if (spriteProperties != null)
+            {
+               foreach (var sp in spriteProperties)
+                  spriteParams.Add(sp.Name);
+            }
+         }
+         foreach(RuleContent rule in rules)
+         {
+            if (0 != (options & HtmlGeneratorOptions.CamelCase))
+            {
+               if (rule.Function.StartsWith("!"))
+                  rule.Function = "!" + CamelCase(rule.Function.Substring(1));
+               else
+                  rule.Function = CamelCase(rule.Function);
+            }
+            PreProcessHtmlParameter(ref rule.Parameter1, spriteParams);
+            PreProcessHtmlParameter(ref rule.Parameter2, spriteParams);
+            PreProcessHtmlParameter(ref rule.Parameter3, spriteParams);
+            PreProcessHtmlParameter(ref rule.ResultParameter, spriteParams);
+         }
+      }
+
+      private System.Collections.Generic.List<System.Text.RegularExpressions.Regex> javaParamSearches;
+      private System.Collections.Generic.List<String> javaParamReplacements;
+      void PreProcessHtmlParameter(ref string param, System.Collections.Generic.HashSet<string> spriteParams)
+      {
+         if (javaParamReplacements == null)
+         {
+            System.Text.RegularExpressions.RegexOptions reOpt = System.Text.RegularExpressions.RegexOptions.Compiled;
+
+            javaParamSearches = new System.Collections.Generic.List<System.Text.RegularExpressions.Regex>(
+               new System.Text.RegularExpressions.Regex[] {
+               new System.Text.RegularExpressions.Regex("([^.A-Za-z0-9]|^)(" + SpritePlanParentField + ")", reOpt),
+               new System.Text.RegularExpressions.Regex(@"typeof *\(([^)]+)\)", reOpt),
+               new System.Text.RegularExpressions.Regex(@"^\s*ref\s+\S*\.(\w+)\s*$", reOpt),
+               new System.Text.RegularExpressions.Regex(TileCategoryNameClass + @"\.", reOpt), 
+               new System.Text.RegularExpressions.Regex(@"RelativePosition\.(\w+)$", reOpt),
+               new System.Text.RegularExpressions.Regex(@"^(SpriteBase\.)?\bSpriteAnimationType\.(\w+)$", reOpt),
+               new System.Text.RegularExpressions.Regex(@"^(SpriteBase\.)?\bDirection\.(\w+)$", reOpt),
+               new System.Text.RegularExpressions.Regex(@"\bParentLayer.m_SpriteCategories", reOpt),
+               new System.Text.RegularExpressions.Regex(@"^CounterOperation\.(\w+)$", reOpt),
+               new System.Text.RegularExpressions.Regex(@"^Counter\.(\w+)$", reOpt)});
+
+            javaParamReplacements = new System.Collections.Generic.List<string>(new string[] {
+               "$1this.layer", "$1", "\"$1\"", "tileCategories.", "\"$1\"", "\"$2\"", "\"$2\"", "this.layer.spriteCategories",
+               "\"$1\"", "counters.$1"});
+
+            foreach (System.Data.DataRowView drv in ProjectData.SpriteDefinition.DefaultView)
+            {
+               ProjectDataset.SpriteDefinitionRow sdr = (ProjectDataset.SpriteDefinitionRow)drv.Row;
+               javaParamSearches.Add(new System.Text.RegularExpressions.Regex(
+                  @"\b" + SpritesNamespace + @"\." + NameToVariable(sdr.Name) + @"\." + SpriteStateEnumName + @"\b",
+                  reOpt));
+               javaParamReplacements.Add("spriteDefinitions." + NameToVariable(sdr.Name) + ".statesEnum");
+            }
+         }
+         if (string.IsNullOrEmpty(param)) return;
+         param = param.Replace("(int)", string.Empty);
+         for (int i = 0; i < javaParamSearches.Count; i++)
+         {
+            param = javaParamSearches[i].Replace(param, javaParamReplacements[i]);
+         }
+         if ((spriteParams != null) && spriteParams.Contains(param))
+            param = "this." + param;
+         while (param.IndexOf("SpriteBase.InputBits.") >= 0)
+         {
+            int repl = param.IndexOf("SpriteBase.InputBits.");
+            param = param.Substring(0, repl) + "Sprite.inputBits." + CamelCase(param.Substring(repl + 21));
+         }
+      }
+
+      string GenerateHtmlRules(CodeStatementCollection statements, int indentCols)
+      {
+         using (System.IO.StringWriter sw = new System.IO.StringWriter())
+         {
+            foreach (CodeStatement st in statements)
+            {
+               Generator.GenerateCodeFromStatement(st, sw, GeneratorOptions);
+            }
+            string indent = new string(' ', indentCols);
+            return indent + sw.ToString().Replace(Environment.NewLine, Environment.NewLine + indent);
+         }
+      }
       void GenerateHtmlMapButtons(System.IO.TextWriter txt)
       {
          int counter = 0;
@@ -4468,19 +4671,38 @@ namespace SGDK2
          return sb.ToString();
       }
 
-      private void GenerateHtmlSprites(System.IO.TextWriter txt)
+      private RemotingServices.RemotePropertyInfo[] GetSpriteProperties(ProjectDataset.SpriteDefinitionRow spriteDef)
       {
-         using (System.IO.StreamReader sr = new System.IO.StreamReader(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("SGDK2.HTML5.Sprite.js")))
+         if (!string.IsNullOrEmpty(CompileTempAssembly(false)))
+            return null;
+         RemotingServices.IRemoteTypeInfo reflector;
+         try
          {
-            txt.WriteLine(sr.ReadToEnd());
+            reflector = CreateInstanceAndUnwrap("RemoteReflector", SpritesNamespace + "." + NameToVariable(spriteDef.Name)) as RemotingServices.IRemoteTypeInfo;
          }
+         catch (System.Exception)
+         {
+            return null;
+         }
+         return reflector.GetProperties();
+      }
+
+      private void GenerateHtmlSprites(System.IO.TextWriter txt, System.IO.TextWriter err)
+      {
+         txt.WriteLine(GetJavascriptFile("Sprite.js"));
          txt.WriteLine("var spriteDefinitions = new Object();");
          foreach (System.Data.DataRowView drv in ProjectData.SpriteDefinition.DefaultView)
          {
             ProjectDataset.SpriteDefinitionRow drSpriteDef = (ProjectDataset.SpriteDefinitionRow)drv.Row;
             txt.Write("spriteDefinitions." + NameToVariable(drSpriteDef.Name) + " = function(layer, x, y, dx, dy, state, frame, active, priority, solidity");
+            string paramDeserialize = string.Empty;
+            string paramSerialize = string.Empty;
             foreach (ProjectDataset.SpriteParameterRow drParam in ProjectData.GetSortedSpriteParameters(drSpriteDef, false))
+            {
                txt.Write(", " + NameToVariable(drParam.Name));
+               paramDeserialize += ",source." + NameToVariable(drParam.Name);
+               paramSerialize += "," + NameToVariable(drParam.Name) + ":this." + NameToVariable(drParam.Name);
+            }
             txt.WriteLine(") {");
             txt.WriteLine("   Sprite.call(this, layer, x, y, dx, dy, state, frame, active, priority, solidity);");
             foreach(ProjectDataset.SpriteParameterRow drParam in ProjectData.GetSortedSpriteParameters(drSpriteDef, false))
@@ -4490,14 +4712,37 @@ namespace SGDK2
             txt.WriteLine("};");
             txt.WriteLine("spriteDefinitions." + NameToVariable(drSpriteDef.Name) + ".prototype = new Sprite();\r\n" +
                "spriteDefinitions." + NameToVariable(drSpriteDef.Name) + ".prototype.constructor = spriteDefinitions." + NameToVariable(drSpriteDef.Name) + ";");
+            txt.WriteLine("spriteDefinitions." + NameToVariable(drSpriteDef.Name) + ".deserialize = function(layer, data) {\r\n" +
+               "   var source = JSON.parse(data);\r\n" +
+               "   return result = new spriteDefinitions." + NameToVariable(drSpriteDef.Name) +
+               "(layer, source.x, source.y, source.dx, source.dy, source.state, source.frame, source.active, source.priority, solidity[source.solidityName]" +
+               paramDeserialize + ");\r\n" +
+               "}");
+            txt.WriteLine("spriteDefinitions." + NameToVariable(drSpriteDef.Name) + ".prototype.serialize = function() {\r\n" +
+               "   return JSON.stringify(this);\r\n" +
+               "}");
+            txt.WriteLine("spriteDefinitions." + NameToVariable(drSpriteDef.Name) + ".prototype.toJSON = function() {\r\n" +
+               "   return {\"~1\":\"" + NameToVariable(drSpriteDef.Name) + "\"" +
+               ",x:this.x,y:this.y,dx:this.dx,dy:this.dy,state:this.state,frame:this.frame,active:this.isActive,priority:this.priority" +
+               ",solidityName:solidity.getSolidityName(this.solidity)" + paramSerialize + "};\r\n" +
+               "}");
          }
          txt.WriteLine("function initSprites() {\r\n" +
             "   var bounds;");
+
          foreach (System.Data.DataRowView drv in ProjectData.SpriteDefinition.DefaultView)
          {
             ProjectDataset.SpriteDefinitionRow drSpriteDef = (ProjectDataset.SpriteDefinitionRow)drv.Row;
             txt.WriteLine("   spriteDefinitions." + NameToVariable(drSpriteDef.Name) + ".prototype.states = new Array();");
 
+            ProjectDataset.SpriteCategorySpriteRow[] scsrs = drSpriteDef.GetSpriteCategorySpriteRows();
+            if (scsrs.Length > 0)
+            {
+               string[] cats = new string[scsrs.Length];
+               for (int ci = 0; ci < scsrs.Length; ci++)
+                  cats[ci] = "\"" + NameToVariable(scsrs[ci].CategoryName) + "\"";
+               txt.WriteLine("   spriteDefinitions." + NameToVariable(drSpriteDef.Name) + ".prototype.categories = [" + string.Join(",", cats) + "];");
+            }
             CachedSpriteDef sprCached = new CachedSpriteDef(drSpriteDef, null);
             System.Drawing.Rectangle bounds = System.Drawing.Rectangle.Empty;
             int stateIndex = 0;
@@ -4560,19 +4805,43 @@ namespace SGDK2
                txt.WriteLine(");");
             }
             txt.WriteLine("   spriteDefinitions." + NameToVariable(drSpriteDef.Name) + ".statesEnum = {" + string.Join(",", statesEnum.ToArray()) + "};");
+
+            ProjectDataset.SpriteRuleRow[] rules = ProjectData.GetSortedSpriteRules(drSpriteDef, false);
+            if (rules.Length > 0)
+            {
+               txt.WriteLine("   spriteDefinitions." + NameToVariable(drSpriteDef.Name) + ".prototype.executeRules = function() {");
+               RuleContent[] ruleArray = new RuleContent[rules.Length];
+               CodeMemberMethod mthExecuteRules = new CodeMemberMethod();
+               try
+               {
+                  for (int i = 0; i < rules.Length; i++)
+                     ruleArray[i] = new RuleContent(rules[i]);
+                  PreProcessHtmlRules(ruleArray, drSpriteDef);
+                  GenerateRules(ruleArray, mthExecuteRules);
+                  txt.WriteLine(GenerateHtmlRules(mthExecuteRules.Statements, 6));
+               }
+               catch (System.ApplicationException ex)
+               {
+                  err.WriteLine("Error generating sprite definition \"" + drSpriteDef.Name + "\": " + ex.Message);
+               }
+               txt.WriteLine("   };");
+            }
          }
          txt.WriteLine("}");
       }
 
       private void GenerateHtmlTileCategories(System.IO.TextWriter txt)
       {
-         using (System.IO.StreamReader sr = new System.IO.StreamReader(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("SGDK2.HTML5.Tile.js")))
-         {
-            txt.WriteLine(sr.ReadToEnd());
-         }
+         txt.WriteLine(GetJavascriptFile("Tile.js"));
 
          txt.WriteLine("var tileCategories = new Object();");
          txt.WriteLine("var solidity = new Object();");
+         txt.WriteLine("solidity.getSolidityName = function(solid) {\r\n" +
+            "   for(var key in solidity) {\r\n" +
+            "      if (solidity[key] === solid) return key;\r\n" +
+            "   }\r\n" +
+            "   return null;\r\n" +
+            "}");
          txt.WriteLine("function initTileCategories() {");
          foreach(System.Data.DataRowView drv in ProjectData.TileCategory.DefaultView)
          {

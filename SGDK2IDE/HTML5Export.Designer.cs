@@ -41,6 +41,7 @@
          this.btnOK = new System.Windows.Forms.Button();
          this.btnCancel = new System.Windows.Forms.Button();
          this.dlgFilename = new System.Windows.Forms.SaveFileDialog();
+         this.chkCamelCase = new System.Windows.Forms.CheckBox();
          this.grpDisplayArea.SuspendLayout();
          this.grpOutputFiles.SuspendLayout();
          this.SuspendLayout();
@@ -154,7 +155,7 @@
                      | System.Windows.Forms.AnchorStyles.Right)));
          this.chkMapButtons.Checked = true;
          this.chkMapButtons.CheckState = System.Windows.Forms.CheckState.Checked;
-         this.chkMapButtons.Location = new System.Drawing.Point(18, 180);
+         this.chkMapButtons.Location = new System.Drawing.Point(15, 180);
          this.chkMapButtons.Name = "chkMapButtons";
          this.chkMapButtons.Size = new System.Drawing.Size(310, 17);
          this.chkMapButtons.TabIndex = 5;
@@ -165,7 +166,7 @@
          // 
          this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
          this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-         this.btnOK.Location = new System.Drawing.Point(136, 222);
+         this.btnOK.Location = new System.Drawing.Point(136, 226);
          this.btnOK.Name = "btnOK";
          this.btnOK.Size = new System.Drawing.Size(93, 28);
          this.btnOK.TabIndex = 6;
@@ -177,7 +178,7 @@
          // 
          this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
          this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-         this.btnCancel.Location = new System.Drawing.Point(235, 222);
+         this.btnCancel.Location = new System.Drawing.Point(235, 226);
          this.btnCancel.Name = "btnCancel";
          this.btnCancel.Size = new System.Drawing.Size(93, 28);
          this.btnCancel.TabIndex = 7;
@@ -190,13 +191,26 @@
          this.dlgFilename.OverwritePrompt = false;
          this.dlgFilename.Title = "Export HTML5 File Name";
          // 
+         // chkCamelCase
+         // 
+         this.chkCamelCase.AutoSize = true;
+         this.chkCamelCase.Checked = true;
+         this.chkCamelCase.CheckState = System.Windows.Forms.CheckState.Checked;
+         this.chkCamelCase.Location = new System.Drawing.Point(15, 203);
+         this.chkCamelCase.Name = "chkCamelCase";
+         this.chkCamelCase.Size = new System.Drawing.Size(205, 17);
+         this.chkCamelCase.TabIndex = 8;
+         this.chkCamelCase.Text = "Force rule function calls to camelCase";
+         this.chkCamelCase.UseVisualStyleBackColor = true;
+         // 
          // frmHTML5Export
          // 
          this.AcceptButton = this.btnOK;
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
          this.CancelButton = this.btnCancel;
-         this.ClientSize = new System.Drawing.Size(340, 262);
+         this.ClientSize = new System.Drawing.Size(340, 266);
+         this.Controls.Add(this.chkCamelCase);
          this.Controls.Add(this.btnCancel);
          this.Controls.Add(this.btnOK);
          this.Controls.Add(this.chkMapButtons);
@@ -232,5 +246,6 @@
       private System.Windows.Forms.Button btnOK;
       private System.Windows.Forms.Button btnCancel;
       private System.Windows.Forms.SaveFileDialog dlgFilename;
+      private System.Windows.Forms.CheckBox chkCamelCase;
    }
 }

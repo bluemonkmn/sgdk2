@@ -326,6 +326,10 @@
     <EmbeddedResource Include="HTML5\Sprite.js" />
     <EmbeddedResource Include="HTML5\Main.js" />
     <EmbeddedResource Include="HTML5\Frame.js" />
+    <EmbeddedResource Include="HTML5\GeneralRules.js" />
+    <EmbeddedResource Include="HTML5\KeyboardState.js" />
+    <EmbeddedResource Include="HTML5\Plan.js" />
+    <EmbeddedResource Include="HTML5\Player.js" />
     <Content Include="Library\Sound\fmod.cs" />
     <Content Include="Library\Sound\fmodbase.cs" />
     <Compile Include="LogView.cs">

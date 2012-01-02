@@ -35,10 +35,12 @@ namespace SGDK2
          SGDK2IDE.LoadFormSettings(this);
 
 			txtLogView.Text = text;
-
-         lvwObjectErrors.Items.AddRange(System.Linq.Enumerable.ToArray(
-            System.Linq.Enumerable.Select(errorRows,
-            i => new ListViewItem(new string[] { i.GetSourceType(), i.GetSourceName(), i.Message }) { Tag = i, ImageIndex = i.error.IsWarning ? 1 : 0 })));
+         if (errorRows != null)
+         {
+            lvwObjectErrors.Items.AddRange(System.Linq.Enumerable.ToArray(
+               System.Linq.Enumerable.Select(errorRows,
+               i => new ListViewItem(new string[] { i.GetSourceType(), i.GetSourceName(), i.Message }) { Tag = i, ImageIndex = i.error.IsWarning ? 1 : 0 })));
+         }
 		}
 
 		/// <summary>

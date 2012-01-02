@@ -15,11 +15,37 @@ function Sprite(layer, x, y, dx, dy, state, frame, active, priority, solidity) {
    this.dy = dy;
    this.state = state;
    this.frame = frame;
-   this.active = active;
+   this.isActive = active;
    this.priority = priority;
    this.solidity = solidity;
    this.ridingOn = null;
    this.localDX = null;
+   this.inputs = 0;
+   this.oldInputs = 0;
+}
+
+Sprite.prototype = new GeneralRules();
+Sprite.prototype.constructor = Sprite;
+
+Sprite.categorize = function(sprites) {
+   var categories = {};
+   for(var sprKey in sprites) {
+      var spr = sprites[sprKey];
+      if (spr.categories == null) continue;
+      for(var sprCatKey in spr.categories) {
+         var cat = spr.categories[sprCatKey];
+         if (categories[cat] == null)
+            categories[cat] = [spr];
+         else
+            categories[cat].push(spr);
+      }
+   }
+   return categories;
+}
+
+Sprite.deserialize = function(layer,data) {
+   var source = JSON.parse(data);
+   return spriteDefinitions[source["~1"]].deserialize(layer, data);
 }
 
 Sprite.prototype.getCurFrames = function() {
@@ -40,6 +66,8 @@ Sprite.prototype.getSolidHeight = function() {
 };
 
 Sprite.prototype.reactToSolid = function() {
+   if (this.solidity == null)
+      return;
    var hit = false;
    var dyOrig = this.dy;
    var dxOrig = this.dx;
@@ -208,3 +236,355 @@ Sprite.prototype.reactToSolid = function() {
 
    return hit;
 };
+
+Sprite.inputBits = { up:1, right:2, down:4, left:8, button1:16, button2:32, button3:64, button4:128 };
+Sprite.prototype.mapPlayerToInputs = function(playerNum) {
+   var p = players[playerNum - 1];
+   this.oldInputs = this.inputs;
+   this.inputs = 0;
+   if (p.up()) this.inputs |= Sprite.inputBits.up;
+   if (p.left()) this.inputs |= Sprite.inputBits.left;
+   if (p.right()) this.inputs |= Sprite.inputBits.right;
+   if (p.down()) this.inputs |= Sprite.inputBits.down;
+   if (p.button1()) this.inputs |= Sprite.inputBits.button1;
+   if (p.button2()) this.inputs |= Sprite.inputBits.button2;
+   if (p.button3()) this.inputs |= Sprite.inputBits.button3;
+   if (p.button4()) this.inputs |= Sprite.inputBits.button4;
+};
+
+Sprite.prototype.accelerateByInputs = function(acceleration, max, horizontalOnly) {
+   if (!horizontalOnly) {
+      if (0 != (this.inputs & Sprite.inputBits.up))
+         this.dy -= acceleration / 10;
+      if (this.dy < -max)
+         this.dy = -max;
+      if (0 != (this.inputs & Sprite.inputBits.down))
+         this.dy += acceleration / 10;
+      if (this.dy > max)
+         this.dy = max;
+   }
+   if (this.localDX == null) {
+      if (0 != (this.inputs & Sprite.inputBits.left))
+         this.dx -= acceleration / 10;
+      if (this.dx < -max)
+         this.dx = -max;
+      if (0 != (this.inputs & Sprite.inputBits.right))
+         this.dx += acceleration / 10;
+      if (this.dx > max)
+         this.dx = max;
+   } else {
+      if (0 != (this.inputs & Sprite.inputBits.left))
+         this.localDX -= acceleration / 10;
+      if (this.localDX < -max)
+         this.localDX = -max;
+      if (0 != (this.inputs & Sprite.inputBits.right))
+         this.localDX += acceleration / 10;
+      if (this.localDX > max)
+         this.localDX = max;
+   }
+};
+
+Sprite.prototype.isInState = function(firstState, lastState) {
+   return (this.state >= firstState) && (this.state <= lastState);
+};
+
+Sprite.prototype.moveByVelocity = function() {
+   this.oldX = this.x;
+   this.oldY = this.y;
+   this.x += this.dx;
+   this.y += this.dy;
+};
+
+Sprite.prototype.scrollSpriteIntoView = function(useScrollMargins) {
+   this.layer.scrollSpriteIntoView(this, useScrollMargins);
+};
+
+Sprite.prototype.limitVelocity = function(maximum) {
+   var useDX;
+   if (this.localDX == null)
+      useDX = this.dx;
+   else
+      useDX = this.localDX;
+   var dist = useDX * useDX + this.dy * this.dy;
+   if (dist > maximum * maximum) {
+      dist = Math.sqrt(dist);
+      useDX = useDX * maximum / dist;
+      this.dy = this.dy * maximum / dist;
+      if (this.localDX == null)
+         this.dx = useDX;
+      else
+         this.localDX = useDX;
+   }
+}
+
+Sprite.prototype.isOnTile = function(category, relativePosition) {
+   var rp = this.getRelativePosition(relativePosition);
+   var tile = this.layer.getTile(Math.floor(rp.x / this.layer.tileset.tileWidth), Math.floor(rp.y / this.layer.tileset.tileHeight));
+   return category.isTileMember(this.layer.tileset, tile);
+}
+
+Sprite.prototype.getRelativePosition = function(relativePosition) {
+   var rp = {x:Math.floor(this.x),y:Math.floor(this.y)};
+
+   switch (relativePosition) {
+      case "TopCenter":
+         rp.x = Math.floor(this.x + this.getSolidWidth() / 2);
+         break;
+      case "TopRight":
+         rp.x = Math.floor(this.x) + this.getSolidWidth() - 1;
+         break;
+      case "LeftMiddle":
+         rp.y = Math.floor(this.y + this.getSolidHeight() / 2);
+         break;
+      case "CenterMiddle":
+         rp.x = Math.floor(this.x + this.getSolidWidth() / 2);
+         rp.y = Math.floor(this.y + this.getSolidHeight() / 2);
+         break;
+      case "RightMiddle":
+         rp.x = Math.floor(this.x) + this.getSolidWidth() - 1;
+         rp.y = Math.floor(this.y + this.getSolidHeight() / 2);
+         break;
+      case "BottomLeft":
+         rp.y = Math.floor(this.y + this.getSolidHeight() - 1);
+         break;
+      case "BottomCenter":
+         rp.x = Math.floor(this.x + this.getSolidWidth() / 2);
+         rp.y = Math.floor(this.y + this.getSolidHeight() - 1);
+         break;
+      case "BottomRight":
+         rp.x = Math.floor(this.x) + this.getSolidWidth() - 1;
+         rp.y = Math.floor(this.y + this.getSolidHeight() - 1);
+         break;
+   }
+   return rp;
+}
+
+Sprite.prototype.blocked = function(direction) {
+   var solidPixelWidth;
+   var solidPixelHeight;
+   switch (direction)
+   {
+      case "Up":
+         solidPixelWidth = this.getSolidWidth() + Math.ceil(this.x) - Math.floor(this.x);
+         return this.layer.getBottomSolidPixel(Math.floor(this.x), this.floor(this.y) - 1, solidPixelWidth, 1, this.solidity) != MapLayer.noSolid;
+      case "Right":
+         solidPixelHeight = this.getSolidHeight() + Math.ceil(this.y) - Math.floor(this.y);
+         return this.layer.getLeftSolidPixel(Math.floor(this.x) + this.getSolidWidth(), Math.floor(this.y), 1, solidPixelHeight, this.solidity) != MapLayer.noSolid;
+      case "Down":
+         solidPixelWidth = this.getSolidWidth() + Math.ceil(this.x) - Math.floor(this.x);
+         return this.layer.getTopSolidPixel(Math.floor(this.x), Math.floor(this.y) + this.getSolidHeight(), solidPixelWidth, 1, this.solidity) != MapLayer.noSolid;
+      case "Left":
+         solidPixelHeight = this.getSolidHeight() + Math.ceiling(this.y) - Math.floor(this.y);
+         return this.layer.getRightSolidPixel(Math.floor(this.x) - 1, Math.floor(this.y), 1, solidPixelHeight, this.solidity) != MapLayer.noSolid;
+   }
+   return false;
+}
+
+Sprite.prototype.isMoving = function(direction) {
+   var useDX;
+   if (this.localDX == null)
+      useDX = this.dx;
+   else
+      useDX = this.localDX;
+
+   switch (direction) {
+      case "Left":
+         return useDX < 0;
+      case "Right":
+         return useDX > 0;
+      case "Up":
+         return this.dy < 0;
+      case "Down":
+         return this.dy > 0;
+   }
+   return false;
+}
+
+Sprite.prototype.isInputPressed = function(input, initialOnly) {
+   return (this.inputs & input) &&
+      (!initialOnly || (0 == (this.oldInputs & input)));
+}
+
+Sprite.prototype.alterXVelocity = function(delta) {
+   this.dx += delta;
+}
+
+Sprite.prototype.alterYVelocity = function(delta) {
+   this.dy += delta;
+}
+
+Sprite.prototype.reactToInertia = function(retainPercentVertical, retainPercentHorizontal) {
+   if (this.localDX == null) {
+      if (Math.abs(this.dx) < .01)
+         this.dx = 0;
+      else
+         this.dx *= retainPercentHorizontal / 100.0;
+   } else {
+      if (Math.abs(this.localDX) < .01)
+         this.localDX = 0;
+      else
+         this.localDX *= retainPercentHorizontal / 100.0;
+   }
+   if (Math.abs(this.dy) < .01)
+      this.dy = 0;
+   else
+      this.dy *= retainPercentVertical / 100.0;
+}
+
+Sprite.prototype.animate = function(correlation) {
+   switch (correlation)
+   {
+      case "ByFrame":
+         this.frame++;
+         break;
+      case "ByHorizontalVelocity":
+         if (this.localDX == null)
+            this.frame += Math.abs(Math.floor(this.x + this.dx) - Math.floor(this.x));
+         else
+            this.frame += Math.abs(Math.floor(this.localDX));
+         break;
+      case "ByVerticalVelocity":
+         frame += Math.abs(Math.floor(this.y + this.dy) - Math.floor(this.y));
+         break;
+      case "ByVectorVelocity":
+         var tmpDx = Math.abs(Math.floor(this.x + this.dx) - Math.floor(this.x));
+         var tmpDy = Math.abs(Math.floor(this.y + this.dy) - Math.floor(this.y));
+         this.frame += Math.floor(Math.sqrt(tmpDx * tmpDx + tmpDy * tmpDy));
+         break;
+   }
+}
+
+Sprite.prototype.isRidingPlatform = function() {
+   return this.ridingOn != null;
+}
+
+Sprite.prototype.processRules = function() {
+   if ((!this.processed) && (this.isActive)) {
+      this.processed = true;
+      this.executeRules();
+   }
+}
+
+Sprite.prototype.reactToPlatform = function() {
+   if (this.ridingOn == null)
+      return;
+
+   if (!this.ridingOn.processed)
+      this.ridingOn.processRules();
+
+   if ((this.ridingOn.isActive == false) || (this.x + this.getSolidWidth() < this.ridingOn.oldX) || (this.x > this.ridingOn.oldX + this.ridingOn.getSolidWidth()) ||
+      (this.y + this.getSolidHeight() < this.ridingOn.oldY - 1) || (this.y + this.getSolidHeight() >= this.ridingOn.oldY + this.ridingOn.getSolidHeight()))
+   {
+      this.stopRiding();
+      return;
+   }
+
+   if (this.localDX != null)
+      this.dx = this.localDX + this.ridingOn.dx;
+   this.dy = this.ridingOn.y - this.getSolidHeight() - this.y;
+}
+
+Sprite.prototype.landDownOnPlatform = function(platformList) {
+   if (this.ridingOn != null)
+      return false;
+   for(var sprKey in platformList) {
+      var spr = platformList[sprKey];
+      if (!spr.isActive)
+         continue;
+      if ((this.oldY + this.getSolidHeight() <= spr.oldY) &&
+         (this.y + this.getSolidHeight() > spr.y) &&
+         (this.x + this.getSolidWidth() > spr.x) &&
+         (this.x < spr.x + spr.getSolidWidth()))
+      {
+         this.ridingOn = spr;
+         spr.processRules();
+         this.localDX = this.dx - spr.dx;
+         this.dy = spr.y - this.getSolidHeight() - this.y;
+         return true;
+      }
+   }
+   return false;
+}
+
+Sprite.prototype.snapToGround = function(threshhold) {
+   var proposedPixelX = Math.floor(this.x + this.dx);
+   var proposedPixelY = Math.floor(this.y + this.dy);
+   var proposedSolidPixelWidth = this.getSolidWidth() + Math.ceil(this.x + this.dx) - proposedPixelX;
+   var ground = this.layer.getTopSolidPixel(proposedPixelX, proposedPixelY + this.getSolidHeight(), proposedSolidPixelWidth, threshhold, this.solidity);
+   if (ground != MapLayer.noSolid) {
+      newDy = ground - this.getSolidHeight() - this.y;
+      if (newDy > this.dy)
+         this.dy = newDy;
+      return true;
+   }
+   return false;
+}
+
+Sprite.prototype.stopRiding = function() {
+   this.localDX = null;
+   this.ridingOn = null;
+}
+
+Sprite.prototype.switchToState = function(state, alignment) {
+   var oldRect = {x:Math.floor(this.x), y:Math.floor(this.y), width:this.getSolidWidth(), height:this.getSolidHeight()};
+   oldRect.bottom = oldRect.y + oldRect.height;
+   oldRect.right = oldRect.x + oldRect.width;
+   var newWidth = this.states[state].solidWidth;
+   var newHeight = this.states[state].solidHeight;
+   var newX, newY;
+   switch (alignment) {
+      case "TopCenter":
+      case "CenterMiddle":
+      case "BottomCenter":
+         newX = this.x + (oldRect.width - newWidth) / 2;
+         break;
+      case "TopRight":
+      case "RightMiddle":
+      case "BottomRight":
+         newX = this.x + oldRect.width - newWidth;
+         break;
+      default:
+         newX = this.x;
+         break;
+   }
+   switch (alignment) {
+      case "LeftMiddle":
+      case "CenterMiddle":
+      case "RightMiddle":
+         newY = this.y + (oldRect.height - newHeight) / 2;
+         break;
+      case "BottomLeft":
+      case "BottomCenter":
+      case "BottomRight":
+         newY = this.y + oldRect.height - newHeight;
+         break;
+      default:
+         newY = this.y;
+         break;
+   }
+
+   if ((Math.ceil(newY + newHeight) > oldRect.bottom) && (this.layer.getTopSolidPixel(
+      Math.floor(newX), oldRect.bottom, newWidth, Math.ceil(newY) + newHeight - oldRect.bottom, this.solidity) != MapLayer.noSolid))
+      return false;
+
+   if ((Math.floor(newY) < oldRect.y) && (this.layer.getBottomSolidPixel(
+      Math.floor(newX), Math.floor(newY), newWidth, oldRect.y - Math.floor(newY), this.solidity) != MapLayer.noSolid))
+      return false;
+
+   if ((Math.floor(newX) < oldRect.x) && (this.layer.getRightSolidPixel(
+      Math.floor(newX), Math.floor(newY), oldRect.x - Math.floor(newX), newHeight, this.solidity) != MapLayer.noSolid))
+      return false;
+
+   if ((Math.ceil(newX + newWidth) > oldRect.right) && (this.layer.getLeftSolidPixel(
+      oldRect.right, Math.floor(newY), Math.ceil(newX) + newWidth - oldRect.right, newHeight, this.solidity) != MapLayer.noSolid))
+      return false;
+
+   this.x = newX;
+   this.y = newY;
+   this.state = state;
+   return true;
+}
+
+Sprite.prototype.deactivate = function() {
+   this.isActive = false;
+}

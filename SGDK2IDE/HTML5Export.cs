@@ -82,6 +82,8 @@ namespace SGDK2
                options |= CodeGenerator.HtmlGeneratorOptions.FillBrowser;
             if (chkMapButtons.Checked)
                options |= CodeGenerator.HtmlGeneratorOptions.GenerateMapButtons;
+            if (chkCamelCase.Checked)
+               options |= CodeGenerator.HtmlGeneratorOptions.CamelCase;
             string outFile = g.GenerateHtml5(txtFilename.Text, options, out errs, out errorRules);
             if (errs.Length > 0)
             {

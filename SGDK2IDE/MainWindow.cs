@@ -1126,7 +1126,7 @@ namespace SGDK2
                      MessageBox.Show(this, "The specified custom object name already exists", "New Custom Code Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                      return;
                   }
-                  if (sName.EndsWith(".cs") || sName.EndsWith(".config"))
+                  if (sName.EndsWith(".cs") || sName.EndsWith(".config") || sName.EndsWith(".js"))
                   {
                      frmNew = new frmCodeEditor(sName, KeyParts[KeyParts.Length-1]);
                      frmNew.MdiParent = this;

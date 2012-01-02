@@ -1340,7 +1340,7 @@ namespace SGDK2
             return;
 
          string sBareName;
-         if (sName.EndsWith(".cs"))
+         if (sName.EndsWith(".cs") || sName.EndsWith(".js"))
             sBareName = sName.Substring(0, sName.Length - 3);
          else if (sName.EndsWith(".config"))
             sBareName = sName.Substring(0, sName.Length - 7);

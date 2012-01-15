@@ -193,8 +193,8 @@
                <row>
                   <entry>Export to HTML 5 Code</entry>
                   <entry>New with SGDK version 2.2, this option builds on the new features available in
-                     HTML 5 to generate a web page which is capable of displaying the maps, tiles, and
-                     sprites defined in your project. See
+                     HTML 5 to generate SGDK2 games to HTML &amp; Javascript code, allowing games to be played
+                     on the web, and thus on a wider variety of platforms. See
                      <link xlink:href="d07a3ab3-7056-48e4-9700-1b54d8205acc"/>
                      for details.
                   </entry>

@@ -25,3 +25,6 @@ keyboardState.handleKeyUp = function(e) {
 };
 
 keyboardState.isKeyPressed = function(key) { return keyboardState.keyState[key]; };
+
+document.onkeydown = keyboardState.handleKeyDown;
+document.onkeyup = keyboardState.handleKeyUp;

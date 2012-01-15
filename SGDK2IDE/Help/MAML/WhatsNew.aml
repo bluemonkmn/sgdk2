@@ -13,6 +13,22 @@
     </introduction>
 
 <section>
+  <title>Version 2.2.1</title>
+  <content>
+  <para>This section describes updates between versions 2.2.0 and 2.2.1.</para>
+  <list class="ordered">
+    <listItem>Implement most of the remainder of SGDK2 features for HTML5. (Make SGDK2 export completely functional games to HTML5 format instead of just map data.) A few rules remain un-supported in HTML5 format and are <externalLink>
+<linkText>documented online</linkText>
+<linkUri>https://docs.google.com/spreadsheet/pub?hl=en_US&amp;hl=en_US&amp;key=0AuyO-2scTVuRdFBpTUZoM0NNRzhXVXdud1E5a3A4cFE&amp;output=html</linkUri>
+<linkTarget>_blank</linkTarget>
+</externalLink>
+</listItem>
+    <listItem>Provide a new HTML 5 sample project with the unsupported rule functions removed. (Only supported rules will appear in drowdown lists with projects based on this template.)</listItem>
+  </list>
+  </content>
+</section>
+
+<section>
   <title>Version 2.2.0</title>
   <content>
   <para>This section describes updates between versions 2.1.9 and 2.2.0.</para>

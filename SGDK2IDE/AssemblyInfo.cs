@@ -1,7 +1,7 @@
 /*
  * Scrolling Game Development Kit 2.0
  *
- * Copyright © 2000 - 2010 Benjamin Marty <bluemonkmn@users.sourceforge.net>
+ * Copyright © 2000 - 2012 Benjamin Marty <bluemonkmn@users.sourceforge.net>
  * 
  * Distributed under the GNU General Public License (GPL)
  *   - see included file COPYING.txt for details, or visit:
@@ -23,7 +23,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Scrolling Game Development Kit")]
-[assembly: AssemblyCopyright("Copyright ©2000-2010 Benjamin Marty")]
+[assembly: AssemblyCopyright("Copyright ©2000-2012 Benjamin Marty")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]		
 

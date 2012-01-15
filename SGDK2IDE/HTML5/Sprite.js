@@ -242,14 +242,16 @@ Sprite.prototype.mapPlayerToInputs = function(playerNum) {
    var p = players[playerNum - 1];
    this.oldInputs = this.inputs;
    this.inputs = 0;
-   if (p.up()) this.inputs |= Sprite.inputBits.up;
-   if (p.left()) this.inputs |= Sprite.inputBits.left;
-   if (p.right()) this.inputs |= Sprite.inputBits.right;
-   if (p.down()) this.inputs |= Sprite.inputBits.down;
-   if (p.button1()) this.inputs |= Sprite.inputBits.button1;
-   if (p.button2()) this.inputs |= Sprite.inputBits.button2;
-   if (p.button3()) this.inputs |= Sprite.inputBits.button3;
-   if (p.button4()) this.inputs |= Sprite.inputBits.button4;
+   if (GeneralRules.playerPressButton(playerNum)) {
+      if (p.up()) this.inputs |= Sprite.inputBits.up;
+      if (p.left()) this.inputs |= Sprite.inputBits.left;
+      if (p.right()) this.inputs |= Sprite.inputBits.right;
+      if (p.down()) this.inputs |= Sprite.inputBits.down;
+      if (p.button1()) this.inputs |= Sprite.inputBits.button1;
+      if (p.button2()) this.inputs |= Sprite.inputBits.button2;
+      if (p.button3()) this.inputs |= Sprite.inputBits.button3;
+      if (p.button4()) this.inputs |= Sprite.inputBits.button4;
+   }
 };
 
 Sprite.prototype.accelerateByInputs = function(acceleration, max, horizontalOnly) {
@@ -444,7 +446,7 @@ Sprite.prototype.animate = function(correlation) {
             this.frame += Math.abs(Math.floor(this.localDX));
          break;
       case "ByVerticalVelocity":
-         frame += Math.abs(Math.floor(this.y + this.dy) - Math.floor(this.y));
+         this.frame += Math.abs(Math.floor(this.y + this.dy) - Math.floor(this.y));
          break;
       case "ByVectorVelocity":
          var tmpDx = Math.abs(Math.floor(this.x + this.dx) - Math.floor(this.x));
@@ -588,3 +590,270 @@ Sprite.prototype.switchToState = function(state, alignment) {
 Sprite.prototype.deactivate = function() {
    this.isActive = false;
 }
+
+Sprite.prototype.touchTiles = function(category) {
+   if (this.touchedTiles != null)
+      this.touchedTiles.length = 0;
+
+   var tw = this.layer.tileset.tileWidth;
+   var th = this.layer.tileset.tileHeight;
+   var minYEdge = Math.floor(Math.floor(this.y) / th);
+   var maxY = Math.floor((Math.floor(this.y) + this.getSolidHeight()) / th);
+   if (maxY >= this.layer.virtualRows)
+      maxY = this.layer.virtualRows - 1;
+   var maxYEdge = Math.floor((Math.floor(this.y) + this.getSolidHeight() - 1) / th);
+   var minX = Math.floor(Math.floor(this.x - 1) / tw);
+   var minXEdge = Math.floor(Math.floor(this.x) / tw);
+   var maxX = Math.floor((Math.floor(this.x) + this.getSolidWidth()) / tw);
+   if (maxX >= this.layer.virtualColumns)
+      maxX = this.layer.virtualColumns - 1;
+   var maxXEdge = Math.floor((Math.floor(this.x) + this.getSolidWidth() - 1) / tw);
+   for (var yidx = Math.floor((Math.floor(this.y) - 1) / th); yidx <= maxY; yidx++) {
+      var isYEdge = !((yidx >= minYEdge) && (yidx <= maxYEdge));
+      for (var xidx = (isYEdge ? minXEdge : minX);
+         xidx <= (isYEdge ? maxXEdge : maxX);
+         xidx++)
+      {
+         if (category.isTileMember(this.layer.tileset, this.layer.getTile(xidx, yidx))) {
+            var wasTouching;
+            var oldPixelX = Math.floor(this.oldX);
+            var oldPixelY = Math.floor(this.oldY);
+
+            if ((oldPixelX <= xidx * tw + tw) &&
+               (oldPixelX + this.getSolidWidth() >= xidx * tw) &&
+               (oldPixelY <= yidx * th + th) &&
+               (oldPixelY + this.getSolidHeight() >= yidx * th))
+            {
+               var edgeX = (oldPixelX + this.getSolidWidth() == xidx * tw) ||
+                  (this.oldPixelX == xidx * tw + tw);
+               var edgeY = (oldPixelY + this.getSolidHeight() == yidx * th) ||
+                  (this.oldPixelY == yidx * th + th);
+               if (edgeX && edgeY)
+                  wasTouching = false;
+               else
+                  wasTouching = true;
+            }
+            else
+               wasTouching = false;
+            
+            if (this.touchedTiles == null)
+               this.touchedTiles = [];
+            this.touchedTiles.push({x:xidx, y:yidx, tileValue:this.layer.getTile(xidx, yidx), initial:!wasTouching, processed:false});
+         }
+      }
+   }
+   if (this.touchedTiles == null)
+      return false;
+   return this.touchedTiles.length > 0;
+};
+
+Sprite.prototype.tileTake = function(tileValue, counter, newValue) {
+   if (this.touchedTiles == null)
+      return 0;
+
+   var result = 0;
+
+   for (var i = 0; i < this.touchedTiles.length; i++) {
+      var tt = this.touchedTiles[i];
+      if ((tt.tileValue == tileValue) && (!tt.processed)) {
+         if (counter.value < counter.max) {
+            counter.value++;
+            this.layer.setTile(tt.x, tt.y, tt.tileValue = newValue);
+            tt.processed = true;
+            result++;
+         }
+         else
+            break;
+      }
+   }
+   return result;
+};
+
+Sprite.prototype.tileAddSprite = function (touchingIndex, spriteDefinition) {
+   var tt = this.touchedTiles[touchingIndex];
+   var spriteParams = "{\"~1\":\"" + spriteDefinition + "\", \"x\":" +
+   tt.x * this.layer.tileset.tileWidth + ",\"y\":" + tt.y * this.layer.tileset.tileHeight +
+   ",\"dx\":0,\"dy\":0,\"state\":0,\"frame\":0,\"active\":true,\"priority\":0,\"solidityName\":\"" +
+   solidity.getSolidityName(this.solidity) + "\"}";
+   GeneralRules.lastCreatedSprite = Sprite.deserialize(this.layer, spriteParams);
+   GeneralRules.lastCreatedSprite.isDynamic = true;
+   GeneralRules.lastCreatedSprite.clearParameters();
+
+   this.layer.sprites.push(GeneralRules.lastCreatedSprite);
+   for(var categoryKey in spriteDefinitions[spriteDefinition].prototype.categories) {
+      var category = spriteDefinitions[spriteDefinition].prototype.categories[categoryKey];
+      this.layer.spriteCategories[category].push(GeneralRules.lastCreatedSprite);
+   }
+};
+
+Sprite.prototype.tileActivateSprite = function(touchingIndex, category, clearParameters) {
+   for (var i = 0; i < category.length; i++) {
+      if (!category[i].isActive) {
+         category[i].isActive = true;
+         var tt = this.touchedTiles[touchingIndex];
+         category[i].x = tt.x * this.layer.tileset.tileWidth;
+         category[i].y = tt.y * this.layer.tileset.tileHeight;
+         if (clearParameters) {
+            category[i].frame = 0;
+            category[i].state = 0;
+            category[i].clearParameters();
+         }
+         category[i].processRules();
+         return i;
+      }
+   }
+   return -1;
+};
+
+Sprite.prototype.clearParameters = function() {
+   if (this.userParams == null) return;
+   for(i in userParams) {
+      this[this.userParams[i]] = 0;
+   }
+};
+
+Sprite.prototype.setSolidity = function(solidity) {
+   this.solidity = solidity;
+};
+
+Sprite.prototype.testCollisionRect = function(targets) {
+   if (!this.isActive)
+      return -1;
+   for(var idx = 0; idx < targets.length; idx++) {
+      var targetSprite = targets[idx];
+      if ((targetSprite == this) || (!targetSprite.isActive))
+         continue;
+      var x1 = Math.floor(this.x);
+      var w1 = this.getSolidWidth();
+      var x2 = Math.floor(targetSprite.x);
+      var w2 = targetSprite.getSolidWidth();
+      var y1 = Math.floor(this.y);
+      var h1 = this.getSolidHeight();
+      var y2 = Math.floor(targetSprite.y);
+      var h2 = targetSprite.getSolidHeight();
+
+      if ((x1 + w1 > x2) && (x2 + w2 > x1) && (y1 + h1 > y2) && (y2 + h2 > y1))
+         return idx;
+   }
+   return -1;
+};
+
+Sprite.prototype.getNearestSpriteIndex = function(target) {
+   var minDist = 999999999;
+   var result = -1;
+   for (var i = 0; i < target.length; i++) {
+      if ((!target[i].isActive) || (target[i] == this))
+         continue;
+      var xOff = target[i].x - this.x;
+      var yOff = target[i].y - this.y;
+      var dist = xOff * xOff + yOff * yOff;
+      if (dist < minDist) {
+         minDist = dist;
+         result = i;
+      }
+   }
+   return result;
+};
+
+Sprite.prototype.pushTowardCategory = function(target, index, force) {
+   if (index < 0)
+      index = this.getNearestSpriteIndex(target);
+   if (index < 0)
+      return false;
+
+   return this.pushTowardSprite(target[index], force);
+};
+
+Sprite.prototype.pushTowardSprite = function (target, force) {
+   var vx = target.x - this.x + (target.getSolidWidth() - this.getSolidWidth()) / 2;
+   var vy = target.y - this.y + (target.getSolidHeight() - this.getSolidHeight()) / 2;
+   var dist = Math.sqrt(vx * vx + vy * vy);
+   if (dist >= 1) {
+      this.dx += vx * force / dist / 10.0;
+      this.dy += vy * force / dist / 10.0;
+      return true;
+   }
+   return false;
+};
+
+Sprite.prototype.setInputState = function(input, press) {
+   if (press)
+      this.inputs |= input;
+   else
+      this.inputs &= ~input;
+};
+
+Sprite.prototype.clearInputs = function(setOldInputs) {
+   if (setOldInputs)
+      this.oldInputs = this.inputs;
+   inputs = 0;
+};
+
+Sprite.prototype.tileUseUp = function(tileValue, counter, newValue) {
+   if (this.touchedTiles == null)
+      return 0;
+
+   var result = 0;
+
+   for (var i = 0; i < this.touchedTiles.length; i++) {
+      var tt = this.touchedTiles[i];
+      if ((tt.tileValue == tileValue) && (!tt.processed)) {
+         if (counter.value > 0) {
+            counter.value--;
+            this.layer.setTile(tt.x, tt.y, tt.tileValue = newValue);
+            tt.processed = true;
+            result++;
+         }
+         else
+            break;
+      }
+   }
+   return result;
+};
+
+Sprite.prototype.addSpriteHere = function(spriteDefinition, location, hotSpot) {
+   var spriteParams = "{\"~1\":\"" + spriteDefinition + "\", \"x\":0,\"y\":0" +
+   ",\"dx\":0,\"dy\":0,\"state\":0,\"frame\":0,\"active\":true,\"priority\":0,\"solidityName\":\"" +
+   solidity.getSolidityName(this.solidity) + "\"}";
+   GeneralRules.lastCreatedSprite = Sprite.deserialize(this.layer, spriteParams);
+
+   ptLocation = this.getRelativePosition(location);
+   ptHotSpot = GeneralRules.lastCreatedSprite.getRelativePosition(hotSpot);
+   GeneralRules.lastCreatedSprite.x = GeneralRules.lastCreatedSprite.oldX = ptLocation.x - ptHotSpot.x;
+   GeneralRules.lastCreatedSprite.y = GeneralRules.lastCreatedSprite.oldY = ptLocation.y - ptHotSpot.y;
+
+   GeneralRules.lastCreatedSprite.isDynamic = true;
+   GeneralRules.lastCreatedSprite.clearParameters();
+
+   this.layer.sprites.push(GeneralRules.lastCreatedSprite);
+   for(var categoryKey in spriteDefinitions[spriteDefinition].prototype.categories) {
+      var category = spriteDefinitions[spriteDefinition].prototype.categories[categoryKey];
+      this.layer.spriteCategories[category].push(GeneralRules.lastCreatedSprite);
+   }
+};
+
+Sprite.prototype.tileChange = function(oldTileValue, newTileValue, initialOnly) {
+   if (this.touchedTiles == null)
+      return 0;
+
+   var result = 0;
+
+   for (var i = 0; i < this.touchedTiles.length; i++) {
+      var tt = this.touchedTiles[i];
+      if ((tt.tileValue == oldTileValue) && (!tt.processed) && (!initialOnly || tt.initial)) {
+         tt.processed = true;
+         this.layer.setTile(tt.x, tt.y, tt.tileValue = newTileValue);
+         result++;
+      }
+   }
+   return result;
+};
+
+Sprite.prototype.tileChangeTouched = function(touchingIndex, newTileValue) {
+   if ((this.touchedTiles == null) || (this.touchedTiles.length <= touchingIndex))
+      return;
+
+   var tt = this.touchedTiles[touchingIndex];
+   this.layer[tt.x, tt.y] = tt.tileValue = newTileValue;
+};
+

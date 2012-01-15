@@ -3284,6 +3284,8 @@ namespace SGDK2
       {
          if (name.EndsWith(".cs"))
             name = name.Substring(0, name.Length - 3);
+         else if (name.EndsWith(".js"))
+            return "// Begin " + name;
          return "namespace CustomObjects\r\n{\r\n   public class " + NameToVariable(name) +
             "\r\n   {\r\n\r\n   }\r\n}\r\n";
       }
@@ -3922,17 +3924,45 @@ namespace SGDK2
          }
       }
 
+      private System.Collections.Generic.HashSet<string> generatedJSFiles = null;
+
       private string GetJavascriptFile(string name)
       {
+         if (generatedJSFiles == null)
+            generatedJSFiles = new System.Collections.Generic.HashSet<string>();
          ProjectDataset.SourceCodeRow sc = ProjectData.GetSourceCode(name);
-         if (sc != null) return sc.Text;
+         if (sc != null)
+         {
+            generatedJSFiles.Add(sc.Name);
+            return ProjectData.GetSourceCodeText(sc);
+         }
          string code;
          using (System.IO.StreamReader sr = new System.IO.StreamReader(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("SGDK2.HTML5." + name)))
          {
+            generatedJSFiles.Add(name);
             code = sr.ReadToEnd();
          }
          ProjectData.AddSourceCode(name, code, null, false, null);
          return code;
+      }
+
+      private string GetRemainingJavascriptFiles()
+      {
+         if (generatedJSFiles == null)
+            generatedJSFiles = new System.Collections.Generic.HashSet<string>();
+         System.Text.StringBuilder sb = new System.Text.StringBuilder();
+         foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
+         {
+            ProjectDataset.SourceCodeRow scRow = (ProjectDataset.SourceCodeRow)drv.Row;
+            if (!scRow.Name.EndsWith(".js"))
+               continue;
+            if (!generatedJSFiles.Contains(scRow.Name))
+            {
+               generatedJSFiles.Add(scRow.Name);
+               sb.AppendLine(ProjectData.GetSourceCodeText(scRow));
+            }
+         }
+         return sb.ToString();
       }
 
       private void GenerateHtmlProject(string ProjectName, System.IO.TextWriter txt, System.IO.TextWriter err)
@@ -3966,7 +3996,7 @@ namespace SGDK2
          }
          txt.WriteLine("</head>\r\n" +
             "<body class=\"unselectable\" unselectable=\"on\"" + ((0 != (options & HtmlGeneratorOptions.FillBrowser))
-            ? " onresize=\"resizeView()\"" : string.Empty) + "  onkeydown=\"keyboardState.handleKeyDown(event)\" onkeyup=\"keyboardState.handleKeyUp(event)\">\r\n" + 
+            ? " onresize=\"resizeView()\"" : string.Empty) + ">\r\n" + 
             "<canvas id=\"gameView\" width=\"" + dispSize.Width.ToString() + "\" height=\"" + dispSize.Height.ToString() + "\" " +
             "onmousedown=\"beginDrag(event)\" ontouchstart=\"beginTouchDrag(event)\" onmouseup=\"endDrag(event)\" " +
             "onmouseout=\"endDrag(event)\" ontouchmove=\"processTouchDrag(event)\" " +
@@ -3998,8 +4028,9 @@ namespace SGDK2
             "var viewWidth = " + dispSize.Width.ToString() + ";\r\n" +
             "var viewHeight = " + dispSize.Height.ToString() + ";\r\n" +
             "function firstMap() {\r\n" +
-            "   currentMap = " + NameToMapClass(ProjectData.ProjectRow.StartMap) + ";\r\n" +
-            (string.IsNullOrEmpty(ProjectData.ProjectRow.OverlayMap)?string.Empty:"   overlayMap = " + NameToMapClass(ProjectData.ProjectRow.OverlayMap) + ";\r\n") +
+            "   GeneralRules.prototype.switchToMap(\"" + NameToVariable(ProjectData.ProjectRow.StartMap) + "\", false);\r\n" +
+            (string.IsNullOrEmpty(ProjectData.ProjectRow.OverlayMap)?string.Empty:"   GeneralRules.prototype.setOverlay(\"" + 
+            NameToVariable(ProjectData.ProjectRow.OverlayMap) + "\");\r\n") +
             (0 != (options & HtmlGeneratorOptions.FillBrowser) ? "   resizeView();\r\n" : string.Empty) +
             "}");
 
@@ -4015,6 +4046,7 @@ namespace SGDK2
          GenerateHtmlSprites(txt, err);
          GenerateHtmlTileCategories(txt);
          GenerateHtmlMaps(txt, err);
+         txt.WriteLine(GetRemainingJavascriptFiles());
          txt.WriteLine("window.onload = startGame;");
       }
 
@@ -4318,49 +4350,32 @@ namespace SGDK2
             "// DecodeData2 = Cardinality " + (jsEncodedDigits.Length + 1).ToString() + "-" + (jsEncodedDigits.Length * jsEncodedDigits.Length).ToString()+ "\r\n" +
             "var dataDigits = '" + jsEncodedDigits + "';\r\n");
 
+         txt.WriteLine(GetJavascriptFile("Map.js")); 
          txt.WriteLine(GetJavascriptFile("MapLayer.js"));
          txt.WriteLine(GetJavascriptFile("Plan.js"));
 
          System.Text.StringBuilder sbLayer = new System.Text.StringBuilder();
-         System.Text.StringBuilder sbScroll = new System.Text.StringBuilder();
-         System.Text.StringBuilder sbDraw = new System.Text.StringBuilder();
          System.Text.StringBuilder sbSprites = new System.Text.StringBuilder();
          System.Text.StringBuilder sbPlans = new System.Text.StringBuilder();
-         System.Text.StringBuilder sbSave = new System.Text.StringBuilder();
-         System.Text.StringBuilder sbLoad = new System.Text.StringBuilder();
-         System.Collections.Generic.List<String> mapList = new System.Collections.Generic.List<String>();
+         txt.WriteLine("var maps = {};");
+         txt.WriteLine("var mapInitializers = {};");
          foreach (System.Data.DataRowView drv in ProjectData.Map.DefaultView)
          {
             ProjectDataset.MapRow drMap = (ProjectDataset.MapRow)drv.Row;
-            sbScroll.AppendLine(
-               "   " + NameToMapClass(drMap.Name) + ".scroll = function(x, y) {\r\n" +
-               "      if(x < viewWidth - this.scrollWidth) x = viewWidth - this.scrollWidth;\r\n" +
-               "      if(x > 0) x = 0;\r\n" +
-               "      if(y < viewHeight - this.scrollHeight) y = viewHeight - this.scrollHeight;\r\n" +
-               "      if(y > 0) y = 0;\r\n" +
-               "      this.scrollX = x;\r\n" +
-               "      this.scrollY = y;");
-            sbDraw.AppendLine(
-               "   " + NameToMapClass(drMap.Name) + ".draw = function(ctx) {");
-            mapList.Add(NameToMapClass(drMap.Name) + ":" + NameToMapClass(drMap.Name));
-            txt.WriteLine("var " + NameToMapClass(drMap.Name) + " = {scrollX: 0, scrollY: 0, scrollWidth: " +
-               drMap.ScrollWidth.ToString() + ", scrollHeight: " + drMap.ScrollHeight.ToString() + ", scrollMarginLeft: " +
-               drMap.ScrollMarginLeft.ToString() + ", scrollMarginTop: " + drMap.ScrollMarginTop.ToString() + ", scrollMarginRight: " +
-               drMap.ScrollMarginRight.ToString() + ", scrollMarginBottom: " + drMap.ScrollMarginBottom.ToString() + "};");
-            txt.WriteLine(NameToMapClass(drMap.Name) + ".executeRules = function() {");
-            sbSave.AppendLine("   " + NameToMapClass(drMap.Name) + ".getState = function() {\r\n" +
-               "      var result = {};");
-            sbLoad.AppendLine("   " + NameToMapClass(drMap.Name) + ".setState = function(data) {");
+            txt.WriteLine("mapInitializers." + NameToVariable(drMap.Name) + " = function() {\r\n" +
+               "   maps." + NameToVariable(drMap.Name) + " = new Map(" +
+               drMap.ScrollWidth.ToString() + ", " + drMap.ScrollHeight.ToString() + ", " +
+               drMap.ScrollMarginLeft.ToString() + "," + drMap.ScrollMarginTop.ToString() + "," +
+               drMap.ScrollMarginRight.ToString() + "," + drMap.ScrollMarginBottom.ToString() + ");");
 
             foreach (ProjectDataset.LayerRow lyr in ProjectData.GetSortedLayers(drMap))
             {
                if (lyr.Tileset == null)
                   continue;
-               string lyrRef = NameToMapClass(drMap.Name) + "." + NameToVariable(lyr.Name) + "_Lyr";
+               string lyrRef = "maps." + NameToVariable(drMap.Name) + ".layers." + NameToVariable(lyr.Name);
 
-               txt.WriteLine("   " + lyrRef + ".executeRules();");
                sbLayer.AppendLine("   " + lyrRef + " = new MapLayer(\r\n" +
-                  "      " + NameToMapClass(drMap.Name) +
+                  "      maps." + NameToVariable(drMap.Name) +
                   ", tilesets." + NameToVariable(lyr.Tileset) + "," +
                   lyr.Width.ToString() + "," + lyr.Height.ToString() + "," +
                   lyr.VirtualWidth.ToString() + "," + lyr.VirtualHeight.ToString() + "," +
@@ -4368,16 +4383,6 @@ namespace SGDK2
                   lyr.ScrollRateX.ToString() + "," + lyr.ScrollRateY.ToString() + "," +
                   lyr.Priority.ToString() + ",\r\n" +
                   "      " + EncodeTilesToJavascript(lyr, "      ") + ");");
-               if ((lyr.ScrollRateX != 0) || (lyr.ScrollRateY != 0))
-               {
-                  sbScroll.AppendLine("      " + lyrRef + ".currentX = " + ((lyr.OffsetX != 0) ? lyrRef + ".offsetX + " : string.Empty) +
-                     ((lyr.ScrollRateX == 1) ? "x" : "Math.floor(x * " + lyr.ScrollRateX.ToString() + ")") + ";");
-                  sbScroll.AppendLine("      " + lyrRef + ".currentY = " + ((lyr.OffsetY != 0) ? lyrRef + ".offsetY + " : string.Empty) +
-                     ((lyr.ScrollRateY == 1) ? "y" : "Math.floor(y * " + lyr.ScrollRateY.ToString() + ")") + ";");
-               }
-               sbDraw.AppendLine("      " + lyrRef + ".draw(ctx);");
-               sbSave.AppendLine("      result." + NameToVariable(lyr.Name) + "_Lyr = " + lyrRef + ".getState();");
-               sbLoad.AppendLine("      " + lyrRef + ".setState(data." + NameToVariable(lyr.Name) + "_Lyr);");
                ProjectDataset.SpritePlanRow[] plans = ProjectData.GetSortedSpritePlans(lyr, false);
 
                sbLayer.AppendLine("   " + lyrRef + ".executeRules = function() {");
@@ -4442,7 +4447,7 @@ namespace SGDK2
                   if (rules.Length > 0)
                   {
                      sbPlans.AppendLine("   " + planRef + ".executeRules = function() {");
-                     sbLayer.AppendLine("      " + planRef + ".executeRules();");
+                     sbLayer.AppendLine("      this." + NameToVariable(drPlan.Name) + ".executeRules();");
                      RuleContent[] ruleArray = new RuleContent[rules.Length];
                      for (int i = 0; i < rules.Length; i++)
                         ruleArray[i] = new RuleContent(rules[i]);
@@ -4487,19 +4492,14 @@ namespace SGDK2
                sbSprites.AppendLine("      this.spriteCategories = Sprite.categorize(this.sprites);");
                sbSprites.AppendLine("   };\r\n" +
                   "   " + lyrRef + ".initSprites();");
-               sbLayer.AppendLine("      " + lyrRef + ".processSprites();");
+               sbLayer.AppendLine("      this.processSprites();");
                sbLayer.AppendLine("   };");
             }
-            txt.WriteLine("};"); // End Map's executeRules function
-            sbScroll.AppendLine("   };");
-            sbDraw.AppendLine("   };");
-            sbSave.AppendLine("      return result;\r\n" +
-               "   };");
-            sbLoad.AppendLine("   };");
+            txt.WriteLine(sbLayer.ToString() + sbPlans.ToString() + sbSprites.ToString() + "};");
+            sbLayer.Clear();
+            sbPlans.Clear();
+            sbSprites.Clear();
          }
-         txt.WriteLine("function initMaps() {\r\n" + sbLayer.ToString() + sbScroll.ToString() + sbDraw.ToString() + sbPlans.ToString() + sbSprites.ToString() + 
-            sbSave.ToString() + sbLoad.ToString() + "}");
-         txt.WriteLine("var maps = {" + string.Join(",", mapList) + "};");
       }
 
       void PreProcessHtmlRules(RuleContent[] rules, ProjectDataset.SpriteDefinitionRow sprite)
@@ -4533,6 +4533,17 @@ namespace SGDK2
          }
       }
 
+      private string ReplaceWithLowercase(System.Text.RegularExpressions.Match m)
+      {
+         return "\"" + m.Groups[1].Captures[0].Value.ToLower() + "\"";
+      }
+
+      private string ReplaceWithCamelCase(System.Text.RegularExpressions.Match m)
+      {
+         return m.Captures[0].Value.Substring(0, m.Groups[1].Index - m.Index) + CamelCase(m.Groups[1].Value)
+            + m.Captures[0].Value.Substring(m.Groups[1].Index + m.Groups[1].Length - m.Index);
+      }
+
       private System.Collections.Generic.List<System.Text.RegularExpressions.Regex> javaParamSearches;
       private System.Collections.Generic.List<String> javaParamReplacements;
       void PreProcessHtmlParameter(ref string param, System.Collections.Generic.HashSet<string> spriteParams)
@@ -4544,7 +4555,7 @@ namespace SGDK2
             javaParamSearches = new System.Collections.Generic.List<System.Text.RegularExpressions.Regex>(
                new System.Text.RegularExpressions.Regex[] {
                new System.Text.RegularExpressions.Regex("([^.A-Za-z0-9]|^)(" + SpritePlanParentField + ")", reOpt),
-               new System.Text.RegularExpressions.Regex(@"typeof *\(([^)]+)\)", reOpt),
+               new System.Text.RegularExpressions.Regex(@"typeof *\(([^)]+)_Map\)", reOpt),
                new System.Text.RegularExpressions.Regex(@"^\s*ref\s+\S*\.(\w+)\s*$", reOpt),
                new System.Text.RegularExpressions.Regex(TileCategoryNameClass + @"\.", reOpt), 
                new System.Text.RegularExpressions.Regex(@"RelativePosition\.(\w+)$", reOpt),
@@ -4552,11 +4563,23 @@ namespace SGDK2
                new System.Text.RegularExpressions.Regex(@"^(SpriteBase\.)?\bDirection\.(\w+)$", reOpt),
                new System.Text.RegularExpressions.Regex(@"\bParentLayer.m_SpriteCategories", reOpt),
                new System.Text.RegularExpressions.Regex(@"^CounterOperation\.(\w+)$", reOpt),
-               new System.Text.RegularExpressions.Regex(@"^Counter\.(\w+)$", reOpt)});
+               new System.Text.RegularExpressions.Regex(@"^Counter\.(\w+)$", reOpt),
+               new System.Text.RegularExpressions.Regex(@"^SaveUnitInclusion\.(\w+)$", reOpt),
+               new System.Text.RegularExpressions.Regex(@"\." + LayerParentField + @"\b", reOpt),
+               new System.Text.RegularExpressions.Regex(@"\bKey\.", reOpt),
+               new System.Text.RegularExpressions.Regex(@"\bCounter\.(\w+)\.CurrentValue\b", reOpt),
+               new System.Text.RegularExpressions.Regex(@"\bTileset\.(\w+)\b", reOpt),
+               new System.Text.RegularExpressions.Regex(@"\bSystem\.Drawing\.KnownColor\.(\w+)\b",reOpt),
+               new System.Text.RegularExpressions.Regex(@"\bButtonSpecifier\b",reOpt),
+               new System.Text.RegularExpressions.Regex(@"\bbuttonSpecifier\.(\w+)\b", reOpt),
+               new System.Text.RegularExpressions.Regex(@"\bPlanBase\.DrawStyle\.(\w+)\b", reOpt),
+               new System.Text.RegularExpressions.Regex(@"\btypeof\(Sprites\.(\w+)\)", reOpt),
+               new System.Text.RegularExpressions.Regex(@"\bSolidity\.(\w+)\b", reOpt)});
 
             javaParamReplacements = new System.Collections.Generic.List<string>(new string[] {
-               "$1this.layer", "$1", "\"$1\"", "tileCategories.", "\"$1\"", "\"$2\"", "\"$2\"", "this.layer.spriteCategories",
-               "\"$1\"", "counters.$1"});
+               "$1this.layer", "\"$1\"", "\"$1\"", "tileCategories.", "\"$1\"", "\"$2\"", "\"$2\"", "this.layer.spriteCategories",
+               "\"$1\"", "counters.$1", "\"$1\"", ".map", "keyboardState.key.", "counters.$1.value", "tilesets.$1", "~lc1",
+               "buttonSpecifier", "~cc1", "\"$1\"", "\"$1\"", "solidity.$1"});
 
             foreach (System.Data.DataRowView drv in ProjectData.SpriteDefinition.DefaultView)
             {
@@ -4566,12 +4589,39 @@ namespace SGDK2
                   reOpt));
                javaParamReplacements.Add("spriteDefinitions." + NameToVariable(sdr.Name) + ".statesEnum");
             }
+
+            foreach (System.Data.DataRowView drv in ProjectData.Layer.DefaultView)
+            {
+               ProjectDataset.LayerRow lyr = ((ProjectDataset.LayerRow)drv.Row);
+               javaParamSearches.Add(new System.Text.RegularExpressions.Regex(
+                  @"\bm_" + NameToVariable(lyr.Name) + @"\b", reOpt));
+               javaParamReplacements.Add("layers." + NameToVariable(lyr.Name));
+            }
+         
+            foreach (System.Data.DataRowView drv in ProjectData.SpritePlan.DefaultView)
+            {
+               ProjectDataset.SpritePlanRow plan = ((ProjectDataset.SpritePlanRow)drv.Row);
+               javaParamSearches.Add(new System.Text.RegularExpressions.Regex(
+                  @"\bm_" + NameToVariable(plan.Name) + @"\b", reOpt));
+               javaParamReplacements.Add(NameToVariable(plan.Name));
+            }
          }
          if (string.IsNullOrEmpty(param)) return;
          param = param.Replace("(int)", string.Empty);
          for (int i = 0; i < javaParamSearches.Count; i++)
          {
-            param = javaParamSearches[i].Replace(param, javaParamReplacements[i]);
+            if (javaParamReplacements[i] == "~lc1")
+            {
+               param = javaParamSearches[i].Replace(param, new System.Text.RegularExpressions.MatchEvaluator(ReplaceWithLowercase));
+            }
+            else if (javaParamReplacements[i] == "~cc1")
+            {
+               param = javaParamSearches[i].Replace(param, new System.Text.RegularExpressions.MatchEvaluator(ReplaceWithCamelCase));
+            }
+            else
+            {
+               param = javaParamSearches[i].Replace(param, javaParamReplacements[i]);
+            }
          }
          if ((spriteParams != null) && spriteParams.Contains(param))
             param = "this." + param;
@@ -4597,16 +4647,13 @@ namespace SGDK2
       void GenerateHtmlMapButtons(System.IO.TextWriter txt)
       {
          int counter = 0;
-         txt.WriteLine("<script type=\"text/javascript\">\r\n" +
-            "function switchToMap(m) { currentMap=m; m.draw(gameViewContext); }\r\n" +
-            "</script>");
          foreach (System.Data.DataRowView drv in ProjectData.Map.DefaultView)
          {
             ProjectDataset.MapRow drMap = (ProjectDataset.MapRow)drv.Row;
             if ((counter++ % 5) == 0)
                txt.WriteLine("<br />");
-            txt.WriteLine("<input id=\"btn" + NameToMapClass(drMap.Name) + "\" type=\"button\" onclick=\"switchToMap(" +
-               NameToMapClass(drMap.Name) + ")\" value=\"" + drMap.Name + "\"/>");
+            txt.WriteLine("<input id=\"btn" + NameToMapClass(drMap.Name) + "\" type=\"button\" onclick=\"GeneralRules.prototype.switchToMap('" +
+               NameToVariable(drMap.Name) + "',true)\" value=\"" + drMap.Name + "\"/>");
          }
       }
 
@@ -4697,11 +4744,15 @@ namespace SGDK2
             txt.Write("spriteDefinitions." + NameToVariable(drSpriteDef.Name) + " = function(layer, x, y, dx, dy, state, frame, active, priority, solidity");
             string paramDeserialize = string.Empty;
             string paramSerialize = string.Empty;
+            string paramNames = string.Empty;
             foreach (ProjectDataset.SpriteParameterRow drParam in ProjectData.GetSortedSpriteParameters(drSpriteDef, false))
             {
                txt.Write(", " + NameToVariable(drParam.Name));
                paramDeserialize += ",source." + NameToVariable(drParam.Name);
                paramSerialize += "," + NameToVariable(drParam.Name) + ":this." + NameToVariable(drParam.Name);
+               if (paramNames.Length > 0)
+                  paramNames += ",";
+               paramNames += "\"" + NameToVariable(drParam.Name) + "\"";
             }
             txt.WriteLine(") {");
             txt.WriteLine("   Sprite.call(this, layer, x, y, dx, dy, state, frame, active, priority, solidity);");
@@ -4726,6 +4777,7 @@ namespace SGDK2
                ",x:this.x,y:this.y,dx:this.dx,dy:this.dy,state:this.state,frame:this.frame,active:this.isActive,priority:this.priority" +
                ",solidityName:solidity.getSolidityName(this.solidity)" + paramSerialize + "};\r\n" +
                "}");
+            txt.WriteLine("spriteDefinitions." + NameToVariable(drSpriteDef.Name) + ".userParams = [" + paramNames + "];");
          }
          txt.WriteLine("function initSprites() {\r\n" +
             "   var bounds;");

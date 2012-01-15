@@ -330,6 +330,7 @@
     <EmbeddedResource Include="HTML5\KeyboardState.js" />
     <EmbeddedResource Include="HTML5\Plan.js" />
     <EmbeddedResource Include="HTML5\Player.js" />
+    <EmbeddedResource Include="HTML5\Map.js" />
     <Content Include="Library\Sound\fmod.cs" />
     <Content Include="Library\Sound\fmodbase.cs" />
     <Compile Include="LogView.cs">

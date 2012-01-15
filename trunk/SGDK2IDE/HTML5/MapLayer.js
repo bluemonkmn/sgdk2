@@ -26,12 +26,18 @@ function MapLayer(map, tileset, columns, rows, virtualColumns, virtualRows, offs
    this.scrollRateX = scrollRateX;
    this.scrollRateY = scrollRateY;
    this.priority = priority;
-   if(tileData.length < columns * rows * 2)
-      this.tiles = decodeData1(tileData);
-   else
-      this.tiles = decodeData2(tileData);
+   if (tileData != null)
+   {
+      if(tileData.length < columns * rows * 2)
+         this.tiles = decodeData1(tileData);
+      else
+         this.tiles = decodeData2(tileData);
+   } else {
+      this.tiles = [];
+   }
    this.virtualColumns = virtualColumns ? virtualColumns : columns;
    this.virtualRows = virtualRows ? virtualRows : rows;
+   this.sprites = [];
 }
 
 MapLayer.prototype.encodeTileData2 = function() {
@@ -40,7 +46,7 @@ MapLayer.prototype.encodeTileData2 = function() {
       result += dataDigits[Math.floor(this.tiles[i] / dataDigits.length)] + dataDigits[this.tiles[i] % dataDigits.length];
    }
    return result;
-}
+};
 
 MapLayer.prototype.getState = function() {
    var result = {currentX:this.currentX,currentY:this.currentY,tiles:this.encodeTileData2()};
@@ -65,36 +71,36 @@ MapLayer.prototype.getState = function() {
    }
    result.dynamicSprites = "[" + dynamicSprites.join(",") + "]";
    return result;
-}
+};
 
 MapLayer.prototype.setState = function(source) {
    this.tiles = decodeData2(source.tiles);
-   this.sprites = [];
-   for(var key in source)
-   {
-      if (key.substr(0,2) == "~1")
-      {
+   this.sprites.length = 0;
+   for(var key in source) {
+      if (key.substr(0,2) == "~1") {
          var s = Sprite.deserialize(this,source[key]);
          this[key.substr(2)] = s;
          this.sprites.push(s);
       }
    }
-   if (source["dynamicSprites"] != null)
-   {
+   if (source["dynamicSprites"] != null) {
       var dynamicSprites = JSON.parse(source["dynamicSprites"]);
-      for(s in dynamicSprites)
-      {
+      for(s in dynamicSprites) {
          this.sprites.push(Sprite.deserialize(this,dynamicSprites[s]));
       }
    }
    this.spriteCategories = Sprite.categorize(this.sprites);
    this.currentX = source.currentX;
    this.currentY = source.currentY;
-}
+};
 
 MapLayer.prototype.getTile = function(x, y) {
    return this.tiles[(y % this.rows) * this.columns + (x % this.columns)];
 };
+
+MapLayer.prototype.setTile = function(x, y, value) {
+   this.tiles[(y % this.rows) * this.columns + (x % this.columns)] = value;
+}
 
 MapLayer.prototype.draw = function(ctx) {
    var tileWidth = this.tileset.tileWidth;
@@ -466,5 +472,16 @@ MapLayer.prototype.processSprites = function() {
    for(var si = 0; si < this.sprites.length; si++)
       if (this.sprites[si].isActive)
          this.sprites[si].processRules();
+   for(var si = 0; si < this.sprites.length; si++) {
+      var sprite = this.sprites[si];
+      if (sprite.isDynamic && !sprite.isActive) {
+         for(var categoryKey in sprite.categories) {
+            for(var spriteKey in this.spriteCategories[categoryKey]) {
+               if (this.spriteCategories[categoryKey][spriteKey] === sprite)
+                  this.spriteCategories[categoryKey].splice(spriteKey, 1);
+            }
+         }
+         this.sprites.splice(si, 1);
+      }
+   }   
 }
-

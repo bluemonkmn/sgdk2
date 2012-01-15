@@ -2,17 +2,17 @@
 var dragX, dragY;
 var currentMap;
 var overlayMap;
+var mainLoop = {interval:null, milliseconds:20};
 function startGame() {
    initGraphicSheets();
    initFramesets();
    initTilesets();
    initTileCategories();
    initSprites();
-   initMaps();
    firstMap();
    var gameView = document.getElementById('gameView');
    gameViewContext = gameView.getContext('2d');
-   setInterval("pulse()", 20);
+   mainLoop.interval = setInterval("pulse()", mainLoop.milliseconds);
 }
 function pulse() {
    if (currentMap != null)
@@ -20,6 +20,7 @@ function pulse() {
       currentMap.draw(gameViewContext);
       currentMap.executeRules();
    }
+   GeneralRules.drawMessages();
    if (overlayMap != null)
    {
       overlayMap.draw(gameViewContext);

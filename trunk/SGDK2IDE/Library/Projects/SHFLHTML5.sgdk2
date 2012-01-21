@@ -7255,6 +7255,64 @@ public abstract partial class SpriteBase : GeneralRules
    }
 
    /// &lt;summary&gt;
+   /// Find the next unprocessed tile of the specified type (requires &lt;see cref="TouchTiles"/&gt;).
+   /// &lt;/summary&gt;
+   /// &lt;param name="TileValue"&gt;Tile index to search for&lt;/param&gt;
+   /// &lt;param name="InitialOnly"&gt;If this is true, the tile will only be considered if the sprite
+   /// just started touching it (was not touching it before).&lt;/param&gt;
+   /// &lt;param name="MarkAsProcessed"&gt;If this is true, the tile that is returned is immediately
+   /// marked as processed, otherwise it is left as unprocessed and may still be affected by
+   /// other tile interaction functions.&lt;/param&gt;
+   /// &lt;returns&gt;The index of the next unprocessed tile in &lt;see cref="TouchedTiles"/&gt; if one
+   /// exists with the specified &lt;paramref name="TileValue" /&gt;, or -1 if no such tile exists.
+   /// &lt;/returns&gt;
+   /// &lt;remarks&gt;While &lt;see cref="TileUseUp"/&gt; and &lt;see cref="TileTake"/&gt; provide simple
+   /// access to common behaviors related to tile interactions, they aren't expected to cover
+   /// all behaviors you might want to implement related to tile interactions.  This function
+   /// provides a piece of functionality that will be useful in more detailed control over
+   /// tile interactions.&lt;seealso cref="TouchTiles"/&gt;&lt;seealso cref="TileActivateSprite"/&gt;
+   /// &lt;seealso cref="TileAddSprite"/&gt;&lt;/remarks&gt;
+   /// &lt;example&gt;
+   /// The following example demonstrates how you could activate the next inactive instance of
+   /// a sprite in the "Points" category at the location of any tile whose tile number is 10
+   /// when the sprite touches the tile, only when the sprite first touches the tile. Performing
+   /// this in a while loop ensures that all such tiles that the sprite is initially touching get
+   /// processed at once, which is important because it won't be initially touching them any more
+   /// in the next frame. TempNum is any temporary numeric variable, such as a sprite parameter.
+   /// &lt;code&gt;
+   /// if (TouchTiles(TileCategoryName.Touchable))
+   /// {
+   ///    TempNum = TileTouchingIndex(10, true, true);
+   ///    while(TempNum &gt; 0)
+   ///    {
+   ///       TileActivateSprite(TempNum, ParentLayer.m_SpriteCategories.Points, true);
+   ///       TempNum = TileTouchingIndex(10, true, true);
+   ///    }
+   /// }
+   /// &lt;/code&gt;
+   /// &lt;/example&gt;
+   [Description("Return the index of the next unprocessed tile with the specified value from the list of tiles the sprite is touching. If InitialOnly is set, only return tiles that the sprite wasn't already touching. Return -1 if no tiles are being touched. (Must run TouchTiles first.)")]
+   public virtual int TileTouchingIndex(int TileValue, bool InitialOnly, bool MarkAsProcessed)
+   {
+      Debug.Assert(this.isActive, "Attempted to execute TileTouchingIndex on an inactive sprite");
+
+      if (TouchedTiles == null)
+         return -1;
+
+      for (int i = 0; i &lt; TouchedTiles.Count; i++)
+      {
+         TouchedTile tt = TouchedTiles[i];
+         if ((tt.tileValue == TileValue) &amp;&amp; (!tt.processed) &amp;&amp; (!InitialOnly || tt.initial))
+         {
+            tt.processed = MarkAsProcessed;
+            return i;
+         }
+      }
+
+      return -1;
+   }
+
+   /// &lt;summary&gt;
    /// Activate the next inactive sprite from a category at the coordinates of a tile being touched by the sprite.
    /// &lt;/summary&gt;
    /// &lt;param name="TouchingIndex"&gt;Index of the tile in the array of tiles to process (&lt;see cref="TouchedTiles"/&gt;).

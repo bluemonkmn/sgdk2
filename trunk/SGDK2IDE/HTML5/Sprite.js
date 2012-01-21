@@ -463,7 +463,7 @@ Sprite.prototype.isRidingPlatform = function() {
 Sprite.prototype.processRules = function() {
    if ((!this.processed) && (this.isActive)) {
       this.processed = true;
-      this.executeRules();
+      if (this.executeRules != null) this.executeRules();
    }
 }
 
@@ -682,6 +682,8 @@ Sprite.prototype.tileAddSprite = function (touchingIndex, spriteDefinition) {
    this.layer.sprites.push(GeneralRules.lastCreatedSprite);
    for(var categoryKey in spriteDefinitions[spriteDefinition].prototype.categories) {
       var category = spriteDefinitions[spriteDefinition].prototype.categories[categoryKey];
+      if (this.layer.spriteCategories[category] == null)
+         this.layer.spriteCategories[category] = [];
       this.layer.spriteCategories[category].push(GeneralRules.lastCreatedSprite);
    }
 };
@@ -828,6 +830,8 @@ Sprite.prototype.addSpriteHere = function(spriteDefinition, location, hotSpot) {
    this.layer.sprites.push(GeneralRules.lastCreatedSprite);
    for(var categoryKey in spriteDefinitions[spriteDefinition].prototype.categories) {
       var category = spriteDefinitions[spriteDefinition].prototype.categories[categoryKey];
+      if (this.layer.spriteCategories[category] == null)
+         this.layer.spriteCategories[category] = [];
       this.layer.spriteCategories[category].push(GeneralRules.lastCreatedSprite);
    }
 };
@@ -857,3 +861,17 @@ Sprite.prototype.tileChangeTouched = function(touchingIndex, newTileValue) {
    this.layer[tt.x, tt.y] = tt.tileValue = newTileValue;
 };
 
+Sprite.prototype.tileTouchingIndex = function(tileValue, initialOnly, markAsProcessed) {
+   if (this.touchedTiles == null)
+      return -1;
+
+   for (var i = 0; i < this.touchedTiles.length; i++) {
+      var tt = this.touchedTiles[i];
+      if ((tt.tileValue == tileValue) && (!tt.processed) && (!initialOnly || tt.initial)) {
+         tt.processed = markAsProcessed;
+         return i;
+      }
+   }
+
+   return -1;
+}

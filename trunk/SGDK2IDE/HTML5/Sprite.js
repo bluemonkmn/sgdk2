@@ -1,7 +1,7 @@
-﻿function SpriteState(solidWidth, solidHeight, frameSet, bounds, frames) {
+﻿function SpriteState(solidWidth, solidHeight, frameSetName, bounds, frames) {
    this.solidWidth = solidWidth;
    this.solidHeight = solidHeight;
-   this.frameSet = frameSet;
+   this.frameSetName = frameSetName;
    this.bounds = bounds;
    this.frames = frames;
    this.totalDuration = frames ? frames[frames.length - 1].accumulatedDuration : 0;
@@ -368,7 +368,7 @@ Sprite.prototype.blocked = function(direction) {
    {
       case "Up":
          solidPixelWidth = this.getSolidWidth() + Math.ceil(this.x) - Math.floor(this.x);
-         return this.layer.getBottomSolidPixel(Math.floor(this.x), this.floor(this.y) - 1, solidPixelWidth, 1, this.solidity) != MapLayer.noSolid;
+         return this.layer.getBottomSolidPixel(Math.floor(this.x), Math.floor(this.y) - 1, solidPixelWidth, 1, this.solidity) != MapLayer.noSolid;
       case "Right":
          solidPixelHeight = this.getSolidHeight() + Math.ceil(this.y) - Math.floor(this.y);
          return this.layer.getLeftSolidPixel(Math.floor(this.x) + this.getSolidWidth(), Math.floor(this.y), 1, solidPixelHeight, this.solidity) != MapLayer.noSolid;

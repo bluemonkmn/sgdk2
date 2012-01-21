@@ -16,79 +16,143 @@ namespace SGDK2
          InitializeComponent();
       }
 
+      private static string lastProj = null;
+      private static string lastDir = null;
+      private static string lastFile = null;
+
       protected override void OnLoad(EventArgs e)
       {
          base.OnLoad(e);
-         string projectFile = ((frmMain)Owner).ProjectFile;
-         if (!string.IsNullOrEmpty(projectFile))
+         string htmlOptionString = SGDK2IDE.GetUserOption("HTMLExportOptions");
+            CodeGenerator.HtmlGeneratorOptions options;
+         if (!string.IsNullOrEmpty(htmlOptionString))
          {
-            string dirName = System.IO.Path.GetDirectoryName(projectFile);
-            dlgFilename.InitialDirectory = dirName;
-            dlgFilename.FileName = System.IO.Path.Combine(dirName, System.IO.Path.GetFileNameWithoutExtension(projectFile) + ".html");
-            txtFilename.Text = dlgFilename.FileName;
+            options = (CodeGenerator.HtmlGeneratorOptions)Enum.Parse(typeof(CodeGenerator.HtmlGeneratorOptions), htmlOptionString);
+            chkEmbedPng.Checked = (0 != (options & CodeGenerator.HtmlGeneratorOptions.EmbedPng));
+            chkMapButtons.Checked = (0 != (options & CodeGenerator.HtmlGeneratorOptions.GenerateMapButtons));
+            rdoEmbedJS.Checked = (0 != (options & CodeGenerator.HtmlGeneratorOptions.EmbedJs));
+            rdoFilePerObject.Checked = (0 != (options & CodeGenerator.HtmlGeneratorOptions.SeparateJsPerObj));
+            rdoSeparateJS.Checked = !(rdoEmbedJS.Checked || rdoFilePerObject.Checked);
+            rdoFill.Checked = (0 != (options & CodeGenerator.HtmlGeneratorOptions.FillBrowser));
+            rdoFixed.Checked = !rdoFill.Checked;
+            chkCamelCase.Checked = (0 != (options & CodeGenerator.HtmlGeneratorOptions.CamelCase));
          }
+         else
+            options = GetOptions();
+
+         if (lastProj != SGDK2IDE.CurrentProjectFile)
+         {
+            lastDir = lastFile = null;
+         }
+         if (lastDir != null)
+            txtDirectory.Text = lastDir;
+         if (lastFile != null)
+            txtFilename.Text = lastFile;
+
+         EnableFilename(options);
+
          SGDK2IDE.g_HelpProvider.SetHelpKeyword(this, @"html/d07a3ab3-7056-48e4-9700-1b54d8205acc.htm");
          SGDK2IDE.g_HelpProvider.SetHelpNavigator(this, System.Windows.Forms.HelpNavigator.Topic);
       }
+
+      protected override void OnClosing(CancelEventArgs e)
+      {
+         base.OnClosing(e);
+         SGDK2IDE.SetUserOption("HTMLExportOptions", GetOptions().ToString());
+         lastDir = txtDirectory.Text;
+         lastFile = (txtFilename.Text == "(Multiple)") ? null : txtFilename.Text;
+         lastProj = SGDK2IDE.CurrentProjectFile;
+      }
+
       private void btnBrowse_Click(object sender, EventArgs e)
       {
-         if (dlgFilename.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+         try
          {
-            txtFilename.Text = dlgFilename.FileName;
+            dlgOutFolder.SelectedPath = txtDirectory.Text;
          }
+         catch (System.Exception) { }
+
+         if (dlgOutFolder.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+         {
+            txtDirectory.Text = dlgOutFolder.SelectedPath;
+         }
+      }
+
+      public CodeGenerator.HtmlGeneratorOptions GetOptions()
+      {
+         return (chkEmbedPng.Checked ? CodeGenerator.HtmlGeneratorOptions.EmbedPng : 0) |
+            (rdoEmbedJS.Checked ? CodeGenerator.HtmlGeneratorOptions.EmbedJs : 0) |
+            (rdoFilePerObject.Checked ? CodeGenerator.HtmlGeneratorOptions.SeparateJsPerObj : 0) |
+            (rdoFill.Checked ? CodeGenerator.HtmlGeneratorOptions.FillBrowser : 0) |
+            (chkMapButtons.Checked ? CodeGenerator.HtmlGeneratorOptions.GenerateMapButtons : 0) |
+            (chkCamelCase.Checked ? CodeGenerator.HtmlGeneratorOptions.CamelCase : 0);
       }
 
       private void btnOK_Click(object sender, EventArgs e)
       {
          try
          {
-            CodeGenerator g = new CodeGenerator();
-            string errs;
-            System.Collections.Generic.IEnumerable<CodeGenerator.ObjectErrorInfo> errorRules;
-            CodeGenerator.HtmlGeneratorOptions options = 0;
-            if (rdoSingleFile.Checked)
+            foreach (char c in System.IO.Path.GetInvalidFileNameChars())
             {
-               options = CodeGenerator.HtmlGeneratorOptions.SingleFile;
-               if (System.IO.File.Exists(txtFilename.Text) && DialogResult.Yes !=
-                  MessageBox.Show(this, "File \"" + txtFilename.Text + "\" already exists. Overwrite?", this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
+               if (txtFilename.Text.IndexOf(c) >= 0)
                {
+                  MessageBox.Show(this, "Character '" + c + "' is not valid in a filename.", "Export HTML", MessageBoxButtons.OK, MessageBoxIcon.Error);
                   DialogResult = System.Windows.Forms.DialogResult.None;
                   return;
                }
+            }
+            if (!System.IO.Path.IsPathRooted(txtDirectory.Text))
+            {
+               MessageBox.Show(this, "A full directory name must be entered", "Export HTML", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+               DialogResult = System.Windows.Forms.DialogResult.None;
+               return;
+            }
+            CodeGenerator g = new CodeGenerator();
+            g.htmlOptions = GetOptions();
+            string htmlFile;
+            if (txtFilename.Enabled)
+            {
+               htmlFile = System.IO.Path.Combine(txtDirectory.Text, txtFilename.Text);
             }
             else
             {
-               string[] files = g.GetHtmlFileList(txtFilename.Text);
-               string existFile = null;
-               int existCount = 0;
-               for (int i = 0; i < files.Length; i++)
+               string projectFile = ((frmMain)Owner).ProjectFile;
+               if (string.IsNullOrEmpty(projectFile))
                {
-                  if (System.IO.File.Exists(files[i]))
-                  {
-                     existCount++;
-                     if (existFile == null)
-                        existFile = files[i];
-                  }
+                  // Should never occur
+                  htmlFile = System.IO.Path.Combine(txtDirectory.Text, "Unnamed.html");
                }
-               if ((existCount > 0) && DialogResult.Yes !=
-                  MessageBox.Show(this, "File \"" + existFile + "\" " + (existCount > 1 ? "and " + (existCount - 1).ToString() + " other files already exist." :
-                  "already exists.") + " Overwrite?", this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
+               else
                {
-                  DialogResult = System.Windows.Forms.DialogResult.None;
-                  return;
+                  htmlFile = System.IO.Path.Combine(txtDirectory.Text, System.IO.Path.GetFileNameWithoutExtension(projectFile) + ".html");
                }
             }
-            if (rdoFill.Checked)
-               options |= CodeGenerator.HtmlGeneratorOptions.FillBrowser;
-            if (chkMapButtons.Checked)
-               options |= CodeGenerator.HtmlGeneratorOptions.GenerateMapButtons;
-            if (chkCamelCase.Checked)
-               options |= CodeGenerator.HtmlGeneratorOptions.CamelCase;
-            string outFile = g.GenerateHtml5(txtFilename.Text, options, out errs, out errorRules);
+            string errs;
+            System.Collections.Generic.IEnumerable<CodeGenerator.ObjectErrorInfo> errorRules;
+            string[] files = g.GetHtmlFileList(htmlFile);
+            string existFile = null;
+            int existCount = 0;
+            for (int i = 0; i < files.Length; i++)
+            {
+               if (System.IO.File.Exists(files[i]))
+               {
+                  existCount++;
+                  if (existFile == null)
+                     existFile = files[i];
+               }
+            }
+            if ((existCount > 0) && DialogResult.Yes !=
+               MessageBox.Show(this, "File \"" + existFile + "\" " + (existCount > 1 ? "and " + (existCount - 1).ToString() + " other files already exist." :
+               "already exists.") + " Overwrite?", this.Text, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2))
+            {
+               DialogResult = System.Windows.Forms.DialogResult.None;
+               return;
+            }
+            string outFile = g.GenerateHtml5(htmlFile, out errs, out errorRules);
             if (errs.Length > 0)
             {
                frmLogView frm = new frmLogView(errs, errorRules);
-               frm.MdiParent = this;
+               frm.MdiParent = this.Owner;
                frm.Show();
                return;
             }
@@ -98,6 +162,40 @@ namespace SGDK2
          {
             MessageBox.Show(this, ex.Message, this.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
          }
+      }
+
+      private void EnableFilename(CodeGenerator.HtmlGeneratorOptions options)
+      {
+         string projectFile = SGDK2IDE.CurrentProjectFile;
+         if (string.IsNullOrEmpty(projectFile))
+         {
+            txtFilename.Enabled = true;
+            txtFilename.Text = (lastFile == null) ? "Unnamed.html" : lastFile;
+         }
+         else
+         {
+            string dirName = (lastDir == null) ? System.IO.Path.GetDirectoryName(projectFile) : lastDir;
+            if (0 != (options & CodeGenerator.HtmlGeneratorOptions.EmbedJs) &&
+                0 != (options & CodeGenerator.HtmlGeneratorOptions.EmbedPng))
+            {
+               txtFilename.Enabled = true;
+               txtFilename.Text = (lastFile == null) ? System.IO.Path.GetFileNameWithoutExtension(projectFile) + ".html" : lastFile;
+            }
+            else
+            {
+               txtFilename.Enabled = false;
+               txtFilename.Text = "(Multiple)";
+               string subDir = System.IO.Path.GetFileNameWithoutExtension(projectFile) + System.IO.Path.DirectorySeparatorChar + "html";
+               if ((lastDir == null) || (lastDir == System.IO.Path.GetDirectoryName(projectFile)))
+                  dirName = System.IO.Path.Combine(dirName, subDir);
+            }
+            txtDirectory.Text = dirName;
+         }
+      }
+
+      private void Output_CheckedChanged(object sender, EventArgs e)
+      {
+         EnableFilename(GetOptions());
       }
    }
 }

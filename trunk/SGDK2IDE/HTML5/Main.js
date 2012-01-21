@@ -8,7 +8,6 @@ function startGame() {
    initFramesets();
    initTilesets();
    initTileCategories();
-   initSprites();
    firstMap();
    var gameView = document.getElementById('gameView');
    gameViewContext = gameView.getContext('2d');

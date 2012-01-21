@@ -136,7 +136,7 @@ MapLayer.prototype.draw = function(ctx) {
       if (!curSprite.isActive) continue;
       var frames = curSprite.getCurFrames();
       if (frames == null) continue;
-      var frameSet = curSprite.states[curSprite.state].frameSet;
+      var frameSet = frameSets[curSprite.states[curSprite.state].frameSetName];
       if (typeof frames == 'number')
          frameSet.frames[frames % frameSet.frames.length].draw(ctx, curSprite.x + this.currentX, curSprite.y + this.currentY);
       else

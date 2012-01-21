@@ -375,6 +375,8 @@ PlanBase.prototype.addSpriteAtPlan = function(spriteDefinition, relativePosition
    this.layer.sprites.push(GeneralRules.lastCreatedSprite);
    for(var categoryKey in spriteDefinitions[spriteDefinition].prototype.categories) {
       var category = spriteDefinitions[spriteDefinition].prototype.categories[categoryKey];
+      if (this.layer.spriteCategories[category] == null)
+         this.layer.spriteCategories[category] = [];
       this.layer.spriteCategories[category].push(GeneralRules.lastCreatedSprite);
    }
 }

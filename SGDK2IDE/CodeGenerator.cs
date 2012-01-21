@@ -4776,8 +4776,9 @@ namespace SGDK2
 
       private RemotingServices.RemotePropertyInfo[] GetSpriteProperties(ProjectDataset.SpriteDefinitionRow spriteDef)
       {
-         if (!string.IsNullOrEmpty(CompileTempAssembly(false)))
-            return null;
+         string errors = CompileTempAssembly(false);
+         if (!string.IsNullOrEmpty(errors))
+            throw new ApplicationException("Errors occurred compiling the project for use during the export process. Compile the project with F7 for details.");
          RemotingServices.IRemoteTypeInfo reflector;
          try
          {
@@ -4934,6 +4935,7 @@ namespace SGDK2
                   catch (System.ApplicationException ex)
                   {
                      err.WriteLine("Error generating sprite definition \"" + drSpriteDef.Name + "\": " + ex.Message);
+                     return;
                   }
                   txt.WriteLine("};");
                }

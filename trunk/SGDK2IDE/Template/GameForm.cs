@@ -51,6 +51,8 @@ public partial class GameForm : Form
    public IPlayer[] Players = new IPlayer[Project.MaxPlayers];
    bool isFullScreen = false;
    private string title;
+   public static System.Drawing.Point oldMousePosition;
+   public static System.Windows.Forms.MouseButtons oldMouseButtons;
 
    #region Events
    /// <summary>
@@ -241,6 +243,8 @@ public partial class GameForm : Form
             OnAfterDrawOverlay();
          GameDisplay.Flush();
          GameDisplay.SwapBuffers();
+         oldMousePosition = System.Windows.Forms.Control.MousePosition;
+         oldMouseButtons = System.Windows.Forms.Control.MouseButtons;
          Application.DoEvents();
       }
    }

@@ -874,4 +874,21 @@ Sprite.prototype.tileTouchingIndex = function(tileValue, initialOnly, markAsProc
    }
 
    return -1;
+};
+
+Sprite.prototype.mapMouseToSprite = function(instantMove) {
+   var pos = {x:mouseInfo.x - this.layer.currentX, y:mouseInfo.y - this.layer.currentY};
+   if (instantMove) {
+      this.oldX = this.x;
+      this.oldY = this.y;
+      this.x = pos.x;
+      this.y = pos.y;
+   } else {
+      this.dx = pos.x - this.x;
+      this.dy = pos.y - this.y;
+   }
+   this.oldinputs = this.inputs;
+   this.inputs = 0;
+   if (mouseInfo.pressed)
+      this.inputs |= Sprite.inputBits.button1;
 }

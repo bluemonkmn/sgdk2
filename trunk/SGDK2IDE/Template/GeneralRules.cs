@@ -811,6 +811,22 @@ public abstract partial class GeneralRules
       return 0 != (System.Windows.Forms.Control.MouseButtons & Button);
    }
 
+   /// <summary>
+   /// When the mouse drags over the display, scroll the map along with it.
+   /// </summary>
+   [Description("When the mouse drags over the display, scroll the map along with it.")]
+   public virtual void DragMap()
+   {
+      if (0 != (GameForm.oldMouseButtons & System.Windows.Forms.Control.MouseButtons & System.Windows.Forms.MouseButtons.Left))
+      {
+         int mapX = (int)((ParentLayer.CurrentPosition.X - ParentLayer.AbsolutePosition.X) / ParentLayer.ScrollRate.Width);
+         int mapY = (int)((ParentLayer.CurrentPosition.Y - ParentLayer.AbsolutePosition.Y) / ParentLayer.ScrollRate.Height);
+         int mouseOffsetX = System.Windows.Forms.Control.MousePosition.X - GameForm.oldMousePosition.X;
+         int mouseOffsetY = System.Windows.Forms.Control.MousePosition.Y - GameForm.oldMousePosition.Y;
+         Project.GameWindow.CurrentMap.Scroll(new System.Drawing.Point(mapX + mouseOffsetX, mapY + mouseOffsetY));
+      }
+   }
+
    #region Collections
    protected static System.Collections.Specialized.HybridDictionary selectedSprites = new System.Collections.Specialized.HybridDictionary();
 

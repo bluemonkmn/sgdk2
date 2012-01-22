@@ -92,6 +92,7 @@ namespace SGDK2
          public string Parameter2;
          public string Parameter3;
          public string ResultParameter;
+         public bool Suspended;
          public bool EndIf;
 
          public RuleContent(ProjectDataset.SpriteRuleRow row)
@@ -115,6 +116,7 @@ namespace SGDK2
                ResultParameter = null;
             else
                ResultParameter = row.ResultParameter;
+            Suspended = row.Suspended;
             EndIf = row.EndIf;
          }
          public RuleContent(ProjectDataset.PlanRuleRow row)
@@ -138,6 +140,7 @@ namespace SGDK2
                ResultParameter = null;
             else
                ResultParameter = row.ResultParameter;
+            Suspended = row.Suspended;
             EndIf = row.EndIf;
          }
       }
@@ -1906,7 +1909,7 @@ namespace SGDK2
 
                if (GenerateLevel > CodeLevel.ExcludeRules)
                {
-                  ProjectDataset.PlanRuleRow[] rules = ProjectData.GetSortedPlanRules(drPlan, false);
+                  ProjectDataset.PlanRuleRow[] rules = ProjectData.GetSortedPlanRules(drPlan, true);
                   if (rules.Length > 0)
                   {
                      mthExecuteLayerRules.Statements.Add(
@@ -2116,103 +2119,109 @@ namespace SGDK2
                continue;
             if (String.Compare(rule.Type , "End", true) != 0)
             {
-               CodeExpression invokeResult;
-               CodeBinaryOperatorType op = CodeBinaryOperatorType.Modulus;
-               switch(rule.Function)
+               CodeExpression invokeResult = null;
+               if (!rule.Suspended)
                {
-                  case "+":
-                     op = CodeBinaryOperatorType.Add;
-                     break;
-                  case "-":
-                     op = CodeBinaryOperatorType.Subtract;
-                     break;
-                  case "<":
-                  case "!>=":
-                     op = CodeBinaryOperatorType.LessThan;
-                     break;
-                  case "<=":
-                  case "!>":
-                     op = CodeBinaryOperatorType.LessThanOrEqual;
-                     break;
-                  case "==":
-                  case "!!=":
-                     op = CodeBinaryOperatorType.IdentityEquality;
-                     break;
-                  case ">=":
-                  case "!<":
-                     op = CodeBinaryOperatorType.GreaterThanOrEqual;
-                     break;
-                  case ">":
-                  case "!<=":
-                     op = CodeBinaryOperatorType.GreaterThan;
-                     break;
-                  case "!=":
-                  case "!==":
-                     op = CodeBinaryOperatorType.IdentityInequality;
-                     break;
-               }
-               // If function is an operator
-               if (op != CodeBinaryOperatorType.Modulus)
-               {
-                  if (rule.Parameter1 != null &&
-                     (rule.Parameter1.StartsWith("(") || !rule.Parameter1.EndsWith(")")))
-                     rule.Parameter1 = "(" + rule.Parameter1 + ")";
-                  if (rule.Parameter2 != null &&
-                     (!rule.Parameter2.StartsWith("(") || !rule.Parameter2.EndsWith(")")))
-                     rule.Parameter2 = "(" + rule.Parameter2 + ")";
-                  invokeResult = new CodeBinaryOperatorExpression(
-                     new CodeSnippetExpression(rule.Parameter1),
-                     op, new CodeSnippetExpression(rule.Parameter2));
-               }
-               else if (String.Compare(rule.Function, "=", true) == 0)
-                  invokeResult = new CodeSnippetExpression(rule.Parameter1);
-               else
-               {
-                  CodeMethodInvokeExpression invoke;
-                  CodeExpression target;
-                  string functionName;
-                  if (rule.Function.IndexOf(".") >= 0)
+                  CodeBinaryOperatorType op = CodeBinaryOperatorType.Modulus;
+                  switch (rule.Function)
                   {
-                     int dotPos = rule.Function.LastIndexOf('.');
-                     string typeName = rule.Function.Substring(0,dotPos);
-                     if (typeName.StartsWith("!"))
-                        typeName = typeName.Substring(1);
-                     target = new CodeTypeReferenceExpression(typeName);
-                     functionName = rule.Function.Substring(dotPos+1);
+                     case "+":
+                        op = CodeBinaryOperatorType.Add;
+                        break;
+                     case "-":
+                        op = CodeBinaryOperatorType.Subtract;
+                        break;
+                     case "<":
+                     case "!>=":
+                        op = CodeBinaryOperatorType.LessThan;
+                        break;
+                     case "<=":
+                     case "!>":
+                        op = CodeBinaryOperatorType.LessThanOrEqual;
+                        break;
+                     case "==":
+                     case "!!=":
+                        op = CodeBinaryOperatorType.IdentityEquality;
+                        break;
+                     case ">=":
+                     case "!<":
+                        op = CodeBinaryOperatorType.GreaterThanOrEqual;
+                        break;
+                     case ">":
+                     case "!<=":
+                        op = CodeBinaryOperatorType.GreaterThan;
+                        break;
+                     case "!=":
+                     case "!==":
+                        op = CodeBinaryOperatorType.IdentityInequality;
+                        break;
                   }
-                  else
+                  // If function is an operator
+                  if (op != CodeBinaryOperatorType.Modulus)
                   {
-                     target = new CodeThisReferenceExpression();
-                     if (rule.Function.StartsWith("!"))
-                        functionName = rule.Function.Substring(1);
-                     else
-                        functionName = rule.Function;
-                  }
-                  if (rule.Function.StartsWith("!"))
-                  {
+                     if (rule.Parameter1 != null &&
+                        (rule.Parameter1.StartsWith("(") || !rule.Parameter1.EndsWith(")")))
+                        rule.Parameter1 = "(" + rule.Parameter1 + ")";
+                     if (rule.Parameter2 != null &&
+                        (!rule.Parameter2.StartsWith("(") || !rule.Parameter2.EndsWith(")")))
+                        rule.Parameter2 = "(" + rule.Parameter2 + ")";
                      invokeResult = new CodeBinaryOperatorExpression(
-                        invoke = new CodeMethodInvokeExpression(
-                        target, functionName),
-                        CodeBinaryOperatorType.ValueEquality,
-                        new CodePrimitiveExpression(false));
+                        new CodeSnippetExpression(rule.Parameter1),
+                        op, new CodeSnippetExpression(rule.Parameter2));
                   }
+                  else if (String.Compare(rule.Function, "=", true) == 0)
+                     invokeResult = new CodeSnippetExpression(rule.Parameter1);
                   else
-                     invokeResult = invoke = new CodeMethodInvokeExpression(target, functionName);
-
-                  if (!((rule.Parameter1 == null) || (rule.Parameter1.Length == 0)))
                   {
-                     invoke.Parameters.Add(new CodeSnippetExpression(rule.Parameter1));
-                     if (!((rule.Parameter2 == null) || (rule.Parameter2.Length == 0)))
+                     CodeMethodInvokeExpression invoke;
+                     CodeExpression target;
+                     string functionName;
+                     if (rule.Function.IndexOf(".") >= 0)
                      {
-                        invoke.Parameters.Add(new CodeSnippetExpression(rule.Parameter2));
-                        if (!((rule.Parameter3 == null) || (rule.Parameter3.Length == 0)))
+                        int dotPos = rule.Function.LastIndexOf('.');
+                        string typeName = rule.Function.Substring(0, dotPos);
+                        if (typeName.StartsWith("!"))
+                           typeName = typeName.Substring(1);
+                        target = new CodeTypeReferenceExpression(typeName);
+                        functionName = rule.Function.Substring(dotPos + 1);
+                     }
+                     else
+                     {
+                        target = new CodeThisReferenceExpression();
+                        if (rule.Function.StartsWith("!"))
+                           functionName = rule.Function.Substring(1);
+                        else
+                           functionName = rule.Function;
+                     }
+                     if (rule.Function.StartsWith("!"))
+                     {
+                        invokeResult = new CodeBinaryOperatorExpression(
+                           invoke = new CodeMethodInvokeExpression(
+                           target, functionName),
+                           CodeBinaryOperatorType.ValueEquality,
+                           new CodePrimitiveExpression(false));
+                     }
+                     else
+                        invokeResult = invoke = new CodeMethodInvokeExpression(target, functionName);
+
+                     if (!((rule.Parameter1 == null) || (rule.Parameter1.Length == 0)))
+                     {
+                        invoke.Parameters.Add(new CodeSnippetExpression(rule.Parameter1));
+                        if (!((rule.Parameter2 == null) || (rule.Parameter2.Length == 0)))
                         {
-                           invoke.Parameters.Add(new CodeSnippetExpression(rule.Parameter3));
+                           invoke.Parameters.Add(new CodeSnippetExpression(rule.Parameter2));
+                           if (!((rule.Parameter3 == null) || (rule.Parameter3.Length == 0)))
+                           {
+                              invoke.Parameters.Add(new CodeSnippetExpression(rule.Parameter3));
+                           }
                         }
                      }
                   }
                }
-
+               else
+               {
+                  invokeResult = new CodePrimitiveExpression(false);
+               }
                if (String.Compare(rule.Type,"if",true) == 0)
                {
                   CodeConditionStatement cond = new CodeConditionStatement();
@@ -2221,7 +2230,7 @@ namespace SGDK2
                }
                else if (String.Compare(rule.Type,"and",true) == 0)
                {
-                  if (stkNestedConditions.Count > 0)
+                  if ((stkNestedConditions.Count > 0) && (!rule.Suspended))
                   {
                      ConditionStackElement prev = (ConditionStackElement)stkNestedConditions.Peek();
                      prev.Condition = new CodeBinaryOperatorExpression(
@@ -2230,7 +2239,7 @@ namespace SGDK2
                }
                else if (String.Compare(rule.Type,"or",true) == 0)
                {
-                  if (stkNestedConditions.Count > 0)
+                  if ((stkNestedConditions.Count > 0) && (!rule.Suspended))
                   {
                      ConditionStackElement prev = (ConditionStackElement)stkNestedConditions.Peek();
                      prev.Condition = new CodeBinaryOperatorExpression(
@@ -2274,8 +2283,11 @@ namespace SGDK2
                      ConditionStackElement prev = (ConditionStackElement)stkNestedConditions.Peek();
                      if ((String.Compare(rule.Type, "Else", true) == 0) && (prev.Statement is CodeConditionStatement))
                         prev.NextPhase();
-                     prev.ChildStatements.Add(new CodeCommentStatement(rule.Name));
-                     prev.ChildStatements.Add(stmtRule);
+                     if (!rule.Suspended)
+                     {
+                        prev.ChildStatements.Add(new CodeCommentStatement(rule.Name));
+                        prev.ChildStatements.Add(stmtRule);
+                     }
 
                      if (rule.EndIf)
                      {
@@ -2292,7 +2304,7 @@ namespace SGDK2
                         }
                      }
                   }
-                  else
+                  else if (!rule.Suspended)
                   {
                      mthExecuteRules.Statements.Add(new CodeCommentStatement(rule.Name));
                      mthExecuteRules.Statements.Add(stmtRule);
@@ -2743,7 +2755,7 @@ namespace SGDK2
          clsSpriteDef.Members.Add(propStateInfo);
 
          // Sprite Rules
-         ProjectDataset.SpriteRuleRow[] rules = ProjectData.GetSortedSpriteRules(drSpriteDef,false);
+         ProjectDataset.SpriteRuleRow[] rules = ProjectData.GetSortedSpriteRules(drSpriteDef,true);
          RuleContent[] ruleArray = new RuleContent[rules.Length];
          CodeMemberMethod mthExecuteRules = new CodeMemberMethod();
          mthExecuteRules.Name = "ExecuteRules";
@@ -4036,8 +4048,6 @@ namespace SGDK2
             "<body class=\"unselectable\" unselectable=\"on\"" + ((0 != (htmlOptions & HtmlGeneratorOptions.FillBrowser))
             ? " onresize=\"resizeView()\"" : string.Empty) + ">\r\n" + 
             "<canvas id=\"gameView\" width=\"" + dispSize.Width.ToString() + "\" height=\"" + dispSize.Height.ToString() + "\" " +
-            "onmousedown=\"beginDrag(event)\" ontouchstart=\"beginTouchDrag(event)\" onmouseup=\"endDrag(event)\" " +
-            "onmouseout=\"endDrag(event)\" ontouchmove=\"processTouchDrag(event)\" " +
             "unselectable=\"on\" class=\"unselectable\">\r\n" +
             "   Your browser does not support HTML5 canvases.\r\n" +
             "</canvas>");
@@ -4493,7 +4503,7 @@ namespace SGDK2
                         }
                      }
 
-                     ProjectDataset.PlanRuleRow[] rules = ProjectData.GetSortedPlanRules(drPlan, false);
+                     ProjectDataset.PlanRuleRow[] rules = ProjectData.GetSortedPlanRules(drPlan, true);
                      if (rules.Length > 0)
                      {
                         sbPlans.AppendLine("   " + planRef + ".executeRules = function() {");
@@ -4918,7 +4928,7 @@ namespace SGDK2
                }
                txt.WriteLine("spriteDefinitions." + NameToVariable(drSpriteDef.Name) + ".statesEnum = {" + string.Join(",", statesEnum.ToArray()) + "};");
 
-               ProjectDataset.SpriteRuleRow[] rules = ProjectData.GetSortedSpriteRules(drSpriteDef, false);
+               ProjectDataset.SpriteRuleRow[] rules = ProjectData.GetSortedSpriteRules(drSpriteDef, true);
                if (rules.Length > 0)
                {
                   txt.WriteLine("spriteDefinitions." + NameToVariable(drSpriteDef.Name) + ".prototype.executeRules = function() {");

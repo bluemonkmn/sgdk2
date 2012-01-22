@@ -4949,6 +4949,22 @@ public abstract partial class GeneralRules
       return false;
    }
 
+   /// &lt;summary&gt;
+   /// When the mouse drags over the display, scroll the map along with it.
+   /// &lt;/summary&gt;
+   [Description("When the mouse drags over the display, scroll the map along with it.")]
+   public virtual void DragMap()
+   {
+      if (0 != (GameForm.oldMouseButtons &amp; System.Windows.Forms.Control.MouseButtons &amp; System.Windows.Forms.MouseButtons.Left))
+      {
+         int mapX = (int)((ParentLayer.CurrentPosition.X - ParentLayer.AbsolutePosition.X) / ParentLayer.ScrollRate.Width);
+         int mapY = (int)((ParentLayer.CurrentPosition.Y - ParentLayer.AbsolutePosition.Y) / ParentLayer.ScrollRate.Height);
+         int mouseOffsetX = System.Windows.Forms.Control.MousePosition.X - GameForm.oldMousePosition.X;
+         int mouseOffsetY = System.Windows.Forms.Control.MousePosition.Y - GameForm.oldMousePosition.Y;
+         Project.GameWindow.CurrentMap.Scroll(new System.Drawing.Point(mapX + mouseOffsetX, mapY + mouseOffsetY));
+      }
+   }
+
    #region "Messages"
    /// &lt;summary&gt;
    /// Determines in which view(s) a message will appear.
@@ -6770,6 +6786,45 @@ public abstract partial class SpriteBase : GeneralRules
       }
    }
 
+   /// &lt;summary&gt;
+   /// Move the sprite to the position of the mouse cursor and set the sprite's button inputs based on mouse button states.
+   /// &lt;/summary&gt;
+   /// &lt;param name="InstantMove"&gt;If true, the sprite will be moved immediately without regard to
+   /// the existing position or solidity or anything else.  If false, the sprite's position will
+   /// not be immediately changed, but its velocity will be set so that the sprite will end up at
+   /// the mouse cursor's location after &lt;see cref="MoveByVelocity"/&gt; executes. Note that moving
+   /// the sprite instantly will ignore solidity and will not work well with sprites riding on
+   /// this sprite, while allowing just the velocity to be set will allow this, but limit the
+   /// sprite's movement based on solidity.&lt;/param&gt;
+   /// &lt;remarks&gt;Before the button inputs are mapped from the mouse to the sprite,
+   /// the existing inputs are copied from &lt;see cref="inputs"/&gt; to &lt;see cref="oldinputs"/&gt;
+   /// so other rules will be able to determine which buttons were pressed before.
+   /// &lt;/remarks&gt;
+   [Description("Move the sprite to the position of the mouse cursor and set the sprite's button inputs based on mouse button states. If InstantMove is true, the sprite will be moved immediately, otherwise it the velocity will be set to move when MoveByVelocity runs.")]
+   public virtual void MapMouseToSprite(bool InstantMove)
+   {
+      System.Drawing.Point pos = ParentLayer.GetMousePosition();
+      if (InstantMove)
+      {
+         oldX = x;
+         oldY = y;
+         x = pos.X;
+         y = pos.Y;
+      }
+      else
+      {
+         dx = pos.X - x;
+         dy = pos.Y - y;
+      }
+      oldinputs = inputs;
+      inputs = 0;
+      if (0 != (System.Windows.Forms.Control.MouseButtons &amp; System.Windows.Forms.MouseButtons.Left))
+         inputs |= InputBits.Button1;
+      if (0 != (System.Windows.Forms.Control.MouseButtons &amp; System.Windows.Forms.MouseButtons.Right))
+         inputs |= InputBits.Button2;
+      if (0 != (System.Windows.Forms.Control.MouseButtons &amp; System.Windows.Forms.MouseButtons.Middle))
+         inputs |= InputBits.Button3;
+   }
    #endregion
 
    #region Solidity

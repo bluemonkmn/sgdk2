@@ -276,7 +276,7 @@ namespace SGDK2
       private static TempAssembly m_TempAssembly = null;
 
       #region Project Level Code Generation
-      public void GenerateAllCode(string FolderName, out string errs)
+      public void GenerateAllCode(string FolderName, System.Collections.Generic.List<ObjectErrorInfo> errorRows, out string errs)
       {
          System.IO.TextWriter err = new System.IO.StringWriter();
          System.IO.TextWriter txt = null;
@@ -314,7 +314,7 @@ namespace SGDK2
                txt.Close();
 
                txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, NameToVariable(drMap.Name) + "_Map.cs"));
-               GenerateMap(drMap, txt, err);
+               GenerateMap(drMap, txt, errorRows, err);
                txt.Close();
             }
 
@@ -325,7 +325,7 @@ namespace SGDK2
             {
                ProjectDataset.SpriteDefinitionRow drSpriteDef = (ProjectDataset.SpriteDefinitionRow)drv.Row;
                txt = new System.IO.StreamWriter(System.IO.Path.Combine(SpritesFolder, NameToVariable(drSpriteDef.Name) + ".cs"));
-               GenerateSpriteDef(drSpriteDef, txt, err);
+               GenerateSpriteDef(drSpriteDef, txt, errorRows, err);
                txt.Close();
             }
 
@@ -572,7 +572,7 @@ namespace SGDK2
                txt.Close();*/
 
             txt = new System.IO.StringWriter();
-            GenerateMap(drMap, txt, err);
+            GenerateMap(drMap, txt, null, err);
             txt.Close();
             result.Add(txt.ToString());
          }
@@ -607,7 +607,7 @@ namespace SGDK2
          {
             ProjectDataset.SpriteDefinitionRow drSpriteDef = (ProjectDataset.SpriteDefinitionRow)drv.Row;
             txt = new System.IO.StringWriter();
-            GenerateSpriteDef(drSpriteDef, txt, err);
+            GenerateSpriteDef(drSpriteDef, txt, null, err);
             txt.Close();
             result.Add(txt.ToString());
          }
@@ -1493,7 +1493,7 @@ namespace SGDK2
          writer.Close();
       }
 
-      public void GenerateMap(ProjectDataset.MapRow drMap, System.IO.TextWriter txt, System.IO.TextWriter err)
+      public void GenerateMap(ProjectDataset.MapRow drMap, System.IO.TextWriter txt, System.Collections.Generic.List<ObjectErrorInfo> errorRows, System.IO.TextWriter err)
       {
          CodeTypeDeclaration clsMap = new CodeTypeDeclaration(NameToMapClass(drMap.Name));
          clsMap.BaseTypes.Add("MapBase");
@@ -1929,6 +1929,15 @@ namespace SGDK2
                         GenerateRules(ruleArray, mthExecuteRules);
                         clsPlan.Members.Add(mthExecuteRules);
                      }
+                     catch (RuleException ex)
+                     {
+                        if (errorRows != null)
+                        {
+                           ProjectDataset.PlanRuleRow rule = ProjectData.GetPlanRule(drPlan, ex.rule.Name);
+                           errorRows.Add(new ObjectErrorInfo(rule, new CompilerError(null, 0, 0, null, ex.Message)));
+                        }
+                        err.WriteLine("Error generating plan \"" + drPlan.Name + "\" on layer \"" + drLayer.Name + "\" of map \"" + drMap.Name + "\": " + ex.Message);
+                     }
                      catch (System.ApplicationException ex)
                      {
                         err.WriteLine("Error generating plan \"" + drPlan.Name +"\" on layer \"" + drLayer.Name + "\" of map \"" + drMap.Name + "\": " +  ex.Message);
@@ -2108,6 +2117,16 @@ namespace SGDK2
             new CodeFieldReferenceExpression(
             new CodeThisReferenceExpression(), MapDisplayField), "Flush"));
          Generator.GenerateCodeFromType(clsMap, txt, GeneratorOptions);
+      }
+
+      class RuleException : ApplicationException
+      {
+         public RuleContent rule;
+         public RuleException(RuleContent rule, string message)
+            : base(message)
+         {
+            this.rule = rule;
+         }
       }
 
       private void GenerateRules(RuleContent[] rules, CodeMemberMethod mthExecuteRules)
@@ -2311,7 +2330,7 @@ namespace SGDK2
                   }
                }
             }
-            else
+            else if (stkNestedConditions.Count > 0)
             {
                ConditionStackElement popVal = ((ConditionStackElement)stkNestedConditions.Pop());
                if (stkNestedConditions.Count > 0)
@@ -2324,6 +2343,10 @@ namespace SGDK2
                   mthExecuteRules.Statements.Add(new CodeCommentStatement(popVal.RuleName));
                   mthExecuteRules.Statements.Add(popVal.Statement);
                }
+            }
+            else
+            {
+               throw new RuleException(rule, "Mismatched End");
             }
          }
          while(stkNestedConditions.Count > 0)
@@ -2416,7 +2439,7 @@ namespace SGDK2
          }
       }
 
-      public void GenerateSpriteDef(ProjectDataset.SpriteDefinitionRow drSpriteDef, System.IO.TextWriter txt, System.IO.TextWriter err)
+      public void GenerateSpriteDef(ProjectDataset.SpriteDefinitionRow drSpriteDef, System.IO.TextWriter txt, System.Collections.Generic.List<ObjectErrorInfo> errorRows, System.IO.TextWriter err)
       {
          CodeNamespace nsSprites = new CodeNamespace(SpritesNamespace);
          CodeTypeDeclaration clsSpriteDef = new CodeTypeDeclaration(NameToVariable(drSpriteDef.Name));
@@ -2770,9 +2793,18 @@ namespace SGDK2
             }
             clsSpriteDef.Members.Add(mthExecuteRules);
          }
+         catch (RuleException ex)
+         {
+            if (errorRows != null)
+            {
+               ProjectDataset.SpriteRuleRow rule = ProjectData.GetSpriteRule(drSpriteDef, ex.rule.Name);
+               errorRows.Add(new ObjectErrorInfo(rule, new CompilerError(null, 0, 0, null, ex.Message)));
+            }
+            err.WriteLine("Error generating sprite definition \"" + drSpriteDef.Name + "\": " + ex.Message);
+         }
          catch (System.ApplicationException ex)
          {
-            err.WriteLine("Error generating sprite definition \"" + drSpriteDef.Name +"\": " +  ex.Message);
+            err.WriteLine("Error generating sprite definition \"" + drSpriteDef.Name + "\": " + ex.Message);
          }
 
          Generator.GenerateCodeFromNamespace(nsSprites, txt, GeneratorOptions);
@@ -3298,6 +3330,10 @@ namespace SGDK2
             name = name.Substring(0, name.Length - 3);
          else if (name.EndsWith(".js"))
             return "// Begin " + name;
+         else if (name.EndsWith(".html"))
+            return "<!DOCTYPE html>\r\n<html>\r\n<head>\r\n<meta charset=\"utf-8\" />\r\n<title>" +
+               name.Substring(0, name.Length - 5) +
+               "</title>\r\n</head>\r\n<body>\r\n</body>\r\n</html>";
          return "namespace CustomObjects\r\n{\r\n   public class " + NameToVariable(name) +
             "\r\n   {\r\n\r\n   }\r\n}\r\n";
       }
@@ -3574,9 +3610,13 @@ namespace SGDK2
             string appCfgOutput = System.IO.Path.Combine(FolderName, ProjectName + ".exe.config");
             string[] resourcesList = GetResourcesFileList(FolderName);
             System.Collections.ArrayList OldDlls = new System.Collections.ArrayList();
-            GenerateAllCode(FolderName, out errs);
+            GenerateAllCode(FolderName, errorRows, out errs);
             if (errs.Length > 0)
+            {
+               if (errorRows.Count > 0)
+                  errorRules = errorRows.ToArray();
                return null;
+            }
 
             string resourceSwitches = string.Empty;
             foreach (string resFile in resourcesList)
@@ -3805,6 +3845,8 @@ namespace SGDK2
                      }
                   } while ((sr.EndOfStream == false) && (lineNum < err.Line));
 
+                  if (curPlan == null) continue;
+
                   ProjectDataset.SpritePlanRow drSpritePlan = null;
                   foreach (ProjectDataset.LayerRow lyr in drMap.GetLayerRows())
                      if ((drSpritePlan == null) && (NameToVariable(lyr.Name) == curLayer))
@@ -3890,7 +3932,19 @@ namespace SGDK2
                   ProjectDataset.MapRow m = (ProjectDataset.MapRow)drv.Row;
                   result.Add(System.IO.Path.Combine(FolderName, NameToMapClass(m.Name) + ".js"));
                }
+               foreach (System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
+               {
+                  ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
+                  if (drCode.Name.EndsWith(".js") && drCode.IsCustomObject) 
+                     result.Add(System.IO.Path.Combine(FolderName, drCode.Name));
+               }
             }
+         }
+         foreach (System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
+         {
+            ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
+            if (drCode.Name.EndsWith(".html") && drCode.IsCustomObject)
+               result.Add(System.IO.Path.Combine(FolderName, drCode.Name));
          }
          return result.ToArray();
       }
@@ -3915,6 +3969,7 @@ namespace SGDK2
          var errorRows = new System.Collections.Generic.List<ObjectErrorInfo>();
          try
          {
+            this.GenerateLevel = CodeLevel.ExcludeRules; // HTML code generation does not need sprite rules to be compiled.
             htmlOutputFolder = System.IO.Path.GetDirectoryName(htmlFileName);
             if (!System.IO.Path.IsPathRooted(htmlOutputFolder))
             {
@@ -3943,8 +3998,10 @@ namespace SGDK2
                using (System.IO.StreamWriter txt = new System.IO.StreamWriter(jsFileName))
                {
                   GenerateHtmlJavascript(txt, err);
+                  GenerateCustomJavascriptFiles(txt);
                }
             }
+            GenerateCustomHtmlFiles();
             errs = err.ToString();
             err.Close();
             if (errorRows.Count > 0)
@@ -3961,112 +4018,140 @@ namespace SGDK2
          }
       }
 
-      private System.Collections.Generic.HashSet<string> generatedJSFiles = null;
-
       private string GetJavascriptFile(string name)
       {
-         if (generatedJSFiles == null)
-            generatedJSFiles = new System.Collections.Generic.HashSet<string>();
          ProjectDataset.SourceCodeRow sc = ProjectData.GetSourceCode(name);
          if (sc != null)
          {
-            generatedJSFiles.Add(sc.Name);
             return ProjectData.GetSourceCodeText(sc);
          }
          string code;
          using (System.IO.StreamReader sr = new System.IO.StreamReader(System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceStream("SGDK2.HTML5." + name)))
          {
-            generatedJSFiles.Add(name);
             code = sr.ReadToEnd();
          }
          ProjectData.AddSourceCode(name, code, null, false, null);
          return code;
       }
 
-      private string GetRemainingJavascriptFiles()
+      private void GenerateCustomJavascriptFiles(System.IO.TextWriter txt)
       {
-         if (generatedJSFiles == null)
-            generatedJSFiles = new System.Collections.Generic.HashSet<string>();
-         System.Text.StringBuilder sb = new System.Text.StringBuilder();
-         foreach(System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
+         bool separateFiles = false;
+         if (0 == (htmlOptions & HtmlGeneratorOptions.EmbedJs) && 0 != (htmlOptions & HtmlGeneratorOptions.SeparateJsPerObj))
+            separateFiles = true;
+         foreach (System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
          {
             ProjectDataset.SourceCodeRow scRow = (ProjectDataset.SourceCodeRow)drv.Row;
             if (!scRow.Name.EndsWith(".js"))
                continue;
-            if (!generatedJSFiles.Contains(scRow.Name))
+            if (!scRow.IsCustomObject)
+               continue;
+            if (separateFiles)
+               txt = new System.IO.StreamWriter(System.IO.Path.Combine(htmlOutputFolder, scRow.Name));
+            try
             {
-               generatedJSFiles.Add(scRow.Name);
-               sb.AppendLine(ProjectData.GetSourceCodeText(scRow));
+               txt.WriteLine(ProjectData.GetSourceCodeText(scRow));
+            }
+            finally
+            {
+               if (separateFiles)
+                  txt.Close();
             }
          }
-         return sb.ToString();
+      }
+
+      private void GenerateCustomHtmlFiles()
+      {
+         foreach (System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
+         {
+            ProjectDataset.SourceCodeRow scRow = (ProjectDataset.SourceCodeRow)drv.Row;
+            if (!scRow.Name.EndsWith(".html"))
+               continue;
+            if (!scRow.IsCustomObject)
+               continue;
+            using (System.IO.StreamWriter txt = new System.IO.StreamWriter(System.IO.Path.Combine(htmlOutputFolder, scRow.Name)))
+            {
+               txt.WriteLine(ProjectData.GetSourceCodeText(scRow));
+               txt.Close();
+            }
+         }
       }
 
       private void GenerateHtmlProject(string ProjectName, System.IO.TextWriter txt, System.IO.TextWriter err)
       {
          System.Drawing.Size dispSize = Display.GetScreenSize((GameDisplayMode)Enum.Parse(typeof(GameDisplayMode), ProjectData.ProjectRow.DisplayMode));
-         txt.WriteLine("<!DOCTYPE html>\r\n" +
-            "<html>\r\n" +
-            "<head>\r\n" +
-            "<meta charset=\"utf-8\" />\r\n" +
-            "<title>" + ProjectName + "</title>\r\n" +
-            "<style>\r\n" +
-            "   .unselectable {\r\n" +
-            "      user-select:none;\r\n" +
-            "      -moz-user-select:-moz-none;\r\n" +
-            "      -khtml-user-select:none;\r\n" +
-            "      -webkit-user-select:none;\r\n" +
-            "      -o-user-select:none;\r\n" +
-            "   }\r\n" +
-            "   canvas { display: block }\r\n" +
-            (0 != (htmlOptions & HtmlGeneratorOptions.FillBrowser) ? "   body { margin:0 }\r\n" : string.Empty) +
-            "</style>\r\n");
-         if (0 != (htmlOptions & HtmlGeneratorOptions.EmbedJs))
+         string htmlTemplate = GetJavascriptFile("Template.html");
+         htmlTemplate = htmlTemplate.Replace("<!--#echo var=\"Title\" -->", ProjectName);
+         htmlTemplate = htmlTemplate.Replace("<!--#echo var=\"BodyCSS\" -->", (0 != (htmlOptions & HtmlGeneratorOptions.FillBrowser) ? "body { margin:0 }" : string.Empty));
+
+         using (System.IO.StringWriter sw = new System.IO.StringWriter())
          {
-            txt.WriteLine("<script type=\"text/javascript\">\r\n");
-            GenerateHtmlJavascript(txt, err);
-            txt.WriteLine("</script>\r\n");
+            if (0 != (htmlOptions & HtmlGeneratorOptions.EmbedJs))
+            {
+               sw.WriteLine("<script type=\"text/javascript\">\r\n");
+               GenerateHtmlJavascript(sw, err);
+               GenerateCustomJavascriptFiles(sw);
+               sw.WriteLine("</script>\r\n");
+            }
+            else
+            {
+               sw.WriteLine("<script type=\"text/javascript\" src=\"" + ProjectName + ".js\"></script>");
+               if (0 != (htmlOptions & HtmlGeneratorOptions.SeparateJsPerObj))
+               {
+                  foreach (System.Data.DataRowView drv in ProjectData.SpriteDefinition.DefaultView)
+                  {
+                     ProjectDataset.SpriteDefinitionRow sdr = (ProjectDataset.SpriteDefinitionRow)drv.Row;
+                     sw.WriteLine("<script type=\"text/javascript\" src=\"" + SpritesDir + "/" + NameToVariable(sdr.Name) + ".js\"></script>");
+                  }
+                  foreach (System.Data.DataRowView drv in ProjectData.Map.DefaultView)
+                  {
+                     ProjectDataset.MapRow drMap = (ProjectDataset.MapRow)drv.Row;
+                     sw.WriteLine("<script type=\"text/javascript\" src=\"" + NameToMapClass(drMap.Name) + ".js\"></script>");
+                  }
+                  foreach (System.Data.DataRowView drv in ProjectData.SourceCode.DefaultView)
+                  {
+                     ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)drv.Row;
+                     if (drCode.Name.EndsWith(".js") && drCode.IsCustomObject)
+                        sw.WriteLine("<script type=\"text/javascript\" src=\"" + drCode.Name + "\"></script>");
+                  }
+               }
+            }
+            htmlTemplate = htmlTemplate.Replace("<!--#echo var=\"Scripts\" -->", sw.ToString());
+         }
+         htmlTemplate = htmlTemplate.Replace("<!--#echo var=\"Width\" -->", dispSize.Width.ToString());
+         htmlTemplate = htmlTemplate.Replace("<!--#echo var=\"Height\" -->", dispSize.Height.ToString());
+
+         using (System.IO.StringWriter sw = new System.IO.StringWriter())
+         {
+            foreach (System.Data.DataRowView drv in ProjectData.GraphicSheet.DefaultView)
+            {
+               ProjectDataset.GraphicSheetRow drGfx = (ProjectDataset.GraphicSheetRow)drv.Row;
+               if (0 != (htmlOptions & HtmlGeneratorOptions.EmbedPng))
+               {
+                  sw.Write("<img id=\"" + NameToVariable(drGfx.Name) + "\" style=\"display:none\" src=\"data:image/png;base64,");
+                  sw.Write(Convert.ToBase64String(ProjectData.GetGraphicSheet(drGfx.Name).Image, Base64FormattingOptions.InsertLineBreaks));
+               }
+               else
+                  sw.Write("<img id=\"" + NameToVariable(drGfx.Name) + "\" style=\"display:none\" src=\"" + drGfx.Name + ".png");
+               sw.WriteLine("\" />");
+            }
+
+            htmlTemplate = htmlTemplate.Replace("<!--#echo var=\"Images\" -->", sw.ToString());
+         }
+
+         if (0 != (htmlOptions & HtmlGeneratorOptions.GenerateMapButtons))
+         {
+            using (System.IO.StringWriter sw = new System.IO.StringWriter())
+            {
+               GenerateHtmlMapButtons(sw);
+               htmlTemplate = htmlTemplate.Replace("<!--#echo var=\"MapButtons\" -->", sw.ToString());
+            }
          }
          else
          {
-            txt.WriteLine("<script type=\"text/javascript\" src=\"" + ProjectName + ".js\"></script>");
-            if (0 != (htmlOptions & HtmlGeneratorOptions.SeparateJsPerObj))
-            {
-               foreach (System.Data.DataRowView drv in ProjectData.SpriteDefinition.DefaultView)
-               {
-                  ProjectDataset.SpriteDefinitionRow sdr = (ProjectDataset.SpriteDefinitionRow)drv.Row;
-                  txt.WriteLine("<script type=\"text/javascript\" src=\"" + SpritesDir + "/" + NameToVariable(sdr.Name) + ".js\"></script>");
-               }
-               foreach (System.Data.DataRowView drv in ProjectData.Map.DefaultView)
-               {
-                  ProjectDataset.MapRow drMap = (ProjectDataset.MapRow)drv.Row;
-                  txt.WriteLine("<script type=\"text/javascript\" src=\"" + NameToMapClass(drMap.Name) + ".js\"></script>");
-               }
-            }
+            htmlTemplate = htmlTemplate.Replace("<!--#echo var=\"MapButtons\" -->", string.Empty);
          }
-         txt.WriteLine("</head>\r\n" +
-            "<body class=\"unselectable\" unselectable=\"on\"" + ((0 != (htmlOptions & HtmlGeneratorOptions.FillBrowser))
-            ? " onresize=\"resizeView()\"" : string.Empty) + ">\r\n" + 
-            "<canvas id=\"gameView\" width=\"" + dispSize.Width.ToString() + "\" height=\"" + dispSize.Height.ToString() + "\" " +
-            "unselectable=\"on\" class=\"unselectable\">\r\n" +
-            "   Your browser does not support HTML5 canvases.\r\n" +
-            "</canvas>");
-         foreach (System.Data.DataRowView drv in ProjectData.GraphicSheet.DefaultView)
-         {
-            ProjectDataset.GraphicSheetRow drGfx = (ProjectDataset.GraphicSheetRow)drv.Row;
-            if (0 != (htmlOptions & HtmlGeneratorOptions.EmbedPng))
-            {
-               txt.Write("<img id=\"" + NameToVariable(drGfx.Name) + "\" style=\"display:none\" src=\"data:image/png;base64,");
-               txt.Write(Convert.ToBase64String(ProjectData.GetGraphicSheet(drGfx.Name).Image, Base64FormattingOptions.InsertLineBreaks));
-            }
-            else
-               txt.Write("<img id=\"" + NameToVariable(drGfx.Name) + "\" style=\"display:none\" src=\"" + drGfx.Name + ".png");
-            txt.WriteLine("\" />");
-         }
-         if (0 != (htmlOptions & HtmlGeneratorOptions.GenerateMapButtons))
-            GenerateHtmlMapButtons(txt);
-         txt.WriteLine("</body>\r\n" +
-            "</html>");
+         txt.WriteLine(htmlTemplate);
       }
 
       private void GenerateHtmlJavascript(System.IO.TextWriter txt, System.IO.TextWriter err)
@@ -4094,7 +4179,8 @@ namespace SGDK2
          GenerateHtmlSprites(txt, err);
          GenerateHtmlTileCategories(txt);
          GenerateHtmlMaps(txt, err);
-         txt.WriteLine(GetRemainingJavascriptFiles());
+         if (0 != (htmlOptions & HtmlGeneratorOptions.FillBrowser))
+            txt.WriteLine("window.onresize = resizeView;");
          txt.WriteLine("window.onload = startGame;");
       }
 

@@ -1,0 +1,28 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale:1.0, user-scalable=no;"/>
+<title><!--#echo var="Title" --></title>
+<style>
+   .unselectable {
+      user-select:none;
+      -moz-user-select:-moz-none;
+      -khtml-user-select:none;
+      -webkit-user-select:none;
+      -o-user-select:none;
+   }
+   canvas { display: block }
+   <!--#echo var="BodyCSS" -->
+</style>
+
+<!--#echo var="Scripts" -->
+</head>
+<body class="unselectable" unselectable="on">
+<canvas id="gameView" width="<!--#echo var="Width" -->" height="<!--#echo var="Height" -->" unselectable="on" class="unselectable">
+   Your browser does not support HTML5 canvases.
+</canvas>
+<!--#echo var="Images" -->
+<!--#echo var="MapButtons" -->
+</body>
+</html>

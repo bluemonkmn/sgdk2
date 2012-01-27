@@ -35,6 +35,7 @@ function startGame() {
 
    gameView.touchstart = function(e) {
       e = e || window.event;
+      e.preventDefault();
       var touch = e.touches.item(0);
       mouseInfo.x = touch.clientX;
       mouseInfo.y = touch.clientY;
@@ -44,6 +45,7 @@ function startGame() {
 
    gameView.touchmove = function(e) {
       e = e || window.event;
+      e.preventDefault();
       var touch = e.touches.item(0);
       mouseInfo.x = touch.clientX;
       mouseInfo.y = touch.clientY;
@@ -51,6 +53,8 @@ function startGame() {
    };
    
    gameView.touchend = function(e) {
+      e = e || window.event;
+      e.preventDefault();
       mouseInfo.pressed = false;
    }
 

@@ -1344,6 +1344,8 @@ namespace SGDK2
             sBareName = sName.Substring(0, sName.Length - 3);
          else if (sName.EndsWith(".config"))
             sBareName = sName.Substring(0, sName.Length - 7);
+         else if (sName.EndsWith(".html"))
+            sBareName = sName.Substring(0, sName.Length - 5);
          else if (sName.EndsWith(".dll"))
             sBareName = sName.Substring(0, sName.Length - 4);
          else if (sName.EndsWith(".so"))

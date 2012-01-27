@@ -1103,6 +1103,8 @@ namespace SGDK2
                      sBareName = sName.Substring(0, sName.Length - 3);
                   else if (sName.EndsWith(".dll"))
                      sBareName = sName.Substring(0, sName.Length - 4);
+                  else if (sName.EndsWith(".html"))
+                     sBareName = sName.Substring(0, sName.Length - 5);
                   else if (sName.EndsWith(".config"))
                      sBareName = sName.Substring(0, sName.Length - 7);
                   else if (sName.EndsWith(".so"))
@@ -1126,7 +1128,7 @@ namespace SGDK2
                      MessageBox.Show(this, "The specified custom object name already exists", "New Custom Code Object", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                      return;
                   }
-                  if (sName.EndsWith(".cs") || sName.EndsWith(".config") || sName.EndsWith(".js"))
+                  if (sName.EndsWith(".cs") || sName.EndsWith(".config") || sName.EndsWith(".js") || sName.EndsWith(".html"))
                   {
                      frmNew = new frmCodeEditor(sName, KeyParts[KeyParts.Length-1]);
                      frmNew.MdiParent = this;

@@ -33,7 +33,7 @@ function startGame() {
       mouseInfo.pressed = false;
    };
 
-   gameView.touchstart = function(e) {
+   gameView.ontouchstart = function(e) {
       e = e || window.event;
       e.preventDefault();
       var touch = e.touches.item(0);
@@ -43,7 +43,7 @@ function startGame() {
       mouseInfo.clicked = true;
    };
 
-   gameView.touchmove = function(e) {
+   gameView.ontouchmove = function(e) {
       e = e || window.event;
       e.preventDefault();
       var touch = e.touches.item(0);
@@ -52,7 +52,7 @@ function startGame() {
       mouseInfo.pressed = true;
    };
    
-   gameView.touchend = function(e) {
+   gameView.ontouchend = function(e) {
       e = e || window.event;
       e.preventDefault();
       mouseInfo.pressed = false;

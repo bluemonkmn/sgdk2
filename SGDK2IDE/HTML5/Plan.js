@@ -380,3 +380,7 @@ PlanBase.prototype.addSpriteAtPlan = function(spriteDefinition, relativePosition
       this.layer.spriteCategories[category].push(GeneralRules.lastCreatedSprite);
    }
 }
+
+PlanBase.prototype.mapMouseToSprite = function(target, instantMove, hotSpot) {
+   target.mapMouseToSprite(instantMove, hotSpot);
+}

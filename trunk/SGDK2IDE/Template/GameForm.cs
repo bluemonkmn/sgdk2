@@ -52,7 +52,9 @@ public partial class GameForm : Form
    bool isFullScreen = false;
    private string title;
    public static System.Drawing.Point oldMousePosition;
+   public static System.Drawing.Point curMousePosition;
    public static System.Windows.Forms.MouseButtons oldMouseButtons;
+   public static System.Windows.Forms.MouseButtons curMouseButtons;
 
    #region Events
    /// <summary>
@@ -205,6 +207,11 @@ public partial class GameForm : Form
       Application.DoEvents();
       while(true)
       {
+         oldMousePosition = curMousePosition;
+         oldMouseButtons = curMouseButtons;
+         curMousePosition = System.Windows.Forms.Control.MousePosition;
+         curMouseButtons = System.Windows.Forms.Control.MouseButtons;
+
          if (OnFrameStart != null)
             OnFrameStart();
          if ((GameDisplay == null) || GameDisplay.IsDisposed || m_quit)
@@ -243,8 +250,6 @@ public partial class GameForm : Form
             OnAfterDrawOverlay();
          GameDisplay.Flush();
          GameDisplay.SwapBuffers();
-         oldMousePosition = System.Windows.Forms.Control.MousePosition;
-         oldMouseButtons = System.Windows.Forms.Control.MouseButtons;
          Application.DoEvents();
       }
    }

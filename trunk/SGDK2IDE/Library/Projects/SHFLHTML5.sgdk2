@@ -4147,6 +4147,29 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
    }
 
    /// &lt;summary&gt;
+   /// Move the specified sprite to the position of the mouse cursor and set the sprite's button inputs based on mouse button states.
+   /// &lt;/summary&gt;
+   /// &lt;param name="Target"&gt;Specifies the sprite to be moved.&lt;/param&gt;
+   /// &lt;param name="InstantMove"&gt;If true, the sprite will be moved immediately without regard to
+   /// the existing position or solidity or anything else.  If false, the sprite's position will
+   /// not be immediately changed, but its velocity will be set so that the sprite will end up at
+   /// the mouse cursor's location after &lt;see cref="SpriteBase.MoveByVelocity"/&gt; executes. Note that moving
+   /// the sprite instantly will ignore solidity and will not work well with sprites riding on
+   /// this sprite, while allowing just the velocity to be set will allow this, but limit the
+   /// sprite's movement based on solidity.&lt;/param&gt;
+   /// &lt;param name="hotSpot"&gt;Which part of the sprite will move to the mouse point.&lt;/param&gt;
+   /// &lt;remarks&gt;Before the button inputs are mapped from the mouse to the sprite,
+   /// the existing inputs are copied from &lt;see cref="SpriteBase.inputs"/&gt; to &lt;see cref="SpriteBase.oldinputs"/&gt;
+   /// so other rules will be able to determine which buttons were pressed before.
+   /// &lt;/remarks&gt;
+   [Description("Move the specified sprite to the position of the mouse cursor and set the sprite's button inputs based on mouse button states. If InstantMove is true, the sprite will be moved immediately, otherwise it the velocity will be set to move when MoveByVelocity runs.")]
+   public virtual void MapMouseToSprite(SpriteBase Target, bool InstantMove, RelativePosition hotSpot)
+   {
+      Target.MapMouseToSprite(InstantMove, hotSpot);
+   }
+
+
+   /// &lt;summary&gt;
    /// If any sprite in the specified category is within the bounds of this plan or
    /// the Target plan, and is pressing the specified Trigger, transport it to the
    /// other plan.
@@ -4947,6 +4970,18 @@ public abstract partial class GeneralRules
             return false;
       }
       return false;
+   }
+
+   /// &lt;summary&gt;
+   /// Determines if the specified mouse button is pressed.
+   /// &lt;/summary&gt;
+   /// &lt;param name="Button"&gt;Specifies which button to check.&lt;/param&gt;
+   /// &lt;returns&gt;True if the button is pressed, false if it is not pressed.&lt;/returns&gt;
+   [Description("Determines if touch was initiated or mouse was clicked this frame.")]
+   public virtual bool Clicked()
+   {
+      return (0 != System.Windows.Forms.Control.MouseButtons) &amp;&amp;
+         ((GameForm.oldMouseButtons &amp; System.Windows.Forms.Control.MouseButtons) == 0);
    }
 
    /// &lt;summary&gt;
@@ -6787,6 +6822,65 @@ public abstract partial class SpriteBase : GeneralRules
    }
 
    /// &lt;summary&gt;
+   /// Set the state of the directional inputs on this sprite to move toward the specified sprite in a category.
+   /// &lt;/summary&gt;
+   /// &lt;param name="Target"&gt;Specifies the sprite collection containing the sprite toward which this sprite will try to move.&lt;/param&gt;
+   /// &lt;param name="Index"&gt;Use &lt;see cref="GetNearestSpriteIndex"/&gt; to compute this value or pass -1 to compute the current nearest sprite each time this is called.&lt;/param&gt;
+   /// &lt;remarks&gt;This function assumes that the directional inputs on the sprite
+   /// cause the sprite to move directly in the direction associated with the input.  It will
+   /// not work if, for example, left arrow causes the sprite to turn left instead of move left.
+   /// &lt;seealso cref="SetInputsTowardSprite"/&gt;
+   /// &lt;seealso cref="PushTowardCategory"/&gt;
+   /// &lt;seealso cref="GetNearestSpriteIndex"/&gt;&lt;/remarks&gt;
+   [Description("Set the state of the directional inputs on this sprite to move toward the specified sprite in a category, assuming the input causes the sprite to move directly in its direction. Use GetNearestSpriteIndex to compute an Index or pass -1 to use the current nearest sprite.")]
+   public virtual void SetInputsTowardCategory(SpriteCollection Target, int Index)
+   {
+      Debug.Assert(this.isActive, "Attepmted to execute SetInputsTowardCategory on an inactive sprite");
+      Debug.Assert(Index &lt; Target.Count, "Attempted to SetInputsTowardCategory on an index beyond the bounds of a collection");
+
+      if (Index &lt; 0)
+         Index = GetNearestSpriteIndex(Target);
+      if (Index &lt; 0)
+      {
+         inputs &amp;= ~(InputBits.Left | InputBits.Right | InputBits.Up | InputBits.Down);
+         return;
+      }
+
+      SetInputsTowardSprite(Target[Index]);
+   }
+
+   /// &lt;summary&gt;
+   /// Set the state of the directional inputs on this sprite to move toward the specified sprite.
+   /// &lt;/summary&gt;
+   /// &lt;param name="Target"&gt;Specifies the sprite collection containing the sprite toward which
+   /// this sprite will try to move.&lt;/param&gt;
+   /// &lt;remarks&gt;This function is not exposed as a rule function because it is intended to be
+   /// called by a plan or other code that can provide a target sprite based on specific
+   /// context whereas a sprite definition rule function is supposed to be generic.
+   /// This is called by &lt;see cref="SetInputsTowardCategory"/&gt;.&lt;/remarks&gt;
+   public virtual void SetInputsTowardSprite(SpriteBase Target)
+   {
+      int targetCenter = Target.PixelX + Target.SolidWidth / 2;
+      int myCenter = PixelX + SolidWidth / 2;
+
+      if (targetCenter &lt; myCenter)
+         inputs |= InputBits.Left;
+      else if (targetCenter &gt; myCenter)
+         inputs |= InputBits.Right;
+      else
+         inputs &amp;= ~(InputBits.Left | InputBits.Right);
+
+      targetCenter = Target.PixelY + Target.SolidHeight / 2;
+      myCenter = PixelY + SolidHeight / 2;
+      if (targetCenter &lt; myCenter)
+         inputs |= InputBits.Up;
+      else if (targetCenter &gt; myCenter)
+         inputs |= InputBits.Down;
+      else
+         inputs &amp;= ~(InputBits.Up | InputBits.Down);
+   }
+
+   /// &lt;summary&gt;
    /// Move the sprite to the position of the mouse cursor and set the sprite's button inputs based on mouse button states.
    /// &lt;/summary&gt;
    /// &lt;param name="InstantMove"&gt;If true, the sprite will be moved immediately without regard to
@@ -6796,25 +6890,27 @@ public abstract partial class SpriteBase : GeneralRules
    /// the sprite instantly will ignore solidity and will not work well with sprites riding on
    /// this sprite, while allowing just the velocity to be set will allow this, but limit the
    /// sprite's movement based on solidity.&lt;/param&gt;
+   /// &lt;param name="hotSpot"&gt;Which part of the sprite will move to the mouse point.&lt;/param&gt;
    /// &lt;remarks&gt;Before the button inputs are mapped from the mouse to the sprite,
    /// the existing inputs are copied from &lt;see cref="inputs"/&gt; to &lt;see cref="oldinputs"/&gt;
    /// so other rules will be able to determine which buttons were pressed before.
    /// &lt;/remarks&gt;
    [Description("Move the sprite to the position of the mouse cursor and set the sprite's button inputs based on mouse button states. If InstantMove is true, the sprite will be moved immediately, otherwise it the velocity will be set to move when MoveByVelocity runs.")]
-   public virtual void MapMouseToSprite(bool InstantMove)
+   public virtual void MapMouseToSprite(bool InstantMove, RelativePosition hotSpot)
    {
       System.Drawing.Point pos = ParentLayer.GetMousePosition();
+      System.Drawing.Point hotPoint = GetRelativePosition(hotSpot);
       if (InstantMove)
       {
          oldX = x;
          oldY = y;
-         x = pos.X;
-         y = pos.Y;
+         x = pos.X + x - hotPoint.X;
+         y = pos.Y + y - hotPoint.Y;
       }
       else
       {
-         dx = pos.X - x;
-         dy = pos.Y - y;
+         dx = pos.X - hotPoint.X;
+         dy = pos.Y - hotPoint.Y;
       }
       oldinputs = inputs;
       inputs = 0;

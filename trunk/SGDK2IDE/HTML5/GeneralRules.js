@@ -472,4 +472,8 @@ GeneralRules.prototype.getRandomNumber = function(minimum, maximum) {
 GeneralRules.prototype.dragMap = function () {
    if (mouseInfo.pressed && !mouseInfo.clicked)
       currentMap.scroll(currentMap.scrollX + mouseInfo.x - mouseInfo.oldX, currentMap.scrollY + mouseInfo.y - mouseInfo.oldY);
-}
+};
+
+GeneralRules.prototype.clicked = function() {
+   return mouseInfo.clicked;
+};

@@ -1536,25 +1536,27 @@ public abstract partial class SpriteBase : GeneralRules
    /// the sprite instantly will ignore solidity and will not work well with sprites riding on
    /// this sprite, while allowing just the velocity to be set will allow this, but limit the
    /// sprite's movement based on solidity.</param>
+   /// <param name="hotSpot">Which part of the sprite will move to the mouse point.</param>
    /// <remarks>Before the button inputs are mapped from the mouse to the sprite,
    /// the existing inputs are copied from <see cref="inputs"/> to <see cref="oldinputs"/>
    /// so other rules will be able to determine which buttons were pressed before.
    /// </remarks>
    [Description("Move the sprite to the position of the mouse cursor and set the sprite's button inputs based on mouse button states. If InstantMove is true, the sprite will be moved immediately, otherwise it the velocity will be set to move when MoveByVelocity runs.")]
-   public virtual void MapMouseToSprite(bool InstantMove)
+   public virtual void MapMouseToSprite(bool InstantMove, RelativePosition hotSpot)
    {
       System.Drawing.Point pos = ParentLayer.GetMousePosition();
+      System.Drawing.Point hotPoint = GetRelativePosition(hotSpot);
       if (InstantMove)
       {
          oldX = x;
          oldY = y;
-         x = pos.X;
-         y = pos.Y;
+         x = pos.X + x - hotPoint.X;
+         y = pos.Y + y - hotPoint.Y;
       }
       else
       {
-         dx = pos.X - x;
-         dy = pos.Y - y;
+         dx = pos.X - hotPoint.X;
+         dy = pos.Y - hotPoint.Y;
       }
       oldinputs = inputs;
       inputs = 0;

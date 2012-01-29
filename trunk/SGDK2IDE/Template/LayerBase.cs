@@ -625,7 +625,7 @@ public abstract partial class LayerBase : System.Collections.IEnumerable
    public Point GetMousePosition()
    {
       Point dispPos;
-      dispPos = m_ParentMap.Display.PointToClient(System.Windows.Forms.Control.MousePosition);
+      dispPos = m_ParentMap.Display.PointToClient(GameForm.curMousePosition);
       dispPos.Offset(-CurrentPosition.X, -CurrentPosition.Y);
       return dispPos;
    }

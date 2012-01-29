@@ -788,7 +788,7 @@ Sprite.prototype.setInputState = function(input, press) {
 Sprite.prototype.clearInputs = function(setOldInputs) {
    if (setOldInputs)
       this.oldInputs = this.inputs;
-   inputs = 0;
+   this.inputs = 0;
 };
 
 Sprite.prototype.tileUseUp = function(tileValue, counter, newValue) {
@@ -876,19 +876,53 @@ Sprite.prototype.tileTouchingIndex = function(tileValue, initialOnly, markAsProc
    return -1;
 };
 
-Sprite.prototype.mapMouseToSprite = function(instantMove) {
+Sprite.prototype.mapMouseToSprite = function(instantMove, hotSpot) {
    var pos = {x:mouseInfo.x - this.layer.currentX, y:mouseInfo.y - this.layer.currentY};
+   var rp = this.getRelativePosition(hotSpot);
    if (instantMove) {
       this.oldX = this.x;
       this.oldY = this.y;
-      this.x = pos.x;
-      this.y = pos.y;
+      this.x = pos.x + this.x - rp.x;
+      this.y = pos.y + this.y - rp.y;
    } else {
-      this.dx = pos.x - this.x;
-      this.dy = pos.y - this.y;
+      this.dx = pos.x - rp.x;
+      this.dy = pos.y - rp.y;
    }
    this.oldinputs = this.inputs;
    this.inputs = 0;
    if (mouseInfo.pressed)
       this.inputs |= Sprite.inputBits.button1;
-}
+};
+
+Sprite.prototype.setInputsTowardSprite = function(target) {
+   var targetCenter = target.x + target.getSolidWidth() / 2;
+   var myCenter = this.x + this.getSolidWidth() / 2;
+
+   if (targetCenter < myCenter)
+      this.inputs |= Sprite.inputBits.left;
+   else if (targetCenter > myCenter)
+      this.inputs |= Sprite.inputBits.right;
+   else
+      this.inputs &= ~(Sprite.inputBits.left | Sprite.inputBits.right);
+
+   targetCenter = target.y + target.getSolidHeight() / 2;
+   myCenter = this.y + this.getSolidHeight() / 2;
+   if (targetCenter < myCenter)
+      this.inputs |= Sprite.inputBits.up;
+   else if (targetCenter > myCenter)
+      this.inputs |= Sprite.inputBits.down;
+   else
+      this.inputs &= ~(Sprite.inputBits.up | Sprite.inputBits.down);
+};
+
+Sprite.prototype.setInputsTowardCategory = function(target, index) {
+   if (index < 0)
+      index = this.getNearestSpriteIndex(target);
+   if (index < 0)
+   {
+      this.inputs &= ~(Sprite.inputBits.left | Sprite.inputBits.right | Sprite.inputBits.up | Sprite.inputBits.down);
+      return;
+   }
+
+   this.setInputsTowardSprite(target[index]);
+};

@@ -812,17 +812,29 @@ public abstract partial class GeneralRules
    }
 
    /// <summary>
+   /// Determines if the specified mouse button is pressed.
+   /// </summary>
+   /// <param name="Button">Specifies which button to check.</param>
+   /// <returns>True if the button is pressed, false if it is not pressed.</returns>
+   [Description("Determines if touch was initiated or mouse was clicked this frame.")]
+   public virtual bool Clicked()
+   {
+      return (0 != System.Windows.Forms.Control.MouseButtons) &&
+         ((GameForm.oldMouseButtons & System.Windows.Forms.Control.MouseButtons) == 0);
+   }
+
+   /// <summary>
    /// When the mouse drags over the display, scroll the map along with it.
    /// </summary>
    [Description("When the mouse drags over the display, scroll the map along with it.")]
    public virtual void DragMap()
    {
-      if (0 != (GameForm.oldMouseButtons & System.Windows.Forms.Control.MouseButtons & System.Windows.Forms.MouseButtons.Left))
+      if (0 != (GameForm.oldMouseButtons & GameForm.curMouseButtons & System.Windows.Forms.MouseButtons.Left))
       {
          int mapX = (int)((ParentLayer.CurrentPosition.X - ParentLayer.AbsolutePosition.X) / ParentLayer.ScrollRate.Width);
          int mapY = (int)((ParentLayer.CurrentPosition.Y - ParentLayer.AbsolutePosition.Y) / ParentLayer.ScrollRate.Height);
-         int mouseOffsetX = System.Windows.Forms.Control.MousePosition.X - GameForm.oldMousePosition.X;
-         int mouseOffsetY = System.Windows.Forms.Control.MousePosition.Y - GameForm.oldMousePosition.Y;
+         int mouseOffsetX = GameForm.curMousePosition.X - GameForm.oldMousePosition.X;
+         int mouseOffsetY = Gameform.curMousePosition.Y - GameForm.oldMousePosition.Y;
          Project.GameWindow.CurrentMap.Scroll(new System.Drawing.Point(mapX + mouseOffsetX, mapY + mouseOffsetY));
       }
    }

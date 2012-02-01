@@ -16,6 +16,7 @@ GeneralRules.prototype.saveGame = function(slot, temporary) {
       this.includeInSaveUnit("WhichMapIsOverlaid");
    }
    if (GeneralRules.saveUnit.allMaps) {
+      GeneralRules.saveUnit.maps = {};
       for(var key in maps) {
          GeneralRules.saveUnit.maps[key] = maps[key].getState();
       }

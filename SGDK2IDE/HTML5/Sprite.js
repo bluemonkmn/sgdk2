@@ -376,7 +376,7 @@ Sprite.prototype.blocked = function(direction) {
          solidPixelWidth = this.getSolidWidth() + Math.ceil(this.x) - Math.floor(this.x);
          return this.layer.getTopSolidPixel(Math.floor(this.x), Math.floor(this.y) + this.getSolidHeight(), solidPixelWidth, 1, this.solidity) != MapLayer.noSolid;
       case "Left":
-         solidPixelHeight = this.getSolidHeight() + Math.ceiling(this.y) - Math.floor(this.y);
+         solidPixelHeight = this.getSolidHeight() + Math.ceil(this.y) - Math.floor(this.y);
          return this.layer.getRightSolidPixel(Math.floor(this.x) - 1, Math.floor(this.y), 1, solidPixelHeight, this.solidity) != MapLayer.noSolid;
    }
    return false;

@@ -834,7 +834,7 @@ public abstract partial class GeneralRules
          int mapX = (int)((ParentLayer.CurrentPosition.X - ParentLayer.AbsolutePosition.X) / ParentLayer.ScrollRate.Width);
          int mapY = (int)((ParentLayer.CurrentPosition.Y - ParentLayer.AbsolutePosition.Y) / ParentLayer.ScrollRate.Height);
          int mouseOffsetX = GameForm.curMousePosition.X - GameForm.oldMousePosition.X;
-         int mouseOffsetY = Gameform.curMousePosition.Y - GameForm.oldMousePosition.Y;
+         int mouseOffsetY = GameForm.curMousePosition.Y - GameForm.oldMousePosition.Y;
          Project.GameWindow.CurrentMap.Scroll(new System.Drawing.Point(mapX + mouseOffsetX, mapY + mouseOffsetY));
       }
    }

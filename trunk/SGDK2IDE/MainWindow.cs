@@ -3163,7 +3163,7 @@ namespace SGDK2
          tmrInitComplete.Enabled = false;
          frmDeployment.CheckDeploymentOptions(false, this);
 
-         if (DialogResult.Yes == frmSwitchableMessage.GetResult("NewUserHelp", DialogResult.Cancel, "If you are new to SGDK2, you should know that pressing the F1 will usually display a page with detailed help for the currently displayed task.  To get started, you may also want to browse the tutorials and other documentation.  Do you want to display the documentation now?", "Suggestions", MessageBoxButtons.YesNo, this))
+         if (DialogResult.Yes == frmSwitchableMessage.GetResult("NewUserHelp", DialogResult.Cancel, "Need Help?\r\n\r\nSGDK2 comes with extensive documentation provided in the online help file.\r\nHOWEVER if you downloaded SGDK2 from the internet you may need to unblock the help file as described at http://www.jeff.wilcox.name/2008/11/unblock-chms/.\r\n\r\n If you are new to SGDK2, you should know that pressing the F1 will usually display a page with detailed help for the currently displayed task.  To get started, you may also want to browse the tutorials and other documentation.  Do you want to display the documentation now?", "Suggestions", MessageBoxButtons.YesNo, this))
          {
             if(GetHelp())
                Help.ShowHelp(this, SGDK2IDE.g_HelpProvider.HelpNamespace, HelpNavigator.TableOfContents);

@@ -13,6 +13,62 @@
     </introduction>
 
 <section>
+   <title>Version 2.2.2</title>
+   <content>
+   <para>This section describes updates between versions 2.2.1 and 2.2.2.</para>
+   <list class="ordered">
+      <listItem>Implement Mobile device (touch interface) template project in
+      Mobile.sgdk2.</listItem>
+      <listItem>Allow the generated HTML file to be customized via an .html
+      template file in the project's source code folder.</listItem>
+      <listItem>Implement the ability to generate separate JavaScript files per
+      object (for each sprite definition and each map) when exporting HTML5
+      code.</listItem>
+      <listItem>Remember settings in the HTML5 export window and re-use them
+      when appropriate.</listItem>
+      <listItem>Corrections to improve/implement support for HTML5-based
+      projects targeting mobile devices.</listItem>
+      <listItem>Prevent default handling of HTML5 touch events to improve
+      behavior of project on mobile devices.</listItem>
+      <listItem>Generate the HTML5 page title from the project title instead of
+      from the project filename.</listItem>
+      <listItem>Implement some rules to provide basic support for mouse/touch
+      input handling.</listItem>
+      <listItem>Implement GeneralRules.Clicked rule function to determine if
+      the mouse was just clicked or touch interface was just touched.</listItem>
+      <listItem>Implement MapMouseToSprite for HTML5 projects.</listItem>
+      <listItem>Enhance MapMouseToSprite rule function to allow specifying the
+      sprite's hotspot relative to the mouse position.</listItem>
+      <listItem>Eliminate automatic hard-wired map dragging in HTML5 output and
+      replace it with a DragMap function that allows the project to control
+      this behavior.</listItem>
+      <listItem>Implement tileTouchingIndex in HTML5.</listItem>
+      <listItem>Halt the HTML5 export process if a compile error occurs in the
+      .NET code because the export process relies on some .NET reflection to
+      generate proper output.</listItem>
+      <listItem>Improve the way dynamic sprites are added to sprite categories
+      in HTML5 generated code so that initially empty categories will work.</listItem>
+      <listItem>Don't try to execute rules on sprites that have no rules in the
+      generated HTML5 code.</listItem>
+      <listItem>Improve code generation for suspended rules (especially when
+      suspended rules affect indentation).</listItem>
+      <listItem>Correct bugs in the HTML5 implementation of the Sprite.blocked
+      function.</listItem>
+      <listItem>Improve error handling when extraneous End rules exist for
+      sprite or plan rule sequences.</listItem>
+      <listItem>Exclude sprite and plan rules from the temporary compile that
+      is performed while exporting HTML5 code.</listItem>
+      <listItem>Correct ClearInputs rule function implementation for HTML5.</listItem>
+      <listItem>Implement SetInputsTowardSprite and SetInputsTowardCategory
+      functions for HTML5.</listItem>
+      <listItem>Improve .NET code's tracking of old mouse position.</listItem>
+      <listItem>Correct HTML5 save function when saving all maps without
+      explicitly including any maps in the save unit.</listItem>
+   </list>
+   </content>
+</section>
+
+<section>
   <title>Version 2.2.1</title>
   <content>
   <para>This section describes updates between versions 2.2.0 and 2.2.1.</para>

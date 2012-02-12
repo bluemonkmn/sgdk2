@@ -24,14 +24,6 @@
       touch screen to scroll around the maps if scrolling is not overridden
       by other rules.</para>
     </introduction>
-    <section address="Filename">
-      <title>File Name</title>
-      <content>
-        <para>This specifies the name of the HTML file that will be generated.
-        Other files may be generated in the same directory as this file
-        depending on options selected below.</para>
-      </content>
-    </section>
     <section address="DisplayArea">
       <title>Display Area</title>
       <content>
@@ -60,34 +52,72 @@
           </section>
       </sections>
     </section>
-    <section address="OutputFiles">
-      <title>Output files</title>
+    <section address="OutputFormat">
+      <title>Output Format</title>
       <content>
         <para>This determines whether code is generated to a single file or
         multiple files.</para>
       </content>
       <sections>
-          <section address="SingleFile">
-          <title>Single HTML file</title>
+          <section address="EmbedImages">
+          <title>Embed images in HTML file</title>
           <content>
-          <para>All data including graphics are embedded into a single HTML
-          file. This is recommended when viewing the HTML file from a local
+          <para>Graphics are embedded into the HTML file. This is recommended
+          when viewing the HTML file from a local
           file system because security restrictions apply and tend to interfere
           with some of the generated code's operation when the images are stored
           in separate files on a local file system. These restrictions do not
-          apply to files served from a true web server.</para>
+          apply to files served from a true web server. Un-checking this
+          option when appropriate can improve code readability by
+          separating the image data, and reduce the overhead introduced by
+          encoding image data as text.</para>
           </content>
           </section>
-          <section address="MultiFile">
-          <title>Separate HTML, PNG and JS files</title>
+          <section address="EmbedJavaScript">
+          <title>Embed JavaScript in HTML</title>
           <content>
-          <para>The HTML is generated independently from the JavaScript (JS)
-          and Graphic sheet image (PNG) files and referenced by the HTML file.
-          This can make the resources more managable and (in the case of PNG
-          files) more compact.</para>
+          <para>All JavaScript code is embedded within the HTML file. Combined
+          with the Embed images option, this allows your entire project to be
+          generated to a single HTML file with no external references.</para>
+          </content>
+          </section>
+          <section address="SingleJavaScript">
+          <title>Single external JavaScript file</title>
+          <content>
+          <para>All the JavasScript code is generated to a single JS file
+          separate from the HTML file.</para>
+          </content>
+          </section>
+          <section address="SeparateJavaScript">
+          <title>Separate JavaScript file per object</title>
+          <content>
+          <para>General JavaScript code is generated to a file separate from the
+          HTML, similar to the Single external JavaScript file option. However,
+          code specific to sprite definitions and maps are generated to
+          individual files specific to those objects (and named after those
+          objects). Custom JS files added to the project's source code folder
+          also retain their independence when generating with this option.</para>
           </content>
           </section>
       </sections>
+    </section>
+    <section address="Directory">
+      <title>Directory</title>
+      <content>
+        <para>This specifies the location where the output files will be
+        generated.  If multiple files are being generated, it's good to specify
+        a dedicated directory here rather than a directory containing other
+        files.</para>
+      </content>
+    </section>
+    <section address="Filename">
+      <title>File Name</title>
+      <content>
+        <para>This specifies the name of the HTML file that will be generated.
+        Other files may be generated in the directory specified above, but
+        this is the only file that is always generated regardless of the options
+        selected above, and whose name can be specified.</para>
+      </content>
     </section>
     <section address="MapButtons">
       <title>Generate buttons to switch between maps</title>

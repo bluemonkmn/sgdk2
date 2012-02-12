@@ -4081,7 +4081,7 @@ namespace SGDK2
       {
          System.Drawing.Size dispSize = Display.GetScreenSize((GameDisplayMode)Enum.Parse(typeof(GameDisplayMode), ProjectData.ProjectRow.DisplayMode));
          string htmlTemplate = GetJavascriptFile("Template.html");
-         htmlTemplate = htmlTemplate.Replace("<!--#echo var=\"Title\" -->", ProjectName);
+         htmlTemplate = htmlTemplate.Replace("<!--#echo var=\"Title\" -->", ProjectData.ProjectRow.TitleText.ToString());
          htmlTemplate = htmlTemplate.Replace("<!--#echo var=\"BodyCSS\" -->", (0 != (htmlOptions & HtmlGeneratorOptions.FillBrowser) ? "body { margin:0 }" : string.Empty));
 
          using (System.IO.StringWriter sw = new System.IO.StringWriter())

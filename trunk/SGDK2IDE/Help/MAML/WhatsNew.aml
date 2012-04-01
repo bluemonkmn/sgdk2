@@ -13,6 +13,21 @@
     </introduction>
 
 <section>
+   <title>Version 2.2.3</title>
+   <content>
+   <para>This section describes updates between versions 2.2.2 and 2.2.3.</para>
+   <list class="ordered">
+      <listItem>Ensure HTML5 code doesn't fail when attempting to test whether a
+      sprite has collided with an empty sprite category.</listItem>
+      <listItem>Fix a typo in the scrollSpriteIntoView HTML5 function.
+      </listItem>
+      <listItem>Fix code generator to not have errors when a disabled rule
+      function has no function assigned (if/end if nesting error).</listItem>
+   </list>
+   </content>
+</section>
+
+<section>
    <title>Version 2.2.2</title>
    <content>
    <para>This section describes updates between versions 2.2.1 and 2.2.2.</para>

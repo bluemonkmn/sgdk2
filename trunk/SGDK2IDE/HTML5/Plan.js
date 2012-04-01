@@ -351,7 +351,7 @@ PlanBase.prototype.isSpriteWithin = function(sprite, relativePosition) {
    return false;
 };
 
-PlanBase.prototype.scrollSpriteIntoView = function(sprite, useScrollMargin) {
+PlanBase.prototype.scrollSpriteIntoView = function(sprite, useScrollMargins) {
    this.layer.scrollSpriteIntoView(sprite, useScrollMargins);
 };
 

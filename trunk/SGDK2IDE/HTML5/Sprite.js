@@ -721,6 +721,8 @@ Sprite.prototype.setSolidity = function(solidity) {
 Sprite.prototype.testCollisionRect = function(targets) {
    if (!this.isActive)
       return -1;
+   if (targets == null)
+      return -1;
    for(var idx = 0; idx < targets.length; idx++) {
       var targetSprite = targets[idx];
       if ((targetSprite == this) || (!targetSprite.isActive))

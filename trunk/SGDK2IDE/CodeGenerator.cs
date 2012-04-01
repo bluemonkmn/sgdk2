@@ -2134,13 +2134,13 @@ namespace SGDK2
          System.Collections.Stack stkNestedConditions = new System.Collections.Stack();
          foreach(RuleContent rule in rules)
          {
-            if (rule.Function.Length == 0)
-               continue;
             if (String.Compare(rule.Type , "End", true) != 0)
             {
                CodeExpression invokeResult = null;
                if (!rule.Suspended)
                {
+                  if (rule.Function.Length == 0)
+                     continue;
                   CodeBinaryOperatorType op = CodeBinaryOperatorType.Modulus;
                   switch (rule.Function)
                   {
@@ -3854,6 +3854,9 @@ namespace SGDK2
                            if ((drSpritePlan == null) && (NameToVariable(pln.Name) == curPlan))
                               drSpritePlan = pln;
                   string errLine = fileLines[fileLines.Count - 1];
+                  
+                  if (drSpritePlan == null) continue;
+
                   ProjectDataset.PlanRuleRow[] planRules = ProjectData.GetSortedPlanRules(drSpritePlan, false);
                   var ruleMap = System.Linq.Enumerable.ToDictionary(planRules, k => k.Name, v => v);
                   for (int i = fileLines.Count - 1; i > 0; i--)

@@ -65,8 +65,11 @@ GeneralRules.prototype.loadGame = function(slot, temporary) {
       for(var key in data.counters)
          counters[key].value = data.counters[key].value; // Tile definitions are linked to the original counter instance
    }
-   if (data.currentMap !== undefined)
-      this.switchToMap(data.currentMap, true);
+   if (data.currentMap !== undefined) {
+      if (maps[data.currentMap] === undefined)
+         mapInitializers[data.currentMap]();
+      currentMap = maps[data.currentMap];
+   }
    if (data.overlayMap !== undefined)
       this.setOverlay(data.overlayMap);
 };
@@ -398,8 +401,8 @@ GeneralRules.prototype.createMessage = function(message) {
    }
 
    var messageSize = {width: maxWidth * GeneralRules.fontTileset.tileWidth, height: y * GeneralRules.fontTileset.tileHeight};
-   var messageX = (viewWidth - messageSize.width) / 2;
-   var messageY = (viewHeight - messageSize.height) / 2;
+   var messageX = Math.floor((viewWidth - messageSize.width) / 2);
+   var messageY = Math.floor((viewHeight - messageSize.height) / 2);
 
    var result = new MessageLayer(
       GeneralRules.fontTileset, this.layer.map, maxWidth, y, messageX, messageY,

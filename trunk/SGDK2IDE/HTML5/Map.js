@@ -46,8 +46,9 @@ Map.prototype.getState = function() {
 Map.prototype.setState = function(data) {
    for(var key in this.layers)
       this.layers[key].setState(data.layers[key]);
-   this.cameFromMapName = data.cameFromMapName;
-   this.mapFlags = data.mapFlags;
+   // These are probably correct, but the C# implementation doesn't do this
+   // this.cameFromMapName = data.cameFromMapName;
+   // this.mapFlags = data.mapFlags;
 };
 
 Map.prototype.executeRules = function() {

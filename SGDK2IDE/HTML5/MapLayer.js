@@ -66,7 +66,7 @@ MapLayer.prototype.getState = function() {
    {
       if (staticSpriteIndices[spriteIndex] !== true)
       {
-         dynamicSprites.push("\"" + this.sprites[spriteIndex].serialize().replace("\\", "\\\\").replace("\"", "\\\"") + "\"");
+         dynamicSprites.push("\"" + this.sprites[spriteIndex].serialize().replace(/\\/g, "\\\\").replace(/"/g, "\\\"") + "\"");
       }
    }
    result.dynamicSprites = "[" + dynamicSprites.join(",") + "]";

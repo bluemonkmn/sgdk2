@@ -625,9 +625,9 @@ Sprite.prototype.touchTiles = function(category) {
                (oldPixelY + this.getSolidHeight() >= yidx * th))
             {
                var edgeX = (oldPixelX + this.getSolidWidth() == xidx * tw) ||
-                  (this.oldPixelX == xidx * tw + tw);
+                  (oldPixelX == xidx * tw + tw);
                var edgeY = (oldPixelY + this.getSolidHeight() == yidx * th) ||
-                  (this.oldPixelY == yidx * th + th);
+                  (oldPixelY == yidx * th + th);
                if (edgeX && edgeY)
                   wasTouching = false;
                else
@@ -708,9 +708,9 @@ Sprite.prototype.tileActivateSprite = function(touchingIndex, category, clearPar
 };
 
 Sprite.prototype.clearParameters = function() {
-   if (this.userParams == null) return;
-   for(i in userParams) {
-      this[this.userParams[i]] = 0;
+   if (this.constructor.userParams == null) return;
+   for(i in this.constructor.userParams) {
+      this[this.constructor.userParams[i]] = 0;
    }
 };
 
@@ -745,6 +745,7 @@ Sprite.prototype.testCollisionRect = function(targets) {
 Sprite.prototype.getNearestSpriteIndex = function(target) {
    var minDist = 999999999;
    var result = -1;
+   if (target == null) return -1;
    for (var i = 0; i < target.length; i++) {
       if ((!target[i].isActive) || (target[i] == this))
          continue;
@@ -860,7 +861,8 @@ Sprite.prototype.tileChangeTouched = function(touchingIndex, newTileValue) {
       return;
 
    var tt = this.touchedTiles[touchingIndex];
-   this.layer[tt.x, tt.y] = tt.tileValue = newTileValue;
+   tt.tileValue =  newTileValue;
+   this.layer.setTile(tt.x, tt.y, tt.tileValue);
 };
 
 Sprite.prototype.tileTouchingIndex = function(tileValue, initialOnly, markAsProcessed) {

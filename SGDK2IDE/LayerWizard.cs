@@ -1033,7 +1033,7 @@ namespace SGDK2
          for(int i=0; i<lrs.Length; i++)
          {
             m_Layers[i] = new Layer(lrs[i], offsetDisplay);
-            if (lrs[i] == m_Layer)
+            if (lrs[i].Name == m_Layer.Name)
                m_nCurLayer = i;
          }
          if (m_RememberedOffset == Point.Empty)

@@ -3967,6 +3967,8 @@ namespace SGDK2
 
       public string GenerateHtml5(string htmlFileName, out string errs, out System.Collections.Generic.IEnumerable<ObjectErrorInfo> errorRules)
       {
+         System.Globalization.CultureInfo originalCulture = System.Threading.Thread.CurrentThread.CurrentCulture;
+         System.Threading.Thread.CurrentThread.CurrentCulture = System.Globalization.CultureInfo.InvariantCulture;
          System.IO.TextWriter err = new System.IO.StringWriter();
          errorRules = null;
          var errorRows = new System.Collections.Generic.List<ObjectErrorInfo>();
@@ -4018,6 +4020,10 @@ namespace SGDK2
             if (errorRows.Count > 0)
                errorRules = errorRows.ToArray();
             return null;
+         }
+         finally
+         {
+            System.Threading.Thread.CurrentThread.CurrentCulture = originalCulture;
          }
       }
 

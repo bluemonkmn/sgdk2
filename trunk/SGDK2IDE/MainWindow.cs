@@ -20,6 +20,8 @@ namespace SGDK2
       #region Win32 API declarations
       const uint DWM_EC_DISABLECOMPOSITION = 0;
       private MenuItem mnuFileGenHtml5;
+      private MenuItem mnuRunHTML5Button;
+      private MenuItem mnuFileRunHtml5;
       const uint DWM_EC_ENABLECOMPOSITION = 1;
       [System.Runtime.InteropServices.DllImport("dwmapi.dll", EntryPoint = "DwmEnableComposition")]
       private extern static uint DwmEnableComposition(uint compositionAction);
@@ -202,6 +204,8 @@ namespace SGDK2
          this.lblProjectTree = new System.Windows.Forms.Label();
          this.sbMain = new System.Windows.Forms.StatusBar();
          this.tmrInitComplete = new System.Windows.Forms.Timer(this.components);
+         this.mnuFileRunHtml5 = new System.Windows.Forms.MenuItem();
+         this.mnuRunHTML5Button = new System.Windows.Forms.MenuItem();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.pnlProjectTree.SuspendLayout();
          this.SuspendLayout();
@@ -265,7 +269,8 @@ namespace SGDK2
          // 
          this.mnuRunBar.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.mnuRunDebugButton,
-            this.mnuRunButton});
+            this.mnuRunButton,
+            this.mnuRunHTML5Button});
          // 
          // mnuRunDebugButton
          // 
@@ -355,7 +360,7 @@ namespace SGDK2
          this.tvwMain.Location = new System.Drawing.Point(0, 16);
          this.tvwMain.Name = "tvwMain";
          this.tvwMain.SelectedImageIndex = 0;
-         this.tvwMain.Size = new System.Drawing.Size(222, 447);
+         this.tvwMain.Size = new System.Drawing.Size(222, 405);
          this.tvwMain.TabIndex = 3;
          this.tvwMain.DoubleClick += new System.EventHandler(this.tvwMain_DoubleClick);
          this.tvwMain.Leave += new System.EventHandler(this.tvwMain_Leave);
@@ -402,7 +407,7 @@ namespace SGDK2
          this.splitterMDI.Location = new System.Drawing.Point(222, 27);
          this.splitterMDI.MinSize = 20;
          this.splitterMDI.Name = "splitterMDI";
-         this.splitterMDI.Size = new System.Drawing.Size(6, 463);
+         this.splitterMDI.Size = new System.Drawing.Size(6, 421);
          this.splitterMDI.TabIndex = 4;
          this.splitterMDI.TabStop = false;
          // 
@@ -435,6 +440,7 @@ namespace SGDK2
             this.mnuFileDeleteIntermediateFiles,
             this.mnuFileDeleteOutputFiles,
             this.mnuFileGenHtml5,
+            this.mnuFileRunHtml5,
             this.mnuFileSep3,
             this.mnuFileSep4,
             this.mnuFileExit});
@@ -573,19 +579,19 @@ namespace SGDK2
          // 
          // mnuFileSep3
          // 
-         this.mnuFileSep3.Index = 16;
+         this.mnuFileSep3.Index = 17;
          this.mnuFileSep3.MergeOrder = 27;
          this.mnuFileSep3.Text = "-";
          // 
          // mnuFileSep4
          // 
-         this.mnuFileSep4.Index = 17;
+         this.mnuFileSep4.Index = 18;
          this.mnuFileSep4.MergeOrder = 98;
          this.mnuFileSep4.Text = "-";
          // 
          // mnuFileExit
          // 
-         this.mnuFileExit.Index = 18;
+         this.mnuFileExit.Index = 19;
          this.mnuFileExit.MergeOrder = 99;
          this.mnuFileExit.Text = "E&xit";
          this.mnuFileExit.Click += new System.EventHandler(this.mnuFileExit_Click);
@@ -692,7 +698,7 @@ namespace SGDK2
          this.pnlProjectTree.Dock = System.Windows.Forms.DockStyle.Left;
          this.pnlProjectTree.Location = new System.Drawing.Point(0, 27);
          this.pnlProjectTree.Name = "pnlProjectTree";
-         this.pnlProjectTree.Size = new System.Drawing.Size(222, 463);
+         this.pnlProjectTree.Size = new System.Drawing.Size(222, 421);
          this.pnlProjectTree.TabIndex = 6;
          // 
          // lblProjectTree
@@ -717,7 +723,7 @@ namespace SGDK2
          // 
          // sbMain
          // 
-         this.sbMain.Location = new System.Drawing.Point(0, 490);
+         this.sbMain.Location = new System.Drawing.Point(0, 448);
          this.sbMain.Name = "sbMain";
          this.sbMain.Size = new System.Drawing.Size(965, 20);
          this.sbMain.TabIndex = 8;
@@ -725,6 +731,19 @@ namespace SGDK2
          // tmrInitComplete
          // 
          this.tmrInitComplete.Tick += new System.EventHandler(this.tmrInitComplete_Tick);
+         // 
+         // mnuFileRunHtml5
+         // 
+         this.mnuFileRunHtml5.Index = 16;
+         this.mnuFileRunHtml5.Shortcut = System.Windows.Forms.Shortcut.F10;
+         this.mnuFileRunHtml5.Text = "Ex&port HTML 5 and Run";
+         this.mnuFileRunHtml5.Click += new System.EventHandler(this.mnuFileRunHtml5_Click);
+         // 
+         // mnuRunHTML5Button
+         // 
+         this.mnuRunHTML5Button.Index = 2;
+         this.mnuRunHTML5Button.Text = "Run HTML 5";
+         this.mnuRunHTML5Button.Click += new System.EventHandler(this.mnuFileRunHtml5_Click);
          // 
          // dataMonitor
          // 
@@ -784,7 +803,7 @@ namespace SGDK2
          // frmMain
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-         this.ClientSize = new System.Drawing.Size(965, 510);
+         this.ClientSize = new System.Drawing.Size(965, 468);
          this.Controls.Add(this.splitterMDI);
          this.Controls.Add(this.pnlProjectTree);
          this.Controls.Add(this.tbrMain);
@@ -2992,6 +3011,10 @@ namespace SGDK2
          if (System.IO.Directory.Exists(spriteDir) &&
              (System.IO.Directory.GetFileSystemEntries(spriteDir).Length == 0))
             System.IO.Directory.Delete(spriteDir, false);
+         string framesetDir = System.IO.Path.Combine(strFolder, "Framesets");
+         if (System.IO.Directory.Exists(framesetDir) &&
+             (System.IO.Directory.GetFileSystemEntries(framesetDir).Length == 0))
+            System.IO.Directory.Delete(framesetDir, false);
       }
 
       private void mnuFileDeleteOutputFiles_Click(object sender, System.EventArgs e)
@@ -3237,6 +3260,11 @@ namespace SGDK2
       private void chkDeploymentOptions_Click(object sender, EventArgs e)
       {
          frmDeployment.CheckDeploymentOptions(true, this);
+      }
+
+      private void mnuFileRunHtml5_Click(object sender, EventArgs e)
+      {
+         frmHTML5Export.ExportAndRun(this);
       }
       #endregion
    }

@@ -13,6 +13,28 @@
     </introduction>
 
 <section>
+   <title>Version 2.2.6</title>
+   <content>
+   <para>This section describes updates between versions 2.2.3 and 2.2.6.</para>
+   <list class="ordered">
+      <listItem>Corrections to loadGame and createMessage functions</listItem>
+      <listItem>Corrections to map setState and layer getState functions</listItem>
+      <listItem>Corrections to sprite touchTiles, clearParameters, getNearestSpriteIndex
+      and tileChangeTouched functions</listItem>
+      <listItem>Correction to layer wizard.</listItem>
+      <listItem>ClickOnce installer updates. (Still not published because .NET 4.5 isn't out yet.)</listItem>
+      <listItem>When exporting HTML5 code (javascript numbers), ignore system's
+      decimal separator (always use period) and other local settings.</listItem>
+      <listItem>For projects based on the latest code template with Frameset.cs, generate framesets
+      in binary format to avoid huge code file and stack overflow at runtime when project has many
+      (on the order of 10000) frames.</listItem>
+      <listItem>Correct error when the map editor is minimized and restored.</listItem>
+      <listItem>Implement new command to export and run the project in HTML 5 form with a single click or keypress.</listItem>
+   </list>
+   </content>
+</section>
+
+<section>
    <title>Version 2.2.3</title>
    <content>
    <para>This section describes updates between versions 2.2.2 and 2.2.3.</para>

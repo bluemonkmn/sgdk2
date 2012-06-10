@@ -173,6 +173,8 @@ namespace SGDK2
          base.OnResize(e);
          if ((GraphicsContext.CurrentContext == null) || (!this.IsHandleCreated))
             return;
+         if (ClientSize.Width <= 0)
+            return;
          MakeCurrent();
          GL.Finish();
          GL.Viewport(0, 0, ClientSize.Width, ClientSize.Height);
@@ -187,6 +189,7 @@ namespace SGDK2
          {
             GL.Ortho(0, ClientSize.Width, ClientSize.Height, 0, -1, 1);
          }
+         CheckError();
       }
       #endregion
 
@@ -416,8 +419,10 @@ namespace SGDK2
              (m_currentTexture != texture))
          {
             if (m_currentOp != DisplayOperation.None)
+            {
                GL.End();
-            CheckError();
+               CheckError();
+            }
 
             CheckRequirements();
             GL.TexEnv(TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (float)TextureEnvMode.Modulate);

@@ -444,6 +444,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Template\Joystick.cs" />
     <EmbeddedResource Include="Template\KeyboardState.cs" />
+    <EmbeddedResource Include="Template\Frameset.cs" />
     <Compile Include="TileCache.cs">
       <SubType>Code</SubType>
     </Compile>

@@ -80,6 +80,7 @@ namespace SGDK2
       private const string AppendStartIndexField = "m_nAppendStartIndex";
       private const string TileCategoryNameClass = "TileCategoryName";
       private const string SpritesDir = "Sprites";
+      private const string FramesetsDir = "Framesets";
       #endregion
 
       #region Embedded Types
@@ -298,9 +299,25 @@ namespace SGDK2
             GenerateCounters(txt);
             txt.Close();
 
-            txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, FramesetClass + ".cs"));
-            GenerateFramesets(txt);
-            txt.Close();
+            if (UseBinaryFramesets)
+            {
+               foreach (System.Data.DataRowView drv in ProjectData.Frameset.DefaultView)
+               {
+                  ProjectDataset.FramesetRow drFrameset = (ProjectDataset.FramesetRow)drv.Row;
+                  System.IO.Directory.CreateDirectory(System.IO.Path.Combine(FolderName, FramesetsDir));
+                  using (System.IO.BinaryWriter bw = new System.IO.BinaryWriter(new System.IO.FileStream(GetIntermediateEmbeddedFilename(FolderName, drv.Row), System.IO.FileMode.Create)))
+                  {
+                     GenerateBinaryFrameset(drFrameset, bw);
+                     bw.Close();
+                  }
+               }
+            }
+            else
+            {
+               txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, FramesetClass + ".cs"));
+               GenerateFramesets(txt);
+               txt.Close();
+            }
 
             txt = new System.IO.StreamWriter(System.IO.Path.Combine(FolderName, TilesetClass + ".cs"));
             GenerateTilesets(txt, err);
@@ -376,12 +393,14 @@ namespace SGDK2
          fileList.AddRange(new string[]
             {
                System.IO.Path.Combine(FolderName, CounterClass + ".cs"),
-               System.IO.Path.Combine(FolderName, FramesetClass + ".cs"),
                System.IO.Path.Combine(FolderName, TilesetClass + ".cs"),
                System.IO.Path.Combine(FolderName, SolidityClassName + ".cs"),
                System.IO.Path.Combine(FolderName, LayerSpriteCategoriesBaseClassName + ".cs"),
                System.IO.Path.Combine(FolderName, "AssemblyInfo.cs")
             });
+
+         if (!UseBinaryFramesets)
+            fileList.Add(System.IO.Path.Combine(FolderName, FramesetClass + ".cs"));
 
          foreach (System.Data.DataRowView drv in ProjectData.Map.DefaultView)
             fileList.Add(GetIntermediateCodeFilename(FolderName, drv.Row));
@@ -481,7 +500,22 @@ namespace SGDK2
             if ((!drCode.IsCustomObjectDataNull()) && drCode.Name.EndsWith(".cs"))
                fileList.Add(GetIntermediateEmbeddedFilename(FolderName, drv.Row));
          }
+         if (UseBinaryFramesets)
+         {
+            foreach (System.Data.DataRowView drv in ProjectData.Frameset.DefaultView)
+            {
+               fileList.Add(GetIntermediateEmbeddedFilename(FolderName, drv.Row));
+            }
+         }
          return (string[])(fileList.ToArray(typeof(string)));
+      }
+
+      public static bool UseBinaryFramesets
+      {
+         get
+         {
+            return ProjectData.GetSourceCode(FramesetClass + ".cs") != null;
+         }
       }
 
       public static string GetIntermediateEmbeddedFilename(string FolderName, System.Data.DataRow row)
@@ -493,6 +527,11 @@ namespace SGDK2
             ProjectDataset.SourceCodeRow drCode = (ProjectDataset.SourceCodeRow)row;
             if ((!drCode.IsCustomObjectDataNull()) && drCode.Name.EndsWith(".cs"))
                return System.IO.Path.Combine(FolderName, System.IO.Path.GetFileNameWithoutExtension(drCode.Name)) + ".bin";
+         }
+         if (row is ProjectDataset.FramesetRow && UseBinaryFramesets)
+         {
+            ProjectDataset.FramesetRow drFrameset = (ProjectDataset.FramesetRow)row;
+            return System.IO.Path.Combine(FolderName, System.IO.Path.Combine(FramesetsDir, drFrameset.Name + ".bin"));
          }
          return null;
       }
@@ -577,10 +616,13 @@ namespace SGDK2
             result.Add(txt.ToString());
          }
 
-         txt = new System.IO.StringWriter();
-         GenerateFramesets(txt);
-         txt.Close();
-         result.Add(txt.ToString());
+         if (!UseBinaryFramesets)
+         {
+            txt = new System.IO.StringWriter();
+            GenerateFramesets(txt);
+            txt.Close();
+            result.Add(txt.ToString());
+         }
 
          txt = new System.IO.StringWriter();
          GenerateTilesets(txt, err);
@@ -959,6 +1001,81 @@ namespace SGDK2
 
          Generator.GenerateCodeFromType(framesetClassDecl, txt, GeneratorOptions);
          Generator.GenerateCodeFromType(classFramesetRef, txt, GeneratorOptions);
+      }
+
+      public void GenerateBinaryFrameset(ProjectDataset.FramesetRow drFrameset, System.IO.BinaryWriter bw)
+      {
+         var gfxIndex = new System.Collections.Generic.Dictionary<string, Int16>();
+         var gfxSheetList = new System.Collections.Generic.LinkedList<string>();
+         foreach (ProjectDataset.FrameRow drFrame in ProjectData.GetSortedFrameRows(drFrameset))
+         {
+            if (!gfxIndex.ContainsKey(drFrame.GraphicSheet))
+            {
+               gfxIndex[drFrame.GraphicSheet] = (Int16)gfxIndex.Count;
+               gfxSheetList.AddLast(drFrame.GraphicSheet);
+            }
+         }
+         bw.Write(gfxIndex.Count);
+         foreach (var g in gfxSheetList)
+         {
+            bw.Write(g);
+         }
+         var frameList = ProjectData.GetSortedFrameRows(drFrameset);
+         bw.Write(frameList.Length);
+         foreach (ProjectDataset.FrameRow drFrame in frameList)
+         {
+            ProjectDataset.GraphicSheetRow g = ProjectData.GetGraphicSheet(drFrame.GraphicSheet);
+            if ((drFrame.m11 == 1) &&
+               (drFrame.m12 == 0) &&
+               (drFrame.m21 == 0) &&
+               (drFrame.m22 == 1) &&
+               (drFrame.dx == 0) &&
+               (drFrame.dy == 0))
+            {
+               if (drFrame.color == -1)
+                  bw.Write((byte)0);
+               else
+                  bw.Write((byte)1);
+               bw.Write(gfxIndex[drFrame.GraphicSheet]);
+               bw.Write(drFrame.CellIndex);
+               bw.Write((drFrame.CellIndex % g.Columns) * g.CellWidth);
+               bw.Write(((int)(drFrame.CellIndex / g.Columns)) * g.CellHeight);
+               bw.Write(g.CellWidth);
+               bw.Write(g.CellHeight);
+               if (drFrame.color != -1)
+                  bw.Write(drFrame.color);
+            }
+            else
+            {
+               if (drFrame.color == -1)
+                  bw.Write((byte)2);
+               else
+                  bw.Write((byte)3);
+               bw.Write(gfxIndex[drFrame.GraphicSheet]);
+               bw.Write(drFrame.CellIndex);
+               System.Drawing.PointF[] corners = new System.Drawing.PointF[] {
+                     new System.Drawing.PointF(0, 0),
+                     new System.Drawing.PointF(0, g.CellHeight),
+                     new System.Drawing.PointF(g.CellWidth, g.CellHeight),
+                     new System.Drawing.PointF(g.CellWidth, 0)};
+               using (System.Drawing.Drawing2D.Matrix mtx = new System.Drawing.Drawing2D.Matrix(
+                  drFrame.m11, drFrame.m12, drFrame.m21, drFrame.m22, drFrame.dx, drFrame.dy))
+               {
+                  mtx.TransformPoints(corners);
+               }
+               for (int ptIdx = 0; ptIdx < 4; ptIdx++)
+               {
+                  bw.Write(corners[ptIdx].X);
+                  bw.Write(corners[ptIdx].Y);
+               }
+               bw.Write((drFrame.CellIndex % g.Columns) * g.CellWidth);
+               bw.Write(((int)(drFrame.CellIndex / g.Columns)) * g.CellHeight);
+               bw.Write(g.CellWidth);
+               bw.Write(g.CellHeight);
+               if (drFrame.color != -1)
+                  bw.Write(drFrame.color);
+            }
+         }
       }
 
       public void GenerateCounters(System.IO.TextWriter txt)
@@ -3660,6 +3777,16 @@ namespace SGDK2
                else if (drCode.Name.EndsWith(".cs") && !drCode.IsCustomObjectDataNull())
                   resourceSwitches += " /res:\"" + System.IO.Path.Combine(FolderName, System.IO.Path.GetFileNameWithoutExtension(drCode.Name) + ".bin") + "\"";
             }
+            
+            if (UseBinaryFramesets)
+            {
+               foreach (System.Data.DataRowView drv in ProjectData.Frameset.DefaultView)
+               {
+                  ProjectDataset.FramesetRow drFrameset = (ProjectDataset.FramesetRow)drv.Row;
+                  resourceSwitches += " /res:\"" + GetIntermediateEmbeddedFilename(FolderName, drv.Row) + "\",\"" + FramesetsDir + "." + drFrameset.Name + ".bin\"";
+               }
+            }
+
             compilerParams.GenerateExecutable = true;
             compilerParams.GenerateInMemory = false;
             compilerParams.IncludeDebugInformation = Debug;

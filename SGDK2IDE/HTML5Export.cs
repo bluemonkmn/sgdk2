@@ -197,5 +197,71 @@ namespace SGDK2
       {
          EnableFilename(GetOptions());
       }
+
+      public static void ExportAndRun(Form parent)
+      {
+         try
+         {
+            string htmlOptionString = SGDK2IDE.GetUserOption("HTMLExportOptions");
+            CodeGenerator.HtmlGeneratorOptions options;
+            if (!string.IsNullOrEmpty(htmlOptionString))
+               options = (CodeGenerator.HtmlGeneratorOptions)Enum.Parse(typeof(CodeGenerator.HtmlGeneratorOptions), htmlOptionString);
+            else
+            {
+               PromptDisplayDialog(parent);
+               return;
+            }
+
+            if (string.IsNullOrEmpty(SGDK2IDE.CurrentProjectFile))
+            {
+               PromptDisplayDialog(parent);
+               return;
+            }
+
+            CodeGenerator g = new CodeGenerator();
+            g.htmlOptions = options;
+            string htmlFile;
+            if (0 != (options & CodeGenerator.HtmlGeneratorOptions.EmbedJs) &&
+                0 != (options & CodeGenerator.HtmlGeneratorOptions.EmbedPng))
+            {
+               if (String.IsNullOrEmpty(lastDir) || String.IsNullOrEmpty(lastFile))
+               {
+                  PromptDisplayDialog(parent);
+                  return;
+               }
+               htmlFile = System.IO.Path.Combine(lastDir, lastFile);
+            }
+            else
+            {
+               if (String.IsNullOrEmpty(lastDir))
+               {
+                  PromptDisplayDialog(parent);
+                  return;
+               }
+               htmlFile = System.IO.Path.Combine(lastDir, System.IO.Path.GetFileNameWithoutExtension(SGDK2IDE.CurrentProjectFile) + ".html");
+            }
+            string errs;
+            System.Collections.Generic.IEnumerable<CodeGenerator.ObjectErrorInfo> errorRules;
+            string outFile = g.GenerateHtml5(htmlFile, out errs, out errorRules);
+            if (errs.Length > 0)
+            {
+               frmLogView frm = new frmLogView(errs, errorRules);
+               frm.MdiParent = parent;
+               frm.Show();
+               return;
+            }
+            System.Diagnostics.Process.Start(htmlFile);
+         }
+         catch (System.Exception ex)
+         {
+            MessageBox.Show(parent, ex.Message, parent.Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
+         }
+      }
+
+      private static void PromptDisplayDialog(Form parent)
+      {
+         if (MessageBox.Show(parent, "The project must be saved and exported once before running it in this manner. Do you want to Export now?", "Export and Run HMTL 5", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) == DialogResult.Yes)
+            new frmHTML5Export().ShowDialog(parent);
+      }
    }
 }

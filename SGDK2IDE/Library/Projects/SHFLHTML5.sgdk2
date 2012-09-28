@@ -68,12 +68,10 @@
           </xs:element>
           <xs:element name="Counter">
             <xs:complexType>
-              <xs:sequence>
-                <xs:element name="Min" type="xs:int" default="0" msdata:Ordinal="3" />
-              </xs:sequence>
               <xs:attribute name="Name" type="xs:string" use="required" />
               <xs:attribute name="Value" type="xs:int" />
               <xs:attribute name="Max" type="xs:int" />
+              <xs:attribute name="Min" type="xs:int" msdata:DefaultValue="0" use="required" />
             </xs:complexType>
           </xs:element>
           <xs:element name="Map">
@@ -2441,44 +2439,20 @@
       <TileFrame Sequence="0" FrameValue="138" Duration="90" />
     </Tile>
   </Tileset>
-  <Counter Name="FrameCounter" Value="1" Max="1000000000">
-    <Min>0</Min>
-  </Counter>
-  <Counter Name="MenuPointerIndex" Value="0" Max="4">
-    <Min>0</Min>
-  </Counter>
-  <Counter Name="KeyRepeat" Value="0" Max="60">
-    <Min>0</Min>
-  </Counter>
-  <Counter Name="Players" Value="2" Max="2">
-    <Min>0</Min>
-  </Counter>
-  <Counter Name="Player 1 grapes" Value="0" Max="10">
-    <Min>0</Min>
-  </Counter>
-  <Counter Name="Player 2 grapes" Value="0" Max="10">
-    <Min>0</Min>
-  </Counter>
-  <Counter Name="Player 1 cherries" Value="0" Max="10">
-    <Min>0</Min>
-  </Counter>
-  <Counter Name="Player 2 cherries" Value="0" Max="10">
-    <Min>0</Min>
-  </Counter>
-  <Counter Name="Player 1 ice cream" Value="0" Max="10">
-    <Min>0</Min>
-  </Counter>
-  <Counter Name="Player 2 ice cream" Value="0" Max="10">
-    <Min>0</Min>
-  </Counter>
-  <Counter Name="Player 1 Score" Value="0" Max="10000000">
-    <Min>0</Min>
-  </Counter>
-  <Counter Name="Player 2 Score" Value="0" Max="10000000">
-    <Min>0</Min>
-  </Counter>
+  <Counter Name="FrameCounter" Value="1" Max="1000000000" Min="0" />
+  <Counter Name="MenuPointerIndex" Value="0" Max="4" Min="0" />
+  <Counter Name="KeyRepeat" Value="0" Max="60" Min="0" />
+  <Counter Name="Players" Value="2" Max="2" Min="0" />
+  <Counter Name="Player 1 grapes" Value="0" Max="10" Min="0" />
+  <Counter Name="Player 2 grapes" Value="0" Max="10" Min="0" />
+  <Counter Name="Player 1 cherries" Value="0" Max="10" Min="0" />
+  <Counter Name="Player 2 cherries" Value="0" Max="10" Min="0" />
+  <Counter Name="Player 1 ice cream" Value="0" Max="10" Min="0" />
+  <Counter Name="Player 2 ice cream" Value="0" Max="10" Min="0" />
+  <Counter Name="Player 1 Score" Value="0" Max="10000000" Min="0" />
+  <Counter Name="Player 2 Score" Value="0" Max="10000000" Min="0" />
   <Map Name="Menu" ScrollMarginLeft="32" ScrollMarginTop="32" ScrollMarginRight="32" ScrollMarginBottom="32" ScrollWidth="800" ScrollHeight="600">
-    <Layer Name="Letters" Width="25" Height="19" Tileset="LetterTiles" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="1" ScrollRateY="1" ZIndex="0" Priority="0" VirtualWidth="0" VirtualHeight="0">
+    <Layer Name="Letters" Width="25" Height="19" Tileset="LetterTiles" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="1" ScrollRateY="1" ZIndex="1" Priority="0" VirtualWidth="0" VirtualHeight="0">
       <Tiles>z8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8XFGhEjzwInHBgNJREezxMNGRHGxs/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Px8caESPPAyccGA0lER7PEw0ZEcjIz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/JyQ8bGiAVGiERzxMNGRHKys/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8vLHSEVIMzMz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pzw==</Tiles>
       <SpritePlan Name="Select Menu Items" Priority="1">
         <BaseClass>PlanBase</BaseClass>

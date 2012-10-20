@@ -152,6 +152,7 @@ namespace SGDK2
          this.mnuRunBar = new System.Windows.Forms.ContextMenu();
          this.mnuRunDebugButton = new System.Windows.Forms.MenuItem();
          this.mnuRunButton = new System.Windows.Forms.MenuItem();
+         this.mnuRunHTML5Button = new System.Windows.Forms.MenuItem();
          this.tbbFileSep = new System.Windows.Forms.ToolBarButton();
          this.tbbNew = new System.Windows.Forms.ToolBarButton();
          this.tbbDelete = new System.Windows.Forms.ToolBarButton();
@@ -184,6 +185,7 @@ namespace SGDK2
          this.mnuFileDeleteIntermediateFiles = new System.Windows.Forms.MenuItem();
          this.mnuFileDeleteOutputFiles = new System.Windows.Forms.MenuItem();
          this.mnuFileGenHtml5 = new System.Windows.Forms.MenuItem();
+         this.mnuFileRunHtml5 = new System.Windows.Forms.MenuItem();
          this.mnuFileSep3 = new System.Windows.Forms.MenuItem();
          this.mnuFileSep4 = new System.Windows.Forms.MenuItem();
          this.mnuFileExit = new System.Windows.Forms.MenuItem();
@@ -204,8 +206,6 @@ namespace SGDK2
          this.lblProjectTree = new System.Windows.Forms.Label();
          this.sbMain = new System.Windows.Forms.StatusBar();
          this.tmrInitComplete = new System.Windows.Forms.Timer(this.components);
-         this.mnuFileRunHtml5 = new System.Windows.Forms.MenuItem();
-         this.mnuRunHTML5Button = new System.Windows.Forms.MenuItem();
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.pnlProjectTree.SuspendLayout();
          this.SuspendLayout();
@@ -283,6 +283,12 @@ namespace SGDK2
          this.mnuRunButton.Index = 1;
          this.mnuRunButton.Text = "Run";
          this.mnuRunButton.Click += new System.EventHandler(this.mnuFileRunProject_Click);
+         // 
+         // mnuRunHTML5Button
+         // 
+         this.mnuRunHTML5Button.Index = 2;
+         this.mnuRunHTML5Button.Text = "Run HTML 5";
+         this.mnuRunHTML5Button.Click += new System.EventHandler(this.mnuFileRunHtml5_Click);
          // 
          // tbbFileSep
          // 
@@ -473,6 +479,7 @@ namespace SGDK2
          // 
          this.mnuFileSavePrj.Index = 2;
          this.mnuFileSavePrj.MergeOrder = 3;
+         this.mnuFileSavePrj.Shortcut = System.Windows.Forms.Shortcut.CtrlS;
          this.mnuFileSavePrj.Text = "&Save Project";
          this.mnuFileSavePrj.Click += new System.EventHandler(this.mnuFileSavePrj_Click);
          // 
@@ -576,6 +583,13 @@ namespace SGDK2
          this.mnuFileGenHtml5.MergeOrder = 27;
          this.mnuFileGenHtml5.Text = "Export to &HTML 5 Code...";
          this.mnuFileGenHtml5.Click += new System.EventHandler(this.mnuFileGenHtml5_Click);
+         // 
+         // mnuFileRunHtml5
+         // 
+         this.mnuFileRunHtml5.Index = 16;
+         this.mnuFileRunHtml5.Shortcut = System.Windows.Forms.Shortcut.F10;
+         this.mnuFileRunHtml5.Text = "Ex&port HTML 5 and Run";
+         this.mnuFileRunHtml5.Click += new System.EventHandler(this.mnuFileRunHtml5_Click);
          // 
          // mnuFileSep3
          // 
@@ -731,19 +745,6 @@ namespace SGDK2
          // tmrInitComplete
          // 
          this.tmrInitComplete.Tick += new System.EventHandler(this.tmrInitComplete_Tick);
-         // 
-         // mnuFileRunHtml5
-         // 
-         this.mnuFileRunHtml5.Index = 16;
-         this.mnuFileRunHtml5.Shortcut = System.Windows.Forms.Shortcut.F10;
-         this.mnuFileRunHtml5.Text = "Ex&port HTML 5 and Run";
-         this.mnuFileRunHtml5.Click += new System.EventHandler(this.mnuFileRunHtml5_Click);
-         // 
-         // mnuRunHTML5Button
-         // 
-         this.mnuRunHTML5Button.Index = 2;
-         this.mnuRunHTML5Button.Text = "Run HTML 5";
-         this.mnuRunHTML5Button.Click += new System.EventHandler(this.mnuFileRunHtml5_Click);
          // 
          // dataMonitor
          // 
@@ -3213,6 +3214,7 @@ namespace SGDK2
 
       private void mnuTreeView_Popup(object sender, EventArgs e)
       {
+         if (m_ContextNode == null) return;
          string nodeType = m_ContextNode.Tag.ToString().Substring(0, 2);
          if (nodeType == "SD")
          {

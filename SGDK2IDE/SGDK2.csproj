@@ -47,8 +47,8 @@
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>default.html</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>3</ApplicationRevision>
-    <ApplicationVersion>2.2.7.%2a</ApplicationVersion>
+    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationVersion>2.2.8.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -833,272 +833,272 @@
     <PublishFile Include="Help\SGDK2Help.chm">
       <Visible>False</Visible>
       <Group>Online Help</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Graphics\Lettering.png">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Graphics\SHFL.sgdk2">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Graphics\SHFL32x32.png">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Graphics\SMHFL.sgdk2">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Projects\Mobile.sgdk2">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Projects\SHFL.sgdk2">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Projects\SHFLHTML5.sgdk2">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Sound\Ben.sgdk2">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Sound\Ceekayed.sgdk2">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Sound\Effects.sgdk2">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Sound\fmod.cs">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Sound\fmodbase.cs">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\SourceCode\Message.sgdk2">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\SourceCode\Online.sgdk2">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\SourceCode\SpriteRecorder.sgdk2">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\SourceCode\Video.sgdk2">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Sprites\Cannon.sgdk2">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Sprites\LeftRightFlat.sgdk2">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Sprites\LeftRightJump.sgdk2">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Sprites\LeftRightSlope.sgdk2">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Sprites\RotatingCar.sgdk2">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Sprites\SHFLSprites.png">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Sprites\SimplePlatform.sgdk2">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Sprites\SimplePlayer.sgdk2">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Sprites\SpaceShip.sgdk2">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Tiles\Lettering.sgdk2">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Tiles\SHFL.sgdk2">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="Library\Tiles\Simple Ground.sgdk2">
       <Visible>False</Visible>
       <Group>Template Library</Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
     <PublishFile Include="ProjectDataset.xsd">
       <Visible>False</Visible>
       <Group>
       </Group>
-      <TargetPath>
-      </TargetPath>
       <PublishState>Exclude</PublishState>
       <IncludeHash>True</IncludeHash>
+      <TargetPath>
+      </TargetPath>
       <FileType>File</FileType>
     </PublishFile>
   </ItemGroup>

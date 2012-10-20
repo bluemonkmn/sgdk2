@@ -104,33 +104,39 @@ namespace SGDK2
 
       protected override void OnLoad(EventArgs e)
       {
-         BLENDFUNCTION bf;
-         
-         String strAppDir = Application.ExecutablePath;
-         strAppDir = System.IO.Path.GetDirectoryName(strAppDir);
+         try
+         {
+            BLENDFUNCTION bf;
 
-         bf.BlendOp = 0; // AC_SRC_OVER
-         bf.BlendFlags = 0;
-         bf.SourceConstantAlpha = 255;
-         bf.AlphaFormat = 1; // AC_SRC_ALPHA
+            String strAppDir = Application.ExecutablePath;
+            strAppDir = System.IO.Path.GetDirectoryName(strAppDir);
 
-         IntPtr hdcScreen = GetDC(IntPtr.Zero);
-         IntPtr hdcImage = CreateCompatibleDC(hdcScreen);
-         IntPtr hBmp = m_SplashImage.GetHbitmap(Color.FromArgb(0));
-         IntPtr bmpOld = SelectObject(hdcImage, hBmp);
+            bf.BlendOp = 0; // AC_SRC_OVER
+            bf.BlendFlags = 0;
+            bf.SourceConstantAlpha = 255;
+            bf.AlphaFormat = 1; // AC_SRC_ALPHA
 
-         Point ptSrc = new Point(0,0);
-         Size szImg = m_SplashImage.Size;
-         Point ptTopLeft = this.Location;
+            IntPtr hdcScreen = GetDC(IntPtr.Zero);
+            IntPtr hdcImage = CreateCompatibleDC(hdcScreen);
+            IntPtr hBmp = m_SplashImage.GetHbitmap(Color.FromArgb(0));
+            IntPtr bmpOld = SelectObject(hdcImage, hBmp);
 
-         UpdateLayeredWindow(this.Handle, hdcScreen, ref ptTopLeft, ref szImg, hdcImage, ref ptSrc, 0, ref bf, 2 /* ULW_ALPHA */);
+            Point ptSrc = new Point(0, 0);
+            Size szImg = m_SplashImage.Size;
+            Point ptTopLeft = this.Location;
 
-         SelectObject(hdcImage, bmpOld);
-         DeleteObject(hBmp);
-         DeleteDC(hdcImage);
-         m_SplashImage.Dispose();
-         m_SplashImage = null;
-         ReleaseDC(IntPtr.Zero, hdcScreen);
+            UpdateLayeredWindow(this.Handle, hdcScreen, ref ptTopLeft, ref szImg, hdcImage, ref ptSrc, 0, ref bf, 2 /* ULW_ALPHA */);
+
+            SelectObject(hdcImage, bmpOld);
+            DeleteObject(hBmp);
+            DeleteDC(hdcImage);
+            m_SplashImage.Dispose();
+            m_SplashImage = null;
+            ReleaseDC(IntPtr.Zero, hdcScreen);
+         }
+         catch
+         {
+         }
       }
 
       protected override CreateParams CreateParams

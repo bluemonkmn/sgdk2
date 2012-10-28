@@ -1793,6 +1793,8 @@ namespace SGDK2 {
             
             private global::System.Data.DataColumn columnName;
             
+            private global::System.Data.DataColumn columnFolder;
+            
             private global::System.Data.DataColumn columnColumns;
             
             private global::System.Data.DataColumn columnRows;
@@ -1841,6 +1843,14 @@ namespace SGDK2 {
             public global::System.Data.DataColumn NameColumn {
                 get {
                     return this.columnName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn FolderColumn {
+                get {
+                    return this.columnFolder;
                 }
             }
             
@@ -1921,10 +1931,11 @@ namespace SGDK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public GraphicSheetRow AddGraphicSheetRow(string Name, short Columns, short Rows, short CellWidth, short CellHeight, byte[] Image) {
+            public GraphicSheetRow AddGraphicSheetRow(string Name, string Folder, short Columns, short Rows, short CellWidth, short CellHeight, byte[] Image) {
                 GraphicSheetRow rowGraphicSheetRow = ((GraphicSheetRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Name,
+                        Folder,
                         Columns,
                         Rows,
                         CellWidth,
@@ -1960,6 +1971,7 @@ namespace SGDK2 {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             internal void InitVars() {
                 this.columnName = base.Columns["Name"];
+                this.columnFolder = base.Columns["Folder"];
                 this.columnColumns = base.Columns["Columns"];
                 this.columnRows = base.Columns["Rows"];
                 this.columnCellWidth = base.Columns["CellWidth"];
@@ -1972,6 +1984,8 @@ namespace SGDK2 {
             private void InitClass() {
                 this.columnName = new global::System.Data.DataColumn("Name", typeof(string), null, global::System.Data.MappingType.Attribute);
                 base.Columns.Add(this.columnName);
+                this.columnFolder = new global::System.Data.DataColumn("Folder", typeof(string), null, global::System.Data.MappingType.Attribute);
+                base.Columns.Add(this.columnFolder);
                 this.columnColumns = new global::System.Data.DataColumn("Columns", typeof(short), null, global::System.Data.MappingType.Attribute);
                 base.Columns.Add(this.columnColumns);
                 this.columnRows = new global::System.Data.DataColumn("Rows", typeof(short), null, global::System.Data.MappingType.Attribute);
@@ -1987,6 +2001,7 @@ namespace SGDK2 {
                 this.columnName.AllowDBNull = false;
                 this.columnName.Unique = true;
                 this.columnName.Namespace = "";
+                this.columnFolder.Namespace = "";
                 this.columnColumns.Namespace = "";
                 this.columnColumns.DefaultValue = ((short)(16));
                 this.columnRows.Namespace = "";
@@ -2132,6 +2147,8 @@ namespace SGDK2 {
             
             private global::System.Data.DataColumn columnName;
             
+            private global::System.Data.DataColumn columnFolder;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public FramesetDataTable() {
@@ -2175,6 +2192,14 @@ namespace SGDK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn FolderColumn {
+                get {
+                    return this.columnFolder;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -2210,10 +2235,11 @@ namespace SGDK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public FramesetRow AddFramesetRow(string Name) {
+            public FramesetRow AddFramesetRow(string Name, string Folder) {
                 FramesetRow rowFramesetRow = ((FramesetRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
-                        Name};
+                        Name,
+                        Folder};
                 rowFramesetRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowFramesetRow);
                 return rowFramesetRow;
@@ -2244,6 +2270,7 @@ namespace SGDK2 {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             internal void InitVars() {
                 this.columnName = base.Columns["Name"];
+                this.columnFolder = base.Columns["Folder"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -2251,11 +2278,14 @@ namespace SGDK2 {
             private void InitClass() {
                 this.columnName = new global::System.Data.DataColumn("Name", typeof(string), null, global::System.Data.MappingType.Attribute);
                 base.Columns.Add(this.columnName);
+                this.columnFolder = new global::System.Data.DataColumn("Folder", typeof(string), null, global::System.Data.MappingType.Attribute);
+                base.Columns.Add(this.columnFolder);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("FramesetKey", new global::System.Data.DataColumn[] {
                                 this.columnName}, true));
                 this.columnName.AllowDBNull = false;
                 this.columnName.Unique = true;
                 this.columnName.Namespace = "";
+                this.columnFolder.Namespace = "";
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -3744,6 +3774,8 @@ namespace SGDK2 {
             
             private global::System.Data.DataColumn columnName;
             
+            private global::System.Data.DataColumn columnFolder;
+            
             private global::System.Data.DataColumn columnValue;
             
             private global::System.Data.DataColumn columnMax;
@@ -3788,6 +3820,14 @@ namespace SGDK2 {
             public global::System.Data.DataColumn NameColumn {
                 get {
                     return this.columnName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn FolderColumn {
+                get {
+                    return this.columnFolder;
                 }
             }
             
@@ -3852,10 +3892,11 @@ namespace SGDK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public CounterRow AddCounterRow(string Name, int Value, int Max, int Min) {
+            public CounterRow AddCounterRow(string Name, string Folder, int Value, int Max, int Min) {
                 CounterRow rowCounterRow = ((CounterRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Name,
+                        Folder,
                         Value,
                         Max,
                         Min};
@@ -3889,6 +3930,7 @@ namespace SGDK2 {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             internal void InitVars() {
                 this.columnName = base.Columns["Name"];
+                this.columnFolder = base.Columns["Folder"];
                 this.columnValue = base.Columns["Value"];
                 this.columnMax = base.Columns["Max"];
                 this.columnMin = base.Columns["Min"];
@@ -3899,6 +3941,8 @@ namespace SGDK2 {
             private void InitClass() {
                 this.columnName = new global::System.Data.DataColumn("Name", typeof(string), null, global::System.Data.MappingType.Attribute);
                 base.Columns.Add(this.columnName);
+                this.columnFolder = new global::System.Data.DataColumn("Folder", typeof(string), null, global::System.Data.MappingType.Attribute);
+                base.Columns.Add(this.columnFolder);
                 this.columnValue = new global::System.Data.DataColumn("Value", typeof(int), null, global::System.Data.MappingType.Attribute);
                 base.Columns.Add(this.columnValue);
                 this.columnMax = new global::System.Data.DataColumn("Max", typeof(int), null, global::System.Data.MappingType.Attribute);
@@ -3910,6 +3954,7 @@ namespace SGDK2 {
                 this.columnName.AllowDBNull = false;
                 this.columnName.Unique = true;
                 this.columnName.Namespace = "";
+                this.columnFolder.Namespace = "";
                 this.columnValue.Namespace = "";
                 this.columnMax.Namespace = "";
                 this.columnMin.AllowDBNull = false;
@@ -4050,6 +4095,8 @@ namespace SGDK2 {
             
             private global::System.Data.DataColumn columnName;
             
+            private global::System.Data.DataColumn columnFolder;
+            
             private global::System.Data.DataColumn columnScrollMarginLeft;
             
             private global::System.Data.DataColumn columnScrollMarginTop;
@@ -4108,6 +4155,14 @@ namespace SGDK2 {
             public global::System.Data.DataColumn NameColumn {
                 get {
                     return this.columnName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn FolderColumn {
+                get {
+                    return this.columnFolder;
                 }
             }
             
@@ -4228,10 +4283,11 @@ namespace SGDK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public MapRow AddMapRow(string Name, short ScrollMarginLeft, short ScrollMarginTop, short ScrollMarginRight, short ScrollMarginBottom, int ScrollWidth, int ScrollHeight, short ViewLeft, short ViewTop, short ViewWidth, short ViewHeight) {
+            public MapRow AddMapRow(string Name, string Folder, short ScrollMarginLeft, short ScrollMarginTop, short ScrollMarginRight, short ScrollMarginBottom, int ScrollWidth, int ScrollHeight, short ViewLeft, short ViewTop, short ViewWidth, short ViewHeight) {
                 MapRow rowMapRow = ((MapRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Name,
+                        Folder,
                         ScrollMarginLeft,
                         ScrollMarginTop,
                         ScrollMarginRight,
@@ -4272,6 +4328,7 @@ namespace SGDK2 {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             internal void InitVars() {
                 this.columnName = base.Columns["Name"];
+                this.columnFolder = base.Columns["Folder"];
                 this.columnScrollMarginLeft = base.Columns["ScrollMarginLeft"];
                 this.columnScrollMarginTop = base.Columns["ScrollMarginTop"];
                 this.columnScrollMarginRight = base.Columns["ScrollMarginRight"];
@@ -4289,6 +4346,8 @@ namespace SGDK2 {
             private void InitClass() {
                 this.columnName = new global::System.Data.DataColumn("Name", typeof(string), null, global::System.Data.MappingType.Attribute);
                 base.Columns.Add(this.columnName);
+                this.columnFolder = new global::System.Data.DataColumn("Folder", typeof(string), null, global::System.Data.MappingType.Attribute);
+                base.Columns.Add(this.columnFolder);
                 this.columnScrollMarginLeft = new global::System.Data.DataColumn("ScrollMarginLeft", typeof(short), null, global::System.Data.MappingType.Attribute);
                 base.Columns.Add(this.columnScrollMarginLeft);
                 this.columnScrollMarginTop = new global::System.Data.DataColumn("ScrollMarginTop", typeof(short), null, global::System.Data.MappingType.Attribute);
@@ -4314,6 +4373,7 @@ namespace SGDK2 {
                 this.columnName.AllowDBNull = false;
                 this.columnName.Unique = true;
                 this.columnName.Namespace = "";
+                this.columnFolder.Namespace = "";
                 this.columnScrollMarginLeft.AllowDBNull = false;
                 this.columnScrollMarginLeft.Namespace = "";
                 this.columnScrollMarginTop.AllowDBNull = false;
@@ -7221,6 +7281,8 @@ namespace SGDK2 {
             
             private global::System.Data.DataColumn columnName;
             
+            private global::System.Data.DataColumn columnFolder;
+            
             private global::System.Data.DataColumn columnBaseClass;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -7261,6 +7323,14 @@ namespace SGDK2 {
             public global::System.Data.DataColumn NameColumn {
                 get {
                     return this.columnName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn FolderColumn {
+                get {
+                    return this.columnFolder;
                 }
             }
             
@@ -7309,10 +7379,11 @@ namespace SGDK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public SpriteDefinitionRow AddSpriteDefinitionRow(string Name, string BaseClass) {
+            public SpriteDefinitionRow AddSpriteDefinitionRow(string Name, string Folder, string BaseClass) {
                 SpriteDefinitionRow rowSpriteDefinitionRow = ((SpriteDefinitionRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Name,
+                        Folder,
                         BaseClass};
                 rowSpriteDefinitionRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowSpriteDefinitionRow);
@@ -7344,6 +7415,7 @@ namespace SGDK2 {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             internal void InitVars() {
                 this.columnName = base.Columns["Name"];
+                this.columnFolder = base.Columns["Folder"];
                 this.columnBaseClass = base.Columns["BaseClass"];
             }
             
@@ -7352,14 +7424,17 @@ namespace SGDK2 {
             private void InitClass() {
                 this.columnName = new global::System.Data.DataColumn("Name", typeof(string), null, global::System.Data.MappingType.Attribute);
                 base.Columns.Add(this.columnName);
-                this.columnBaseClass = new global::System.Data.DataColumn("BaseClass", typeof(string), null, global::System.Data.MappingType.Element);
+                this.columnFolder = new global::System.Data.DataColumn("Folder", typeof(string), null, global::System.Data.MappingType.Attribute);
+                base.Columns.Add(this.columnFolder);
+                this.columnBaseClass = new global::System.Data.DataColumn("BaseClass", typeof(string), null, global::System.Data.MappingType.Attribute);
                 base.Columns.Add(this.columnBaseClass);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("SpriteDefinitionKey", new global::System.Data.DataColumn[] {
                                 this.columnName}, true));
                 this.columnName.AllowDBNull = false;
                 this.columnName.Unique = true;
                 this.columnName.Namespace = "";
-                this.columnBaseClass.AllowDBNull = false;
+                this.columnFolder.Namespace = "";
+                this.columnBaseClass.Namespace = "";
                 this.columnBaseClass.DefaultValue = ((string)("SpriteBase"));
             }
             
@@ -9981,6 +10056,8 @@ namespace SGDK2 {
             
             private global::System.Data.DataColumn columnName;
             
+            private global::System.Data.DataColumn columnFolder;
+            
             private global::System.Data.DataColumn columnIsCustomObject;
             
             private global::System.Data.DataColumn columnDependsOn;
@@ -10027,6 +10104,14 @@ namespace SGDK2 {
             public global::System.Data.DataColumn NameColumn {
                 get {
                     return this.columnName;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn FolderColumn {
+                get {
+                    return this.columnFolder;
                 }
             }
             
@@ -10099,10 +10184,11 @@ namespace SGDK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public SourceCodeRow AddSourceCodeRow(string Name, bool IsCustomObject, string DependsOn, string Text, byte[] CustomObjectData) {
+            public SourceCodeRow AddSourceCodeRow(string Name, string Folder, bool IsCustomObject, string DependsOn, string Text, byte[] CustomObjectData) {
                 SourceCodeRow rowSourceCodeRow = ((SourceCodeRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Name,
+                        Folder,
                         IsCustomObject,
                         DependsOn,
                         Text,
@@ -10137,6 +10223,7 @@ namespace SGDK2 {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             internal void InitVars() {
                 this.columnName = base.Columns["Name"];
+                this.columnFolder = base.Columns["Folder"];
                 this.columnIsCustomObject = base.Columns["IsCustomObject"];
                 this.columnDependsOn = base.Columns["DependsOn"];
                 this.columnText = base.Columns["Text"];
@@ -10148,6 +10235,8 @@ namespace SGDK2 {
             private void InitClass() {
                 this.columnName = new global::System.Data.DataColumn("Name", typeof(string), null, global::System.Data.MappingType.Attribute);
                 base.Columns.Add(this.columnName);
+                this.columnFolder = new global::System.Data.DataColumn("Folder", typeof(string), null, global::System.Data.MappingType.Attribute);
+                base.Columns.Add(this.columnFolder);
                 this.columnIsCustomObject = new global::System.Data.DataColumn("IsCustomObject", typeof(bool), null, global::System.Data.MappingType.Attribute);
                 base.Columns.Add(this.columnIsCustomObject);
                 this.columnDependsOn = new global::System.Data.DataColumn("DependsOn", typeof(string), null, global::System.Data.MappingType.Attribute);
@@ -10161,6 +10250,7 @@ namespace SGDK2 {
                 this.columnName.AllowDBNull = false;
                 this.columnName.Unique = true;
                 this.columnName.Namespace = "";
+                this.columnFolder.Namespace = "";
                 this.columnIsCustomObject.Namespace = "";
                 this.columnIsCustomObject.DefaultValue = ((bool)(false));
                 this.columnDependsOn.Namespace = "";
@@ -11821,6 +11911,22 @@ namespace SGDK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Folder {
+                get {
+                    if (this.IsFolderNull()) {
+                        return null;
+                    }
+                    else {
+                        return ((string)(this[this.tableGraphicSheet.FolderColumn]));
+                    }
+                }
+                set {
+                    this[this.tableGraphicSheet.FolderColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public short Columns {
                 get {
                     try {
@@ -11897,6 +12003,18 @@ namespace SGDK2 {
                 set {
                     this[this.tableGraphicSheet.ImageColumn] = value;
                 }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsFolderNull() {
+                return this.IsNull(this.tableGraphicSheet.FolderColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetFolderNull() {
+                this[this.tableGraphicSheet.FolderColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -11983,6 +12101,34 @@ namespace SGDK2 {
                 set {
                     this[this.tableFrameset.NameColumn] = value;
                 }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Folder {
+                get {
+                    if (this.IsFolderNull()) {
+                        return null;
+                    }
+                    else {
+                        return ((string)(this[this.tableFrameset.FolderColumn]));
+                    }
+                }
+                set {
+                    this[this.tableFrameset.FolderColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsFolderNull() {
+                return this.IsNull(this.tableFrameset.FolderColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetFolderNull() {
+                this[this.tableFrameset.FolderColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -12645,6 +12791,22 @@ namespace SGDK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Folder {
+                get {
+                    if (this.IsFolderNull()) {
+                        return null;
+                    }
+                    else {
+                        return ((string)(this[this.tableCounter.FolderColumn]));
+                    }
+                }
+                set {
+                    this[this.tableCounter.FolderColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public int Value {
                 get {
                     try {
@@ -12684,6 +12846,18 @@ namespace SGDK2 {
                 set {
                     this[this.tableCounter.MinColumn] = value;
                 }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsFolderNull() {
+                return this.IsNull(this.tableCounter.FolderColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetFolderNull() {
+                this[this.tableCounter.FolderColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -12744,6 +12918,22 @@ namespace SGDK2 {
                 }
                 set {
                     this[this.tableMap.NameColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Folder {
+                get {
+                    if (this.IsFolderNull()) {
+                        return null;
+                    }
+                    else {
+                        return ((string)(this[this.tableMap.FolderColumn]));
+                    }
+                }
+                set {
+                    this[this.tableMap.FolderColumn] = value;
                 }
             }
             
@@ -12885,6 +13075,18 @@ namespace SGDK2 {
                 set {
                     this[this.tableMap.ViewHeightColumn] = value;
                 }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsFolderNull() {
+                return this.IsNull(this.tableMap.FolderColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetFolderNull() {
+                this[this.tableMap.FolderColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -14555,13 +14757,58 @@ namespace SGDK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Folder {
+                get {
+                    if (this.IsFolderNull()) {
+                        return null;
+                    }
+                    else {
+                        return ((string)(this[this.tableSpriteDefinition.FolderColumn]));
+                    }
+                }
+                set {
+                    this[this.tableSpriteDefinition.FolderColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public string BaseClass {
                 get {
-                    return ((string)(this[this.tableSpriteDefinition.BaseClassColumn]));
+                    try {
+                        return ((string)(this[this.tableSpriteDefinition.BaseClassColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'BaseClass\' in table \'SpriteDefinition\' is DBNull.", e);
+                    }
                 }
                 set {
                     this[this.tableSpriteDefinition.BaseClassColumn] = value;
                 }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsFolderNull() {
+                return this.IsNull(this.tableSpriteDefinition.FolderColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetFolderNull() {
+                this[this.tableSpriteDefinition.FolderColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsBaseClassNull() {
+                return this.IsNull(this.tableSpriteDefinition.BaseClassColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetBaseClassNull() {
+                this[this.tableSpriteDefinition.BaseClassColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -15432,6 +15679,22 @@ namespace SGDK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Folder {
+                get {
+                    if (this.IsFolderNull()) {
+                        return null;
+                    }
+                    else {
+                        return ((string)(this[this.tableSourceCode.FolderColumn]));
+                    }
+                }
+                set {
+                    this[this.tableSourceCode.FolderColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public bool IsCustomObject {
                 get {
                     if (this.IsIsCustomObjectNull()) {
@@ -15492,6 +15755,18 @@ namespace SGDK2 {
                 set {
                     this[this.tableSourceCode.CustomObjectDataColumn] = value;
                 }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsFolderNull() {
+                return this.IsNull(this.tableSourceCode.FolderColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetFolderNull() {
+                this[this.tableSourceCode.FolderColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]

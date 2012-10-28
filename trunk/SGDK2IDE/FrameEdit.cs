@@ -163,6 +163,8 @@ namespace SGDK2
       private SGDK2.GraphicBrowser BGFrameSelector;
       private System.Windows.Forms.MenuItem mnuBackgroundFrame;
       private System.Windows.Forms.MenuItem mnuFrameSizingBorder;
+      private TextBox txtFramesetFolder;
+      private Label lblFramesetFolder;
       private System.ComponentModel.IContainer components;
       #endregion
 
@@ -183,7 +185,7 @@ namespace SGDK2
             sName = "New Frameset " + (nIdx++).ToString();
          while(ProjectData.GetFrameSet(sName) != null);
 
-         FrameBrowser.Frameset = ProjectData.AddFramesetRow(sName);
+         FrameBrowser.Frameset = ProjectData.AddFramesetRow(sName, string.Empty);
          BGFrameSelector.Frameset = FrameBrowser.Frameset;
          txtFramesetName.Text = sName;
       }
@@ -198,6 +200,7 @@ namespace SGDK2
          SGDK2IDE.LoadFormSettings(this);
 
          txtFramesetName.Text = dr.Name;
+         txtFramesetFolder.Text = dr.Folder;
          FrameBrowser.Frameset = dr;
          BGFrameSelector.Frameset = dr;
       }
@@ -335,6 +338,8 @@ namespace SGDK2
          this.tpgFrameset = new System.Windows.Forms.TabPage();
          this.splitterGraphics = new System.Windows.Forms.Splitter();
          this.tpgFrameEditor = new System.Windows.Forms.TabPage();
+         this.lblFramesetFolder = new System.Windows.Forms.Label();
+         this.txtFramesetFolder = new System.Windows.Forms.TextBox();
          this.pnlFrames.SuspendLayout();
          this.pnlFrameAction.SuspendLayout();
          this.pnlTransform.SuspendLayout();
@@ -359,7 +364,7 @@ namespace SGDK2
          this.pnlFrames.Dock = System.Windows.Forms.DockStyle.Fill;
          this.pnlFrames.Location = new System.Drawing.Point(221, 0);
          this.pnlFrames.Name = "pnlFrames";
-         this.pnlFrames.Size = new System.Drawing.Size(235, 447);
+         this.pnlFrames.Size = new System.Drawing.Size(279, 447);
          this.pnlFrames.TabIndex = 25;
          // 
          // FrameBrowser
@@ -376,10 +381,10 @@ namespace SGDK2
          this.FrameBrowser.Frameset = null;
          this.FrameBrowser.FramesToDisplay = null;
          this.FrameBrowser.GraphicSheet = null;
-         this.FrameBrowser.Location = new System.Drawing.Point(0, 24);
+         this.FrameBrowser.Location = new System.Drawing.Point(0, 53);
          this.FrameBrowser.Name = "FrameBrowser";
          this.FrameBrowser.SheetImage = null;
-         this.FrameBrowser.Size = new System.Drawing.Size(235, 218);
+         this.FrameBrowser.Size = new System.Drawing.Size(279, 189);
          this.FrameBrowser.TabIndex = 6;
          this.FrameBrowser.CurrentCellChanged += new System.EventHandler(this.FrameBrowser_CurrentCellChanged);
          this.FrameBrowser.DragDrop += new System.Windows.Forms.DragEventHandler(this.FrameBrowser_DragDrop);
@@ -551,27 +556,29 @@ namespace SGDK2
          this.FrameSplitter.Dock = System.Windows.Forms.DockStyle.Bottom;
          this.FrameSplitter.Location = new System.Drawing.Point(0, 242);
          this.FrameSplitter.Name = "FrameSplitter";
-         this.FrameSplitter.Size = new System.Drawing.Size(235, 5);
+         this.FrameSplitter.Size = new System.Drawing.Size(279, 5);
          this.FrameSplitter.TabIndex = 8;
          this.FrameSplitter.TabStop = false;
          // 
          // pnlFrameAction
          // 
+         this.pnlFrameAction.Controls.Add(this.txtFramesetFolder);
+         this.pnlFrameAction.Controls.Add(this.lblFramesetFolder);
          this.pnlFrameAction.Controls.Add(this.txtFramesetName);
          this.pnlFrameAction.Controls.Add(this.lblFramesetName);
          this.pnlFrameAction.Dock = System.Windows.Forms.DockStyle.Top;
          this.pnlFrameAction.Location = new System.Drawing.Point(0, 0);
          this.pnlFrameAction.Name = "pnlFrameAction";
-         this.pnlFrameAction.Size = new System.Drawing.Size(235, 24);
+         this.pnlFrameAction.Size = new System.Drawing.Size(279, 53);
          this.pnlFrameAction.TabIndex = 1;
          // 
          // txtFramesetName
          // 
-         this.txtFramesetName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                     | System.Windows.Forms.AnchorStyles.Right)));
+         this.txtFramesetName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
          this.txtFramesetName.Location = new System.Drawing.Point(120, 0);
          this.txtFramesetName.Name = "txtFramesetName";
-         this.txtFramesetName.Size = new System.Drawing.Size(107, 20);
+         this.txtFramesetName.Size = new System.Drawing.Size(151, 20);
          this.txtFramesetName.TabIndex = 1;
          this.txtFramesetName.Validating += new System.ComponentModel.CancelEventHandler(this.txtFramesetName_Validating);
          this.txtFramesetName.Validated += new System.EventHandler(this.txtFramesetName_Validated);
@@ -591,7 +598,7 @@ namespace SGDK2
          this.FrameProperties.LineColor = System.Drawing.SystemColors.ScrollBar;
          this.FrameProperties.Location = new System.Drawing.Point(0, 247);
          this.FrameProperties.Name = "FrameProperties";
-         this.FrameProperties.Size = new System.Drawing.Size(235, 200);
+         this.FrameProperties.Size = new System.Drawing.Size(279, 200);
          this.FrameProperties.TabIndex = 0;
          this.FrameProperties.ToolbarVisible = false;
          this.FrameProperties.Enter += new System.EventHandler(this.FrameProperties_Enter);
@@ -869,8 +876,8 @@ namespace SGDK2
          // 
          // trbRotate
          // 
-         this.trbRotate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
-                     | System.Windows.Forms.AnchorStyles.Right)));
+         this.trbRotate.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
          this.trbRotate.LargeChange = 15;
          this.trbRotate.Location = new System.Drawing.Point(64, 323);
          this.trbRotate.Maximum = 180;
@@ -959,8 +966,8 @@ namespace SGDK2
          // 
          // cboGraphicSheet
          // 
-         this.cboGraphicSheet.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                     | System.Windows.Forms.AnchorStyles.Right)));
+         this.cboGraphicSheet.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
          this.cboGraphicSheet.DisplayMember = "Name";
          this.cboGraphicSheet.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
          this.cboGraphicSheet.Location = new System.Drawing.Point(96, 0);
@@ -1243,7 +1250,7 @@ namespace SGDK2
          this.tabFrameset.Location = new System.Drawing.Point(0, 0);
          this.tabFrameset.Name = "tabFrameset";
          this.tabFrameset.SelectedIndex = 0;
-         this.tabFrameset.Size = new System.Drawing.Size(464, 473);
+         this.tabFrameset.Size = new System.Drawing.Size(508, 473);
          this.tabFrameset.TabIndex = 15;
          this.tabFrameset.SelectedIndexChanged += new System.EventHandler(this.tabFrameset_SelectedIndexChanged);
          // 
@@ -1254,7 +1261,7 @@ namespace SGDK2
          this.tpgFrameset.Controls.Add(this.pnlGraphicSheet);
          this.tpgFrameset.Location = new System.Drawing.Point(4, 22);
          this.tpgFrameset.Name = "tpgFrameset";
-         this.tpgFrameset.Size = new System.Drawing.Size(456, 447);
+         this.tpgFrameset.Size = new System.Drawing.Size(500, 447);
          this.tpgFrameset.TabIndex = 0;
          this.tpgFrameset.Text = "Frameset";
          // 
@@ -1275,12 +1282,31 @@ namespace SGDK2
          this.tpgFrameEditor.TabIndex = 1;
          this.tpgFrameEditor.Text = "Frame Editor";
          // 
+         // lblFramesetFolder
+         // 
+         this.lblFramesetFolder.AutoSize = true;
+         this.lblFramesetFolder.Location = new System.Drawing.Point(8, 29);
+         this.lblFramesetFolder.Name = "lblFramesetFolder";
+         this.lblFramesetFolder.Size = new System.Drawing.Size(85, 13);
+         this.lblFramesetFolder.TabIndex = 2;
+         this.lblFramesetFolder.Text = "Frameset Folder:";
+         // 
+         // txtFramesetFolder
+         // 
+         this.txtFramesetFolder.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+         this.txtFramesetFolder.Location = new System.Drawing.Point(120, 26);
+         this.txtFramesetFolder.Name = "txtFramesetFolder";
+         this.txtFramesetFolder.Size = new System.Drawing.Size(151, 20);
+         this.txtFramesetFolder.TabIndex = 3;
+         this.txtFramesetFolder.Validated += new System.EventHandler(this.txtFramesetFolder_Validated);
+         // 
          // frmFrameEdit
          // 
          this.AcceptButton = this.btnOK;
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
          this.CancelButton = this.btnCancel;
-         this.ClientSize = new System.Drawing.Size(464, 473);
+         this.ClientSize = new System.Drawing.Size(508, 473);
          this.Controls.Add(this.tabFrameset);
          this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
          this.Menu = this.mnuFrameset;
@@ -2458,6 +2484,11 @@ namespace SGDK2
          {
             DeleteSelectedFrames();
          }
+      }
+
+      private void txtFramesetFolder_Validated(object sender, EventArgs e)
+      {
+         FrameBrowser.Frameset.Folder = txtFramesetFolder.Text;
       }
       #endregion
    }

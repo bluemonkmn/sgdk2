@@ -45,6 +45,21 @@ namespace SGDK2
             }
          }
 
+         [DescriptionAttribute("Backslash-delimited path defining the parent folder structure into which this sheet is nested in the project tree"),
+         Category("Design"),
+         ParenthesizePropertyName(true)]
+         public string Folder
+         {
+            get
+            {
+               return m_drGfx.Folder;
+            }
+            set
+            {
+               m_drGfx.Folder = value;
+            }
+         }
+
          [DescriptionAttribute("Number of graphic cells on each row of the sheet"),
          Category("Layout")]
          public short Columns

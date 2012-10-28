@@ -587,6 +587,7 @@ namespace SGDK2
          // mnuFileRunHtml5
          // 
          this.mnuFileRunHtml5.Index = 16;
+         this.mnuFileRunHtml5.MergeOrder = 28;
          this.mnuFileRunHtml5.Shortcut = System.Windows.Forms.Shortcut.F10;
          this.mnuFileRunHtml5.Text = "Ex&port HTML 5 and Run";
          this.mnuFileRunHtml5.Click += new System.EventHandler(this.mnuFileRunHtml5_Click);
@@ -594,7 +595,7 @@ namespace SGDK2
          // mnuFileSep3
          // 
          this.mnuFileSep3.Index = 17;
-         this.mnuFileSep3.MergeOrder = 27;
+         this.mnuFileSep3.MergeOrder = 30;
          this.mnuFileSep3.Text = "-";
          // 
          // mnuFileSep4
@@ -1697,6 +1698,52 @@ namespace SGDK2
          }            
       }
 
+      private TreeNode MakeFolderNode(TreeNode parent, string folder)
+      {
+         if (!string.IsNullOrEmpty(folder))
+         {
+            string[] parts = folder.Split(new char[] { SGDK2IDE.pathSeparator }, 2);
+            int newIndex;
+            for (newIndex = 0; newIndex < parent.Nodes.Count; newIndex++)
+            {
+               int diff = string.Compare(parent.Nodes[newIndex].Text, parts[0], true);
+               if (diff == 0)
+               {
+                  if (parts.Length == 1)
+                     return parent.Nodes[newIndex];
+                  return MakeFolderNode(parent.Nodes[newIndex], parts[1]);
+               }
+               else if (diff > 0)
+                  break;
+            }
+            TreeNode folderNode = parent.Nodes.Insert(newIndex, parts[0]);
+            folderNode.Tag = "FO";
+            folderNode.SelectedImageIndex = folderNode.ImageIndex = 1;
+            if (parts.Length == 1)
+               return folderNode;
+            return MakeFolderNode(folderNode, parts[1]);
+         }
+         else
+            return parent;
+      }
+
+      private TreeNode InsertNestedNode(TreeNode parent, string childName, string folder)
+      {
+         parent = MakeFolderNode(parent, folder);
+         return InsertSortedNode(parent, childName);
+      }
+
+      private void RemoveEmptyNestedNode(TreeNode parent)
+      {
+         TreeNode grandparent = parent.Parent;
+         while ((parent.Nodes.Count == 0) && (parent.Tag.ToString() == "FO"))
+         {
+            parent.Remove();
+            parent = grandparent;
+            grandparent = parent.Parent;
+         }
+      }
+
       private TreeNode InsertSortedNode(TreeNode parent, string childName)
       {
          int newIndex;
@@ -1706,6 +1753,46 @@ namespace SGDK2
                break;
          }
          return parent.Nodes.Insert(newIndex, childName);
+      }
+
+      private void UpdateNestedNode(TreeNode child, string folder)
+      {
+         string[] folderParts;
+         if (string.IsNullOrEmpty(folder))
+         {
+            folderParts = new string[] {};
+         } else {
+            folderParts = folder.Split(SGDK2IDE.pathSeparator);
+         }
+         int ancestorIndex = folderParts.Length - 1;
+         TreeNode parent = child.Parent;
+         for (parent = child.Parent; (ancestorIndex >= 0) && (parent.Tag.ToString() == "FO"); ancestorIndex--, parent = parent.Parent)
+         {
+            if (string.Compare(folderParts[ancestorIndex], parent.Text, true) != 0)
+               break;
+         }
+         if ((ancestorIndex < 0) && (parent.Tag.ToString() != "FO"))
+         {
+            UpdateSortedNode(child);
+         }
+         else
+         {
+            TreeNode topParent = parent;
+            while (topParent.Tag.ToString() == "FO")
+               topParent = topParent.Parent;
+            parent = child.Parent;
+            child.Remove();
+            RemoveEmptyNestedNode(parent);
+            TreeNode folderNode = MakeFolderNode(topParent, folder);
+            int newIndex;
+            for (newIndex = 0; newIndex < folderNode.Nodes.Count; newIndex++)
+            {
+               if (string.Compare(folderNode.Nodes[newIndex].Text, child.Text, true) > 0)
+                  break;
+            }
+            folderNode.Nodes.Insert(newIndex, child);
+            child.EnsureVisible();
+         }
       }
 
       private void UpdateSortedNode(TreeNode child)
@@ -1906,7 +1993,7 @@ namespace SGDK2
       {
          if (e.Action == DataRowAction.Add)
          {
-            TreeNode ndNew = InsertSortedNode((TreeNode)m_TreeNodes["GS"], e.Row.Name);
+            TreeNode ndNew = InsertNestedNode((TreeNode)m_TreeNodes["GS"], e.Row.Name, e.Row.Folder);
             
             ndNew.Tag = "GS" + e.Row.Name;
             ndNew.SelectedImageIndex = ndNew.ImageIndex = 4;
@@ -1933,7 +2020,7 @@ namespace SGDK2
             m_TreeNodes.Remove("GS" + sOldKey);
             m_TreeNodes.Remove("GE" + sOldKey);
             ndOld.Tag = "GS" + (ndOld.Text = e.Row.Name);
-            UpdateSortedNode(ndOld);
+            UpdateNestedNode(ndOld, e.Row.Folder);
             ndOldChild.Tag = "GE" + e.Row.Name;
             m_TreeNodes.Add(ndOld.Tag, ndOld);
             m_TreeNodes.Add(ndOldChild.Tag, ndOldChild);
@@ -1954,7 +2041,9 @@ namespace SGDK2
             TreeNode tnEditor = (TreeNode)m_TreeNodes["GE" + m_AffectedNodeKeys["GS"]];
             m_TreeNodes.Remove("GS" + m_AffectedNodeKeys["GS"]);
             m_TreeNodes.Remove("GE" + m_AffectedNodeKeys["GS"]);
+            TreeNode parent = tnSheet.Parent;
             tnSheet.Parent.Nodes.Remove(tnSheet);
+            RemoveEmptyNestedNode(parent);
             m_AffectedNodeKeys.Remove("GS");
          }
       }
@@ -1963,7 +2052,7 @@ namespace SGDK2
       {
          if (e.Action == DataRowAction.Add)
          {
-            TreeNode ndNew = InsertSortedNode((TreeNode)m_TreeNodes["FS"],e.Row.Name);
+            TreeNode ndNew = InsertNestedNode((TreeNode)m_TreeNodes["FS"], e.Row.Name, e.Row.Folder);
             ndNew.Tag = "FS" + e.Row.Name;
             ndNew.SelectedImageIndex = ndNew.ImageIndex = 10;
             ndNew.EnsureVisible();
@@ -1981,7 +2070,7 @@ namespace SGDK2
             TreeNode ndOld = (TreeNode)m_TreeNodes["FS" + sOldKey];
             m_TreeNodes.Remove("FS" + sOldKey);
             ndOld.Tag = "FS" + (ndOld.Text = e.Row.Name);
-            UpdateSortedNode(ndOld);
+            UpdateNestedNode(ndOld, e.Row.Folder);
             m_TreeNodes.Add(ndOld.Tag, ndOld);
          }
       }
@@ -1998,7 +2087,9 @@ namespace SGDK2
          {
             TreeNode tnDel = (TreeNode)m_TreeNodes[m_AffectedNodeKeys["FS"]];
             m_TreeNodes.Remove(m_AffectedNodeKeys["FS"]);
-            tnDel.Parent.Nodes.Remove(tnDel);
+            TreeNode parent = tnDel.Parent;
+            parent.Nodes.Remove(tnDel);
+            RemoveEmptyNestedNode(parent);
             m_AffectedNodeKeys.Remove("FS");
          }
       }
@@ -2074,7 +2165,7 @@ namespace SGDK2
       {
          if (e.Action == DataRowAction.Add)
          {
-            TreeNode ndNew = InsertSortedNode((TreeNode)m_TreeNodes["CR"], e.Row.Name);
+            TreeNode ndNew = InsertNestedNode((TreeNode)m_TreeNodes["CR"], e.Row.Name, e.Row.Folder);
             ndNew.Tag = "CR" + e.Row.Name;
             ndNew.SelectedImageIndex = ndNew.ImageIndex = 13;
             ndNew.EnsureVisible();
@@ -2091,7 +2182,7 @@ namespace SGDK2
             TreeNode ndOld = (TreeNode)m_TreeNodes["CR" + sOldKey];
             m_TreeNodes.Remove("CR" + sOldKey);
             ndOld.Tag = "CR" + (ndOld.Text = e.Row.Name);
-            UpdateSortedNode(ndOld);
+            UpdateNestedNode(ndOld, e.Row.Folder);
             m_TreeNodes.Add(ndOld.Tag, ndOld);
          }      
       }
@@ -2108,7 +2199,9 @@ namespace SGDK2
          {
             TreeNode tnDel = (TreeNode)m_TreeNodes[m_AffectedNodeKeys["CR"]];
             m_TreeNodes.Remove(m_AffectedNodeKeys["CR"]);
+            TreeNode parent = tnDel.Parent;
             tnDel.Parent.Nodes.Remove(tnDel);
+            RemoveEmptyNestedNode(parent);
             m_AffectedNodeKeys.Remove("CR");
          }      
       }
@@ -2160,7 +2253,7 @@ namespace SGDK2
       {
          if (e.Action == DataRowAction.Add)
          {
-            TreeNode ndNew = InsertSortedNode((TreeNode)m_TreeNodes["MP"], e.Row.Name);
+            TreeNode ndNew = InsertNestedNode((TreeNode)m_TreeNodes["MP"], e.Row.Name, e.Row.Folder);
             ndNew.Tag = "MP" + e.Row.Name;
             ndNew.SelectedImageIndex = ndNew.ImageIndex = 14;
             // Add the node to the local index
@@ -2182,7 +2275,7 @@ namespace SGDK2
             TreeNode ndOld = (TreeNode)m_TreeNodes["MP" + sOldKey];
             m_TreeNodes.Remove("MP" + sOldKey);
             ndOld.Tag = "MP" + (ndOld.Text = e.Row.Name);
-            UpdateSortedNode(ndOld);
+            UpdateNestedNode(ndOld, e.Row.Folder);
             m_TreeNodes.Add(ndOld.Tag, ndOld);
 
             ndOld = (TreeNode)m_TreeNodes["LR" + sOldKey];
@@ -2203,10 +2296,12 @@ namespace SGDK2
          if (m_AffectedNodeKeys.ContainsKey("MP"))
          {
             TreeNode tnDel = (TreeNode)m_TreeNodes["MP" + m_AffectedNodeKeys["MP"]];
+            TreeNode parent = tnDel.Parent;
             m_TreeNodes.Remove("MP" + m_AffectedNodeKeys["MP"]);
             tnDel.Parent.Nodes.Remove(tnDel);
             m_TreeNodes.Remove("LR" + m_AffectedNodeKeys["MP"]);
             m_AffectedNodeKeys.Remove("MP");
+            RemoveEmptyNestedNode(parent);
          }            
       }
 
@@ -2214,7 +2309,7 @@ namespace SGDK2
       {
          if (e.Action == DataRowAction.Add)
          {
-            TreeNode ndNew = InsertSortedNode((TreeNode)m_TreeNodes["SD"], e.Row.Name);
+            TreeNode ndNew = InsertNestedNode((TreeNode)m_TreeNodes["SD"], e.Row.Name, e.Row.Folder);
             ndNew.Tag = "SD" + e.Row.Name;
             ndNew.SelectedImageIndex = ndNew.ImageIndex = 20;
             ndNew.EnsureVisible();
@@ -2231,7 +2326,7 @@ namespace SGDK2
             TreeNode ndOld = (TreeNode)m_TreeNodes["SD" + sOldKey];
             m_TreeNodes.Remove("SD" + sOldKey);
             ndOld.Tag = "SD" + (ndOld.Text = e.Row.Name);
-            UpdateSortedNode(ndOld);
+            UpdateNestedNode(ndOld, e.Row.Folder);
             m_TreeNodes.Add(ndOld.Tag, ndOld);
          }
       }
@@ -2248,7 +2343,9 @@ namespace SGDK2
          {
             TreeNode tnDel = (TreeNode)m_TreeNodes[m_AffectedNodeKeys["SD"]];
             m_TreeNodes.Remove(m_AffectedNodeKeys["SD"]);
+            TreeNode parent = tnDel.Parent;
             tnDel.Parent.Nodes.Remove(tnDel);
+            RemoveEmptyNestedNode(parent);
             m_AffectedNodeKeys.Remove("SD");
          }      
       }
@@ -2486,7 +2583,7 @@ namespace SGDK2
             string parent = String.Empty;
             if (!e.Row.IsDependsOnNull())
                parent = e.Row.DependsOn;
-            TreeNode ndNew = InsertSortedNode((TreeNode)m_TreeNodes["CD" + parent], e.Row.Name);
+            TreeNode ndNew = InsertNestedNode((TreeNode)m_TreeNodes["CD" + parent], e.Row.Name, e.Row.Folder);
             ndNew.Tag = "CD" + e.Row.Name;
             if (e.Row.IsCustomObject)
                ndNew.SelectedImageIndex = ndNew.ImageIndex = 24;
@@ -2508,7 +2605,7 @@ namespace SGDK2
             m_TreeNodes.Remove(sOldKey);
             ndOld.Tag = "CD" + e.Row.Name;
             ndOld.Text = e.Row.Name;
-            UpdateSortedNode(ndOld);
+            UpdateNestedNode(ndOld, e.Row.Folder);
             m_TreeNodes.Add(ndOld.Tag, ndOld);
             foreach(ProjectDataset.SourceCodeRow child in ProjectData.GetDependentSourceCode(e.Row))
                child.DependsOn = e.Row.Name;
@@ -2528,7 +2625,9 @@ namespace SGDK2
          {
             TreeNode tnCode = (TreeNode)m_TreeNodes[m_AffectedNodeKeys["CD"]];
             m_TreeNodes.Remove(m_AffectedNodeKeys["CD"]);
+            TreeNode parent = tnCode.Parent;
             tnCode.Parent.Nodes.Remove(tnCode);
+            RemoveEmptyNestedNode(parent);
             m_AffectedNodeKeys.Remove("CD");
             CodeGenerator.ResetTempAssembly();
          }                        

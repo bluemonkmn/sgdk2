@@ -39,6 +39,7 @@ namespace SGDK2
       public static System.Windows.Forms.HelpProvider g_HelpProvider;
       private static frmMain mainWindow = null;
       private static System.Collections.Stack statusStack = null;
+      public const char pathSeparator = '\\';
       #endregion
 
       private SGDK2IDE()

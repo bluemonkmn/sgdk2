@@ -3435,7 +3435,7 @@ namespace SGDK2
       #region Utility Functions
       public static string NameToVariable(string name)
       {
-         return name.Replace(" ","_");
+         return name.Replace(' ','_');
       }
       public static string NameToMapClass(string name)
       {

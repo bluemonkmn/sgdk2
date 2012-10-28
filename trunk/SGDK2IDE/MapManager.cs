@@ -45,6 +45,21 @@ namespace SGDK2
             }
          }
 
+         [Description("Backslash-delimited path specifying parent folder structure in which this map is nested in the tree view"),
+         Category("Design"),
+         ParenthesizePropertyName(true)]
+         public string Folder
+         {
+            get
+            {
+               return m_drMap.Folder;
+            }
+            set
+            {
+               m_drMap.Folder = value;
+            }
+         }
+
          [Description("Minimum amount of space allowed between the left edge of the player and the left edge of the map window"),
          Category("Layout")]
          public short ScrollMarginLeft

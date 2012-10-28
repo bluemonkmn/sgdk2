@@ -188,12 +188,12 @@ namespace SGDK2
          if (Name.EndsWith(" t"))
             return "Name cannot end with \" t\"";
 
-         if (char.IsDigit(Name,0))
+         if (char.IsDigit(Name, 0))
          {
             return "Name must not start with a digit.";
          }
 
-         for(int nIdx = 0; nIdx < Name.Length; nIdx++)
+         for (int nIdx = 0; nIdx < Name.Length; nIdx++)
          {
             if (!(char.IsLetterOrDigit(Name, nIdx) || (Name[nIdx] == ' ')))
                return "Name must contain only letters, digits and spaces";
@@ -201,6 +201,7 @@ namespace SGDK2
 
          return null;
       }
+
       public static bool EnforceConstraints
       {
          get
@@ -497,9 +498,9 @@ namespace SGDK2
             m_dsPrj.Frameset.FramesetRowDeleting -= value;
          }
       }
-      public static ProjectDataset.FramesetRow AddFramesetRow(string Name)
+      public static ProjectDataset.FramesetRow AddFramesetRow(string Name, string Folder)
       {
-         return m_dsPrj.Frameset.AddFramesetRow(Name);
+         return m_dsPrj.Frameset.AddFramesetRow(Name, Folder);
       }
 
       public static ProjectDataset.FramesetRow GetFrameSet(string Name)
@@ -1049,7 +1050,7 @@ namespace SGDK2
       }
       public static ProjectDataset.CounterRow AddCounter(string Name, int Value, int Max, int Min)
       {
-         return m_dsPrj.Counter.AddCounterRow(Name, Value, Max, Min);
+         return m_dsPrj.Counter.AddCounterRow(Name, null, Value, Max, Min);
       }
       #endregion
 
@@ -1462,7 +1463,7 @@ namespace SGDK2
       }
       public static ProjectDataset.SpriteDefinitionRow AddSpriteDefinition(string Name, string BaseClass)
       {
-         return m_dsPrj.SpriteDefinition.AddSpriteDefinitionRow(Name, BaseClass);
+         return m_dsPrj.SpriteDefinition.AddSpriteDefinitionRow(Name, null, BaseClass);
       }
       public static ProjectDataset.SpriteParameterRow[] GetSortedSpriteParameters(ProjectDataset.SpriteDefinitionRow row, bool sortByName)
       {
@@ -2745,7 +2746,7 @@ namespace SGDK2
       }
       public static ProjectDataset.SourceCodeRow AddSourceCode(string Name, string Text, string DependsOn, bool IsCustomObject, byte[] CustomObjectData)
       {
-         return m_dsPrj.SourceCode.AddSourceCodeRow(Name, IsCustomObject, DependsOn, Text, CustomObjectData);
+         return m_dsPrj.SourceCode.AddSourceCodeRow(Name, null, IsCustomObject, DependsOn, Text, CustomObjectData);
       }
       public static void DeleteSourceCode(ProjectDataset.SourceCodeRow row)
       {

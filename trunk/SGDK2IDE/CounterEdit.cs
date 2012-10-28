@@ -27,6 +27,8 @@ namespace SGDK2
       private SGDK2.DataChangeNotifier dataMonitor;
       private Label lblMinimum;
       private NumericUpDown nudMinimum;
+      private TextBox txtFolder;
+      private Label lblFolder;
 		private System.ComponentModel.IContainer components = null;
       #endregion
 
@@ -62,6 +64,7 @@ namespace SGDK2
 
          m_Counter = drCounter;
          txtCounterName.Text = drCounter.Name;
+         txtFolder.Text = drCounter.Folder;
          nudMinimum.Value = drCounter.Min;
          nudMaximum.Value = drCounter.Max;
          nudValue.Value = drCounter.Value;
@@ -102,6 +105,8 @@ namespace SGDK2
          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
          this.lblMinimum = new System.Windows.Forms.Label();
          this.nudMinimum = new System.Windows.Forms.NumericUpDown();
+         this.txtFolder = new System.Windows.Forms.TextBox();
+         this.lblFolder = new System.Windows.Forms.Label();
          ((System.ComponentModel.ISupportInitialize)(this.nudMaximum)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.nudValue)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.nudMinimum)).BeginInit();
@@ -109,7 +114,7 @@ namespace SGDK2
          // 
          // nudMaximum
          // 
-         this.nudMaximum.Location = new System.Drawing.Point(72, 60);
+         this.nudMaximum.Location = new System.Drawing.Point(72, 86);
          this.nudMaximum.Maximum = new decimal(new int[] {
             2000000000,
             0,
@@ -122,7 +127,7 @@ namespace SGDK2
             -2147483648});
          this.nudMaximum.Name = "nudMaximum";
          this.nudMaximum.Size = new System.Drawing.Size(88, 20);
-         this.nudMaximum.TabIndex = 6;
+         this.nudMaximum.TabIndex = 8;
          this.nudMaximum.Value = new decimal(new int[] {
             1,
             0,
@@ -133,28 +138,28 @@ namespace SGDK2
          // 
          // lblMaximum
          // 
-         this.lblMaximum.Location = new System.Drawing.Point(8, 60);
+         this.lblMaximum.Location = new System.Drawing.Point(8, 86);
          this.lblMaximum.Name = "lblMaximum";
          this.lblMaximum.Size = new System.Drawing.Size(64, 20);
-         this.lblMaximum.TabIndex = 5;
+         this.lblMaximum.TabIndex = 7;
          this.lblMaximum.Text = "Ma&ximum:";
          this.lblMaximum.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
          // 
          // nudValue
          // 
-         this.nudValue.Location = new System.Drawing.Point(72, 86);
+         this.nudValue.Location = new System.Drawing.Point(72, 112);
          this.nudValue.Name = "nudValue";
          this.nudValue.Size = new System.Drawing.Size(88, 20);
-         this.nudValue.TabIndex = 8;
+         this.nudValue.TabIndex = 10;
          this.nudValue.ValueChanged += new System.EventHandler(this.nudValue_ValueChanged);
          this.nudValue.Validated += new System.EventHandler(this.nudValue_Validated);
          // 
          // lblValue
          // 
-         this.lblValue.Location = new System.Drawing.Point(8, 86);
+         this.lblValue.Location = new System.Drawing.Point(8, 112);
          this.lblValue.Name = "lblValue";
          this.lblValue.Size = new System.Drawing.Size(64, 20);
-         this.lblValue.TabIndex = 7;
+         this.lblValue.TabIndex = 9;
          this.lblValue.Text = "&Value:";
          this.lblValue.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
          // 
@@ -183,16 +188,16 @@ namespace SGDK2
          // 
          // lblMinimum
          // 
-         this.lblMinimum.Location = new System.Drawing.Point(8, 34);
+         this.lblMinimum.Location = new System.Drawing.Point(8, 60);
          this.lblMinimum.Name = "lblMinimum";
          this.lblMinimum.Size = new System.Drawing.Size(64, 20);
-         this.lblMinimum.TabIndex = 3;
+         this.lblMinimum.TabIndex = 5;
          this.lblMinimum.Text = "&Minimum:";
          this.lblMinimum.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
          // 
          // nudMinimum
          // 
-         this.nudMinimum.Location = new System.Drawing.Point(72, 34);
+         this.nudMinimum.Location = new System.Drawing.Point(72, 60);
          this.nudMinimum.Maximum = new decimal(new int[] {
             2000000000,
             0,
@@ -205,14 +210,33 @@ namespace SGDK2
             -2147483648});
          this.nudMinimum.Name = "nudMinimum";
          this.nudMinimum.Size = new System.Drawing.Size(88, 20);
-         this.nudMinimum.TabIndex = 4;
+         this.nudMinimum.TabIndex = 6;
          this.nudMinimum.ValueChanged += new System.EventHandler(this.nudMinimum_ValueChanged);
          this.nudMinimum.Validated += new System.EventHandler(this.nudMinimum_Validated);
+         // 
+         // txtFolder
+         // 
+         this.txtFolder.Location = new System.Drawing.Point(72, 34);
+         this.txtFolder.Name = "txtFolder";
+         this.txtFolder.Size = new System.Drawing.Size(168, 20);
+         this.txtFolder.TabIndex = 4;
+         this.txtFolder.Validated += new System.EventHandler(this.txtFolder_Validated);
+         // 
+         // lblFolder
+         // 
+         this.lblFolder.AutoSize = true;
+         this.lblFolder.Location = new System.Drawing.Point(8, 37);
+         this.lblFolder.Name = "lblFolder";
+         this.lblFolder.Size = new System.Drawing.Size(39, 13);
+         this.lblFolder.TabIndex = 3;
+         this.lblFolder.Text = "&Folder:";
          // 
          // frmCounterEdit
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-         this.ClientSize = new System.Drawing.Size(251, 119);
+         this.ClientSize = new System.Drawing.Size(251, 143);
+         this.Controls.Add(this.lblFolder);
+         this.Controls.Add(this.txtFolder);
          this.Controls.Add(this.nudMinimum);
          this.Controls.Add(this.lblMinimum);
          this.Controls.Add(this.nudMaximum);
@@ -306,6 +330,11 @@ namespace SGDK2
          }
       }
 
+      private void txtFolder_Validated(object sender, EventArgs e)
+      {
+         m_Counter.Folder = txtFolder.Text;
+      }
+
       private void dataMonitor_CounterRowDeleted(object sender, SGDK2.ProjectDataset.CounterRowChangeEvent e)
       {
          if (e.Row == m_Counter)
@@ -343,6 +372,7 @@ namespace SGDK2
          m_Counter.Min = (int)nudMinimum.Value;
       }
       #endregion
+
    }
 }
 

@@ -644,7 +644,7 @@ namespace SGDK2
             {
                drTarget = ProjectData.GetFrameSet(cboOtherFrameset.Text);
                if (drTarget == null)
-                  drTarget = ProjectData.AddFramesetRow(cboOtherFrameset.Text);
+                  drTarget = ProjectData.AddFramesetRow(cboOtherFrameset.Text, string.Empty);
                else
                {
                   allFrames = ProjectData.GetSortedFrameRows(drTarget);

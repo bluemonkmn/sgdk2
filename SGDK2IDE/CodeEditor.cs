@@ -104,6 +104,7 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuExportEmbeddedData;
       private System.Windows.Forms.SaveFileDialog dlgExportEmbeddedData;
       private System.Windows.Forms.MenuItem mnuDataPlay;
+      private MenuItem mnuFileFolder;
       #endregion
 
       #region Win32 API
@@ -143,7 +144,7 @@ namespace SGDK2
 
          m_SourceCode = ProjectData.AddSourceCode(Name, CodeGenerator.GetCustomCodeTemplate(Name), DependsOn, true, null);
          rtfCode.Rtf = ConvertToRTF(m_SourceCode.Text);
-         mnuFileSeparator.Visible = mnuFileRename.Visible = mnuEmbeddedData.Visible = true;
+         mnuFileRename.Visible = mnuEmbeddedData.Visible = true;
       }
 
       public frmCodeEditor(ProjectDataset.SourceCodeRow drSourceCode)
@@ -160,7 +161,7 @@ namespace SGDK2
             rtfCode.Rtf = ConvertToRTF(m_SourceCode.Text);
 
          if (m_SourceCode.IsCustomObject)
-            mnuFileSeparator.Visible = mnuFileRename.Visible = mnuEmbeddedData.Visible = true;
+            mnuFileRename.Visible = mnuEmbeddedData.Visible = true;
 
          InitClearMenuItem();
       }
@@ -191,9 +192,7 @@ namespace SGDK2
       private void InitializeComponent()
       {
          this.components = new System.ComponentModel.Container();
-         System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(frmCodeEditor));
-         this.DataMonitor = new SGDK2.DataChangeNotifier(this.components);
-         this.rtfCode = new SGDK2.CodeEditor();
+         System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmCodeEditor));
          this.tmrReparse = new System.Windows.Forms.Timer(this.components);
          this.staCode = new System.Windows.Forms.StatusBar();
          this.sbpStatus = new System.Windows.Forms.StatusBarPanel();
@@ -201,10 +200,11 @@ namespace SGDK2
          this.sbpInsert = new System.Windows.Forms.StatusBarPanel();
          this.sbpLineNum = new System.Windows.Forms.StatusBarPanel();
          this.sbpChar = new System.Windows.Forms.StatusBarPanel();
-         this.mnuCodeEditor = new System.Windows.Forms.MainMenu();
+         this.mnuCodeEditor = new System.Windows.Forms.MainMenu(this.components);
          this.mnuFile = new System.Windows.Forms.MenuItem();
          this.mnuFileSeparator = new System.Windows.Forms.MenuItem();
          this.mnuFileRename = new System.Windows.Forms.MenuItem();
+         this.mnuFileFolder = new System.Windows.Forms.MenuItem();
          this.mnuEdit = new System.Windows.Forms.MenuItem();
          this.mnuEditUndo = new System.Windows.Forms.MenuItem();
          this.mnuEditRedo = new System.Windows.Forms.MenuItem();
@@ -222,36 +222,14 @@ namespace SGDK2
          this.tmrInvalidateStatus = new System.Windows.Forms.Timer(this.components);
          this.dlgEmbeddedFile = new System.Windows.Forms.OpenFileDialog();
          this.dlgExportEmbeddedData = new System.Windows.Forms.SaveFileDialog();
+         this.rtfCode = new SGDK2.CodeEditor();
+         this.DataMonitor = new SGDK2.DataChangeNotifier(this.components);
          ((System.ComponentModel.ISupportInitialize)(this.sbpStatus)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpCAPS)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpInsert)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpLineNum)).BeginInit();
          ((System.ComponentModel.ISupportInitialize)(this.sbpChar)).BeginInit();
          this.SuspendLayout();
-         // 
-         // DataMonitor
-         // 
-         this.DataMonitor.SourceCodeRowDeleted += new SGDK2.ProjectDataset.SourceCodeRowChangeEventHandler(this.DataMonitor_SourceCodeRowDeleted);
-         this.DataMonitor.SourceCodeRowChanged += new SGDK2.ProjectDataset.SourceCodeRowChangeEventHandler(this.DataMonitor_SourceCodeRowChanged);
-         this.DataMonitor.Clearing += new System.EventHandler(this.DataMonitor_Clearing);
-         // 
-         // rtfCode
-         // 
-         this.rtfCode.AcceptsTab = true;
-         this.rtfCode.Dock = System.Windows.Forms.DockStyle.Fill;
-         this.rtfCode.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
-         this.rtfCode.HideSelection = false;
-         this.rtfCode.Location = new System.Drawing.Point(0, 0);
-         this.rtfCode.Name = "rtfCode";
-         this.rtfCode.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedBoth;
-         this.rtfCode.ShowSelectionMargin = true;
-         this.rtfCode.Size = new System.Drawing.Size(456, 327);
-         this.rtfCode.TabIndex = 0;
-         this.rtfCode.Text = "";
-         this.rtfCode.WordWrap = false;
-         this.rtfCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.rtfCode_KeyDown);
-         this.rtfCode.MouseUp += new System.Windows.Forms.MouseEventHandler(this.rtfCode_MouseUp);
-         this.rtfCode.TextChanged += new System.EventHandler(this.rtfCode_TextChanged);
          // 
          // tmrReparse
          // 
@@ -260,14 +238,14 @@ namespace SGDK2
          // 
          // staCode
          // 
-         this.staCode.Location = new System.Drawing.Point(0, 327);
+         this.staCode.Location = new System.Drawing.Point(0, 285);
          this.staCode.Name = "staCode";
          this.staCode.Panels.AddRange(new System.Windows.Forms.StatusBarPanel[] {
-                                                                                   this.sbpStatus,
-                                                                                   this.sbpCAPS,
-                                                                                   this.sbpInsert,
-                                                                                   this.sbpLineNum,
-                                                                                   this.sbpChar});
+            this.sbpStatus,
+            this.sbpCAPS,
+            this.sbpInsert,
+            this.sbpLineNum,
+            this.sbpChar});
          this.staCode.ShowPanels = true;
          this.staCode.Size = new System.Drawing.Size(456, 22);
          this.staCode.TabIndex = 1;
@@ -277,12 +255,14 @@ namespace SGDK2
          // 
          this.sbpStatus.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Spring;
          this.sbpStatus.BorderStyle = System.Windows.Forms.StatusBarPanelBorderStyle.None;
-         this.sbpStatus.Width = 342;
+         this.sbpStatus.Name = "sbpStatus";
+         this.sbpStatus.Width = 341;
          // 
          // sbpCAPS
          // 
          this.sbpCAPS.Alignment = System.Windows.Forms.HorizontalAlignment.Center;
          this.sbpCAPS.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
+         this.sbpCAPS.Name = "sbpCAPS";
          this.sbpCAPS.Style = System.Windows.Forms.StatusBarPanelStyle.OwnerDraw;
          this.sbpCAPS.Text = "CAPS";
          this.sbpCAPS.Width = 45;
@@ -291,6 +271,7 @@ namespace SGDK2
          // 
          this.sbpInsert.Alignment = System.Windows.Forms.HorizontalAlignment.Center;
          this.sbpInsert.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
+         this.sbpInsert.Name = "sbpInsert";
          this.sbpInsert.Style = System.Windows.Forms.StatusBarPanelStyle.OwnerDraw;
          this.sbpInsert.Text = "INS";
          this.sbpInsert.Width = 33;
@@ -299,56 +280,65 @@ namespace SGDK2
          // 
          this.sbpLineNum.Alignment = System.Windows.Forms.HorizontalAlignment.Center;
          this.sbpLineNum.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
+         this.sbpLineNum.Name = "sbpLineNum";
          this.sbpLineNum.Width = 10;
          // 
          // sbpChar
          // 
          this.sbpChar.Alignment = System.Windows.Forms.HorizontalAlignment.Center;
          this.sbpChar.AutoSize = System.Windows.Forms.StatusBarPanelAutoSize.Contents;
+         this.sbpChar.Name = "sbpChar";
          this.sbpChar.Width = 10;
          // 
          // mnuCodeEditor
          // 
          this.mnuCodeEditor.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                      this.mnuFile,
-                                                                                      this.mnuEdit,
-                                                                                      this.mnuEmbeddedData});
+            this.mnuFile,
+            this.mnuEdit,
+            this.mnuEmbeddedData});
          // 
          // mnuFile
          // 
          this.mnuFile.Index = 0;
          this.mnuFile.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                this.mnuFileSeparator,
-                                                                                this.mnuFileRename});
+            this.mnuFileSeparator,
+            this.mnuFileRename,
+            this.mnuFileFolder});
          this.mnuFile.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
          this.mnuFile.Text = "&File";
          // 
          // mnuFileSeparator
          // 
          this.mnuFileSeparator.Index = 0;
-         this.mnuFileSeparator.MergeOrder = 8;
+         this.mnuFileSeparator.MergeOrder = 5;
          this.mnuFileSeparator.Text = "-";
-         this.mnuFileSeparator.Visible = false;
          // 
          // mnuFileRename
          // 
          this.mnuFileRename.Index = 1;
-         this.mnuFileRename.MergeOrder = 8;
+         this.mnuFileRename.MergeOrder = 6;
          this.mnuFileRename.Text = "Rename &Custom Code Object";
          this.mnuFileRename.Visible = false;
          this.mnuFileRename.Click += new System.EventHandler(this.mnuFileRename_Click);
+         // 
+         // mnuFileFolder
+         // 
+         this.mnuFileFolder.Index = 2;
+         this.mnuFileFolder.MergeOrder = 7;
+         this.mnuFileFolder.Text = "Spe&cify Folder Name";
+         this.mnuFileFolder.Click += new System.EventHandler(this.mnuFileFolder_Click);
          // 
          // mnuEdit
          // 
          this.mnuEdit.Index = 1;
          this.mnuEdit.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                this.mnuEditUndo,
-                                                                                this.mnuEditRedo,
-                                                                                this.mnuEditSeparator,
-                                                                                this.mnuEditFind,
-                                                                                this.mnuFindNext,
-                                                                                this.mnuEditReplace,
-                                                                                this.mnuEditGoto});
+            this.mnuEditUndo,
+            this.mnuEditRedo,
+            this.mnuEditSeparator,
+            this.mnuEditFind,
+            this.mnuFindNext,
+            this.mnuEditReplace,
+            this.mnuEditGoto});
          this.mnuEdit.Text = "&Edit";
          // 
          // mnuEditUndo
@@ -402,11 +392,11 @@ namespace SGDK2
          // 
          this.mnuEmbeddedData.Index = 2;
          this.mnuEmbeddedData.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-                                                                                        this.mnuDataLoad,
-                                                                                        this.mnuDataEdit,
-                                                                                        this.mnuDataClear,
-                                                                                        this.mnuDataPlay,
-                                                                                        this.mnuExportEmbeddedData});
+            this.mnuDataLoad,
+            this.mnuDataEdit,
+            this.mnuDataClear,
+            this.mnuDataPlay,
+            this.mnuExportEmbeddedData});
          this.mnuEmbeddedData.MergeOrder = 2;
          this.mnuEmbeddedData.Text = "Embedded &Data";
          this.mnuEmbeddedData.Visible = false;
@@ -450,9 +440,7 @@ namespace SGDK2
          // dlgEmbeddedFile
          // 
          this.dlgEmbeddedFile.AddExtension = false;
-         this.dlgEmbeddedFile.Filter = "FMOD Supported Sounds|*.MOD;*.MID;*.MP3;*.OGG;*.WAV;*.WMA|Mod files (*.MOD)|*.MOD" +
-            "|MIDI files (*.MID)|*.MID|MP3 files (*.MP3)|*.MP3|OGG files (*.OGG)|*.OGG|WAV fi" +
-            "les (*.WAV)|*.WAV|Windows Media Audio (*.WMA)|*.WMA|All files (*.*)|*.*";
+         this.dlgEmbeddedFile.Filter = resources.GetString("dlgEmbeddedFile.Filter");
          this.dlgEmbeddedFile.Title = "Select File To Embed";
          // 
          // dlgExportEmbeddedData
@@ -461,10 +449,34 @@ namespace SGDK2
          this.dlgExportEmbeddedData.Filter = "All files (*.*)|*.*";
          this.dlgExportEmbeddedData.Title = "Specify Export File Name";
          // 
+         // rtfCode
+         // 
+         this.rtfCode.AcceptsTab = true;
+         this.rtfCode.Dock = System.Windows.Forms.DockStyle.Fill;
+         this.rtfCode.Font = new System.Drawing.Font("Courier New", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+         this.rtfCode.HideSelection = false;
+         this.rtfCode.Location = new System.Drawing.Point(0, 0);
+         this.rtfCode.Name = "rtfCode";
+         this.rtfCode.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedBoth;
+         this.rtfCode.ShowSelectionMargin = true;
+         this.rtfCode.Size = new System.Drawing.Size(456, 285);
+         this.rtfCode.TabIndex = 0;
+         this.rtfCode.Text = "";
+         this.rtfCode.WordWrap = false;
+         this.rtfCode.TextChanged += new System.EventHandler(this.rtfCode_TextChanged);
+         this.rtfCode.KeyDown += new System.Windows.Forms.KeyEventHandler(this.rtfCode_KeyDown);
+         this.rtfCode.MouseUp += new System.Windows.Forms.MouseEventHandler(this.rtfCode_MouseUp);
+         // 
+         // DataMonitor
+         // 
+         this.DataMonitor.SourceCodeRowChanged += new SGDK2.ProjectDataset.SourceCodeRowChangeEventHandler(this.DataMonitor_SourceCodeRowChanged);
+         this.DataMonitor.SourceCodeRowDeleted += new SGDK2.ProjectDataset.SourceCodeRowChangeEventHandler(this.DataMonitor_SourceCodeRowDeleted);
+         this.DataMonitor.Clearing += new System.EventHandler(this.DataMonitor_Clearing);
+         // 
          // frmCodeEditor
          // 
          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-         this.ClientSize = new System.Drawing.Size(456, 349);
+         this.ClientSize = new System.Drawing.Size(456, 307);
          this.Controls.Add(this.rtfCode);
          this.Controls.Add(this.staCode);
          this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -1374,6 +1386,15 @@ namespace SGDK2
          }
 
          m_SourceCode.Name = sName;
+      }
+
+      private void mnuFileFolder_Click(object sender, EventArgs e)
+      {
+         string sFolder = frmInputBox.GetInput(this, "Specify Code Object Folder", "Specify a folder name to use in the tree", m_SourceCode.Folder);
+         if ((sFolder == null) || (sFolder == m_SourceCode.Folder))
+            return;
+
+         m_SourceCode.Folder = sFolder;
       }
 
       private void mnuDataClear_Click(object sender, System.EventArgs e)

@@ -597,7 +597,7 @@ namespace SGDK2
                if (drName == null)
                   ProjectData.GraphicSheet.Rows.Add(drTmp.ItemArray);
                else
-                  ProjectData.GraphicSheet.AddGraphicSheetRow(drName[dcNewGSName].ToString(),
+                  ProjectData.GraphicSheet.AddGraphicSheetRow(drName[dcNewGSName].ToString(), drTmp.Folder,
                      drTmp.Columns, drTmp.Rows, drTmp.CellWidth, drTmp.CellHeight, drTmp.Image);
             }
             ProjectData.MergeCredits(importData);

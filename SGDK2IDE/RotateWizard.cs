@@ -815,7 +815,7 @@ namespace SGDK2
                   {
                      if (drNewFrameset == null)
                         if ((drNewFrameset = ProjectData.GetFrameSet(cboFrameset.Text)) == null)
-                           drNewFrameset = ProjectData.AddFramesetRow(cboFrameset.Text);
+                           drNewFrameset = ProjectData.AddFramesetRow(cboFrameset.Text, string.Empty);
 
                      drFrameset = drNewFrameset;
                   }

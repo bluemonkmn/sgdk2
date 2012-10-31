@@ -51,11 +51,16 @@
   <content>
       <para>The right side of this tab displays the contents of the 
          frameset (all the frames). At the top you can see and change the frameset's 
-         name. In the panel below the name, is a list of all the frames. If there are 
-         different size frames or frames that are offset differently from the origin, 
-         the space allocated for each frame will be larger than the graphics in the 
-         frame itself. The properties of the selected frame or frames are displayed at
-         the bottom and 
+         name. Below the name you have the option of specifying a folder. The
+         folder may be delimited by backslashes to nest the frameset within
+         multiple levels of folders. The folder will become the parent of the
+         frameset in the project tree only. It does not affect other uses of the
+         frameset, but is just provided for organizational purposes in the tree.</para>
+         <para>In the panel below the name and folder, is a list of all the frames.
+         If there are different size frames or frames that are offset differently
+         from the origin, the space allocated for each frame will be larger than
+         the graphics in the frame itself. The properties of the selected frame
+         or frames are displayed at the bottom and 
          can be edited directly. These properties include all the information about the 
          frame, which means you can also change the transformation matrix directly on 
          this tab if you know which numbers to put where. The "Frame Editor" tab 

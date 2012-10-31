@@ -75,12 +75,25 @@
 <section><!--h3-->
   <title>Rename Custom Code Object</title>
   <content>
-      <para>Rename the code object/file currently being edited. The name 
+      <para>This command is available only for custom code objects, not standard
+         code. Rename the code object/file currently being edited. The name
          must follow the rules for file naming because during the process of compiling 
          the project, a file by this name will be created. The name must also be unique 
          among all code files in the project.</para>
         </content>
 </section>
+
+<section><!--h3-->
+  <title>Specify Folder Name</title>
+  <content>
+      <para>Specify a folder name for the code object currently being edited.
+      The folder may be delimited by backslashes to nest the object within
+      multiple levels of folders. The folder will become the parent of the code
+      object in the project tree only. It does not affect other uses of the
+      code object.</para>
+        </content>
+</section>
+
         </content>
 </section>
 

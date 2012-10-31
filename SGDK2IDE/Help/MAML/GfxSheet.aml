@@ -41,6 +41,16 @@
 </section>
 
 <section><!--h3-->
+  <title>Folder</title>
+  <content>
+      <para>Optionally specify a folder name for the graphic sheet. The folder
+      may be delimited by backslashes to nest the sheet within multiple levels
+      of folders. The folder will become the parent of the sheet in the project
+      tree only. It does not affect other uses of the graphic sheet.</para>
+  </content>
+</section>
+
+<section><!--h3-->
   <title>Name</title>
   <content>
       <para>The name of a graphic sheet must be unique among all graphic 
@@ -49,6 +59,7 @@
         </content>
 </section>
 
+     
 <section><!--h3-->
   <title>CellHeight, CellWidth</title>
   <content>

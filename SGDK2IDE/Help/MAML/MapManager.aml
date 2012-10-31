@@ -12,6 +12,17 @@
     </introduction>
 
 <section><!--h2-->
+  <title>Folder</title>
+  <content>
+      <para>Optionally specify a folder name for the map. The folder
+      may be delimited by backslashes to nest the map multiple levels
+      of folders. The folder will become the parent of the map in the project
+      tree. It is for organizational convenience in the project tree only, and
+      does not affect other uses of the map.</para>
+        </content>
+</section>
+      
+<section><!--h2-->
   <title>Name</title>
   <content>
       <para>The name of a map must be unique among all map names in the project. A name 

@@ -30,6 +30,16 @@
 </section>
 
 <section><!--h2-->
+  <title>Folder</title>
+  <content>
+  <para>Specify a folder name for the counter. The folder may be delimited by
+      backslashes to nest the counter within multiple levels of folders. The
+      folder will become the parent of the counter in the project tree only.
+      It does not affect other uses of the counter.</para>
+    </content>
+</section>
+
+<section><!--h2-->
   <title>Maximum</title>
   <content>
 

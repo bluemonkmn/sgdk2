@@ -23,6 +23,20 @@
       folder, or select it and then choose "Properties" from the View menu, or "Edit"
       from the context (right-mouse) menu.
     </para>
+    <para>
+    At the top of this window are some basic pieces of information about the sprite
+    definition visible no matter which tab is selected below. The Name of the
+    sprite definition is used to refer to the sprite definition and must be
+    unique throughout the project. The Folder is a backslash-delimited name that
+    can be used to specify a parent folder name into which the sprite definition
+    will be nested for organizational purposes only in the project tree. The
+    Base Class is a relatively advanced feature, which should be left at the
+    default value of SpriteBase in most cases. If you want to create <link
+    xlink:href="8dc5b7ca-9900-4b6d-a51b-9de648e0da18">Source Code</link> objects
+    to define sprites with specialized sets of rule functions you can specify
+    your <codeEntityReference qualifyHint="false">T:SpriteBase</codeEntityReference>-derived
+    base class here.
+    </para>
     <para>Because sprite definitions consist of different components that have a 
          significant deal of detail to explain, the description of sprite definitions is 
          split up into 3 parts corresponding with the 3 tabs. This page will explain 

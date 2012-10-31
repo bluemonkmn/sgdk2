@@ -1754,32 +1754,38 @@ namespace SGDK2
          }
          return parent.Nodes.Insert(newIndex, childName);
       }
-
-      private void UpdateNestedNode(TreeNode child, string folder)
+      private void UpdateNestedNode(TreeNode child, string folder, string oldFolder)
       {
          string[] folderParts;
          if (string.IsNullOrEmpty(folder))
-         {
             folderParts = new string[] {};
-         } else {
+         else
             folderParts = folder.Split(SGDK2IDE.pathSeparator);
-         }
+         int oldAncestorCount = 0;
+         if (string.IsNullOrEmpty(oldFolder))
+            oldAncestorCount = 0;
+         else
+            oldAncestorCount = oldFolder.Split(SGDK2IDE.pathSeparator).Length;
          int ancestorIndex = folderParts.Length - 1;
          TreeNode parent = child.Parent;
-         for (parent = child.Parent; (ancestorIndex >= 0) && (parent.Tag.ToString() == "FO"); ancestorIndex--, parent = parent.Parent)
+         for (parent = child.Parent; ancestorIndex >= 0; ancestorIndex--, parent = parent.Parent)
          {
             if (string.Compare(folderParts[ancestorIndex], parent.Text, true) != 0)
                break;
          }
-         if ((ancestorIndex < 0) && (parent.Tag.ToString() != "FO"))
+         if ((ancestorIndex < 0) && (folderParts.Length == oldAncestorCount))
          {
             UpdateSortedNode(child);
          }
          else
          {
             TreeNode topParent = parent;
-            while (topParent.Tag.ToString() == "FO")
+            int oldAncestorIndex = oldAncestorCount - (folderParts.Length - ancestorIndex);
+            while (oldAncestorIndex >= 0)
+            {
                topParent = topParent.Parent;
+               oldAncestorIndex--;
+            }
             parent = child.Parent;
             child.Remove();
             RemoveEmptyNestedNode(parent);
@@ -2015,12 +2021,13 @@ namespace SGDK2
          if (e.Action == DataRowAction.Change)
          {
             String sOldKey = e.Row[ProjectData.GraphicSheet.NameColumn, DataRowVersion.Current].ToString();
+            String sOldFolder = e.Row[ProjectData.GraphicSheet.FolderColumn, DataRowVersion.Current].ToString();
             TreeNode ndOld = (TreeNode)m_TreeNodes["GS" + sOldKey];
             TreeNode ndOldChild = (TreeNode)m_TreeNodes["GE" + sOldKey];
             m_TreeNodes.Remove("GS" + sOldKey);
             m_TreeNodes.Remove("GE" + sOldKey);
             ndOld.Tag = "GS" + (ndOld.Text = e.Row.Name);
-            UpdateNestedNode(ndOld, e.Row.Folder);
+            UpdateNestedNode(ndOld, e.Row.Folder, sOldFolder);
             ndOldChild.Tag = "GE" + e.Row.Name;
             m_TreeNodes.Add(ndOld.Tag, ndOld);
             m_TreeNodes.Add(ndOldChild.Tag, ndOldChild);
@@ -2067,10 +2074,11 @@ namespace SGDK2
          if (e.Action == DataRowAction.Change)
          {
             String sOldKey = e.Row[ProjectData.Frameset.NameColumn, DataRowVersion.Current].ToString();
+            String sOldFolder = e.Row[ProjectData.Frameset.FolderColumn, DataRowVersion.Current].ToString();
             TreeNode ndOld = (TreeNode)m_TreeNodes["FS" + sOldKey];
             m_TreeNodes.Remove("FS" + sOldKey);
             ndOld.Tag = "FS" + (ndOld.Text = e.Row.Name);
-            UpdateNestedNode(ndOld, e.Row.Folder);
+            UpdateNestedNode(ndOld, e.Row.Folder, sOldFolder);
             m_TreeNodes.Add(ndOld.Tag, ndOld);
          }
       }
@@ -2179,10 +2187,11 @@ namespace SGDK2
          if (e.Action == DataRowAction.Change)
          {
             String sOldKey = e.Row[ProjectData.Counter.NameColumn, DataRowVersion.Current].ToString();
+            String sOldFolder = e.Row[ProjectData.Counter.FolderColumn, DataRowVersion.Current].ToString();
             TreeNode ndOld = (TreeNode)m_TreeNodes["CR" + sOldKey];
             m_TreeNodes.Remove("CR" + sOldKey);
             ndOld.Tag = "CR" + (ndOld.Text = e.Row.Name);
-            UpdateNestedNode(ndOld, e.Row.Folder);
+            UpdateNestedNode(ndOld, e.Row.Folder, sOldFolder);
             m_TreeNodes.Add(ndOld.Tag, ndOld);
          }      
       }
@@ -2272,10 +2281,11 @@ namespace SGDK2
          if (e.Action == DataRowAction.Change)
          {
             String sOldKey = e.Row[ProjectData.Map.NameColumn, DataRowVersion.Current].ToString();
+            String sOldFolder = e.Row[ProjectData.Map.FolderColumn, DataRowVersion.Current].ToString();
             TreeNode ndOld = (TreeNode)m_TreeNodes["MP" + sOldKey];
             m_TreeNodes.Remove("MP" + sOldKey);
             ndOld.Tag = "MP" + (ndOld.Text = e.Row.Name);
-            UpdateNestedNode(ndOld, e.Row.Folder);
+            UpdateNestedNode(ndOld, e.Row.Folder, sOldFolder);
             m_TreeNodes.Add(ndOld.Tag, ndOld);
 
             ndOld = (TreeNode)m_TreeNodes["LR" + sOldKey];
@@ -2323,10 +2333,11 @@ namespace SGDK2
          if (e.Action == DataRowAction.Change)
          {
             String sOldKey = e.Row[ProjectData.SpriteDefinition.NameColumn, DataRowVersion.Current].ToString();
+            String sOldFolder = e.Row[ProjectData.SpriteDefinition.FolderColumn, DataRowVersion.Current].ToString();
             TreeNode ndOld = (TreeNode)m_TreeNodes["SD" + sOldKey];
             m_TreeNodes.Remove("SD" + sOldKey);
             ndOld.Tag = "SD" + (ndOld.Text = e.Row.Name);
-            UpdateNestedNode(ndOld, e.Row.Folder);
+            UpdateNestedNode(ndOld, e.Row.Folder, sOldFolder);
             m_TreeNodes.Add(ndOld.Tag, ndOld);
          }
       }
@@ -2601,11 +2612,12 @@ namespace SGDK2
          if (e.Action == DataRowAction.Change)
          {
             String sOldKey = "CD" + e.Row[ProjectData.SourceCode.NameColumn, DataRowVersion.Current].ToString();
+            String sOldFolder = e.Row[ProjectData.SourceCode.FolderColumn, DataRowVersion.Current].ToString();
             TreeNode ndOld = (TreeNode)m_TreeNodes[sOldKey];
             m_TreeNodes.Remove(sOldKey);
             ndOld.Tag = "CD" + e.Row.Name;
             ndOld.Text = e.Row.Name;
-            UpdateNestedNode(ndOld, e.Row.Folder);
+            UpdateNestedNode(ndOld, e.Row.Folder, sOldFolder);
             m_TreeNodes.Add(ndOld.Tag, ndOld);
             foreach(ProjectDataset.SourceCodeRow child in ProjectData.GetDependentSourceCode(e.Row))
                child.DependsOn = e.Row.Name;

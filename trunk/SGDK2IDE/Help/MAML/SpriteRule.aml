@@ -139,12 +139,13 @@
           You may manually add up to 3 parameters to the converted function (in the code
           editor, assuming you are familiar with C#) if you would like to be able to create
           rules that pass different parameter values to this function (you can use functions
-          from <!-- TODO: Unknown topic link: html\T_SpriteBase.htm -->SpriteBase as an example), but it will
+          from <codeEntityReference qualifyHint="false">T:SpriteBase</codeEntityReference>
+          as an example), but it will
           still only be accessible to this sprite. However, if your rules are not dependent
           on anything specific to this sprite, you may move the code or change the code
           declaration to put the function in the
-          <!-- TODO: Unknown topic link: html\T_SpriteBase.htm -->SpriteBase class. Then it will be accessible
-          to all sprites.</listItem>
+          <codeEntityReference qualifyHint="false">T:SpriteBase</codeEntityReference>
+          class. Then it will be accessible to all sprites.</listItem>
       </list>
         </content>
 </section>

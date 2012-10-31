@@ -13,6 +13,24 @@
     </introduction>
 
 <section>
+   <title>Version 2.2.9</title>
+   <content>
+   <para>This section describes updates between versions 2.2.7 and 2.2.9.</para>
+   <list class="ordered">
+      <listItem>Implement the ability to nest Graphic Sheets, Framesets, Sprite
+      Definitions, Counters, Source Code and Maps in folders in the tree view.</listItem>
+      <listItem>Correct the position of the "Export HTML5 and Run" command when
+      another window with File menu items is active.</listItem>
+      <listItem>Avoid fatal error when right-clicking in project tree where
+      there is no node.</listItem>
+      <listItem>Add Ctrl-S shortcut to Save menu item in file menu.</listItem>
+      <listItem>If splash form transparency fails for any reason (running under
+      Mono), ignore the error.</listItem>      
+   </list>
+   </content>
+</section>
+
+<section>
    <title>Version 2.2.7</title>
    <content>
    <para>This section describes updates between versions 2.2.6 and 2.2.7.</para>

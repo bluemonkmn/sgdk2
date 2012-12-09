@@ -5,5 +5,5 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyDescription("Scrolling Game Development Kit 2 Runtime Type Reflection")]
 [assembly: AssemblyCompany("Benjamin Marty")]
 [assembly: AssemblyProduct("Scrolling Game Development Kit 2")]
-[assembly: AssemblyCopyright("Copyright ©2006-2007 Benjamin Marty")]
-[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyCopyright("Copyright ©2006-2012 Benjamin Marty")]
+[assembly: AssemblyVersion("2.2.9.3")]

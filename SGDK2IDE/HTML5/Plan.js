@@ -367,7 +367,7 @@ PlanBase.prototype.addSpriteAtPlan = function(spriteDefinition, relativePosition
 
    if ((this.m_Coords != null) && (this.m_Coords.length > 0))
    {
-      offset = lastCreatedSprite.getRelativePosition(relativePosition);
+      offset = GeneralRules.lastCreatedSprite.getRelativePosition(relativePosition);
       GeneralRules.lastCreatedSprite.x = this[0].x - offset.x;
       GeneralRules.lastCreatedSprite.y = this[0].y - offset.y ;
    }

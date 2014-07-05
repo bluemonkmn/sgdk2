@@ -1,15 +1,16 @@
 <?xml version="1.0" standalone="yes"?>
 <ProjectDataset>
   <xs:schema id="ProjectDataset" xmlns="" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop">
-    <xs:element name="ProjectDataset" msdata:IsDataSet="true" msprop:SchemaVersion="1">
+    <xs:element name="ProjectDataset" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:SchemaVersion="1">
       <xs:complexType>
-        <xs:choice maxOccurs="unbounded">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="GraphicSheet">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="Image" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="5" />
+                <xs:element name="Image" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="6" />
               </xs:sequence>
               <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Folder" type="xs:string" />
               <xs:attribute name="Columns" type="xs:short" default="16" />
               <xs:attribute name="Rows" type="xs:short" default="8" />
               <xs:attribute name="CellWidth" msdata:Caption="Cell Width" type="xs:short" default="32" />
@@ -36,6 +37,7 @@
                 </xs:element>
               </xs:sequence>
               <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Folder" type="xs:string" />
             </xs:complexType>
           </xs:element>
           <xs:element name="Tileset">
@@ -69,8 +71,10 @@
           <xs:element name="Counter">
             <xs:complexType>
               <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Folder" type="xs:string" />
               <xs:attribute name="Value" type="xs:int" />
               <xs:attribute name="Max" type="xs:int" />
+              <xs:attribute name="Min" type="xs:int" msdata:DefaultValue="0" use="required" />
             </xs:complexType>
           </xs:element>
           <xs:element name="Map">
@@ -113,6 +117,7 @@
                       <xs:element name="SpritePlan" minOccurs="0" maxOccurs="unbounded">
                         <xs:complexType>
                           <xs:sequence>
+                            <xs:element name="BaseClass" type="xs:string" default="PlanBase" msdata:Ordinal="4" />
                             <xs:element name="Coordinate" minOccurs="0" maxOccurs="unbounded">
                               <xs:complexType>
                                 <xs:attribute name="MapName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
@@ -176,6 +181,7 @@
                 </xs:element>
               </xs:sequence>
               <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Folder" type="xs:string" />
               <xs:attribute name="ScrollMarginLeft" type="xs:short" use="required" />
               <xs:attribute name="ScrollMarginTop" type="xs:short" use="required" />
               <xs:attribute name="ScrollMarginRight" type="xs:short" use="required" />
@@ -236,6 +242,8 @@
                 </xs:element>
               </xs:sequence>
               <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Folder" type="xs:string" />
+              <xs:attribute name="BaseClass" type="xs:string" default="SpriteBase" />
             </xs:complexType>
           </xs:element>
           <xs:element name="SpriteCategory">
@@ -268,10 +276,11 @@
           <xs:element name="SourceCode">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="Text" type="xs:string" minOccurs="0" msdata:Ordinal="3" />
-                <xs:element name="CustomObjectData" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="4" />
+                <xs:element name="Text" type="xs:string" minOccurs="0" msdata:Ordinal="4" />
+                <xs:element name="CustomObjectData" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="5" />
               </xs:sequence>
               <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Folder" type="xs:string" />
               <xs:attribute name="IsCustomObject" type="xs:boolean" default="false" />
               <xs:attribute name="DependsOn" type="xs:string" />
             </xs:complexType>
@@ -1068,7 +1077,7 @@
     <Frame FrameValue="430" GraphicSheet="ShipFire" CellIndex="3" m11="-0.1736" m12="0.9848" m21="-0.9848" m22="-0.1736" dx="34.5353" dy="3.0214" color="-1" />
     <Frame FrameValue="431" GraphicSheet="ShipFire" CellIndex="3" m11="-0.0872" m12="0.9962" m21="-0.9962" m22="-0.0872" dx="33.3336" dy="1.4554" color="-1" />
   </Frameset>
-  <SpriteDefinition Name="SpaceShip">
+  <SpriteDefinition Name="SpaceShip" BaseClass="SpriteBase">
     <SpriteRule Name="If pressing left" Sequence="1" Type="If" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Left" Parameter2="false" EndIf="false" Suspended="false" />
     <SpriteRule Name="Turn left" Sequence="2" Type="Do" Function="CalculateRotatedState" Parameter1="(int)State.Drift0" Parameter2="72" Parameter3="state+1" ResultParameter="state" EndIf="true" Suspended="false" />
     <SpriteRule Name="If pressing right" Sequence="3" Type="If" Function="IsInputPressed" Parameter1="SpriteBase.InputBits.Right" Parameter2="false" EndIf="false" Suspended="false" />

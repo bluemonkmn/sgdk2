@@ -7,9 +7,10 @@
           <xs:element name="GraphicSheet">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="Image" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="5" />
+                <xs:element name="Image" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="6" />
               </xs:sequence>
               <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Folder" type="xs:string" />
               <xs:attribute name="Columns" type="xs:short" default="16" />
               <xs:attribute name="Rows" type="xs:short" default="8" />
               <xs:attribute name="CellWidth" msdata:Caption="Cell Width" type="xs:short" default="32" />
@@ -36,6 +37,7 @@
                 </xs:element>
               </xs:sequence>
               <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Folder" type="xs:string" />
             </xs:complexType>
           </xs:element>
           <xs:element name="Tileset">
@@ -69,6 +71,7 @@
           <xs:element name="Counter">
             <xs:complexType>
               <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Folder" type="xs:string" />
               <xs:attribute name="Value" type="xs:int" />
               <xs:attribute name="Max" type="xs:int" />
               <xs:attribute name="Min" type="xs:int" msdata:DefaultValue="0" use="required" />
@@ -178,6 +181,7 @@
                 </xs:element>
               </xs:sequence>
               <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Folder" type="xs:string" />
               <xs:attribute name="ScrollMarginLeft" type="xs:short" use="required" />
               <xs:attribute name="ScrollMarginTop" type="xs:short" use="required" />
               <xs:attribute name="ScrollMarginRight" type="xs:short" use="required" />
@@ -193,7 +197,6 @@
           <xs:element name="SpriteDefinition">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="BaseClass" type="xs:string" default="SpriteBase" msdata:Ordinal="1" />
                 <xs:element name="SpriteRule" minOccurs="0" maxOccurs="unbounded">
                   <xs:complexType>
                     <xs:attribute name="DefinitionName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
@@ -239,6 +242,8 @@
                 </xs:element>
               </xs:sequence>
               <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Folder" type="xs:string" />
+              <xs:attribute name="BaseClass" type="xs:string" default="SpriteBase" />
             </xs:complexType>
           </xs:element>
           <xs:element name="SpriteCategory">
@@ -271,10 +276,11 @@
           <xs:element name="SourceCode">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="Text" type="xs:string" minOccurs="0" msdata:Ordinal="3" />
-                <xs:element name="CustomObjectData" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="4" />
+                <xs:element name="Text" type="xs:string" minOccurs="0" msdata:Ordinal="4" />
+                <xs:element name="CustomObjectData" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="5" />
               </xs:sequence>
               <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Folder" type="xs:string" />
               <xs:attribute name="IsCustomObject" type="xs:boolean" default="false" />
               <xs:attribute name="DependsOn" type="xs:string" />
             </xs:complexType>
@@ -2778,8 +2784,7 @@
       </SpritePlan>
     </Layer>
   </Map>
-  <SpriteDefinition Name="Platform">
-    <BaseClass>SpriteBase</BaseClass>
+  <SpriteDefinition Name="Platform" BaseClass="SpriteBase">
     <SpriteRule Name="Limit" Sequence="1" Type="Do" Function="LimitVelocity" Parameter1="5" EndIf="false" Suspended="false" />
     <SpriteRule Name="React" Sequence="2" Type="Do" Function="ReactToSolid" EndIf="false" Suspended="false" />
     <SpriteRule Name="Move" Sequence="3" Type="Do" Function="MoveByVelocity" EndIf="false" Suspended="false" />
@@ -2789,8 +2794,7 @@
       <SpriteFrame Sequence="0" FrameValue="0" Duration="1" MaskAlphaLevel="0" />
     </SpriteState>
   </SpriteDefinition>
-  <SpriteDefinition Name="Player">
-    <BaseClass>SpriteBase</BaseClass>
+  <SpriteDefinition Name="Player" BaseClass="SpriteBase">
     <SpriteRule Name="If climbing" Sequence="1" Type="If" Function="IsInState" Parameter1="(int)Sprites.Player.State.Climbing" Parameter2="(int)Sprites.Player.State.Climbing" EndIf="false" Suspended="false" />
     <SpriteRule Name="Check if player left ladder" Sequence="2" Type="If" Function="!IsOnTile" Parameter1="TileCategoryName.Ladder" Parameter2="RelativePosition.BottomCenter" EndIf="true" Suspended="false" />
     <SpriteRule Name="Leave ladder" Sequence="4" Type="Do" Function="SwitchToState" Parameter1="(int)Sprites.Player.State.Right" Parameter2="RelativePosition.CenterMiddle" EndIf="true" Suspended="false" />
@@ -2893,8 +2897,7 @@
       <SpriteFrame Sequence="7" FrameValue="13" Duration="5" MaskAlphaLevel="0" />
     </SpriteState>
   </SpriteDefinition>
-  <SpriteDefinition Name="Points">
-    <BaseClass>SpriteBase</BaseClass>
+  <SpriteDefinition Name="Points" BaseClass="SpriteBase">
     <SpriteRule Name="Animate" Sequence="1" Type="Do" Function="+" Parameter1="frame" Parameter2="1" ResultParameter="frame" EndIf="false" Suspended="false" />
     <SpriteRule Name="If expired" Sequence="4" Type="If" Function="&gt;=" Parameter1="frame" Parameter2="135" EndIf="false" Suspended="false" />
     <SpriteRule Name="Deactivate" Sequence="5" Type="Do" Function="Deactivate" EndIf="false" Suspended="false" />

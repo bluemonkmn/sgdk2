@@ -14,7 +14,7 @@
     <RootNamespace>Documentation</RootNamespace>
     <Name>Documentation</Name>
     <!-- SHFB properties -->
-    <OutputPath>C:\Users\Ben\Documents\Visual Studio 2010\Projects\SGDK20IDE\Help\</OutputPath>
+    <OutputPath>C:\Users\Ben\Documents\Visual Studio 2012\Projects\SGDK2IDE\Help\</OutputPath>
     <HtmlHelpName>SGDK2Help</HtmlHelpName>
     <Language>en-US</Language>
     <ProjectSummary>

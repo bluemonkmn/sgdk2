@@ -7,9 +7,10 @@
           <xs:element name="GraphicSheet">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="Image" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="5" />
+                <xs:element name="Image" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="6" />
               </xs:sequence>
               <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Folder" type="xs:string" />
               <xs:attribute name="Columns" type="xs:short" default="16" />
               <xs:attribute name="Rows" type="xs:short" default="8" />
               <xs:attribute name="CellWidth" msdata:Caption="Cell Width" type="xs:short" default="32" />
@@ -36,6 +37,7 @@
                 </xs:element>
               </xs:sequence>
               <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Folder" type="xs:string" />
             </xs:complexType>
           </xs:element>
           <xs:element name="Tileset">
@@ -68,12 +70,11 @@
           </xs:element>
           <xs:element name="Counter">
             <xs:complexType>
-              <xs:sequence>
-                <xs:element name="Min" type="xs:int" default="0" msdata:Ordinal="3" />
-              </xs:sequence>
               <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Folder" type="xs:string" />
               <xs:attribute name="Value" type="xs:int" />
               <xs:attribute name="Max" type="xs:int" />
+              <xs:attribute name="Min" type="xs:int" msdata:DefaultValue="0" use="required" />
             </xs:complexType>
           </xs:element>
           <xs:element name="Map">
@@ -180,6 +181,7 @@
                 </xs:element>
               </xs:sequence>
               <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Folder" type="xs:string" />
               <xs:attribute name="ScrollMarginLeft" type="xs:short" use="required" />
               <xs:attribute name="ScrollMarginTop" type="xs:short" use="required" />
               <xs:attribute name="ScrollMarginRight" type="xs:short" use="required" />
@@ -195,7 +197,6 @@
           <xs:element name="SpriteDefinition">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="BaseClass" type="xs:string" default="SpriteBase" msdata:Ordinal="1" />
                 <xs:element name="SpriteRule" minOccurs="0" maxOccurs="unbounded">
                   <xs:complexType>
                     <xs:attribute name="DefinitionName" type="xs:string" msdata:AllowDBNull="false" use="prohibited" />
@@ -241,6 +242,8 @@
                 </xs:element>
               </xs:sequence>
               <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Folder" type="xs:string" />
+              <xs:attribute name="BaseClass" type="xs:string" default="SpriteBase" />
             </xs:complexType>
           </xs:element>
           <xs:element name="SpriteCategory">
@@ -273,10 +276,11 @@
           <xs:element name="SourceCode">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="Text" type="xs:string" minOccurs="0" msdata:Ordinal="3" />
-                <xs:element name="CustomObjectData" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="4" />
+                <xs:element name="Text" type="xs:string" minOccurs="0" msdata:Ordinal="4" />
+                <xs:element name="CustomObjectData" type="xs:base64Binary" minOccurs="0" msdata:Ordinal="5" />
               </xs:sequence>
               <xs:attribute name="Name" type="xs:string" use="required" />
+              <xs:attribute name="Folder" type="xs:string" />
               <xs:attribute name="IsCustomObject" type="xs:boolean" default="false" />
               <xs:attribute name="DependsOn" type="xs:string" />
             </xs:complexType>
@@ -661,12 +665,8 @@
   <Tileset Name="Main" Frameset="Main" TileWidth="32" TileHeight="32">
     <Tile TileValue="0" Counter="FrameCounter" />
   </Tileset>
-  <Counter Name="FrameCounter" Value="1" Max="1000000000">
-    <Min>0</Min>
-  </Counter>
-  <Counter Name="Keys" Value="0" Max="3">
-    <Min>0</Min>
-  </Counter>
+  <Counter Name="FrameCounter" Value="1" Max="1000000000" Min="0" />
+  <Counter Name="Keys" Value="0" Max="3" Min="0" />
   <Map Name="Input Overlay" ScrollMarginLeft="32" ScrollMarginTop="32" ScrollMarginRight="32" ScrollMarginBottom="32">
     <Layer Name="Designer Background" Width="100" Height="15" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="1" ScrollRateY="1" ZIndex="0" Priority="0" VirtualWidth="0" VirtualHeight="0">
       <Tiles>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</Tiles>
@@ -702,8 +702,7 @@
       <Sprite Name="Player 1" DefinitionName="Player" StateName="Up" CurrentFrame="0" X="491" Y="391" DX="0" DY="0" Priority="1" Active="true" Solidity="Standard" Color="-1" />
     </Layer>
   </Map>
-  <SpriteDefinition Name="InputButton">
-    <BaseClass>SpriteBase</BaseClass>
+  <SpriteDefinition Name="InputButton" BaseClass="SpriteBase">
     <SpriteRule Name="If this button is up" Sequence="1" Type="If" Function="IsInState" Parameter1="(int)Sprites.InputButton.State.Up" Parameter2="(int)Sprites.InputButton.State.Up" EndIf="false" Suspended="false" />
     <SpriteRule Name="Map mouse on this sprite press to overlay up button" Sequence="3" Type="Do" Function="SetOverlayInputByMouse" Parameter1="SpriteBase.InputBits.Up" EndIf="true" Suspended="false" />
     <SpriteRule Name="If this button is down" Sequence="4" Type="If" Function="IsInState" Parameter1="(int)Sprites.InputButton.State.Down" Parameter2="(int)Sprites.InputButton.State.Down" EndIf="false" Suspended="false" />
@@ -735,8 +734,7 @@
       <SpriteFrame Sequence="0" FrameValue="4" Duration="1" MaskAlphaLevel="0" />
     </SpriteState>
   </SpriteDefinition>
-  <SpriteDefinition Name="Player">
-    <BaseClass>SpriteBase</BaseClass>
+  <SpriteDefinition Name="Player" BaseClass="SpriteBase">
     <SpriteRule Name="Map inputs from overlay" Sequence="1" Type="Do" Function="MapInputsFromOverlay" EndIf="false" Suspended="false" />
     <SpriteRule Name="Accelerate by inputs" Sequence="2" Type="Do" Function="AccelerateByInputs" Parameter1="5" Parameter2="6" Parameter3="false" EndIf="false" Suspended="false" />
     <SpriteRule Name="React to solidity" Sequence="3" Type="Do" Function="ReactToSolid" EndIf="false" Suspended="false" />

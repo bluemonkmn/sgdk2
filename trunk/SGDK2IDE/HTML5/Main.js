@@ -13,16 +13,18 @@ function startGame() {
 
    gameView.onmousedown = function(e) {
       e = e || window.event;
-      mouseInfo.x = e.clientX;
-      mouseInfo.y = e.clientY;
+      var rect = gameView.getBoundingClientRect();
+      mouseInfo.x = e.clientX - rect.left;
+      mouseInfo.y = e.clientY - rect.top;
       mouseInfo.pressed = true;
       mouseInfo.clicked = true;
    };
 
    gameView.onmousemove = function(e) {
       e = e || window.event;
-      mouseInfo.x = e.clientX;
-      mouseInfo.y = e.clientY;
+      var rect = gameView.getBoundingClientRect();
+      mouseInfo.x = e.clientX - rect.left;
+      mouseInfo.y = e.clientY - rect.top;
    };
 
    gameView.onmouseup = function(e) {
@@ -36,9 +38,10 @@ function startGame() {
    gameView.ontouchstart = function(e) {
       e = e || window.event;
       e.preventDefault();
+      var rect = gameView.getBoundingClientRect();
       var touch = e.touches.item(0);
-      mouseInfo.x = touch.clientX;
-      mouseInfo.y = touch.clientY;
+      mouseInfo.x = touch.clientX - rect.left;
+      mouseInfo.y = touch.clientY - rect.top;
       mouseInfo.pressed = true;
       mouseInfo.clicked = true;
    };
@@ -47,8 +50,9 @@ function startGame() {
       e = e || window.event;
       e.preventDefault();
       var touch = e.touches.item(0);
-      mouseInfo.x = touch.clientX;
-      mouseInfo.y = touch.clientY;
+      var rect = gameView.getBoundingClientRect();
+      mouseInfo.x = touch.clientX - rect.left;
+      mouseInfo.y = touch.clientY - rect.top;
       mouseInfo.pressed = true;
    };
    

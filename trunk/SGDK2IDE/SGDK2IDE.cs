@@ -124,7 +124,7 @@ namespace SGDK2
 
          System.Drawing.StringFormat fmt = new System.Drawing.StringFormat(StringFormatFlags.NoWrap | StringFormatFlags.NoClip);
          fmt.Alignment = StringAlignment.Center;
-         String sCopyright = "Copyright ©2000-2012\r\nBenjamin Marty";
+         String sCopyright = "Copyright ©2000-2014\r\nBenjamin Marty";
          Rectangle rcFmt = new Rectangle(40, 164, 130, 25);
          gc.DrawString(sCopyright, fnt, Brushes.Sienna, rcFmt, fmt);
          rcFmt.Offset(-1,-1);
@@ -132,7 +132,7 @@ namespace SGDK2
          fnt.Dispose();
          fnt = new Font("Tahoma", 8);
          string ver = Application.ProductVersion;
-         rcFmt = new Rectangle(88, 151, 27, 10);
+         rcFmt = new Rectangle(86, 151, 30, 10);
          gc.DrawString("v" + ver, fnt, Brushes.White, rcFmt, fmt);
          fmt.Dispose();
          fnt.Dispose();

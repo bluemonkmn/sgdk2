@@ -197,6 +197,15 @@ PlanBase.prototype.isSpriteWithin = function(sprite, relativePosition) {
    return ((rp.x >= this.left) && (rp.y >= this.top) && (rp.x < this.left + this.width) && (rp.y < this.top + this.height));
 };
 
+PlanBase.prototype.getSpriteWithin = function(sprites, relativePosition, skip) {
+   if (!sprites) return -1;
+   for (var i=skip+1; i < sprites.length; i++) {
+      if (sprites[i].isActive && (this.isSpriteWithin(sprites[i], relativePosition)))
+         return i;
+   }
+   return -1;
+};
+
 PlanBase.prototype.copyInputsToOld = function(sprite) {
    sprite.oldInputs = sprite.inputs;
 };
@@ -371,6 +380,9 @@ PlanBase.prototype.addSpriteAtPlan = function(spriteDefinition, relativePosition
       GeneralRules.lastCreatedSprite.x = this[0].x - offset.x;
       GeneralRules.lastCreatedSprite.y = this[0].y - offset.y ;
    }
+
+   GeneralRules.lastCreatedSprite.isDynamic = true;
+   GeneralRules.lastCreatedSprite.clearParameters();
 
    this.layer.sprites.push(GeneralRules.lastCreatedSprite);
    for(var categoryKey in spriteDefinitions[spriteDefinition].prototype.categories) {

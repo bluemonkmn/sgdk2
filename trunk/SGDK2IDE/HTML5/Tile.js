@@ -76,8 +76,8 @@ TileCategory.prototype.isTileMember = function(tileset, tileIndex) {
    if (membership == null)
       return false;
    var member = membership[tileIndex];
-   if (member == true) return true;
-   if (member == null) return false;
+   if (member === true) return true;
+   if (!member) return false;
    return member.indexOf(tileset.tiles[tileIndex].getCurFrameIndex()) > -1;
 };
 

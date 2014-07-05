@@ -13,6 +13,31 @@
     </introduction>
 
 <section>
+   <title>Version 2.2.10</title>
+   <content>
+   <para>This section describes updates between versions 2.2.9 and 2.2.10.</para>
+   <list class="ordered">
+   <listItem>Revert to .NET 4.0 for compatibility with Windows XP. (The
+   ClickOnce installer in .NET 4.5 is still too unreliable anyway. Will no
+   longer provide ClickOnce install.)</listItem>
+   <listItem>Correct mouse coordinates reported by HTML5 code when game view is
+   not at the top left corner of the web page.</listItem>
+   <listItem>Correct the way inactive sprites are removed from a category when
+   deactivated in HTML5 projects.</listItem>
+   <listItem>Implement HTML5 (js) version of getSpriteWithin function to
+   retrieve sprite within a plan rectangle.</listItem>
+   <listItem>Correct HTML5 addSpriteAtPlan function to mark the created sprite
+   as dynamic, and initialize its parameters to default values.</listItem>
+   <listItem>Correct HTML5 (js) code to properly determine tile category
+   membership of animated tile frames.</listItem>
+   <listItem>Update template projects to conform to modified SGDK2 file XML
+   schema that was changed in a recent release to include Folder info etc.
+   </listItem>
+   </list>
+   </content>
+</section>
+
+<section>
    <title>Version 2.2.9</title>
    <content>
    <para>This section describes updates between versions 2.2.7 and 2.2.9.</para>

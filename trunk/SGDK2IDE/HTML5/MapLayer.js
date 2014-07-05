@@ -476,9 +476,10 @@ MapLayer.prototype.processSprites = function() {
       var sprite = this.sprites[si];
       if (sprite.isDynamic && !sprite.isActive) {
          for(var categoryKey in sprite.categories) {
-            for(var spriteKey in this.spriteCategories[categoryKey]) {
-               if (this.spriteCategories[categoryKey][spriteKey] === sprite)
-                  this.spriteCategories[categoryKey].splice(spriteKey, 1);
+            var category = sprite.categories[categoryKey];
+            for(var spriteKey in this.spriteCategories[category]) {
+               if (this.spriteCategories[category][spriteKey] === sprite)
+                  this.spriteCategories[category].splice(spriteKey, 1);
             }
          }
          this.sprites.splice(si, 1);

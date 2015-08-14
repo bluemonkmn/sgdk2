@@ -1,5 +1,5 @@
 ﻿function PlanBase() {
-   this.targetDistance = 5;
+   this.TargetDistance = 5;
 }
 
 PlanBase.prototype = new GeneralRules();
@@ -57,7 +57,7 @@ PlanBase.prototype.checkNextCoordinate = function(sprite, coordinateIndex, waitC
    }
    var dx = this[coordinateIndex].x - sprite.x;
    var dy = this[coordinateIndex].y - sprite.y;
-   if (Math.sqrt(dx * dx + dy * dy) <= this.targetDistance)
+   if (Math.sqrt(dx * dx + dy * dy) <= this.TargetDistance)
    {
       if (this[coordinateIndex].weight > 0)
          sprite[waitCounterMember]++;
@@ -131,7 +131,7 @@ PlanBase.prototype.drawCounterAsTile = function(tileIndex, counter, style) {
             this.height);
          disp.clip();
          for(var frameIndex in frames)
-            fr.frames[frameIndex % fr.frames.length].draw(disp, this.left, this.top);
+            fr.frames[frames[frameIndex] % fr.frames.length].draw(disp, this.left, this.top);
          disp.restore();
          break;
       case "StretchRightToCounter":
@@ -142,7 +142,8 @@ PlanBase.prototype.drawCounterAsTile = function(tileIndex, counter, style) {
             var frameIndex = frames[i];
             var fillWidth = this.width * counter.value / counter.max;
             for (var repeat = 0; repeat < Math.ceil(fillWidth / ts.tileWidth); repeat++)
-               fr.frames[frameIndex % fr.frames.length].draw(disp, this.left + repeat * ts.tileWidth, this.top);
+               fr.frames[frameIndex % fr.frames.length].draw(disp,
+                  this.left + repeat * ts.tileWidth + this.layer.currentX, this.top + this.layer.currentY);
          }
          break;
       case "ClipTopToCounter":
@@ -156,7 +157,8 @@ PlanBase.prototype.drawCounterAsTile = function(tileIndex, counter, style) {
             var frameIndex = frames[i];
             var fillHeight = this.height * counter.value / counter.max;
             for (var repeat = 0; repeat < Math.ceil(fillHeight / ts.tileHeight); repeat++)
-               fr.frames[frameIndex % fr.frames.length].draw(disp, this.left + repeat * ts.tileWidth, this.top - repeat * ts.tileHeight - ts.tileHeight);
+               fr.frames[frameIndex % fr.frames.length].draw(disp,
+                  this.left + repeat * ts.tileWidth + this.layer.currentX, this.top - repeat * ts.tileHeight - ts.tileHeight + this.layer.currentY);
          }
          break;
    }

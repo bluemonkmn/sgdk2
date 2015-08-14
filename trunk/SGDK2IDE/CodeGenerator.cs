@@ -4721,7 +4721,7 @@ namespace SGDK2
                      {
                         foreach (ProjectDataset.PlanParameterValueRow planParam in planParams)
                         {
-                           sbPlans.AppendLine("   " + planRef + "." + planParam.Name + " = " + planParam.Value);
+                           sbPlans.AppendLine("   " + planRef + "." + planParam.Name + " = " + planParam.Value + ";");
                         }
                      }
 

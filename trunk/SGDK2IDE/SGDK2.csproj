@@ -780,7 +780,6 @@
     <None Include="Properties\app.manifest">
       <SubType>Designer</SubType>
     </None>
-    <None Include="SGDK2_1_TemporaryKey.pfx" />
     <None Include="SGDK2_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

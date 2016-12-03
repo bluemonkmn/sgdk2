@@ -436,7 +436,7 @@ namespace SGDK2
 
             CheckError();
             GL.BindTexture(texTarget, texture.Texture);
-            GL.Begin(BeginMode.Quads);
+            GL.Begin(PrimitiveType.Quads);
             m_currentOp = DisplayOperation.DrawFrames;
             m_currentTexture = texture;
          }
@@ -500,7 +500,7 @@ namespace SGDK2
          {
             GL.Disable(EnableCap.LineStipple);
          }
-         GL.Begin(BeginMode.LineStrip);
+         GL.Begin(PrimitiveType.LineStrip);
          for (int i=0; i<points.Length - 1; i++)
             GL.Vertex2(points[i].X, points[i].Y);
          int x = points[points.Length - 1].X;
@@ -523,7 +523,7 @@ namespace SGDK2
 
             GL.Enable(EnableCap.PolygonSmooth);
             GL.Hint(HintTarget.PolygonSmoothHint, HintMode.Nicest);
-            GL.Begin(BeginMode.Triangles);
+            GL.Begin(PrimitiveType.Triangles);
             GL.Vertex2(x1 - ndy / 2, y1 + ndx / 2);
             GL.Vertex2(x1 + ndx, y1 + ndy);
             GL.Vertex2(x1 + ndy / 2, y1 - ndx / 2);
@@ -568,7 +568,7 @@ namespace SGDK2
          {
             GL.Disable(EnableCap.LineStipple);
          }
-         GL.Begin(BeginMode.LineStrip);
+         GL.Begin(PrimitiveType.LineStrip);
          m_currentOp = DisplayOperation.DrawLines;
       }
 
@@ -623,7 +623,7 @@ namespace SGDK2
 
             GL.Enable(EnableCap.PolygonSmooth);
             GL.Hint(HintTarget.PolygonSmoothHint, HintMode.Nicest);
-            GL.Begin(BeginMode.Triangles);
+            GL.Begin(PrimitiveType.Triangles);
             GL.Vertex2(x1 - ndy / 2, y1 + ndx / 2);
             GL.Vertex2(x1 + ndx, y1 + ndy);
             GL.Vertex2(x1 + ndy / 2, y1 - ndx / 2);
@@ -657,7 +657,7 @@ namespace SGDK2
          GL.Disable(EnableCap.LineSmooth);
          GL.LineWidth(1);
          GL.Disable(texCap);
-         GL.Begin(BeginMode.LineLoop);
+         GL.Begin(PrimitiveType.LineLoop);
          GL.Vertex2(rectf.X, rectf.Y);
          GL.Vertex2(rectf.X, rectf.Y + rectf.Height - 1);
          GL.Vertex2(rectf.X + rectf.Width - 1, rectf.Y + rectf.Height - 1);
@@ -679,7 +679,7 @@ namespace SGDK2
             GL.End();
          m_currentOp = DisplayOperation.None;
          GL.Disable(texCap);
-         GL.Begin(BeginMode.Quads);
+         GL.Begin(PrimitiveType.Quads);
          GL.Vertex2(rect.X, rect.Y);
          GL.Vertex2(rect.X, rect.Y + rect.Height);
          GL.Vertex2(rect.X + rect.Width, rect.Y + rect.Height);
@@ -714,7 +714,7 @@ namespace SGDK2
             GL.Hint(HintTarget.PointSmoothHint, HintMode.Nicest);
             GL.Enable(EnableCap.PointSmooth);
             GL.Disable(texCap);
-            GL.Begin(BeginMode.Points);
+            GL.Begin(PrimitiveType.Points);
             m_currentOp = DisplayOperation.DrawPoints;
          }
          GL.Vertex2(location.X, location.Y);
@@ -754,13 +754,13 @@ namespace SGDK2
          GL.Disable(texCap);
          GL.Disable(EnableCap.PolygonStipple);
          SetColor(color1);
-         GL.Begin(BeginMode.QuadStrip);
+         GL.Begin(PrimitiveType.QuadStrip);
          SendRectFramePoints(inner, thickness);
          GL.End();
          GL.Enable(EnableCap.PolygonStipple);
          GL.PolygonStipple(shadedStipple);
          SetColor(color2);
-         GL.Begin(BeginMode.QuadStrip);
+         GL.Begin(PrimitiveType.QuadStrip);
          SendRectFramePoints(inner, thickness);
          GL.End();
          GL.Disable(EnableCap.PolygonStipple);

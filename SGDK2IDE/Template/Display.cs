@@ -8,6 +8,7 @@ using System.Collections;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
+using System.Collections.Generic;
 
 /// <summary>
 /// Specifies a size and color depth for a display.
@@ -71,6 +72,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    {
       private string m_Name;
       private int m_Texture = 0;
+      private int m_NormalMap = 0;
       private Display m_Display;
       private int m_Width = 0;
       private int m_Height = 0;
@@ -89,6 +91,33 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
          get
          {
             return m_Name;
+         }
+      }
+
+      public void Use()
+      {
+         if (m_Texture == 0)
+            m_Texture = m_Display.GetTexture(m_Name);
+         if (m_Texture != 0)
+         {
+            GL.ActiveTexture(TextureUnit.Texture0);
+            GL.BindTexture(texTarget, m_Texture);
+         }
+
+         if (m_NormalMap == 0)
+            m_NormalMap = m_Display.GetTexture(m_Name + "_nm");
+         if (m_NormalMap != 0)
+         {
+            GL.ActiveTexture(TextureUnit.Texture1);
+            GL.BindTexture(texTarget, m_NormalMap);
+         }
+      }
+
+      public bool HasNormalMap
+      {
+         get
+         {
+            return m_NormalMap != 0;
          }
       }
 
@@ -190,7 +219,19 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    /// </summary>
    /// <value>If true, requirements have already been checked.
    /// If false, requirements will be checked next time DrawFrame executes.</value>
-   public bool requirementsChecked = false;
+   public bool isInitialized = false;
+   VertexBuffer<TileVertex> vertexBuffer;
+   VertexBuffer<ColoredVertex> solidVertexBuffer;
+   private ShaderProgram normalMapShader;
+   private ShaderProgram flatShader;
+   private ShaderProgram solidShader;
+   Matrix4 projectionMatrix;
+   private LightSources lights;
+   private LightSources flatLights;
+   private VertexArray<TileVertex> normalVertexArray;
+   private VertexArray<TileVertex> flatVertexArray;
+   private VertexArray<ColoredVertex> solidVertexArray;
+   private Color4 currentColor;
    #endregion
 
    #region Initialization and clean-up
@@ -205,14 +246,183 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       m_GameDisplayMode = mode;
    }
 
-   protected override void Dispose(bool disposing)
+   private void Initialize()
    {
-      if (disposing)
+      if (isInitialized)
+         return;
+
+      // Check Requirements
+      GL.Finish();
+      string[] versionParts = GL.GetString(StringName.Version).Split(new char[] { '.' }, 3);
+      int majorVer = int.Parse(versionParts[0]);
+      int minorVer = int.Parse(versionParts[1]);
+      if (majorVer < 3)
       {
-         OpenTK.DisplayDevice.Default.RestoreResolution();
-         DisposeAllTextures();
+         string errString = "OpenGL version 3.0 is required";
+         try
+         {
+            errString += "; your version is: " + GL.GetString(StringName.Version);
+         }
+         catch
+         {
+         }
+         if (System.Windows.Forms.DialogResult.Cancel == System.Windows.Forms.MessageBox.Show(this, errString + "\r\nTry updating your video drivers.", "Requirement Check Warning", System.Windows.Forms.MessageBoxButtons.OKCancel, System.Windows.Forms.MessageBoxIcon.Exclamation, System.Windows.Forms.MessageBoxDefaultButton.Button2))
+            throw new ApplicationException(errString);
       }
-      base.Dispose(disposing);
+
+      // Create vertex buffer
+      vertexBuffer = new VertexBuffer<TileVertex>(TileVertex.Size);
+      solidVertexBuffer = new VertexBuffer<ColoredVertex>(ColoredVertex.Size);
+
+      // Set up shaders
+      Shader vshader = new Shader(ShaderType.VertexShader,
+          @"#version 130
+
+                // a projection transformation to apply to the vertex' position
+                uniform mat4 projectionMatrix;
+
+                // attributes of our vertex
+                in vec2 vPosition;
+                in vec2 vSrc;
+                in vec4 vColor;
+
+                out vec2 vTex;  // must match name in fragment shader
+                out vec4 fColor; // must match name in fragment shader
+
+                void main()
+                {
+                    // gl_Position is a special variable of OpenGL that must be set
+                    gl_Position = projectionMatrix * vec4(vPosition, -1.0, 1.0);
+                    vTex = vSrc;
+                    fColor = vColor;
+                }");
+
+      string segment1_all =
+         @"#version 130
+
+            in vec2 vTex; // must match name in vertex shader
+            in vec4 fColor; // must match name in vertex shader
+
+            out vec4 fragColor; // first out variable is automatically written to the screen
+
+            uniform sampler2D tex;
+            uniform sampler2D norm;
+
+            #define MAX_LIGHTS 4
+            #define MAX_WALLS 2
+                
+            struct Light {
+               vec3 position;
+               vec4 color;
+               vec3 falloff;
+               vec3 aim;
+               float aperture;
+               float aperturesoftness;
+               vec3 wall[MAX_WALLS * 2];
+            };
+                
+            uniform Light lights[MAX_LIGHTS];
+
+            void main()
+            {
+               vec4 DiffuseColor = texelFetch(tex, ivec2(vTex.x, vTex.y), 0);
+               if (DiffuseColor.a == 0)
+                  discard;
+               DiffuseColor *= fColor;
+               ";
+      string segment2_norm =
+             @"vec3 NormalMap = texelFetch(norm, ivec2(vTex.x, vTex.y), 0).rgb;
+               NormalMap.g = 1.0 - NormalMap.g;
+              ";
+      string segment3_all =
+             @"vec3 FinalColor = vec3(0,0,0);
+
+               for (int i=0; i<MAX_LIGHTS; i++)
+               {
+                  vec3 LightDir = vec3((lights[i].position.xy - gl_FragCoord.xy) / vec2(100.0, 100.0).xy, lights[i].position.z);
+                  float D = length(LightDir);
+              ";
+      string segment4_norm =
+             @"   vec3 N = normalize(NormalMap * 2.0 - 1.0);
+                  vec3 L = normalize(LightDir);
+                  vec3 Diffuse = (lights[i].color.rgb * lights[i].color.a) * max(dot(N, L), 0.0);
+              ";
+      string segment4_non =
+             @"   vec3 Diffuse = lights[i].color.rgb * lights[i].color.a;
+              ";
+      string segment5_all =
+             @"   vec3 sd = normalize(vec3(gl_FragCoord.xy, lights[i].aim.z) - lights[i].position);
+                  vec3 a = normalize(lights[i].aim);
+                  float Attenuation = smoothstep(lights[i].aperture, lights[i].aperture + lights[i].aperturesoftness, dot(sd,a))
+                        / (lights[i].falloff.x + (lights[i].falloff.y*D) + (lights[i].falloff.z*D*D) );
+                  vec3 Intensity = Diffuse * Attenuation;
+
+                  float shadow = 0;
+                  for (int w=0; w<MAX_WALLS; w++)
+                  {
+                     vec2 t2l = lights[i].position.xy - gl_FragCoord.xy;
+                     vec2 t2w0 = lights[i].wall[w*2].xy - gl_FragCoord.xy;
+                     vec2 t2w1 = lights[i].wall[w*2+1].xy - gl_FragCoord.xy;
+                     vec2 wall1 = lights[i].wall[w*2+1].xy - lights[i].wall[w*2].xy;
+                     vec2 w12l = lights[i].position.xy - lights[i].wall[w*2].xy;
+                     vec2 w12t = gl_FragCoord.xy - lights[i].wall[w*2].xy;
+                     float dp1 = dot(normalize(vec2(t2l.y, -t2l.x)), normalize(t2w0)); // >0 when ray from target to light intersects ray from wall vertex 0 to 1
+                     float dp2 = dot(normalize(vec2(-t2l.y, t2l.x)), normalize(t2w1)); // >0 when ray from target to light intersects ray from wall vertex 1 to 0
+                     float dp3 = 1-sign(abs(sign(dot(vec2(wall1.y, -wall1.x), w12l)) + sign(dot(vec2(wall1.y, -wall1.x), w12t)))); // 0 if light is on the same side of the wall, 1 otherwise
+                     float f1 = smoothstep(0, 2 - lights[i].wall[w*2].z * 2, dp1 * sign(dp2)) * smoothstep(0, 2 - lights[i].wall[w*2+1].z * 2, dp2 * sign(dp1));
+                     shadow = min(1, shadow + dp3 * f1); //smoothstep(-.002, 0, dp1 * dp2));
+                  }
+                  Intensity = (1 - shadow) * Intensity;
+                  
+                  FinalColor += max(vec3(0,0,0), DiffuseColor.rgb * Intensity);
+               }
+               fragColor = vec4(FinalColor, DiffuseColor.a);
+            }";
+      Shader fshader_norm = new Shader(ShaderType.FragmentShader, segment1_all + segment2_norm + segment3_all + segment4_norm + segment5_all);
+      Shader fshader_flat = new Shader(ShaderType.FragmentShader, segment1_all + segment3_all + segment4_non + segment5_all);
+      Shader vshader_solid = new Shader(ShaderType.VertexShader, @"#version 130
+            uniform mat4 projectionMatrix;
+            in vec2 vPosition;
+            in vec4 vColor;
+            out vec4 fColor;
+            void main()
+            {
+               gl_Position = projectionMatrix * vec4(vPosition, -1.0, 1.0);
+               fColor = vColor;
+            }");
+      Shader fshader_solid = new Shader(ShaderType.FragmentShader, @"#version 130
+            in vec4 fColor;
+            out vec4 fragColor;            
+            void main()
+            {
+               fragColor = fColor;
+            }");
+      normalMapShader = new ShaderProgram(vshader, fshader_norm);
+      flatShader = new ShaderProgram(vshader, fshader_flat);
+      solidShader = new ShaderProgram(vshader_solid, fshader_solid);
+      vshader.Dispose();
+      vshader_solid.Dispose();
+      fshader_norm.Dispose();
+      fshader_flat.Dispose();
+      fshader_solid.Dispose();
+
+      // Set up VertexArray objects
+      VertexAttribute vaposition = new VertexAttribute("vPosition", 2, VertexAttribPointerType.Float, TileVertex.Size, 0);
+      VertexAttribute vasrc = new VertexAttribute("vSrc", 2, VertexAttribPointerType.Float, TileVertex.Size, 2 * 4);
+      VertexAttribute vacolor = new VertexAttribute("vColor", 4, VertexAttribPointerType.Float, TileVertex.Size, 4 * 4);
+      normalVertexArray = new VertexArray<TileVertex>(vertexBuffer, normalMapShader, vaposition, vasrc, vacolor);
+      flatVertexArray = new VertexArray<TileVertex>(vertexBuffer, flatShader, vaposition, vasrc, vacolor);
+      VertexAttribute vaSolidPosition = new VertexAttribute("vPosition", 2, VertexAttribPointerType.Float, ColoredVertex.Size, 0);
+      VertexAttribute vaSolidColor = new VertexAttribute("vColor", 4, VertexAttribPointerType.Float, ColoredVertex.Size, 2 * 4);
+      solidVertexArray = new VertexArray<ColoredVertex>(solidVertexBuffer, solidShader, vaSolidPosition, vaSolidColor);
+
+      lights = new LightSources(normalMapShader, "lights");
+      flatLights = new LightSources(flatShader, "lights");
+
+      // Align to display
+      System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode);
+      projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, nativeSize.Width, nativeSize.Height, 0, .1f, 10f);
+      isInitialized = true;
    }
    #endregion
 
@@ -227,48 +437,108 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       if (GraphicsContext.CurrentContext == null)
          return;
       GL.Viewport(0, 0, ClientSize.Width, ClientSize.Height);
-      GL.MatrixMode(MatrixMode.Projection);
-      GL.LoadIdentity();
       if (scaleNativeSize)
       {
          System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode);
-         GL.Ortho(0, nativeSize.Width, nativeSize.Height, 0, -1, 1);
+         projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, nativeSize.Width, nativeSize.Height, 0, .1f, 10f);
       }
       else
       {
-         GL.Ortho(0, ClientSize.Width, ClientSize.Height, 0, -1, 1);
+         projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, ClientSize.Width, ClientSize.Height, 0, .1f, 10f);
       }
+   }
+
+   protected override void WndProc(ref System.Windows.Forms.Message m)
+   {
+      switch (m.Msg)
+      {
+         case 0x2: // WM_DESTROY
+            CheckError();
+            Dispose();
+            break;
+      }
+      base.WndProc(ref m);
+   }
+
+   protected override void Dispose(bool disposing)
+   {
+      // If controls are disposed in the wrong order, GL somehow gets into an error
+      // state during non-application code.
+      CheckError();
+      if (disposing)
+      {
+         if (vertexBuffer != null)
+         {
+            vertexBuffer.Dispose();
+            vertexBuffer = null;
+         }
+         if (solidVertexBuffer != null)
+         {
+            solidVertexBuffer.Dispose();
+            solidVertexBuffer = null;
+         }
+         if (normalVertexArray != null)
+         {
+            normalVertexArray.Dispose();
+            normalVertexArray = null;
+         }
+         if (flatVertexArray != null)
+         {
+            flatVertexArray.Dispose();
+            flatVertexArray = null;
+         }
+         if (solidVertexArray != null)
+         {
+            solidVertexArray.Dispose();
+            solidVertexArray = null;
+         }
+         if (normalMapShader != null)
+         {
+            normalMapShader.Dispose();
+            normalMapShader = null;
+         }
+         if (flatShader != null)
+         {
+            flatShader.Dispose();
+            flatShader = null;
+         }
+         if (solidShader != null)
+         {
+            solidShader.Dispose();
+            solidShader = null;
+         }
+         OpenTK.DisplayDevice.Default.RestoreResolution();
+         DisposeAllTextures();
+      }
+      base.Dispose(disposing);
    }
    #endregion
 
    #region Private members
-   static int NextPow2(int value)
-   {
-      int result;
-      for (result = 1; result < value; result <<= 1)
-         ;
-      return result;
-   }
-
    private int GetTexture(string Name)
    {
       int texture;
+      System.Drawing.Bitmap bmpTexture = (System.Drawing.Bitmap)Project.Resources.GetObject(Name);
+      if (bmpTexture == null)
+         return 0;
       GL.GenTextures(1, out texture);
       GL.BindTexture(texTarget, texture);
+      CheckError();
       GL.TexParameter(texTarget, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
       GL.TexParameter(texTarget, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+      CheckError();
       GL.TexParameter(texTarget, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Clamp);
       GL.TexParameter(texTarget, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Clamp);
+      CheckError();
 
-      System.Drawing.Bitmap bmpTexture = (System.Drawing.Bitmap)Project.Resources.GetObject(Name);
-
-      int useWidth = NextPow2(bmpTexture.Width);
-      int useHeight = NextPow2(bmpTexture.Height);
+      int useWidth = OpenTK.Functions.NextPowerOfTwo(bmpTexture.Width - 1);
+      int useHeight = OpenTK.Functions.NextPowerOfTwo(bmpTexture.Height - 1);
 
       bool useSubTexture = (useWidth != bmpTexture.Width) || (useHeight != bmpTexture.Height);
 
       int texSize;
       GL.GetInteger(GetPName.MaxTextureSize, out texSize);
+      CheckError();
       if ((texSize < useWidth) ||
           (texSize < useHeight))
          throw new System.ApplicationException("Texture " + Name + " is size " + useWidth + "x" + useHeight +
@@ -287,10 +557,12 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
          {
             GL.TexImage2D(texTarget, 0, PixelInternalFormat.Rgba8, useWidth, useHeight, 0, PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
             GL.TexSubImage2D(texTarget, 0, 0, 0, bmpTexture.Width, bmpTexture.Height, PixelFormat.Bgra, PixelType.UnsignedByte, bits.Scan0);
+            CheckError();
          }
          else
          {
             GL.TexImage2D(texTarget, 0, PixelInternalFormat.Rgba8, useWidth, useHeight, 0, PixelFormat.Bgra, PixelType.UnsignedByte, bits.Scan0);
+            CheckError();
          }
       }
       finally
@@ -365,35 +637,6 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
             return new System.Drawing.Size(1280, 1024);
       }
       return new System.Drawing.Size(0, 0);
-   }
-
-   /// <summary>
-   /// Checks that the current video drivers support features required by the framework code,
-   /// and didplays a message if not.
-   /// </summary>
-   public void CheckRequirements()
-   {
-      if (!requirementsChecked)
-      {
-         requirementsChecked = true;
-         GL.Finish();
-         string[] versionParts = GL.GetString(StringName.Version).Split(new char[] { '.' }, 3);
-         int majorVer = int.Parse(versionParts[0]);
-         int minorVer = int.Parse(versionParts[1]);
-         if ((majorVer < 1) || ((majorVer == 1) && (minorVer < 2)))
-         {
-            string errString = "OpenGL version 1.2 is required";
-            try
-            {
-               errString += "; your version is: " + GL.GetString(StringName.Version);
-            }
-            catch
-            {
-            }
-            if (System.Windows.Forms.DialogResult.Cancel == System.Windows.Forms.MessageBox.Show(this, errString + "\r\nTry updating your video drivers.", "Requirement Check Warning", System.Windows.Forms.MessageBoxButtons.OKCancel, System.Windows.Forms.MessageBoxIcon.Exclamation, System.Windows.Forms.MessageBoxDefaultButton.Button2))
-               throw new ApplicationException(errString);
-         }
-      }
    }
 
    /// <summary>
@@ -505,12 +748,9 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       if ((m_currentOp != DisplayOperation.DrawFrames) ||
           (m_currentTexture != texture))
       {
-         if (m_currentOp != DisplayOperation.None)
-            GL.End();
-         CheckError();
+         Initialize();
+         Flush();
 
-         CheckRequirements();
-         GL.TexEnv(TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (float)TextureEnvMode.Modulate);
          GL.Enable(EnableCap.Blend);
          GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
          GL.Disable(EnableCap.PolygonSmooth);
@@ -520,19 +760,27 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
          GL.Disable(EnableCap.Dither);
 
          CheckError();
-         GL.BindTexture(texTarget, texture.Texture);
-         GL.Begin(BeginMode.Quads);
+         texture.Use();
+         if (texture.HasNormalMap)
+         {
+            normalMapShader.Use(projectionMatrix);
+            normalVertexArray.Bind();
+            lights.Set();
+         }
+         else
+         {
+            flatShader.Use(projectionMatrix);
+            flatVertexArray.Bind();
+            flatLights.Set();
+         }
          m_currentOp = DisplayOperation.DrawFrames;
          m_currentTexture = texture;
       }
-      GL.TexCoord2((float)sourceRect.Left / texture.Width, (float)sourceRect.Top / texture.Height);
-      GL.Vertex2(corners[0].X + offsetX, corners[0].Y + offsetY);
-      GL.TexCoord2((float)sourceRect.Left / texture.Width, (float)(sourceRect.Top + sourceRect.Height) / texture.Height);
-      GL.Vertex2(corners[1].X + offsetX, corners[1].Y + offsetY);
-      GL.TexCoord2((float)(sourceRect.Left + sourceRect.Width) / texture.Width, (float)(sourceRect.Top + sourceRect.Height) / texture.Height);
-      GL.Vertex2(corners[2].X + offsetX, corners[2].Y + offsetY);
-      GL.TexCoord2((float)(sourceRect.Left + sourceRect.Width) / texture.Width, (float)sourceRect.Top / texture.Height);
-      GL.Vertex2(corners[3].X + offsetX, corners[3].Y + offsetY);
+
+      vertexBuffer.AddVertex(new TileVertex(corners[0].X + offsetX, corners[0].Y + offsetY, sourceRect.X, sourceRect.Y, currentColor));
+      vertexBuffer.AddVertex(new TileVertex(corners[1].X + offsetX, corners[1].Y + offsetY, sourceRect.X, sourceRect.Bottom, currentColor));
+      vertexBuffer.AddVertex(new TileVertex(corners[2].X + offsetX, corners[2].Y + offsetY, sourceRect.Right, sourceRect.Bottom, currentColor));
+      vertexBuffer.AddVertex(new TileVertex(corners[3].X + offsetX, corners[3].Y + offsetY, sourceRect.Right, sourceRect.Y, currentColor));
    }
 
    /// <summary>
@@ -540,11 +788,32 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    /// </summary>
    public void Flush()
    {
-      if (m_currentOp != DisplayOperation.None)
+      if (m_currentOp == DisplayOperation.None)
+         return;
+      switch (m_currentOp)
       {
-         GL.End();
-         m_currentOp = DisplayOperation.None;
+         case DisplayOperation.DrawFrames:
+            vertexBuffer.Bind();
+            vertexBuffer.BufferData();
+            vertexBuffer.Draw(PrimitiveType.Quads);
+            break;
+         case DisplayOperation.DrawLines:
+            solidVertexBuffer.Bind();
+            solidVertexBuffer.BufferData();
+            solidVertexBuffer.Draw(PrimitiveType.LineStrip);
+            break;
+         case DisplayOperation.DrawPoints:
+            solidVertexBuffer.Bind();
+            solidVertexBuffer.BufferData();
+            solidVertexBuffer.Draw(PrimitiveType.Points);
+            break;
       }
+      GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+      GL.UseProgram(0);
+      GL.BindVertexArray(0);
+      solidVertexBuffer.Clear();
+      vertexBuffer.Clear();
+      m_currentOp = DisplayOperation.None;
       CheckError();
    }
 
@@ -559,8 +828,13 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    /// <param name="arrowShorten">The number of pixels (beyond arrowSize) by which the last line is shortened, and the arrowhead pulled back.</param>
    public void DrawArrow(System.Drawing.Point[] points, int width, short pattern, bool antiAlias, int arrowSize, int arrowShorten)
    {
-      if (m_currentOp != DisplayOperation.None)
-         GL.End();
+      Initialize();
+      Flush();
+      solidShader.Use(projectionMatrix);
+      solidVertexArray.Bind();
+      solidVertexBuffer.Bind();
+      solidVertexBuffer.Clear();
+
       GL.Disable(texCap);
       if (antiAlias)
       {
@@ -585,9 +859,9 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       {
          GL.Disable(EnableCap.LineStipple);
       }
-      GL.Begin(BeginMode.LineStrip);
+
       for (int i = 0; i < points.Length - 1; i++)
-         GL.Vertex2(points[i].X, points[i].Y);
+         solidVertexBuffer.AddVertex(new ColoredVertex(points[i].X, points[i].Y, currentColor));
       int x = points[points.Length - 1].X;
       int y = points[points.Length - 1].Y;
       int dx = x - points[points.Length - 2].X;
@@ -599,26 +873,31 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
          float ndy = dy * (arrowSize + arrowShorten) / len;
          float x1 = x - ndx;
          float y1 = y - ndy;
-         GL.Vertex2(x1, y1);
+         solidVertexBuffer.AddVertex(new ColoredVertex(x1, y1, currentColor));
          ndx = dx * arrowSize / len;
          ndy = dy * arrowSize / len;
-         GL.End();
-
-         m_currentOp = DisplayOperation.None;
+         solidVertexBuffer.BufferData();
+         solidVertexBuffer.Draw(PrimitiveType.LineStrip);
+         solidVertexBuffer.Clear();
 
          GL.Enable(EnableCap.PolygonSmooth);
          GL.Hint(HintTarget.PolygonSmoothHint, HintMode.Nicest);
-         GL.Begin(BeginMode.Triangles);
-         GL.Vertex2(x1 - ndy / 2, y1 + ndx / 2);
-         GL.Vertex2(x1 + ndx, y1 + ndy);
-         GL.Vertex2(x1 + ndy / 2, y1 - ndx / 2);
-         GL.End();
+         solidVertexBuffer.AddVertex(new ColoredVertex(x1 - ndy / 2, y1 + ndx / 2, currentColor));
+         solidVertexBuffer.AddVertex(new ColoredVertex(x1 + ndx, y1 + ndy, currentColor));
+         solidVertexBuffer.AddVertex(new ColoredVertex(x1 + ndy / 2, y1 - ndx / 2, currentColor));
+         solidVertexBuffer.BufferData();
+         solidVertexBuffer.Draw(PrimitiveType.Triangles);
       }
       else
       {
-         GL.Vertex2(points[points.Length - 1].X, points[points.Length - 1].Y);
-         GL.End();
+         solidVertexBuffer.AddVertex(new ColoredVertex(points[points.Length - 1].X, points[points.Length - 1].Y, currentColor));
+         solidVertexBuffer.BufferData();
+         solidVertexBuffer.Draw(PrimitiveType.LineStrip);
       }
+      solidVertexBuffer.Clear();
+      GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+      GL.UseProgram(0);
+      GL.BindVertexArray(0);
       m_currentOp = DisplayOperation.None;
    }
 
@@ -630,8 +909,9 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    /// <param name="antiAlias">Determines if the lines are anti-aliased.</param>
    public void BeginLine(float width, short pattern, bool antiAlias)
    {
-      if (m_currentOp != DisplayOperation.None)
-         GL.End();
+      Initialize();
+      Flush();
+
       GL.Disable(texCap);
       if (antiAlias)
       {
@@ -653,8 +933,11 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       {
          GL.Disable(EnableCap.LineStipple);
       }
-      GL.Begin(BeginMode.LineStrip);
       m_currentOp = DisplayOperation.DrawLines;
+      solidVertexBuffer.Clear();
+      solidVertexBuffer.Bind();
+      solidVertexArray.Bind();
+      solidShader.Use(projectionMatrix);
    }
 
    /// <summary>
@@ -669,28 +952,30 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    {
       if (m_currentOp != DisplayOperation.DrawLines)
       {
-         if (m_currentOp != DisplayOperation.None)
-            GL.End();
+         Initialize();
+         Flush();
          BeginLine(1, 0, false);
       }
-      GL.Vertex2(x, y);
+      ColoredVertex cv = new ColoredVertex(x, y, currentColor);
+      System.Diagnostics.Debug.WriteLine(cv.ToString());
+      solidVertexBuffer.AddVertex(new ColoredVertex(x, y, currentColor));
       endPoint = new System.Drawing.Point(x, y);
    }
 
    /// <summary>
    /// End a line begun with <see cref="BeginLine"/> with an arrowhead.
    /// </summary>
-   /// <param name="x">Horizontal coordinate of the tip of the arrow head</param>
+   /// <param name="x">Horizontal coordinate of the tip of the arrowhead</param>
    /// <param name="y">Vertical coordinate of the tip of the arrowhead</param>
    /// <param name="ArrowSize">Length of the arrowhead</param>
    public void ArrowTo(int x, int y, int ArrowSize)
    {
       if (m_currentOp != DisplayOperation.DrawLines)
       {
-         if (m_currentOp != DisplayOperation.None)
-            GL.End();
+         Initialize();
+         Flush();
          BeginLine(1, 0, true);
-         GL.Vertex2(endPoint.X, endPoint.Y);
+         solidVertexBuffer.AddVertex(new ColoredVertex(endPoint.X, endPoint.Y, currentColor));
       }
       int dx = (x - endPoint.X);
       int dy = (y - endPoint.Y);
@@ -701,18 +986,19 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
          float ndy = dy * ArrowSize / len;
          float x1 = x - ndx;
          float y1 = y - ndy;
-         GL.Vertex2(x1, y1);
-         GL.End();
+         solidVertexBuffer.AddVertex(new ColoredVertex(x1, y1, currentColor));
+         Flush();
 
          m_currentOp = DisplayOperation.None;
 
          GL.Enable(EnableCap.PolygonSmooth);
          GL.Hint(HintTarget.PolygonSmoothHint, HintMode.Nicest);
-         GL.Begin(BeginMode.Triangles);
-         GL.Vertex2(x1 - ndy / 2, y1 + ndx / 2);
-         GL.Vertex2(x1 + ndx, y1 + ndy);
-         GL.Vertex2(x1 + ndy / 2, y1 - ndx / 2);
-         GL.End();
+         solidVertexBuffer.AddVertex(new ColoredVertex(x1 - ndy / 2, y1 + ndx / 2, currentColor));
+         solidVertexBuffer.AddVertex(new ColoredVertex(x1 + ndx, y1 + ndy, currentColor));
+         solidVertexBuffer.AddVertex(new ColoredVertex(x1 + ndy / 2, y1 - ndx / 2, currentColor));
+         solidVertexBuffer.BufferData();
+         solidVertexBuffer.Draw(PrimitiveType.Triangles);
+         solidVertexBuffer.Clear();
       }
       else
          LineTo(x, y);
@@ -725,11 +1011,8 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    /// <param name="pattern">Dash pattern applied to the lines forming the outline.</param>
    public void DrawRectangle(System.Drawing.Rectangle rect, short pattern)
    {
-      if (m_currentOp != DisplayOperation.None)
-      {
-         GL.End();
-         m_currentOp = DisplayOperation.None;
-      }
+      Initialize();
+      Flush();
       if ((pattern == 0) || (pattern == unchecked((short)(0xffff))))
          GL.Disable(EnableCap.LineStipple);
       else
@@ -742,12 +1025,19 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       GL.Disable(EnableCap.LineSmooth);
       GL.LineWidth(1);
       GL.Disable(texCap);
-      GL.Begin(BeginMode.LineLoop);
-      GL.Vertex2(rectf.X, rectf.Y);
-      GL.Vertex2(rectf.X, rectf.Y + rectf.Height - 1);
-      GL.Vertex2(rectf.X + rectf.Width - 1, rectf.Y + rectf.Height - 1);
-      GL.Vertex2(rectf.X + rectf.Width - 1, rectf.Y);
-      GL.End();
+      solidVertexBuffer.Bind();
+      solidVertexArray.Bind();
+      solidShader.Use(projectionMatrix);
+      solidVertexBuffer.AddVertex(new ColoredVertex(rectf.X, rectf.Y, currentColor));
+      solidVertexBuffer.AddVertex(new ColoredVertex(rectf.X, rectf.Y + rectf.Height - 1, currentColor));
+      solidVertexBuffer.AddVertex(new ColoredVertex(rectf.X + rectf.Width - 1, rectf.Y + rectf.Height - 1, currentColor));
+      solidVertexBuffer.AddVertex(new ColoredVertex(rectf.X + rectf.Width - 1, rectf.Y, currentColor));
+      solidVertexBuffer.BufferData();
+      solidVertexBuffer.Draw(PrimitiveType.LineLoop);
+      solidVertexBuffer.Clear();
+      GL.UseProgram(0);
+      GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+      GL.BindVertexArray(0);
    }
 
    /// <summary>
@@ -760,16 +1050,23 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    /// <seealso cref="SetColor"/></remarks>
    public void FillRectangle(System.Drawing.Rectangle rect)
    {
-      if (m_currentOp != DisplayOperation.None)
-         GL.End();
+      Initialize();
+      Flush();
       m_currentOp = DisplayOperation.None;
       GL.Disable(texCap);
-      GL.Begin(BeginMode.Quads);
-      GL.Vertex2(rect.X, rect.Y);
-      GL.Vertex2(rect.X, rect.Y + rect.Height);
-      GL.Vertex2(rect.X + rect.Width, rect.Y + rect.Height);
-      GL.Vertex2(rect.X + rect.Width, rect.Y);
-      GL.End();
+      solidVertexBuffer.Bind();
+      solidShader.Use(projectionMatrix);
+      solidVertexArray.Bind();
+      solidVertexBuffer.AddVertex(new ColoredVertex(rect.X, rect.Y, currentColor));
+      solidVertexBuffer.AddVertex(new ColoredVertex(rect.X, rect.Y + rect.Height, currentColor));
+      solidVertexBuffer.AddVertex(new ColoredVertex(rect.X + rect.Width, rect.Y + rect.Height, currentColor));
+      solidVertexBuffer.AddVertex(new ColoredVertex(rect.X + rect.Width, rect.Y, currentColor));
+      solidVertexBuffer.BufferData();
+      solidVertexBuffer.Draw(PrimitiveType.Quads);
+      solidVertexBuffer.Clear();
+      GL.UseProgram(0);
+      GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+      GL.BindVertexArray(0);
    }
 
    /// <summary>
@@ -779,8 +1076,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    {
       set
       {
-         if (m_currentOp != DisplayOperation.None)
-            GL.End();
+         Flush();
          m_currentOp = DisplayOperation.None;
          GL.PointSize(value);
       }
@@ -794,15 +1090,17 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    {
       if (m_currentOp != DisplayOperation.DrawPoints)
       {
-         if (m_currentOp != DisplayOperation.None)
-            GL.End();
+         Initialize();
+         Flush();
          GL.Hint(HintTarget.PointSmoothHint, HintMode.Nicest);
          GL.Enable(EnableCap.PointSmooth);
          GL.Disable(texCap);
-         GL.Begin(BeginMode.Points);
+         solidVertexBuffer.Bind();
+         solidVertexArray.Bind();
+         solidShader.Use(projectionMatrix);
          m_currentOp = DisplayOperation.DrawPoints;
       }
-      GL.Vertex2(location.X, location.Y);
+      solidVertexBuffer.AddVertex(new ColoredVertex(location.X, location.Y, currentColor));
    }
 
    /// <summary>
@@ -811,7 +1109,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    /// <param name="color">Color to select.</param>
    public void SetColor(System.Drawing.Color color)
    {
-      GL.Color4(color.R, color.G, color.B, color.A);
+      currentColor = new Color4(color.R, color.G, color.B, color.A);
    }
 
    /// <summary>
@@ -820,8 +1118,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    /// <param name="color">Color as an integer with bytes in ARGB order.</param>
    public void SetColor(int color)
    {
-      System.Drawing.Color c = System.Drawing.Color.FromArgb(color);
-      SetColor(c);
+      SetColor(System.Drawing.Color.FromArgb(color));
    }
 
    /// <summary>
@@ -833,36 +1130,40 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    /// <param name="color2">Foreground dither color</param>
    public void DrawShadedRectFrame(System.Drawing.Rectangle inner, int thickness, System.Drawing.Color color1, System.Drawing.Color color2)
    {
-      if (m_currentOp != DisplayOperation.None)
-         GL.End();
-      m_currentOp = DisplayOperation.None;
+      Initialize();
+      Flush();
       GL.Disable(texCap);
       GL.Disable(EnableCap.PolygonStipple);
       SetColor(color1);
-      GL.Begin(BeginMode.QuadStrip);
+      solidVertexBuffer.Bind();
+      solidVertexArray.Bind();
+      solidShader.Use(projectionMatrix);
       SendRectFramePoints(inner, thickness);
-      GL.End();
+      solidVertexBuffer.BufferData();
+      solidVertexBuffer.Draw(PrimitiveType.QuadStrip);
+      solidVertexBuffer.Clear();
       GL.Enable(EnableCap.PolygonStipple);
       GL.PolygonStipple(shadedStipple);
       SetColor(color2);
-      GL.Begin(BeginMode.QuadStrip);
       SendRectFramePoints(inner, thickness);
-      GL.End();
+      solidVertexBuffer.BufferData();
+      solidVertexBuffer.Draw(PrimitiveType.QuadStrip);
+      solidVertexBuffer.Clear();
       GL.Disable(EnableCap.PolygonStipple);
    }
 
    private void SendRectFramePoints(System.Drawing.Rectangle inner, int thickness)
    {
-      GL.Vertex2(inner.X - thickness, inner.Y - thickness);
-      GL.Vertex2(inner.X - 1, inner.Y - 1);
-      GL.Vertex2(inner.X - thickness, inner.Y + inner.Height + thickness - 1);
-      GL.Vertex2(inner.X - 1, inner.Y + inner.Height);
-      GL.Vertex2(inner.X + inner.Width + thickness - 1, inner.Y + inner.Height + thickness - 1);
-      GL.Vertex2(inner.X + inner.Width, inner.Y + inner.Height);
-      GL.Vertex2(inner.X + inner.Width + thickness - 1, inner.Y - thickness);
-      GL.Vertex2(inner.X + inner.Width, inner.Y - 1);
-      GL.Vertex2(inner.X - thickness, inner.Y - thickness);
-      GL.Vertex2(inner.X - 1, inner.Y - 1);
+      solidVertexBuffer.AddVertex(new ColoredVertex(inner.X - thickness, inner.Y - thickness, currentColor));
+      solidVertexBuffer.AddVertex(new ColoredVertex(inner.X - 1, inner.Y - 1, currentColor));
+      solidVertexBuffer.AddVertex(new ColoredVertex(inner.X - thickness, inner.Y + inner.Height + thickness - 1, currentColor));
+      solidVertexBuffer.AddVertex(new ColoredVertex(inner.X - 1, inner.Y + inner.Height, currentColor));
+      solidVertexBuffer.AddVertex(new ColoredVertex(inner.X + inner.Width + thickness - 1, inner.Y + inner.Height + thickness - 1, currentColor));
+      solidVertexBuffer.AddVertex(new ColoredVertex(inner.X + inner.Width, inner.Y + inner.Height, currentColor));
+      solidVertexBuffer.AddVertex(new ColoredVertex(inner.X + inner.Width + thickness - 1, inner.Y - thickness, currentColor));
+      solidVertexBuffer.AddVertex(new ColoredVertex(inner.X + inner.Width, inner.Y - 1, currentColor));
+      solidVertexBuffer.AddVertex(new ColoredVertex(inner.X - thickness, inner.Y - thickness, currentColor));
+      solidVertexBuffer.AddVertex(new ColoredVertex(inner.X - 1, inner.Y - 1, currentColor));
    }
 
    /// <summary>
@@ -870,9 +1171,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    /// </summary>
    public void Clear()
    {
-      if (m_currentOp != DisplayOperation.None)
-         GL.End();
-      m_currentOp = DisplayOperation.None;
+      Flush();
       GL.Clear(ClearBufferMask.AccumBufferBit | ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
    }
 
@@ -883,9 +1182,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    /// <param name="rect">Rectangle relative to the top-left corner of the display in pixel coordinates.</param>
    public void Scissor(System.Drawing.Rectangle rect)
    {
-      if (m_currentOp != DisplayOperation.None)
-         GL.End();
-      m_currentOp = DisplayOperation.None;
+      Flush();
       GL.Enable(EnableCap.ScissorTest);
       GL.Scissor(rect.X, ClientRectangle.Height - rect.Y - rect.Height, rect.Width, rect.Height);
    }
@@ -895,14 +1192,14 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    /// </summary>
    public void ScissorOff()
    {
-      if (m_currentOp != DisplayOperation.None)
-         GL.End();
-      m_currentOp = DisplayOperation.None;
+      Flush();
       GL.Disable(EnableCap.ScissorTest);
    }
 
-   private static void CheckError()
+   public static void CheckError()
    {
+      if (GraphicsContext.CurrentContext == null)
+         return;
       ErrorCode ec = GL.GetError();
       if (ec != 0)
       {
@@ -971,6 +1268,816 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    }
 
    #endregion
+}
+
+/// <summary>
+/// Encapsulates the information that we want to track for every tile corner drawn
+/// </summary>
+struct TileVertex
+{
+   public const int Size = 8 * 4; // size of struct in bytes
+
+   private readonly Vector2 position;
+   private readonly Vector2 source;
+   private readonly Color4 color;
+
+   public TileVertex(float x, float y, float srcX, float srcY)
+      : this(x, y, srcX, srcY, Color4.White)
+   {
+   }
+
+   public TileVertex(float x, float y, float srcX, float srcY, Color4 color)
+   {
+      this.position = new Vector2(x, y);
+      this.source = new Vector2(srcX, srcY);
+      this.color = color;
+   }
+}
+
+struct ColoredVertex
+{
+   public const int Size = 6 * 4; // size of struct in bytes
+
+   private readonly Vector2 position;
+   private readonly Color4 color;
+
+   public ColoredVertex(Vector2 position, Color4 color)
+   {
+      this.position = position;
+      this.color = color;
+   }
+   public ColoredVertex(float x, float y, Color4 color)
+   {
+      this.position = new Vector2(x, y);
+      this.color = color;
+   }
+
+   public override string ToString()
+   {
+      IntPtr block = System.Runtime.InteropServices.Marshal.AllocCoTaskMem(50);
+      System.Runtime.InteropServices.Marshal.StructureToPtr(this, block, false);
+      byte[] bytes = new byte[64];
+      System.Runtime.InteropServices.Marshal.Copy(block, bytes, 0, 64);
+      System.Runtime.InteropServices.Marshal.FreeCoTaskMem(block);
+      System.Text.StringBuilder sb = new System.Text.StringBuilder();
+      for (int i = 0; i < bytes.Length; i += 4)
+      {
+         sb.Append(string.Format("({0})", BitConverter.ToSingle(bytes, i)));
+      }
+      return sb.ToString();
+   }
+}
+
+/// <summary>
+/// Collects vertices used in determining the locations of the corners of all the graphics being
+/// drawn in a drawing operation.
+/// </summary>
+/// <typeparam name="TVertex"></typeparam>
+sealed class VertexBuffer<TVertex> : IDisposable
+where TVertex : struct // vertices must be structs so we can copy them to GPU memory easily
+{
+   private readonly int vertexSize;
+   private TVertex[] vertices = new TVertex[4];
+
+   private int count;
+
+   private int handle = -1;
+
+   public VertexBuffer(int vertexSize)
+   {
+      this.vertexSize = vertexSize;
+
+      // generate the actual Vertex Buffer Object
+      this.handle = GL.GenBuffer();
+      Display.CheckError();
+   }
+
+   public void AddVertex(TVertex v)
+   {
+      // resize array if too small
+      if (this.count == this.vertices.Length)
+         Array.Resize(ref this.vertices, this.count * 2);
+      // add vertex
+      this.vertices[count] = v;
+      this.count++;
+   }
+
+   public void Bind()
+   {
+      if (handle < 0)
+         throw new ObjectDisposedException(this.GetType().Name);
+      // make this the active array buffer
+      GL.BindBuffer(BufferTarget.ArrayBuffer, this.handle);
+      Display.CheckError();
+   }
+
+   public void BufferData()
+   {
+      // copy contained vertices to GPU memory
+      GL.BufferData(BufferTarget.ArrayBuffer, (IntPtr)(this.vertexSize * this.count),
+          this.vertices, BufferUsageHint.StreamDraw);
+      Display.CheckError();
+   }
+
+   public void Draw(PrimitiveType primitive)
+   {
+      GL.DrawArrays(primitive, 0, this.count);
+      Display.CheckError();
+   }
+
+   public void Clear()
+   {
+      count = 0;
+   }
+
+   #region IDisposable Support
+   void Dispose(bool disposing)
+   {
+      if (handle >= 0)
+      {
+         int curHandle;
+         GL.GetInteger(GetPName.ArrayBufferBinding, out curHandle);
+         Display.CheckError();
+         GL.DeleteBuffer(handle);
+         Display.CheckError();
+         if (curHandle == handle)
+         {
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            Display.CheckError();
+         }
+         handle = -1;
+      }
+   }
+
+   ~VertexBuffer()
+   {
+      // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+      Dispose(false);
+   }
+
+   public void Dispose()
+   {
+      // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+      Dispose(true);
+      GC.SuppressFinalize(this);
+   }
+   #endregion
+}
+
+/// <summary>
+/// Encapsulates an error occurring while compiling or linking an OpenGL shader.
+/// </summary>
+public class ShaderException : Exception
+{
+   public ShaderException(string message) : base(message) { }
+}
+
+/// <summary>
+/// Encapsulates a single OpenGL shader, for example, a fragment shader or vertex shader.
+/// </summary>
+sealed class Shader : IDisposable
+{
+   private int handle;
+
+   public int Handle
+   {
+      get
+      {
+         if (this.handle < 0)
+            throw new ObjectDisposedException(this.GetType().Name);
+         return this.handle;
+      }
+   }
+
+   public Shader(ShaderType type, string code)
+   {
+      // create shader object
+      this.handle = GL.CreateShader(type);
+
+      // set source and compile shader
+      GL.ShaderSource(this.handle, code);
+      Display.CheckError();
+      GL.CompileShader(this.handle);
+      Display.CheckError();
+      string info;
+      GL.GetShaderInfoLog(this.handle, out info);
+      if (!string.IsNullOrEmpty(info))
+         throw new ShaderException(info);
+   }
+
+   #region IDisposable Support
+   void Dispose(bool disposing)
+   {
+      if (handle >= 0)
+      {
+         GL.DeleteShader(handle);
+         Display.CheckError();
+         handle = -1;
+      }
+   }
+
+   ~Shader()
+   {
+      // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+      Dispose(false);
+   }
+
+   // This code added to correctly implement the disposable pattern.
+   public void Dispose()
+   {
+      // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+      Dispose(true);
+      GC.SuppressFinalize(this);
+   }
+   #endregion
+}
+
+/// <summary>
+/// Encapsulates an OpenGL shader program including, for example, both vertex and fragment shaders
+/// </summary>
+sealed class ShaderProgram : IDisposable
+{
+   private int handle;
+
+   public ShaderProgram(params Shader[] shaders)
+   {
+      // create program object
+      this.handle = GL.CreateProgram();
+      Display.CheckError();
+
+      // assign all shaders
+      foreach (var shader in shaders)
+      {
+         GL.AttachShader(this.handle, shader.Handle);
+         Display.CheckError();
+      }
+      // link program (effectively compiles it)
+      GL.LinkProgram(this.handle);
+      Display.CheckError();
+      string info;
+      GL.GetProgramInfoLog(handle, out info);
+
+      // detach shaders
+      foreach (var shader in shaders)
+      {
+         GL.DetachShader(this.handle, shader.Handle);
+         Display.CheckError();
+      }
+
+      if (!string.IsNullOrEmpty(info))
+         throw new ShaderException(info);
+   }
+
+   public void Use(Matrix4 projectionMatrix)
+   {
+      if (handle < 0)
+         throw new ObjectDisposedException(GetType().Name);
+      // activate this program to be used
+      GL.UseProgram(this.handle);
+      GL.UniformMatrix4(GetUniformLocation("projectionMatrix"), false, ref projectionMatrix);
+      Display.CheckError();
+   }
+
+   public int GetAttributeLocation(string name)
+   {
+      if (handle < 0)
+         throw new ObjectDisposedException(GetType().Name);
+      // get the location of a vertex attribute
+      return GL.GetAttribLocation(this.handle, name);
+   }
+
+   public int GetUniformLocation(string name)
+   {
+      if (handle < 0)
+         throw new ObjectDisposedException(GetType().Name);
+      // get the location of a uniform variable
+      int result = GL.GetUniformLocation(this.handle, name);
+      if (result < 0)
+         throw new ArgumentException("\"" + name + "\" not found.", name);
+      return result;
+   }
+
+   #region IDisposable Support
+   void Dispose(bool disposing)
+   {
+      if (handle >= 0)
+      {
+         GL.DeleteProgram(handle);
+         Display.CheckError();
+         handle = -1;
+      }
+   }
+
+   ~ShaderProgram()
+   {
+      // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+      Dispose(false);
+   }
+
+   // This code added to correctly implement the disposable pattern.
+   public void Dispose()
+   {
+      // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+      Dispose(true);
+      GC.SuppressFinalize(this);
+   }
+   #endregion
+}
+
+/// <summary>
+/// Links a collection of vertices to the current drawing operation and shader program.
+/// </summary>
+/// <typeparam name="TVertex">Determines the data type of each vertex</typeparam>
+sealed class VertexArray<TVertex> : IDisposable
+    where TVertex : struct
+{
+   private int handle;
+
+   public VertexArray(VertexBuffer<TVertex> vertexBuffer, ShaderProgram program,
+       params VertexAttribute[] attributes)
+   {
+      // create new vertex array object
+      GL.GenVertexArrays(1, out handle);
+      Display.CheckError();
+
+      // bind the object so we can modify it
+      Bind();
+
+      // bind the vertex buffer object
+      vertexBuffer.Bind();
+
+      // set all attributes
+      foreach (var attribute in attributes)
+         attribute.Set(program);
+
+      // unbind objects to reset state
+      GL.BindVertexArray(0);
+      Display.CheckError();
+      GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+      Display.CheckError();
+   }
+
+   public void Bind()
+   {
+      if (handle < 0)
+         throw new ObjectDisposedException(GetType().Name);
+
+      // bind for usage (modification or rendering)
+      GL.BindVertexArray(handle);
+      Display.CheckError();
+   }
+
+   #region IDisposable Support
+   void Dispose(bool disposing)
+   {
+      if (handle >= 0)
+      {
+         int curVertexArray;
+         GL.GetInteger(GetPName.VertexArrayBinding, out curVertexArray);
+         Display.CheckError();
+         if (curVertexArray == handle)
+         {
+            GL.BindVertexArray(0);
+            Display.CheckError();
+         }
+         GL.DeleteVertexArrays(1, ref handle);
+         Display.CheckError();
+         handle = -1;
+      }
+   }
+
+   ~VertexArray()
+   {
+      // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+      Dispose(false);
+   }
+
+   // This code added to correctly implement the disposable pattern.
+   public void Dispose()
+   {
+      // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+      Dispose(true);
+      GC.SuppressFinalize(this);
+   }
+   #endregion
+}
+
+/// <summary>
+/// Determines how attributes of vertices beign drawn are propagated to the shader program.
+/// </summary>
+sealed class VertexAttribute
+{
+   private readonly string name;
+   private readonly int size;
+   private readonly VertexAttribPointerType type;
+   private readonly bool normalize;
+   private readonly int stride;
+   private readonly int offset;
+
+   public VertexAttribute(string name, int size, VertexAttribPointerType type,
+       int stride, int offset, bool normalize = false)
+   {
+      this.name = name;
+      this.size = size;
+      this.type = type;
+      this.stride = stride;
+      this.offset = offset;
+      this.normalize = normalize;
+   }
+
+   public void Set(ShaderProgram program)
+   {
+      // get location of attribute from shader program
+      int index = program.GetAttributeLocation(this.name);
+
+      // enable and set attribute
+      GL.EnableVertexAttribArray(index);
+      Display.CheckError();
+      if (type == VertexAttribPointerType.Int)
+      {
+         GL.VertexAttribIPointer(index, size, VertexAttribIntegerType.Int,
+             stride, IntPtr.Add(IntPtr.Zero, offset));
+         Display.CheckError();
+      }
+      else
+      {
+         GL.VertexAttribPointer(index, this.size, this.type,
+             this.normalize, this.stride, this.offset);
+         Display.CheckError();
+      }
+   }
+}
+
+/// <summary>
+/// Aggregates light sources in a scene so that pixels can be affected by multiple light sources.
+/// </summary>
+class LightSources : IList<LightSource>
+{
+   /// <summary>
+   /// Determines how many light sources can affect each drawing operation.
+   /// </summary>
+   /// <remarks>
+   /// This must match MAX_LIGHTS in the fragment shader code.
+   /// </remarks>
+   public const int MAX_LIGHTS = 4;
+
+   private List<LightSource> lights = new List<LightSource>(MAX_LIGHTS);
+   private int[,] lightArrayLocations;
+
+   /// <summary>
+   /// Create a collection of light sources linked to the specified variable in the specified shader program
+   /// </summary>
+   /// <param name="program">Determines which shader program's variables will be affected by light sources
+   /// in this collection.</param>
+   /// <param name="lightArrayName">Determines the name of the variable in the shader program that will
+   /// be updated with light source data from this collection</param>
+   public LightSources(ShaderProgram program, string lightArrayName)
+   {
+      lightArrayLocations = new int[MAX_LIGHTS, LightSource.locationCount];
+      for (int i = 0; i < MAX_LIGHTS; i++)
+      {
+         if (i == 0)
+            lights.Add(new LightSource()
+            {
+               Position = new Vector3(0, 0, 1),
+               Color = System.Drawing.Color.White,
+               Falloff = new Vector3(1f, 0, 0),
+               ApertureFocus = -10f,
+               ApertureSoftness = 0f,
+               Aim = new Vector3(1, 0, 0)
+            });
+         else
+            lights.Add(new LightSource()
+            {
+               Position = new Vector3(),
+               Color = System.Drawing.Color.Transparent,
+               Falloff = new Vector3(.8f, .2f, 0f),
+               ApertureFocus = -10f,
+               ApertureSoftness = 0f,
+               Aim = new Vector3(1, 0, 0)
+            });
+         lightArrayLocations[i, 0] = program.GetUniformLocation(lightArrayName + string.Format("[{0}].position", i));
+         lightArrayLocations[i, 1] = program.GetUniformLocation(lightArrayName + string.Format("[{0}].color", i));
+         lightArrayLocations[i, 2] = program.GetUniformLocation(lightArrayName + string.Format("[{0}].falloff", i));
+         lightArrayLocations[i, 3] = program.GetUniformLocation(lightArrayName + string.Format("[{0}].aim", i));
+         lightArrayLocations[i, 4] = program.GetUniformLocation(lightArrayName + string.Format("[{0}].aperture", i));
+         lightArrayLocations[i, 5] = program.GetUniformLocation(lightArrayName + string.Format("[{0}].aperturesoftness", i));
+         for (int w = 0; w < LightSource.wallsPerLight * 2; w++)
+            lightArrayLocations[i, 6 + w] = program.GetUniformLocation(lightArrayName + string.Format("[{0}].wall[{1}]", i, w));
+      }
+   }
+
+   /// <summary>
+   /// Access a single light source within this collection.
+   /// </summary>
+   /// <param name="index">Determines which 0-based light source is being accessed.</param>
+   /// <returns>Light source object whose properties can be read or written.</returns>
+   public LightSource this[int index]
+   {
+      get
+      {
+         return ((IList<LightSource>)lights)[index];
+      }
+
+      set
+      {
+         ((IList<LightSource>)lights)[index] = value;
+      }
+   }
+
+   /// <summary>
+   /// Returns the number of light sources in the collection, which is always MAX_LIGHTS.
+   /// </summary>
+   /// <remarks>
+   /// The same number of light sources are always included in the scene's processing
+   /// because, due to the way OpenGL uses parallelization to optimize the processing of
+   /// pixels in the fragment shader, every pixel must undergo the same calculations.
+   /// So in order to reduce the apparent number of light sources, a light source's
+   /// properties are just set to have no effect on the scene instead of removing it
+   /// entirely.
+   /// </remarks>
+   public int Count
+   {
+      get
+      {
+         return ((IList<LightSource>)lights).Count;
+      }
+   }
+
+   /// <summary>
+   /// Indicates whether this collection can be modified.
+   /// </summary>
+   public bool IsReadOnly
+   {
+      get
+      {
+         return ((IList<LightSource>)lights).IsReadOnly;
+      }
+   }
+
+   /// <summary>
+   /// Not supported. (Included only for IList interface.) <see cref="Count"/>
+   /// </summary>
+   public void Add(LightSource item)
+   {
+      throw new NotSupportedException("Number of light sources cannot be changed.");
+   }
+
+   /// <summary>
+   /// Not supported. (Included only for IList interface.) <see cref="Count"/>
+   /// </summary>
+   public void Clear()
+   {
+      throw new NotSupportedException("Number of light sources cannot be changed.");
+   }
+
+   /// <summary>
+   /// Determines whether the collection contains the specified light source object.
+   /// </summary>
+   /// <param name="item">Light source object for which to search.</param>
+   /// <returns>True if the specified light source is in this collection.</returns>
+   public bool Contains(LightSource item)
+   {
+      return ((IList<LightSource>)lights).Contains(item);
+   }
+
+   /// <summary>
+   /// Copy the light sources in this collection to an array.
+   /// </summary>
+   /// <param name="array">Target array</param>
+   /// <param name="arrayIndex">The 0-based starting index</param>
+   public void CopyTo(LightSource[] array, int arrayIndex)
+   {
+      ((IList<LightSource>)lights).CopyTo(array, arrayIndex);
+   }
+
+   /// <summary>
+   /// Allows this collection to be enumerated evaluating each light source in sequence.
+   /// </summary>
+   /// <returns>An object that can be used to enumerate all light sources in this collection.</returns>
+   public IEnumerator<LightSource> GetEnumerator()
+   {
+      return ((IList<LightSource>)lights).GetEnumerator();
+   }
+
+   /// <summary>
+   /// Determines where in the collection the specified light source occurs. <see cref="IList.IndexOf(object)"/>
+   /// </summary>
+   public int IndexOf(LightSource item)
+   {
+      return ((IList<LightSource>)lights).IndexOf(item);
+   }
+
+   /// <summary>
+   /// Not supported. (Included only for IList interface.) <see cref="Count"/>
+   /// </summary>
+   public void Insert(int index, LightSource item)
+   {
+      throw new NotSupportedException("Number of light sources cannot be changed.");
+   }
+
+   /// <summary>
+   /// Not supported. (Included only for IList interface.) <see cref="Count"/>
+   /// </summary>
+   public bool Remove(LightSource item)
+   {
+      throw new NotSupportedException("Number of light sources cannot be changed.");
+   }
+
+   /// <summary>
+   /// Not supported. (Included only for IList interface.) <see cref="Count"/>
+   /// </summary>
+   public void RemoveAt(int index)
+   {
+      throw new NotSupportedException("Number of light sources cannot be changed.");
+   }
+
+   /// <summary>
+   /// Allows this collection to be enumerated evaluating each light source in sequence.
+   /// </summary>
+   /// <returns>An object that can be used to enumerate all light sources in this collection.</returns>
+   IEnumerator IEnumerable.GetEnumerator()
+   {
+      return ((IList<LightSource>)lights).GetEnumerator();
+   }
+
+   /// <summary>
+   /// Applies the light sources in this collection to the current drawing operation.
+   /// </summary>
+   public void Set()
+   {
+      for (int i = 0; i < lights.Count; i++)
+      {
+         GL.Uniform3(lightArrayLocations[i, 0], lights[i].Position);
+         Display.CheckError();
+         GL.Uniform4(lightArrayLocations[i, 1], lights[i].Color);
+         Display.CheckError();
+         GL.Uniform3(lightArrayLocations[i, 2], lights[i].Falloff);
+         Display.CheckError();
+         GL.Uniform3(lightArrayLocations[i, 3], lights[i].Aim);
+         Display.CheckError();
+         GL.Uniform1(lightArrayLocations[i, 4], lights[i].ApertureFocus);
+         Display.CheckError();
+         GL.Uniform1(lightArrayLocations[i, 5], lights[i].ApertureSoftness);
+         Display.CheckError();
+         for (int w = 0; w < LightSource.wallsPerLight * 2; w++)
+         {
+            GL.Uniform3(lightArrayLocations[i, 6 + w], lights[i][w]);
+            Display.CheckError();
+         }
+      }
+   }
+}
+
+/// <summary>
+/// Defines the properties of a light source used by the SGDK2 display object
+/// to determine brightness of drawn pixels at runtime.
+/// </summary>
+class LightSource
+{
+   /// <summary>
+   /// Determines how many walls can obstruct each light source.
+   /// </summary>
+   public const int wallsPerLight = 2;
+   /// <summary>
+   /// Determines how many pointers OpenGL code needs to access
+   /// all the properties of a light source.
+   /// </summary>
+   public const int locationCount = 6 + wallsPerLight * 2;
+
+   private string name;
+   private Vector3 position;
+   private Color4 color;
+   private Vector3 aim;
+   private Vector3 falloff;
+   private float apertureFocus;
+   private float apertureSoftness;
+   private Vector3[] wallVertices;
+
+   public LightSource()
+   {
+      wallVertices = new Vector3[wallsPerLight * 2];
+   }
+
+   /// <summary>
+   /// Pixel coordinate within the display where the light source resides.
+   /// </summary>
+   public Vector3 Position { get { return position; } set { position = value; } }
+
+   /// <summary>
+   /// Color of the light source with alpha representing brightness
+   /// </summary>
+   public System.Drawing.Color Color
+   {
+      get
+      {
+         return System.Drawing.Color.FromArgb(color.ToArgb());
+      }
+
+      set
+      {
+         color = new Color4(value.R, value.G, value.B, value.A);
+      }
+   }
+
+   /// <summary>
+   /// Coordinate relative to this light source's position at which the light is pointed
+   /// </summary>
+   public Vector3 Aim
+   {
+      get
+      {
+         return aim;
+      }
+
+      set
+      {
+         aim = value;
+      }
+   }
+
+   /// <summary>
+   /// Constant (x), linear (y) and quadratic (z) falloff coefficients for calculating attenuation
+   /// </summary>
+   public Vector3 Falloff
+   {
+      get
+      {
+         return falloff;
+      }
+
+      set
+      {
+         falloff = value;
+      }
+   }
+
+   /// <summary>
+   /// Determines whether the light is omni-directional, or emits light in limited directions.
+   /// </summary>
+   /// <remarks>
+   /// A value of -1 emits light in all directions, 0 emits light over a 180-degree arc (making a linear
+   /// divider between lit and unlight pixels at the light source), 0.7071 (cosine of 45
+   /// degrees) results in a 90-degree arc. The actual apparent angle of illuminated pixels
+   /// can vary based on the Aim because the arc is over a cone pointed by Aim.
+   /// </remarks>
+   public float ApertureFocus
+   {
+      get
+      {
+         return apertureFocus;
+      }
+
+      set
+      {
+         apertureFocus = value;
+      }
+   }
+
+   /// <summary>
+   /// For a directed and focused light source, determine how crisp the edges of its illumination are
+   /// </summary>
+   /// <remarks>
+   /// A value of 0 results in every pixel along the edge of the cone being either entirely included
+   /// or excluded from the light cone. A value of 0.1 results in smooth transition between cone sizes
+   /// determined by ApertureFocus and ApertureFocus -0.1.
+   /// </remarks>
+   public float ApertureSoftness
+   {
+      get
+      {
+         return apertureSoftness;
+      }
+
+      set
+      {
+         apertureSoftness = value;
+      }
+   }
+
+   /// <summary>
+   /// Determines the endpoints of light barriers that block this light source's effect.
+   /// </summary>
+   /// <param name="index">Which barrier enpoint is being accessed (each barrier having 2 endpoints)</param>
+   /// <returns>The location of an endpoint of a light barrier</returns>
+   /// <remarks>
+   /// Each barrier has 2 endpoints independent of other barriers, therefore, endpoints 0 and 1
+   /// determine the configuration of the first barrier while endpoints 2 and 3 determine the
+   /// second barrier. The Z coordinate of the barrier should be between 0 and 1 where 1 completely
+   /// blocks light and lower values allow light to bleed in from that end of the barrier. 0 Causes
+   /// the barrier to have no effect on the light source.
+   /// </remarks>
+   public Vector3 this[int index]
+   {
+      get { return wallVertices[index]; }
+      set { wallVertices[index] = value; }
+   }
+
+   public override string ToString()
+   {
+      return name;
+   }
+
 }
 
 /// <summary>

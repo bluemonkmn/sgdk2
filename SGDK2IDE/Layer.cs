@@ -456,7 +456,12 @@ namespace SGDK2
          m_CachedSprites = new System.Collections.ArrayList(SpriteRows.Length);
          foreach(ProjectDataset.SpriteRow drSprite in SpriteRows)
          {
-            SpriteProvider sp = new SpriteProvider(cache[drSprite.DefinitionName], drSprite);
+            ProjectDataset.SpriteDefinitionRow drSpriteDef = ProjectData.GetSpriteDefinition(drSprite.DefinitionName);
+            SpriteProvider sp;
+            if (ProjectData.IsLightSource(drSpriteDef))
+               sp = new LightSpriteProvider(cache[drSprite.DefinitionName], drSprite);
+            else
+               sp = new SpriteProvider(cache[drSprite.DefinitionName], drSprite);
             m_CachedSprites.Add(sp);
          }
       }

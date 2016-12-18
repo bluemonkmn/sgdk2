@@ -5037,6 +5037,12 @@ namespace SGDK2 {
             
             private global::System.Data.DataColumn columnColor;
             
+            private global::System.Data.DataColumn columnLightConstantFalloff;
+            
+            private global::System.Data.DataColumn columnLightLinearFalloff;
+            
+            private global::System.Data.DataColumn columnLightQuadraticFalloff;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public SpriteDataTable() {
@@ -5184,6 +5190,30 @@ namespace SGDK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn LightConstantFalloffColumn {
+                get {
+                    return this.columnLightConstantFalloff;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn LightLinearFalloffColumn {
+                get {
+                    return this.columnLightLinearFalloff;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn LightQuadraticFalloffColumn {
+                get {
+                    return this.columnLightQuadraticFalloff;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -5219,7 +5249,24 @@ namespace SGDK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public SpriteRow AddSpriteRow(string LayerName, string Name, string DefinitionName, string StateName, short CurrentFrame, int X, int Y, float DX, float DY, string MapName, int Priority, bool Active, string Solidity, int Color) {
+            public SpriteRow AddSpriteRow(
+                        string LayerName, 
+                        string Name, 
+                        string DefinitionName, 
+                        string StateName, 
+                        short CurrentFrame, 
+                        int X, 
+                        int Y, 
+                        float DX, 
+                        float DY, 
+                        string MapName, 
+                        int Priority, 
+                        bool Active, 
+                        string Solidity, 
+                        int Color, 
+                        float LightConstantFalloff, 
+                        float LightLinearFalloff, 
+                        float LightQuadraticFalloff) {
                 SpriteRow rowSpriteRow = ((SpriteRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         LayerName,
@@ -5235,7 +5282,10 @@ namespace SGDK2 {
                         Priority,
                         Active,
                         Solidity,
-                        Color};
+                        Color,
+                        LightConstantFalloff,
+                        LightLinearFalloff,
+                        LightQuadraticFalloff};
                 rowSpriteRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowSpriteRow);
                 return rowSpriteRow;
@@ -5281,6 +5331,9 @@ namespace SGDK2 {
                 this.columnActive = base.Columns["Active"];
                 this.columnSolidity = base.Columns["Solidity"];
                 this.columnColor = base.Columns["Color"];
+                this.columnLightConstantFalloff = base.Columns["LightConstantFalloff"];
+                this.columnLightLinearFalloff = base.Columns["LightLinearFalloff"];
+                this.columnLightQuadraticFalloff = base.Columns["LightQuadraticFalloff"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5314,6 +5367,12 @@ namespace SGDK2 {
                 base.Columns.Add(this.columnSolidity);
                 this.columnColor = new global::System.Data.DataColumn("Color", typeof(int), null, global::System.Data.MappingType.Attribute);
                 base.Columns.Add(this.columnColor);
+                this.columnLightConstantFalloff = new global::System.Data.DataColumn("LightConstantFalloff", typeof(float), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnLightConstantFalloff);
+                this.columnLightLinearFalloff = new global::System.Data.DataColumn("LightLinearFalloff", typeof(float), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnLightLinearFalloff);
+                this.columnLightQuadraticFalloff = new global::System.Data.DataColumn("LightQuadraticFalloff", typeof(float), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnLightQuadraticFalloff);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("SpriteKey", new global::System.Data.DataColumn[] {
                                 this.columnLayerName,
                                 this.columnName,
@@ -5343,6 +5402,12 @@ namespace SGDK2 {
                 this.columnSolidity.Namespace = "";
                 this.columnColor.Namespace = "";
                 this.columnColor.DefaultValue = ((int)(-1));
+                this.columnLightConstantFalloff.AllowDBNull = false;
+                this.columnLightConstantFalloff.DefaultValue = ((float)(0F));
+                this.columnLightLinearFalloff.AllowDBNull = false;
+                this.columnLightLinearFalloff.DefaultValue = ((float)(0F));
+                this.columnLightQuadraticFalloff.AllowDBNull = false;
+                this.columnLightQuadraticFalloff.DefaultValue = ((float)(0F));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -13782,6 +13847,39 @@ namespace SGDK2 {
                 }
                 set {
                     this[this.tableSprite.ColorColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public float LightConstantFalloff {
+                get {
+                    return ((float)(this[this.tableSprite.LightConstantFalloffColumn]));
+                }
+                set {
+                    this[this.tableSprite.LightConstantFalloffColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public float LightLinearFalloff {
+                get {
+                    return ((float)(this[this.tableSprite.LightLinearFalloffColumn]));
+                }
+                set {
+                    this[this.tableSprite.LightLinearFalloffColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public float LightQuadraticFalloff {
+                get {
+                    return ((float)(this[this.tableSprite.LightQuadraticFalloffColumn]));
+                }
+                set {
+                    this[this.tableSprite.LightQuadraticFalloffColumn] = value;
                 }
             }
             

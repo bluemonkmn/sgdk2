@@ -23,7 +23,12 @@ namespace SGDK2
          if (context.Instance is SpriteProvider)
          {
             ArrayList properties = new ArrayList();
-            System.Type typ = typeof(SpriteProvider);
+            System.Type typ;
+            if (context.Instance is LightSpriteProvider)
+               typ = typeof(LightSpriteProvider);
+            else
+               typ = typeof(SpriteProvider);
+
             properties.AddRange(new ReflectionPropertyDescriptor[]
             {
                new ReflectionPropertyDescriptor(typ.GetProperty("Name")),
@@ -42,6 +47,17 @@ namespace SGDK2
                new ReflectionPropertyDescriptor(typ.GetProperty("ModulateBlue")),
                new ReflectionPropertyDescriptor(typ.GetProperty("ModulateAlpha"))
             });
+
+            if (context.Instance is LightSpriteProvider)
+            {
+               CategoryAttribute cat = new CategoryAttribute("Lighting");
+               properties.AddRange(new ReflectionPropertyDescriptor[]
+               {
+                  new ReflectionPropertyDescriptor(typ.GetProperty("LightConstantFalloff"), cat),
+                  new ReflectionPropertyDescriptor(typ.GetProperty("LightLinearFalloff"), cat),
+                  new ReflectionPropertyDescriptor(typ.GetProperty("LightQuadraticFalloff"), cat)
+               });
+            }
 
             foreach(string paramName in ((SpriteProvider)context.Instance).ParameterNames)
             {
@@ -118,8 +134,8 @@ namespace SGDK2
    [TypeConverter(typeof(SpriteConverter))]
    public class SpriteProvider : IProvideFrame, IProvideGraphics, ICustomTypeDescriptor, ITypeDescriptorContext
    {
-      private readonly CachedSpriteDef m_Sprite;
-      private ProjectDataset.SpriteRow m_SpriteRow = null;
+      protected readonly CachedSpriteDef m_Sprite;
+      protected ProjectDataset.SpriteRow m_SpriteRow = null;
       private ProjectDataset.ParameterValueRow[] m_ParameterRows = null;
       private string m_State;
       private short m_Frame;
@@ -136,9 +152,9 @@ namespace SGDK2
       private static int defaultPriority = 1;
 
       private static SpriteConverter m_converter = new SpriteConverter();
-      private static Hashtable defaultInstances = new Hashtable();
+      protected static Hashtable defaultInstances = new Hashtable();
 
-      private SpriteProvider(CachedSpriteDef sprite, string state, short frame, int color)
+      protected SpriteProvider(CachedSpriteDef sprite, string state, short frame, int color)
       {
          m_Sprite = sprite;
          m_State = state;
@@ -161,7 +177,7 @@ namespace SGDK2
       public static SpriteProvider GetDefaultInstance(CachedSpriteDef sprite, string defaultState, short defaultFrame, int defaultColor)
       {
          if (!defaultInstances.ContainsKey(sprite.Name))
-            defaultInstances[sprite.Name] = new SpriteProvider(sprite, defaultState, defaultFrame, defaultColor);
+               defaultInstances[sprite.Name] = new SpriteProvider(sprite, defaultState, defaultFrame, defaultColor);
          SpriteProvider result = (SpriteProvider)defaultInstances[sprite.Name];
          if (result.m_Sprite != sprite)
          {
@@ -783,11 +799,118 @@ namespace SGDK2
       #endregion
    }
 
+   [TypeConverter(typeof(SpriteConverter))]
+   public class LightSpriteProvider : SpriteProvider
+   {
+      private float m_ConstantFalloff;
+      private float m_LinearFalloff;
+      private float m_QuadraticFalloff;
+
+      private LightSpriteProvider(CachedSpriteDef sprite, string state, short frame, int color) : base(sprite, state, frame, color)
+      {
+      }
+
+      public LightSpriteProvider(CachedSpriteDef sprite, ProjectDataset.SpriteRow row) : base(sprite, row)
+      {
+      }
+
+      [Description("Value (usually 0 to 1) indicating how this light source impacts the lighting on the entire layer equally. (Google constant lighting falloff for details.)")]
+      public float LightConstantFalloff
+      {
+         get
+         {
+            if (m_SpriteRow != null)
+               return m_SpriteRow.LightConstantFalloff;
+            else
+               return m_ConstantFalloff;
+         }
+         set
+         {
+            if (m_SpriteRow != null)
+               m_SpriteRow.LightConstantFalloff = value;
+            else
+               m_ConstantFalloff = value;
+         }
+      }
+
+      [Description("Value (usually 0 to 1) indicating how this light source's intensity diminishes over linear distance. (Google linear lighting falloff for details.)")]
+      public float LightLinearFalloff
+      {
+         get
+         {
+            if (m_SpriteRow != null)
+               return m_SpriteRow.LightLinearFalloff;
+            else
+               return m_LinearFalloff;
+         }
+         set
+         {
+            if (m_SpriteRow != null)
+               m_SpriteRow.LightLinearFalloff = value;
+            else
+               m_LinearFalloff = value;
+         }
+      }
+
+      [Description("Value (usually 0 to 1) indicating how this light source's intensity diminishes quadratically over distance. (Google quadratic lighting falloff for details.)")]
+      public float LightQuadraticFalloff
+      {
+         get
+         {
+            if (m_SpriteRow != null)
+               return m_SpriteRow.LightQuadraticFalloff;
+            else
+               return m_QuadraticFalloff;
+         }
+         set
+         {
+            if (m_SpriteRow != null)
+               m_SpriteRow.LightQuadraticFalloff = value;
+            else
+               m_QuadraticFalloff = value;
+         }
+      }
+
+      public static new LightSpriteProvider GetDefaultInstance(CachedSpriteDef sprite, string defaultState, short defaultFrame, int defaultColor)
+      {
+         if (!defaultInstances.ContainsKey(sprite.Name) || !(defaultInstances[sprite.Name] is LightSpriteProvider))
+            defaultInstances[sprite.Name] = new LightSpriteProvider(sprite, defaultState, defaultFrame, defaultColor);
+         LightSpriteProvider result = (LightSpriteProvider)defaultInstances[sprite.Name];
+         if (result.m_Sprite != sprite)
+         {
+            LightSpriteProvider newResult = new LightSpriteProvider(sprite, defaultState, defaultFrame, defaultColor);
+            newResult.Active = result.Active;
+            newResult.Color = result.Color;
+            newResult.DX = result.DX;
+            newResult.DY = result.DY;
+            newResult.CurrentFrame = result.CurrentFrame;
+            for (int i = 0; i < newResult.ParameterNames.Count; i++)
+            {
+               int paramIdx = result.ParameterNames.IndexOf(newResult.ParameterNames[i]);
+               if (paramIdx >= 0)
+                  newResult.ParameterValues[i] = result.ParameterValues[paramIdx];
+            }
+            newResult.Priority = result.Priority;
+            newResult.Solidity = result.Solidity;
+            if (sprite.ContainsState(result.CurrentStateName) &&
+                sprite[result.CurrentStateName].frames.Length > 0)
+               newResult.CurrentStateName = result.CurrentStateName;
+            defaultInstances[sprite.Name] = result = newResult;
+         }
+         return result;
+      }
+   }
+
    class ReflectionPropertyDescriptor : System.ComponentModel.PropertyDescriptor
    {
       System.Reflection.PropertyInfo m_PropertyInfo;
       
       public ReflectionPropertyDescriptor(System.Reflection.PropertyInfo pi) : base(pi.Name, new Attribute[] {new CategoryAttribute("Intrinsic"), new BrowsableAttribute(true)})
+      {
+         m_PropertyInfo = pi;
+      }
+
+      public ReflectionPropertyDescriptor(System.Reflection.PropertyInfo pi, CategoryAttribute cat) : base(pi.Name, new Attribute[] { cat, new BrowsableAttribute(true) })
       {
          m_PropertyInfo = pi;
       }

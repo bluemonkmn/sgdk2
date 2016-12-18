@@ -339,7 +339,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
 
                for (int i=0; i<MAX_LIGHTS; i++)
                {
-                  vec3 LightDir = vec3((lights[i].position.xy - gl_FragCoord.xy) / vec2(100.0, 100.0).xy, lights[i].position.z);
+                  vec3 LightDir = vec3((lights[i].position.xy - gl_FragCoord.xy) / vec2(200.0, 200.0).xy, lights[i].position.z);
                   float D = length(LightDir);
               ";
       string segment4_norm =
@@ -531,8 +531,8 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       GL.TexParameter(texTarget, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Clamp);
       CheckError();
 
-      int useWidth = OpenTK.Functions.NextPowerOfTwo(bmpTexture.Width - 1);
-      int useHeight = OpenTK.Functions.NextPowerOfTwo(bmpTexture.Height - 1);
+      int useWidth = OpenTK.MathHelper.NextPowerOfTwo(bmpTexture.Width - 1);
+      int useHeight = OpenTK.MathHelper.NextPowerOfTwo(bmpTexture.Height - 1);
 
       bool useSubTexture = (useWidth != bmpTexture.Width) || (useHeight != bmpTexture.Height);
 
@@ -1253,6 +1253,26 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
          }
       }
    }
+
+   /// <summary>
+   /// Set the properties of one of the display's light sources for real-time lighting effects.
+   /// </summary>
+   /// <param name="index">Indicates which light source to set. Must be between 0 and MAX_LIGHTS - 1, inclusive</param>
+   /// <param name="windowCoordinate">Coordinate within the display at which the light should be positioned with the origin at the top left corner</param>
+   /// <param name="falloff">Constant, linear and quadratic falloff of the light intensity. Google linear light falloff for details.</param>
+   /// <param name="color">Color and intensity of the light source. Alpha channel indicates intensity.</param>
+   public void SetLightSource(int index, Vector2 windowCoordinate, Vector3 falloff, System.Drawing.Color color)
+   {
+      if (index >= LightSources.MAX_LIGHTS)
+         throw new IndexOutOfRangeException("SetLightSource index must be less than MAX_LIGHTS");
+
+      lights[index].Falloff = flatLights[index].Falloff = falloff;
+      lights[index].Position = flatLights[index].Position = new Vector3(
+         windowCoordinate.X, ClientRectangle.Height - windowCoordinate.Y, 1);
+      lights[index].Color = flatLights[index].Color = color;
+   }
+
+   public const int MAX_LIGHTS = LightSources.MAX_LIGHTS;
    #endregion
 
    #region ISerializable Members
@@ -1266,7 +1286,6 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    {
       info.SetType(typeof(DisplayRef));
    }
-
    #endregion
 }
 

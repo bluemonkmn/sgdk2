@@ -1078,7 +1078,7 @@ public abstract partial class GeneralRules
    }
    #endregion
 
-   #region "Messages"
+   #region Messages
    /// <summary>
    /// Determines in which view(s) a message will appear.
    /// </summary>
@@ -1505,6 +1505,34 @@ public abstract partial class GeneralRules
       }
 
       return result;
+   }
+   #endregion
+
+   #region Lighting
+   /// <summary>
+   /// Use properties of the sprites in the specified category to configure real-time lighting on the display
+   /// for the current frame.
+   /// </summary>
+   /// <param name="sprites">Sprite category containing all the light sources to apply to the display.</param>
+   /// <remarks>Light sources are sprites whose base class is set to LightSpriteBase. Only sprites with that
+   /// base class will affect the lighting. Only MAX_LIGHTS lights will be processed. Any quantity in excess
+   /// of that number will be ignored.</remarks>
+   [Description("Use properties of the sprites in the specified category to configure real-time lighting on the display for the current frame.")]
+   public virtual void ApplyLights(SpriteCollection sprites)
+   {
+      int lightNum = 0;
+      foreach (SpriteBase sprite in sprites)
+      {
+         LightSpriteBase lsb = sprite as LightSpriteBase;
+         if (lsb == null) continue;
+         ParentLayer.ParentMap.Display.SetLightSource(lightNum, new OpenTK.Vector2(
+            (float)(ParentLayer.CurrentPosition.X + lsb.x),
+            (float)(ParentLayer.CurrentPosition.Y + lsb.y)),
+            new OpenTK.Vector3(lsb.constantFalloff, lsb.linearFalloff, lsb.quadraticFalloff),
+            System.Drawing.Color.FromArgb(lsb.color));
+         if (++lightNum >= Display.MAX_LIGHTS)
+            break;
+      }
    }
    #endregion
 }

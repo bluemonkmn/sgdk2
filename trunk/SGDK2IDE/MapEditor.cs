@@ -1033,8 +1033,13 @@ namespace SGDK2
                {
                   if (drState[validState].GetSpriteFrameRows().Length > 0)
                   {
-                     SpriteProvider sp = SpriteProvider.GetDefaultInstance(
-                        m_SpriteCache[drDef.Name], drState[validState].Name, 0, -1);
+                     SpriteProvider sp;
+                     if (ProjectData.IsLightSource(drDef))
+                        sp = LightSpriteProvider.GetDefaultInstance(
+                           m_SpriteCache[drDef.Name], drState[validState].Name, 0, -1);
+                     else
+                        sp = SpriteProvider.GetDefaultInstance(
+                           m_SpriteCache[drDef.Name], drState[validState].Name, 0, -1);
                      string name;
                      int index = 1;
                      do
@@ -1805,9 +1810,19 @@ namespace SGDK2
                   string[] paramNames = new string[sp.ParameterNames.Count];
                   sp.ParameterNames.CopyTo(paramNames, 0);
                   ProjectDataset.LayerRow drLayer = m_Layers[m_nCurLayer].LayerRow;
-                  ProjectData.AddSprite(drLayer.Name, sp.Name, sp.DefinitionName, sp.CurrentStateName,
-                     sp.CurrentFrame, sp.X, sp.Y, sp.DX, sp.DY, drLayer.MapRow.Name, sp.Priority,
-                     sp.Active, sp.Solidity, sp.Color, paramNames, sp.ParameterValues);
+                  if (sp is LightSpriteProvider)
+                  {
+                     LightSpriteProvider lsp = (LightSpriteProvider)sp;
+                     ProjectData.AddSprite(drLayer.Name, lsp.Name, lsp.DefinitionName, lsp.CurrentStateName,
+                        lsp.CurrentFrame, lsp.X, lsp.Y, lsp.DX, lsp.DY, drLayer.MapRow.Name, lsp.Priority,
+                        lsp.Active, lsp.Solidity, lsp.Color, lsp.LightConstantFalloff, lsp.LightLinearFalloff, lsp.LightQuadraticFalloff,
+                        paramNames, lsp.ParameterValues);
+                  }
+                  else
+                     ProjectData.AddSprite(drLayer.Name, sp.Name, sp.DefinitionName, sp.CurrentStateName,
+                        sp.CurrentFrame, sp.X, sp.Y, sp.DX, sp.DY, drLayer.MapRow.Name, sp.Priority,
+                        sp.Active, sp.Solidity, sp.Color, 0, 0, 0, paramNames, sp.ParameterValues);
+
                   string name;
                   int index = 1;
                   do
@@ -2272,7 +2287,11 @@ namespace SGDK2
          for (int i = 0; i < selIdcs.Count; i++)
          {
             ProjectDataset.SpriteRow drSprite = (ProjectDataset.SpriteRow)lstAvailableSprites.Items[selIdcs[i]];
-            selSprites[i] = new SpriteProvider(m_SpriteCache[drSprite.DefinitionName], drSprite);
+            ProjectDataset.SpriteDefinitionRow drDef = ProjectData.GetSpriteDefinition(drSprite.DefinitionName);
+            if (ProjectData.IsLightSource(drDef))
+               selSprites[i] = new LightSpriteProvider(m_SpriteCache[drSprite.DefinitionName], drSprite);
+            else
+               selSprites[i] = new SpriteProvider(m_SpriteCache[drSprite.DefinitionName], drSprite);
          }
          if (selIdcs.Count == 1)
             grdSprite.SelectedObject = selSprites[0];

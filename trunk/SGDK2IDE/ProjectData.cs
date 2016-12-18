@@ -1406,6 +1406,13 @@ namespace SGDK2
       #endregion
 
       #region SpriteDefinition
+      public const string LightSpriteBaseClass = "LightSpriteBase";
+
+      public static bool IsLightSource(ProjectDataset.SpriteDefinitionRow spriteDef)
+      {
+         return spriteDef.BaseClass == LightSpriteBaseClass;
+      }
+
       public static event ProjectDataset.SpriteDefinitionRowChangeEventHandler SpriteDefinitionRowChanged
       {
          add
@@ -2121,15 +2128,17 @@ namespace SGDK2
       }
       public static ProjectDataset.SpriteRow AddSprite(string LayerName, string SpriteName,
          string DefinitionName, string StateName, short CurrentFrame, int X, int Y,
-         float DX, float DY, string MapName, int Priority, bool Active, string Solidity, int Color, string[] ParamNames, int[] ParamValues)
+         float DX, float DY, string MapName, int Priority, bool Active, string Solidity, int Color, 
+         float LightConstantFalloff, float LightLinearFalloff, float LightQuadraticFalloff, string[] ParamNames, int[] ParamValues)
       {
          if (GetSpritePlan(GetLayer(MapName, LayerName), SpriteName) != null)
             throw new ApplicationException("Sprite name \"" + SpriteName + "\" conflicts with an existing plan name.  Choose a name that does not conflict with that of a plan or another sprite.");
          ProjectDataset.SpriteRow drSprite = m_dsPrj.Sprite.AddSpriteRow(
             LayerName, SpriteName, DefinitionName, StateName, CurrentFrame,
-            X, Y, DX, DY, MapName, Priority, Active, Solidity, Color);
-         for (int i=0; i<ParamNames.Length; i++)
-            m_dsPrj.ParameterValue.AddParameterValueRow(LayerName, SpriteName, ParamNames[i], 
+            X, Y, DX, DY, MapName, Priority, Active, Solidity, Color, 
+            LightConstantFalloff, LightLinearFalloff, LightQuadraticFalloff);
+         for (int i = 0; i < ParamNames.Length; i++)
+            m_dsPrj.ParameterValue.AddParameterValueRow(LayerName, SpriteName, ParamNames[i],
                ParamValues[i], DefinitionName, MapName);
          return drSprite;
       }

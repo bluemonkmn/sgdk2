@@ -76,6 +76,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       private Display m_Display;
       private int m_Width = 0;
       private int m_Height = 0;
+      private bool? m_HasNormalMap = null;
 
       public TextureRef(Display Disp, string Name)
       {
@@ -94,22 +95,28 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
          }
       }
 
-      public void Use()
+      public void Use(ShaderProgram sp)
       {
          if (m_Texture == 0)
-            m_Texture = m_Display.GetTexture(m_Name);
+            m_Texture = m_Display.GetTexture(m_Name, TextureUnit.Texture0);
          if (m_Texture != 0)
          {
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(texTarget, m_Texture);
+            int texLoc = sp.GetUniformLocation("tex");
+            GL.Uniform1(texLoc, 0);
+            CheckError();
          }
 
          if (m_NormalMap == 0)
-            m_NormalMap = m_Display.GetTexture(m_Name + "_nm");
+            m_NormalMap = m_Display.GetTexture(m_Name + " nm", TextureUnit.Texture1);
          if (m_NormalMap != 0)
          {
             GL.ActiveTexture(TextureUnit.Texture1);
             GL.BindTexture(texTarget, m_NormalMap);
+            int texLoc = sp.GetUniformLocation("norm");
+            GL.Uniform1(texLoc, 1);
+            CheckError();
          }
       }
 
@@ -117,7 +124,9 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       {
          get
          {
-            return m_NormalMap != 0;
+            if (!m_HasNormalMap.HasValue)
+               m_HasNormalMap = Project.Resources.GetObject(m_Name + " nm") != null;
+            return m_HasNormalMap.Value;
          }
       }
 
@@ -130,7 +139,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
          {
             if (m_Texture == 0)
             {
-               m_Texture = m_Display.GetTexture(m_Name);
+               m_Texture = m_Display.GetTexture(m_Name, TextureUnit.Texture0);
             }
             return m_Texture;
          }
@@ -227,7 +236,6 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    private ShaderProgram solidShader;
    Matrix4 projectionMatrix;
    private LightSources lights;
-   private LightSources flatLights;
    private VertexArray<TileVertex> normalVertexArray;
    private VertexArray<TileVertex> flatVertexArray;
    private VertexArray<ColoredVertex> solidVertexArray;
@@ -308,8 +316,8 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
             uniform sampler2D tex;
             uniform sampler2D norm;
 
-            #define MAX_LIGHTS 4
-            #define MAX_WALLS 2
+            #define MAX_LIGHTS " + LightSources.MAX_LIGHTS + @"
+            #define MAX_WALLS " + LightSource.wallsPerLight + @"
                 
             struct Light {
                vec3 position;
@@ -416,8 +424,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       VertexAttribute vaSolidColor = new VertexAttribute("vColor", 4, VertexAttribPointerType.Float, ColoredVertex.Size, 2 * 4);
       solidVertexArray = new VertexArray<ColoredVertex>(solidVertexBuffer, solidShader, vaSolidPosition, vaSolidColor);
 
-      lights = new LightSources(normalMapShader, "lights");
-      flatLights = new LightSources(flatShader, "lights");
+      lights = new LightSources();
 
       // Align to display
       System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode);
@@ -515,13 +522,14 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    #endregion
 
    #region Private members
-   private int GetTexture(string Name)
+   private int GetTexture(string Name, TextureUnit unit)
    {
       int texture;
       System.Drawing.Bitmap bmpTexture = (System.Drawing.Bitmap)Project.Resources.GetObject(Name);
       if (bmpTexture == null)
          return 0;
       GL.GenTextures(1, out texture);
+      GL.ActiveTexture(unit);
       GL.BindTexture(texTarget, texture);
       CheckError();
       GL.TexParameter(texTarget, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
@@ -760,18 +768,21 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
          GL.Disable(EnableCap.Dither);
 
          CheckError();
-         texture.Use();
          if (texture.HasNormalMap)
          {
             normalMapShader.Use(projectionMatrix);
+            texture.Use(normalMapShader);
             normalVertexArray.Bind();
+            lights.UseProgram(normalMapShader, "lights");
             lights.Set();
          }
          else
          {
             flatShader.Use(projectionMatrix);
+            texture.Use(flatShader);
             flatVertexArray.Bind();
-            flatLights.Set();
+            lights.UseProgram(flatShader, "lights");
+            lights.Set();
          }
          m_currentOp = DisplayOperation.DrawFrames;
          m_currentTexture = texture;
@@ -1266,10 +1277,10 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       if (index >= LightSources.MAX_LIGHTS)
          throw new IndexOutOfRangeException("SetLightSource index must be less than MAX_LIGHTS");
 
-      lights[index].Falloff = flatLights[index].Falloff = falloff;
-      lights[index].Position = flatLights[index].Position = new Vector3(
+      lights[index].Falloff = falloff;
+      lights[index].Position = new Vector3(
          windowCoordinate.X, ClientRectangle.Height - windowCoordinate.Y, 1);
-      lights[index].Color = flatLights[index].Color = color;
+      lights[index].Color = color;
    }
 
    public const int MAX_LIGHTS = LightSources.MAX_LIGHTS;
@@ -1454,7 +1465,7 @@ public class ShaderException : Exception
 /// <summary>
 /// Encapsulates a single OpenGL shader, for example, a fragment shader or vertex shader.
 /// </summary>
-sealed class Shader : IDisposable
+public sealed class Shader : IDisposable
 {
    private int handle;
 
@@ -1514,7 +1525,7 @@ sealed class Shader : IDisposable
 /// <summary>
 /// Encapsulates an OpenGL shader program including, for example, both vertex and fragment shaders
 /// </summary>
-sealed class ShaderProgram : IDisposable
+public sealed class ShaderProgram : IDisposable
 {
    private int handle;
 
@@ -1742,17 +1753,13 @@ class LightSources : IList<LightSource>
 
    private List<LightSource> lights = new List<LightSource>(MAX_LIGHTS);
    private int[,] lightArrayLocations;
+   ShaderProgram lastUsedProgram;
 
    /// <summary>
-   /// Create a collection of light sources linked to the specified variable in the specified shader program
+   /// Create a collection of light sources that can be applied to a ShaderProgram
    /// </summary>
-   /// <param name="program">Determines which shader program's variables will be affected by light sources
-   /// in this collection.</param>
-   /// <param name="lightArrayName">Determines the name of the variable in the shader program that will
-   /// be updated with light source data from this collection</param>
-   public LightSources(ShaderProgram program, string lightArrayName)
+   public LightSources()
    {
-      lightArrayLocations = new int[MAX_LIGHTS, LightSource.locationCount];
       for (int i = 0; i < MAX_LIGHTS; i++)
       {
          if (i == 0)
@@ -1775,6 +1782,24 @@ class LightSources : IList<LightSource>
                ApertureSoftness = 0f,
                Aim = new Vector3(1, 0, 0)
             });
+      }
+   }
+
+   /// <summary>
+   /// Prepare this collection of light sources to be used with the specified program.
+   /// </summary>
+   /// <param name="program">Shader program that uses light sources</param>
+   /// <param name="lightArrayName">Variable name of the light source array in the shader program</param>
+   public void UseProgram(ShaderProgram program, string lightArrayName)
+   {
+      if (program == lastUsedProgram)
+         return;
+
+      if ((lightArrayLocations == null) || (lightArrayLocations.GetUpperBound(0) < MAX_LIGHTS - 1)
+         || (lightArrayLocations.GetUpperBound(1) < LightSource.locationCount - 1))
+         lightArrayLocations = new int[MAX_LIGHTS, LightSource.locationCount];
+      for (int i = 0; i < MAX_LIGHTS; i++)
+      {
          lightArrayLocations[i, 0] = program.GetUniformLocation(lightArrayName + string.Format("[{0}].position", i));
          lightArrayLocations[i, 1] = program.GetUniformLocation(lightArrayName + string.Format("[{0}].color", i));
          lightArrayLocations[i, 2] = program.GetUniformLocation(lightArrayName + string.Format("[{0}].falloff", i));
@@ -1784,6 +1809,7 @@ class LightSources : IList<LightSource>
          for (int w = 0; w < LightSource.wallsPerLight * 2; w++)
             lightArrayLocations[i, 6 + w] = program.GetUniformLocation(lightArrayName + string.Format("[{0}].wall[{1}]", i, w));
       }
+      lastUsedProgram = program;
    }
 
    /// <summary>
@@ -1925,6 +1951,8 @@ class LightSources : IList<LightSource>
    /// </summary>
    public void Set()
    {
+      if (lightArrayLocations == null)
+         throw new InvalidOperationException("LightSources.UseProgram must be called before LightSources.Set");
       for (int i = 0; i < lights.Count; i++)
       {
          GL.Uniform3(lightArrayLocations[i, 0], lights[i].Position);

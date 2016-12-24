@@ -5043,6 +5043,14 @@ namespace SGDK2 {
             
             private global::System.Data.DataColumn columnLightQuadraticFalloff;
             
+            private global::System.Data.DataColumn columnLightAimX;
+            
+            private global::System.Data.DataColumn columnLightAimY;
+            
+            private global::System.Data.DataColumn columnLightApertureFocus;
+            
+            private global::System.Data.DataColumn columnLightApertureSoftness;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public SpriteDataTable() {
@@ -5214,6 +5222,38 @@ namespace SGDK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn LightAimXColumn {
+                get {
+                    return this.columnLightAimX;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn LightAimYColumn {
+                get {
+                    return this.columnLightAimY;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn LightApertureFocusColumn {
+                get {
+                    return this.columnLightApertureFocus;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn LightApertureSoftnessColumn {
+                get {
+                    return this.columnLightApertureSoftness;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -5266,7 +5306,11 @@ namespace SGDK2 {
                         int Color, 
                         float LightConstantFalloff, 
                         float LightLinearFalloff, 
-                        float LightQuadraticFalloff) {
+                        float LightQuadraticFalloff, 
+                        float LightAimX, 
+                        float LightAimY, 
+                        float LightApertureFocus, 
+                        float LightApertureSoftness) {
                 SpriteRow rowSpriteRow = ((SpriteRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         LayerName,
@@ -5285,7 +5329,11 @@ namespace SGDK2 {
                         Color,
                         LightConstantFalloff,
                         LightLinearFalloff,
-                        LightQuadraticFalloff};
+                        LightQuadraticFalloff,
+                        LightAimX,
+                        LightAimY,
+                        LightApertureFocus,
+                        LightApertureSoftness};
                 rowSpriteRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowSpriteRow);
                 return rowSpriteRow;
@@ -5334,6 +5382,10 @@ namespace SGDK2 {
                 this.columnLightConstantFalloff = base.Columns["LightConstantFalloff"];
                 this.columnLightLinearFalloff = base.Columns["LightLinearFalloff"];
                 this.columnLightQuadraticFalloff = base.Columns["LightQuadraticFalloff"];
+                this.columnLightAimX = base.Columns["LightAimX"];
+                this.columnLightAimY = base.Columns["LightAimY"];
+                this.columnLightApertureFocus = base.Columns["LightApertureFocus"];
+                this.columnLightApertureSoftness = base.Columns["LightApertureSoftness"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5373,6 +5425,14 @@ namespace SGDK2 {
                 base.Columns.Add(this.columnLightLinearFalloff);
                 this.columnLightQuadraticFalloff = new global::System.Data.DataColumn("LightQuadraticFalloff", typeof(float), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnLightQuadraticFalloff);
+                this.columnLightAimX = new global::System.Data.DataColumn("LightAimX", typeof(float), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnLightAimX);
+                this.columnLightAimY = new global::System.Data.DataColumn("LightAimY", typeof(float), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnLightAimY);
+                this.columnLightApertureFocus = new global::System.Data.DataColumn("LightApertureFocus", typeof(float), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnLightApertureFocus);
+                this.columnLightApertureSoftness = new global::System.Data.DataColumn("LightApertureSoftness", typeof(float), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnLightApertureSoftness);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("SpriteKey", new global::System.Data.DataColumn[] {
                                 this.columnLayerName,
                                 this.columnName,
@@ -5405,9 +5465,17 @@ namespace SGDK2 {
                 this.columnLightConstantFalloff.AllowDBNull = false;
                 this.columnLightConstantFalloff.DefaultValue = ((float)(0F));
                 this.columnLightLinearFalloff.AllowDBNull = false;
-                this.columnLightLinearFalloff.DefaultValue = ((float)(0F));
+                this.columnLightLinearFalloff.DefaultValue = ((float)(1F));
                 this.columnLightQuadraticFalloff.AllowDBNull = false;
                 this.columnLightQuadraticFalloff.DefaultValue = ((float)(0F));
+                this.columnLightAimX.AllowDBNull = false;
+                this.columnLightAimX.DefaultValue = ((float)(0F));
+                this.columnLightAimY.AllowDBNull = false;
+                this.columnLightAimY.DefaultValue = ((float)(1F));
+                this.columnLightApertureFocus.AllowDBNull = false;
+                this.columnLightApertureFocus.DefaultValue = ((float)(0F));
+                this.columnLightApertureSoftness.AllowDBNull = false;
+                this.columnLightApertureSoftness.DefaultValue = ((float)(0F));
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -13880,6 +13948,50 @@ namespace SGDK2 {
                 }
                 set {
                     this[this.tableSprite.LightQuadraticFalloffColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public float LightAimX {
+                get {
+                    return ((float)(this[this.tableSprite.LightAimXColumn]));
+                }
+                set {
+                    this[this.tableSprite.LightAimXColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public float LightAimY {
+                get {
+                    return ((float)(this[this.tableSprite.LightAimYColumn]));
+                }
+                set {
+                    this[this.tableSprite.LightAimYColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public float LightApertureFocus {
+                get {
+                    return ((float)(this[this.tableSprite.LightApertureFocusColumn]));
+                }
+                set {
+                    this[this.tableSprite.LightApertureFocusColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public float LightApertureSoftness {
+                get {
+                    return ((float)(this[this.tableSprite.LightApertureSoftnessColumn]));
+                }
+                set {
+                    this[this.tableSprite.LightApertureSoftnessColumn] = value;
                 }
             }
             

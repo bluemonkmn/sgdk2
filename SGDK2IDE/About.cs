@@ -67,7 +67,7 @@ namespace SGDK2
 		/// </summary>
 		private void InitializeComponent()
 		{
-         System.Resources.ResourceManager resources = new System.Resources.ResourceManager(typeof(frmAbout));
+         System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmAbout));
          this.lblTitle = new System.Windows.Forms.Label();
          this.lblVersion = new System.Windows.Forms.Label();
          this.btnClose = new System.Windows.Forms.Button();
@@ -88,7 +88,7 @@ namespace SGDK2
          // lblTitle
          // 
          this.lblTitle.BackColor = System.Drawing.Color.Transparent;
-         this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+         this.lblTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
          this.lblTitle.Location = new System.Drawing.Point(176, 8);
          this.lblTitle.Name = "lblTitle";
          this.lblTitle.Size = new System.Drawing.Size(392, 32);
@@ -174,17 +174,18 @@ namespace SGDK2
          this.txtCredits.Multiline = true;
          this.txtCredits.Name = "txtCredits";
          this.txtCredits.ReadOnly = true;
-         this.txtCredits.Size = new System.Drawing.Size(368, 48);
+         this.txtCredits.Size = new System.Drawing.Size(368, 63);
          this.txtCredits.TabIndex = 8;
-         this.txtCredits.Text = "Primary design and development: Benjamin Marty\r\nGraphics: Jeff Cruz\r\nAlpha testin" +
-            "g and design input: Seth Marty, Amy Batcher";
+         this.txtCredits.Text = "Primary design and development: Benjamin Marty\r\nGraphic designer and artist: " +
+    "Jeff Cruz\r\nAlpha testing: Jeff Cruz, Seth Marty, Amy Marty\r\nFeature" +
+    " support: Jeff Cruz";
          // 
          // grpCredits
          // 
          this.grpCredits.Controls.Add(this.txtCredits);
          this.grpCredits.Location = new System.Drawing.Point(176, 96);
          this.grpCredits.Name = "grpCredits";
-         this.grpCredits.Size = new System.Drawing.Size(384, 72);
+         this.grpCredits.Size = new System.Drawing.Size(384, 87);
          this.grpCredits.TabIndex = 9;
          this.grpCredits.TabStop = false;
          this.grpCredits.Text = "Credits";
@@ -192,9 +193,9 @@ namespace SGDK2
          // groupBox1
          // 
          this.groupBox1.Controls.Add(this.txtModules);
-         this.groupBox1.Location = new System.Drawing.Point(176, 176);
+         this.groupBox1.Location = new System.Drawing.Point(176, 189);
          this.groupBox1.Name = "groupBox1";
-         this.groupBox1.Size = new System.Drawing.Size(384, 216);
+         this.groupBox1.Size = new System.Drawing.Size(384, 203);
          this.groupBox1.TabIndex = 11;
          this.groupBox1.TabStop = false;
          this.groupBox1.Text = "Loaded Modules";
@@ -209,9 +210,8 @@ namespace SGDK2
          this.txtModules.Name = "txtModules";
          this.txtModules.ReadOnly = true;
          this.txtModules.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-         this.txtModules.Size = new System.Drawing.Size(368, 192);
+         this.txtModules.Size = new System.Drawing.Size(368, 179);
          this.txtModules.TabIndex = 0;
-         this.txtModules.Text = "";
          // 
          // lblGPL
          // 
@@ -245,7 +245,9 @@ namespace SGDK2
          this.Name = "frmAbout";
          this.Text = "About...";
          this.grpCredits.ResumeLayout(false);
+         this.grpCredits.PerformLayout();
          this.groupBox1.ResumeLayout(false);
+         this.groupBox1.PerformLayout();
          this.ResumeLayout(false);
 
       }

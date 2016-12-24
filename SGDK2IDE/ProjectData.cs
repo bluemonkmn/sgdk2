@@ -2129,14 +2129,17 @@ namespace SGDK2
       public static ProjectDataset.SpriteRow AddSprite(string LayerName, string SpriteName,
          string DefinitionName, string StateName, short CurrentFrame, int X, int Y,
          float DX, float DY, string MapName, int Priority, bool Active, string Solidity, int Color, 
-         float LightConstantFalloff, float LightLinearFalloff, float LightQuadraticFalloff, string[] ParamNames, int[] ParamValues)
+         float LightConstantFalloff, float LightLinearFalloff, float LightQuadraticFalloff,
+         float LightAimX, float LightAimY, float LightApertureFocus, float LightApertureSoftness,
+         string[] ParamNames, int[] ParamValues)
       {
          if (GetSpritePlan(GetLayer(MapName, LayerName), SpriteName) != null)
             throw new ApplicationException("Sprite name \"" + SpriteName + "\" conflicts with an existing plan name.  Choose a name that does not conflict with that of a plan or another sprite.");
          ProjectDataset.SpriteRow drSprite = m_dsPrj.Sprite.AddSpriteRow(
             LayerName, SpriteName, DefinitionName, StateName, CurrentFrame,
             X, Y, DX, DY, MapName, Priority, Active, Solidity, Color, 
-            LightConstantFalloff, LightLinearFalloff, LightQuadraticFalloff);
+            LightConstantFalloff, LightLinearFalloff, LightQuadraticFalloff,
+            LightAimX, LightAimY, LightApertureFocus, LightApertureSoftness);
          for (int i = 0; i < ParamNames.Length; i++)
             m_dsPrj.ParameterValue.AddParameterValueRow(LayerName, SpriteName, ParamNames[i],
                ParamValues[i], DefinitionName, MapName);

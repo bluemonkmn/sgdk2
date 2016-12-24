@@ -2140,6 +2140,10 @@ namespace SGDK2
                   SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.LightConstantFalloff));
                   SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.LightLinearFalloff));
                   SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.LightQuadraticFalloff));
+                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.LightAimX));
+                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.LightAimY));
+                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.LightApertureFocus));
+                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.LightApertureSoftness));
                }
                ProjectDataset.SpriteParameterRow[] sprParams = ProjectData.GetSortedSpriteParameters(drDef, false);
                if (sprParams.Length > 0)
@@ -2608,13 +2612,21 @@ namespace SGDK2
             {
                new CodeParameterDeclarationExpression(typeof(float), "constantFalloff"),
                new CodeParameterDeclarationExpression(typeof(float), "linearFalloff"),
-               new CodeParameterDeclarationExpression(typeof(float), "quadraticFalloff")
+               new CodeParameterDeclarationExpression(typeof(float), "quadraticFalloff"),
+               new CodeParameterDeclarationExpression(typeof(float), "aimX"),
+               new CodeParameterDeclarationExpression(typeof(float), "aimY"),
+               new CodeParameterDeclarationExpression(typeof(float), "apertureFocus"),
+               new CodeParameterDeclarationExpression(typeof(float), "apertureSoftness")
             });
             constructor.BaseConstructorArgs.AddRange(new CodeExpression[]
             {
                new CodeArgumentReferenceExpression("constantFalloff"),
                new CodeArgumentReferenceExpression("linearFalloff"),
-               new CodeArgumentReferenceExpression("quadraticFalloff")
+               new CodeArgumentReferenceExpression("quadraticFalloff"),
+               new CodeArgumentReferenceExpression("aimX"),
+               new CodeArgumentReferenceExpression("aimY"),
+               new CodeArgumentReferenceExpression("apertureFocus"),
+               new CodeArgumentReferenceExpression("apertureSoftness")
             });
          }
 
@@ -2656,13 +2668,21 @@ namespace SGDK2
             {
                new CodeParameterDeclarationExpression(typeof(float), "constantFalloff"),
                new CodeParameterDeclarationExpression(typeof(float), "linearFalloff"),
-               new CodeParameterDeclarationExpression(typeof(float), "quadraticFalloff")
+               new CodeParameterDeclarationExpression(typeof(float), "quadraticFalloff"),
+               new CodeParameterDeclarationExpression(typeof(float), "aimX"),
+               new CodeParameterDeclarationExpression(typeof(float), "aimY"),
+               new CodeParameterDeclarationExpression(typeof(float), "apertureFocus"),
+               new CodeParameterDeclarationExpression(typeof(float), "apertureSoftness")
             });
             dynamicConstructor.ChainedConstructorArgs.AddRange(new CodeExpression[]
             {
                new CodeArgumentReferenceExpression("constantFalloff"),
                new CodeArgumentReferenceExpression("linearFalloff"),
-               new CodeArgumentReferenceExpression("quadraticFalloff")
+               new CodeArgumentReferenceExpression("quadraticFalloff"),
+               new CodeArgumentReferenceExpression("aimX"),
+               new CodeArgumentReferenceExpression("aimY"),
+               new CodeArgumentReferenceExpression("apertureFocus"),
+               new CodeArgumentReferenceExpression("apertureSoftness")
             });
          }
 

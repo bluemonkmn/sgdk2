@@ -55,7 +55,11 @@ namespace SGDK2
                {
                   new ReflectionPropertyDescriptor(typ.GetProperty("LightConstantFalloff"), cat),
                   new ReflectionPropertyDescriptor(typ.GetProperty("LightLinearFalloff"), cat),
-                  new ReflectionPropertyDescriptor(typ.GetProperty("LightQuadraticFalloff"), cat)
+                  new ReflectionPropertyDescriptor(typ.GetProperty("LightQuadraticFalloff"), cat),
+                  new ReflectionPropertyDescriptor(typ.GetProperty("LightAimX"), cat),
+                  new ReflectionPropertyDescriptor(typ.GetProperty("LightAimY"), cat),
+                  new ReflectionPropertyDescriptor(typ.GetProperty("LightApertureFocus"), cat),
+                  new ReflectionPropertyDescriptor(typ.GetProperty("LightApertureSoftness"), cat)
                });
             }
 
@@ -805,6 +809,10 @@ namespace SGDK2
       private float m_ConstantFalloff;
       private float m_LinearFalloff;
       private float m_QuadraticFalloff;
+      private float m_aimX;
+      private float m_aimY;
+      private float m_apertureFocus;
+      private float m_apertureSoftness;
 
       private LightSpriteProvider(CachedSpriteDef sprite, string state, short frame, int color) : base(sprite, state, frame, color)
       {
@@ -868,6 +876,82 @@ namespace SGDK2
                m_SpriteRow.LightQuadraticFalloff = value;
             else
                m_QuadraticFalloff = value;
+         }
+      }
+
+      [Description("Horizontal coordinate offset (relative to the sprite position) of the direction in which the light is pointing.")]
+      public float LightAimX
+      {
+         get
+         {
+            if (m_SpriteRow != null)
+               return m_SpriteRow.LightAimX;
+            else
+               return m_aimX;
+         }
+         set
+         {
+            if (m_SpriteRow != null)
+               m_SpriteRow.LightAimX = value;
+            else
+               m_aimX = value;
+         }
+      }
+
+      [Description("Vertical coordinate offset (relative to the sprite position) of the direction in which the light is pointing. Positive numbers point downward.")]
+      public float LightAimY
+      {
+         get
+         {
+            if (m_SpriteRow != null)
+               return m_SpriteRow.LightAimY;
+            else
+               return m_aimY;
+         }
+         set
+         {
+            if (m_SpriteRow != null)
+               m_SpriteRow.LightAimY = value;
+            else
+               m_aimY = value;
+         }
+      }
+
+      [Description("Determines how light is emitted only in one direction. -1 emits in all directions, 0 in a 180-degree arc, and 1 in an infinitely narrow beam toward AimX, AimY.")]
+      public float LightApertureFocus
+      {
+         get
+         {
+            if (m_SpriteRow != null)
+               return m_SpriteRow.LightApertureFocus;
+            else
+               return m_apertureFocus;
+         }
+         set
+         {
+            if (m_SpriteRow != null)
+               m_SpriteRow.LightApertureFocus = value;
+            else
+               m_apertureFocus = value;
+         }
+      }
+
+      [Description("Determines crispness of edges of focused light beam. 0 is perfectly crisp, 0.1 blurs the ApertureFocus value by 0.1.")]
+      public float LightApertureSoftness
+      {
+         get
+         {
+            if (m_SpriteRow != null)
+               return m_SpriteRow.LightApertureSoftness;
+            else
+               return m_apertureSoftness;
+         }
+         set
+         {
+            if (m_SpriteRow != null)
+               m_SpriteRow.LightApertureSoftness = value;
+            else
+               m_apertureSoftness = value;
          }
       }
 

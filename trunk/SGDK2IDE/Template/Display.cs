@@ -1272,7 +1272,8 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    /// <param name="windowCoordinate">Coordinate within the display at which the light should be positioned with the origin at the top left corner</param>
    /// <param name="falloff">Constant, linear and quadratic falloff of the light intensity. Google linear light falloff for details.</param>
    /// <param name="color">Color and intensity of the light source. Alpha channel indicates intensity.</param>
-   public void SetLightSource(int index, Vector2 windowCoordinate, Vector3 falloff, System.Drawing.Color color)
+   public void SetLightSource(int index, Vector2 windowCoordinate, Vector3 falloff, System.Drawing.Color color,
+      float aimX, float aimY, float apertureFocus, float apertureSoftness)
    {
       if (index >= LightSources.MAX_LIGHTS)
          throw new IndexOutOfRangeException("SetLightSource index must be less than MAX_LIGHTS");
@@ -1281,6 +1282,9 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       lights[index].Position = new Vector3(
          windowCoordinate.X, ClientRectangle.Height - windowCoordinate.Y, 1);
       lights[index].Color = color;
+      lights[index].Aim = new Vector3(aimX, -aimY, 0);
+      lights[index].ApertureFocus = apertureFocus;
+      lights[index].ApertureSoftness = apertureSoftness;
    }
 
    public const int MAX_LIGHTS = LightSources.MAX_LIGHTS;
@@ -1992,7 +1996,6 @@ class LightSource
    /// </summary>
    public const int locationCount = 6 + wallsPerLight * 2;
 
-   private string name;
    private Vector3 position;
    private Color4 color;
    private Vector3 aim;
@@ -2119,12 +2122,6 @@ class LightSource
       get { return wallVertices[index]; }
       set { wallVertices[index] = value; }
    }
-
-   public override string ToString()
-   {
-      return name;
-   }
-
 }
 
 /// <summary>

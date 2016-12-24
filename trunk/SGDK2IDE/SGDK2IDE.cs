@@ -124,7 +124,7 @@ namespace SGDK2
 
          System.Drawing.StringFormat fmt = new System.Drawing.StringFormat(StringFormatFlags.NoWrap | StringFormatFlags.NoClip);
          fmt.Alignment = StringAlignment.Center;
-         String sCopyright = "Copyright ©2000-2014\r\nBenjamin Marty";
+         String sCopyright = "Copyright ©2000-2017\r\nBenjamin Marty";
          Rectangle rcFmt = new Rectangle(40, 164, 130, 25);
          gc.DrawString(sCopyright, fnt, Brushes.Sienna, rcFmt, fmt);
          rcFmt.Offset(-1,-1);

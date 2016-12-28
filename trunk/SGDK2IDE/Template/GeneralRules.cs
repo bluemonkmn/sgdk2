@@ -1525,12 +1525,20 @@ public abstract partial class GeneralRules
       {
          LightSpriteBase lsb = sprite as LightSpriteBase;
          if (lsb == null) continue;
+         lsb.GenerateWalls(10);
+         int coord;
+         for (coord = 0; coord < LightSpriteBase.WallCoordinateCount; coord++)
+         {
+            OpenTK.Vector3 wc = LightSpriteBase.WallCoordinates[coord];
+            LightSpriteBase.WallCoordinates[coord] = new OpenTK.Vector3(wc.X + ParentLayer.CurrentPosition.X, wc.Y + ParentLayer.CurrentPosition.Y, wc.Z);
+         }
          ParentLayer.ParentMap.Display.SetLightSource(lightNum, new OpenTK.Vector2(
-            (float)(ParentLayer.CurrentPosition.X + lsb.x),
-            (float)(ParentLayer.CurrentPosition.Y + lsb.y)),
+            (float)(ParentLayer.CurrentPosition.X + lsb.x + lsb.SolidWidth / 2),
+            (float)(ParentLayer.CurrentPosition.Y + lsb.y + lsb.SolidHeight / 2)),
             new OpenTK.Vector3(lsb.constantFalloff, lsb.linearFalloff, lsb.quadraticFalloff),
             System.Drawing.Color.FromArgb(lsb.color), lsb.aimX, lsb.aimY,
-            lsb.apertureFocus, lsb.apertureSoftness);
+            lsb.apertureFocus, lsb.apertureSoftness,
+            LightSpriteBase.WallCoordinates, LightSpriteBase.WallCoordinateCount);
          if (++lightNum >= Display.MAX_LIGHTS)
             break;
       }

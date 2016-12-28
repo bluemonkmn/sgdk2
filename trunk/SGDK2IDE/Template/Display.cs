@@ -968,7 +968,6 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
          BeginLine(1, 0, false);
       }
       ColoredVertex cv = new ColoredVertex(x, y, currentColor);
-      System.Diagnostics.Debug.WriteLine(cv.ToString());
       solidVertexBuffer.AddVertex(new ColoredVertex(x, y, currentColor));
       endPoint = new System.Drawing.Point(x, y);
    }
@@ -1272,8 +1271,10 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    /// <param name="windowCoordinate">Coordinate within the display at which the light should be positioned with the origin at the top left corner</param>
    /// <param name="falloff">Constant, linear and quadratic falloff of the light intensity. Google linear light falloff for details.</param>
    /// <param name="color">Color and intensity of the light source. Alpha channel indicates intensity.</param>
+   /// <param name="walls">Array of Vector3 structures specifying the endpoints of walls (in pairs)</param>
+   /// <param name="wallCoordCount">Number of applicable (non-zero) elements in walls. This should be a multiple of 2.</param>
    public void SetLightSource(int index, Vector2 windowCoordinate, Vector3 falloff, System.Drawing.Color color,
-      float aimX, float aimY, float apertureFocus, float apertureSoftness)
+      float aimX, float aimY, float apertureFocus, float apertureSoftness, Vector3[] walls, int wallCoordCount)
    {
       if (index >= LightSources.MAX_LIGHTS)
          throw new IndexOutOfRangeException("SetLightSource index must be less than MAX_LIGHTS");
@@ -1285,6 +1286,11 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       lights[index].Aim = new Vector3(aimX, -aimY, 0);
       lights[index].ApertureFocus = apertureFocus;
       lights[index].ApertureSoftness = apertureSoftness;
+      int wallIndex;
+      for (wallIndex = 0; wallIndex < wallCoordCount; wallIndex++)
+         lights[index][wallIndex] = new Vector3(walls[wallIndex].X, ClientRectangle.Height - walls[wallIndex].Y, walls[wallIndex].Z);
+      while (wallIndex < LightSource.wallsPerLight && (lights[index][wallIndex].Z != 0))
+         lights[index][wallIndex++] = new Vector3(0, 0, 0);
    }
 
    public const int MAX_LIGHTS = LightSources.MAX_LIGHTS;
@@ -1989,7 +1995,7 @@ class LightSource
    /// <summary>
    /// Determines how many walls can obstruct each light source.
    /// </summary>
-   public const int wallsPerLight = 2;
+   public const int wallsPerLight = 20;
    /// <summary>
    /// Determines how many pointers OpenGL code needs to access
    /// all the properties of a light source.

@@ -1514,13 +1514,17 @@ public abstract partial class GeneralRules
    /// for the current frame.
    /// </summary>
    /// <param name="sprites">Sprite category containing all the light sources to apply to the display.</param>
+   /// <param name="view">View number (0 to 3) whose light sources are being applied.</param>
    /// <remarks>Light sources are sprites whose base class is set to LightSpriteBase. Only sprites with that
    /// base class will affect the lighting. Only MAX_LIGHTS lights will be processed. Any quantity in excess
    /// of that number will be ignored.</remarks>
    [Description("Use properties of the sprites in the specified category to configure real-time lighting on the display for the current frame.")]
-   public virtual void ApplyLights(SpriteCollection sprites)
+   public virtual void ApplyLights(SpriteCollection sprites, int view)
    {
       int lightNum = 0;
+      int oldView = CurrentView;
+      CurrentView = view;
+      ParentLayer.ParentMap.Display.currentView = view;
       foreach (SpriteBase sprite in sprites)
       {
          LightSpriteBase lsb = sprite as LightSpriteBase;
@@ -1530,11 +1534,13 @@ public abstract partial class GeneralRules
          for (coord = 0; coord < LightSpriteBase.WallCoordinateCount; coord++)
          {
             OpenTK.Vector3 wc = LightSpriteBase.WallCoordinates[coord];
-            LightSpriteBase.WallCoordinates[coord] = new OpenTK.Vector3(wc.X + ParentLayer.CurrentPosition.X, wc.Y + ParentLayer.CurrentPosition.Y, wc.Z);
+            LightSpriteBase.WallCoordinates[coord] = new OpenTK.Vector3(
+               wc.X + ParentLayer.CurrentPosition.X + ParentLayer.ParentMap.CurrentView.X,
+               wc.Y + ParentLayer.CurrentPosition.Y + ParentLayer.ParentMap.CurrentView.Y, wc.Z);
          }
          ParentLayer.ParentMap.Display.SetLightSource(lightNum, new OpenTK.Vector2(
-            (float)(ParentLayer.CurrentPosition.X + lsb.x + lsb.SolidWidth / 2),
-            (float)(ParentLayer.CurrentPosition.Y + lsb.y + lsb.SolidHeight / 2)),
+            (float)(ParentLayer.CurrentPosition.X + ParentLayer.ParentMap.CurrentView.X + lsb.x + lsb.SolidWidth / 2),
+            (float)(ParentLayer.CurrentPosition.Y + ParentLayer.ParentMap.CurrentView.Y + lsb.y + lsb.SolidHeight / 2)),
             new OpenTK.Vector3(lsb.constantFalloff, lsb.linearFalloff, lsb.quadraticFalloff),
             System.Drawing.Color.FromArgb(lsb.color), lsb.aimX, lsb.aimY,
             lsb.apertureFocus, lsb.apertureSoftness,
@@ -1542,6 +1548,16 @@ public abstract partial class GeneralRules
          if (++lightNum >= Display.MAX_LIGHTS)
             break;
       }
+      CurrentView = oldView;
+   }
+
+   /// <summary>
+   /// Reset all light sources to initial default behavior.
+   /// </summary>
+   [Description("Reset all light sources to initial default behavior.")]
+   public virtual void ResetLights()
+   {
+      ParentLayer.ParentMap.Display.ResetLights();
    }
    #endregion
 }

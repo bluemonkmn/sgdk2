@@ -201,6 +201,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    private DisplayOperation m_currentOp;
    private TextureRef m_currentTexture = null;
    private bool scaleNativeSize = false;
+   private const int scaleFactor = 2;
    private const TextureTarget texTarget = TextureTarget.Texture2D;
    private const EnableCap texCap = EnableCap.Texture2D;
    private static TextureRef m_DefaultFont = null;
@@ -234,12 +235,16 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    private ShaderProgram normalMapShader;
    private ShaderProgram flatShader;
    private ShaderProgram solidShader;
+   private ShaderProgram nolightShader;
    Matrix4 projectionMatrix;
-   private LightSources lights;
+   private LightSources[] lights;
    private VertexArray<TileVertex> normalVertexArray;
    private VertexArray<TileVertex> flatVertexArray;
    private VertexArray<ColoredVertex> solidVertexArray;
+   private VertexArray<TileVertex> nolightVertexArray;
    private Color4 currentColor;
+   public int currentView;
+   public bool enableLighting;
    #endregion
 
    #region Initialization and clean-up
@@ -405,14 +410,29 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
             {
                fragColor = fColor;
             }");
+      Shader fshader_nolights = new Shader(ShaderType.FragmentShader, @"#version 130
+            in vec2 vTex;  // must match name in vertex shader
+            in vec4 fColor;
+            out vec4 fragColor;            
+            uniform sampler2D tex;
+            void main()
+            {
+               vec4 DiffuseColor = texelFetch(tex, ivec2(vTex.x, vTex.y), 0);
+               if (DiffuseColor.a == 0)
+                  discard;
+               DiffuseColor *= fColor;
+               fragColor = DiffuseColor;
+            }");
       normalMapShader = new ShaderProgram(vshader, fshader_norm);
       flatShader = new ShaderProgram(vshader, fshader_flat);
       solidShader = new ShaderProgram(vshader_solid, fshader_solid);
+      nolightShader = new ShaderProgram(vshader, fshader_nolights);
       vshader.Dispose();
       vshader_solid.Dispose();
       fshader_norm.Dispose();
       fshader_flat.Dispose();
       fshader_solid.Dispose();
+      fshader_nolights.Dispose();
 
       // Set up VertexArray objects
       VertexAttribute vaposition = new VertexAttribute("vPosition", 2, VertexAttribPointerType.Float, TileVertex.Size, 0);
@@ -420,14 +440,21 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       VertexAttribute vacolor = new VertexAttribute("vColor", 4, VertexAttribPointerType.Float, TileVertex.Size, 4 * 4);
       normalVertexArray = new VertexArray<TileVertex>(vertexBuffer, normalMapShader, vaposition, vasrc, vacolor);
       flatVertexArray = new VertexArray<TileVertex>(vertexBuffer, flatShader, vaposition, vasrc, vacolor);
+      nolightVertexArray = new VertexArray<TileVertex>(vertexBuffer, nolightShader, vaposition, vasrc, vacolor);
       VertexAttribute vaSolidPosition = new VertexAttribute("vPosition", 2, VertexAttribPointerType.Float, ColoredVertex.Size, 0);
       VertexAttribute vaSolidColor = new VertexAttribute("vColor", 4, VertexAttribPointerType.Float, ColoredVertex.Size, 2 * 4);
       solidVertexArray = new VertexArray<ColoredVertex>(solidVertexBuffer, solidShader, vaSolidPosition, vaSolidColor);
 
-      lights = new LightSources();
+      // One set of light sources for each possible view
+      if (Project.MaxViews == 4)
+         lights = new LightSources[] { new LightSources(), new LightSources(), new LightSources(), new LightSources() };
+      else if (Project.MaxViews == 2)
+         lights = new LightSources[] { new LightSources(), new LightSources()};
+      else
+         lights = new LightSources[] { new LightSources() };
 
       // Align to display
-      System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode);
+      System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode, false);
       projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, nativeSize.Width, nativeSize.Height, 0, .1f, 10f);
       isInitialized = true;
    }
@@ -446,7 +473,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       GL.Viewport(0, 0, ClientSize.Width, ClientSize.Height);
       if (scaleNativeSize)
       {
-         System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode);
+         System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode, false);
          projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, nativeSize.Width, nativeSize.Height, 0, .1f, 10f);
       }
       else
@@ -508,6 +535,11 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
          {
             flatShader.Dispose();
             flatShader = null;
+         }
+         if (nolightShader != null)
+         {
+            nolightShader.Dispose();
+            nolightShader = null;
          }
          if (solidShader != null)
          {
@@ -623,26 +655,28 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    /// Get the size of a display based on the specified mode
    /// </summary>
    /// <param name="mode">Game display mode used for the display</param>
+   /// <param name="scaled">true to return the scaled size (multiplied by scaleFactor), false to return the native size</param>
    /// <returns>Width and height in pixels</returns>
-   public static System.Drawing.Size GetScreenSize(GameDisplayMode mode)
+   public static System.Drawing.Size GetScreenSize(GameDisplayMode mode, bool scaled)
    {
+      int scale = scaled ? scaleFactor : 1;
       switch (mode)
       {
          case GameDisplayMode.m320x240x16:
          case GameDisplayMode.m320x240x24:
-            return new System.Drawing.Size(320, 240);
+            return new System.Drawing.Size(320 * scale, 240 * scale);
          case GameDisplayMode.m640x480x16:
          case GameDisplayMode.m640x480x24:
-            return new System.Drawing.Size(640, 480);
+            return new System.Drawing.Size(640 * scale, 480 * scale);
          case GameDisplayMode.m800x600x16:
          case GameDisplayMode.m800x600x24:
-            return new System.Drawing.Size(800, 600);
+            return new System.Drawing.Size(800 * scale, 600 *scale);
          case GameDisplayMode.m1024x768x16:
          case GameDisplayMode.m1024x768x24:
-            return new System.Drawing.Size(1024, 768);
+            return new System.Drawing.Size(1024 * scale, 768 * scale);
          case GameDisplayMode.m1280x1024x16:
          case GameDisplayMode.m1280x1024x24:
-            return new System.Drawing.Size(1280, 1024);
+            return new System.Drawing.Size(1280 * scale, 1024 * scale);
       }
       return new System.Drawing.Size(0, 0);
    }
@@ -681,7 +715,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    /// </summary>
    public void SwitchToResolution()
    {
-      System.Drawing.Size size = GetScreenSize(m_GameDisplayMode);
+      System.Drawing.Size size = GetScreenSize(m_GameDisplayMode, false);
       int depth = GetModeDepth(m_GameDisplayMode);
       OpenTK.DisplayResolution best = null;
       foreach (OpenTK.DisplayResolution dr in OpenTK.DisplayDevice.Default.AvailableResolutions)
@@ -737,7 +771,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
          {
             GL.MatrixMode(MatrixMode.Projection);
             GL.LoadIdentity();
-            System.Drawing.Size naturalSize = GetScreenSize(value);
+            System.Drawing.Size naturalSize = GetScreenSize(value, false);
             GL.Ortho(0, naturalSize.Width, naturalSize.Height, 0, -1, 1);
          }
       }
@@ -773,16 +807,22 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
             normalMapShader.Use(projectionMatrix);
             texture.Use(normalMapShader);
             normalVertexArray.Bind();
-            lights.UseProgram(normalMapShader, "lights");
-            lights.Set();
+            lights[currentView].UseProgram(normalMapShader, "lights");
+            lights[currentView].Set();
          }
-         else
+         else if (enableLighting)
          {
             flatShader.Use(projectionMatrix);
             texture.Use(flatShader);
             flatVertexArray.Bind();
-            lights.UseProgram(flatShader, "lights");
-            lights.Set();
+            lights[currentView].UseProgram(flatShader, "lights");
+            lights[currentView].Set();
+         }
+         else
+         {
+            nolightShader.Use(projectionMatrix);
+            texture.Use(nolightShader);
+            nolightVertexArray.Bind();
          }
          m_currentOp = DisplayOperation.DrawFrames;
          m_currentTexture = texture;
@@ -1194,7 +1234,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    {
       Flush();
       GL.Enable(EnableCap.ScissorTest);
-      GL.Scissor(rect.X, ClientRectangle.Height - rect.Y - rect.Height, rect.Width, rect.Height);
+      GL.Scissor(rect.X * scaleFactor, ClientRectangle.Height - (rect.Y + rect.Height) * scaleFactor, rect.Width * scaleFactor, rect.Height * scaleFactor);
    }
 
    /// <summary>
@@ -1279,21 +1319,41 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       if (index >= LightSources.MAX_LIGHTS)
          throw new IndexOutOfRangeException("SetLightSource index must be less than MAX_LIGHTS");
 
-      lights[index].Falloff = falloff;
-      lights[index].Position = new Vector3(
-         windowCoordinate.X, ClientRectangle.Height - windowCoordinate.Y, 1);
-      lights[index].Color = color;
-      lights[index].Aim = new Vector3(aimX, -aimY, 0);
-      lights[index].ApertureFocus = apertureFocus;
-      lights[index].ApertureSoftness = apertureSoftness;
+      lights[currentView][index].Falloff = falloff;
+      lights[currentView][index].Position = new Vector3(
+         windowCoordinate.X * scaleFactor, ClientRectangle.Height - windowCoordinate.Y * scaleFactor, 1);
+      lights[currentView][index].Color = color;
+      lights[currentView][index].Aim = new Vector3(aimX, -aimY, 0);
+      lights[currentView][index].ApertureFocus = apertureFocus;
+      lights[currentView][index].ApertureSoftness = apertureSoftness;
       int wallIndex;
       for (wallIndex = 0; wallIndex < wallCoordCount; wallIndex++)
-         lights[index][wallIndex] = new Vector3(walls[wallIndex].X, ClientRectangle.Height - walls[wallIndex].Y, walls[wallIndex].Z);
-      while (wallIndex < LightSource.wallsPerLight && (lights[index][wallIndex].Z != 0))
-         lights[index][wallIndex++] = new Vector3(0, 0, 0);
+         lights[currentView][index][wallIndex] = new Vector3(walls[wallIndex].X * scaleFactor, ClientRectangle.Height - walls[wallIndex].Y * scaleFactor, walls[wallIndex].Z);
+      while (wallIndex < LightSource.wallsPerLight && (lights[currentView][index][wallIndex].Z != 0))
+         lights[currentView][index][wallIndex++] = new Vector3(0, 0, 0);
+   }
+
+   /// <summary>
+   /// Reset all light sources to initial default behavior
+   /// </summary>
+   public void ResetLights()
+   {
+      lights[currentView].Reset();
    }
 
    public const int MAX_LIGHTS = LightSources.MAX_LIGHTS;
+
+   /// <summary>
+   /// Return the rectangle into which code can draw using game-native coordinates
+   /// </summary>
+   /// <remarks>This rectangle's coordinates will be half of the physical coordinates if scaleFactor is 2.</remarks>
+   public System.Drawing.Rectangle NativeDisplayRect
+   {
+      get
+      {
+         return new System.Drawing.Rectangle(DisplayRectangle.X, DisplayRectangle.Y, DisplayRectangle.Width / scaleFactor, DisplayRectangle.Height / scaleFactor);
+      }
+   }
    #endregion
 
    #region ISerializable Members
@@ -1792,6 +1852,35 @@ class LightSources : IList<LightSource>
                ApertureSoftness = 0f,
                Aim = new Vector3(1, 0, 0)
             });
+      }
+   }
+
+   /// <summary>
+   /// Reset all light sources to initial default behavior
+   /// </summary>
+   public void Reset()
+   {
+      for (int i = 0; i < MAX_LIGHTS; i++)
+      {
+         if (i == 0)
+         {
+            lights[i].Position = new Vector3(0, 0, 1);
+            lights[i].Color = System.Drawing.Color.White;
+            lights[i].Falloff = new Vector3(1f, 0, 0);
+         }
+         else
+         {
+            lights[i].Position = new Vector3();
+            lights[i].Color = System.Drawing.Color.Transparent;
+            lights[i].Falloff = new Vector3(.8f, .2f, 0f);
+         }
+         lights[i].ApertureFocus = -10f;
+         lights[i].ApertureSoftness = 0f;
+         lights[i].Aim = new Vector3(1, 0, 0);
+         for (int w = 0; w < LightSource.wallsPerLight * 2; w++)
+         {
+            lights[i][w] = new Vector3();
+         }
       }
    }
 

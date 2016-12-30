@@ -241,6 +241,12 @@ public abstract partial class LightSpriteBase : SpriteBase
 
    public void GenerateWalls(int tileRadius)
    {
+      int tileX, tileY, startX, startY;
+      int tw = layer.Tileset.TileWidth;
+      int th = layer.Tileset.TileHeight;
+      tileX = startX = (int)((x + SolidWidth / 2) / tw);
+      tileY = startY = (int)((y + SolidHeight / 2) / th);
+
       int tileCount = layer.VirtualColumns * layer.VirtualRows;
       if ((processedTiles == null) || (processedTiles.Length < tileCount))
          processedTiles = new System.Collections.BitArray(tileCount);
@@ -248,11 +254,6 @@ public abstract partial class LightSpriteBase : SpriteBase
          processedTiles.SetAll(false);
       tileCoords.Clear();
 
-      int tileX, tileY, startX, startY;
-      int tw = layer.Tileset.TileWidth;
-      int th = layer.Tileset.TileHeight;
-      tileX = startX = (int)((x + SolidWidth / 2) / tw);
-      tileY = startY = (int)((y + SolidHeight / 2) / th);
       processedTiles[tileY * layer.VirtualColumns + tileX] = true;
 
       wallCount = 0;

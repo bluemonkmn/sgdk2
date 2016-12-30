@@ -1768,7 +1768,7 @@ namespace SGDK2
                new CodeTypeReferenceExpression(typeof(System.Drawing.Rectangle)), "Intersect",
                new CodeFieldReferenceExpression(
                new CodeFieldReferenceExpression(new CodeThisReferenceExpression(),
-               MapDisplayField), "DisplayRectangle"),
+               MapDisplayField), "NativeDisplayRect"),
                new CodePropertySetValueReferenceExpression())));
             clsMap.Members.Add(prpView);
          }

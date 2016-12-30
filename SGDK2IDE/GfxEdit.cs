@@ -90,16 +90,55 @@ namespace SGDK2
 
       public class frmTilePreview : Form
       {
+         MenuItem mnuIncreaseTileZoom;
+         MenuItem mnuDecreaseTileZoom;
+         int ZoomFactor = 1;
+         Brush bruBackground;
+         Bitmap bmpBackground;
+
          public frmTilePreview(Brush bruBackground, Bitmap bmpBackground)
          {
-            this.Text = "Preview Tiling";
-            Bitmap bmpBack = new Bitmap(bmpBackground.Width, bmpBackground.Height,
-               System.Drawing.Imaging.PixelFormat.Format24bppRgb);
+            this.Text = "Preview Tiling (1x)";
+            this.bruBackground = bruBackground;
+            this.bmpBackground = bmpBackground;
+            GenerateImage();
+            mnuIncreaseTileZoom = new MenuItem("&Increase Zoom", mnuTileZoom_Click);
+            mnuDecreaseTileZoom = new MenuItem("&Decrease Zoom", mnuTileZoom_Click);
+            this.Menu = new MainMenu(new MenuItem[] { mnuIncreaseTileZoom, mnuDecreaseTileZoom });
+         }
+
+         private void mnuTileZoom_Click(object sender, EventArgs e)
+         {
+            if ((sender == mnuIncreaseTileZoom) && (ZoomFactor < 16))
+            {
+               ZoomFactor *= 2;
+            }
+            else if ((sender == mnuDecreaseTileZoom) && (ZoomFactor > 1))
+            {
+               ZoomFactor /= 2;
+            }
+            GenerateImage();
+            Text = string.Format("Preview Tiling ({0}x)", ZoomFactor);
+         }
+
+         private void GenerateImage()
+         {
+            Bitmap bmpBack = new Bitmap(bmpBackground.Width * ZoomFactor,
+               bmpBackground.Height * ZoomFactor, PixelFormat.Format24bppRgb);
             Graphics g = Graphics.FromImage(bmpBack);
             g.FillRectangle(bruBackground, 0, 0, bmpBack.Width, bmpBack.Height);
-            g.DrawImageUnscaled(bmpBackground, 0, 0);
+            g.InterpolationMode = InterpolationMode.NearestNeighbor;
+            g.PixelOffsetMode = PixelOffsetMode.Half;
+            g.DrawImage(bmpBackground, 0, 0, bmpBack.Width, bmpBack.Height);
             g.Dispose();
-            this.BackgroundImage = bmpBack;
+            if (this.BackgroundImage != null)
+            {
+               Image old = this.BackgroundImage;
+               BackgroundImage = bmpBack;
+               old.Dispose();
+            }
+            else
+               BackgroundImage = bmpBack;
          }
 
          protected override void Dispose( bool disposing )
@@ -170,6 +209,7 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuZoom4;
       private System.Windows.Forms.MenuItem mnuZoom6;
       private System.Windows.Forms.MenuItem mnuZoom8;
+      private MenuItem mnuZoom16;
       private System.Windows.Forms.ToolBarButton tbbBezier;
       private System.Windows.Forms.MenuItem mnuToolFreeDraw;
       private System.Windows.Forms.MenuItem mnuToolFreeLine;
@@ -288,6 +328,7 @@ namespace SGDK2
       private System.Windows.Forms.MenuItem mnuZoom4x4;
       private System.Windows.Forms.MenuItem mnuZoom8x8;
       private System.Windows.Forms.MenuItem mnuZoom6x6;
+      private MenuItem mnuZoom16x16;
       private System.Windows.Forms.MenuItem mnuFileSep;
       private System.Windows.Forms.MenuItem mnuDisjointedColors;
       private System.Windows.Forms.ToolBarButton tbbDisjointedColors;
@@ -437,179 +478,181 @@ namespace SGDK2
       /// </summary>
       private void InitializeComponent()
       {
-          this.components = new System.ComponentModel.Container();
-          System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmGraphicsEditor));
-          this.tbrGraphicsEditor = new System.Windows.Forms.ToolBar();
-          this.tbbFreeDraw = new System.Windows.Forms.ToolBarButton();
-          this.tbbFreeLine = new System.Windows.Forms.ToolBarButton();
-          this.tbbBezier = new System.Windows.Forms.ToolBarButton();
-          this.tbbLine = new System.Windows.Forms.ToolBarButton();
-          this.tbbRect = new System.Windows.Forms.ToolBarButton();
-          this.tbbEllipse = new System.Windows.Forms.ToolBarButton();
-          this.tbbAirbrush = new System.Windows.Forms.ToolBarButton();
-          this.tbbSmooth = new System.Windows.Forms.ToolBarButton();
-          this.tbbEraser = new System.Windows.Forms.ToolBarButton();
-          this.tbbGradientFill = new System.Windows.Forms.ToolBarButton();
-          this.tbbFloodFill = new System.Windows.Forms.ToolBarButton();
-          this.tbbFloodSel = new System.Windows.Forms.ToolBarButton();
-          this.tbbSelRect = new System.Windows.Forms.ToolBarButton();
-          this.tbbSelFree = new System.Windows.Forms.ToolBarButton();
-          this.tbbTranslate = new System.Windows.Forms.ToolBarButton();
-          this.tbbRotate = new System.Windows.Forms.ToolBarButton();
-          this.tbbScale = new System.Windows.Forms.ToolBarButton();
-          this.tbbDropper = new System.Windows.Forms.ToolBarButton();
-          this.tbdCustomTool = new System.Windows.Forms.ToolBarButton();
-          this.mnuCCustomTool = new System.Windows.Forms.ContextMenu();
-          this.tbsSep1 = new System.Windows.Forms.ToolBarButton();
-          this.tbbHFlip = new System.Windows.Forms.ToolBarButton();
-          this.tbbVFlip = new System.Windows.Forms.ToolBarButton();
-          this.tbbHOffset = new System.Windows.Forms.ToolBarButton();
-          this.tbbVOffset = new System.Windows.Forms.ToolBarButton();
-          this.tbbTilePreview = new System.Windows.Forms.ToolBarButton();
-          this.tbbHueMap = new System.Windows.Forms.ToolBarButton();
-          this.tbbNoise = new System.Windows.Forms.ToolBarButton();
-          this.imlGraphicsEditor = new System.Windows.Forms.ImageList(this.components);
-          this.mnuCZoom = new System.Windows.Forms.ContextMenu();
-          this.mnuActualSize = new System.Windows.Forms.MenuItem();
-          this.mnuZoom2 = new System.Windows.Forms.MenuItem();
-          this.mnuZoom4 = new System.Windows.Forms.MenuItem();
-          this.mnuZoom6 = new System.Windows.Forms.MenuItem();
-          this.mnuZoom8 = new System.Windows.Forms.MenuItem();
-          this.mnuGraphicsEditor = new System.Windows.Forms.MainMenu(this.components);
-          this.mnuFile = new System.Windows.Forms.MenuItem();
-          this.mnuFileSep = new System.Windows.Forms.MenuItem();
-          this.mnuExportGraphic = new System.Windows.Forms.MenuItem();
-          this.mnuImportGraphic = new System.Windows.Forms.MenuItem();
-          this.mnuExportSheet = new System.Windows.Forms.MenuItem();
-          this.mnuImportSheet = new System.Windows.Forms.MenuItem();
-          this.mnuView = new System.Windows.Forms.MenuItem();
-          this.mnuZoom = new System.Windows.Forms.MenuItem();
-          this.mnuZoom1x1 = new System.Windows.Forms.MenuItem();
-          this.mnuZoom2x2 = new System.Windows.Forms.MenuItem();
-          this.mnuZoom4x4 = new System.Windows.Forms.MenuItem();
-          this.mnuZoom6x6 = new System.Windows.Forms.MenuItem();
-          this.mnuZoom8x8 = new System.Windows.Forms.MenuItem();
-          this.mnuZoomSeparator = new System.Windows.Forms.MenuItem();
-          this.mnuZoomDecrease = new System.Windows.Forms.MenuItem();
-          this.mnuZoomIncrease = new System.Windows.Forms.MenuItem();
-          this.mnuEdit = new System.Windows.Forms.MenuItem();
-          this.mnuEditUndo = new System.Windows.Forms.MenuItem();
-          this.mnuEditRedo = new System.Windows.Forms.MenuItem();
-          this.mnuEditSep1 = new System.Windows.Forms.MenuItem();
-          this.mnuEditCut = new System.Windows.Forms.MenuItem();
-          this.mnuEditCopy = new System.Windows.Forms.MenuItem();
-          this.mnuEditPaste = new System.Windows.Forms.MenuItem();
-          this.mnuEditDelete = new System.Windows.Forms.MenuItem();
-          this.mnuEditSep2 = new System.Windows.Forms.MenuItem();
-          this.mnuEditResetPos = new System.Windows.Forms.MenuItem();
-          this.mnuEditSelectAll = new System.Windows.Forms.MenuItem();
-          this.mnuEditDeselect = new System.Windows.Forms.MenuItem();
-          this.mnuEditSep3 = new System.Windows.Forms.MenuItem();
-          this.mnuEditHFlip = new System.Windows.Forms.MenuItem();
-          this.mnuEditVFlip = new System.Windows.Forms.MenuItem();
-          this.mnuEditHOffset = new System.Windows.Forms.MenuItem();
-          this.mnuEditVOffset = new System.Windows.Forms.MenuItem();
-          this.mnuEditTilePreview = new System.Windows.Forms.MenuItem();
-          this.mnuHueMap = new System.Windows.Forms.MenuItem();
-          this.mnuNoise = new System.Windows.Forms.MenuItem();
-          this.mnuEditSep4 = new System.Windows.Forms.MenuItem();
-          this.mnuEditSelectionHighlight = new System.Windows.Forms.MenuItem();
-          this.mnuEditShowHighlight = new System.Windows.Forms.MenuItem();
-          this.mnuEditHighlightSep1 = new System.Windows.Forms.MenuItem();
-          this.mnuEditSelRed = new System.Windows.Forms.MenuItem();
-          this.mnuEditSelGreen = new System.Windows.Forms.MenuItem();
-          this.mnuEditSelBlue = new System.Windows.Forms.MenuItem();
-          this.mnuEditSelWhite = new System.Windows.Forms.MenuItem();
-          this.mnuEditSelBlack = new System.Windows.Forms.MenuItem();
-          this.mnuEditSelRedF = new System.Windows.Forms.MenuItem();
-          this.mnuEditSelGreenF = new System.Windows.Forms.MenuItem();
-          this.mnuEditSelBlueF = new System.Windows.Forms.MenuItem();
-          this.mnuEditSelWhiteF = new System.Windows.Forms.MenuItem();
-          this.mnuEditSelBlackF = new System.Windows.Forms.MenuItem();
-          this.mnuEditBackdrop = new System.Windows.Forms.MenuItem();
-          this.mnuEditBackWhiteDiamond = new System.Windows.Forms.MenuItem();
-          this.mnuEditBackBlackDiamond = new System.Windows.Forms.MenuItem();
-          this.mnuEditBackWhiteCross = new System.Windows.Forms.MenuItem();
-          this.mnuEditBackBlackCross = new System.Windows.Forms.MenuItem();
-          this.mnuEditBackWhite = new System.Windows.Forms.MenuItem();
-          this.mnuEditBackBlack = new System.Windows.Forms.MenuItem();
-          this.mnuEditBackGray = new System.Windows.Forms.MenuItem();
-          this.mnuEditSep5 = new System.Windows.Forms.MenuItem();
-          this.mnuEditShowGrid = new System.Windows.Forms.MenuItem();
-          this.mnuTools = new System.Windows.Forms.MenuItem();
-          this.mnuToolFreeDraw = new System.Windows.Forms.MenuItem();
-          this.mnuToolFreeLine = new System.Windows.Forms.MenuItem();
-          this.mnuToolBezier = new System.Windows.Forms.MenuItem();
-          this.mnuToolLine = new System.Windows.Forms.MenuItem();
-          this.mnuToolRectangle = new System.Windows.Forms.MenuItem();
-          this.mnuToolEllipse = new System.Windows.Forms.MenuItem();
-          this.mnuToolAirbrush = new System.Windows.Forms.MenuItem();
-          this.mnuToolSmooth = new System.Windows.Forms.MenuItem();
-          this.mnuToolErase = new System.Windows.Forms.MenuItem();
-          this.mnuToolGradientFill = new System.Windows.Forms.MenuItem();
-          this.mnuToolFloodFill = new System.Windows.Forms.MenuItem();
-          this.mnuToolFloodSel = new System.Windows.Forms.MenuItem();
-          this.mnuToolSelRect = new System.Windows.Forms.MenuItem();
-          this.mnuToolSelFree = new System.Windows.Forms.MenuItem();
-          this.mnuToolTranslate = new System.Windows.Forms.MenuItem();
-          this.mnuToolRotate = new System.Windows.Forms.MenuItem();
-          this.mnuToolScale = new System.Windows.Forms.MenuItem();
-          this.mnuToolDropper = new System.Windows.Forms.MenuItem();
-          this.mnuToolCustom = new System.Windows.Forms.MenuItem();
-          this.mnuToolSep1 = new System.Windows.Forms.MenuItem();
-          this.mnuToolAntiAlias = new System.Windows.Forms.MenuItem();
-          this.mnuToolOutline = new System.Windows.Forms.MenuItem();
-          this.mnuToolFill = new System.Windows.Forms.MenuItem();
-          this.mnuToolGradientFills = new System.Windows.Forms.MenuItem();
-          this.mnuToolLock = new System.Windows.Forms.MenuItem();
-          this.mnuDisjointedColors = new System.Windows.Forms.MenuItem();
-          this.mnuToolSep2 = new System.Windows.Forms.MenuItem();
-          this.mnuPen = new System.Windows.Forms.MenuItem();
-          this.mnuPixelPen = new System.Windows.Forms.MenuItem();
-          this.mnuTinyPen = new System.Windows.Forms.MenuItem();
-          this.mnuSmallPen = new System.Windows.Forms.MenuItem();
-          this.mnuMediumPen = new System.Windows.Forms.MenuItem();
-          this.mnuLargePen = new System.Windows.Forms.MenuItem();
-          this.mnuHugePen = new System.Windows.Forms.MenuItem();
-          this.mnu64Pen = new System.Windows.Forms.MenuItem();
-          this.mnuPenSep1 = new System.Windows.Forms.MenuItem();
-          this.mnuPenDecrease = new System.Windows.Forms.MenuItem();
-          this.mnuPenIncrease = new System.Windows.Forms.MenuItem();
-          this.mnuPenSep2 = new System.Windows.Forms.MenuItem();
-          this.mnuRoundPen = new System.Windows.Forms.MenuItem();
-          this.mnuSquarePen = new System.Windows.Forms.MenuItem();
-          this.tbrOptions = new System.Windows.Forms.ToolBar();
-          this.tbbAntiAlias = new System.Windows.Forms.ToolBarButton();
-          this.tbbOutline = new System.Windows.Forms.ToolBarButton();
-          this.tbbFill = new System.Windows.Forms.ToolBarButton();
-          this.tbbGradientFills = new System.Windows.Forms.ToolBarButton();
-          this.tbbLock = new System.Windows.Forms.ToolBarButton();
-          this.tbbDisjointedColors = new System.Windows.Forms.ToolBarButton();
-          this.tbsOptSep1 = new System.Windows.Forms.ToolBarButton();
-          this.tbbPixelPen = new System.Windows.Forms.ToolBarButton();
-          this.tbbTinyPen = new System.Windows.Forms.ToolBarButton();
-          this.tbbSmallPen = new System.Windows.Forms.ToolBarButton();
-          this.tbbMediumPen = new System.Windows.Forms.ToolBarButton();
-          this.tbbLargePen = new System.Windows.Forms.ToolBarButton();
-          this.tbbHugePen = new System.Windows.Forms.ToolBarButton();
-          this.tbb64Pen = new System.Windows.Forms.ToolBarButton();
-          this.tbsOptSep2 = new System.Windows.Forms.ToolBarButton();
-          this.tbbRound = new System.Windows.Forms.ToolBarButton();
-          this.tbbSquare = new System.Windows.Forms.ToolBarButton();
-          this.tbsOptSep3 = new System.Windows.Forms.ToolBarButton();
-          this.tbdZoom = new System.Windows.Forms.ToolBarButton();
-          this.tbbShowGrid = new System.Windows.Forms.ToolBarButton();
-          this.ToolSplitter = new System.Windows.Forms.Splitter();
-          this.ctlColorSel = new SGDK2.ColorSel();
-          this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
-          this.SuspendLayout();
-          // 
-          // tbrGraphicsEditor
-          // 
-          this.tbrGraphicsEditor.Appearance = System.Windows.Forms.ToolBarAppearance.Flat;
-          this.tbrGraphicsEditor.AutoSize = false;
-          this.tbrGraphicsEditor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-          this.tbrGraphicsEditor.Buttons.AddRange(new System.Windows.Forms.ToolBarButton[] {
+         this.components = new System.ComponentModel.Container();
+         System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmGraphicsEditor));
+         this.tbrGraphicsEditor = new System.Windows.Forms.ToolBar();
+         this.tbbFreeDraw = new System.Windows.Forms.ToolBarButton();
+         this.tbbFreeLine = new System.Windows.Forms.ToolBarButton();
+         this.tbbBezier = new System.Windows.Forms.ToolBarButton();
+         this.tbbLine = new System.Windows.Forms.ToolBarButton();
+         this.tbbRect = new System.Windows.Forms.ToolBarButton();
+         this.tbbEllipse = new System.Windows.Forms.ToolBarButton();
+         this.tbbAirbrush = new System.Windows.Forms.ToolBarButton();
+         this.tbbSmooth = new System.Windows.Forms.ToolBarButton();
+         this.tbbEraser = new System.Windows.Forms.ToolBarButton();
+         this.tbbGradientFill = new System.Windows.Forms.ToolBarButton();
+         this.tbbFloodFill = new System.Windows.Forms.ToolBarButton();
+         this.tbbFloodSel = new System.Windows.Forms.ToolBarButton();
+         this.tbbSelRect = new System.Windows.Forms.ToolBarButton();
+         this.tbbSelFree = new System.Windows.Forms.ToolBarButton();
+         this.tbbTranslate = new System.Windows.Forms.ToolBarButton();
+         this.tbbRotate = new System.Windows.Forms.ToolBarButton();
+         this.tbbScale = new System.Windows.Forms.ToolBarButton();
+         this.tbbDropper = new System.Windows.Forms.ToolBarButton();
+         this.tbdCustomTool = new System.Windows.Forms.ToolBarButton();
+         this.mnuCCustomTool = new System.Windows.Forms.ContextMenu();
+         this.tbsSep1 = new System.Windows.Forms.ToolBarButton();
+         this.tbbHFlip = new System.Windows.Forms.ToolBarButton();
+         this.tbbVFlip = new System.Windows.Forms.ToolBarButton();
+         this.tbbHOffset = new System.Windows.Forms.ToolBarButton();
+         this.tbbVOffset = new System.Windows.Forms.ToolBarButton();
+         this.tbbTilePreview = new System.Windows.Forms.ToolBarButton();
+         this.tbbHueMap = new System.Windows.Forms.ToolBarButton();
+         this.tbbNoise = new System.Windows.Forms.ToolBarButton();
+         this.imlGraphicsEditor = new System.Windows.Forms.ImageList(this.components);
+         this.mnuCZoom = new System.Windows.Forms.ContextMenu();
+         this.mnuActualSize = new System.Windows.Forms.MenuItem();
+         this.mnuZoom2 = new System.Windows.Forms.MenuItem();
+         this.mnuZoom4 = new System.Windows.Forms.MenuItem();
+         this.mnuZoom6 = new System.Windows.Forms.MenuItem();
+         this.mnuZoom8 = new System.Windows.Forms.MenuItem();
+         this.mnuZoom16 = new System.Windows.Forms.MenuItem();
+         this.mnuGraphicsEditor = new System.Windows.Forms.MainMenu(this.components);
+         this.mnuFile = new System.Windows.Forms.MenuItem();
+         this.mnuFileSep = new System.Windows.Forms.MenuItem();
+         this.mnuExportGraphic = new System.Windows.Forms.MenuItem();
+         this.mnuImportGraphic = new System.Windows.Forms.MenuItem();
+         this.mnuExportSheet = new System.Windows.Forms.MenuItem();
+         this.mnuImportSheet = new System.Windows.Forms.MenuItem();
+         this.mnuView = new System.Windows.Forms.MenuItem();
+         this.mnuZoom = new System.Windows.Forms.MenuItem();
+         this.mnuZoom1x1 = new System.Windows.Forms.MenuItem();
+         this.mnuZoom2x2 = new System.Windows.Forms.MenuItem();
+         this.mnuZoom4x4 = new System.Windows.Forms.MenuItem();
+         this.mnuZoom6x6 = new System.Windows.Forms.MenuItem();
+         this.mnuZoom8x8 = new System.Windows.Forms.MenuItem();
+         this.mnuZoom16x16 = new System.Windows.Forms.MenuItem();
+         this.mnuZoomSeparator = new System.Windows.Forms.MenuItem();
+         this.mnuZoomDecrease = new System.Windows.Forms.MenuItem();
+         this.mnuZoomIncrease = new System.Windows.Forms.MenuItem();
+         this.mnuEdit = new System.Windows.Forms.MenuItem();
+         this.mnuEditUndo = new System.Windows.Forms.MenuItem();
+         this.mnuEditRedo = new System.Windows.Forms.MenuItem();
+         this.mnuEditSep1 = new System.Windows.Forms.MenuItem();
+         this.mnuEditCut = new System.Windows.Forms.MenuItem();
+         this.mnuEditCopy = new System.Windows.Forms.MenuItem();
+         this.mnuEditPaste = new System.Windows.Forms.MenuItem();
+         this.mnuEditDelete = new System.Windows.Forms.MenuItem();
+         this.mnuEditSep2 = new System.Windows.Forms.MenuItem();
+         this.mnuEditResetPos = new System.Windows.Forms.MenuItem();
+         this.mnuEditSelectAll = new System.Windows.Forms.MenuItem();
+         this.mnuEditDeselect = new System.Windows.Forms.MenuItem();
+         this.mnuEditSep3 = new System.Windows.Forms.MenuItem();
+         this.mnuEditHFlip = new System.Windows.Forms.MenuItem();
+         this.mnuEditVFlip = new System.Windows.Forms.MenuItem();
+         this.mnuEditHOffset = new System.Windows.Forms.MenuItem();
+         this.mnuEditVOffset = new System.Windows.Forms.MenuItem();
+         this.mnuEditTilePreview = new System.Windows.Forms.MenuItem();
+         this.mnuHueMap = new System.Windows.Forms.MenuItem();
+         this.mnuNoise = new System.Windows.Forms.MenuItem();
+         this.mnuEditSep4 = new System.Windows.Forms.MenuItem();
+         this.mnuEditSelectionHighlight = new System.Windows.Forms.MenuItem();
+         this.mnuEditShowHighlight = new System.Windows.Forms.MenuItem();
+         this.mnuEditHighlightSep1 = new System.Windows.Forms.MenuItem();
+         this.mnuEditSelRed = new System.Windows.Forms.MenuItem();
+         this.mnuEditSelGreen = new System.Windows.Forms.MenuItem();
+         this.mnuEditSelBlue = new System.Windows.Forms.MenuItem();
+         this.mnuEditSelWhite = new System.Windows.Forms.MenuItem();
+         this.mnuEditSelBlack = new System.Windows.Forms.MenuItem();
+         this.mnuEditSelRedF = new System.Windows.Forms.MenuItem();
+         this.mnuEditSelGreenF = new System.Windows.Forms.MenuItem();
+         this.mnuEditSelBlueF = new System.Windows.Forms.MenuItem();
+         this.mnuEditSelWhiteF = new System.Windows.Forms.MenuItem();
+         this.mnuEditSelBlackF = new System.Windows.Forms.MenuItem();
+         this.mnuEditBackdrop = new System.Windows.Forms.MenuItem();
+         this.mnuEditBackWhiteDiamond = new System.Windows.Forms.MenuItem();
+         this.mnuEditBackBlackDiamond = new System.Windows.Forms.MenuItem();
+         this.mnuEditBackWhiteCross = new System.Windows.Forms.MenuItem();
+         this.mnuEditBackBlackCross = new System.Windows.Forms.MenuItem();
+         this.mnuEditBackWhite = new System.Windows.Forms.MenuItem();
+         this.mnuEditBackBlack = new System.Windows.Forms.MenuItem();
+         this.mnuEditBackGray = new System.Windows.Forms.MenuItem();
+         this.mnuEditSep5 = new System.Windows.Forms.MenuItem();
+         this.mnuEditShowGrid = new System.Windows.Forms.MenuItem();
+         this.mnuTools = new System.Windows.Forms.MenuItem();
+         this.mnuToolFreeDraw = new System.Windows.Forms.MenuItem();
+         this.mnuToolFreeLine = new System.Windows.Forms.MenuItem();
+         this.mnuToolBezier = new System.Windows.Forms.MenuItem();
+         this.mnuToolLine = new System.Windows.Forms.MenuItem();
+         this.mnuToolRectangle = new System.Windows.Forms.MenuItem();
+         this.mnuToolEllipse = new System.Windows.Forms.MenuItem();
+         this.mnuToolAirbrush = new System.Windows.Forms.MenuItem();
+         this.mnuToolSmooth = new System.Windows.Forms.MenuItem();
+         this.mnuToolErase = new System.Windows.Forms.MenuItem();
+         this.mnuToolGradientFill = new System.Windows.Forms.MenuItem();
+         this.mnuToolFloodFill = new System.Windows.Forms.MenuItem();
+         this.mnuToolFloodSel = new System.Windows.Forms.MenuItem();
+         this.mnuToolSelRect = new System.Windows.Forms.MenuItem();
+         this.mnuToolSelFree = new System.Windows.Forms.MenuItem();
+         this.mnuToolTranslate = new System.Windows.Forms.MenuItem();
+         this.mnuToolRotate = new System.Windows.Forms.MenuItem();
+         this.mnuToolScale = new System.Windows.Forms.MenuItem();
+         this.mnuToolDropper = new System.Windows.Forms.MenuItem();
+         this.mnuToolCustom = new System.Windows.Forms.MenuItem();
+         this.mnuToolSep1 = new System.Windows.Forms.MenuItem();
+         this.mnuToolAntiAlias = new System.Windows.Forms.MenuItem();
+         this.mnuToolOutline = new System.Windows.Forms.MenuItem();
+         this.mnuToolFill = new System.Windows.Forms.MenuItem();
+         this.mnuToolGradientFills = new System.Windows.Forms.MenuItem();
+         this.mnuToolLock = new System.Windows.Forms.MenuItem();
+         this.mnuDisjointedColors = new System.Windows.Forms.MenuItem();
+         this.mnuToolSep2 = new System.Windows.Forms.MenuItem();
+         this.mnuPen = new System.Windows.Forms.MenuItem();
+         this.mnuPixelPen = new System.Windows.Forms.MenuItem();
+         this.mnuTinyPen = new System.Windows.Forms.MenuItem();
+         this.mnuSmallPen = new System.Windows.Forms.MenuItem();
+         this.mnuMediumPen = new System.Windows.Forms.MenuItem();
+         this.mnuLargePen = new System.Windows.Forms.MenuItem();
+         this.mnuHugePen = new System.Windows.Forms.MenuItem();
+         this.mnu64Pen = new System.Windows.Forms.MenuItem();
+         this.mnuPenSep1 = new System.Windows.Forms.MenuItem();
+         this.mnuPenDecrease = new System.Windows.Forms.MenuItem();
+         this.mnuPenIncrease = new System.Windows.Forms.MenuItem();
+         this.mnuPenSep2 = new System.Windows.Forms.MenuItem();
+         this.mnuRoundPen = new System.Windows.Forms.MenuItem();
+         this.mnuSquarePen = new System.Windows.Forms.MenuItem();
+         this.tbrOptions = new System.Windows.Forms.ToolBar();
+         this.tbbAntiAlias = new System.Windows.Forms.ToolBarButton();
+         this.tbbOutline = new System.Windows.Forms.ToolBarButton();
+         this.tbbFill = new System.Windows.Forms.ToolBarButton();
+         this.tbbGradientFills = new System.Windows.Forms.ToolBarButton();
+         this.tbbLock = new System.Windows.Forms.ToolBarButton();
+         this.tbbDisjointedColors = new System.Windows.Forms.ToolBarButton();
+         this.tbsOptSep1 = new System.Windows.Forms.ToolBarButton();
+         this.tbbPixelPen = new System.Windows.Forms.ToolBarButton();
+         this.tbbTinyPen = new System.Windows.Forms.ToolBarButton();
+         this.tbbSmallPen = new System.Windows.Forms.ToolBarButton();
+         this.tbbMediumPen = new System.Windows.Forms.ToolBarButton();
+         this.tbbLargePen = new System.Windows.Forms.ToolBarButton();
+         this.tbbHugePen = new System.Windows.Forms.ToolBarButton();
+         this.tbb64Pen = new System.Windows.Forms.ToolBarButton();
+         this.tbsOptSep2 = new System.Windows.Forms.ToolBarButton();
+         this.tbbRound = new System.Windows.Forms.ToolBarButton();
+         this.tbbSquare = new System.Windows.Forms.ToolBarButton();
+         this.tbsOptSep3 = new System.Windows.Forms.ToolBarButton();
+         this.tbdZoom = new System.Windows.Forms.ToolBarButton();
+         this.tbbShowGrid = new System.Windows.Forms.ToolBarButton();
+         this.ToolSplitter = new System.Windows.Forms.Splitter();
+         this.ctlColorSel = new SGDK2.ColorSel();
+         this.dataMonitor = new SGDK2.DataChangeNotifier(this.components);
+         this.SuspendLayout();
+         // 
+         // tbrGraphicsEditor
+         // 
+         this.tbrGraphicsEditor.Appearance = System.Windows.Forms.ToolBarAppearance.Flat;
+         this.tbrGraphicsEditor.AutoSize = false;
+         this.tbrGraphicsEditor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+         this.tbrGraphicsEditor.Buttons.AddRange(new System.Windows.Forms.ToolBarButton[] {
             this.tbbFreeDraw,
             this.tbbFreeLine,
             this.tbbBezier,
@@ -637,377 +680,441 @@ namespace SGDK2
             this.tbbTilePreview,
             this.tbbHueMap,
             this.tbbNoise});
-          this.tbrGraphicsEditor.ButtonSize = new System.Drawing.Size(23, 22);
-          this.tbrGraphicsEditor.Divider = false;
-          this.tbrGraphicsEditor.Dock = System.Windows.Forms.DockStyle.Left;
-          this.tbrGraphicsEditor.DropDownArrows = true;
-          this.tbrGraphicsEditor.ImageList = this.imlGraphicsEditor;
-          this.tbrGraphicsEditor.Location = new System.Drawing.Point(0, 0);
-          this.tbrGraphicsEditor.Name = "tbrGraphicsEditor";
-          this.tbrGraphicsEditor.ShowToolTips = true;
-          this.tbrGraphicsEditor.Size = new System.Drawing.Size(48, 405);
-          this.tbrGraphicsEditor.TabIndex = 0;
-          this.tbrGraphicsEditor.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tbrGraphicsEditor_ButtonClick);
-          // 
-          // tbbFreeDraw
-          // 
-          this.tbbFreeDraw.ImageIndex = 0;
-          this.tbbFreeDraw.Name = "tbbFreeDraw";
-          this.tbbFreeDraw.Pushed = true;
-          this.tbbFreeDraw.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbFreeDraw.ToolTipText = "Paint brush (draw freehand strokes ended with a mouse button release)";
-          // 
-          // tbbFreeLine
-          // 
-          this.tbbFreeLine.ImageIndex = 1;
-          this.tbbFreeLine.Name = "tbbFreeLine";
-          this.tbbFreeLine.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbFreeLine.ToolTipText = "Draw connected freehand lines and curves ended with right mouse button";
-          // 
-          // tbbBezier
-          // 
-          this.tbbBezier.ImageIndex = 2;
-          this.tbbBezier.Name = "tbbBezier";
-          this.tbbBezier.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbBezier.ToolTipText = "Draw connected smooth curves ended with right mouse button";
-          // 
-          // tbbLine
-          // 
-          this.tbbLine.ImageIndex = 3;
-          this.tbbLine.Name = "tbbLine";
-          this.tbbLine.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbLine.Tag = "";
-          this.tbbLine.ToolTipText = "Draw singular straight lines";
-          // 
-          // tbbRect
-          // 
-          this.tbbRect.ImageIndex = 4;
-          this.tbbRect.Name = "tbbRect";
-          this.tbbRect.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbRect.Tag = "";
-          this.tbbRect.ToolTipText = "Draw hollow rectangles";
-          // 
-          // tbbEllipse
-          // 
-          this.tbbEllipse.ImageIndex = 5;
-          this.tbbEllipse.Name = "tbbEllipse";
-          this.tbbEllipse.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbEllipse.Tag = "";
-          this.tbbEllipse.ToolTipText = "Draw hollow ellipses";
-          // 
-          // tbbAirbrush
-          // 
-          this.tbbAirbrush.ImageIndex = 37;
-          this.tbbAirbrush.Name = "tbbAirbrush";
-          this.tbbAirbrush.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbAirbrush.ToolTipText = "Airbrush";
-          // 
-          // tbbSmooth
-          // 
-          this.tbbSmooth.ImageIndex = 45;
-          this.tbbSmooth.Name = "tbbSmooth";
-          this.tbbSmooth.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbSmooth.ToolTipText = "Blur/smooth";
-          // 
-          // tbbEraser
-          // 
-          this.tbbEraser.ImageIndex = 26;
-          this.tbbEraser.Name = "tbbEraser";
-          this.tbbEraser.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbEraser.ToolTipText = "Erase areas to transparent color.";
-          // 
-          // tbbGradientFill
-          // 
-          this.tbbGradientFill.ImageIndex = 36;
-          this.tbbGradientFill.Name = "tbbGradientFill";
-          this.tbbGradientFill.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbGradientFill.ToolTipText = "Fill selected region with color gradient";
-          // 
-          // tbbFloodFill
-          // 
-          this.tbbFloodFill.ImageIndex = 7;
-          this.tbbFloodFill.Name = "tbbFloodFill";
-          this.tbbFloodFill.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbFloodFill.ToolTipText = "Flood fill regions of similar colors (drag over color range)";
-          // 
-          // tbbFloodSel
-          // 
-          this.tbbFloodSel.ImageIndex = 35;
-          this.tbbFloodSel.Name = "tbbFloodSel";
-          this.tbbFloodSel.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbFloodSel.ToolTipText = "Color Wand (select connected areas of similar color)";
-          // 
-          // tbbSelRect
-          // 
-          this.tbbSelRect.ImageIndex = 27;
-          this.tbbSelRect.Name = "tbbSelRect";
-          this.tbbSelRect.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbSelRect.ToolTipText = "Select rectangular regions";
-          // 
-          // tbbSelFree
-          // 
-          this.tbbSelFree.ImageIndex = 28;
-          this.tbbSelFree.Name = "tbbSelFree";
-          this.tbbSelFree.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbSelFree.ToolTipText = "Select irregular regions (terminate with right button)";
-          // 
-          // tbbTranslate
-          // 
-          this.tbbTranslate.ImageIndex = 29;
-          this.tbbTranslate.Name = "tbbTranslate";
-          this.tbbTranslate.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbTranslate.ToolTipText = "Move the currently selected portion of the graphic";
-          // 
-          // tbbRotate
-          // 
-          this.tbbRotate.ImageIndex = 30;
-          this.tbbRotate.Name = "tbbRotate";
-          this.tbbRotate.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbRotate.ToolTipText = "Freely rotate the selected portion of the graphic";
-          // 
-          // tbbScale
-          // 
-          this.tbbScale.ImageIndex = 31;
-          this.tbbScale.Name = "tbbScale";
-          this.tbbScale.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbScale.ToolTipText = "Scale the selected portion of the graphic to a new size";
-          // 
-          // tbbDropper
-          // 
-          this.tbbDropper.ImageIndex = 33;
-          this.tbbDropper.Name = "tbbDropper";
-          this.tbbDropper.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbDropper.ToolTipText = "Pick a color from the image";
-          // 
-          // tbdCustomTool
-          // 
-          this.tbdCustomTool.DropDownMenu = this.mnuCCustomTool;
-          this.tbdCustomTool.Name = "tbdCustomTool";
-          this.tbdCustomTool.Style = System.Windows.Forms.ToolBarButtonStyle.DropDownButton;
-          this.tbdCustomTool.ToolTipText = "Select custom tool";
-          // 
-          // tbsSep1
-          // 
-          this.tbsSep1.Name = "tbsSep1";
-          this.tbsSep1.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
-          this.tbsSep1.Tag = "";
-          // 
-          // tbbHFlip
-          // 
-          this.tbbHFlip.ImageIndex = 38;
-          this.tbbHFlip.Name = "tbbHFlip";
-          this.tbbHFlip.ToolTipText = "Flip selection horizontally";
-          // 
-          // tbbVFlip
-          // 
-          this.tbbVFlip.ImageIndex = 39;
-          this.tbbVFlip.Name = "tbbVFlip";
-          this.tbbVFlip.ToolTipText = "Flip selection vertically";
-          // 
-          // tbbHOffset
-          // 
-          this.tbbHOffset.ImageIndex = 41;
-          this.tbbHOffset.Name = "tbbHOffset";
-          this.tbbHOffset.ToolTipText = "Offset and wrap image horizontally to edit seam";
-          // 
-          // tbbVOffset
-          // 
-          this.tbbVOffset.ImageIndex = 42;
-          this.tbbVOffset.Name = "tbbVOffset";
-          this.tbbVOffset.ToolTipText = "Offset and wrap image vertically to edit seam";
-          // 
-          // tbbTilePreview
-          // 
-          this.tbbTilePreview.ImageIndex = 43;
-          this.tbbTilePreview.Name = "tbbTilePreview";
-          this.tbbTilePreview.ToolTipText = "Preview how graphic will appear when tiled";
-          // 
-          // tbbHueMap
-          // 
-          this.tbbHueMap.ImageIndex = 47;
-          this.tbbHueMap.Name = "tbbHueMap";
-          this.tbbHueMap.ToolTipText = "Remap colors";
-          // 
-          // tbbNoise
-          // 
-          this.tbbNoise.ImageIndex = 48;
-          this.tbbNoise.Name = "tbbNoise";
-          this.tbbNoise.ToolTipText = "Add noise";
-          // 
-          // imlGraphicsEditor
-          // 
-          this.imlGraphicsEditor.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imlGraphicsEditor.ImageStream")));
-          this.imlGraphicsEditor.TransparentColor = System.Drawing.Color.Magenta;
-          // 
-          // mnuCZoom
-          // 
-          this.mnuCZoom.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+         this.tbrGraphicsEditor.ButtonSize = new System.Drawing.Size(23, 22);
+         this.tbrGraphicsEditor.Divider = false;
+         this.tbrGraphicsEditor.Dock = System.Windows.Forms.DockStyle.Left;
+         this.tbrGraphicsEditor.DropDownArrows = true;
+         this.tbrGraphicsEditor.ImageList = this.imlGraphicsEditor;
+         this.tbrGraphicsEditor.Location = new System.Drawing.Point(0, 0);
+         this.tbrGraphicsEditor.Name = "tbrGraphicsEditor";
+         this.tbrGraphicsEditor.ShowToolTips = true;
+         this.tbrGraphicsEditor.Size = new System.Drawing.Size(48, 363);
+         this.tbrGraphicsEditor.TabIndex = 0;
+         this.tbrGraphicsEditor.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tbrGraphicsEditor_ButtonClick);
+         // 
+         // tbbFreeDraw
+         // 
+         this.tbbFreeDraw.ImageIndex = 0;
+         this.tbbFreeDraw.Name = "tbbFreeDraw";
+         this.tbbFreeDraw.Pushed = true;
+         this.tbbFreeDraw.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbFreeDraw.ToolTipText = "Paint brush (draw freehand strokes ended with a mouse button release)";
+         // 
+         // tbbFreeLine
+         // 
+         this.tbbFreeLine.ImageIndex = 1;
+         this.tbbFreeLine.Name = "tbbFreeLine";
+         this.tbbFreeLine.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbFreeLine.ToolTipText = "Draw connected freehand lines and curves ended with right mouse button";
+         // 
+         // tbbBezier
+         // 
+         this.tbbBezier.ImageIndex = 2;
+         this.tbbBezier.Name = "tbbBezier";
+         this.tbbBezier.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbBezier.ToolTipText = "Draw connected smooth curves ended with right mouse button";
+         // 
+         // tbbLine
+         // 
+         this.tbbLine.ImageIndex = 3;
+         this.tbbLine.Name = "tbbLine";
+         this.tbbLine.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbLine.Tag = "";
+         this.tbbLine.ToolTipText = "Draw singular straight lines";
+         // 
+         // tbbRect
+         // 
+         this.tbbRect.ImageIndex = 4;
+         this.tbbRect.Name = "tbbRect";
+         this.tbbRect.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbRect.Tag = "";
+         this.tbbRect.ToolTipText = "Draw hollow rectangles";
+         // 
+         // tbbEllipse
+         // 
+         this.tbbEllipse.ImageIndex = 5;
+         this.tbbEllipse.Name = "tbbEllipse";
+         this.tbbEllipse.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbEllipse.Tag = "";
+         this.tbbEllipse.ToolTipText = "Draw hollow ellipses";
+         // 
+         // tbbAirbrush
+         // 
+         this.tbbAirbrush.ImageIndex = 37;
+         this.tbbAirbrush.Name = "tbbAirbrush";
+         this.tbbAirbrush.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbAirbrush.ToolTipText = "Airbrush";
+         // 
+         // tbbSmooth
+         // 
+         this.tbbSmooth.ImageIndex = 45;
+         this.tbbSmooth.Name = "tbbSmooth";
+         this.tbbSmooth.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbSmooth.ToolTipText = "Blur/smooth";
+         // 
+         // tbbEraser
+         // 
+         this.tbbEraser.ImageIndex = 26;
+         this.tbbEraser.Name = "tbbEraser";
+         this.tbbEraser.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbEraser.ToolTipText = "Erase areas to transparent color.";
+         // 
+         // tbbGradientFill
+         // 
+         this.tbbGradientFill.ImageIndex = 36;
+         this.tbbGradientFill.Name = "tbbGradientFill";
+         this.tbbGradientFill.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbGradientFill.ToolTipText = "Fill selected region with color gradient";
+         // 
+         // tbbFloodFill
+         // 
+         this.tbbFloodFill.ImageIndex = 7;
+         this.tbbFloodFill.Name = "tbbFloodFill";
+         this.tbbFloodFill.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbFloodFill.ToolTipText = "Flood fill regions of similar colors (drag over color range)";
+         // 
+         // tbbFloodSel
+         // 
+         this.tbbFloodSel.ImageIndex = 35;
+         this.tbbFloodSel.Name = "tbbFloodSel";
+         this.tbbFloodSel.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbFloodSel.ToolTipText = "Color Wand (select connected areas of similar color)";
+         // 
+         // tbbSelRect
+         // 
+         this.tbbSelRect.ImageIndex = 27;
+         this.tbbSelRect.Name = "tbbSelRect";
+         this.tbbSelRect.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbSelRect.ToolTipText = "Select rectangular regions";
+         // 
+         // tbbSelFree
+         // 
+         this.tbbSelFree.ImageIndex = 28;
+         this.tbbSelFree.Name = "tbbSelFree";
+         this.tbbSelFree.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbSelFree.ToolTipText = "Select irregular regions (terminate with right button)";
+         // 
+         // tbbTranslate
+         // 
+         this.tbbTranslate.ImageIndex = 29;
+         this.tbbTranslate.Name = "tbbTranslate";
+         this.tbbTranslate.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbTranslate.ToolTipText = "Move the currently selected portion of the graphic";
+         // 
+         // tbbRotate
+         // 
+         this.tbbRotate.ImageIndex = 30;
+         this.tbbRotate.Name = "tbbRotate";
+         this.tbbRotate.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbRotate.ToolTipText = "Freely rotate the selected portion of the graphic";
+         // 
+         // tbbScale
+         // 
+         this.tbbScale.ImageIndex = 31;
+         this.tbbScale.Name = "tbbScale";
+         this.tbbScale.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbScale.ToolTipText = "Scale the selected portion of the graphic to a new size";
+         // 
+         // tbbDropper
+         // 
+         this.tbbDropper.ImageIndex = 33;
+         this.tbbDropper.Name = "tbbDropper";
+         this.tbbDropper.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbDropper.ToolTipText = "Pick a color from the image";
+         // 
+         // tbdCustomTool
+         // 
+         this.tbdCustomTool.DropDownMenu = this.mnuCCustomTool;
+         this.tbdCustomTool.Name = "tbdCustomTool";
+         this.tbdCustomTool.Style = System.Windows.Forms.ToolBarButtonStyle.DropDownButton;
+         this.tbdCustomTool.ToolTipText = "Select custom tool";
+         // 
+         // tbsSep1
+         // 
+         this.tbsSep1.Name = "tbsSep1";
+         this.tbsSep1.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+         this.tbsSep1.Tag = "";
+         // 
+         // tbbHFlip
+         // 
+         this.tbbHFlip.ImageIndex = 38;
+         this.tbbHFlip.Name = "tbbHFlip";
+         this.tbbHFlip.ToolTipText = "Flip selection horizontally";
+         // 
+         // tbbVFlip
+         // 
+         this.tbbVFlip.ImageIndex = 39;
+         this.tbbVFlip.Name = "tbbVFlip";
+         this.tbbVFlip.ToolTipText = "Flip selection vertically";
+         // 
+         // tbbHOffset
+         // 
+         this.tbbHOffset.ImageIndex = 41;
+         this.tbbHOffset.Name = "tbbHOffset";
+         this.tbbHOffset.ToolTipText = "Offset and wrap image horizontally to edit seam";
+         // 
+         // tbbVOffset
+         // 
+         this.tbbVOffset.ImageIndex = 42;
+         this.tbbVOffset.Name = "tbbVOffset";
+         this.tbbVOffset.ToolTipText = "Offset and wrap image vertically to edit seam";
+         // 
+         // tbbTilePreview
+         // 
+         this.tbbTilePreview.ImageIndex = 43;
+         this.tbbTilePreview.Name = "tbbTilePreview";
+         this.tbbTilePreview.ToolTipText = "Preview how graphic will appear when tiled";
+         // 
+         // tbbHueMap
+         // 
+         this.tbbHueMap.ImageIndex = 47;
+         this.tbbHueMap.Name = "tbbHueMap";
+         this.tbbHueMap.ToolTipText = "Remap colors";
+         // 
+         // tbbNoise
+         // 
+         this.tbbNoise.ImageIndex = 48;
+         this.tbbNoise.Name = "tbbNoise";
+         this.tbbNoise.ToolTipText = "Add noise";
+         // 
+         // imlGraphicsEditor
+         // 
+         this.imlGraphicsEditor.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imlGraphicsEditor.ImageStream")));
+         this.imlGraphicsEditor.TransparentColor = System.Drawing.Color.Magenta;
+         this.imlGraphicsEditor.Images.SetKeyName(0, "");
+         this.imlGraphicsEditor.Images.SetKeyName(1, "");
+         this.imlGraphicsEditor.Images.SetKeyName(2, "");
+         this.imlGraphicsEditor.Images.SetKeyName(3, "");
+         this.imlGraphicsEditor.Images.SetKeyName(4, "");
+         this.imlGraphicsEditor.Images.SetKeyName(5, "");
+         this.imlGraphicsEditor.Images.SetKeyName(6, "");
+         this.imlGraphicsEditor.Images.SetKeyName(7, "");
+         this.imlGraphicsEditor.Images.SetKeyName(8, "");
+         this.imlGraphicsEditor.Images.SetKeyName(9, "");
+         this.imlGraphicsEditor.Images.SetKeyName(10, "");
+         this.imlGraphicsEditor.Images.SetKeyName(11, "");
+         this.imlGraphicsEditor.Images.SetKeyName(12, "");
+         this.imlGraphicsEditor.Images.SetKeyName(13, "");
+         this.imlGraphicsEditor.Images.SetKeyName(14, "");
+         this.imlGraphicsEditor.Images.SetKeyName(15, "");
+         this.imlGraphicsEditor.Images.SetKeyName(16, "");
+         this.imlGraphicsEditor.Images.SetKeyName(17, "");
+         this.imlGraphicsEditor.Images.SetKeyName(18, "");
+         this.imlGraphicsEditor.Images.SetKeyName(19, "");
+         this.imlGraphicsEditor.Images.SetKeyName(20, "");
+         this.imlGraphicsEditor.Images.SetKeyName(21, "");
+         this.imlGraphicsEditor.Images.SetKeyName(22, "");
+         this.imlGraphicsEditor.Images.SetKeyName(23, "");
+         this.imlGraphicsEditor.Images.SetKeyName(24, "");
+         this.imlGraphicsEditor.Images.SetKeyName(25, "");
+         this.imlGraphicsEditor.Images.SetKeyName(26, "");
+         this.imlGraphicsEditor.Images.SetKeyName(27, "");
+         this.imlGraphicsEditor.Images.SetKeyName(28, "");
+         this.imlGraphicsEditor.Images.SetKeyName(29, "");
+         this.imlGraphicsEditor.Images.SetKeyName(30, "");
+         this.imlGraphicsEditor.Images.SetKeyName(31, "");
+         this.imlGraphicsEditor.Images.SetKeyName(32, "");
+         this.imlGraphicsEditor.Images.SetKeyName(33, "");
+         this.imlGraphicsEditor.Images.SetKeyName(34, "");
+         this.imlGraphicsEditor.Images.SetKeyName(35, "");
+         this.imlGraphicsEditor.Images.SetKeyName(36, "");
+         this.imlGraphicsEditor.Images.SetKeyName(37, "");
+         this.imlGraphicsEditor.Images.SetKeyName(38, "");
+         this.imlGraphicsEditor.Images.SetKeyName(39, "");
+         this.imlGraphicsEditor.Images.SetKeyName(40, "");
+         this.imlGraphicsEditor.Images.SetKeyName(41, "");
+         this.imlGraphicsEditor.Images.SetKeyName(42, "");
+         this.imlGraphicsEditor.Images.SetKeyName(43, "");
+         this.imlGraphicsEditor.Images.SetKeyName(44, "");
+         this.imlGraphicsEditor.Images.SetKeyName(45, "");
+         this.imlGraphicsEditor.Images.SetKeyName(46, "");
+         this.imlGraphicsEditor.Images.SetKeyName(47, "");
+         this.imlGraphicsEditor.Images.SetKeyName(48, "");
+         this.imlGraphicsEditor.Images.SetKeyName(49, "16x16.bmp");
+         // 
+         // mnuCZoom
+         // 
+         this.mnuCZoom.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.mnuActualSize,
             this.mnuZoom2,
             this.mnuZoom4,
             this.mnuZoom6,
-            this.mnuZoom8});
-          // 
-          // mnuActualSize
-          // 
-          this.mnuActualSize.Index = 0;
-          this.mnuActualSize.Text = "Actual Size";
-          this.mnuActualSize.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuZoom2
-          // 
-          this.mnuZoom2.Index = 1;
-          this.mnuZoom2.Text = "2x2 Zoom";
-          this.mnuZoom2.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuZoom4
-          // 
-          this.mnuZoom4.Checked = true;
-          this.mnuZoom4.Index = 2;
-          this.mnuZoom4.Text = "4x4 Zoom";
-          this.mnuZoom4.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuZoom6
-          // 
-          this.mnuZoom6.Index = 3;
-          this.mnuZoom6.Text = "6x6 Zoom";
-          this.mnuZoom6.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuZoom8
-          // 
-          this.mnuZoom8.Index = 4;
-          this.mnuZoom8.Text = "8x8 Zoom";
-          this.mnuZoom8.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuGraphicsEditor
-          // 
-          this.mnuGraphicsEditor.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.mnuZoom8,
+            this.mnuZoom16});
+         // 
+         // mnuActualSize
+         // 
+         this.mnuActualSize.Index = 0;
+         this.mnuActualSize.Text = "Actual Size";
+         this.mnuActualSize.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuZoom2
+         // 
+         this.mnuZoom2.Index = 1;
+         this.mnuZoom2.Text = "2x2 Zoom";
+         this.mnuZoom2.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuZoom4
+         // 
+         this.mnuZoom4.Checked = true;
+         this.mnuZoom4.Index = 2;
+         this.mnuZoom4.Text = "4x4 Zoom";
+         this.mnuZoom4.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuZoom6
+         // 
+         this.mnuZoom6.Index = 3;
+         this.mnuZoom6.Text = "6x6 Zoom";
+         this.mnuZoom6.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuZoom8
+         // 
+         this.mnuZoom8.Index = 4;
+         this.mnuZoom8.Text = "8x8 Zoom";
+         this.mnuZoom8.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuZoom16
+         // 
+         this.mnuZoom16.Index = 5;
+         this.mnuZoom16.Text = "16x16 Zoom";
+         this.mnuZoom16.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuGraphicsEditor
+         // 
+         this.mnuGraphicsEditor.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.mnuFile,
             this.mnuView,
             this.mnuEdit,
             this.mnuTools});
-          // 
-          // mnuFile
-          // 
-          this.mnuFile.Index = 0;
-          this.mnuFile.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+         // 
+         // mnuFile
+         // 
+         this.mnuFile.Index = 0;
+         this.mnuFile.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.mnuFileSep,
             this.mnuExportGraphic,
             this.mnuImportGraphic,
             this.mnuExportSheet,
             this.mnuImportSheet});
-          this.mnuFile.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
-          this.mnuFile.Text = "&File";
-          // 
-          // mnuFileSep
-          // 
-          this.mnuFileSep.Index = 0;
-          this.mnuFileSep.MergeOrder = 1;
-          this.mnuFileSep.Text = "-";
-          // 
-          // mnuExportGraphic
-          // 
-          this.mnuExportGraphic.Index = 1;
-          this.mnuExportGraphic.MergeOrder = 2;
-          this.mnuExportGraphic.Text = "Export Grap&hic...";
-          this.mnuExportGraphic.Click += new System.EventHandler(this.mnuExportGraphic_Click);
-          // 
-          // mnuImportGraphic
-          // 
-          this.mnuImportGraphic.Index = 2;
-          this.mnuImportGraphic.MergeOrder = 2;
-          this.mnuImportGraphic.Text = "Import Graphi&c...";
-          this.mnuImportGraphic.Click += new System.EventHandler(this.mnuImportGraphic_Click);
-          // 
-          // mnuExportSheet
-          // 
-          this.mnuExportSheet.Index = 3;
-          this.mnuExportSheet.MergeOrder = 2;
-          this.mnuExportSheet.Text = "Export Sheet as Image...";
-          this.mnuExportSheet.Click += new System.EventHandler(this.mnuExportSheet_Click);
-          // 
-          // mnuImportSheet
-          // 
-          this.mnuImportSheet.Index = 4;
-          this.mnuImportSheet.MergeOrder = 2;
-          this.mnuImportSheet.Text = "Import Image as Sheet...";
-          this.mnuImportSheet.Click += new System.EventHandler(this.mnuImportSheet_Click);
-          // 
-          // mnuView
-          // 
-          this.mnuView.Index = 1;
-          this.mnuView.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+         this.mnuFile.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
+         this.mnuFile.Text = "&File";
+         // 
+         // mnuFileSep
+         // 
+         this.mnuFileSep.Index = 0;
+         this.mnuFileSep.MergeOrder = 1;
+         this.mnuFileSep.Text = "-";
+         // 
+         // mnuExportGraphic
+         // 
+         this.mnuExportGraphic.Index = 1;
+         this.mnuExportGraphic.MergeOrder = 2;
+         this.mnuExportGraphic.Text = "Export Grap&hic...";
+         this.mnuExportGraphic.Click += new System.EventHandler(this.mnuExportGraphic_Click);
+         // 
+         // mnuImportGraphic
+         // 
+         this.mnuImportGraphic.Index = 2;
+         this.mnuImportGraphic.MergeOrder = 2;
+         this.mnuImportGraphic.Text = "Import Graphi&c...";
+         this.mnuImportGraphic.Click += new System.EventHandler(this.mnuImportGraphic_Click);
+         // 
+         // mnuExportSheet
+         // 
+         this.mnuExportSheet.Index = 3;
+         this.mnuExportSheet.MergeOrder = 2;
+         this.mnuExportSheet.Text = "Export Sheet as Image...";
+         this.mnuExportSheet.Click += new System.EventHandler(this.mnuExportSheet_Click);
+         // 
+         // mnuImportSheet
+         // 
+         this.mnuImportSheet.Index = 4;
+         this.mnuImportSheet.MergeOrder = 2;
+         this.mnuImportSheet.Text = "Import Image as Sheet...";
+         this.mnuImportSheet.Click += new System.EventHandler(this.mnuImportSheet_Click);
+         // 
+         // mnuView
+         // 
+         this.mnuView.Index = 1;
+         this.mnuView.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.mnuZoom});
-          this.mnuView.MergeOrder = 1;
-          this.mnuView.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
-          this.mnuView.Text = "&View";
-          // 
-          // mnuZoom
-          // 
-          this.mnuZoom.Index = 0;
-          this.mnuZoom.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+         this.mnuView.MergeOrder = 1;
+         this.mnuView.MergeType = System.Windows.Forms.MenuMerge.MergeItems;
+         this.mnuView.Text = "&View";
+         // 
+         // mnuZoom
+         // 
+         this.mnuZoom.Index = 0;
+         this.mnuZoom.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.mnuZoom1x1,
             this.mnuZoom2x2,
             this.mnuZoom4x4,
             this.mnuZoom6x6,
             this.mnuZoom8x8,
+            this.mnuZoom16x16,
             this.mnuZoomSeparator,
             this.mnuZoomDecrease,
             this.mnuZoomIncrease});
-          this.mnuZoom.Text = "&Zoom";
-          // 
-          // mnuZoom1x1
-          // 
-          this.mnuZoom1x1.Index = 0;
-          this.mnuZoom1x1.Text = "&Actual Size";
-          this.mnuZoom1x1.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuZoom2x2
-          // 
-          this.mnuZoom2x2.Index = 1;
-          this.mnuZoom2x2.Text = "&2x2 Magnification";
-          this.mnuZoom2x2.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuZoom4x4
-          // 
-          this.mnuZoom4x4.Checked = true;
-          this.mnuZoom4x4.Index = 2;
-          this.mnuZoom4x4.Text = "&4x4 Magnification";
-          this.mnuZoom4x4.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuZoom6x6
-          // 
-          this.mnuZoom6x6.Index = 3;
-          this.mnuZoom6x6.Text = "&6x6 Magnification";
-          this.mnuZoom6x6.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuZoom8x8
-          // 
-          this.mnuZoom8x8.Index = 4;
-          this.mnuZoom8x8.Text = "&8x8 Magnification";
-          this.mnuZoom8x8.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuZoomSeparator
-          // 
-          this.mnuZoomSeparator.Index = 5;
-          this.mnuZoomSeparator.Text = "-";
-          // 
-          // mnuZoomDecrease
-          // 
-          this.mnuZoomDecrease.Index = 6;
-          this.mnuZoomDecrease.Text = "&Decrease Magnification\t-";
-          this.mnuZoomDecrease.Click += new System.EventHandler(this.mnuZoomDecrease_Click);
-          // 
-          // mnuZoomIncrease
-          // 
-          this.mnuZoomIncrease.Index = 7;
-          this.mnuZoomIncrease.Text = "&Increase Magnification\t+";
-          this.mnuZoomIncrease.Click += new System.EventHandler(this.mnuZoomIncrease_Click);
-          // 
-          // mnuEdit
-          // 
-          this.mnuEdit.Index = 2;
-          this.mnuEdit.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+         this.mnuZoom.Text = "&Zoom";
+         // 
+         // mnuZoom1x1
+         // 
+         this.mnuZoom1x1.Index = 0;
+         this.mnuZoom1x1.Text = "&Actual Size";
+         this.mnuZoom1x1.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuZoom2x2
+         // 
+         this.mnuZoom2x2.Index = 1;
+         this.mnuZoom2x2.Text = "&2x2 Magnification";
+         this.mnuZoom2x2.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuZoom4x4
+         // 
+         this.mnuZoom4x4.Checked = true;
+         this.mnuZoom4x4.Index = 2;
+         this.mnuZoom4x4.Text = "&4x4 Magnification";
+         this.mnuZoom4x4.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuZoom6x6
+         // 
+         this.mnuZoom6x6.Index = 3;
+         this.mnuZoom6x6.Text = "&6x6 Magnification";
+         this.mnuZoom6x6.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuZoom8x8
+         // 
+         this.mnuZoom8x8.Index = 4;
+         this.mnuZoom8x8.Text = "&8x8 Magnification";
+         this.mnuZoom8x8.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuZoom16x16
+         // 
+         this.mnuZoom16x16.Index = 5;
+         this.mnuZoom16x16.Text = "16&x16 Magnification";
+         this.mnuZoom16x16.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuZoomSeparator
+         // 
+         this.mnuZoomSeparator.Index = 6;
+         this.mnuZoomSeparator.Text = "-";
+         // 
+         // mnuZoomDecrease
+         // 
+         this.mnuZoomDecrease.Index = 7;
+         this.mnuZoomDecrease.Text = "&Decrease Magnification\t-";
+         this.mnuZoomDecrease.Click += new System.EventHandler(this.mnuZoomDecrease_Click);
+         // 
+         // mnuZoomIncrease
+         // 
+         this.mnuZoomIncrease.Index = 8;
+         this.mnuZoomIncrease.Text = "&Increase Magnification\t+";
+         this.mnuZoomIncrease.Click += new System.EventHandler(this.mnuZoomIncrease_Click);
+         // 
+         // mnuEdit
+         // 
+         this.mnuEdit.Index = 2;
+         this.mnuEdit.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.mnuEditUndo,
             this.mnuEditRedo,
             this.mnuEditSep1,
@@ -1032,137 +1139,137 @@ namespace SGDK2
             this.mnuEditBackdrop,
             this.mnuEditSep5,
             this.mnuEditShowGrid});
-          this.mnuEdit.MergeOrder = 2;
-          this.mnuEdit.Text = "&Edit";
-          // 
-          // mnuEditUndo
-          // 
-          this.mnuEditUndo.Index = 0;
-          this.mnuEditUndo.Shortcut = System.Windows.Forms.Shortcut.CtrlZ;
-          this.mnuEditUndo.Text = "&Undo";
-          this.mnuEditUndo.Click += new System.EventHandler(this.mnuEditUndo_Click);
-          // 
-          // mnuEditRedo
-          // 
-          this.mnuEditRedo.Index = 1;
-          this.mnuEditRedo.Shortcut = System.Windows.Forms.Shortcut.CtrlY;
-          this.mnuEditRedo.Text = "&Redo";
-          this.mnuEditRedo.Click += new System.EventHandler(this.mnuEditRedo_Click);
-          // 
-          // mnuEditSep1
-          // 
-          this.mnuEditSep1.Index = 2;
-          this.mnuEditSep1.Text = "-";
-          // 
-          // mnuEditCut
-          // 
-          this.mnuEditCut.Index = 3;
-          this.mnuEditCut.Shortcut = System.Windows.Forms.Shortcut.CtrlX;
-          this.mnuEditCut.Text = "Cu&t";
-          this.mnuEditCut.Click += new System.EventHandler(this.mnuClipAction_Click);
-          // 
-          // mnuEditCopy
-          // 
-          this.mnuEditCopy.Index = 4;
-          this.mnuEditCopy.Shortcut = System.Windows.Forms.Shortcut.CtrlC;
-          this.mnuEditCopy.Text = "&Copy";
-          this.mnuEditCopy.Click += new System.EventHandler(this.mnuClipAction_Click);
-          // 
-          // mnuEditPaste
-          // 
-          this.mnuEditPaste.Index = 5;
-          this.mnuEditPaste.Shortcut = System.Windows.Forms.Shortcut.CtrlV;
-          this.mnuEditPaste.Text = "&Paste";
-          this.mnuEditPaste.Click += new System.EventHandler(this.mnuClipAction_Click);
-          // 
-          // mnuEditDelete
-          // 
-          this.mnuEditDelete.Index = 6;
-          this.mnuEditDelete.Shortcut = System.Windows.Forms.Shortcut.Del;
-          this.mnuEditDelete.Text = "&Delete Selection";
-          this.mnuEditDelete.Click += new System.EventHandler(this.mnuClipAction_Click);
-          // 
-          // mnuEditSep2
-          // 
-          this.mnuEditSep2.Index = 7;
-          this.mnuEditSep2.Text = "-";
-          // 
-          // mnuEditResetPos
-          // 
-          this.mnuEditResetPos.Index = 8;
-          this.mnuEditResetPos.Text = "Re&set Position";
-          this.mnuEditResetPos.Click += new System.EventHandler(this.mnuEditResetPos_Click);
-          // 
-          // mnuEditSelectAll
-          // 
-          this.mnuEditSelectAll.Index = 9;
-          this.mnuEditSelectAll.Shortcut = System.Windows.Forms.Shortcut.CtrlA;
-          this.mnuEditSelectAll.Text = "Select &All";
-          this.mnuEditSelectAll.Click += new System.EventHandler(this.mnuEditSelectAll_Click);
-          // 
-          // mnuEditDeselect
-          // 
-          this.mnuEditDeselect.Index = 10;
-          this.mnuEditDeselect.Shortcut = System.Windows.Forms.Shortcut.CtrlShiftA;
-          this.mnuEditDeselect.Text = "D&eselect All";
-          this.mnuEditDeselect.Click += new System.EventHandler(this.mnuEditDeselect_Click);
-          // 
-          // mnuEditSep3
-          // 
-          this.mnuEditSep3.Index = 11;
-          this.mnuEditSep3.Text = "-";
-          // 
-          // mnuEditHFlip
-          // 
-          this.mnuEditHFlip.Index = 12;
-          this.mnuEditHFlip.Text = "Flip &Horizontally";
-          this.mnuEditHFlip.Click += new System.EventHandler(this.mnuEditFlip_Click);
-          // 
-          // mnuEditVFlip
-          // 
-          this.mnuEditVFlip.Index = 13;
-          this.mnuEditVFlip.Text = "Flip &Vertically";
-          this.mnuEditVFlip.Click += new System.EventHandler(this.mnuEditFlip_Click);
-          // 
-          // mnuEditHOffset
-          // 
-          this.mnuEditHOffset.Index = 14;
-          this.mnuEditHOffset.Text = "Hori&zontal Offset && Wrap";
-          this.mnuEditHOffset.Click += new System.EventHandler(this.mnuEditOffset_Click);
-          // 
-          // mnuEditVOffset
-          // 
-          this.mnuEditVOffset.Index = 15;
-          this.mnuEditVOffset.Text = "Vertical &Offset && Wrap";
-          this.mnuEditVOffset.Click += new System.EventHandler(this.mnuEditOffset_Click);
-          // 
-          // mnuEditTilePreview
-          // 
-          this.mnuEditTilePreview.Index = 16;
-          this.mnuEditTilePreview.Text = "Previe&w Tiling";
-          this.mnuEditTilePreview.Click += new System.EventHandler(this.mnuEditTilePreview_Click);
-          // 
-          // mnuHueMap
-          // 
-          this.mnuHueMap.Index = 17;
-          this.mnuHueMap.Text = "Re&map Hues";
-          this.mnuHueMap.Click += new System.EventHandler(this.mnuHueMap_Click);
-          // 
-          // mnuNoise
-          // 
-          this.mnuNoise.Index = 18;
-          this.mnuNoise.Text = "Add &Noise";
-          this.mnuNoise.Click += new System.EventHandler(this.mnuNoise_Click);
-          // 
-          // mnuEditSep4
-          // 
-          this.mnuEditSep4.Index = 19;
-          this.mnuEditSep4.Text = "-";
-          // 
-          // mnuEditSelectionHighlight
-          // 
-          this.mnuEditSelectionHighlight.Index = 20;
-          this.mnuEditSelectionHighlight.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+         this.mnuEdit.MergeOrder = 2;
+         this.mnuEdit.Text = "&Edit";
+         // 
+         // mnuEditUndo
+         // 
+         this.mnuEditUndo.Index = 0;
+         this.mnuEditUndo.Shortcut = System.Windows.Forms.Shortcut.CtrlZ;
+         this.mnuEditUndo.Text = "&Undo";
+         this.mnuEditUndo.Click += new System.EventHandler(this.mnuEditUndo_Click);
+         // 
+         // mnuEditRedo
+         // 
+         this.mnuEditRedo.Index = 1;
+         this.mnuEditRedo.Shortcut = System.Windows.Forms.Shortcut.CtrlY;
+         this.mnuEditRedo.Text = "&Redo";
+         this.mnuEditRedo.Click += new System.EventHandler(this.mnuEditRedo_Click);
+         // 
+         // mnuEditSep1
+         // 
+         this.mnuEditSep1.Index = 2;
+         this.mnuEditSep1.Text = "-";
+         // 
+         // mnuEditCut
+         // 
+         this.mnuEditCut.Index = 3;
+         this.mnuEditCut.Shortcut = System.Windows.Forms.Shortcut.CtrlX;
+         this.mnuEditCut.Text = "Cu&t";
+         this.mnuEditCut.Click += new System.EventHandler(this.mnuClipAction_Click);
+         // 
+         // mnuEditCopy
+         // 
+         this.mnuEditCopy.Index = 4;
+         this.mnuEditCopy.Shortcut = System.Windows.Forms.Shortcut.CtrlC;
+         this.mnuEditCopy.Text = "&Copy";
+         this.mnuEditCopy.Click += new System.EventHandler(this.mnuClipAction_Click);
+         // 
+         // mnuEditPaste
+         // 
+         this.mnuEditPaste.Index = 5;
+         this.mnuEditPaste.Shortcut = System.Windows.Forms.Shortcut.CtrlV;
+         this.mnuEditPaste.Text = "&Paste";
+         this.mnuEditPaste.Click += new System.EventHandler(this.mnuClipAction_Click);
+         // 
+         // mnuEditDelete
+         // 
+         this.mnuEditDelete.Index = 6;
+         this.mnuEditDelete.Shortcut = System.Windows.Forms.Shortcut.Del;
+         this.mnuEditDelete.Text = "&Delete Selection";
+         this.mnuEditDelete.Click += new System.EventHandler(this.mnuClipAction_Click);
+         // 
+         // mnuEditSep2
+         // 
+         this.mnuEditSep2.Index = 7;
+         this.mnuEditSep2.Text = "-";
+         // 
+         // mnuEditResetPos
+         // 
+         this.mnuEditResetPos.Index = 8;
+         this.mnuEditResetPos.Text = "Re&set Position";
+         this.mnuEditResetPos.Click += new System.EventHandler(this.mnuEditResetPos_Click);
+         // 
+         // mnuEditSelectAll
+         // 
+         this.mnuEditSelectAll.Index = 9;
+         this.mnuEditSelectAll.Shortcut = System.Windows.Forms.Shortcut.CtrlA;
+         this.mnuEditSelectAll.Text = "Select &All";
+         this.mnuEditSelectAll.Click += new System.EventHandler(this.mnuEditSelectAll_Click);
+         // 
+         // mnuEditDeselect
+         // 
+         this.mnuEditDeselect.Index = 10;
+         this.mnuEditDeselect.Shortcut = System.Windows.Forms.Shortcut.CtrlShiftA;
+         this.mnuEditDeselect.Text = "D&eselect All";
+         this.mnuEditDeselect.Click += new System.EventHandler(this.mnuEditDeselect_Click);
+         // 
+         // mnuEditSep3
+         // 
+         this.mnuEditSep3.Index = 11;
+         this.mnuEditSep3.Text = "-";
+         // 
+         // mnuEditHFlip
+         // 
+         this.mnuEditHFlip.Index = 12;
+         this.mnuEditHFlip.Text = "Flip &Horizontally";
+         this.mnuEditHFlip.Click += new System.EventHandler(this.mnuEditFlip_Click);
+         // 
+         // mnuEditVFlip
+         // 
+         this.mnuEditVFlip.Index = 13;
+         this.mnuEditVFlip.Text = "Flip &Vertically";
+         this.mnuEditVFlip.Click += new System.EventHandler(this.mnuEditFlip_Click);
+         // 
+         // mnuEditHOffset
+         // 
+         this.mnuEditHOffset.Index = 14;
+         this.mnuEditHOffset.Text = "Hori&zontal Offset && Wrap";
+         this.mnuEditHOffset.Click += new System.EventHandler(this.mnuEditOffset_Click);
+         // 
+         // mnuEditVOffset
+         // 
+         this.mnuEditVOffset.Index = 15;
+         this.mnuEditVOffset.Text = "Vertical &Offset && Wrap";
+         this.mnuEditVOffset.Click += new System.EventHandler(this.mnuEditOffset_Click);
+         // 
+         // mnuEditTilePreview
+         // 
+         this.mnuEditTilePreview.Index = 16;
+         this.mnuEditTilePreview.Text = "Previe&w Tiling";
+         this.mnuEditTilePreview.Click += new System.EventHandler(this.mnuEditTilePreview_Click);
+         // 
+         // mnuHueMap
+         // 
+         this.mnuHueMap.Index = 17;
+         this.mnuHueMap.Text = "Re&map Hues";
+         this.mnuHueMap.Click += new System.EventHandler(this.mnuHueMap_Click);
+         // 
+         // mnuNoise
+         // 
+         this.mnuNoise.Index = 18;
+         this.mnuNoise.Text = "Add &Noise";
+         this.mnuNoise.Click += new System.EventHandler(this.mnuNoise_Click);
+         // 
+         // mnuEditSep4
+         // 
+         this.mnuEditSep4.Index = 19;
+         this.mnuEditSep4.Text = "-";
+         // 
+         // mnuEditSelectionHighlight
+         // 
+         this.mnuEditSelectionHighlight.Index = 20;
+         this.mnuEditSelectionHighlight.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.mnuEditShowHighlight,
             this.mnuEditHighlightSep1,
             this.mnuEditSelRed,
@@ -1175,96 +1282,96 @@ namespace SGDK2
             this.mnuEditSelBlueF,
             this.mnuEditSelWhiteF,
             this.mnuEditSelBlackF});
-          this.mnuEditSelectionHighlight.Text = "Selection Highlight";
-          // 
-          // mnuEditShowHighlight
-          // 
-          this.mnuEditShowHighlight.Checked = true;
-          this.mnuEditShowHighlight.Index = 0;
-          this.mnuEditShowHighlight.Shortcut = System.Windows.Forms.Shortcut.CtrlT;
-          this.mnuEditShowHighlight.Text = "&Show Highlight";
-          this.mnuEditShowHighlight.Click += new System.EventHandler(this.mnuEditSelColor_Click);
-          // 
-          // mnuEditHighlightSep1
-          // 
-          this.mnuEditHighlightSep1.Index = 1;
-          this.mnuEditHighlightSep1.Text = "-";
-          // 
-          // mnuEditSelRed
-          // 
-          this.mnuEditSelRed.Index = 2;
-          this.mnuEditSelRed.RadioCheck = true;
-          this.mnuEditSelRed.Text = "Red";
-          this.mnuEditSelRed.Click += new System.EventHandler(this.mnuEditSelColor_Click);
-          // 
-          // mnuEditSelGreen
-          // 
-          this.mnuEditSelGreen.Index = 3;
-          this.mnuEditSelGreen.RadioCheck = true;
-          this.mnuEditSelGreen.Text = "Green";
-          this.mnuEditSelGreen.Click += new System.EventHandler(this.mnuEditSelColor_Click);
-          // 
-          // mnuEditSelBlue
-          // 
-          this.mnuEditSelBlue.Checked = true;
-          this.mnuEditSelBlue.Index = 4;
-          this.mnuEditSelBlue.RadioCheck = true;
-          this.mnuEditSelBlue.Text = "Blue";
-          this.mnuEditSelBlue.Click += new System.EventHandler(this.mnuEditSelColor_Click);
-          // 
-          // mnuEditSelWhite
-          // 
-          this.mnuEditSelWhite.Index = 5;
-          this.mnuEditSelWhite.RadioCheck = true;
-          this.mnuEditSelWhite.Text = "White";
-          this.mnuEditSelWhite.Click += new System.EventHandler(this.mnuEditSelColor_Click);
-          // 
-          // mnuEditSelBlack
-          // 
-          this.mnuEditSelBlack.Index = 6;
-          this.mnuEditSelBlack.RadioCheck = true;
-          this.mnuEditSelBlack.Text = "Black";
-          this.mnuEditSelBlack.Click += new System.EventHandler(this.mnuEditSelColor_Click);
-          // 
-          // mnuEditSelRedF
-          // 
-          this.mnuEditSelRedF.Index = 7;
-          this.mnuEditSelRedF.RadioCheck = true;
-          this.mnuEditSelRedF.Text = "Faint Red";
-          this.mnuEditSelRedF.Click += new System.EventHandler(this.mnuEditSelColor_Click);
-          // 
-          // mnuEditSelGreenF
-          // 
-          this.mnuEditSelGreenF.Index = 8;
-          this.mnuEditSelGreenF.RadioCheck = true;
-          this.mnuEditSelGreenF.Text = "Faint Green";
-          this.mnuEditSelGreenF.Click += new System.EventHandler(this.mnuEditSelColor_Click);
-          // 
-          // mnuEditSelBlueF
-          // 
-          this.mnuEditSelBlueF.Index = 9;
-          this.mnuEditSelBlueF.RadioCheck = true;
-          this.mnuEditSelBlueF.Text = "Faint Blue";
-          this.mnuEditSelBlueF.Click += new System.EventHandler(this.mnuEditSelColor_Click);
-          // 
-          // mnuEditSelWhiteF
-          // 
-          this.mnuEditSelWhiteF.Index = 10;
-          this.mnuEditSelWhiteF.RadioCheck = true;
-          this.mnuEditSelWhiteF.Text = "Faint White";
-          this.mnuEditSelWhiteF.Click += new System.EventHandler(this.mnuEditSelColor_Click);
-          // 
-          // mnuEditSelBlackF
-          // 
-          this.mnuEditSelBlackF.Index = 11;
-          this.mnuEditSelBlackF.RadioCheck = true;
-          this.mnuEditSelBlackF.Text = "Faint Black";
-          this.mnuEditSelBlackF.Click += new System.EventHandler(this.mnuEditSelColor_Click);
-          // 
-          // mnuEditBackdrop
-          // 
-          this.mnuEditBackdrop.Index = 21;
-          this.mnuEditBackdrop.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+         this.mnuEditSelectionHighlight.Text = "Selection Highlight";
+         // 
+         // mnuEditShowHighlight
+         // 
+         this.mnuEditShowHighlight.Checked = true;
+         this.mnuEditShowHighlight.Index = 0;
+         this.mnuEditShowHighlight.Shortcut = System.Windows.Forms.Shortcut.CtrlT;
+         this.mnuEditShowHighlight.Text = "&Show Highlight";
+         this.mnuEditShowHighlight.Click += new System.EventHandler(this.mnuEditSelColor_Click);
+         // 
+         // mnuEditHighlightSep1
+         // 
+         this.mnuEditHighlightSep1.Index = 1;
+         this.mnuEditHighlightSep1.Text = "-";
+         // 
+         // mnuEditSelRed
+         // 
+         this.mnuEditSelRed.Index = 2;
+         this.mnuEditSelRed.RadioCheck = true;
+         this.mnuEditSelRed.Text = "Red";
+         this.mnuEditSelRed.Click += new System.EventHandler(this.mnuEditSelColor_Click);
+         // 
+         // mnuEditSelGreen
+         // 
+         this.mnuEditSelGreen.Index = 3;
+         this.mnuEditSelGreen.RadioCheck = true;
+         this.mnuEditSelGreen.Text = "Green";
+         this.mnuEditSelGreen.Click += new System.EventHandler(this.mnuEditSelColor_Click);
+         // 
+         // mnuEditSelBlue
+         // 
+         this.mnuEditSelBlue.Checked = true;
+         this.mnuEditSelBlue.Index = 4;
+         this.mnuEditSelBlue.RadioCheck = true;
+         this.mnuEditSelBlue.Text = "Blue";
+         this.mnuEditSelBlue.Click += new System.EventHandler(this.mnuEditSelColor_Click);
+         // 
+         // mnuEditSelWhite
+         // 
+         this.mnuEditSelWhite.Index = 5;
+         this.mnuEditSelWhite.RadioCheck = true;
+         this.mnuEditSelWhite.Text = "White";
+         this.mnuEditSelWhite.Click += new System.EventHandler(this.mnuEditSelColor_Click);
+         // 
+         // mnuEditSelBlack
+         // 
+         this.mnuEditSelBlack.Index = 6;
+         this.mnuEditSelBlack.RadioCheck = true;
+         this.mnuEditSelBlack.Text = "Black";
+         this.mnuEditSelBlack.Click += new System.EventHandler(this.mnuEditSelColor_Click);
+         // 
+         // mnuEditSelRedF
+         // 
+         this.mnuEditSelRedF.Index = 7;
+         this.mnuEditSelRedF.RadioCheck = true;
+         this.mnuEditSelRedF.Text = "Faint Red";
+         this.mnuEditSelRedF.Click += new System.EventHandler(this.mnuEditSelColor_Click);
+         // 
+         // mnuEditSelGreenF
+         // 
+         this.mnuEditSelGreenF.Index = 8;
+         this.mnuEditSelGreenF.RadioCheck = true;
+         this.mnuEditSelGreenF.Text = "Faint Green";
+         this.mnuEditSelGreenF.Click += new System.EventHandler(this.mnuEditSelColor_Click);
+         // 
+         // mnuEditSelBlueF
+         // 
+         this.mnuEditSelBlueF.Index = 9;
+         this.mnuEditSelBlueF.RadioCheck = true;
+         this.mnuEditSelBlueF.Text = "Faint Blue";
+         this.mnuEditSelBlueF.Click += new System.EventHandler(this.mnuEditSelColor_Click);
+         // 
+         // mnuEditSelWhiteF
+         // 
+         this.mnuEditSelWhiteF.Index = 10;
+         this.mnuEditSelWhiteF.RadioCheck = true;
+         this.mnuEditSelWhiteF.Text = "Faint White";
+         this.mnuEditSelWhiteF.Click += new System.EventHandler(this.mnuEditSelColor_Click);
+         // 
+         // mnuEditSelBlackF
+         // 
+         this.mnuEditSelBlackF.Index = 11;
+         this.mnuEditSelBlackF.RadioCheck = true;
+         this.mnuEditSelBlackF.Text = "Faint Black";
+         this.mnuEditSelBlackF.Click += new System.EventHandler(this.mnuEditSelColor_Click);
+         // 
+         // mnuEditBackdrop
+         // 
+         this.mnuEditBackdrop.Index = 21;
+         this.mnuEditBackdrop.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.mnuEditBackWhiteDiamond,
             this.mnuEditBackBlackDiamond,
             this.mnuEditBackWhiteCross,
@@ -1272,80 +1379,80 @@ namespace SGDK2
             this.mnuEditBackWhite,
             this.mnuEditBackBlack,
             this.mnuEditBackGray});
-          this.mnuEditBackdrop.Text = "Backdrop";
-          // 
-          // mnuEditBackWhiteDiamond
-          // 
-          this.mnuEditBackWhiteDiamond.Checked = true;
-          this.mnuEditBackWhiteDiamond.Index = 0;
-          this.mnuEditBackWhiteDiamond.RadioCheck = true;
-          this.mnuEditBackWhiteDiamond.Shortcut = System.Windows.Forms.Shortcut.Ctrl1;
-          this.mnuEditBackWhiteDiamond.Text = "Gray and white diamonds";
-          this.mnuEditBackWhiteDiamond.Click += new System.EventHandler(this.mnuBackdrop_Click);
-          // 
-          // mnuEditBackBlackDiamond
-          // 
-          this.mnuEditBackBlackDiamond.Index = 1;
-          this.mnuEditBackBlackDiamond.RadioCheck = true;
-          this.mnuEditBackBlackDiamond.Shortcut = System.Windows.Forms.Shortcut.Ctrl2;
-          this.mnuEditBackBlackDiamond.Text = "Gray and black diamonds";
-          this.mnuEditBackBlackDiamond.Click += new System.EventHandler(this.mnuBackdrop_Click);
-          // 
-          // mnuEditBackWhiteCross
-          // 
-          this.mnuEditBackWhiteCross.Index = 2;
-          this.mnuEditBackWhiteCross.RadioCheck = true;
-          this.mnuEditBackWhiteCross.Shortcut = System.Windows.Forms.Shortcut.Ctrl3;
-          this.mnuEditBackWhiteCross.Text = "Light Crosshatch";
-          this.mnuEditBackWhiteCross.Click += new System.EventHandler(this.mnuBackdrop_Click);
-          // 
-          // mnuEditBackBlackCross
-          // 
-          this.mnuEditBackBlackCross.Index = 3;
-          this.mnuEditBackBlackCross.RadioCheck = true;
-          this.mnuEditBackBlackCross.Shortcut = System.Windows.Forms.Shortcut.Ctrl4;
-          this.mnuEditBackBlackCross.Text = "Dark Crosshatch";
-          this.mnuEditBackBlackCross.Click += new System.EventHandler(this.mnuBackdrop_Click);
-          // 
-          // mnuEditBackWhite
-          // 
-          this.mnuEditBackWhite.Index = 4;
-          this.mnuEditBackWhite.RadioCheck = true;
-          this.mnuEditBackWhite.Shortcut = System.Windows.Forms.Shortcut.Ctrl5;
-          this.mnuEditBackWhite.Text = "Solid White";
-          this.mnuEditBackWhite.Click += new System.EventHandler(this.mnuBackdrop_Click);
-          // 
-          // mnuEditBackBlack
-          // 
-          this.mnuEditBackBlack.Index = 5;
-          this.mnuEditBackBlack.RadioCheck = true;
-          this.mnuEditBackBlack.Shortcut = System.Windows.Forms.Shortcut.Ctrl6;
-          this.mnuEditBackBlack.Text = "Solid Black";
-          this.mnuEditBackBlack.Click += new System.EventHandler(this.mnuBackdrop_Click);
-          // 
-          // mnuEditBackGray
-          // 
-          this.mnuEditBackGray.Index = 6;
-          this.mnuEditBackGray.RadioCheck = true;
-          this.mnuEditBackGray.Shortcut = System.Windows.Forms.Shortcut.Ctrl7;
-          this.mnuEditBackGray.Text = "Solid Gray";
-          this.mnuEditBackGray.Click += new System.EventHandler(this.mnuBackdrop_Click);
-          // 
-          // mnuEditSep5
-          // 
-          this.mnuEditSep5.Index = 22;
-          this.mnuEditSep5.Text = "-";
-          // 
-          // mnuEditShowGrid
-          // 
-          this.mnuEditShowGrid.Index = 23;
-          this.mnuEditShowGrid.Text = "&Grid";
-          this.mnuEditShowGrid.Click += new System.EventHandler(this.mnuEditShowGrid_Click);
-          // 
-          // mnuTools
-          // 
-          this.mnuTools.Index = 3;
-          this.mnuTools.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+         this.mnuEditBackdrop.Text = "Backdrop";
+         // 
+         // mnuEditBackWhiteDiamond
+         // 
+         this.mnuEditBackWhiteDiamond.Checked = true;
+         this.mnuEditBackWhiteDiamond.Index = 0;
+         this.mnuEditBackWhiteDiamond.RadioCheck = true;
+         this.mnuEditBackWhiteDiamond.Shortcut = System.Windows.Forms.Shortcut.Ctrl1;
+         this.mnuEditBackWhiteDiamond.Text = "Gray and white diamonds";
+         this.mnuEditBackWhiteDiamond.Click += new System.EventHandler(this.mnuBackdrop_Click);
+         // 
+         // mnuEditBackBlackDiamond
+         // 
+         this.mnuEditBackBlackDiamond.Index = 1;
+         this.mnuEditBackBlackDiamond.RadioCheck = true;
+         this.mnuEditBackBlackDiamond.Shortcut = System.Windows.Forms.Shortcut.Ctrl2;
+         this.mnuEditBackBlackDiamond.Text = "Gray and black diamonds";
+         this.mnuEditBackBlackDiamond.Click += new System.EventHandler(this.mnuBackdrop_Click);
+         // 
+         // mnuEditBackWhiteCross
+         // 
+         this.mnuEditBackWhiteCross.Index = 2;
+         this.mnuEditBackWhiteCross.RadioCheck = true;
+         this.mnuEditBackWhiteCross.Shortcut = System.Windows.Forms.Shortcut.Ctrl3;
+         this.mnuEditBackWhiteCross.Text = "Light Crosshatch";
+         this.mnuEditBackWhiteCross.Click += new System.EventHandler(this.mnuBackdrop_Click);
+         // 
+         // mnuEditBackBlackCross
+         // 
+         this.mnuEditBackBlackCross.Index = 3;
+         this.mnuEditBackBlackCross.RadioCheck = true;
+         this.mnuEditBackBlackCross.Shortcut = System.Windows.Forms.Shortcut.Ctrl4;
+         this.mnuEditBackBlackCross.Text = "Dark Crosshatch";
+         this.mnuEditBackBlackCross.Click += new System.EventHandler(this.mnuBackdrop_Click);
+         // 
+         // mnuEditBackWhite
+         // 
+         this.mnuEditBackWhite.Index = 4;
+         this.mnuEditBackWhite.RadioCheck = true;
+         this.mnuEditBackWhite.Shortcut = System.Windows.Forms.Shortcut.Ctrl5;
+         this.mnuEditBackWhite.Text = "Solid White";
+         this.mnuEditBackWhite.Click += new System.EventHandler(this.mnuBackdrop_Click);
+         // 
+         // mnuEditBackBlack
+         // 
+         this.mnuEditBackBlack.Index = 5;
+         this.mnuEditBackBlack.RadioCheck = true;
+         this.mnuEditBackBlack.Shortcut = System.Windows.Forms.Shortcut.Ctrl6;
+         this.mnuEditBackBlack.Text = "Solid Black";
+         this.mnuEditBackBlack.Click += new System.EventHandler(this.mnuBackdrop_Click);
+         // 
+         // mnuEditBackGray
+         // 
+         this.mnuEditBackGray.Index = 6;
+         this.mnuEditBackGray.RadioCheck = true;
+         this.mnuEditBackGray.Shortcut = System.Windows.Forms.Shortcut.Ctrl7;
+         this.mnuEditBackGray.Text = "Solid Gray";
+         this.mnuEditBackGray.Click += new System.EventHandler(this.mnuBackdrop_Click);
+         // 
+         // mnuEditSep5
+         // 
+         this.mnuEditSep5.Index = 22;
+         this.mnuEditSep5.Text = "-";
+         // 
+         // mnuEditShowGrid
+         // 
+         this.mnuEditShowGrid.Index = 23;
+         this.mnuEditShowGrid.Text = "&Grid";
+         this.mnuEditShowGrid.Click += new System.EventHandler(this.mnuEditShowGrid_Click);
+         // 
+         // mnuTools
+         // 
+         this.mnuTools.Index = 3;
+         this.mnuTools.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.mnuToolFreeDraw,
             this.mnuToolFreeLine,
             this.mnuToolBezier,
@@ -1374,192 +1481,192 @@ namespace SGDK2
             this.mnuDisjointedColors,
             this.mnuToolSep2,
             this.mnuPen});
-          this.mnuTools.MergeOrder = 3;
-          this.mnuTools.MergeType = System.Windows.Forms.MenuMerge.Replace;
-          this.mnuTools.Text = "&Tools";
-          // 
-          // mnuToolFreeDraw
-          // 
-          this.mnuToolFreeDraw.Checked = true;
-          this.mnuToolFreeDraw.Index = 0;
-          this.mnuToolFreeDraw.RadioCheck = true;
-          this.mnuToolFreeDraw.Text = "&Freehand Drawing";
-          this.mnuToolFreeDraw.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuToolFreeLine
-          // 
-          this.mnuToolFreeLine.Index = 1;
-          this.mnuToolFreeLine.RadioCheck = true;
-          this.mnuToolFreeLine.Text = "Freeha&nd Lines";
-          this.mnuToolFreeLine.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuToolBezier
-          // 
-          this.mnuToolBezier.Index = 2;
-          this.mnuToolBezier.Text = "&Bezier Curves";
-          this.mnuToolBezier.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuToolLine
-          // 
-          this.mnuToolLine.Index = 3;
-          this.mnuToolLine.RadioCheck = true;
-          this.mnuToolLine.Text = "&Line";
-          this.mnuToolLine.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuToolRectangle
-          // 
-          this.mnuToolRectangle.Index = 4;
-          this.mnuToolRectangle.RadioCheck = true;
-          this.mnuToolRectangle.Text = "&Rectangle";
-          this.mnuToolRectangle.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuToolEllipse
-          // 
-          this.mnuToolEllipse.Index = 5;
-          this.mnuToolEllipse.RadioCheck = true;
-          this.mnuToolEllipse.Text = "Elli&pse";
-          this.mnuToolEllipse.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuToolAirbrush
-          // 
-          this.mnuToolAirbrush.Index = 6;
-          this.mnuToolAirbrush.RadioCheck = true;
-          this.mnuToolAirbrush.Text = "Airbr&ush";
-          this.mnuToolAirbrush.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuToolSmooth
-          // 
-          this.mnuToolSmooth.Index = 7;
-          this.mnuToolSmooth.Text = "Smoot&h";
-          this.mnuToolSmooth.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuToolErase
-          // 
-          this.mnuToolErase.Index = 8;
-          this.mnuToolErase.RadioCheck = true;
-          this.mnuToolErase.Text = "&Erase";
-          this.mnuToolErase.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuToolGradientFill
-          // 
-          this.mnuToolGradientFill.Index = 9;
-          this.mnuToolGradientFill.RadioCheck = true;
-          this.mnuToolGradientFill.Text = "Gradient Fill";
-          this.mnuToolGradientFill.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuToolFloodFill
-          // 
-          this.mnuToolFloodFill.Index = 10;
-          this.mnuToolFloodFill.RadioCheck = true;
-          this.mnuToolFloodFill.Text = "Flood Fill";
-          this.mnuToolFloodFill.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuToolFloodSel
-          // 
-          this.mnuToolFloodSel.Index = 11;
-          this.mnuToolFloodSel.RadioCheck = true;
-          this.mnuToolFloodSel.Text = "Color &Wand";
-          this.mnuToolFloodSel.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuToolSelRect
-          // 
-          this.mnuToolSelRect.Index = 12;
-          this.mnuToolSelRect.RadioCheck = true;
-          this.mnuToolSelRect.Text = "Rectan&gular Selection";
-          this.mnuToolSelRect.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuToolSelFree
-          // 
-          this.mnuToolSelFree.Index = 13;
-          this.mnuToolSelFree.RadioCheck = true;
-          this.mnuToolSelFree.Text = "&Irregular Selection";
-          this.mnuToolSelFree.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuToolTranslate
-          // 
-          this.mnuToolTranslate.Index = 14;
-          this.mnuToolTranslate.RadioCheck = true;
-          this.mnuToolTranslate.Text = "&Move Selection";
-          this.mnuToolTranslate.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuToolRotate
-          // 
-          this.mnuToolRotate.Index = 15;
-          this.mnuToolRotate.RadioCheck = true;
-          this.mnuToolRotate.Text = "Ro&tate Selection";
-          this.mnuToolRotate.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuToolScale
-          // 
-          this.mnuToolScale.Index = 16;
-          this.mnuToolScale.RadioCheck = true;
-          this.mnuToolScale.Text = "Si&ze Selection";
-          this.mnuToolScale.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuToolDropper
-          // 
-          this.mnuToolDropper.Index = 17;
-          this.mnuToolDropper.RadioCheck = true;
-          this.mnuToolDropper.Text = "&Color Pick Dropper";
-          this.mnuToolDropper.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuToolCustom
-          // 
-          this.mnuToolCustom.Index = 18;
-          this.mnuToolCustom.Text = "Custom Tool";
-          // 
-          // mnuToolSep1
-          // 
-          this.mnuToolSep1.Index = 19;
-          this.mnuToolSep1.Text = "-";
-          // 
-          // mnuToolAntiAlias
-          // 
-          this.mnuToolAntiAlias.Checked = true;
-          this.mnuToolAntiAlias.Index = 20;
-          this.mnuToolAntiAlias.Text = "&Anti-Alias";
-          this.mnuToolAntiAlias.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuToolOutline
-          // 
-          this.mnuToolOutline.Checked = true;
-          this.mnuToolOutline.Index = 21;
-          this.mnuToolOutline.Text = "Draw &Outlined Shapes";
-          this.mnuToolOutline.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuToolFill
-          // 
-          this.mnuToolFill.Index = 22;
-          this.mnuToolFill.Text = "&Draw Filled Shapes";
-          this.mnuToolFill.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuToolGradientFills
-          // 
-          this.mnuToolGradientFills.Index = 23;
-          this.mnuToolGradientFills.Text = "Gradient Fills";
-          this.mnuToolGradientFills.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuToolLock
-          // 
-          this.mnuToolLock.Index = 24;
-          this.mnuToolLock.Text = "Loc&k Tools Proportions";
-          this.mnuToolLock.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuDisjointedColors
-          // 
-          this.mnuDisjointedColors.Index = 25;
-          this.mnuDisjointedColors.Text = "Affect Un&joined Color Regions";
-          this.mnuDisjointedColors.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuToolSep2
-          // 
-          this.mnuToolSep2.Index = 26;
-          this.mnuToolSep2.Text = "-";
-          // 
-          // mnuPen
-          // 
-          this.mnuPen.Index = 27;
-          this.mnuPen.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+         this.mnuTools.MergeOrder = 3;
+         this.mnuTools.MergeType = System.Windows.Forms.MenuMerge.Replace;
+         this.mnuTools.Text = "&Tools";
+         // 
+         // mnuToolFreeDraw
+         // 
+         this.mnuToolFreeDraw.Checked = true;
+         this.mnuToolFreeDraw.Index = 0;
+         this.mnuToolFreeDraw.RadioCheck = true;
+         this.mnuToolFreeDraw.Text = "&Freehand Drawing";
+         this.mnuToolFreeDraw.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuToolFreeLine
+         // 
+         this.mnuToolFreeLine.Index = 1;
+         this.mnuToolFreeLine.RadioCheck = true;
+         this.mnuToolFreeLine.Text = "Freeha&nd Lines";
+         this.mnuToolFreeLine.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuToolBezier
+         // 
+         this.mnuToolBezier.Index = 2;
+         this.mnuToolBezier.Text = "&Bezier Curves";
+         this.mnuToolBezier.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuToolLine
+         // 
+         this.mnuToolLine.Index = 3;
+         this.mnuToolLine.RadioCheck = true;
+         this.mnuToolLine.Text = "&Line";
+         this.mnuToolLine.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuToolRectangle
+         // 
+         this.mnuToolRectangle.Index = 4;
+         this.mnuToolRectangle.RadioCheck = true;
+         this.mnuToolRectangle.Text = "&Rectangle";
+         this.mnuToolRectangle.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuToolEllipse
+         // 
+         this.mnuToolEllipse.Index = 5;
+         this.mnuToolEllipse.RadioCheck = true;
+         this.mnuToolEllipse.Text = "Elli&pse";
+         this.mnuToolEllipse.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuToolAirbrush
+         // 
+         this.mnuToolAirbrush.Index = 6;
+         this.mnuToolAirbrush.RadioCheck = true;
+         this.mnuToolAirbrush.Text = "Airbr&ush";
+         this.mnuToolAirbrush.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuToolSmooth
+         // 
+         this.mnuToolSmooth.Index = 7;
+         this.mnuToolSmooth.Text = "Smoot&h";
+         this.mnuToolSmooth.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuToolErase
+         // 
+         this.mnuToolErase.Index = 8;
+         this.mnuToolErase.RadioCheck = true;
+         this.mnuToolErase.Text = "&Erase";
+         this.mnuToolErase.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuToolGradientFill
+         // 
+         this.mnuToolGradientFill.Index = 9;
+         this.mnuToolGradientFill.RadioCheck = true;
+         this.mnuToolGradientFill.Text = "Gradient Fill";
+         this.mnuToolGradientFill.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuToolFloodFill
+         // 
+         this.mnuToolFloodFill.Index = 10;
+         this.mnuToolFloodFill.RadioCheck = true;
+         this.mnuToolFloodFill.Text = "Flood Fill";
+         this.mnuToolFloodFill.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuToolFloodSel
+         // 
+         this.mnuToolFloodSel.Index = 11;
+         this.mnuToolFloodSel.RadioCheck = true;
+         this.mnuToolFloodSel.Text = "Color &Wand";
+         this.mnuToolFloodSel.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuToolSelRect
+         // 
+         this.mnuToolSelRect.Index = 12;
+         this.mnuToolSelRect.RadioCheck = true;
+         this.mnuToolSelRect.Text = "Rectan&gular Selection";
+         this.mnuToolSelRect.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuToolSelFree
+         // 
+         this.mnuToolSelFree.Index = 13;
+         this.mnuToolSelFree.RadioCheck = true;
+         this.mnuToolSelFree.Text = "&Irregular Selection";
+         this.mnuToolSelFree.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuToolTranslate
+         // 
+         this.mnuToolTranslate.Index = 14;
+         this.mnuToolTranslate.RadioCheck = true;
+         this.mnuToolTranslate.Text = "&Move Selection";
+         this.mnuToolTranslate.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuToolRotate
+         // 
+         this.mnuToolRotate.Index = 15;
+         this.mnuToolRotate.RadioCheck = true;
+         this.mnuToolRotate.Text = "Ro&tate Selection";
+         this.mnuToolRotate.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuToolScale
+         // 
+         this.mnuToolScale.Index = 16;
+         this.mnuToolScale.RadioCheck = true;
+         this.mnuToolScale.Text = "Si&ze Selection";
+         this.mnuToolScale.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuToolDropper
+         // 
+         this.mnuToolDropper.Index = 17;
+         this.mnuToolDropper.RadioCheck = true;
+         this.mnuToolDropper.Text = "&Color Pick Dropper";
+         this.mnuToolDropper.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuToolCustom
+         // 
+         this.mnuToolCustom.Index = 18;
+         this.mnuToolCustom.Text = "Custom Tool";
+         // 
+         // mnuToolSep1
+         // 
+         this.mnuToolSep1.Index = 19;
+         this.mnuToolSep1.Text = "-";
+         // 
+         // mnuToolAntiAlias
+         // 
+         this.mnuToolAntiAlias.Checked = true;
+         this.mnuToolAntiAlias.Index = 20;
+         this.mnuToolAntiAlias.Text = "&Anti-Alias";
+         this.mnuToolAntiAlias.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuToolOutline
+         // 
+         this.mnuToolOutline.Checked = true;
+         this.mnuToolOutline.Index = 21;
+         this.mnuToolOutline.Text = "Draw &Outlined Shapes";
+         this.mnuToolOutline.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuToolFill
+         // 
+         this.mnuToolFill.Index = 22;
+         this.mnuToolFill.Text = "&Draw Filled Shapes";
+         this.mnuToolFill.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuToolGradientFills
+         // 
+         this.mnuToolGradientFills.Index = 23;
+         this.mnuToolGradientFills.Text = "Gradient Fills";
+         this.mnuToolGradientFills.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuToolLock
+         // 
+         this.mnuToolLock.Index = 24;
+         this.mnuToolLock.Text = "Loc&k Tools Proportions";
+         this.mnuToolLock.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuDisjointedColors
+         // 
+         this.mnuDisjointedColors.Index = 25;
+         this.mnuDisjointedColors.Text = "Affect Un&joined Color Regions";
+         this.mnuDisjointedColors.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuToolSep2
+         // 
+         this.mnuToolSep2.Index = 26;
+         this.mnuToolSep2.Text = "-";
+         // 
+         // mnuPen
+         // 
+         this.mnuPen.Index = 27;
+         this.mnuPen.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.mnuPixelPen,
             this.mnuTinyPen,
             this.mnuSmallPen,
@@ -1573,101 +1680,101 @@ namespace SGDK2
             this.mnuPenSep2,
             this.mnuRoundPen,
             this.mnuSquarePen});
-          this.mnuPen.Text = "Pen";
-          // 
-          // mnuPixelPen
-          // 
-          this.mnuPixelPen.Checked = true;
-          this.mnuPixelPen.Index = 0;
-          this.mnuPixelPen.RadioCheck = true;
-          this.mnuPixelPen.Text = "&Pixel (1x1)";
-          this.mnuPixelPen.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuTinyPen
-          // 
-          this.mnuTinyPen.Index = 1;
-          this.mnuTinyPen.RadioCheck = true;
-          this.mnuTinyPen.Text = "&Tiny (3x3)";
-          this.mnuTinyPen.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuSmallPen
-          // 
-          this.mnuSmallPen.Index = 2;
-          this.mnuSmallPen.RadioCheck = true;
-          this.mnuSmallPen.Text = "&Small (5x5)";
-          this.mnuSmallPen.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuMediumPen
-          // 
-          this.mnuMediumPen.Index = 3;
-          this.mnuMediumPen.RadioCheck = true;
-          this.mnuMediumPen.Text = "&Medium (7x7)";
-          this.mnuMediumPen.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuLargePen
-          // 
-          this.mnuLargePen.Index = 4;
-          this.mnuLargePen.RadioCheck = true;
-          this.mnuLargePen.Text = "&Large (9x9)";
-          this.mnuLargePen.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuHugePen
-          // 
-          this.mnuHugePen.Index = 5;
-          this.mnuHugePen.RadioCheck = true;
-          this.mnuHugePen.Text = "&Huge (11x11)";
-          this.mnuHugePen.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnu64Pen
-          // 
-          this.mnu64Pen.Index = 6;
-          this.mnu64Pen.Text = "&64x64";
-          this.mnu64Pen.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuPenSep1
-          // 
-          this.mnuPenSep1.Index = 7;
-          this.mnuPenSep1.Text = "-";
-          // 
-          // mnuPenDecrease
-          // 
-          this.mnuPenDecrease.Index = 8;
-          this.mnuPenDecrease.Text = "&Decrease Size\t[";
-          this.mnuPenDecrease.Click += new System.EventHandler(this.mnuPenDecrease_Click);
-          // 
-          // mnuPenIncrease
-          // 
-          this.mnuPenIncrease.Index = 9;
-          this.mnuPenIncrease.Text = "&Increase Size\t]";
-          this.mnuPenIncrease.Click += new System.EventHandler(this.mnuPenIncrease_Click);
-          // 
-          // mnuPenSep2
-          // 
-          this.mnuPenSep2.Index = 10;
-          this.mnuPenSep2.Text = "-";
-          // 
-          // mnuRoundPen
-          // 
-          this.mnuRoundPen.Checked = true;
-          this.mnuRoundPen.Index = 11;
-          this.mnuRoundPen.RadioCheck = true;
-          this.mnuRoundPen.Shortcut = System.Windows.Forms.Shortcut.F9;
-          this.mnuRoundPen.Text = "&Round";
-          this.mnuRoundPen.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // mnuSquarePen
-          // 
-          this.mnuSquarePen.Index = 12;
-          this.mnuSquarePen.RadioCheck = true;
-          this.mnuSquarePen.Shortcut = System.Windows.Forms.Shortcut.F10;
-          this.mnuSquarePen.Text = "S&quare";
-          this.mnuSquarePen.Click += new System.EventHandler(this.mnuTool_Click);
-          // 
-          // tbrOptions
-          // 
-          this.tbrOptions.Appearance = System.Windows.Forms.ToolBarAppearance.Flat;
-          this.tbrOptions.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-          this.tbrOptions.Buttons.AddRange(new System.Windows.Forms.ToolBarButton[] {
+         this.mnuPen.Text = "Pen";
+         // 
+         // mnuPixelPen
+         // 
+         this.mnuPixelPen.Checked = true;
+         this.mnuPixelPen.Index = 0;
+         this.mnuPixelPen.RadioCheck = true;
+         this.mnuPixelPen.Text = "&Pixel (1x1)";
+         this.mnuPixelPen.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuTinyPen
+         // 
+         this.mnuTinyPen.Index = 1;
+         this.mnuTinyPen.RadioCheck = true;
+         this.mnuTinyPen.Text = "&Tiny (3x3)";
+         this.mnuTinyPen.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuSmallPen
+         // 
+         this.mnuSmallPen.Index = 2;
+         this.mnuSmallPen.RadioCheck = true;
+         this.mnuSmallPen.Text = "&Small (5x5)";
+         this.mnuSmallPen.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuMediumPen
+         // 
+         this.mnuMediumPen.Index = 3;
+         this.mnuMediumPen.RadioCheck = true;
+         this.mnuMediumPen.Text = "&Medium (7x7)";
+         this.mnuMediumPen.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuLargePen
+         // 
+         this.mnuLargePen.Index = 4;
+         this.mnuLargePen.RadioCheck = true;
+         this.mnuLargePen.Text = "&Large (9x9)";
+         this.mnuLargePen.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuHugePen
+         // 
+         this.mnuHugePen.Index = 5;
+         this.mnuHugePen.RadioCheck = true;
+         this.mnuHugePen.Text = "&Huge (11x11)";
+         this.mnuHugePen.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnu64Pen
+         // 
+         this.mnu64Pen.Index = 6;
+         this.mnu64Pen.Text = "&64x64";
+         this.mnu64Pen.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuPenSep1
+         // 
+         this.mnuPenSep1.Index = 7;
+         this.mnuPenSep1.Text = "-";
+         // 
+         // mnuPenDecrease
+         // 
+         this.mnuPenDecrease.Index = 8;
+         this.mnuPenDecrease.Text = "&Decrease Size\t[";
+         this.mnuPenDecrease.Click += new System.EventHandler(this.mnuPenDecrease_Click);
+         // 
+         // mnuPenIncrease
+         // 
+         this.mnuPenIncrease.Index = 9;
+         this.mnuPenIncrease.Text = "&Increase Size\t]";
+         this.mnuPenIncrease.Click += new System.EventHandler(this.mnuPenIncrease_Click);
+         // 
+         // mnuPenSep2
+         // 
+         this.mnuPenSep2.Index = 10;
+         this.mnuPenSep2.Text = "-";
+         // 
+         // mnuRoundPen
+         // 
+         this.mnuRoundPen.Checked = true;
+         this.mnuRoundPen.Index = 11;
+         this.mnuRoundPen.RadioCheck = true;
+         this.mnuRoundPen.Shortcut = System.Windows.Forms.Shortcut.F9;
+         this.mnuRoundPen.Text = "&Round";
+         this.mnuRoundPen.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // mnuSquarePen
+         // 
+         this.mnuSquarePen.Index = 12;
+         this.mnuSquarePen.RadioCheck = true;
+         this.mnuSquarePen.Shortcut = System.Windows.Forms.Shortcut.F10;
+         this.mnuSquarePen.Text = "S&quare";
+         this.mnuSquarePen.Click += new System.EventHandler(this.mnuTool_Click);
+         // 
+         // tbrOptions
+         // 
+         this.tbrOptions.Appearance = System.Windows.Forms.ToolBarAppearance.Flat;
+         this.tbrOptions.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+         this.tbrOptions.Buttons.AddRange(new System.Windows.Forms.ToolBarButton[] {
             this.tbbAntiAlias,
             this.tbbOutline,
             this.tbbFill,
@@ -1688,196 +1795,196 @@ namespace SGDK2
             this.tbsOptSep3,
             this.tbdZoom,
             this.tbbShowGrid});
-          this.tbrOptions.Divider = false;
-          this.tbrOptions.DropDownArrows = true;
-          this.tbrOptions.ImageList = this.imlGraphicsEditor;
-          this.tbrOptions.Location = new System.Drawing.Point(54, 0);
-          this.tbrOptions.Name = "tbrOptions";
-          this.tbrOptions.ShowToolTips = true;
-          this.tbrOptions.Size = new System.Drawing.Size(570, 27);
-          this.tbrOptions.TabIndex = 1;
-          this.tbrOptions.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tbrGraphicsEditor_ButtonClick);
-          // 
-          // tbbAntiAlias
-          // 
-          this.tbbAntiAlias.ImageIndex = 6;
-          this.tbbAntiAlias.Name = "tbbAntiAlias";
-          this.tbbAntiAlias.Pushed = true;
-          this.tbbAntiAlias.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbAntiAlias.ToolTipText = "Toggle anti-aliasing";
-          // 
-          // tbbOutline
-          // 
-          this.tbbOutline.ImageIndex = 8;
-          this.tbbOutline.Name = "tbbOutline";
-          this.tbbOutline.Pushed = true;
-          this.tbbOutline.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbOutline.ToolTipText = "Toggle drawing of outlines around shapes";
-          // 
-          // tbbFill
-          // 
-          this.tbbFill.ImageIndex = 34;
-          this.tbbFill.Name = "tbbFill";
-          this.tbbFill.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbFill.ToolTipText = "Toggle filling of shapes";
-          // 
-          // tbbGradientFills
-          // 
-          this.tbbGradientFills.ImageIndex = 40;
-          this.tbbGradientFills.Name = "tbbGradientFills";
-          this.tbbGradientFills.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbGradientFills.ToolTipText = "Toggle use of gradients on filled shapes";
-          // 
-          // tbbLock
-          // 
-          this.tbbLock.ImageIndex = 32;
-          this.tbbLock.Name = "tbbLock";
-          this.tbbLock.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbLock.ToolTipText = "Toggle locking of proportions and rotation to nice ratios";
-          // 
-          // tbbDisjointedColors
-          // 
-          this.tbbDisjointedColors.ImageIndex = 46;
-          this.tbbDisjointedColors.Name = "tbbDisjointedColors";
-          this.tbbDisjointedColors.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbDisjointedColors.ToolTipText = "Fill and Color Wand affect all similar colors instead of joined regions";
-          // 
-          // tbsOptSep1
-          // 
-          this.tbsOptSep1.Name = "tbsOptSep1";
-          this.tbsOptSep1.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
-          // 
-          // tbbPixelPen
-          // 
-          this.tbbPixelPen.ImageIndex = 9;
-          this.tbbPixelPen.Name = "tbbPixelPen";
-          this.tbbPixelPen.Pushed = true;
-          this.tbbPixelPen.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbPixelPen.ToolTipText = "1x1 pen";
-          // 
-          // tbbTinyPen
-          // 
-          this.tbbTinyPen.ImageIndex = 10;
-          this.tbbTinyPen.Name = "tbbTinyPen";
-          this.tbbTinyPen.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbTinyPen.ToolTipText = "3x3 Pen";
-          // 
-          // tbbSmallPen
-          // 
-          this.tbbSmallPen.ImageIndex = 11;
-          this.tbbSmallPen.Name = "tbbSmallPen";
-          this.tbbSmallPen.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbSmallPen.ToolTipText = "5x5 pen";
-          // 
-          // tbbMediumPen
-          // 
-          this.tbbMediumPen.ImageIndex = 12;
-          this.tbbMediumPen.Name = "tbbMediumPen";
-          this.tbbMediumPen.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbMediumPen.ToolTipText = "7x7 pen";
-          // 
-          // tbbLargePen
-          // 
-          this.tbbLargePen.ImageIndex = 13;
-          this.tbbLargePen.Name = "tbbLargePen";
-          this.tbbLargePen.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbLargePen.ToolTipText = "9x9 pen";
-          // 
-          // tbbHugePen
-          // 
-          this.tbbHugePen.ImageIndex = 14;
-          this.tbbHugePen.Name = "tbbHugePen";
-          this.tbbHugePen.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbHugePen.ToolTipText = "11x11 pen";
-          // 
-          // tbb64Pen
-          // 
-          this.tbb64Pen.ImageIndex = 15;
-          this.tbb64Pen.Name = "tbb64Pen";
-          this.tbb64Pen.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbb64Pen.ToolTipText = "64x64 pen";
-          // 
-          // tbsOptSep2
-          // 
-          this.tbsOptSep2.Name = "tbsOptSep2";
-          this.tbsOptSep2.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
-          // 
-          // tbbRound
-          // 
-          this.tbbRound.ImageIndex = 14;
-          this.tbbRound.Name = "tbbRound";
-          this.tbbRound.Pushed = true;
-          this.tbbRound.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbRound.ToolTipText = "Round Pen";
-          // 
-          // tbbSquare
-          // 
-          this.tbbSquare.ImageIndex = 20;
-          this.tbbSquare.Name = "tbbSquare";
-          this.tbbSquare.ToolTipText = "Square/flat pen";
-          // 
-          // tbsOptSep3
-          // 
-          this.tbsOptSep3.Name = "tbsOptSep3";
-          this.tbsOptSep3.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
-          // 
-          // tbdZoom
-          // 
-          this.tbdZoom.DropDownMenu = this.mnuCZoom;
-          this.tbdZoom.ImageIndex = 23;
-          this.tbdZoom.Name = "tbdZoom";
-          this.tbdZoom.Style = System.Windows.Forms.ToolBarButtonStyle.DropDownButton;
-          this.tbdZoom.ToolTipText = "Set magnification level";
-          // 
-          // tbbShowGrid
-          // 
-          this.tbbShowGrid.ImageIndex = 44;
-          this.tbbShowGrid.Name = "tbbShowGrid";
-          this.tbbShowGrid.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
-          this.tbbShowGrid.ToolTipText = "Toggle grid";
-          // 
-          // ToolSplitter
-          // 
-          this.ToolSplitter.Location = new System.Drawing.Point(48, 0);
-          this.ToolSplitter.Name = "ToolSplitter";
-          this.ToolSplitter.Size = new System.Drawing.Size(6, 405);
-          this.ToolSplitter.TabIndex = 2;
-          this.ToolSplitter.TabStop = false;
-          // 
-          // ctlColorSel
-          // 
-          this.ctlColorSel.CurrentColorType = SGDK2.SelectColorType.Pen;
-          this.ctlColorSel.Cursor = System.Windows.Forms.Cursors.Default;
-          this.ctlColorSel.Location = new System.Drawing.Point(328, 40);
-          this.ctlColorSel.Name = "ctlColorSel";
-          this.ctlColorSel.Size = new System.Drawing.Size(288, 296);
-          this.ctlColorSel.TabIndex = 3;
-          this.ctlColorSel.Text = "Color Selector";
-          // 
-          // dataMonitor
-          // 
-          this.dataMonitor.GraphicSheetRowDeleted += new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(this.dataMonitor_GraphicSheetRowDeleted);
-          this.dataMonitor.GraphicSheetRowChanged += new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(this.dataMonitor_GraphicSheetRowChanged);
-          this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
-          // 
-          // frmGraphicsEditor
-          // 
-          this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-          this.AutoScroll = true;
-          this.ClientSize = new System.Drawing.Size(624, 405);
-          this.Controls.Add(this.ctlColorSel);
-          this.Controls.Add(this.tbrOptions);
-          this.Controls.Add(this.ToolSplitter);
-          this.Controls.Add(this.tbrGraphicsEditor);
-          this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-          this.KeyPreview = true;
-          this.Menu = this.mnuGraphicsEditor;
-          this.Name = "frmGraphicsEditor";
-          this.Text = "Graphics Editor";
-          this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
-          this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.frmGraphicsEditor_KeyPress);
-          this.ResumeLayout(false);
-          this.PerformLayout();
+         this.tbrOptions.Divider = false;
+         this.tbrOptions.DropDownArrows = true;
+         this.tbrOptions.ImageList = this.imlGraphicsEditor;
+         this.tbrOptions.Location = new System.Drawing.Point(54, 0);
+         this.tbrOptions.Name = "tbrOptions";
+         this.tbrOptions.ShowToolTips = true;
+         this.tbrOptions.Size = new System.Drawing.Size(570, 27);
+         this.tbrOptions.TabIndex = 1;
+         this.tbrOptions.ButtonClick += new System.Windows.Forms.ToolBarButtonClickEventHandler(this.tbrGraphicsEditor_ButtonClick);
+         // 
+         // tbbAntiAlias
+         // 
+         this.tbbAntiAlias.ImageIndex = 6;
+         this.tbbAntiAlias.Name = "tbbAntiAlias";
+         this.tbbAntiAlias.Pushed = true;
+         this.tbbAntiAlias.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbAntiAlias.ToolTipText = "Toggle anti-aliasing";
+         // 
+         // tbbOutline
+         // 
+         this.tbbOutline.ImageIndex = 8;
+         this.tbbOutline.Name = "tbbOutline";
+         this.tbbOutline.Pushed = true;
+         this.tbbOutline.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbOutline.ToolTipText = "Toggle drawing of outlines around shapes";
+         // 
+         // tbbFill
+         // 
+         this.tbbFill.ImageIndex = 34;
+         this.tbbFill.Name = "tbbFill";
+         this.tbbFill.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbFill.ToolTipText = "Toggle filling of shapes";
+         // 
+         // tbbGradientFills
+         // 
+         this.tbbGradientFills.ImageIndex = 40;
+         this.tbbGradientFills.Name = "tbbGradientFills";
+         this.tbbGradientFills.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbGradientFills.ToolTipText = "Toggle use of gradients on filled shapes";
+         // 
+         // tbbLock
+         // 
+         this.tbbLock.ImageIndex = 32;
+         this.tbbLock.Name = "tbbLock";
+         this.tbbLock.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbLock.ToolTipText = "Toggle locking of proportions and rotation to nice ratios";
+         // 
+         // tbbDisjointedColors
+         // 
+         this.tbbDisjointedColors.ImageIndex = 46;
+         this.tbbDisjointedColors.Name = "tbbDisjointedColors";
+         this.tbbDisjointedColors.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbDisjointedColors.ToolTipText = "Fill and Color Wand affect all similar colors instead of joined regions";
+         // 
+         // tbsOptSep1
+         // 
+         this.tbsOptSep1.Name = "tbsOptSep1";
+         this.tbsOptSep1.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+         // 
+         // tbbPixelPen
+         // 
+         this.tbbPixelPen.ImageIndex = 9;
+         this.tbbPixelPen.Name = "tbbPixelPen";
+         this.tbbPixelPen.Pushed = true;
+         this.tbbPixelPen.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbPixelPen.ToolTipText = "1x1 pen";
+         // 
+         // tbbTinyPen
+         // 
+         this.tbbTinyPen.ImageIndex = 10;
+         this.tbbTinyPen.Name = "tbbTinyPen";
+         this.tbbTinyPen.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbTinyPen.ToolTipText = "3x3 Pen";
+         // 
+         // tbbSmallPen
+         // 
+         this.tbbSmallPen.ImageIndex = 11;
+         this.tbbSmallPen.Name = "tbbSmallPen";
+         this.tbbSmallPen.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbSmallPen.ToolTipText = "5x5 pen";
+         // 
+         // tbbMediumPen
+         // 
+         this.tbbMediumPen.ImageIndex = 12;
+         this.tbbMediumPen.Name = "tbbMediumPen";
+         this.tbbMediumPen.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbMediumPen.ToolTipText = "7x7 pen";
+         // 
+         // tbbLargePen
+         // 
+         this.tbbLargePen.ImageIndex = 13;
+         this.tbbLargePen.Name = "tbbLargePen";
+         this.tbbLargePen.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbLargePen.ToolTipText = "9x9 pen";
+         // 
+         // tbbHugePen
+         // 
+         this.tbbHugePen.ImageIndex = 14;
+         this.tbbHugePen.Name = "tbbHugePen";
+         this.tbbHugePen.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbHugePen.ToolTipText = "11x11 pen";
+         // 
+         // tbb64Pen
+         // 
+         this.tbb64Pen.ImageIndex = 15;
+         this.tbb64Pen.Name = "tbb64Pen";
+         this.tbb64Pen.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbb64Pen.ToolTipText = "64x64 pen";
+         // 
+         // tbsOptSep2
+         // 
+         this.tbsOptSep2.Name = "tbsOptSep2";
+         this.tbsOptSep2.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+         // 
+         // tbbRound
+         // 
+         this.tbbRound.ImageIndex = 14;
+         this.tbbRound.Name = "tbbRound";
+         this.tbbRound.Pushed = true;
+         this.tbbRound.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbRound.ToolTipText = "Round Pen";
+         // 
+         // tbbSquare
+         // 
+         this.tbbSquare.ImageIndex = 20;
+         this.tbbSquare.Name = "tbbSquare";
+         this.tbbSquare.ToolTipText = "Square/flat pen";
+         // 
+         // tbsOptSep3
+         // 
+         this.tbsOptSep3.Name = "tbsOptSep3";
+         this.tbsOptSep3.Style = System.Windows.Forms.ToolBarButtonStyle.Separator;
+         // 
+         // tbdZoom
+         // 
+         this.tbdZoom.DropDownMenu = this.mnuCZoom;
+         this.tbdZoom.ImageIndex = 23;
+         this.tbdZoom.Name = "tbdZoom";
+         this.tbdZoom.Style = System.Windows.Forms.ToolBarButtonStyle.DropDownButton;
+         this.tbdZoom.ToolTipText = "Set magnification level";
+         // 
+         // tbbShowGrid
+         // 
+         this.tbbShowGrid.ImageIndex = 44;
+         this.tbbShowGrid.Name = "tbbShowGrid";
+         this.tbbShowGrid.Style = System.Windows.Forms.ToolBarButtonStyle.ToggleButton;
+         this.tbbShowGrid.ToolTipText = "Toggle grid";
+         // 
+         // ToolSplitter
+         // 
+         this.ToolSplitter.Location = new System.Drawing.Point(48, 0);
+         this.ToolSplitter.Name = "ToolSplitter";
+         this.ToolSplitter.Size = new System.Drawing.Size(6, 363);
+         this.ToolSplitter.TabIndex = 2;
+         this.ToolSplitter.TabStop = false;
+         // 
+         // ctlColorSel
+         // 
+         this.ctlColorSel.CurrentColorType = SGDK2.SelectColorType.Pen;
+         this.ctlColorSel.Cursor = System.Windows.Forms.Cursors.Default;
+         this.ctlColorSel.Location = new System.Drawing.Point(328, 40);
+         this.ctlColorSel.Name = "ctlColorSel";
+         this.ctlColorSel.Size = new System.Drawing.Size(288, 296);
+         this.ctlColorSel.TabIndex = 3;
+         this.ctlColorSel.Text = "Color Selector";
+         // 
+         // dataMonitor
+         // 
+         this.dataMonitor.GraphicSheetRowChanged += new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(this.dataMonitor_GraphicSheetRowChanged);
+         this.dataMonitor.GraphicSheetRowDeleted += new SGDK2.ProjectDataset.GraphicSheetRowChangeEventHandler(this.dataMonitor_GraphicSheetRowDeleted);
+         this.dataMonitor.Clearing += new System.EventHandler(this.dataMonitor_Clearing);
+         // 
+         // frmGraphicsEditor
+         // 
+         this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Inherit;
+         this.AutoScroll = true;
+         this.ClientSize = new System.Drawing.Size(624, 363);
+         this.Controls.Add(this.ctlColorSel);
+         this.Controls.Add(this.tbrOptions);
+         this.Controls.Add(this.ToolSplitter);
+         this.Controls.Add(this.tbrGraphicsEditor);
+         this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+         this.KeyPreview = true;
+         this.Menu = this.mnuGraphicsEditor;
+         this.Name = "frmGraphicsEditor";
+         this.Text = "Graphics Editor";
+         this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
+         this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.frmGraphicsEditor_KeyPress);
+         this.ResumeLayout(false);
+         this.PerformLayout();
 
       }
       #endregion
@@ -2015,14 +2122,16 @@ namespace SGDK2
             (cTool == mnuZoom4) ||
             (cTool == mnuZoom6) ||
             (cTool == mnuZoom8) ||
+            (cTool == mnuZoom16) ||
             (cTool == mnuZoom1x1) ||
             (cTool == mnuZoom2x2) ||
             (cTool == mnuZoom4x4) ||
             (cTool == mnuZoom6x6) ||
-            (cTool == mnuZoom8x8))
+            (cTool == mnuZoom8x8) ||
+            (cTool == mnuZoom16x16))
          {
             Boolean bSuccess = false;
-            mnuZoom1x1.Checked = mnuZoom2x2.Checked = mnuZoom4x4.Checked = mnuZoom6x6.Checked = mnuZoom8x8.Checked = false;
+            mnuZoom1x1.Checked = mnuZoom2x2.Checked = mnuZoom4x4.Checked = mnuZoom6x6.Checked = mnuZoom8x8.Checked = mnuZoom16x16.Checked = false;
             if ((cTool == mnuActualSize) || (cTool == mnuZoom1x1))
             {
                if (bSuccess = m_frmMagnify.SetMagnify(1))
@@ -2061,6 +2170,14 @@ namespace SGDK2
                {
                   tbdZoom.ImageIndex = 25;
                   mnuZoom8x8.Checked = true;
+               }
+            }
+            else if ((cTool == mnuZoom16) || (cTool == mnuZoom16x16))
+            {
+               if (bSuccess = m_frmMagnify.SetMagnify(16))
+               {
+                  tbdZoom.ImageIndex = 49;
+                  mnuZoom16x16.Checked = true;
                }
             }
             if (bSuccess)
@@ -3045,6 +3162,8 @@ namespace SGDK2
             SelectTool(mnuZoom4);
          else if (mnuZoom8x8.Checked || mnuZoom8.Checked)
             SelectTool(mnuZoom6);
+         else if (mnuZoom16x16.Checked || mnuZoom16.Checked)
+            SelectTool(mnuZoom8);
       }
 
       private void mnuZoomIncrease_Click(object sender, System.EventArgs e)
@@ -3057,6 +3176,8 @@ namespace SGDK2
             SelectTool(mnuZoom6);
          else if (mnuZoom6x6.Checked || mnuZoom6.Checked)
             SelectTool(mnuZoom8);
+         else if (mnuZoom8x8.Checked || mnuZoom8.Checked)
+            SelectTool(mnuZoom16);
       }
 
       private void frmGraphicsEditor_KeyPress(object sender, System.Windows.Forms.KeyPressEventArgs e)

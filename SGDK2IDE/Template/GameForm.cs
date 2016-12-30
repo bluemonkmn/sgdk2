@@ -119,12 +119,12 @@ public partial class GameForm : Form
 #if DEBUG
       MessageBox.Show("You are running in debug mode.  Unexpected runtime conditions may cause the game to halt, and if an error occurs you will have the opportunity to debug into it if you have a debugger installed and the project's source code handy", "Debug Mode Active");
 #endif
-      ClientSize = Display.GetScreenSize(mode);
+      ClientSize = Display.GetScreenSize(mode, true);
       GameDisplay = new Display(mode, windowed);
       GameDisplay.BorderStyle = System.Windows.Forms.BorderStyle.None;
       GameDisplay.Location = new System.Drawing.Point(0, 0);
       GameDisplay.Name = "GameDisplay";
-      GameDisplay.Size = Display.GetScreenSize(mode);
+      GameDisplay.Size = Display.GetScreenSize(mode, true);
       Controls.Add(this.GameDisplay);
       Name = "GameForm";
       Text = this.title = title;
@@ -573,7 +573,7 @@ public partial class GameForm : Form
                ControlBox = true;
                MinimizeBox = true;
                Menu = mnuGame;
-               ClientSize = Display.GetScreenSize(GameDisplay.GameDisplayMode);
+               ClientSize = Display.GetScreenSize(GameDisplay.GameDisplayMode, true);
                Text = title;
             }
          }

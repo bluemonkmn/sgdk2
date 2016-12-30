@@ -291,11 +291,11 @@ public abstract partial class MapBase
    {
       get
       {
-         return m_Display.DisplayRectangle;
+         return m_Display.NativeDisplayRect;
       }
       set
       {
-         System.Diagnostics.Debug.Assert(System.Drawing.Rectangle.Intersect(m_Display.DisplayRectangle, value).Equals(value));
+         System.Diagnostics.Debug.Assert(System.Drawing.Rectangle.Intersect(m_Display.NativeDisplayRect, value).Equals(value));
       }
    }
 

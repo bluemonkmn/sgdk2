@@ -129,6 +129,8 @@ public abstract partial class LayerBase : System.Collections.IEnumerable
    private readonly int m_nVirtualColumns;
    private readonly int m_nVirtualRows;
    private System.Drawing.Point m_AbsolutePosition;
+   private bool? m_enableLighting;
+
    /// <summary>
    /// A "Category" or collection of all sprites contained by the layer.
    /// </summary>
@@ -348,6 +350,33 @@ public abstract partial class LayerBase : System.Collections.IEnumerable
    }
 
    /// <summary>
+   /// Determines whether lighing effect are enabled for this layer.
+   /// </summary>
+   /// <remarks>By default, lighting effects are only enabled when sprites derived from LightSpriteBase
+   /// are on it when first drawn. This value is ignored when graphics with normal maps are drawn, in
+   /// which case lighting is implicitly enabled.</remarks>
+   public bool EnableLighting
+   {
+      get
+      {
+         if (!m_enableLighting.HasValue)
+         {
+            return false;
+            m_enableLighting = false;
+            if (m_Sprites != null)
+               for (int i = 0; i < m_Sprites.Count; i++)
+                  if (m_Sprites[i] is LightSpriteBase)
+                     m_enableLighting = true;
+         }
+         return m_enableLighting.Value;
+      }
+      set
+      {
+         m_enableLighting = value;
+      }
+   }
+
+   /// <summary>
    /// Draw the layer according to the currently active view defined by <see cref="MapBase.CurrentView"/>.
    /// </summary>
    /// <remarks>Drawing the layer includes drawing of all the tiles and the sprites in the layer.</remarks>
@@ -366,6 +395,8 @@ public abstract partial class LayerBase : System.Collections.IEnumerable
       Rectangle ViewRect = m_ParentMap.CurrentView;
       Display disp = m_ParentMap.Display;
       disp.Scissor(ViewRect);
+      disp.currentView = m_ParentMap.CurrentViewIndex;
+      disp.enableLighting = EnableLighting;
 
       int EndCol = (ViewRect.Width - 1 + m_nRightBuffer - CurrentPosition.X) / nTileWidth;
       if (EndCol >= VirtualColumns)

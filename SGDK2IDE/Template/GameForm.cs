@@ -226,7 +226,7 @@ public partial class GameForm : Form
             // Display is minimized or inactive, wait until it is restored
             Application.DoEvents();
             if (GameDisplay != null)
-               GameDisplay.SwapBuffers();
+               GameDisplay.FinishFrame();
             System.Threading.Thread.Sleep(0);
             continue;
          }
@@ -249,7 +249,7 @@ public partial class GameForm : Form
          if (OnAfterDrawOverlay != null)
             OnAfterDrawOverlay();
          GameDisplay.Flush();
-         GameDisplay.SwapBuffers();
+         GameDisplay.FinishFrame();
          Application.DoEvents();
       }
    }

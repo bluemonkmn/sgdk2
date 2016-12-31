@@ -200,7 +200,6 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    private GameDisplayMode m_GameDisplayMode;
    private DisplayOperation m_currentOp;
    private TextureRef m_currentTexture = null;
-   private bool scaleNativeSize = false;
    private const int scaleFactor = 2;
    private const TextureTarget texTarget = TextureTarget.Texture2D;
    private const EnableCap texCap = EnableCap.Texture2D;
@@ -223,6 +222,8 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA,
       0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA};
    private System.Drawing.Point endPoint = System.Drawing.Point.Empty;
+   private int frameBuffer = -1;
+   private int texUnscaledOutput = -1;
    /// <summary>
    /// Determines if requirements have already been checked or need to be
    /// (re-)checked during the next call to <see cref="DrawFrame"/>.
@@ -423,6 +424,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
                DiffuseColor *= fColor;
                fragColor = DiffuseColor;
             }");
+
       normalMapShader = new ShaderProgram(vshader, fshader_norm);
       flatShader = new ShaderProgram(vshader, fshader_flat);
       solidShader = new ShaderProgram(vshader_solid, fshader_solid);
@@ -449,13 +451,17 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       if (Project.MaxViews == 4)
          lights = new LightSources[] { new LightSources(), new LightSources(), new LightSources(), new LightSources() };
       else if (Project.MaxViews == 2)
-         lights = new LightSources[] { new LightSources(), new LightSources()};
+         lights = new LightSources[] { new LightSources(), new LightSources() };
       else
          lights = new LightSources[] { new LightSources() };
 
       // Align to display
       System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode, false);
       projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, nativeSize.Width, nativeSize.Height, 0, .1f, 10f);
+
+      if (scaleFactor > 1)
+         Buffer(false, true);
+
       isInitialized = true;
    }
    #endregion
@@ -470,16 +476,9 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       base.OnResize(e);
       if (GraphicsContext.CurrentContext == null)
          return;
-      GL.Viewport(0, 0, ClientSize.Width, ClientSize.Height);
-      if (scaleNativeSize)
-      {
-         System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode, false);
-         projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, nativeSize.Width, nativeSize.Height, 0, .1f, 10f);
-      }
-      else
-      {
-         projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, ClientSize.Width, ClientSize.Height, 0, .1f, 10f);
-      }
+      System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode, false);
+      GL.Viewport(0, 0, nativeSize.Width, nativeSize.Height);
+      projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, nativeSize.Width, nativeSize.Height, 0, .1f, 10f);
    }
 
    protected override void WndProc(ref System.Windows.Forms.Message m)
@@ -526,6 +525,11 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
             solidVertexArray.Dispose();
             solidVertexArray = null;
          }
+         if (nolightVertexArray != null)
+         {
+            nolightVertexArray.Dispose();
+            nolightVertexArray = null;
+         }
          if (normalMapShader != null)
          {
             normalMapShader.Dispose();
@@ -548,6 +552,16 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
          }
          OpenTK.DisplayDevice.Default.RestoreResolution();
          DisposeAllTextures();
+      }
+      if (frameBuffer != -1)
+      {
+         GL.DeleteFramebuffer(frameBuffer);
+         frameBuffer = -1;
+      }
+      if (texUnscaledOutput != -1)
+      {
+         GL.DeleteTexture(texUnscaledOutput);
+         texUnscaledOutput = -1;
       }
       base.Dispose(disposing);
    }
@@ -670,7 +684,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
             return new System.Drawing.Size(640 * scale, 480 * scale);
          case GameDisplayMode.m800x600x16:
          case GameDisplayMode.m800x600x24:
-            return new System.Drawing.Size(800 * scale, 600 *scale);
+            return new System.Drawing.Size(800 * scale, 600 * scale);
          case GameDisplayMode.m1024x768x16:
          case GameDisplayMode.m1024x768x24:
             return new System.Drawing.Size(1024 * scale, 768 * scale);
@@ -1234,7 +1248,8 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    {
       Flush();
       GL.Enable(EnableCap.ScissorTest);
-      GL.Scissor(rect.X * scaleFactor, ClientRectangle.Height - (rect.Y + rect.Height) * scaleFactor, rect.Width * scaleFactor, rect.Height * scaleFactor);
+      System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode, false);
+      GL.Scissor(rect.X, nativeSize.Height - (rect.Y + rect.Height), rect.Width, rect.Height);
    }
 
    /// <summary>
@@ -1319,16 +1334,17 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       if (index >= LightSources.MAX_LIGHTS)
          throw new IndexOutOfRangeException("SetLightSource index must be less than MAX_LIGHTS");
 
+      System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode, false);
       lights[currentView][index].Falloff = falloff;
       lights[currentView][index].Position = new Vector3(
-         windowCoordinate.X * scaleFactor, ClientRectangle.Height - windowCoordinate.Y * scaleFactor, 1);
+         windowCoordinate.X, nativeSize.Height - windowCoordinate.Y, 1);
       lights[currentView][index].Color = color;
       lights[currentView][index].Aim = new Vector3(aimX, -aimY, 0);
       lights[currentView][index].ApertureFocus = apertureFocus;
       lights[currentView][index].ApertureSoftness = apertureSoftness;
       int wallIndex;
       for (wallIndex = 0; wallIndex < wallCoordCount; wallIndex++)
-         lights[currentView][index][wallIndex] = new Vector3(walls[wallIndex].X * scaleFactor, ClientRectangle.Height - walls[wallIndex].Y * scaleFactor, walls[wallIndex].Z);
+         lights[currentView][index][wallIndex] = new Vector3(walls[wallIndex].X, nativeSize.Height - walls[wallIndex].Y, walls[wallIndex].Z);
       while (wallIndex < LightSource.wallsPerLight && (lights[currentView][index][wallIndex].Z != 0))
          lights[currentView][index][wallIndex++] = new Vector3(0, 0, 0);
    }
@@ -1353,6 +1369,87 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       {
          return new System.Drawing.Rectangle(DisplayRectangle.X, DisplayRectangle.Y, DisplayRectangle.Width / scaleFactor, DisplayRectangle.Height / scaleFactor);
       }
+   }
+
+   /// <summary>
+   /// Controls how graphics output is buffered and copied to the display.
+   /// </summary>
+   /// <param name="copy">When true, the content of the buffer will be copied to the display, scaling
+   /// the buffer to the size of the display if necessary.</param>
+   /// <param name="enable">When true, subsequent drawing operations will go to a buffer whose size is
+   /// determined by the native game display size instead od directly to the screen. When false, this
+   /// buffer, if it exists will be bypassed.</param>
+   /// <remarks>The purpose of this command is to optimize scaling because lighting effects
+   /// can severly burden the GPU if they happen at the scaled up size. Therefore, when scaling up,
+   /// everything is rendered to the smaller buffer, and then copied and scaled to the larger size.</remarks>
+   private void Buffer(bool copy, bool enable)
+   {
+      if (copy)
+      {
+         Flush();
+         GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+         CheckError();
+         System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode, false);
+         System.Drawing.Size displaySize = GetScreenSize(m_GameDisplayMode, true);
+         Matrix4 copyMatrix = Matrix4.CreateOrthographicOffCenter(0, displaySize.Width, 0, displaySize.Height, .1f, 10f);
+         GL.Viewport(ClientRectangle);
+         nolightShader.Use(copyMatrix);
+         GL.ActiveTexture(TextureUnit.Texture0);
+         GL.BindTexture(texTarget, texUnscaledOutput);
+         int texLoc = nolightShader.GetUniformLocation("tex");
+         GL.Uniform1(texLoc, 0);
+         CheckError();
+         nolightVertexArray.Bind();
+         GL.Disable(EnableCap.DepthTest);
+         vertexBuffer.AddVertex(new TileVertex(0, 0, 0, 0));
+         vertexBuffer.AddVertex(new TileVertex(0, displaySize.Height, 0, nativeSize.Height));
+         vertexBuffer.AddVertex(new TileVertex(displaySize.Width, displaySize.Height, nativeSize.Width, nativeSize.Height));
+         vertexBuffer.AddVertex(new TileVertex(displaySize.Width, 0, nativeSize.Width, 0));
+         vertexBuffer.Bind();
+         vertexBuffer.BufferData();
+         vertexBuffer.Draw(PrimitiveType.Quads);
+         Flush();
+         GL.Viewport(0, 0, nativeSize.Width, nativeSize.Height);
+      }
+
+      if (enable)
+      {
+         if (frameBuffer == -1)
+         {
+            // Create frame buffer for scaling after rendering
+            frameBuffer = GL.GenFramebuffer();
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, frameBuffer);
+            CheckError();
+         }
+         if (texUnscaledOutput == -1)
+         {
+            texUnscaledOutput = GL.GenTexture();
+            GL.BindTexture(TextureTarget.Texture2D, texUnscaledOutput);
+            CheckError();
+            System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode, false);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, nativeSize.Width, nativeSize.Height, 0, PixelFormat.Rgb, PixelType.UnsignedByte, IntPtr.Zero);
+            CheckError();
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMagFilter.Nearest);
+            CheckError();
+            GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, texUnscaledOutput, 0);
+            CheckError();
+         }
+         GL.BindFramebuffer(FramebufferTarget.Framebuffer, frameBuffer);
+         CheckError();
+      }
+   }
+
+   /// <summary>
+   /// Present the buffered display to the visible window.
+   /// </summary>
+   public void FinishFrame()
+   {
+      if (frameBuffer != -1)
+         Buffer(true, false);
+      SwapBuffers();
+      if (frameBuffer != -1)
+         Buffer(false, true);
    }
    #endregion
 

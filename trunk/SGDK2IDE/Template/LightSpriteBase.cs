@@ -373,7 +373,7 @@ public abstract partial class LightSpriteBase : SpriteBase
 
    private void EnqueueCoord(int x, int y)
    {
-      if ((x > 0) && (y > 0) && (x < layer.VirtualColumns) && (y < layer.VirtualRows) && !processedTiles[y * layer.VirtualColumns + x])
+      if ((x >= 0) && (y >= 0) && (x < layer.VirtualColumns) && (y < layer.VirtualRows) && !processedTiles[y * layer.VirtualColumns + x])
       {
          tileCoords.Enqueue(new Tuple<int, int>(x, y));
          processedTiles[y * layer.VirtualColumns + x] = true;

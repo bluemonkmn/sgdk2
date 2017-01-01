@@ -1345,7 +1345,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       int wallIndex;
       for (wallIndex = 0; wallIndex < wallCoordCount; wallIndex++)
          lights[currentView][index][wallIndex] = new Vector3(walls[wallIndex].X, nativeSize.Height - walls[wallIndex].Y, walls[wallIndex].Z);
-      while (wallIndex < LightSource.wallsPerLight && (lights[currentView][index][wallIndex].Z != 0))
+      while (wallIndex < LightSource.wallsPerLight * 2)
          lights[currentView][index][wallIndex++] = new Vector3(0, 0, 0);
    }
 

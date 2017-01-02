@@ -389,14 +389,14 @@ namespace SGDK2
       /// <param name="row">Row containing the source data</param>
       /// <param name="bForceReload">Force reload from source data</param>
       /// <returns>Bitmap object</returns>
-      public static Bitmap GetGraphicSheetImage(string Name, bool bForceReload)
+      public static Bitmap GetGraphicSheetImage(string Name, bool bForceReload, bool bApplyNormals)
       {
          if (m_GraphicSheets == null)
             m_GraphicSheets = new System.Collections.Specialized.HybridDictionary();
 
-         if (m_GraphicSheets.Contains(Name))
+         if (m_GraphicSheets.Contains(Name + "~" + (bApplyNormals?"n":"f")))
          {
-            WeakReference wr = (WeakReference)m_GraphicSheets[Name];
+            WeakReference wr = (WeakReference)m_GraphicSheets[Name + "~" + (bApplyNormals ? "n" : "f")];
             if (bForceReload)
             {
                // If reload is forced, may have to dispose of old bitmap
@@ -425,8 +425,11 @@ namespace SGDK2
          else
          {
             Bitmap bmpStreamImage;
+            Bitmap bmpNormalImage;
             ProjectDataset.GraphicSheetRow drGfx = ProjectData.GetGraphicSheet(Name);
+            ProjectDataset.GraphicSheetRow drNorm = ProjectData.GetGraphicSheet(Name + " nm");
             System.IO.MemoryStream ms = null;
+            MemoryStream msNormal = null;
             if (IsGraphicSheetDecapsulated(drGfx))
                try
                {
@@ -441,15 +444,49 @@ namespace SGDK2
                ms = new System.IO.MemoryStream(ProjectData.GetGraphicSheet(Name).Image, false);
                bmpStreamImage = (Bitmap)Bitmap.FromStream(ms);
             }
+
+            if ((drNorm != null) && bApplyNormals)
+            {
+               if (IsGraphicSheetDecapsulated(drNorm))
+                  try
+                  {
+                     bmpNormalImage = new Bitmap(ProjectData.GetGraphicSheetCapsulePath(SGDK2IDE.CurrentProjectFile, drNorm));
+                  }
+                  catch (System.Exception ex)
+                  {
+                     throw new ApplicationException("An error occurred attempting to load a decapsulated graphic sheet from \"" + ProjectData.GetGraphicSheetCapsulePath(SGDK2IDE.CurrentProjectFile, drNorm) + "\": " + ex.ToString(), ex);
+                  }
+               else
+               {
+                  msNormal = new System.IO.MemoryStream(ProjectData.GetGraphicSheet(Name + " nm").Image, false);
+                  bmpNormalImage = (Bitmap)Bitmap.FromStream(msNormal);
+               }
+            }
+            else
+               bmpNormalImage = null;
+
             bmpResult = new Bitmap(bmpStreamImage.Width, bmpStreamImage.Height,
                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            SGDK2IDE.CopyImage(bmpResult, bmpStreamImage);
+            if (bmpNormalImage == null)
+               SGDK2IDE.CopyImage(bmpResult, bmpStreamImage);
+            else
+            {
+               SGDK2IDE.ApplyFrontLitNormals(bmpResult, bmpStreamImage, bmpNormalImage);
+               bmpNormalImage.Dispose();
+            }
             bmpStreamImage.Dispose();
             if (ms != null)
                ms.Close();
+            if (msNormal != null)
+               msNormal.Close();
          }
-         m_GraphicSheets[Name] = new WeakReference(bmpResult);
+         m_GraphicSheets[Name +"~" + (bApplyNormals?"n":"f")] = new WeakReference(bmpResult);
          return bmpResult;
+      }
+
+      public static Bitmap GetGraphicSheetImage(string Name, bool bForceReload)
+      {
+         return GetGraphicSheetImage(Name, bForceReload, false);
       }
       #endregion
 

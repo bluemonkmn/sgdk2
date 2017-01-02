@@ -6,4 +6,4 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyCompany("Benjamin Marty")]
 [assembly: AssemblyProduct("Scrolling Game Development Kit 2")]
 [assembly: AssemblyCopyright("Copyright ©2006-2012 Benjamin Marty")]
-[assembly: AssemblyVersion("2.3.0.5")]
+[assembly: AssemblyVersion("2.3.0.6")]

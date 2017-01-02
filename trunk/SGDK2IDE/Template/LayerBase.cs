@@ -129,7 +129,7 @@ public abstract partial class LayerBase : System.Collections.IEnumerable
    private readonly int m_nVirtualColumns;
    private readonly int m_nVirtualRows;
    private System.Drawing.Point m_AbsolutePosition;
-   private bool? m_enableLighting;
+   private LightingMode m_Lighting;
 
    /// <summary>
    /// A "Category" or collection of all sprites contained by the layer.
@@ -155,7 +155,7 @@ public abstract partial class LayerBase : System.Collections.IEnumerable
 
    protected LayerBase(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer, int nBottomBuffer,
       int nColumns, int nRows, int nVirtualColumns, int nVirtualRows, System.Drawing.Point Position,
-      System.Drawing.SizeF ScrollRate, int nInjectStartIndex, int nAppendStartIndex)
+      System.Drawing.SizeF ScrollRate, LightingMode Lighting, int nInjectStartIndex, int nAppendStartIndex)
    {
       this.m_ParentMap = Parent;
       this.m_Tileset = Tileset;
@@ -176,6 +176,7 @@ public abstract partial class LayerBase : System.Collections.IEnumerable
          this.m_nVirtualRows = nVirtualRows;
       this.m_AbsolutePosition = Position;
       this.m_ScrollRate = ScrollRate;
+      this.m_Lighting = Lighting;
       byte origView = Parent.CurrentViewIndex;
       for (byte v = 0; v < Project.MaxViews; v++)
       {
@@ -352,27 +353,15 @@ public abstract partial class LayerBase : System.Collections.IEnumerable
    /// <summary>
    /// Determines whether lighing effect are enabled for this layer.
    /// </summary>
-   /// <remarks>By default, lighting effects are only enabled when sprites derived from LightSpriteBase
-   /// are on it when first drawn. This value is ignored when graphics with normal maps are drawn, in
-   /// which case lighting is implicitly enabled.</remarks>
-   public bool EnableLighting
+   public LightingMode Lighting
    {
       get
       {
-         if (!m_enableLighting.HasValue)
-         {
-            return false;
-            m_enableLighting = false;
-            if (m_Sprites != null)
-               for (int i = 0; i < m_Sprites.Count; i++)
-                  if (m_Sprites[i] is LightSpriteBase)
-                     m_enableLighting = true;
-         }
-         return m_enableLighting.Value;
+         return m_Lighting;
       }
       set
       {
-         m_enableLighting = value;
+         m_Lighting = value;
       }
    }
 
@@ -396,7 +385,7 @@ public abstract partial class LayerBase : System.Collections.IEnumerable
       Display disp = m_ParentMap.Display;
       disp.Scissor(ViewRect);
       disp.currentView = m_ParentMap.CurrentViewIndex;
-      disp.enableLighting = EnableLighting;
+      disp.enableLighting = Lighting == LightingMode.Normal;
 
       int EndCol = (ViewRect.Width - 1 + m_nRightBuffer - CurrentPosition.X) / nTileWidth;
       if (EndCol >= VirtualColumns)
@@ -1130,12 +1119,12 @@ public abstract partial class IntLayer : LayerBase
    private int[,] m_Tiles;
 
    public IntLayer(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
-      int nBottomBuffer, int nColumns, int nRows, int nVirtualColumns, int nVirtualRows,
+      int nBottomBuffer, int nColumns, int nRows, int nVirtualColumns, int nVirtualRows, LightingMode Lighting,
       System.Drawing.Point Position, System.Drawing.SizeF ScrollRate,
       int nInjectStartIndex, int nAppendStartIndex, string Name) : 
       base(Tileset, Parent, nLeftBuffer, nTopBuffer, nRightBuffer,
       nBottomBuffer, nColumns, nRows, nVirtualColumns, nVirtualRows, Position,
-      ScrollRate, nInjectStartIndex, nAppendStartIndex)
+      ScrollRate, Lighting, nInjectStartIndex, nAppendStartIndex)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
       if (Name != null)
@@ -1183,10 +1172,10 @@ public abstract partial class ShortLayer : LayerBase
 
    public ShortLayer(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
       int nBottomBuffer, int nColumns, int nRows, int nVirtualColumns, int nVirtualRows, System.Drawing.Point Position,
-      System.Drawing.SizeF ScrollRate, int nInjectStartIndex, int nAppendStartIndex, string Name) : 
+      System.Drawing.SizeF ScrollRate, LightingMode Lighting, int nInjectStartIndex, int nAppendStartIndex, string Name) : 
       base(Tileset, Parent, nLeftBuffer, nTopBuffer, nRightBuffer,
       nBottomBuffer, nColumns, nRows, nVirtualColumns, nVirtualRows, Position,
-      ScrollRate, nInjectStartIndex, nAppendStartIndex)
+      ScrollRate, Lighting, nInjectStartIndex, nAppendStartIndex)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
       if (Name != null)
@@ -1238,10 +1227,10 @@ public abstract partial class ByteLayer : LayerBase
 
    public ByteLayer(Tileset Tileset, MapBase Parent, int nLeftBuffer, int nTopBuffer, int nRightBuffer,
       int nBottomBuffer, int nColumns, int nRows, int nVirtualColumns, int nVirtualRows, System.Drawing.Point Position,
-      System.Drawing.SizeF ScrollRate, int nInjectStartIndex, int nAppendStartIndex, string Name) : 
+      System.Drawing.SizeF ScrollRate, LightingMode Lighting, int nInjectStartIndex, int nAppendStartIndex, string Name) : 
       base(Tileset, Parent, nLeftBuffer, nTopBuffer, nRightBuffer,
       nBottomBuffer, nColumns, nRows, nVirtualColumns, nVirtualRows, Position,
-      ScrollRate, nInjectStartIndex, nAppendStartIndex)
+      ScrollRate, Lighting, nInjectStartIndex, nAppendStartIndex)
    {
       System.Resources.ResourceManager resources = new System.Resources.ResourceManager(Parent.GetType());
       if (Name != null)
@@ -1281,4 +1270,10 @@ public abstract partial class ByteLayer : LayerBase
    {
       return m_Tileset[m_Tiles[x % m_nColumns, y % m_nRows]];
    }
+}
+
+public enum LightingMode
+{
+   Disabled,
+   Normal
 }

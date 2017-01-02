@@ -286,6 +286,52 @@ namespace SGDK2
       }
 
       /// <summary>
+      /// Copy an image like CopyImage, but apply normal mapping from normals in the process, assuming direct lighting.
+      /// </summary>
+      /// <param name="original">The image to be copied</param>
+      /// <param name="output">Where the final result should be generated</param>
+      /// <param name="normals">Normal map image</param>
+      public static void ApplyFrontLitNormals(Bitmap output, Bitmap original, Bitmap normals)
+      {
+         if ((original.Size != normals.Size) || (original.Size != output.Size))
+            throw new ArgumentException("Original, output and normal images must all be the same size.");
+         Rectangle rectAllPixels = new Rectangle(Point.Empty, original.Size);
+         System.Drawing.Imaging.BitmapData datOriginal =
+            original.LockBits(rectAllPixels, System.Drawing.Imaging.ImageLockMode.ReadOnly,
+            System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+         System.Drawing.Imaging.BitmapData datNormals =
+            normals.LockBits(rectAllPixels, System.Drawing.Imaging.ImageLockMode.ReadOnly,
+            System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+         System.Drawing.Imaging.BitmapData datOutput =
+            output.LockBits(rectAllPixels, System.Drawing.Imaging.ImageLockMode.WriteOnly,
+            System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+         Int32[] texturePixels = new Int32[Math.Abs(datOriginal.Stride) * datOriginal.Height / 4];
+         Int32[] normalPixels = new Int32[Math.Abs(datNormals.Stride) * datNormals.Height / 4];
+         System.Runtime.InteropServices.Marshal.Copy(datOriginal.Scan0, texturePixels, 0, texturePixels.Length);
+         System.Runtime.InteropServices.Marshal.Copy(datNormals.Scan0, normalPixels, 0, normalPixels.Length);
+         int nPixelStride = Math.Abs(datOriginal.Stride) / 4;
+         int nNormalStride = Math.Abs(datNormals.Stride) / 4;
+         for (int y = 0; y < original.Height; y++)
+         {
+            for (int x = 0; x < original.Width; x++)
+            {
+               Color pixel = Color.FromArgb(texturePixels[y * nPixelStride + x]);
+               Color normal = Color.FromArgb(normalPixels[y * nNormalStride + x]);
+               int colorScale = normal.B - 128;
+               texturePixels[y * nPixelStride + x] = Color.FromArgb(
+                  pixel.A,
+                  pixel.R * colorScale / 128,
+                  pixel.G * colorScale / 128,
+                  pixel.B * colorScale / 128).ToArgb();
+            }
+         }
+         System.Runtime.InteropServices.Marshal.Copy(texturePixels, 0, datOutput.Scan0, texturePixels.Length);
+         normals.UnlockBits(datNormals);
+         original.UnlockBits(datOriginal);
+         output.UnlockBits(datOutput);
+      }
+
+      /// <summary>
       /// Load a cursor from a resource that contains the base-64 encoded cursor file
       /// data.
       /// </summary>

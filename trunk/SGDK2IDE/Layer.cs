@@ -75,6 +75,12 @@ namespace SGDK2
          }
          #endregion
       }
+
+      public enum LightingMode
+      {
+         Disabled,
+         Normal
+      }
       #endregion
 
       #region Fields
@@ -169,6 +175,25 @@ namespace SGDK2
          {
             m_Layer.OffsetX = value.X;
             m_Layer.OffsetY = value.Y;
+         }
+      }
+
+      public LightingMode Lighting
+      {
+         get
+         {
+            if (m_Layer.IsLightingNull())
+               return LightingMode.Disabled;
+            if (m_Layer.Lighting == "Normal")
+               return LightingMode.Normal;
+            return LightingMode.Disabled;
+         }
+         set
+         {
+            if (value == LightingMode.Normal)
+               m_Layer.Lighting = "Normal";
+            else // Lighting "Disabled"
+               m_Layer.SetLightingNull();
          }
       }
 

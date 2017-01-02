@@ -185,6 +185,28 @@ namespace SGDK2
             }
          }
 
+         [Description("Determines whether real-time lighting effects are applied on this layer for sprites derived from LightSpriteBase that overlap this layer."),
+         Category("Appearance")]
+         public Layer.LightingMode Lighting
+         {
+            get
+            {
+               if (m_tempLayer.IsLightingNull())
+                  return Layer.LightingMode.Disabled;
+               if (m_tempLayer.Lighting == "Normal")
+                  return Layer.LightingMode.Normal;
+               return Layer.LightingMode.Disabled;
+            }
+            set
+            {
+               if (value == Layer.LightingMode.Normal)
+                  m_tempLayer.Lighting = "Normal";
+               else // Lighting "Disabled"
+                  m_tempLayer.SetLightingNull();
+            }
+         }
+
+
          [Description("Determines the number of pixels by which the left side of the layer is offset from the left side of the map (when map is at 0,0)"),
          Category("Layout")]
          public int OffsetX
@@ -308,6 +330,8 @@ namespace SGDK2
          EditRow.Width = 100;
          EditRow.Height = 15;
          EditRow.BytesPerTile = 1;
+         // Lighting "Disabled"
+         EditRow.Lighting = null;
          if (ProjectData.Tileset.DefaultView.Count > 0)
             EditRow.Tileset = (ProjectData.Tileset.DefaultView[0].Row as ProjectDataset.TilesetRow).Name;
          foreach (ProjectDataset.LayerRow lr in ProjectData.GetSortedLayers(parent))

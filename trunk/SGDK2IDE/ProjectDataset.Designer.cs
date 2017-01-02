@@ -4553,6 +4553,8 @@ namespace SGDK2 {
             
             private global::System.Data.DataColumn columnTiles;
             
+            private global::System.Data.DataColumn columnLighting;
+            
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public LayerDataTable() {
@@ -4708,6 +4710,14 @@ namespace SGDK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public global::System.Data.DataColumn LightingColumn {
+                get {
+                    return this.columnLighting;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             [global::System.ComponentModel.Browsable(false)]
             public int Count {
                 get {
@@ -4743,7 +4753,23 @@ namespace SGDK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
-            public LayerRow AddLayerRow(string Name, int Width, int Height, TilesetRow parentTilesetRowByTilesetLayer, byte BytesPerTile, MapRow parentMapRowByMapLayer, int OffsetX, int OffsetY, float ScrollRateX, float ScrollRateY, int ZIndex, int Priority, int VirtualWidth, int VirtualHeight, byte[] Tiles) {
+            public LayerRow AddLayerRow(
+                        string Name, 
+                        int Width, 
+                        int Height, 
+                        TilesetRow parentTilesetRowByTilesetLayer, 
+                        byte BytesPerTile, 
+                        MapRow parentMapRowByMapLayer, 
+                        int OffsetX, 
+                        int OffsetY, 
+                        float ScrollRateX, 
+                        float ScrollRateY, 
+                        int ZIndex, 
+                        int Priority, 
+                        int VirtualWidth, 
+                        int VirtualHeight, 
+                        byte[] Tiles, 
+                        string Lighting) {
                 LayerRow rowLayerRow = ((LayerRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
                         Name,
@@ -4760,7 +4786,8 @@ namespace SGDK2 {
                         Priority,
                         VirtualWidth,
                         VirtualHeight,
-                        Tiles};
+                        Tiles,
+                        Lighting};
                 if ((parentTilesetRowByTilesetLayer != null)) {
                     columnValuesArray[3] = parentTilesetRowByTilesetLayer[0];
                 }
@@ -4812,6 +4839,7 @@ namespace SGDK2 {
                 this.columnVirtualWidth = base.Columns["VirtualWidth"];
                 this.columnVirtualHeight = base.Columns["VirtualHeight"];
                 this.columnTiles = base.Columns["Tiles"];
+                this.columnLighting = base.Columns["Lighting"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -4847,6 +4875,8 @@ namespace SGDK2 {
                 base.Columns.Add(this.columnVirtualHeight);
                 this.columnTiles = new global::System.Data.DataColumn("Tiles", typeof(byte[]), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnTiles);
+                this.columnLighting = new global::System.Data.DataColumn("Lighting", typeof(string), null, global::System.Data.MappingType.Attribute);
+                base.Columns.Add(this.columnLighting);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("LayerKey", new global::System.Data.DataColumn[] {
                                 this.columnMapName,
                                 this.columnName}, true));
@@ -4876,6 +4906,7 @@ namespace SGDK2 {
                 this.columnVirtualWidth.DefaultValue = ((int)(0));
                 this.columnVirtualHeight.Namespace = "";
                 this.columnVirtualHeight.DefaultValue = ((int)(0));
+                this.columnLighting.Namespace = "";
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -5419,19 +5450,19 @@ namespace SGDK2 {
                 base.Columns.Add(this.columnSolidity);
                 this.columnColor = new global::System.Data.DataColumn("Color", typeof(int), null, global::System.Data.MappingType.Attribute);
                 base.Columns.Add(this.columnColor);
-                this.columnLightConstantFalloff = new global::System.Data.DataColumn("LightConstantFalloff", typeof(float), null, global::System.Data.MappingType.Element);
+                this.columnLightConstantFalloff = new global::System.Data.DataColumn("LightConstantFalloff", typeof(float), null, global::System.Data.MappingType.Attribute);
                 base.Columns.Add(this.columnLightConstantFalloff);
-                this.columnLightLinearFalloff = new global::System.Data.DataColumn("LightLinearFalloff", typeof(float), null, global::System.Data.MappingType.Element);
+                this.columnLightLinearFalloff = new global::System.Data.DataColumn("LightLinearFalloff", typeof(float), null, global::System.Data.MappingType.Attribute);
                 base.Columns.Add(this.columnLightLinearFalloff);
-                this.columnLightQuadraticFalloff = new global::System.Data.DataColumn("LightQuadraticFalloff", typeof(float), null, global::System.Data.MappingType.Element);
+                this.columnLightQuadraticFalloff = new global::System.Data.DataColumn("LightQuadraticFalloff", typeof(float), null, global::System.Data.MappingType.Attribute);
                 base.Columns.Add(this.columnLightQuadraticFalloff);
-                this.columnLightAimX = new global::System.Data.DataColumn("LightAimX", typeof(float), null, global::System.Data.MappingType.Element);
+                this.columnLightAimX = new global::System.Data.DataColumn("LightAimX", typeof(float), null, global::System.Data.MappingType.Attribute);
                 base.Columns.Add(this.columnLightAimX);
-                this.columnLightAimY = new global::System.Data.DataColumn("LightAimY", typeof(float), null, global::System.Data.MappingType.Element);
+                this.columnLightAimY = new global::System.Data.DataColumn("LightAimY", typeof(float), null, global::System.Data.MappingType.Attribute);
                 base.Columns.Add(this.columnLightAimY);
-                this.columnLightApertureFocus = new global::System.Data.DataColumn("LightApertureFocus", typeof(float), null, global::System.Data.MappingType.Element);
+                this.columnLightApertureFocus = new global::System.Data.DataColumn("LightApertureFocus", typeof(float), null, global::System.Data.MappingType.Attribute);
                 base.Columns.Add(this.columnLightApertureFocus);
-                this.columnLightApertureSoftness = new global::System.Data.DataColumn("LightApertureSoftness", typeof(float), null, global::System.Data.MappingType.Element);
+                this.columnLightApertureSoftness = new global::System.Data.DataColumn("LightApertureSoftness", typeof(float), null, global::System.Data.MappingType.Attribute);
                 base.Columns.Add(this.columnLightApertureSoftness);
                 this.Constraints.Add(new global::System.Data.UniqueConstraint("SpriteKey", new global::System.Data.DataColumn[] {
                                 this.columnLayerName,
@@ -5462,19 +5493,19 @@ namespace SGDK2 {
                 this.columnSolidity.Namespace = "";
                 this.columnColor.Namespace = "";
                 this.columnColor.DefaultValue = ((int)(-1));
-                this.columnLightConstantFalloff.AllowDBNull = false;
+                this.columnLightConstantFalloff.Namespace = "";
                 this.columnLightConstantFalloff.DefaultValue = ((float)(0F));
-                this.columnLightLinearFalloff.AllowDBNull = false;
+                this.columnLightLinearFalloff.Namespace = "";
                 this.columnLightLinearFalloff.DefaultValue = ((float)(1F));
-                this.columnLightQuadraticFalloff.AllowDBNull = false;
+                this.columnLightQuadraticFalloff.Namespace = "";
                 this.columnLightQuadraticFalloff.DefaultValue = ((float)(0F));
-                this.columnLightAimX.AllowDBNull = false;
+                this.columnLightAimX.Namespace = "";
                 this.columnLightAimX.DefaultValue = ((float)(0F));
-                this.columnLightAimY.AllowDBNull = false;
+                this.columnLightAimY.Namespace = "";
                 this.columnLightAimY.DefaultValue = ((float)(1F));
-                this.columnLightApertureFocus.AllowDBNull = false;
+                this.columnLightApertureFocus.Namespace = "";
                 this.columnLightApertureFocus.DefaultValue = ((float)(0F));
-                this.columnLightApertureSoftness.AllowDBNull = false;
+                this.columnLightApertureSoftness.Namespace = "";
                 this.columnLightApertureSoftness.DefaultValue = ((float)(0F));
             }
             
@@ -13537,6 +13568,22 @@ namespace SGDK2 {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public string Lighting {
+                get {
+                    try {
+                        return ((string)(this[this.tableLayer.LightingColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'Lighting\' in table \'Layer\' is DBNull.", e);
+                    }
+                }
+                set {
+                    this[this.tableLayer.LightingColumn] = value;
+                }
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public MapRow MapRow {
                 get {
                     return ((MapRow)(this.GetParentRow(this.Table.ParentRelations["MapLayer"])));
@@ -13675,6 +13722,18 @@ namespace SGDK2 {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetTilesNull() {
                 this[this.tableLayer.TilesColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsLightingNull() {
+                return this.IsNull(this.tableLayer.LightingColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetLightingNull() {
+                this[this.tableLayer.LightingColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -13922,7 +13981,12 @@ namespace SGDK2 {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public float LightConstantFalloff {
                 get {
-                    return ((float)(this[this.tableSprite.LightConstantFalloffColumn]));
+                    try {
+                        return ((float)(this[this.tableSprite.LightConstantFalloffColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'LightConstantFalloff\' in table \'Sprite\' is DBNull.", e);
+                    }
                 }
                 set {
                     this[this.tableSprite.LightConstantFalloffColumn] = value;
@@ -13933,7 +13997,12 @@ namespace SGDK2 {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public float LightLinearFalloff {
                 get {
-                    return ((float)(this[this.tableSprite.LightLinearFalloffColumn]));
+                    try {
+                        return ((float)(this[this.tableSprite.LightLinearFalloffColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'LightLinearFalloff\' in table \'Sprite\' is DBNull.", e);
+                    }
                 }
                 set {
                     this[this.tableSprite.LightLinearFalloffColumn] = value;
@@ -13944,7 +14013,12 @@ namespace SGDK2 {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public float LightQuadraticFalloff {
                 get {
-                    return ((float)(this[this.tableSprite.LightQuadraticFalloffColumn]));
+                    try {
+                        return ((float)(this[this.tableSprite.LightQuadraticFalloffColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'LightQuadraticFalloff\' in table \'Sprite\' is DBNull.", e);
+                    }
                 }
                 set {
                     this[this.tableSprite.LightQuadraticFalloffColumn] = value;
@@ -13955,7 +14029,12 @@ namespace SGDK2 {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public float LightAimX {
                 get {
-                    return ((float)(this[this.tableSprite.LightAimXColumn]));
+                    try {
+                        return ((float)(this[this.tableSprite.LightAimXColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'LightAimX\' in table \'Sprite\' is DBNull.", e);
+                    }
                 }
                 set {
                     this[this.tableSprite.LightAimXColumn] = value;
@@ -13966,7 +14045,12 @@ namespace SGDK2 {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public float LightAimY {
                 get {
-                    return ((float)(this[this.tableSprite.LightAimYColumn]));
+                    try {
+                        return ((float)(this[this.tableSprite.LightAimYColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'LightAimY\' in table \'Sprite\' is DBNull.", e);
+                    }
                 }
                 set {
                     this[this.tableSprite.LightAimYColumn] = value;
@@ -13977,7 +14061,12 @@ namespace SGDK2 {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public float LightApertureFocus {
                 get {
-                    return ((float)(this[this.tableSprite.LightApertureFocusColumn]));
+                    try {
+                        return ((float)(this[this.tableSprite.LightApertureFocusColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'LightApertureFocus\' in table \'Sprite\' is DBNull.", e);
+                    }
                 }
                 set {
                     this[this.tableSprite.LightApertureFocusColumn] = value;
@@ -13988,7 +14077,12 @@ namespace SGDK2 {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public float LightApertureSoftness {
                 get {
-                    return ((float)(this[this.tableSprite.LightApertureSoftnessColumn]));
+                    try {
+                        return ((float)(this[this.tableSprite.LightApertureSoftnessColumn]));
+                    }
+                    catch (global::System.InvalidCastException e) {
+                        throw new global::System.Data.StrongTypingException("The value for column \'LightApertureSoftness\' in table \'Sprite\' is DBNull.", e);
+                    }
                 }
                 set {
                     this[this.tableSprite.LightApertureSoftnessColumn] = value;
@@ -14135,6 +14229,90 @@ namespace SGDK2 {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             public void SetColorNull() {
                 this[this.tableSprite.ColorColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsLightConstantFalloffNull() {
+                return this.IsNull(this.tableSprite.LightConstantFalloffColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetLightConstantFalloffNull() {
+                this[this.tableSprite.LightConstantFalloffColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsLightLinearFalloffNull() {
+                return this.IsNull(this.tableSprite.LightLinearFalloffColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetLightLinearFalloffNull() {
+                this[this.tableSprite.LightLinearFalloffColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsLightQuadraticFalloffNull() {
+                return this.IsNull(this.tableSprite.LightQuadraticFalloffColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetLightQuadraticFalloffNull() {
+                this[this.tableSprite.LightQuadraticFalloffColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsLightAimXNull() {
+                return this.IsNull(this.tableSprite.LightAimXColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetLightAimXNull() {
+                this[this.tableSprite.LightAimXColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsLightAimYNull() {
+                return this.IsNull(this.tableSprite.LightAimYColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetLightAimYNull() {
+                this[this.tableSprite.LightAimYColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsLightApertureFocusNull() {
+                return this.IsNull(this.tableSprite.LightApertureFocusColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetLightApertureFocusNull() {
+                this[this.tableSprite.LightApertureFocusColumn] = global::System.Convert.DBNull;
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public bool IsLightApertureSoftnessNull() {
+                return this.IsNull(this.tableSprite.LightApertureSoftnessColumn);
+            }
+            
+            [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+            [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
+            public void SetLightApertureSoftnessNull() {
+                this[this.tableSprite.LightApertureSoftnessColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]

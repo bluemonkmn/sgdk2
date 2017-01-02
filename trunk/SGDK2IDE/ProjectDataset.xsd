@@ -95,13 +95,6 @@
                     <xs:element name="Sprite" msprop:Generator_UserTableName="Sprite" msprop:Generator_RowEvArgName="SpriteRowChangeEvent" msprop:Generator_TableVarName="tableSprite" msprop:Generator_TablePropName="Sprite" msprop:Generator_RowDeletingName="SpriteRowDeleting" msprop:Generator_RowChangingName="SpriteRowChanging" msprop:Generator_RowDeletedName="SpriteRowDeleted" msprop:Generator_RowEvHandlerName="SpriteRowChangeEventHandler" msprop:Generator_TableClassName="SpriteDataTable" msprop:Generator_RowChangedName="SpriteRowChanged" msprop:Generator_RowClassName="SpriteRow" minOccurs="0" maxOccurs="unbounded">
                       <xs:complexType>
                         <xs:sequence>
-                          <xs:element name="LightConstantFalloff" msprop:Generator_ColumnVarNameInTable="columnLightConstantFalloff" msprop:Generator_ColumnPropNameInRow="LightConstantFalloff" msprop:Generator_ColumnPropNameInTable="LightConstantFalloffColumn" msprop:Generator_UserColumnName="LightConstantFalloff" type="xs:float" default="0" msdata:Ordinal="14" />
-                          <xs:element name="LightLinearFalloff" msprop:Generator_ColumnVarNameInTable="columnLightLinearFalloff" msprop:Generator_ColumnPropNameInRow="LightLinearFalloff" msprop:Generator_ColumnPropNameInTable="LightLinearFalloffColumn" msprop:Generator_UserColumnName="LightLinearFalloff" type="xs:float" default="1" msdata:Ordinal="15" />
-                          <xs:element name="LightQuadraticFalloff" msprop:Generator_ColumnVarNameInTable="columnLightQuadraticFalloff" msprop:Generator_ColumnPropNameInRow="LightQuadraticFalloff" msprop:Generator_ColumnPropNameInTable="LightQuadraticFalloffColumn" msprop:Generator_UserColumnName="LightQuadraticFalloff" type="xs:float" default="0" msdata:Ordinal="16" />
-                          <xs:element name="LightAimX" msprop:Generator_ColumnVarNameInTable="columnLightAimX" msprop:Generator_ColumnPropNameInRow="LightAimX" msprop:Generator_ColumnPropNameInTable="LightAimXColumn" msprop:Generator_UserColumnName="LightAimX" type="xs:float" default="0" msdata:Ordinal="17" />
-                          <xs:element name="LightAimY" msprop:Generator_ColumnVarNameInTable="columnLightAimY" msprop:Generator_ColumnPropNameInRow="LightAimY" msprop:Generator_ColumnPropNameInTable="LightAimYColumn" msprop:Generator_UserColumnName="LightAimY" type="xs:float" default="1" msdata:Ordinal="18" />
-                          <xs:element name="LightApertureFocus" msprop:Generator_ColumnVarNameInTable="columnLightApertureFocus" msprop:Generator_ColumnPropNameInRow="LightApertureFocus" msprop:Generator_ColumnPropNameInTable="LightApertureFocusColumn" msprop:Generator_UserColumnName="LightApertureFocus" type="xs:float" default="0" msdata:Ordinal="19" />
-                          <xs:element name="LightApertureSoftness" msprop:Generator_ColumnVarNameInTable="columnLightApertureSoftness" msprop:Generator_ColumnPropNameInRow="LightApertureSoftness" msprop:Generator_ColumnPropNameInTable="LightApertureSoftnessColumn" msprop:Generator_UserColumnName="LightApertureSoftness" type="xs:float" default="0" msdata:Ordinal="20" />
                           <xs:element name="ParameterValue" msprop:Generator_UserTableName="ParameterValue" msprop:Generator_RowEvArgName="ParameterValueRowChangeEvent" msprop:Generator_TableVarName="tableParameterValue" msprop:Generator_TablePropName="ParameterValue" msprop:Generator_RowDeletingName="ParameterValueRowDeleting" msprop:Generator_RowChangingName="ParameterValueRowChanging" msprop:Generator_RowDeletedName="ParameterValueRowDeleted" msprop:Generator_RowEvHandlerName="ParameterValueRowChangeEventHandler" msprop:Generator_TableClassName="ParameterValueDataTable" msprop:Generator_RowChangedName="ParameterValueRowChanged" msprop:Generator_RowClassName="ParameterValueRow" minOccurs="0" maxOccurs="unbounded">
                             <xs:complexType>
                               <xs:attribute name="LayerName" msprop:Generator_ColumnVarNameInTable="columnLayerName" msprop:Generator_ColumnPropNameInRow="LayerName" msprop:Generator_ColumnPropNameInTable="LayerNameColumn" msprop:Generator_UserColumnName="LayerName" type="xs:Name" msdata:AllowDBNull="false" use="prohibited" />
@@ -127,6 +120,13 @@
                         <xs:attribute name="Active" msprop:nullValue="false" msprop:Generator_ColumnPropNameInRow="Active" msprop:Generator_ColumnVarNameInTable="columnActive" msprop:Generator_ColumnPropNameInTable="ActiveColumn" msprop:Generator_UserColumnName="Active" type="xs:boolean" default="true" />
                         <xs:attribute name="Solidity" msprop:nullValue="_empty" msprop:Generator_ColumnPropNameInRow="Solidity" msprop:Generator_ColumnVarNameInTable="columnSolidity" msprop:Generator_ColumnPropNameInTable="SolidityColumn" msprop:Generator_UserColumnName="Solidity" type="xs:string" />
                         <xs:attribute name="Color" msprop:nullValue="-1" msprop:Generator_ColumnPropNameInRow="Color" msprop:Generator_ColumnVarNameInTable="columnColor" msprop:Generator_ColumnPropNameInTable="ColorColumn" msprop:Generator_UserColumnName="Color" type="xs:int" default="-1" />
+                        <xs:attribute name="LightConstantFalloff" msprop:Generator_ColumnVarNameInTable="columnLightConstantFalloff" msprop:Generator_ColumnPropNameInRow="LightConstantFalloff" msprop:Generator_ColumnPropNameInTable="LightConstantFalloffColumn" msprop:Generator_UserColumnName="LightConstantFalloff" type="xs:float" default="0" />
+                        <xs:attribute name="LightLinearFalloff" msprop:Generator_ColumnVarNameInTable="columnLightLinearFalloff" msprop:Generator_ColumnPropNameInRow="LightLinearFalloff" msprop:Generator_ColumnPropNameInTable="LightLinearFalloffColumn" msprop:Generator_UserColumnName="LightLinearFalloff" type="xs:float" default="1" />
+                        <xs:attribute name="LightQuadraticFalloff" msprop:Generator_ColumnVarNameInTable="columnLightQuadraticFalloff" msprop:Generator_ColumnPropNameInRow="LightQuadraticFalloff" msprop:Generator_ColumnPropNameInTable="LightQuadraticFalloffColumn" msprop:Generator_UserColumnName="LightQuadraticFalloff" type="xs:float" default="0" />
+                        <xs:attribute name="LightAimX" msprop:Generator_ColumnVarNameInTable="columnLightAimX" msprop:Generator_ColumnPropNameInRow="LightAimX" msprop:Generator_ColumnPropNameInTable="LightAimXColumn" msprop:Generator_UserColumnName="LightAimX" type="xs:float" default="0" />
+                        <xs:attribute name="LightAimY" msprop:Generator_ColumnVarNameInTable="columnLightAimY" msprop:Generator_ColumnPropNameInRow="LightAimY" msprop:Generator_ColumnPropNameInTable="LightAimYColumn" msprop:Generator_UserColumnName="LightAimY" type="xs:float" default="1" />
+                        <xs:attribute name="LightApertureFocus" msprop:Generator_ColumnVarNameInTable="columnLightApertureFocus" msprop:Generator_ColumnPropNameInRow="LightApertureFocus" msprop:Generator_ColumnPropNameInTable="LightApertureFocusColumn" msprop:Generator_UserColumnName="LightApertureFocus" type="xs:float" default="0" />
+                        <xs:attribute name="LightApertureSoftness" msprop:Generator_ColumnVarNameInTable="columnLightApertureSoftness" msprop:Generator_ColumnPropNameInRow="LightApertureSoftness" msprop:Generator_ColumnPropNameInTable="LightApertureSoftnessColumn" msprop:Generator_UserColumnName="LightApertureSoftness" type="xs:float" default="0" />
                       </xs:complexType>
                     </xs:element>
                     <xs:element name="SpritePlan" msprop:Generator_UserTableName="SpritePlan" msprop:Generator_RowEvArgName="SpritePlanRowChangeEvent" msprop:Generator_TableVarName="tableSpritePlan" msprop:Generator_TablePropName="SpritePlan" msprop:Generator_RowDeletingName="SpritePlanRowDeleting" msprop:Generator_RowChangingName="SpritePlanRowChanging" msprop:Generator_RowDeletedName="SpritePlanRowDeleted" msprop:Generator_RowEvHandlerName="SpritePlanRowChangeEventHandler" msprop:Generator_TableClassName="SpritePlanDataTable" msprop:Generator_RowChangedName="SpritePlanRowChanged" msprop:Generator_RowClassName="SpritePlanRow" minOccurs="0" maxOccurs="unbounded">
@@ -192,6 +192,7 @@
                   <xs:attribute name="Priority" msprop:nullValue="0" msprop:Generator_ColumnPropNameInRow="Priority" msprop:Generator_ColumnVarNameInTable="columnPriority" msprop:Generator_ColumnPropNameInTable="PriorityColumn" msprop:Generator_UserColumnName="Priority" type="xs:int" default="0" />
                   <xs:attribute name="VirtualWidth" msprop:nullValue="0" msprop:Generator_ColumnPropNameInRow="VirtualWidth" msprop:Generator_ColumnVarNameInTable="columnVirtualWidth" msprop:Generator_ColumnPropNameInTable="VirtualWidthColumn" msprop:Generator_UserColumnName="VirtualWidth" type="xs:int" default="0" />
                   <xs:attribute name="VirtualHeight" msprop:nullValue="0" msprop:Generator_ColumnPropNameInRow="VirtualHeight" msprop:Generator_ColumnVarNameInTable="columnVirtualHeight" msprop:Generator_ColumnPropNameInTable="VirtualHeightColumn" msprop:Generator_UserColumnName="VirtualHeight" type="xs:int" default="0" />
+                  <xs:attribute name="Lighting" msprop:Generator_ColumnVarNameInTable="columnLighting" msprop:Generator_ColumnPropNameInRow="Lighting" msprop:Generator_ColumnPropNameInTable="LightingColumn" msprop:Generator_UserColumnName="Lighting" type="xs:string" />
                 </xs:complexType>
               </xs:element>
             </xs:sequence>
@@ -509,20 +510,20 @@
       <xs:selector xpath=".//TileCategory" />
       <xs:field xpath="@Name" />
     </xs:unique>
-    <xs:keyref name="TilesetCategory" refer="TilesetKey" msprop:rel_Generator_UserChildTable="CategorizedTileset" msprop:rel_Generator_ChildPropName="GetCategorizedTilesetRows" msprop:rel_Generator_UserRelationName="TilesetCategory" msprop:rel_Generator_RelationVarName="relationTilesetCategory" msprop:rel_Generator_UserParentTable="Tileset" msprop:rel_Generator_ParentPropName="TilesetRow">
+    <xs:keyref name="TilesetCategory" refer="TilesetKey" msprop:rel_Generator_UserChildTable="CategorizedTileset" msprop:rel_Generator_ChildPropName="GetCategorizedTilesetRows" msprop:rel_Generator_UserRelationName="TilesetCategory" msprop:rel_Generator_ParentPropName="TilesetRow" msprop:rel_Generator_RelationVarName="relationTilesetCategory" msprop:rel_Generator_UserParentTable="Tileset">
       <xs:selector xpath=".//CategorizedTileset" />
       <xs:field xpath="@Tileset" />
     </xs:keyref>
-    <xs:keyref name="TileCategoryCategorizedTileset" refer="CategoryKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="CategorizedTileset" msprop:rel_Generator_ChildPropName="GetCategorizedTilesetRows" msprop:rel_Generator_UserRelationName="TileCategoryCategorizedTileset" msprop:rel_Generator_RelationVarName="relationTileCategoryCategorizedTileset" msprop:rel_Generator_UserParentTable="TileCategory" msprop:rel_Generator_ParentPropName="TileCategoryRow">
+    <xs:keyref name="TileCategoryCategorizedTileset" refer="CategoryKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="CategorizedTileset" msprop:rel_Generator_ChildPropName="GetCategorizedTilesetRows" msprop:rel_Generator_UserRelationName="TileCategoryCategorizedTileset" msprop:rel_Generator_ParentPropName="TileCategoryRow" msprop:rel_Generator_RelationVarName="relationTileCategoryCategorizedTileset" msprop:rel_Generator_UserParentTable="TileCategory">
       <xs:selector xpath=".//CategorizedTileset" />
       <xs:field xpath="@Name" />
     </xs:keyref>
-    <xs:keyref name="CategoryCategoryTile" refer="CategorizedTilesetKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="CategoryTile" msprop:rel_Generator_ChildPropName="GetCategoryTileRows" msprop:rel_Generator_UserRelationName="CategoryCategoryTile" msprop:rel_Generator_RelationVarName="relationCategoryCategoryTile" msprop:rel_Generator_UserParentTable="CategorizedTileset" msprop:rel_Generator_ParentPropName="CategorizedTilesetRowParent">
+    <xs:keyref name="CategoryCategoryTile" refer="CategorizedTilesetKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="CategoryTile" msprop:rel_Generator_ChildPropName="GetCategoryTileRows" msprop:rel_Generator_UserRelationName="CategoryCategoryTile" msprop:rel_Generator_ParentPropName="CategorizedTilesetRowParent" msprop:rel_Generator_RelationVarName="relationCategoryCategoryTile" msprop:rel_Generator_UserParentTable="CategorizedTileset">
       <xs:selector xpath=".//CategoryTile" />
       <xs:field xpath="@Tileset" />
       <xs:field xpath="@Category" />
     </xs:keyref>
-    <xs:keyref name="CategoryTileCategoryFrame" refer="CategoryTileKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="CategoryFrame" msprop:rel_Generator_ChildPropName="GetCategoryFrameRows" msprop:rel_Generator_UserRelationName="CategoryTileCategoryFrame" msprop:rel_Generator_RelationVarName="relationCategoryTileCategoryFrame" msprop:rel_Generator_UserParentTable="CategoryTile" msprop:rel_Generator_ParentPropName="CategoryTileRowParent">
+    <xs:keyref name="CategoryTileCategoryFrame" refer="CategoryTileKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="CategoryFrame" msprop:rel_Generator_ChildPropName="GetCategoryFrameRows" msprop:rel_Generator_UserRelationName="CategoryTileCategoryFrame" msprop:rel_Generator_ParentPropName="CategoryTileRowParent" msprop:rel_Generator_RelationVarName="relationCategoryTileCategoryFrame" msprop:rel_Generator_UserParentTable="CategoryTile">
       <xs:selector xpath=".//CategoryFrame" />
       <xs:field xpath="@Tileset" />
       <xs:field xpath="@Category" />
@@ -532,109 +533,109 @@
       <xs:selector xpath=".//Project" />
       <xs:field xpath="@StartMap" />
     </xs:keyref>
-    <xs:keyref name="CategorySolidityShape" refer="CategoryKey" msprop:rel_Generator_UserChildTable="SolidityShape" msprop:rel_Generator_ChildPropName="GetSolidityShapeRows" msprop:rel_Generator_UserRelationName="CategorySolidityShape" msprop:rel_Generator_RelationVarName="relationCategorySolidityShape" msprop:rel_Generator_UserParentTable="TileCategory" msprop:rel_Generator_ParentPropName="TileCategoryRow">
+    <xs:keyref name="CategorySolidityShape" refer="CategoryKey" msprop:rel_Generator_UserChildTable="SolidityShape" msprop:rel_Generator_ChildPropName="GetSolidityShapeRows" msprop:rel_Generator_UserRelationName="CategorySolidityShape" msprop:rel_Generator_ParentPropName="TileCategoryRow" msprop:rel_Generator_RelationVarName="relationCategorySolidityShape" msprop:rel_Generator_UserParentTable="TileCategory">
       <xs:selector xpath=".//SolidityShape" />
       <xs:field xpath="@CategoryName" />
     </xs:keyref>
-    <xs:keyref name="SoliditySolidityShape" refer="SolidityKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="SolidityShape" msprop:rel_Generator_ChildPropName="GetSolidityShapeRows" msprop:rel_Generator_UserRelationName="SoliditySolidityShape" msprop:rel_Generator_RelationVarName="relationSoliditySolidityShape" msprop:rel_Generator_UserParentTable="Solidity" msprop:rel_Generator_ParentPropName="SolidityRow">
+    <xs:keyref name="SoliditySolidityShape" refer="SolidityKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="SolidityShape" msprop:rel_Generator_ChildPropName="GetSolidityShapeRows" msprop:rel_Generator_UserRelationName="SoliditySolidityShape" msprop:rel_Generator_ParentPropName="SolidityRow" msprop:rel_Generator_RelationVarName="relationSoliditySolidityShape" msprop:rel_Generator_UserParentTable="Solidity">
       <xs:selector xpath=".//SolidityShape" />
       <xs:field xpath="@SolidityName" />
     </xs:keyref>
-    <xs:keyref name="SpriteDefinitionCategory" refer="SpriteDefinitionKey" msprop:rel_Generator_UserChildTable="SpriteCategorySprite" msprop:rel_Generator_ChildPropName="GetSpriteCategorySpriteRows" msprop:rel_Generator_UserRelationName="SpriteDefinitionCategory" msprop:rel_Generator_RelationVarName="relationSpriteDefinitionCategory" msprop:rel_Generator_UserParentTable="SpriteDefinition" msprop:rel_Generator_ParentPropName="SpriteDefinitionRow">
+    <xs:keyref name="SpriteDefinitionCategory" refer="SpriteDefinitionKey" msprop:rel_Generator_UserChildTable="SpriteCategorySprite" msprop:rel_Generator_ChildPropName="GetSpriteCategorySpriteRows" msprop:rel_Generator_UserRelationName="SpriteDefinitionCategory" msprop:rel_Generator_ParentPropName="SpriteDefinitionRow" msprop:rel_Generator_RelationVarName="relationSpriteDefinitionCategory" msprop:rel_Generator_UserParentTable="SpriteDefinition">
       <xs:selector xpath=".//SpriteCategorySprite" />
       <xs:field xpath="@DefinitionName" />
     </xs:keyref>
-    <xs:keyref name="SpriteCategorySpriteCategorySprite" refer="SpriteCategoryKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="SpriteCategorySprite" msprop:rel_Generator_ChildPropName="GetSpriteCategorySpriteRows" msprop:rel_Generator_UserRelationName="SpriteCategorySpriteCategorySprite" msprop:rel_Generator_RelationVarName="relationSpriteCategorySpriteCategorySprite" msprop:rel_Generator_UserParentTable="SpriteCategory" msprop:rel_Generator_ParentPropName="SpriteCategoryRow">
+    <xs:keyref name="SpriteCategorySpriteCategorySprite" refer="SpriteCategoryKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="SpriteCategorySprite" msprop:rel_Generator_ChildPropName="GetSpriteCategorySpriteRows" msprop:rel_Generator_UserRelationName="SpriteCategorySpriteCategorySprite" msprop:rel_Generator_ParentPropName="SpriteCategoryRow" msprop:rel_Generator_RelationVarName="relationSpriteCategorySpriteCategorySprite" msprop:rel_Generator_UserParentTable="SpriteCategory">
       <xs:selector xpath=".//SpriteCategorySprite" />
       <xs:field xpath="@CategoryName" />
     </xs:keyref>
-    <xs:keyref name="FramesetSpriteState" refer="FramesetKey" msprop:rel_Generator_UserChildTable="SpriteState" msprop:rel_Generator_ChildPropName="GetSpriteStateRows" msprop:rel_Generator_UserRelationName="FramesetSpriteState" msprop:rel_Generator_RelationVarName="relationFramesetSpriteState" msprop:rel_Generator_UserParentTable="Frameset" msprop:rel_Generator_ParentPropName="FramesetRow">
+    <xs:keyref name="FramesetSpriteState" refer="FramesetKey" msprop:rel_Generator_UserChildTable="SpriteState" msprop:rel_Generator_ChildPropName="GetSpriteStateRows" msprop:rel_Generator_UserRelationName="FramesetSpriteState" msprop:rel_Generator_ParentPropName="FramesetRow" msprop:rel_Generator_RelationVarName="relationFramesetSpriteState" msprop:rel_Generator_UserParentTable="Frameset">
       <xs:selector xpath=".//SpriteState" />
       <xs:field xpath="@FramesetName" />
     </xs:keyref>
-    <xs:keyref name="SpriteDefinitionState" refer="SpriteDefinitionKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="SpriteState" msprop:rel_Generator_ChildPropName="GetSpriteStateRows" msprop:rel_Generator_UserRelationName="SpriteDefinitionState" msprop:rel_Generator_RelationVarName="relationSpriteDefinitionState" msprop:rel_Generator_UserParentTable="SpriteDefinition" msprop:rel_Generator_ParentPropName="SpriteDefinitionRow">
+    <xs:keyref name="SpriteDefinitionState" refer="SpriteDefinitionKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="SpriteState" msprop:rel_Generator_ChildPropName="GetSpriteStateRows" msprop:rel_Generator_UserRelationName="SpriteDefinitionState" msprop:rel_Generator_ParentPropName="SpriteDefinitionRow" msprop:rel_Generator_RelationVarName="relationSpriteDefinitionState" msprop:rel_Generator_UserParentTable="SpriteDefinition">
       <xs:selector xpath=".//SpriteState" />
       <xs:field xpath="@DefinitionName" />
     </xs:keyref>
-    <xs:keyref name="SpriteStateFrame" refer="SpriteStateKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="SpriteFrame" msprop:rel_Generator_ChildPropName="GetSpriteFrameRows" msprop:rel_Generator_UserRelationName="SpriteStateFrame" msprop:rel_Generator_RelationVarName="relationSpriteStateFrame" msprop:rel_Generator_UserParentTable="SpriteState" msprop:rel_Generator_ParentPropName="SpriteStateRowParent">
+    <xs:keyref name="SpriteStateFrame" refer="SpriteStateKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="SpriteFrame" msprop:rel_Generator_ChildPropName="GetSpriteFrameRows" msprop:rel_Generator_UserRelationName="SpriteStateFrame" msprop:rel_Generator_ParentPropName="SpriteStateRowParent" msprop:rel_Generator_RelationVarName="relationSpriteStateFrame" msprop:rel_Generator_UserParentTable="SpriteState">
       <xs:selector xpath=".//SpriteFrame" />
       <xs:field xpath="@DefinitionName" />
       <xs:field xpath="@StateName" />
     </xs:keyref>
-    <xs:keyref name="SpriteDefinitionSpriteParameter" refer="SpriteDefinitionKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="SpriteParameter" msprop:rel_Generator_ChildPropName="GetSpriteParameterRows" msprop:rel_Generator_UserRelationName="SpriteDefinitionSpriteParameter" msprop:rel_Generator_RelationVarName="relationSpriteDefinitionSpriteParameter" msprop:rel_Generator_UserParentTable="SpriteDefinition" msprop:rel_Generator_ParentPropName="SpriteDefinitionRow">
+    <xs:keyref name="SpriteDefinitionSpriteParameter" refer="SpriteDefinitionKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="SpriteParameter" msprop:rel_Generator_ChildPropName="GetSpriteParameterRows" msprop:rel_Generator_UserRelationName="SpriteDefinitionSpriteParameter" msprop:rel_Generator_ParentPropName="SpriteDefinitionRow" msprop:rel_Generator_RelationVarName="relationSpriteDefinitionSpriteParameter" msprop:rel_Generator_UserParentTable="SpriteDefinition">
       <xs:selector xpath=".//SpriteParameter" />
       <xs:field xpath="@DefinitionName" />
     </xs:keyref>
-    <xs:keyref name="SpriteDefinitionSpriteRule" refer="SpriteDefinitionKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="SpriteRule" msprop:rel_Generator_ChildPropName="GetSpriteRuleRows" msprop:rel_Generator_UserRelationName="SpriteDefinitionSpriteRule" msprop:rel_Generator_RelationVarName="relationSpriteDefinitionSpriteRule" msprop:rel_Generator_UserParentTable="SpriteDefinition" msprop:rel_Generator_ParentPropName="SpriteDefinitionRow">
+    <xs:keyref name="SpriteDefinitionSpriteRule" refer="SpriteDefinitionKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="SpriteRule" msprop:rel_Generator_ChildPropName="GetSpriteRuleRows" msprop:rel_Generator_UserRelationName="SpriteDefinitionSpriteRule" msprop:rel_Generator_ParentPropName="SpriteDefinitionRow" msprop:rel_Generator_RelationVarName="relationSpriteDefinitionSpriteRule" msprop:rel_Generator_UserParentTable="SpriteDefinition">
       <xs:selector xpath=".//SpriteRule" />
       <xs:field xpath="@DefinitionName" />
     </xs:keyref>
-    <xs:keyref name="TilesetLayer" refer="TilesetKey" msprop:rel_Generator_UserChildTable="Layer" msprop:rel_Generator_ChildPropName="GetLayerRows" msprop:rel_Generator_UserRelationName="TilesetLayer" msprop:rel_Generator_RelationVarName="relationTilesetLayer" msprop:rel_Generator_UserParentTable="Tileset" msprop:rel_Generator_ParentPropName="TilesetRow">
+    <xs:keyref name="TilesetLayer" refer="TilesetKey" msprop:rel_Generator_UserChildTable="Layer" msprop:rel_Generator_ChildPropName="GetLayerRows" msprop:rel_Generator_UserRelationName="TilesetLayer" msprop:rel_Generator_ParentPropName="TilesetRow" msprop:rel_Generator_RelationVarName="relationTilesetLayer" msprop:rel_Generator_UserParentTable="Tileset">
       <xs:selector xpath=".//Layer" />
       <xs:field xpath="@Tileset" />
     </xs:keyref>
-    <xs:keyref name="MapLayer" refer="MapKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="Layer" msprop:rel_Generator_ChildPropName="GetLayerRows" msprop:rel_Generator_UserRelationName="MapLayer" msprop:rel_Generator_RelationVarName="relationMapLayer" msprop:rel_Generator_UserParentTable="Map" msprop:rel_Generator_ParentPropName="MapRow">
+    <xs:keyref name="MapLayer" refer="MapKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="Layer" msprop:rel_Generator_ChildPropName="GetLayerRows" msprop:rel_Generator_UserRelationName="MapLayer" msprop:rel_Generator_ParentPropName="MapRow" msprop:rel_Generator_RelationVarName="relationMapLayer" msprop:rel_Generator_UserParentTable="Map">
       <xs:selector xpath=".//Layer" />
       <xs:field xpath="@MapName" />
     </xs:keyref>
-    <xs:keyref name="LayerSpritePlan" refer="LayerKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="SpritePlan" msprop:rel_Generator_ChildPropName="GetSpritePlanRows" msprop:rel_Generator_UserRelationName="LayerSpritePlan" msprop:rel_Generator_RelationVarName="relationLayerSpritePlan" msprop:rel_Generator_UserParentTable="Layer" msprop:rel_Generator_ParentPropName="LayerRowParent">
+    <xs:keyref name="LayerSpritePlan" refer="LayerKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="SpritePlan" msprop:rel_Generator_ChildPropName="GetSpritePlanRows" msprop:rel_Generator_UserRelationName="LayerSpritePlan" msprop:rel_Generator_ParentPropName="LayerRowParent" msprop:rel_Generator_RelationVarName="relationLayerSpritePlan" msprop:rel_Generator_UserParentTable="Layer">
       <xs:selector xpath=".//SpritePlan" />
       <xs:field xpath="@MapName" />
       <xs:field xpath="@LayerName" />
     </xs:keyref>
-    <xs:keyref name="SpritePlanPlanParameterValue" refer="SpritePlanKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="PlanParameterValue" msprop:rel_Generator_ChildPropName="GetPlanParameterValueRows" msprop:rel_Generator_UserRelationName="SpritePlanPlanParameterValue" msprop:rel_Generator_RelationVarName="relationSpritePlanPlanParameterValue" msprop:rel_Generator_UserParentTable="SpritePlan" msprop:rel_Generator_ParentPropName="SpritePlanRowParent">
+    <xs:keyref name="SpritePlanPlanParameterValue" refer="SpritePlanKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="PlanParameterValue" msprop:rel_Generator_ChildPropName="GetPlanParameterValueRows" msprop:rel_Generator_UserRelationName="SpritePlanPlanParameterValue" msprop:rel_Generator_ParentPropName="SpritePlanRowParent" msprop:rel_Generator_RelationVarName="relationSpritePlanPlanParameterValue" msprop:rel_Generator_UserParentTable="SpritePlan">
       <xs:selector xpath=".//PlanParameterValue" />
       <xs:field xpath="@MapName" />
       <xs:field xpath="@LayerName" />
       <xs:field xpath="@PlanName" />
     </xs:keyref>
-    <xs:keyref name="SpritePlanPlanRule" refer="SpritePlanKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="PlanRule" msprop:rel_Generator_ChildPropName="GetPlanRuleRows" msprop:rel_Generator_UserRelationName="SpritePlanPlanRule" msprop:rel_Generator_RelationVarName="relationSpritePlanPlanRule" msprop:rel_Generator_UserParentTable="SpritePlan" msprop:rel_Generator_ParentPropName="SpritePlanRowParent">
+    <xs:keyref name="SpritePlanPlanRule" refer="SpritePlanKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="PlanRule" msprop:rel_Generator_ChildPropName="GetPlanRuleRows" msprop:rel_Generator_UserRelationName="SpritePlanPlanRule" msprop:rel_Generator_ParentPropName="SpritePlanRowParent" msprop:rel_Generator_RelationVarName="relationSpritePlanPlanRule" msprop:rel_Generator_UserParentTable="SpritePlan">
       <xs:selector xpath=".//PlanRule" />
       <xs:field xpath="@MapName" />
       <xs:field xpath="@LayerName" />
       <xs:field xpath="@PlanName" />
     </xs:keyref>
-    <xs:keyref name="SpritePlanCoordinate" refer="SpritePlanKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="Coordinate" msprop:rel_Generator_ChildPropName="GetCoordinateRows" msprop:rel_Generator_UserRelationName="SpritePlanCoordinate" msprop:rel_Generator_RelationVarName="relationSpritePlanCoordinate" msprop:rel_Generator_UserParentTable="SpritePlan" msprop:rel_Generator_ParentPropName="SpritePlanRowParent">
+    <xs:keyref name="SpritePlanCoordinate" refer="SpritePlanKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="Coordinate" msprop:rel_Generator_ChildPropName="GetCoordinateRows" msprop:rel_Generator_UserRelationName="SpritePlanCoordinate" msprop:rel_Generator_ParentPropName="SpritePlanRowParent" msprop:rel_Generator_RelationVarName="relationSpritePlanCoordinate" msprop:rel_Generator_UserParentTable="SpritePlan">
       <xs:selector xpath=".//Coordinate" />
       <xs:field xpath="@MapName" />
       <xs:field xpath="@LayerName" />
       <xs:field xpath="@PlanName" />
     </xs:keyref>
-    <xs:keyref name="SpriteDefinitionSprite" refer="SpriteStateKey" msprop:rel_Generator_UserChildTable="Sprite" msprop:rel_Generator_ChildPropName="GetSpriteRows" msprop:rel_Generator_UserRelationName="SpriteDefinitionSprite" msprop:rel_Generator_RelationVarName="relationSpriteDefinitionSprite" msprop:rel_Generator_UserParentTable="SpriteState" msprop:rel_Generator_ParentPropName="SpriteStateRowParent">
+    <xs:keyref name="SpriteDefinitionSprite" refer="SpriteStateKey" msprop:rel_Generator_UserChildTable="Sprite" msprop:rel_Generator_ChildPropName="GetSpriteRows" msprop:rel_Generator_UserRelationName="SpriteDefinitionSprite" msprop:rel_Generator_ParentPropName="SpriteStateRowParent" msprop:rel_Generator_RelationVarName="relationSpriteDefinitionSprite" msprop:rel_Generator_UserParentTable="SpriteState">
       <xs:selector xpath=".//Sprite" />
       <xs:field xpath="@DefinitionName" />
       <xs:field xpath="@StateName" />
     </xs:keyref>
-    <xs:keyref name="LayerSprite" refer="LayerKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="Sprite" msprop:rel_Generator_ChildPropName="GetSpriteRows" msprop:rel_Generator_UserRelationName="LayerSprite" msprop:rel_Generator_RelationVarName="relationLayerSprite" msprop:rel_Generator_UserParentTable="Layer" msprop:rel_Generator_ParentPropName="LayerRowParent">
+    <xs:keyref name="LayerSprite" refer="LayerKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="Sprite" msprop:rel_Generator_ChildPropName="GetSpriteRows" msprop:rel_Generator_UserRelationName="LayerSprite" msprop:rel_Generator_ParentPropName="LayerRowParent" msprop:rel_Generator_RelationVarName="relationLayerSprite" msprop:rel_Generator_UserParentTable="Layer">
       <xs:selector xpath=".//Sprite" />
       <xs:field xpath="@MapName" />
       <xs:field xpath="@LayerName" />
     </xs:keyref>
-    <xs:keyref name="SpriteParameterParameterValue" refer="SpriteParameterKey" msprop:rel_Generator_UserChildTable="ParameterValue" msprop:rel_Generator_ChildPropName="GetParameterValueRows" msprop:rel_Generator_UserRelationName="SpriteParameterParameterValue" msprop:rel_Generator_RelationVarName="relationSpriteParameterParameterValue" msprop:rel_Generator_UserParentTable="SpriteParameter" msprop:rel_Generator_ParentPropName="SpriteParameterRowParent">
+    <xs:keyref name="SpriteParameterParameterValue" refer="SpriteParameterKey" msprop:rel_Generator_UserChildTable="ParameterValue" msprop:rel_Generator_ChildPropName="GetParameterValueRows" msprop:rel_Generator_UserRelationName="SpriteParameterParameterValue" msprop:rel_Generator_ParentPropName="SpriteParameterRowParent" msprop:rel_Generator_RelationVarName="relationSpriteParameterParameterValue" msprop:rel_Generator_UserParentTable="SpriteParameter">
       <xs:selector xpath=".//ParameterValue" />
       <xs:field xpath="@DefinitionName" />
       <xs:field xpath="@ParameterName" />
     </xs:keyref>
-    <xs:keyref name="SpriteParameterValue" refer="SpriteKeyWithDefinition" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="ParameterValue" msprop:rel_Generator_ChildPropName="GetParameterValueRows" msprop:rel_Generator_UserRelationName="SpriteParameterValue" msprop:rel_Generator_RelationVarName="relationSpriteParameterValue" msprop:rel_Generator_UserParentTable="Sprite" msprop:rel_Generator_ParentPropName="SpriteRowParent">
+    <xs:keyref name="SpriteParameterValue" refer="SpriteKeyWithDefinition" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="ParameterValue" msprop:rel_Generator_ChildPropName="GetParameterValueRows" msprop:rel_Generator_UserRelationName="SpriteParameterValue" msprop:rel_Generator_ParentPropName="SpriteRowParent" msprop:rel_Generator_RelationVarName="relationSpriteParameterValue" msprop:rel_Generator_UserParentTable="Sprite">
       <xs:selector xpath=".//ParameterValue" />
       <xs:field xpath="@DefinitionName" />
       <xs:field xpath="@LayerName" />
       <xs:field xpath="@SpriteName" />
       <xs:field xpath="@MapName" />
     </xs:keyref>
-    <xs:keyref name="FramesetTileset" refer="FramesetKey" msprop:rel_Generator_UserChildTable="Tileset" msprop:rel_Generator_ChildPropName="GetTilesetRows" msprop:rel_Generator_UserRelationName="FramesetTileset" msprop:rel_Generator_RelationVarName="relationFramesetTileset" msprop:rel_Generator_UserParentTable="Frameset" msprop:rel_Generator_ParentPropName="FramesetRow">
+    <xs:keyref name="FramesetTileset" refer="FramesetKey" msprop:rel_Generator_UserChildTable="Tileset" msprop:rel_Generator_ChildPropName="GetTilesetRows" msprop:rel_Generator_UserRelationName="FramesetTileset" msprop:rel_Generator_ParentPropName="FramesetRow" msprop:rel_Generator_RelationVarName="relationFramesetTileset" msprop:rel_Generator_UserParentTable="Frameset">
       <xs:selector xpath=".//Tileset" />
       <xs:field xpath="@Frameset" />
     </xs:keyref>
-    <xs:keyref name="CounterTile" refer="CounterKey" msprop:rel_Generator_UserChildTable="Tile" msprop:rel_Generator_ChildPropName="GetTileRows" msprop:rel_Generator_UserRelationName="CounterTile" msprop:rel_Generator_RelationVarName="relationCounterTile" msprop:rel_Generator_UserParentTable="Counter" msprop:rel_Generator_ParentPropName="CounterRow" msdata:DeleteRule="SetNull">
+    <xs:keyref name="CounterTile" refer="CounterKey" msprop:rel_Generator_UserChildTable="Tile" msprop:rel_Generator_ChildPropName="GetTileRows" msprop:rel_Generator_UserRelationName="CounterTile" msprop:rel_Generator_ParentPropName="CounterRow" msprop:rel_Generator_RelationVarName="relationCounterTile" msprop:rel_Generator_UserParentTable="Counter" msdata:DeleteRule="SetNull">
       <xs:selector xpath=".//Tile" />
       <xs:field xpath="@Counter" />
     </xs:keyref>
-    <xs:keyref name="TilesetTile" refer="TilesetKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="Tile" msprop:rel_Generator_ChildPropName="GetTileRows" msprop:rel_Generator_UserRelationName="TilesetTile" msprop:rel_Generator_RelationVarName="relationTilesetTile" msprop:rel_Generator_UserParentTable="Tileset" msprop:rel_Generator_ParentPropName="TilesetRow">
+    <xs:keyref name="TilesetTile" refer="TilesetKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="Tile" msprop:rel_Generator_ChildPropName="GetTileRows" msprop:rel_Generator_UserRelationName="TilesetTile" msprop:rel_Generator_ParentPropName="TilesetRow" msprop:rel_Generator_RelationVarName="relationTilesetTile" msprop:rel_Generator_UserParentTable="Tileset">
       <xs:selector xpath=".//Tile" />
       <xs:field xpath="@Name" />
     </xs:keyref>
-    <xs:keyref name="TileTileFrame" refer="TileKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="TileFrame" msprop:rel_Generator_ChildPropName="GetTileFrameRows" msprop:rel_Generator_UserRelationName="TileTileFrame" msprop:rel_Generator_RelationVarName="relationTileTileFrame" msprop:rel_Generator_UserParentTable="Tile" msprop:rel_Generator_ParentPropName="TileRowParent">
+    <xs:keyref name="TileTileFrame" refer="TileKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="TileFrame" msprop:rel_Generator_ChildPropName="GetTileFrameRows" msprop:rel_Generator_UserRelationName="TileTileFrame" msprop:rel_Generator_ParentPropName="TileRowParent" msprop:rel_Generator_RelationVarName="relationTileTileFrame" msprop:rel_Generator_UserParentTable="Tile">
       <xs:selector xpath=".//TileFrame" />
       <xs:field xpath="@Name" />
       <xs:field xpath="@TileValue" />
@@ -643,7 +644,7 @@
       <xs:selector xpath=".//Frame" />
       <xs:field xpath="@GraphicSheet" />
     </xs:keyref>
-    <xs:keyref name="FramesetFrame" refer="FramesetKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="Frame" msprop:rel_Generator_ChildPropName="GetFrameRows" msprop:rel_Generator_UserRelationName="FramesetFrame" msprop:rel_Generator_RelationVarName="relationFramesetFrame" msprop:rel_Generator_UserParentTable="Frameset" msprop:rel_Generator_ParentPropName="FramesetRow">
+    <xs:keyref name="FramesetFrame" refer="FramesetKey" msdata:IsNested="true" msprop:rel_Generator_UserChildTable="Frame" msprop:rel_Generator_ChildPropName="GetFrameRows" msprop:rel_Generator_UserRelationName="FramesetFrame" msprop:rel_Generator_ParentPropName="FramesetRow" msprop:rel_Generator_RelationVarName="relationFramesetFrame" msprop:rel_Generator_UserParentTable="Frameset">
       <xs:selector xpath=".//Frame" />
       <xs:field xpath="@Name" />
     </xs:keyref>

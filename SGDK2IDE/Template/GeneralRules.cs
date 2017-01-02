@@ -1183,7 +1183,7 @@ public abstract partial class GeneralRules
          System.Drawing.Point Position, System.Drawing.Color background, int player,
          ButtonSpecifier dismissButton, MessageView msgView) :
          base(Tileset, Parent, 0, 0, 0, 0, nColumns, nRows, 0, 0, Position,
-         new System.Drawing.SizeF(0, 0), 0, 0, null)
+         new System.Drawing.SizeF(0, 0), LightingMode.Disabled, 0, 0, null)
       {
          this.background = background;
          this.player = player;

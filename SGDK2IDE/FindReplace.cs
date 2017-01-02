@@ -226,7 +226,7 @@ namespace SGDK2
       public void SetMode(bool replace)
       {
          lblReplaceWith.Visible = txtReplaceWith.Visible = btnReplace.Visible = btnReplaceAll.Visible = replace;
-         Height = replace?160:96;
+         ClientSize = new Size(ClientSize.Width, replace?136:72);
          btnClose.Top=replace?104:40;
          Text = replace?"Replace Text":"Find Text";
       }

@@ -330,6 +330,8 @@ namespace SGDK2
                   bgLayer.BytesPerTile = 1;
                   bgLayer.ScrollRateX = 0;
                   bgLayer.ScrollRateY = 0;
+                  // Lighting "Disabled"
+                  bgLayer.Lighting = null;
                   bgLayer.MapRow = DataObject.m_drMap;
                   ProjectData.AddLayerRow(bgLayer);
                   btnOK.Text = "Update";

@@ -885,7 +885,7 @@ namespace SGDK2
       private void pnlPreviewSolid_Paint(object sender, System.Windows.Forms.PaintEventArgs e)
       {
          ProjectDataset.GraphicSheetRow drGfx = (ProjectDataset.GraphicSheetRow)cboGraphicSheet.Items[cboGraphicSheet.SelectedIndex];
-         Bitmap bmpGfx = ProjectData.GetGraphicSheetImage(drGfx.Name, false);
+         Bitmap bmpGfx = ProjectData.GetGraphicSheetImage(drGfx.Name, false, true);
          int row = (int)(SourceCell.CurrentCellIndex / drGfx.Columns);
          int col = SourceCell.CurrentCellIndex % drGfx.Columns;
          Rectangle srcRect = new Rectangle(col * drGfx.CellWidth, row * drGfx.CellHeight, drGfx.CellWidth, drGfx.CellHeight);

@@ -842,7 +842,6 @@ namespace SGDK2
          for (int i=0; i < subframes.Length; i++)
          {
             ProjectDataset.FrameRow frame = ProjectData.GetFrame(tile.TilesetRow.Frameset, subframes[i]);
-            Bitmap bmp = ProjectData.GetGraphicSheetImage(frame.GraphicSheet, false);
             using (System.Drawing.Drawing2D.Matrix mtx = new System.Drawing.Drawing2D.Matrix(
                       frame.m11, frame.m12, frame.m21, frame.m22, frame.dx, frame.dy))
             {
@@ -1448,7 +1447,7 @@ namespace SGDK2
          for (int i=0; i < subframes.Length; i++)
          {
             ProjectDataset.FrameRow frame = ProjectData.GetFrame(tile.TilesetRow.Frameset, subframes[i]);
-            Bitmap bmp = ProjectData.GetGraphicSheetImage(frame.GraphicSheet, false);
+            Bitmap bmp = ProjectData.GetGraphicSheetImage(frame.GraphicSheet, false, true);
             using (System.Drawing.Drawing2D.Matrix mtx = new System.Drawing.Drawing2D.Matrix(
                frame.m11, frame.m12, frame.m21, frame.m22, frame.dx, frame.dy))
             {

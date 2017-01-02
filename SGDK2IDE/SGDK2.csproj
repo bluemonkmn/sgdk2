@@ -452,6 +452,7 @@
     <EmbeddedResource Include="Template\KeyboardState.cs" />
     <EmbeddedResource Include="Template\Frameset.cs" />
     <EmbeddedResource Include="Template\LightSpriteBase.cs" />
+    <EmbeddedResource Include="Template\Shader.cs" />
     <Compile Include="TileCache.cs">
       <SubType>Code</SubType>
     </Compile>

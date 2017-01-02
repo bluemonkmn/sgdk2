@@ -1816,6 +1816,7 @@ namespace SGDK2
                   new CodeParameterDeclarationExpression(typeof(int), "nVirtualRows"),
                   new CodeParameterDeclarationExpression(typeof(System.Drawing.Point), "Position"),
                   new CodeParameterDeclarationExpression(typeof(System.Drawing.SizeF), "ScrollRate"),
+                  new CodeParameterDeclarationExpression(new CodeTypeReference("LightingMode"), "Lighting"),
                   new CodeParameterDeclarationExpression(typeof(string), "Name")
                });
             CodeObjectCreateExpression createLayerSprites = new CodeObjectCreateExpression(SpriteCollectionClassName);
@@ -1833,6 +1834,7 @@ namespace SGDK2
                   new CodeArgumentReferenceExpression("nVirtualRows"),
                   new CodeArgumentReferenceExpression("Position"),
                   new CodeArgumentReferenceExpression("ScrollRate"),
+                  new CodeArgumentReferenceExpression("Lighting"),
                   new CodePrimitiveExpression(-1), // Placeholder for nInjectStartIndex
                   new CodePrimitiveExpression(-1), // Placeholders for nAppendStartIndex
                   new CodeArgumentReferenceExpression("Name")
@@ -1862,6 +1864,7 @@ namespace SGDK2
                new CodeObjectCreateExpression(typeof(System.Drawing.SizeF),
                new CodePrimitiveExpression(drLayer.ScrollRateX),
                new CodePrimitiveExpression(drLayer.ScrollRateY)),
+               new CodeFieldReferenceExpression(new CodeTypeReferenceExpression("LightingMode"), drLayer.IsLightingNull()?"Disabled":drLayer.Lighting),
                new CodePrimitiveExpression(drLayer.Name))));
 
             if ((drLayer.ScrollRateX==0) && (drLayer.ScrollRateY==0))
@@ -2095,14 +2098,14 @@ namespace SGDK2
             }
 
             if (injectStartIndex >= 0)
-               lyrConstructor.BaseConstructorArgs[12] = new CodePrimitiveExpression(injectStartIndex);
-            else
-               lyrConstructor.BaseConstructorArgs[12] = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(int)), "MaxValue");
-
-            if (appendStartIndex >= 0)
-               lyrConstructor.BaseConstructorArgs[13] = new CodePrimitiveExpression(appendStartIndex);
+               lyrConstructor.BaseConstructorArgs[13] = new CodePrimitiveExpression(injectStartIndex);
             else
                lyrConstructor.BaseConstructorArgs[13] = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(int)), "MaxValue");
+
+            if (appendStartIndex >= 0)
+               lyrConstructor.BaseConstructorArgs[14] = new CodePrimitiveExpression(appendStartIndex);
+            else
+               lyrConstructor.BaseConstructorArgs[14] = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(int)), "MaxValue");
 
             System.Collections.Hashtable htCategories = new System.Collections.Hashtable();
 

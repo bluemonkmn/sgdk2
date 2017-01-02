@@ -179,7 +179,7 @@ namespace SGDK2
                   ProjectDataset.FrameRow drFrame = frames[subFrames[subFrame]];
                   if (string.Compare(sheetName, drFrame.GraphicSheet) != 0)
                   {
-                     bmpFrameset = ProjectData.GetGraphicSheetImage(drFrame.GraphicSheet, false);
+                     bmpFrameset = ProjectData.GetGraphicSheetImage(drFrame.GraphicSheet, false, true);
                      sheetName = drFrame.GraphicSheet;
                      drGfx = ProjectData.GetGraphicSheet(drFrame.GraphicSheet);
                   }

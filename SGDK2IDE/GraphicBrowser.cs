@@ -803,7 +803,7 @@ namespace SGDK2
          if (m_Frameset == null)
          {
             if (m_GraphicSheet != null)
-               bmpImage = ProjectData.GetGraphicSheetImage(m_GraphicSheet.Name, false);
+               bmpImage = ProjectData.GetGraphicSheetImage(m_GraphicSheet.Name, false, true);
             if (bmpImage == null)
                return null;
             else
@@ -819,7 +819,7 @@ namespace SGDK2
             if (fr == null)
                return null;
             ProjectDataset.GraphicSheetRow gr = ProjectData.GetGraphicSheet(fr.GraphicSheet);
-            bmpImage = ProjectData.GetGraphicSheetImage(fr.GraphicSheet , false);
+            bmpImage = ProjectData.GetGraphicSheetImage(fr.GraphicSheet , false, true);
             nCols = bmpImage.Width / gr.CellWidth;
             Rectangle rcCell = new Rectangle(
                (fr.CellIndex % nCols) * gr.CellWidth,
@@ -897,7 +897,7 @@ namespace SGDK2
             int nCols = 0;
             Bitmap bmpImage = m_imgGraphicSheet;
             if (m_GraphicSheet != null)
-               bmpImage = ProjectData.GetGraphicSheetImage(m_GraphicSheet.Name, false);
+               bmpImage = ProjectData.GetGraphicSheetImage(m_GraphicSheet.Name, false, true);
 
             if (bmpImage != null)
                nCols = bmpImage.Width / CellSize.Width;
@@ -986,7 +986,7 @@ namespace SGDK2
                            if (drGfx != subGraphic)
                            {
                               drGfx = subGraphic;
-                              bmpImage = ProjectData.GetGraphicSheetImage(drGfx.Name, false);
+                              bmpImage = ProjectData.GetGraphicSheetImage(drGfx.Name, false, true);
                               nCols = bmpImage.Width / drGfx.CellWidth;
                            }
                            rcCell = p.GetRectangle(nCompositeFrameStep);
@@ -1002,7 +1002,7 @@ namespace SGDK2
                            if ((drGfx == null) || (drGfx.Name != Frames[nFrameToDisplay].GraphicSheet))
                            {
                               drGfx = dtGraphics.FindByName(Frames[nFrameToDisplay].GraphicSheet);
-                              bmpImage = ProjectData.GetGraphicSheetImage(drGfx.Name, false);
+                              bmpImage = ProjectData.GetGraphicSheetImage(drGfx.Name, false, true);
                               nCols = bmpImage.Width / drGfx.CellWidth;
                            }
                            rcCell = new Rectangle((Frames[nFrameToDisplay].CellIndex % nCols) * drGfx.CellWidth,

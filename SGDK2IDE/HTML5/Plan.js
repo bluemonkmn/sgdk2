@@ -265,6 +265,7 @@ PlanBase.prototype.door = function(target, sprites, trigger) {
          {
             result = i;
             this.transportToPlan(sprites[i], outDoor, "BottomCenter");
+            this.copyInputsToOld(sprites[i]);
          }
       }
    }

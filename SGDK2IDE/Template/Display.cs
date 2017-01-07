@@ -11,7 +11,7 @@ using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
 
 /// <summary>
-/// Specifies a size and color depth for a display.
+/// Specifies a size, color depth and scaling factor for a display.
 /// </summary>
 /// <remarks>Color depth only applies when the display is in full screen mode.</remarks>
 public enum GameDisplayMode
@@ -37,6 +37,10 @@ public enum GameDisplayMode
    /// </summary>
    m1280x1024x16,
    /// <summary>
+   /// 1920x1080-pixel display with 16-bit color
+   /// </summary>
+   m1920x1080x16,
+   /// <summary>
    /// 320x240-pixel display with 24-bit color
    /// </summary>
    m320x240x24,
@@ -55,7 +59,59 @@ public enum GameDisplayMode
    /// <summary>
    /// 1280x1024-pixel display with 24-bit color
    /// </summary>
-   m1280x1024x24
+   m1280x1024x24,
+   /// <summary>
+   /// 1920x1080-pixel display with 24-bit color
+   /// </summary>
+   m1920x1080x24,
+   /// <summary>
+   /// 160x120-pixel view with 16-bit color, scaled up to 320x240-pixel display
+   /// </summary>
+   m160x120x16_2x,
+   /// <summary>
+   /// 320x240-pixel view with 16-bit color, scaled up to 640x480-pixel display
+   /// </summary>
+   m320x240x16_2x,
+   /// <summary>
+   /// 400x300-pixel view with 16-bit color, scaled up to 800x600-pixel display
+   /// </summary>
+   m400x300x16_2x,
+   /// <summary>
+   /// 512x384-pixel view with 16-bit color, scaled up to 1024x768-pixel display
+   /// </summary>
+   m512x384x16_2x,
+   /// <summary>
+   /// 640x512-pixel view with 16-bit color, scaled up to 1280x1024-pixel display
+   /// </summary>
+   m640x512x16_2x,
+   /// <summary>
+   /// 960x540-pixel view with 16-bit color, scaled up to 1920x1080-pixel display
+   /// </summary>
+   m960x540x16_2x,
+   /// <summary>
+   /// 160x120-pixel view with 24-bit color, scaled up to 320x240-pixel display
+   /// </summary>
+   m160x120x24_2x,
+   /// <summary>
+   /// 320x240-pixel view with 24-bit color, scaled up to 640x480-pixel display
+   /// </summary>
+   m320x240x24_2x,
+   /// <summary>
+   /// 400x300-pixel view with 24-bit color, scaled up to 800x600-pixel display
+   /// </summary>
+   m400x300x24_2x,
+   /// <summary>
+   /// 512x384-pixel view with 24-bit color, scaled up to 1024x768-pixel display
+   /// </summary>
+   m512x384x24_2x,
+   /// <summary>
+   /// 640x512-pixel view with 24-bit color, scaled up to 1280x1024-pixel display
+   /// </summary>
+   m640x512x24_2x,
+   /// <summary>
+   /// 960x540-pixel view with 24-bit color, scaled up to 1920x1080-pixel display
+   /// </summary>
+   m960x540x24_2x,
 }
 
 /// <summary>
@@ -178,6 +234,9 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
                if (!m_Display.Context.IsCurrent)
                   m_Display.MakeCurrent();
                GL.DeleteTextures(1, ref m_Texture);
+               if (m_NormalMap != 0)
+                  GL.DeleteTextures(1, ref m_NormalMap);
+               m_NormalMap = 0;
             }
             m_Texture = 0;
          }
@@ -200,7 +259,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    private GameDisplayMode m_GameDisplayMode;
    private DisplayOperation m_currentOp;
    private TextureRef m_currentTexture = null;
-   private const int scaleFactor = 2;
+   private readonly int m_scaleFactor;
    private const TextureTarget texTarget = TextureTarget.Texture2D;
    private const EnableCap texCap = EnableCap.Texture2D;
    private static TextureRef m_DefaultFont = null;
@@ -254,6 +313,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       : base(CreateGraphicsMode(mode))
    {
       m_GameDisplayMode = mode;
+      m_scaleFactor = (mode >= GameDisplayMode.m160x120x16_2x ? 2 : 1);
    }
 
    private void Initialize()
@@ -307,7 +367,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode, false);
       projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, nativeSize.Width, nativeSize.Height, 0, .1f, 10f);
 
-      if (scaleFactor > 1)
+      if (m_scaleFactor > 1)
          Buffer(false, true);
 
       isInitialized = true;
@@ -502,24 +562,45 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    /// <returns>Width and height in pixels</returns>
    public static System.Drawing.Size GetScreenSize(GameDisplayMode mode, bool scaled)
    {
-      int scale = scaled ? scaleFactor : 1;
+      int scale = scaled ? 2 : 1;
       switch (mode)
       {
          case GameDisplayMode.m320x240x16:
          case GameDisplayMode.m320x240x24:
-            return new System.Drawing.Size(320 * scale, 240 * scale);
+            return new System.Drawing.Size(320, 240);
          case GameDisplayMode.m640x480x16:
          case GameDisplayMode.m640x480x24:
-            return new System.Drawing.Size(640 * scale, 480 * scale);
+            return new System.Drawing.Size(640, 480);
          case GameDisplayMode.m800x600x16:
          case GameDisplayMode.m800x600x24:
-            return new System.Drawing.Size(800 * scale, 600 * scale);
+            return new System.Drawing.Size(800, 600);
          case GameDisplayMode.m1024x768x16:
          case GameDisplayMode.m1024x768x24:
-            return new System.Drawing.Size(1024 * scale, 768 * scale);
+            return new System.Drawing.Size(1024, 768);
          case GameDisplayMode.m1280x1024x16:
          case GameDisplayMode.m1280x1024x24:
-            return new System.Drawing.Size(1280 * scale, 1024 * scale);
+            return new System.Drawing.Size(1280, 1024);
+         case GameDisplayMode.m1920x1080x16:
+         case GameDisplayMode.m1920x1080x24:
+            return new System.Drawing.Size(1920, 1080);
+         case GameDisplayMode.m160x120x16_2x:
+         case GameDisplayMode.m160x120x24_2x:
+            return new System.Drawing.Size(160 * scale, 120 * scale);
+         case GameDisplayMode.m320x240x16_2x:
+         case GameDisplayMode.m320x240x24_2x:
+            return new System.Drawing.Size(320 * scale, 240 * scale);
+         case GameDisplayMode.m400x300x16_2x:
+         case GameDisplayMode.m400x300x24_2x:
+            return new System.Drawing.Size(400 * scale, 300 * scale);
+         case GameDisplayMode.m512x384x16_2x:
+         case GameDisplayMode.m512x384x24_2x:
+            return new System.Drawing.Size(512 * scale, 384 * scale);
+         case GameDisplayMode.m640x512x16_2x:
+         case GameDisplayMode.m640x512x24_2x:
+            return new System.Drawing.Size(640 * scale, 512 * scale);
+         case GameDisplayMode.m960x540x16_2x:
+         case GameDisplayMode.m960x540x24_2x:
+            return new System.Drawing.Size(960 * scale, 540 * scale);
       }
       return new System.Drawing.Size(0, 0);
    }
@@ -538,6 +619,13 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
          case GameDisplayMode.m800x600x16:
          case GameDisplayMode.m1024x768x16:
          case GameDisplayMode.m1280x1024x16:
+         case GameDisplayMode.m1920x1080x16:
+         case GameDisplayMode.m160x120x16_2x:
+         case GameDisplayMode.m320x240x16_2x:
+         case GameDisplayMode.m400x300x16_2x:
+         case GameDisplayMode.m512x384x16_2x:
+         case GameDisplayMode.m640x512x16_2x:
+         case GameDisplayMode.m960x540x16_2x:
             return 16;
          default:
             return 24;
@@ -554,11 +642,31 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    }
 
    /// <summary>
+   /// Gets or sets the size/resolution and color depth of the display
+   /// </summary>
+   /// <remarks>If the display is windowed, this only affects the size. The color depth
+   /// will match that of the user's desktop. In full screen mode this affects the
+   /// resolution and color depth of the display.</remarks>
+   public GameDisplayMode GameDisplayMode
+   {
+      get
+      {
+         return m_GameDisplayMode;
+      }
+      set
+      {
+         m_GameDisplayMode = value;
+         System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode, false);
+         projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, nativeSize.Width, nativeSize.Height, 0, .1f, 10f);
+      }
+   }
+
+   /// <summary>
    /// Restore the resolution of the display after a call to <see cref="SwitchToResolution" />
    /// </summary>
    public void SwitchToResolution()
    {
-      System.Drawing.Size size = GetScreenSize(m_GameDisplayMode, false);
+      System.Drawing.Size size = GetScreenSize(m_GameDisplayMode, true);
       int depth = GetModeDepth(m_GameDisplayMode);
       OpenTK.DisplayResolution best = null;
       foreach (OpenTK.DisplayResolution dr in OpenTK.DisplayDevice.Default.AvailableResolutions)
@@ -593,31 +701,6 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    public static void RestoreResolution()
    {
       OpenTK.DisplayDevice.Default.RestoreResolution();
-   }
-
-   /// <summary>
-   /// Gets or sets the size/resolution and color depth of the display
-   /// </summary>
-   /// <remarks>If the display is windowed, this only affects the size. The color depth
-   /// will match that of the user's desktop. In full screen mode this affects the
-   /// resolution and color depth of the display.</remarks>
-   public GameDisplayMode GameDisplayMode
-   {
-      get
-      {
-         return m_GameDisplayMode;
-      }
-      set
-      {
-         m_GameDisplayMode = value;
-         if (this.Context != null) // Forces context to be created
-         {
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadIdentity();
-            System.Drawing.Size naturalSize = GetScreenSize(value, false);
-            GL.Ortho(0, naturalSize.Width, naturalSize.Height, 0, -1, 1);
-         }
-      }
    }
 
    /// <summary>
@@ -685,8 +768,6 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    /// </summary>
    public void Flush()
    {
-      if (m_currentOp == DisplayOperation.None)
-         return;
       switch (m_currentOp)
       {
          case DisplayOperation.DrawFrames:
@@ -708,7 +789,9 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
       GL.UseProgram(0);
       GL.BindVertexArray(0);
-      solidVertexBuffer.Clear();
+      if (solidVertexBuffer != null)
+         solidVertexBuffer.Clear();
+      if (vertexBuffer != null)
       vertexBuffer.Clear();
       m_currentOp = DisplayOperation.None;
       CheckError();
@@ -1199,7 +1282,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    {
       get
       {
-         return new System.Drawing.Rectangle(DisplayRectangle.X, DisplayRectangle.Y, DisplayRectangle.Width / scaleFactor, DisplayRectangle.Height / scaleFactor);
+         return new System.Drawing.Rectangle(DisplayRectangle.X, DisplayRectangle.Y, DisplayRectangle.Width / m_scaleFactor, DisplayRectangle.Height / m_scaleFactor);
       }
    }
 
@@ -1268,6 +1351,11 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
             CheckError();
          }
          GL.BindFramebuffer(FramebufferTarget.Framebuffer, frameBuffer);
+         CheckError();
+      }
+      else if (!copy)
+      {
+         GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
          CheckError();
       }
    }

@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections;
+using System.Windows.Forms;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
@@ -12,26 +13,116 @@ using OpenTK.Graphics.OpenGL;
 namespace SGDK2
 {
    /// <summary>
-   /// Specifies a size and color depth for a display.
+   /// Specifies a size, color depth, and scaling factor for a display.
+   /// </summary>
+   /// <remarks>Color depth only applies when the display is in full screen mode.</remarks>
+   /// <summary>
+   /// Specifies a size, color depth and scaling factor for a display.
    /// </summary>
    /// <remarks>Color depth only applies when the display is in full screen mode.</remarks>
    public enum GameDisplayMode
    {
+      /// <summary>
+      /// 320x240-pixel display with 16-bit color
+      /// </summary>
       m320x240x16,
+      /// <summary>
+      /// 640x480-pixel display with 16-bit color
+      /// </summary>
       m640x480x16,
+      /// <summary>
+      /// 800x600-pixel display with 16-bit color
+      /// </summary>
       m800x600x16,
+      /// <summary>
+      /// 1024x768-pixel display with 16-bit color
+      /// </summary>
       m1024x768x16,
+      /// <summary>
+      /// 1280x1024-pixel display with 16-bit color
+      /// </summary>
       m1280x1024x16,
+      /// <summary>
+      /// 1920x1080-pixel display with 16-bit color
+      /// </summary>
+      m1920x1080x16,
+      /// <summary>
+      /// 320x240-pixel display with 24-bit color
+      /// </summary>
       m320x240x24,
+      /// <summary>
+      /// 640x480-pixel display with 24-bit color
+      /// </summary>
       m640x480x24,
+      /// <summary>
+      /// 800x600-pixel display with 24-bit color
+      /// </summary>
       m800x600x24,
+      /// <summary>
+      /// 1024x768-pixel display with 24-bit color
+      /// </summary>
       m1024x768x24,
-      m1280x1024x24
+      /// <summary>
+      /// 1280x1024-pixel display with 24-bit color
+      /// </summary>
+      m1280x1024x24,
+      /// <summary>
+      /// 1920x1080-pixel display with 24-bit color
+      /// </summary>
+      m1920x1080x24,
+      /// <summary>
+      /// 160x120-pixel view with 16-bit color, scaled up to 320x240-pixel display
+      /// </summary>
+      m160x120x16_2x,
+      /// <summary>
+      /// 320x240-pixel view with 16-bit color, scaled up to 640x480-pixel display
+      /// </summary>
+      m320x240x16_2x,
+      /// <summary>
+      /// 400x300-pixel view with 16-bit color, scaled up to 800x600-pixel display
+      /// </summary>
+      m400x300x16_2x,
+      /// <summary>
+      /// 512x384-pixel view with 16-bit color, scaled up to 1024x768-pixel display
+      /// </summary>
+      m512x384x16_2x,
+      /// <summary>
+      /// 640x512-pixel view with 16-bit color, scaled up to 1280x1024-pixel display
+      /// </summary>
+      m640x512x16_2x,
+      /// <summary>
+      /// 960x540-pixel view with 16-bit color, scaled up to 1920x1080-pixel display
+      /// </summary>
+      m960x540x16_2x,
+      /// <summary>
+      /// 160x120-pixel view with 24-bit color, scaled up to 320x240-pixel display
+      /// </summary>
+      m160x120x24_2x,
+      /// <summary>
+      /// 320x240-pixel view with 24-bit color, scaled up to 640x480-pixel display
+      /// </summary>
+      m320x240x24_2x,
+      /// <summary>
+      /// 400x300-pixel view with 24-bit color, scaled up to 800x600-pixel display
+      /// </summary>
+      m400x300x24_2x,
+      /// <summary>
+      /// 512x384-pixel view with 24-bit color, scaled up to 1024x768-pixel display
+      /// </summary>
+      m512x384x24_2x,
+      /// <summary>
+      /// 640x512-pixel view with 24-bit color, scaled up to 1280x1024-pixel display
+      /// </summary>
+      m640x512x24_2x,
+      /// <summary>
+      /// 960x540-pixel view with 24-bit color, scaled up to 1920x1080-pixel display
+      /// </summary>
+      m960x540x24_2x,
    }
 
    public enum DisplayOperation
    {
-      None=0,
+      None = 0,
       DrawFrames,
       DrawLines,
       DrawPoints
@@ -48,10 +139,12 @@ namespace SGDK2
       {
          private string m_Name;
          private int m_Texture = 0;
+         private int m_NormalMap = 0;
          private Display m_Display;
          private int m_Width = 0;
          private int m_Height = 0;
-      
+         private bool? m_HasNormalMap = null;
+
          public TextureRef(Display Disp, string Name)
          {
             m_Display = Disp;
@@ -66,6 +159,41 @@ namespace SGDK2
             }
          }
 
+         public void Use(ShaderProgram sp, bool enableLighting)
+         {
+            if (m_Texture == 0)
+               m_Texture = m_Display.GetTexture(m_Name, TextureUnit.Texture0);
+            if (m_Texture != 0)
+            {
+               GL.ActiveTexture(TextureUnit.Texture0);
+               GL.BindTexture(texTarget, m_Texture);
+               int texLoc = sp.GetUniformLocation("tex");
+               GL.Uniform1(texLoc, 0);
+               CheckError();
+            }
+
+            if ((m_NormalMap == 0) && enableLighting)
+               m_NormalMap = m_Display.GetTexture(m_Name + " nm", TextureUnit.Texture1);
+            if ((m_NormalMap != 0) && enableLighting)
+            {
+               GL.ActiveTexture(TextureUnit.Texture1);
+               GL.BindTexture(texTarget, m_NormalMap);
+               int texLoc = sp.GetUniformLocation("norm");
+               GL.Uniform1(texLoc, 1);
+               CheckError();
+            }
+         }
+
+         public bool HasNormalMap
+         {
+            get
+            {
+               if (!m_HasNormalMap.HasValue)
+                  m_HasNormalMap = ProjectData.GetGraphicSheet(m_Name + " nm") != null;
+               return m_HasNormalMap.Value;
+            }
+         }
+
          public int Texture
          {
             get
@@ -73,7 +201,7 @@ namespace SGDK2
                if (m_Texture == 0)
                {
                   m_Display.MakeCurrent();
-                  m_Texture = m_Display.GetTexture(m_Name);
+                  m_Texture = m_Display.GetTexture(m_Name, TextureUnit.Texture0);
                }
                return m_Texture;
             }
@@ -109,6 +237,9 @@ namespace SGDK2
                   if (!m_Display.Context.IsCurrent)
                      m_Display.MakeCurrent();
                   GL.DeleteTextures(1, ref m_Texture);
+                  if (m_NormalMap != 0)
+                     GL.DeleteTextures(1, ref m_NormalMap);
+                  m_NormalMap = 0;
                }
                m_Texture = 0;
             }
@@ -123,7 +254,7 @@ namespace SGDK2
       private GameDisplayMode m_GameDisplayMode;
       private DisplayOperation m_currentOp;
       private TextureRef m_currentTexture = null;
-      private bool scaleNativeSize = false;
+      private bool m_scale;
       private const TextureTarget texTarget = TextureTarget.Texture2D;
       private const EnableCap texCap = EnableCap.Texture2D;
       private static byte[] shadedStipple = new byte[] {
@@ -145,29 +276,166 @@ namespace SGDK2
          0x55, 0x55, 0x55, 0x55, 0xAA, 0xAA, 0xAA, 0xAA};
       private System.Drawing.Point endPoint = System.Drawing.Point.Empty;
       public bool requirementsChecked = false;
+      private int frameBuffer = -1;
+      private int texUnscaledOutput = -1;
+      /// <summary>
+      /// Determines if requirements have already been checked or need to be
+      /// (re-)checked during the next call to <see cref="DrawFrame"/>.
+      /// </summary>
+      /// <value>If true, requirements have already been checked.
+      /// If false, requirements will be checked next time DrawFrame executes.</value>
+      public bool isInitialized = false;
+      VertexBuffer<TileVertex> vertexBuffer;
+      VertexBuffer<ColoredVertex> solidVertexBuffer;
+      Matrix4 projectionMatrix;
+      private LightSources lights;
+      private VertexArray<TileVertex> normalVertexArray;
+      private VertexArray<TileVertex> flatVertexArray;
+      private VertexArray<ColoredVertex> solidVertexArray;
+      private VertexArray<TileVertex> nolightVertexArray;
+      private Color4 currentColor;
+      public bool enableLighting;
       #endregion
 
       #region Initialization and clean-up
-      public Display() : this(GameDisplayMode.m640x480x24, true)
+      public Display() : this(GameDisplayMode.m640x480x24, true, false)
       {
       }
 
-      public Display(GameDisplayMode mode, bool windowed) : base(CreateGraphicsMode(mode))
+      public Display(GameDisplayMode mode, bool windowed, bool scale) : base(CreateGraphicsMode(mode))
       {
          m_GameDisplayMode = mode;
+         m_scale = scale;
+      }
+
+      private void Initialize()
+      {
+         if (isInitialized)
+            return;
+
+         // Check Requirements
+         GL.Finish();
+         string[] versionParts = GL.GetString(StringName.Version).Split(new char[] { '.' }, 3);
+         int majorVer = int.Parse(versionParts[0]);
+         int minorVer = int.Parse(versionParts[1]);
+         if (majorVer < 3)
+         {
+            string errString = "OpenGL version 3.0 is required";
+            try
+            {
+               errString += "; your version is: " + GL.GetString(StringName.Version);
+            }
+            catch
+            {
+            }
+            if (System.Windows.Forms.DialogResult.Cancel == System.Windows.Forms.MessageBox.Show(this, errString + "\r\nTry updating your video drivers.", "Requirement Check Warning", System.Windows.Forms.MessageBoxButtons.OKCancel, System.Windows.Forms.MessageBoxIcon.Exclamation, System.Windows.Forms.MessageBoxDefaultButton.Button2))
+               throw new ApplicationException(errString);
+         }
+
+         // Create vertex buffer
+         vertexBuffer = new VertexBuffer<TileVertex>(TileVertex.Size);
+         solidVertexBuffer = new VertexBuffer<ColoredVertex>(ColoredVertex.Size);
+
+         // Set up VertexArray objects
+         VertexAttribute vaposition = new VertexAttribute("vPosition", 2, VertexAttribPointerType.Float, TileVertex.Size, 0);
+         VertexAttribute vasrc = new VertexAttribute("vSrc", 2, VertexAttribPointerType.Float, TileVertex.Size, 2 * 4);
+         VertexAttribute vacolor = new VertexAttribute("vColor", 4, VertexAttribPointerType.Float, TileVertex.Size, 4 * 4);
+         normalVertexArray = new VertexArray<TileVertex>(vertexBuffer, ShaderProgram.NormalMappedShader, vaposition, vasrc, vacolor);
+         flatVertexArray = new VertexArray<TileVertex>(vertexBuffer, ShaderProgram.FlatShader, vaposition, vasrc, vacolor);
+         nolightVertexArray = new VertexArray<TileVertex>(vertexBuffer, ShaderProgram.NoLightShader, vaposition, vasrc, vacolor);
+         VertexAttribute vaSolidPosition = new VertexAttribute("vPosition", 2, VertexAttribPointerType.Float, ColoredVertex.Size, 0);
+         VertexAttribute vaSolidColor = new VertexAttribute("vColor", 4, VertexAttribPointerType.Float, ColoredVertex.Size, 2 * 4);
+         solidVertexArray = new VertexArray<ColoredVertex>(solidVertexBuffer, ShaderProgram.SolidShader, vaSolidPosition, vaSolidColor);
+
+         lights = new LightSources();
+
+         // Align to display
+         System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode, false);
+         if (m_scale)
+            projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, nativeSize.Width, nativeSize.Height, 0, .1f, 10f);
+
+         if (m_scale)
+            Buffer(false, true);
+
+         isInitialized = true;
       }
 
       protected override void Dispose(bool disposing)
       {
+         // If controls are disposed in the wrong order, GL somehow gets into an error
+         // state during non-application code.
+         CheckError();
          if (disposing)
          {
+            if (vertexBuffer != null)
+            {
+               vertexBuffer.Dispose();
+               vertexBuffer = null;
+            }
+            if (solidVertexBuffer != null)
+            {
+               solidVertexBuffer.Dispose();
+               solidVertexBuffer = null;
+            }
+            if (normalVertexArray != null)
+            {
+               normalVertexArray.Dispose();
+               normalVertexArray = null;
+            }
+            if (flatVertexArray != null)
+            {
+               flatVertexArray.Dispose();
+               flatVertexArray = null;
+            }
+            if (solidVertexArray != null)
+            {
+               solidVertexArray.Dispose();
+               solidVertexArray = null;
+            }
+            if (nolightVertexArray != null)
+            {
+               nolightVertexArray.Dispose();
+               nolightVertexArray = null;
+            }
+            ShaderProgram.DisposeShaderPrograms();
             DisposeAllTextures();
          }
-         base.Dispose (disposing);
+         if (frameBuffer != -1)
+         {
+            GL.DeleteFramebuffer(frameBuffer);
+            frameBuffer = -1;
+         }
+         if (texUnscaledOutput != -1)
+         {
+            GL.DeleteTexture(texUnscaledOutput);
+            texUnscaledOutput = -1;
+         }
+         base.Dispose(disposing);
       }
       #endregion
 
       #region Overrides
+      protected override void WndProc(ref System.Windows.Forms.Message m)
+      {
+         switch (m.Msg)
+         {
+            case 0x2: // WM_DESTROY
+               CheckError();
+               Dispose();
+               break;
+            // See http://stackoverflow.com/questions/5781709/how-to-stop-a-usercontrol-nee-scrollablecontrol-from-calling-scrollwindow
+            case 276: // WM_HSCROLL
+            case 277: // WM_VSCROLL
+            case 522: // WM_MOUSEWHEEL
+               SendRedrawMessage(false);
+               base.WndProc(ref m);
+               SendRedrawMessage(true);
+               Refresh(); // Invalidate all
+               break;
+         }
+         base.WndProc(ref m);
+      }
+
       protected override void OnResize(EventArgs e)
       {
          base.OnResize(e);
@@ -177,50 +445,57 @@ namespace SGDK2
             return;
          MakeCurrent();
          GL.Finish();
-         GL.Viewport(0, 0, ClientSize.Width, ClientSize.Height);
-         GL.MatrixMode(MatrixMode.Projection);
-         GL.LoadIdentity();
-         if (scaleNativeSize)
+         if (m_scale)
          {
-            var nativeSize = GetScreenSize(m_GameDisplayMode);
-            GL.Ortho(0, nativeSize.Width, nativeSize.Height, 0, -1, 1);
+            System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode, false);
+            GL.Viewport(0, 0, nativeSize.Width, nativeSize.Height);
+            projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, nativeSize.Width, nativeSize.Height, 0, .1f, 10f);
          }
          else
          {
-            GL.Ortho(0, ClientSize.Width, ClientSize.Height, 0, -1, 1);
+            GL.Viewport(0, 0, ClientSize.Width, ClientSize.Height);
+            projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, ClientSize.Width, ClientSize.Height, 0, .1f, 10f);
          }
          CheckError();
       }
       #endregion
 
       #region Private members
-      static int NextPow2(int value)
+      private void SendRedrawMessage(bool redrawFlag)
       {
-         int result;
-         for (result = 1; result < value; result <<= 1)
-            ;
-         return result;
+         // See http://stackoverflow.com/questions/5781709/how-to-stop-a-usercontrol-nee-scrollablecontrol-from-calling-scrollwindow
+         const int WM_SETREDRAW = 0x000B;
+
+         IntPtr wparam = new IntPtr(redrawFlag ? 1 : 0);
+         Message msg = Message.Create(Handle, WM_SETREDRAW, wparam, IntPtr.Zero);
+         System.Windows.Forms.NativeWindow.FromHandle(Handle).DefWndProc(ref msg);
       }
 
-      private int GetTexture(string Name)
+      private int GetTexture(string Name, TextureUnit unit)
       {
          int texture;
+         System.Drawing.Bitmap bmpTexture = ProjectData.GetGraphicSheetImage(Name, false);
+         if (bmpTexture == null)
+            return 0;
          GL.GenTextures(1, out texture);
+         GL.ActiveTexture(unit);
          GL.BindTexture(texTarget, texture);
+         CheckError();
          GL.TexParameter(texTarget, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
          GL.TexParameter(texTarget, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+         CheckError();
          GL.TexParameter(texTarget, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Clamp);
          GL.TexParameter(texTarget, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Clamp);
+         CheckError();
 
-         System.Drawing.Bitmap bmpTexture = (System.Drawing.Bitmap)ProjectData.GetGraphicSheetImage(Name, false);
-
-         int useWidth = NextPow2(bmpTexture.Width);
-         int useHeight = NextPow2(bmpTexture.Height);
+         int useWidth = OpenTK.MathHelper.NextPowerOfTwo(bmpTexture.Width - 1);
+         int useHeight = OpenTK.MathHelper.NextPowerOfTwo(bmpTexture.Height - 1);
 
          bool useSubTexture = (useWidth != bmpTexture.Width) || (useHeight != bmpTexture.Height);
 
          int texSize;
          GL.GetInteger(GetPName.MaxTextureSize, out texSize);
+         CheckError();
          if ((texSize < useWidth) ||
              (texSize < useHeight))
             throw new System.ApplicationException("Texture " + Name + " is size " + useWidth + "x" + useHeight +
@@ -228,9 +503,10 @@ namespace SGDK2
 
          if (m_TextureSizes == null)
             m_TextureSizes = new System.Collections.Generic.Dictionary<string, System.Drawing.Size>();
-         m_TextureSizes[Name] = new System.Drawing.Size(useWidth, useHeight);
+         if (!m_TextureSizes.ContainsKey(Name))
+            m_TextureSizes[Name] = new System.Drawing.Size(useWidth, useHeight);
 
-         var bits = bmpTexture.LockBits(new System.Drawing.Rectangle(0, 0, bmpTexture.Width, bmpTexture.Height),
+         System.Drawing.Imaging.BitmapData bits = bmpTexture.LockBits(new System.Drawing.Rectangle(0, 0, bmpTexture.Width, bmpTexture.Height),
             System.Drawing.Imaging.ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
          try
          {
@@ -238,10 +514,12 @@ namespace SGDK2
             {
                GL.TexImage2D(texTarget, 0, PixelInternalFormat.Rgba8, useWidth, useHeight, 0, PixelFormat.Bgra, PixelType.UnsignedByte, IntPtr.Zero);
                GL.TexSubImage2D(texTarget, 0, 0, 0, bmpTexture.Width, bmpTexture.Height, PixelFormat.Bgra, PixelType.UnsignedByte, bits.Scan0);
+               CheckError();
             }
             else
             {
                GL.TexImage2D(texTarget, 0, PixelInternalFormat.Rgba8, useWidth, useHeight, 0, PixelFormat.Bgra, PixelType.UnsignedByte, bits.Scan0);
+               CheckError();
             }
          }
          finally
@@ -251,7 +529,7 @@ namespace SGDK2
          return texture;
       }
 
-      private static void CheckError()
+      internal static void CheckError()
       {
          ErrorCode ec = GL.GetError();
          if (ec != 0)
@@ -303,66 +581,60 @@ namespace SGDK2
       /// Get the size of a display based on the specified mode
       /// </summary>
       /// <param name="mode">Game display mode used for the display</param>
+      /// <param name="scaled">true to return the scaled size (multiplied by scale factor), false to return the native size</param>
       /// <returns>Width and height in pixels</returns>
-      public static System.Drawing.Size GetScreenSize(GameDisplayMode mode)
+      public static System.Drawing.Size GetScreenSize(GameDisplayMode mode, bool scaled)
       {
-         switch(mode)
+         int scale = scaled ? 2 : 1;
+         switch (mode)
          {
             case GameDisplayMode.m320x240x16:
             case GameDisplayMode.m320x240x24:
-               return new System.Drawing.Size(320,240);
+               return new System.Drawing.Size(320, 240);
             case GameDisplayMode.m640x480x16:
             case GameDisplayMode.m640x480x24:
-               return new System.Drawing.Size(640,480);
+               return new System.Drawing.Size(640, 480);
             case GameDisplayMode.m800x600x16:
             case GameDisplayMode.m800x600x24:
-               return new System.Drawing.Size(800,600);
+               return new System.Drawing.Size(800, 600);
             case GameDisplayMode.m1024x768x16:
             case GameDisplayMode.m1024x768x24:
-               return new System.Drawing.Size(1024,768);
+               return new System.Drawing.Size(1024, 768);
             case GameDisplayMode.m1280x1024x16:
             case GameDisplayMode.m1280x1024x24:
-               return new System.Drawing.Size(1280,1024);
+               return new System.Drawing.Size(1280, 1024);
+            case GameDisplayMode.m1920x1080x16:
+            case GameDisplayMode.m1920x1080x24:
+               return new System.Drawing.Size(1920, 1080);
+            case GameDisplayMode.m160x120x16_2x:
+            case GameDisplayMode.m160x120x24_2x:
+               return new System.Drawing.Size(160 * scale, 120 * scale);
+            case GameDisplayMode.m320x240x16_2x:
+            case GameDisplayMode.m320x240x24_2x:
+               return new System.Drawing.Size(320 * scale, 240 * scale);
+            case GameDisplayMode.m400x300x16_2x:
+            case GameDisplayMode.m400x300x24_2x:
+               return new System.Drawing.Size(400 * scale, 300 * scale);
+            case GameDisplayMode.m512x384x16_2x:
+            case GameDisplayMode.m512x384x24_2x:
+               return new System.Drawing.Size(512 * scale, 384 * scale);
+            case GameDisplayMode.m640x512x16_2x:
+            case GameDisplayMode.m640x512x24_2x:
+               return new System.Drawing.Size(640 * scale, 512 * scale);
+            case GameDisplayMode.m960x540x16_2x:
+            case GameDisplayMode.m960x540x24_2x:
+               return new System.Drawing.Size(960 * scale, 540 * scale);
          }
-         return new System.Drawing.Size(0,0);
-      }
-
-      public void CheckRequirements()
-      {
-         if (!requirementsChecked)
-         {
-            requirementsChecked = true;
-            GL.Finish();
-            string[] versionParts = GL.GetString(StringName.Version).Split(new char[] {'.'}, 3);
-            int majorVer = int.Parse(versionParts[0]);
-            int minorVer = int.Parse(versionParts[1]);
-            if ((majorVer < 1 ) || ((majorVer == 1) && (minorVer < 2)))
-            {
-               string errString = "OpenGL version 1.2 is required";
-               try
-               {
-                  errString += "; your version is: " + GL.GetString(StringName.Version);
-               }
-               catch
-               {
-               }
-               if (System.Windows.Forms.DialogResult.Cancel == System.Windows.Forms.MessageBox.Show(this, errString + "\r\nTry updating your video drivers.", "Requirement Check Warning", System.Windows.Forms.MessageBoxButtons.OKCancel, System.Windows.Forms.MessageBoxIcon.Exclamation, System.Windows.Forms.MessageBoxDefaultButton.Button2))
-                  throw new ApplicationException(errString);
-            }
-         }
+         return new System.Drawing.Size(0, 0);
       }
 
       /// <summary>
-      /// Completes the presentation parameter structure by filling out a back buffer
-      /// width, height, and format.
+      /// Return the bit depth of the specified mode
       /// </summary>
-      /// <param name="mode">Game requested display mode</param>
-      /// <param name="pp">Object to finish populating</param>
-      public static GraphicsMode CreateGraphicsMode(GameDisplayMode mode) 
+      /// <param name="mode">GameDisplayMode value whose depth will be returned</param>
+      /// <returns>Integer value of 16 or 24</returns>
+      public static int GetModeDepth(GameDisplayMode mode)
       {
-         System.Drawing.Size screenSize = GetScreenSize(mode);
-         int depth;
-
          switch (mode)
          {
             case GameDisplayMode.m320x240x16:
@@ -370,13 +642,26 @@ namespace SGDK2
             case GameDisplayMode.m800x600x16:
             case GameDisplayMode.m1024x768x16:
             case GameDisplayMode.m1280x1024x16:
-               depth = 16;
-               break;
+            case GameDisplayMode.m1920x1080x16:
+            case GameDisplayMode.m160x120x16_2x:
+            case GameDisplayMode.m320x240x16_2x:
+            case GameDisplayMode.m400x300x16_2x:
+            case GameDisplayMode.m512x384x16_2x:
+            case GameDisplayMode.m640x512x16_2x:
+            case GameDisplayMode.m960x540x16_2x:
+               return 16;
             default:
-               depth = 24;
-               break;
+               return 24;
          }
-         return new GraphicsMode(new ColorFormat(depth));
+      }
+
+      /// <summary>
+      /// Returns a GraphicsMode structure corresponding to the requested GameDisplayMode
+      /// </summary>
+      /// <param name="mode">Game requested display mode</param>
+      public static GraphicsMode CreateGraphicsMode(GameDisplayMode mode)
+      {
+         return new GraphicsMode(new ColorFormat(GetModeDepth(mode)));
       }
 
       /// <summary>
@@ -394,13 +679,14 @@ namespace SGDK2
          set
          {
             m_GameDisplayMode = value;
-            // this.Context forces context to be created
-            if ((this.IsHandleCreated) && (this.Context != null))
+            if (m_scale)
             {
-               GL.MatrixMode(MatrixMode.Projection);
-               GL.LoadIdentity();
-               var naturalSize = GetScreenSize(value);
-               GL.Ortho(0, naturalSize.Width, naturalSize.Height, 0, -1, 1);
+               System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode, false);
+               projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, nativeSize.Width, nativeSize.Height, 0, .1f, 10f);
+            }
+            else
+            {
+               projectionMatrix = Matrix4.CreateOrthographicOffCenter(0, ClientSize.Width, ClientSize.Height, 0, .1f, 10f);
             }
          }
       }
@@ -418,14 +704,9 @@ namespace SGDK2
          if ((m_currentOp != DisplayOperation.DrawFrames) ||
              (m_currentTexture != texture))
          {
-            if (m_currentOp != DisplayOperation.None)
-            {
-               GL.End();
-               CheckError();
-            }
+            Initialize();
+            Flush();
 
-            CheckRequirements();
-            GL.TexEnv(TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (float)TextureEnvMode.Modulate);
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
             GL.Disable(EnableCap.PolygonSmooth);
@@ -435,19 +716,39 @@ namespace SGDK2
             GL.Disable(EnableCap.Dither);
 
             CheckError();
-            GL.BindTexture(texTarget, texture.Texture);
-            GL.Begin(PrimitiveType.Quads);
+            if (enableLighting)
+            {
+               if (texture.HasNormalMap)
+               {
+                  ShaderProgram.NormalMappedShader.Use(projectionMatrix);
+                  texture.Use(ShaderProgram.NormalMappedShader, enableLighting);
+                  normalVertexArray.Bind();
+                  lights.UseProgram(ShaderProgram.NormalMappedShader, "lights");
+                  lights.Set();
+               }
+               else
+               {
+                  ShaderProgram.FlatShader.Use(projectionMatrix);
+                  texture.Use(ShaderProgram.FlatShader, enableLighting);
+                  flatVertexArray.Bind();
+                  lights.UseProgram(ShaderProgram.FlatShader, "lights");
+                  lights.Set();
+               }
+            }
+            else
+            {
+               ShaderProgram.NoLightShader.Use(projectionMatrix);
+               texture.Use(ShaderProgram.NoLightShader, enableLighting);
+               nolightVertexArray.Bind();
+            }
             m_currentOp = DisplayOperation.DrawFrames;
             m_currentTexture = texture;
          }
-         GL.TexCoord2((float)sourceRect.Left / texture.Width, (float)sourceRect.Top / texture.Height);
-         GL.Vertex2(corners[0].X + offsetX, corners[0].Y + offsetY);
-         GL.TexCoord2((float)sourceRect.Left / texture.Width, (float)(sourceRect.Top + sourceRect.Height) / texture.Height);
-         GL.Vertex2(corners[1].X + offsetX, corners[1].Y + offsetY);
-         GL.TexCoord2((float)(sourceRect.Left + sourceRect.Width) / texture.Width, (float)(sourceRect.Top + sourceRect.Height) / texture.Height);
-         GL.Vertex2(corners[2].X + offsetX, corners[2].Y + offsetY);
-         GL.TexCoord2((float)(sourceRect.Left + sourceRect.Width) / texture.Width, (float)sourceRect.Top / texture.Height);
-         GL.Vertex2(corners[3].X + offsetX, corners[3].Y + offsetY);
+
+         vertexBuffer.AddVertex(new TileVertex(corners[0].X + offsetX, corners[0].Y + offsetY, sourceRect.X, sourceRect.Y, currentColor));
+         vertexBuffer.AddVertex(new TileVertex(corners[1].X + offsetX, corners[1].Y + offsetY, sourceRect.X, sourceRect.Bottom, currentColor));
+         vertexBuffer.AddVertex(new TileVertex(corners[2].X + offsetX, corners[2].Y + offsetY, sourceRect.Right, sourceRect.Bottom, currentColor));
+         vertexBuffer.AddVertex(new TileVertex(corners[3].X + offsetX, corners[3].Y + offsetY, sourceRect.Right, sourceRect.Y, currentColor));
       }
 
       /// <summary>
@@ -455,11 +756,32 @@ namespace SGDK2
       /// </summary>
       public void Flush()
       {
-         if (m_currentOp != DisplayOperation.None)
+         switch (m_currentOp)
          {
-            GL.End();
-            m_currentOp = DisplayOperation.None;
+            case DisplayOperation.DrawFrames:
+               vertexBuffer.Bind();
+               vertexBuffer.BufferData();
+               vertexBuffer.Draw(PrimitiveType.Quads);
+               break;
+            case DisplayOperation.DrawLines:
+               solidVertexBuffer.Bind();
+               solidVertexBuffer.BufferData();
+               solidVertexBuffer.Draw(PrimitiveType.LineStrip);
+               break;
+            case DisplayOperation.DrawPoints:
+               solidVertexBuffer.Bind();
+               solidVertexBuffer.BufferData();
+               solidVertexBuffer.Draw(PrimitiveType.Points);
+               break;
          }
+         GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+         GL.UseProgram(0);
+         GL.BindVertexArray(0);
+         if (solidVertexBuffer != null)
+            solidVertexBuffer.Clear();
+         if (vertexBuffer != null)
+            vertexBuffer.Clear();
+         m_currentOp = DisplayOperation.None;
          CheckError();
       }
 
@@ -474,8 +796,13 @@ namespace SGDK2
       /// <param name="arrowShorten">The number of pixels (beyond arrowSize) by which the last line is shortened, and the arrowhead pulled back.</param>
       public void DrawArrow(System.Drawing.Point[] points, int width, short pattern, bool antiAlias, int arrowSize, int arrowShorten)
       {
-         if (m_currentOp != DisplayOperation.None)
-            GL.End();
+         Initialize();
+         Flush();
+         ShaderProgram.SolidShader.Use(projectionMatrix);
+         solidVertexArray.Bind();
+         solidVertexBuffer.Bind();
+         solidVertexBuffer.Clear();
+
          GL.Disable(texCap);
          if (antiAlias)
          {
@@ -500,9 +827,9 @@ namespace SGDK2
          {
             GL.Disable(EnableCap.LineStipple);
          }
-         GL.Begin(PrimitiveType.LineStrip);
-         for (int i=0; i<points.Length - 1; i++)
-            GL.Vertex2(points[i].X, points[i].Y);
+
+         for (int i = 0; i < points.Length - 1; i++)
+            solidVertexBuffer.AddVertex(new ColoredVertex(points[i].X, points[i].Y, currentColor));
          int x = points[points.Length - 1].X;
          int y = points[points.Length - 1].Y;
          int dx = x - points[points.Length - 2].X;
@@ -514,26 +841,31 @@ namespace SGDK2
             float ndy = dy * (arrowSize + arrowShorten) / len;
             float x1 = x - ndx;
             float y1 = y - ndy;
-            GL.Vertex2(x1, y1);
+            solidVertexBuffer.AddVertex(new ColoredVertex(x1, y1, currentColor));
             ndx = dx * arrowSize / len;
             ndy = dy * arrowSize / len;
-            GL.End();
-
-            m_currentOp = DisplayOperation.None;
+            solidVertexBuffer.BufferData();
+            solidVertexBuffer.Draw(PrimitiveType.LineStrip);
+            solidVertexBuffer.Clear();
 
             GL.Enable(EnableCap.PolygonSmooth);
             GL.Hint(HintTarget.PolygonSmoothHint, HintMode.Nicest);
-            GL.Begin(PrimitiveType.Triangles);
-            GL.Vertex2(x1 - ndy / 2, y1 + ndx / 2);
-            GL.Vertex2(x1 + ndx, y1 + ndy);
-            GL.Vertex2(x1 + ndy / 2, y1 - ndx / 2);
-            GL.End();
+            solidVertexBuffer.AddVertex(new ColoredVertex(x1 - ndy / 2, y1 + ndx / 2, currentColor));
+            solidVertexBuffer.AddVertex(new ColoredVertex(x1 + ndx, y1 + ndy, currentColor));
+            solidVertexBuffer.AddVertex(new ColoredVertex(x1 + ndy / 2, y1 - ndx / 2, currentColor));
+            solidVertexBuffer.BufferData();
+            solidVertexBuffer.Draw(PrimitiveType.Triangles);
          }
          else
          {
-            GL.Vertex2(points[points.Length - 1].X, points[points.Length - 1].Y);
-            GL.End();
+            solidVertexBuffer.AddVertex(new ColoredVertex(points[points.Length - 1].X, points[points.Length - 1].Y, currentColor));
+            solidVertexBuffer.BufferData();
+            solidVertexBuffer.Draw(PrimitiveType.LineStrip);
          }
+         solidVertexBuffer.Clear();
+         GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+         GL.UseProgram(0);
+         GL.BindVertexArray(0);
          m_currentOp = DisplayOperation.None;
       }
 
@@ -545,8 +877,9 @@ namespace SGDK2
       /// <param name="antiAlias">Determines if the lines are anti-aliased.</param>
       public void BeginLine(float width, short pattern, bool antiAlias)
       {
-         if (m_currentOp != DisplayOperation.None)
-            GL.End();
+         Initialize();
+         Flush();
+
          GL.Disable(texCap);
          if (antiAlias)
          {
@@ -568,8 +901,11 @@ namespace SGDK2
          {
             GL.Disable(EnableCap.LineStipple);
          }
-         GL.Begin(PrimitiveType.LineStrip);
          m_currentOp = DisplayOperation.DrawLines;
+         solidVertexBuffer.Clear();
+         solidVertexBuffer.Bind();
+         solidVertexArray.Bind();
+         ShaderProgram.SolidShader.Use(projectionMatrix);
       }
 
       /// <summary>
@@ -584,28 +920,29 @@ namespace SGDK2
       {
          if (m_currentOp != DisplayOperation.DrawLines)
          {
-            if (m_currentOp != DisplayOperation.None)
-               GL.End();
+            Initialize();
+            Flush();
             BeginLine(1, 0, false);
          }
-         GL.Vertex2(x, y);
-         endPoint = new System.Drawing.Point(x,y);
+         ColoredVertex cv = new ColoredVertex(x, y, currentColor);
+         solidVertexBuffer.AddVertex(new ColoredVertex(x, y, currentColor));
+         endPoint = new System.Drawing.Point(x, y);
       }
 
       /// <summary>
       /// End a line begun with <see cref="BeginLine"/> with an arrowhead.
       /// </summary>
-      /// <param name="x">Horizontal coordinate of the tip of the arrow head</param>
+      /// <param name="x">Horizontal coordinate of the tip of the arrowhead</param>
       /// <param name="y">Vertical coordinate of the tip of the arrowhead</param>
       /// <param name="ArrowSize">Length of the arrowhead</param>
       public void ArrowTo(int x, int y, int ArrowSize)
       {
          if (m_currentOp != DisplayOperation.DrawLines)
          {
-            if (m_currentOp != DisplayOperation.None)
-               GL.End();
+            Initialize();
+            Flush();
             BeginLine(1, 0, true);
-            GL.Vertex2(endPoint.X, endPoint.Y);
+            solidVertexBuffer.AddVertex(new ColoredVertex(endPoint.X, endPoint.Y, currentColor));
          }
          int dx = (x - endPoint.X);
          int dy = (y - endPoint.Y);
@@ -616,18 +953,19 @@ namespace SGDK2
             float ndy = dy * ArrowSize / len;
             float x1 = x - ndx;
             float y1 = y - ndy;
-            GL.Vertex2(x1, y1);
-            GL.End();
+            solidVertexBuffer.AddVertex(new ColoredVertex(x1, y1, currentColor));
+            Flush();
 
             m_currentOp = DisplayOperation.None;
 
             GL.Enable(EnableCap.PolygonSmooth);
             GL.Hint(HintTarget.PolygonSmoothHint, HintMode.Nicest);
-            GL.Begin(PrimitiveType.Triangles);
-            GL.Vertex2(x1 - ndy / 2, y1 + ndx / 2);
-            GL.Vertex2(x1 + ndx, y1 + ndy);
-            GL.Vertex2(x1 + ndy / 2, y1 - ndx / 2);
-            GL.End();
+            solidVertexBuffer.AddVertex(new ColoredVertex(x1 - ndy / 2, y1 + ndx / 2, currentColor));
+            solidVertexBuffer.AddVertex(new ColoredVertex(x1 + ndx, y1 + ndy, currentColor));
+            solidVertexBuffer.AddVertex(new ColoredVertex(x1 + ndy / 2, y1 - ndx / 2, currentColor));
+            solidVertexBuffer.BufferData();
+            solidVertexBuffer.Draw(PrimitiveType.Triangles);
+            solidVertexBuffer.Clear();
          }
          else
             LineTo(x, y);
@@ -640,11 +978,8 @@ namespace SGDK2
       /// <param name="pattern">Dash pattern applied to the lines forming the outline.</param>
       public void DrawRectangle(System.Drawing.Rectangle rect, short pattern)
       {
-         if (m_currentOp != DisplayOperation.None)
-         {
-            GL.End();
-            m_currentOp = DisplayOperation.None;
-         }
+         Initialize();
+         Flush();
          if ((pattern == 0) || (pattern == unchecked((short)(0xffff))))
             GL.Disable(EnableCap.LineStipple);
          else
@@ -657,12 +992,19 @@ namespace SGDK2
          GL.Disable(EnableCap.LineSmooth);
          GL.LineWidth(1);
          GL.Disable(texCap);
-         GL.Begin(PrimitiveType.LineLoop);
-         GL.Vertex2(rectf.X, rectf.Y);
-         GL.Vertex2(rectf.X, rectf.Y + rectf.Height - 1);
-         GL.Vertex2(rectf.X + rectf.Width - 1, rectf.Y + rectf.Height - 1);
-         GL.Vertex2(rectf.X + rectf.Width - 1, rectf.Y);
-         GL.End();
+         solidVertexBuffer.Bind();
+         solidVertexArray.Bind();
+         ShaderProgram.SolidShader.Use(projectionMatrix);
+         solidVertexBuffer.AddVertex(new ColoredVertex(rectf.X, rectf.Y, currentColor));
+         solidVertexBuffer.AddVertex(new ColoredVertex(rectf.X, rectf.Y + rectf.Height - 1, currentColor));
+         solidVertexBuffer.AddVertex(new ColoredVertex(rectf.X + rectf.Width - 1, rectf.Y + rectf.Height - 1, currentColor));
+         solidVertexBuffer.AddVertex(new ColoredVertex(rectf.X + rectf.Width - 1, rectf.Y, currentColor));
+         solidVertexBuffer.BufferData();
+         solidVertexBuffer.Draw(PrimitiveType.LineLoop);
+         solidVertexBuffer.Clear();
+         GL.UseProgram(0);
+         GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+         GL.BindVertexArray(0);
       }
 
       /// <summary>
@@ -675,16 +1017,23 @@ namespace SGDK2
       /// <seealso cref="SetColor"/></remarks>
       public void FillRectangle(System.Drawing.Rectangle rect)
       {
-         if (m_currentOp != DisplayOperation.None)
-            GL.End();
+         Initialize();
+         Flush();
          m_currentOp = DisplayOperation.None;
          GL.Disable(texCap);
-         GL.Begin(PrimitiveType.Quads);
-         GL.Vertex2(rect.X, rect.Y);
-         GL.Vertex2(rect.X, rect.Y + rect.Height);
-         GL.Vertex2(rect.X + rect.Width, rect.Y + rect.Height);
-         GL.Vertex2(rect.X + rect.Width, rect.Y);
-         GL.End();
+         solidVertexBuffer.Bind();
+         ShaderProgram.SolidShader.Use(projectionMatrix);
+         solidVertexArray.Bind();
+         solidVertexBuffer.AddVertex(new ColoredVertex(rect.X, rect.Y, currentColor));
+         solidVertexBuffer.AddVertex(new ColoredVertex(rect.X, rect.Y + rect.Height, currentColor));
+         solidVertexBuffer.AddVertex(new ColoredVertex(rect.X + rect.Width, rect.Y + rect.Height, currentColor));
+         solidVertexBuffer.AddVertex(new ColoredVertex(rect.X + rect.Width, rect.Y, currentColor));
+         solidVertexBuffer.BufferData();
+         solidVertexBuffer.Draw(PrimitiveType.Quads);
+         solidVertexBuffer.Clear();
+         GL.UseProgram(0);
+         GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+         GL.BindVertexArray(0);
       }
 
       /// <summary>
@@ -694,8 +1043,7 @@ namespace SGDK2
       {
          set
          {
-            if (m_currentOp != DisplayOperation.None)
-               GL.End();
+            Flush();
             m_currentOp = DisplayOperation.None;
             GL.PointSize(value);
          }
@@ -709,15 +1057,17 @@ namespace SGDK2
       {
          if (m_currentOp != DisplayOperation.DrawPoints)
          {
-            if (m_currentOp != DisplayOperation.None)
-               GL.End();
+            Initialize();
+            Flush();
             GL.Hint(HintTarget.PointSmoothHint, HintMode.Nicest);
             GL.Enable(EnableCap.PointSmooth);
             GL.Disable(texCap);
-            GL.Begin(PrimitiveType.Points);
+            solidVertexBuffer.Bind();
+            solidVertexArray.Bind();
+            ShaderProgram.SolidShader.Use(projectionMatrix);
             m_currentOp = DisplayOperation.DrawPoints;
          }
-         GL.Vertex2(location.X, location.Y);
+         solidVertexBuffer.AddVertex(new ColoredVertex(location.X, location.Y, currentColor));
       }
 
       /// <summary>
@@ -726,7 +1076,7 @@ namespace SGDK2
       /// <param name="color">Color to select.</param>
       public void SetColor(System.Drawing.Color color)
       {
-         GL.Color4(color.R, color.G, color.B, color.A);
+         currentColor = new Color4(color.R, color.G, color.B, color.A);
       }
 
       /// <summary>
@@ -735,8 +1085,7 @@ namespace SGDK2
       /// <param name="color">Color as an integer with bytes in ARGB order.</param>
       public void SetColor(int color)
       {
-         var c = System.Drawing.Color.FromArgb(color);
-         SetColor(c);
+         SetColor(System.Drawing.Color.FromArgb(color));
       }
 
       /// <summary>
@@ -748,36 +1097,40 @@ namespace SGDK2
       /// <param name="color2">Foreground dither color</param>
       public void DrawShadedRectFrame(System.Drawing.Rectangle inner, int thickness, System.Drawing.Color color1, System.Drawing.Color color2)
       {
-         if (m_currentOp != DisplayOperation.None)
-            GL.End();
-         m_currentOp = DisplayOperation.None;
+         Initialize();
+         Flush();
          GL.Disable(texCap);
          GL.Disable(EnableCap.PolygonStipple);
          SetColor(color1);
-         GL.Begin(PrimitiveType.QuadStrip);
+         solidVertexBuffer.Bind();
+         solidVertexArray.Bind();
+         ShaderProgram.SolidShader.Use(projectionMatrix);
          SendRectFramePoints(inner, thickness);
-         GL.End();
+         solidVertexBuffer.BufferData();
+         solidVertexBuffer.Draw(PrimitiveType.QuadStrip);
+         solidVertexBuffer.Clear();
          GL.Enable(EnableCap.PolygonStipple);
          GL.PolygonStipple(shadedStipple);
          SetColor(color2);
-         GL.Begin(PrimitiveType.QuadStrip);
          SendRectFramePoints(inner, thickness);
-         GL.End();
+         solidVertexBuffer.BufferData();
+         solidVertexBuffer.Draw(PrimitiveType.QuadStrip);
+         solidVertexBuffer.Clear();
          GL.Disable(EnableCap.PolygonStipple);
       }
 
       private void SendRectFramePoints(System.Drawing.Rectangle inner, int thickness)
       {
-         GL.Vertex2(inner.X - thickness, inner.Y - thickness);
-         GL.Vertex2(inner.X - 1, inner.Y - 1);
-         GL.Vertex2(inner.X - thickness, inner.Y + inner.Height + thickness - 1);
-         GL.Vertex2(inner.X - 1, inner.Y + inner.Height);
-         GL.Vertex2(inner.X + inner.Width + thickness - 1, inner.Y + inner.Height + thickness - 1);
-         GL.Vertex2(inner.X + inner.Width, inner.Y + inner.Height);
-         GL.Vertex2(inner.X + inner.Width + thickness - 1, inner.Y - thickness);
-         GL.Vertex2(inner.X + inner.Width, inner.Y - 1);
-         GL.Vertex2(inner.X - thickness, inner.Y - thickness);
-         GL.Vertex2(inner.X - 1, inner.Y - 1);
+         solidVertexBuffer.AddVertex(new ColoredVertex(inner.X - thickness, inner.Y - thickness, currentColor));
+         solidVertexBuffer.AddVertex(new ColoredVertex(inner.X - 1, inner.Y - 1, currentColor));
+         solidVertexBuffer.AddVertex(new ColoredVertex(inner.X - thickness, inner.Y + inner.Height + thickness - 1, currentColor));
+         solidVertexBuffer.AddVertex(new ColoredVertex(inner.X - 1, inner.Y + inner.Height, currentColor));
+         solidVertexBuffer.AddVertex(new ColoredVertex(inner.X + inner.Width + thickness - 1, inner.Y + inner.Height + thickness - 1, currentColor));
+         solidVertexBuffer.AddVertex(new ColoredVertex(inner.X + inner.Width, inner.Y + inner.Height, currentColor));
+         solidVertexBuffer.AddVertex(new ColoredVertex(inner.X + inner.Width + thickness - 1, inner.Y - thickness, currentColor));
+         solidVertexBuffer.AddVertex(new ColoredVertex(inner.X + inner.Width, inner.Y - 1, currentColor));
+         solidVertexBuffer.AddVertex(new ColoredVertex(inner.X - thickness, inner.Y - thickness, currentColor));
+         solidVertexBuffer.AddVertex(new ColoredVertex(inner.X - 1, inner.Y - 1, currentColor));
       }
 
       /// <summary>
@@ -785,9 +1138,147 @@ namespace SGDK2
       /// </summary>
       public void Clear()
       {
+         Flush();
          GL.Clear(ClearBufferMask.AccumBufferBit | ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit | ClearBufferMask.StencilBufferBit);
       }
 
+      /// <summary>
+      /// Set the properties of one of the display's light sources for real-time lighting effects.
+      /// </summary>
+      /// <param name="index">Indicates which light source to set. Must be between 0 and MAX_LIGHTS - 1, inclusive</param>
+      /// <param name="windowCoordinate">Coordinate within the display at which the light should be positioned with the origin at the top left corner</param>
+      /// <param name="falloff">Constant, linear and quadratic falloff of the light intensity. Google linear light falloff for details.</param>
+      /// <param name="color">Color and intensity of the light source. Alpha channel indicates intensity.</param>
+      /// <param name="walls">Array of Vector3 structures specifying the endpoints of walls (in pairs)</param>
+      /// <param name="wallCoordCount">Number of applicable (non-zero) elements in walls. This should be a multiple of 2.</param>
+      public void SetLightSource(int index, Vector2 windowCoordinate, Vector3 falloff, System.Drawing.Color color,
+         float aimX, float aimY, float apertureFocus, float apertureSoftness, Vector3[] walls, int wallCoordCount)
+      {
+         if (index >= LightSources.MAX_LIGHTS)
+            throw new IndexOutOfRangeException("SetLightSource index must be less than MAX_LIGHTS");
+
+         System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode, false);
+         lights[index].Falloff = falloff;
+         lights[index].Position = new Vector3(
+            windowCoordinate.X, nativeSize.Height - windowCoordinate.Y, 1);
+         lights[index].Color = color;
+         lights[index].Aim = new Vector3(aimX, -aimY, 0);
+         lights[index].ApertureFocus = apertureFocus;
+         lights[index].ApertureSoftness = apertureSoftness;
+         int wallIndex;
+         for (wallIndex = 0; wallIndex < wallCoordCount; wallIndex++)
+            lights[index][wallIndex] = new Vector3(walls[wallIndex].X, nativeSize.Height - walls[wallIndex].Y, walls[wallIndex].Z);
+         while (wallIndex < LightSource.wallsPerLight * 2)
+            lights[index][wallIndex++] = new Vector3(0, 0, 0);
+      }
+
+      /// <summary>
+      /// Reset all light sources to initial default behavior
+      /// </summary>
+      public void ResetLights()
+      {
+         lights.Reset();
+      }
+
+      /// <summary>
+      /// Controls how graphics output is buffered and copied to the display.
+      /// </summary>
+      /// <param name="copy">When true, the content of the buffer will be copied to the display, scaling
+      /// the buffer to the size of the display if necessary.</param>
+      /// <param name="enable">When true, subsequent drawing operations will go to a buffer whose size is
+      /// determined by the native game display size instead od directly to the screen. When false, this
+      /// buffer, if it exists will be bypassed.</param>
+      /// <remarks>The purpose of this command is to optimize scaling because lighting effects
+      /// can severly burden the GPU if they happen at the scaled up size. Therefore, when scaling up,
+      /// everything is rendered to the smaller buffer, and then copied and scaled to the larger size.</remarks>
+      private void Buffer(bool copy, bool enable)
+      {
+         if (copy)
+         {
+            Flush();
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            CheckError();
+            System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode, false);
+            System.Drawing.Size displaySize = GetScreenSize(m_GameDisplayMode, true);
+            Matrix4 copyMatrix = Matrix4.CreateOrthographicOffCenter(0, displaySize.Width, 0, displaySize.Height, .1f, 10f);
+            GL.Viewport(ClientRectangle);
+            ShaderProgram.NoLightShader.Use(copyMatrix);
+            GL.ActiveTexture(TextureUnit.Texture0);
+            GL.BindTexture(texTarget, texUnscaledOutput);
+            int texLoc = ShaderProgram.NoLightShader.GetUniformLocation("tex");
+            GL.Uniform1(texLoc, 0);
+            CheckError();
+            nolightVertexArray.Bind();
+            GL.Disable(EnableCap.DepthTest);
+            vertexBuffer.AddVertex(new TileVertex(0, 0, 0, 0));
+            vertexBuffer.AddVertex(new TileVertex(0, displaySize.Height, 0, nativeSize.Height));
+            vertexBuffer.AddVertex(new TileVertex(displaySize.Width, displaySize.Height, nativeSize.Width, nativeSize.Height));
+            vertexBuffer.AddVertex(new TileVertex(displaySize.Width, 0, nativeSize.Width, 0));
+            vertexBuffer.Bind();
+            vertexBuffer.BufferData();
+            vertexBuffer.Draw(PrimitiveType.Quads);
+            Flush();
+            GL.Viewport(0, 0, nativeSize.Width, nativeSize.Height);
+         }
+
+         if (enable)
+         {
+            if (frameBuffer == -1)
+            {
+               // Create frame buffer for scaling after rendering
+               frameBuffer = GL.GenFramebuffer();
+               GL.BindFramebuffer(FramebufferTarget.Framebuffer, frameBuffer);
+               CheckError();
+            }
+            if (texUnscaledOutput == -1)
+            {
+               texUnscaledOutput = GL.GenTexture();
+               GL.BindTexture(TextureTarget.Texture2D, texUnscaledOutput);
+               CheckError();
+               System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode, false);
+               GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, nativeSize.Width, nativeSize.Height, 0, PixelFormat.Rgb, PixelType.UnsignedByte, IntPtr.Zero);
+               CheckError();
+               GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Nearest);
+               GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMagFilter.Nearest);
+               CheckError();
+               GL.FramebufferTexture2D(FramebufferTarget.Framebuffer, FramebufferAttachment.ColorAttachment0, TextureTarget.Texture2D, texUnscaledOutput, 0);
+               CheckError();
+            }
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, frameBuffer);
+            CheckError();
+         }
+         else if (!copy)
+         {
+            GL.BindFramebuffer(FramebufferTarget.Framebuffer, 0);
+            CheckError();
+         }
+      }
+
+      public bool ScaleOutput
+      {
+         get
+         {
+            return m_scale;
+         }
+         set
+         {
+            m_scale = value;
+            if ((GraphicsContext.CurrentContext != null) && this.IsHandleCreated)
+               Buffer(false, value);
+         }
+      }
+
+      /// <summary>
+      /// Present the buffered display to the visible window.
+      /// </summary>
+      public void FinishFrame()
+      {
+         if (frameBuffer != -1)
+            Buffer(true, false);
+         SwapBuffers();
+         if (frameBuffer != -1)
+            Buffer(false, true);
+      }
       #endregion
    }
 }

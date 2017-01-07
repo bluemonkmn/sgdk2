@@ -99,7 +99,7 @@ namespace SGDK2
          m_Layer = layerProps.m_tempLayer;
          m_LayerProperties = layerProps;
          if ((m_Layer.MapRow.ViewWidth <= 0) || (m_Layer.MapRow.ViewHeight <= 0))
-            m_ViewSize = Display.GetScreenSize((GameDisplayMode)Enum.Parse(typeof(GameDisplayMode), ProjectData.ProjectRow.DisplayMode));
+            m_ViewSize = Display.GetScreenSize((GameDisplayMode)Enum.Parse(typeof(GameDisplayMode), ProjectData.ProjectRow.DisplayMode), true);
          else
             m_ViewSize = new Size(m_Layer.MapRow.ViewWidth, m_Layer.MapRow.ViewHeight);
       }
@@ -204,6 +204,7 @@ namespace SGDK2
          this.offsetDisplay.AutoScroll = true;
          this.offsetDisplay.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
          this.offsetDisplay.GameDisplayMode = SGDK2.GameDisplayMode.m640x480x24;
+         this.offsetDisplay.ScaleOutput = false;
          this.offsetDisplay.Location = new System.Drawing.Point(0, 32);
          this.offsetDisplay.Name = "offsetDisplay";
          this.offsetDisplay.Size = new System.Drawing.Size(280, 176);
@@ -1075,7 +1076,7 @@ namespace SGDK2
             m_Layers[i].Draw(offsetDisplay, offsetDisplay.ClientSize);
          }
          offsetDisplay.Flush();
-         offsetDisplay.SwapBuffers();
+         offsetDisplay.FinishFrame();
       }
 
       private void offsetDisplay_MouseMove(object sender, System.Windows.Forms.MouseEventArgs e)

@@ -122,6 +122,7 @@ namespace SGDK2
          this.display.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
          this.display.Dock = System.Windows.Forms.DockStyle.Fill;
          this.display.GameDisplayMode = SGDK2.GameDisplayMode.m640x480x24;
+         this.display.ScaleOutput = false;
          this.display.Location = new System.Drawing.Point(0, 0);
          this.display.Name = "display";
          this.display.Size = new System.Drawing.Size(160, 94);
@@ -348,7 +349,7 @@ namespace SGDK2
                }
             }
             display.Flush();
-            display.SwapBuffers();
+            display.FinishFrame();
          }
          catch(System.Exception ex)
          {

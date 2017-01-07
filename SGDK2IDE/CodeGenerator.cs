@@ -4274,7 +4274,7 @@ namespace SGDK2
 
       private void GenerateHtmlProject(string ProjectName, System.IO.TextWriter txt, System.IO.TextWriter err)
       {
-         System.Drawing.Size dispSize = Display.GetScreenSize((GameDisplayMode)Enum.Parse(typeof(GameDisplayMode), ProjectData.ProjectRow.DisplayMode));
+         System.Drawing.Size dispSize = Display.GetScreenSize((GameDisplayMode)Enum.Parse(typeof(GameDisplayMode), ProjectData.ProjectRow.DisplayMode), false);
          string htmlTemplate = GetJavascriptFile("Template.html");
          htmlTemplate = htmlTemplate.Replace("<!--#echo var=\"Title\" -->", ProjectData.ProjectRow.TitleText.ToString());
          htmlTemplate = htmlTemplate.Replace("<!--#echo var=\"BodyCSS\" -->", (0 != (htmlOptions & HtmlGeneratorOptions.FillBrowser) ? "body { margin:0 }" : string.Empty));
@@ -4351,7 +4351,7 @@ namespace SGDK2
 
       private void GenerateHtmlJavascript(System.IO.TextWriter txt, System.IO.TextWriter err)
       {
-         System.Drawing.Size dispSize = Display.GetScreenSize((GameDisplayMode)Enum.Parse(typeof(GameDisplayMode), ProjectData.ProjectRow.DisplayMode));
+         System.Drawing.Size dispSize = Display.GetScreenSize((GameDisplayMode)Enum.Parse(typeof(GameDisplayMode), ProjectData.ProjectRow.DisplayMode), false);
          txt.WriteLine(
             "var viewWidth = " + dispSize.Width.ToString() + ";\r\n" +
             "var viewHeight = " + dispSize.Height.ToString() + ";\r\n" +

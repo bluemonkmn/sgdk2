@@ -427,6 +427,8 @@ namespace SGDK2
             Bitmap bmpStreamImage;
             Bitmap bmpNormalImage;
             ProjectDataset.GraphicSheetRow drGfx = ProjectData.GetGraphicSheet(Name);
+            if (drGfx == null)
+               return null;
             ProjectDataset.GraphicSheetRow drNorm = ProjectData.GetGraphicSheet(Name + " nm");
             System.IO.MemoryStream ms = null;
             MemoryStream msNormal = null;

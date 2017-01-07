@@ -112,6 +112,13 @@
                           <xs:attribute name="Active" type="xs:boolean" default="true" />
                           <xs:attribute name="Solidity" type="xs:string" />
                           <xs:attribute name="Color" type="xs:int" default="-1" />
+                          <xs:attribute name="LightConstantFalloff" type="xs:float" default="0" />
+                          <xs:attribute name="LightLinearFalloff" type="xs:float" default="1" />
+                          <xs:attribute name="LightQuadraticFalloff" type="xs:float" default="0" />
+                          <xs:attribute name="LightAimX" type="xs:float" default="0" />
+                          <xs:attribute name="LightAimY" type="xs:float" default="1" />
+                          <xs:attribute name="LightApertureFocus" type="xs:float" default="0" />
+                          <xs:attribute name="LightApertureSoftness" type="xs:float" default="0" />
                         </xs:complexType>
                       </xs:element>
                       <xs:element name="SpritePlan" minOccurs="0" maxOccurs="unbounded">
@@ -177,6 +184,7 @@
                     <xs:attribute name="Priority" type="xs:int" default="0" />
                     <xs:attribute name="VirtualWidth" type="xs:int" default="0" />
                     <xs:attribute name="VirtualHeight" type="xs:int" default="0" />
+                    <xs:attribute name="Lighting" type="xs:string" />
                   </xs:complexType>
                 </xs:element>
               </xs:sequence>
@@ -2539,26 +2547,26 @@
     </Layer>
     <Layer Name="Main" Width="64" Height="32" Tileset="SHFLTileset" BytesPerTile="1" OffsetX="0" OffsetY="0" ScrollRateX="1" ScrollRateY="1" ZIndex="2" Priority="0" VirtualWidth="0" VirtualHeight="0">
       <Tiles>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</Tiles>
-      <Sprite Name="Player 1" DefinitionName="Player" StateName="Right" CurrentFrame="0" X="204" Y="960" DX="0" DY="0" Priority="1" Active="true" Solidity="Standard" Color="-1">
+      <Sprite Name="Player 1" DefinitionName="Player" StateName="Right" CurrentFrame="0" X="204" Y="960" DX="0" DY="0" Priority="1" Active="true" Solidity="Standard" Color="-1" LightConstantFalloff="0" LightLinearFalloff="1" LightQuadraticFalloff="0" LightAimX="0" LightAimY="1" LightApertureFocus="0" LightApertureSoftness="0">
         <ParameterValue ParameterName="TempNum" Value="0" />
         <ParameterValue ParameterName="ViewNum" Value="0" />
       </Sprite>
-      <Sprite Name="Player 2" DefinitionName="Player" StateName="Left" CurrentFrame="0" X="276" Y="960" DX="0" DY="0" Priority="2" Active="false" Solidity="Standard" Color="-16711681">
+      <Sprite Name="Player 2" DefinitionName="Player" StateName="Left" CurrentFrame="0" X="276" Y="960" DX="0" DY="0" Priority="2" Active="false" Solidity="Standard" Color="-16711681" LightConstantFalloff="0" LightLinearFalloff="1" LightQuadraticFalloff="0" LightAimX="0" LightAimY="1" LightApertureFocus="0" LightApertureSoftness="0">
         <ParameterValue ParameterName="TempNum" Value="0" />
         <ParameterValue ParameterName="ViewNum" Value="1" />
       </Sprite>
-      <Sprite Name="Points 1" DefinitionName="Points" StateName="HundredPoints" CurrentFrame="0" X="42" Y="571" DX="0" DY="0" Priority="1" Active="false" Solidity="" Color="-1" />
-      <Sprite Name="Points 2" DefinitionName="Points" StateName="HundredPoints" CurrentFrame="0" X="52" Y="586" DX="0" DY="0" Priority="1" Active="false" Solidity="" Color="-1" />
-      <Sprite Name="Points 3" DefinitionName="Points" StateName="HundredPoints" CurrentFrame="0" X="61" Y="603" DX="0" DY="0" Priority="1" Active="false" Solidity="" Color="-1" />
-      <Sprite Name="Points 4" DefinitionName="Points" StateName="HundredPoints" CurrentFrame="0" X="71" Y="618" DX="0" DY="0" Priority="1" Active="false" Solidity="" Color="-1" />
-      <Sprite Name="Points 5" DefinitionName="Points" StateName="HundredPoints" CurrentFrame="0" X="82" Y="634" DX="0" DY="0" Priority="1" Active="false" Solidity="" Color="-1" />
-      <Sprite Name="Points 6" DefinitionName="Points" StateName="HundredPoints" CurrentFrame="0" X="94" Y="651" DX="0" DY="0" Priority="1" Active="false" Solidity="" Color="-1" />
-      <Sprite Name="Points 7" DefinitionName="Points" StateName="HundredPoints" CurrentFrame="0" X="104" Y="668" DX="0" DY="0" Priority="1" Active="false" Solidity="" Color="-1" />
-      <Sprite Name="Platform 1" DefinitionName="Platform" StateName="Main" CurrentFrame="0" X="307" Y="606" DX="0" DY="0" Priority="1" Active="true" Solidity="" Color="-1">
+      <Sprite Name="Points 1" DefinitionName="Points" StateName="HundredPoints" CurrentFrame="0" X="42" Y="571" DX="0" DY="0" Priority="1" Active="false" Solidity="" Color="-1" LightConstantFalloff="0" LightLinearFalloff="1" LightQuadraticFalloff="0" LightAimX="0" LightAimY="1" LightApertureFocus="0" LightApertureSoftness="0" />
+      <Sprite Name="Points 2" DefinitionName="Points" StateName="HundredPoints" CurrentFrame="0" X="52" Y="586" DX="0" DY="0" Priority="1" Active="false" Solidity="" Color="-1" LightConstantFalloff="0" LightLinearFalloff="1" LightQuadraticFalloff="0" LightAimX="0" LightAimY="1" LightApertureFocus="0" LightApertureSoftness="0" />
+      <Sprite Name="Points 3" DefinitionName="Points" StateName="HundredPoints" CurrentFrame="0" X="61" Y="603" DX="0" DY="0" Priority="1" Active="false" Solidity="" Color="-1" LightConstantFalloff="0" LightLinearFalloff="1" LightQuadraticFalloff="0" LightAimX="0" LightAimY="1" LightApertureFocus="0" LightApertureSoftness="0" />
+      <Sprite Name="Points 4" DefinitionName="Points" StateName="HundredPoints" CurrentFrame="0" X="71" Y="618" DX="0" DY="0" Priority="1" Active="false" Solidity="" Color="-1" LightConstantFalloff="0" LightLinearFalloff="1" LightQuadraticFalloff="0" LightAimX="0" LightAimY="1" LightApertureFocus="0" LightApertureSoftness="0" />
+      <Sprite Name="Points 5" DefinitionName="Points" StateName="HundredPoints" CurrentFrame="0" X="82" Y="634" DX="0" DY="0" Priority="1" Active="false" Solidity="" Color="-1" LightConstantFalloff="0" LightLinearFalloff="1" LightQuadraticFalloff="0" LightAimX="0" LightAimY="1" LightApertureFocus="0" LightApertureSoftness="0" />
+      <Sprite Name="Points 6" DefinitionName="Points" StateName="HundredPoints" CurrentFrame="0" X="94" Y="651" DX="0" DY="0" Priority="1" Active="false" Solidity="" Color="-1" LightConstantFalloff="0" LightLinearFalloff="1" LightQuadraticFalloff="0" LightAimX="0" LightAimY="1" LightApertureFocus="0" LightApertureSoftness="0" />
+      <Sprite Name="Points 7" DefinitionName="Points" StateName="HundredPoints" CurrentFrame="0" X="104" Y="668" DX="0" DY="0" Priority="1" Active="false" Solidity="" Color="-1" LightConstantFalloff="0" LightLinearFalloff="1" LightQuadraticFalloff="0" LightAimX="0" LightAimY="1" LightApertureFocus="0" LightApertureSoftness="0" />
+      <Sprite Name="Platform 1" DefinitionName="Platform" StateName="Main" CurrentFrame="0" X="307" Y="606" DX="0" DY="0" Priority="1" Active="true" Solidity="" Color="-1" LightConstantFalloff="0" LightLinearFalloff="1" LightQuadraticFalloff="0" LightAimX="0" LightAimY="1" LightApertureFocus="0" LightApertureSoftness="0">
         <ParameterValue ParameterName="CoordIndex" Value="0" />
         <ParameterValue ParameterName="WaitCounter" Value="0" />
       </Sprite>
-      <Sprite Name="Platform 2" DefinitionName="Platform" StateName="Main" CurrentFrame="0" X="960" Y="608" DX="0" DY="0" Priority="1" Active="true" Color="-1">
+      <Sprite Name="Platform 2" DefinitionName="Platform" StateName="Main" CurrentFrame="0" X="960" Y="608" DX="0" DY="0" Priority="1" Active="true" Color="-1" LightConstantFalloff="0" LightLinearFalloff="1" LightQuadraticFalloff="0" LightAimX="0" LightAimY="1" LightApertureFocus="0" LightApertureSoftness="0">
         <ParameterValue ParameterName="CoordIndex" Value="0" />
         <ParameterValue ParameterName="WaitCounter" Value="0" />
       </Sprite>
@@ -4184,6 +4192,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
             {
                result = i;
                TransportToPlan(Sprites[i], outDoor, RelativePosition.BottomCenter);
+               CopyInputsToOld(Sprites[i]);
             }
          }
       }
@@ -5081,7 +5090,7 @@ public abstract partial class GeneralRules
          System.Drawing.Point Position, System.Drawing.Color background, int player,
          ButtonSpecifier dismissButton, MessageView msgView) :
          base(Tileset, Parent, 0, 0, 0, 0, nColumns, nRows, 0, 0, Position,
-         new System.Drawing.SizeF(0, 0), 0, 0, null)
+         new System.Drawing.SizeF(0, 0), LightingMode.Disabled, 0, 0, null)
       {
          this.background = background;
          this.player = player;

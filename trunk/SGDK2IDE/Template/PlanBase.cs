@@ -1281,6 +1281,7 @@ public abstract partial class PlanBase : GeneralRules, System.Collections.IEnume
             {
                result = i;
                TransportToPlan(Sprites[i], outDoor, RelativePosition.BottomCenter);
+               CopyInputsToOld(Sprites[i]);
             }
          }
       }

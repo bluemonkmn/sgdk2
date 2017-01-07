@@ -388,6 +388,7 @@
     <Compile Include="SGDK2IDE.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Shader.cs" />
     <Compile Include="Solidity.cs">
       <SubType>Form</SubType>
     </Compile>

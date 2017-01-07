@@ -326,6 +326,8 @@ namespace SGDK2
          if (nStartRow < 0)
             nStartRow = 0;
 
+         if (Display.ScaleOutput)
+            ViewSize = Display.GetScreenSize(Display.GameDisplayMode, false);
          int EndCol = (ViewSize.Width - 1 + m_nRightBuffer - m_CurrentPosition.X) / nTileWidth;
          if (EndCol >= VirtualColumns)
             EndCol = VirtualColumns - 1;
@@ -343,6 +345,13 @@ namespace SGDK2
          }
 
          int lastColor = 0;
+
+         if (Lighting == LightingMode.Normal)
+         {
+            Display.enableLighting = ApplyLights(Display);
+         }
+         else
+            Display.enableLighting = false;
 
          for (int y = nStartRow; y <= EndRow; y++)
          {
@@ -415,6 +424,7 @@ namespace SGDK2
                break;
             }
          }
+         Display.Flush();
       }
 
       public void InjectFrame(int x, int y, int priority, FrameCache.Frame frame)
@@ -473,6 +483,35 @@ namespace SGDK2
                InjectFrame(sp.X, sp.Y, sp.Priority, sp.GetSubFrame(i), sp.Color);
             }
          }
+      }
+
+      public bool ApplyLights(Display Display)
+      {
+         if (m_CachedSprites == null)
+            return false;
+
+         int lightIndex = 0;
+         bool didReset = false;
+
+         foreach (SpriteProvider sp in m_CachedSprites)
+         {
+            if (sp is LightSpriteProvider)
+            {
+               if (!didReset)
+               {
+                  Display.ResetLights();
+                  didReset = true;
+               }
+               LightSpriteProvider lsp = (LightSpriteProvider)sp;
+               Display.SetLightSource(lightIndex++, new OpenTK.Vector2(lsp.X + CurrentPosition.X, lsp.Y + CurrentPosition.Y),
+                  new OpenTK.Vector3(lsp.LightConstantFalloff, lsp.LightLinearFalloff, lsp.LightQuadraticFalloff),
+                  Color.FromArgb(lsp.Color), lsp.LightAimX, lsp.LightAimY, lsp.LightApertureFocus, lsp.LightApertureSoftness,
+                  new OpenTK.Vector3[] { }, 0);
+               if (lightIndex >= LightSources.MAX_LIGHTS)
+                  break;
+            }
+         }
+         return true;
       }
 
       public void RefreshLayerSprites(SpriteCache cache)

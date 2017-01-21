@@ -417,6 +417,7 @@ namespace SGDK2
       #region Overrides
       protected override void WndProc(ref System.Windows.Forms.Message m)
       {
+
          switch (m.Msg)
          {
             case 0x2: // WM_DESTROY
@@ -531,6 +532,8 @@ namespace SGDK2
 
       internal static void CheckError()
       {
+         if (GraphicsContext.CurrentContext == null)
+            return;
          ErrorCode ec = GL.GetError();
          if (ec != 0)
          {
@@ -1149,10 +1152,16 @@ namespace SGDK2
       /// <param name="windowCoordinate">Coordinate within the display at which the light should be positioned with the origin at the top left corner</param>
       /// <param name="falloff">Constant, linear and quadratic falloff of the light intensity. Google linear light falloff for details.</param>
       /// <param name="color">Color and intensity of the light source. Alpha channel indicates intensity.</param>
+      /// <param name="aimX">Relative horizontal offset of direction in which the light points.</param>
+      /// <param name="aimY">Relative vertical offset of direction in which the light points.</param>
+      /// <param name="aimZ">Relative depth offset of direction in which the light points.</param>
+      /// <param name="lightZ">Z position of light source relative to map layer. Positive moves from layer toward viewer.</param>
+      /// <param name="apertureFocus">Determines how focused the light source is. 1 is an invisibly narrow beam and 0 covers a 180-degree arc.</param>
+      /// <param name="apertureSoftness">Determines how soft the edges of the light beam are.</param>
       /// <param name="walls">Array of Vector3 structures specifying the endpoints of walls (in pairs)</param>
       /// <param name="wallCoordCount">Number of applicable (non-zero) elements in walls. This should be a multiple of 2.</param>
       public void SetLightSource(int index, Vector2 windowCoordinate, Vector3 falloff, System.Drawing.Color color,
-         float aimX, float aimY, float apertureFocus, float apertureSoftness, Vector3[] walls, int wallCoordCount)
+         float aimX, float aimY, float aimZ, float lightZ, float apertureFocus, float apertureSoftness, Vector3[] walls, int wallCoordCount)
       {
          if (index >= LightSources.MAX_LIGHTS)
             throw new IndexOutOfRangeException("SetLightSource index must be less than MAX_LIGHTS");
@@ -1160,9 +1169,9 @@ namespace SGDK2
          System.Drawing.Size nativeSize = GetScreenSize(m_GameDisplayMode, false);
          lights[index].Falloff = falloff;
          lights[index].Position = new Vector3(
-            windowCoordinate.X, nativeSize.Height - windowCoordinate.Y, 1);
+            windowCoordinate.X, nativeSize.Height - windowCoordinate.Y, lightZ);
          lights[index].Color = color;
-         lights[index].Aim = new Vector3(aimX, -aimY, 0);
+         lights[index].Aim = new Vector3(aimX, -aimY, aimZ);
          lights[index].ApertureFocus = apertureFocus;
          lights[index].ApertureSoftness = apertureSoftness;
          int wallIndex;

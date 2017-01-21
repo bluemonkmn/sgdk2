@@ -1842,13 +1842,13 @@ namespace SGDK2
                      ProjectData.AddSprite(drLayer.Name, lsp.Name, lsp.DefinitionName, lsp.CurrentStateName,
                         lsp.CurrentFrame, lsp.X, lsp.Y, lsp.DX, lsp.DY, drLayer.MapRow.Name, lsp.Priority,
                         lsp.Active, lsp.Solidity, lsp.Color, lsp.LightConstantFalloff, lsp.LightLinearFalloff, lsp.LightQuadraticFalloff,
-                        lsp.LightAimX, lsp.LightAimY, lsp.LightApertureFocus, lsp.LightApertureSoftness,
+                        lsp.LightAimX, lsp.LightAimY, lsp.LightAimZ, lsp.LightZ, lsp.LightApertureFocus, lsp.LightApertureSoftness,
                         paramNames, lsp.ParameterValues);
                   }
                   else
                      ProjectData.AddSprite(drLayer.Name, sp.Name, sp.DefinitionName, sp.CurrentStateName,
                         sp.CurrentFrame, sp.X, sp.Y, sp.DX, sp.DY, drLayer.MapRow.Name, sp.Priority,
-                        sp.Active, sp.Solidity, sp.Color, 0, 0, 0, 0, 0, 0, 0, paramNames, sp.ParameterValues);
+                        sp.Active, sp.Solidity, sp.Color, 0, 0, 0, 0, 0, 0, 0, 0, 0, paramNames, sp.ParameterValues);
 
                   string name;
                   int index = 1;

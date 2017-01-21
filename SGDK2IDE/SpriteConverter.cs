@@ -6,17 +6,18 @@ using System;
 using System.Drawing;
 using System.ComponentModel;
 using System.Collections;
+using System.Globalization;
 
 namespace SGDK2
 {
-	/// <summary>
-	/// Exposes properties of a Sprite to a property browser
-	/// </summary>
-	public class SpriteConverter : TypeConverter
-	{
-		public SpriteConverter()
-		{
-		}
+   /// <summary>
+   /// Exposes properties of a Sprite to a property browser
+   /// </summary>
+   public class SpriteConverter : TypeConverter
+   {
+      public SpriteConverter()
+      {
+      }
 
       public override System.ComponentModel.PropertyDescriptorCollection GetProperties(System.ComponentModel.ITypeDescriptorContext context, object value, Attribute[] attributes)
       {
@@ -58,34 +59,36 @@ namespace SGDK2
                   new ReflectionPropertyDescriptor(typ.GetProperty("LightQuadraticFalloff"), cat),
                   new ReflectionPropertyDescriptor(typ.GetProperty("LightAimX"), cat),
                   new ReflectionPropertyDescriptor(typ.GetProperty("LightAimY"), cat),
+                  new ReflectionPropertyDescriptor(typ.GetProperty("LightAimZ"), cat),
+                  new ReflectionPropertyDescriptor(typ.GetProperty("LightZ"), cat),
                   new ReflectionPropertyDescriptor(typ.GetProperty("LightApertureFocus"), cat),
                   new ReflectionPropertyDescriptor(typ.GetProperty("LightApertureSoftness"), cat)
                });
             }
 
-            foreach(string paramName in ((SpriteProvider)context.Instance).ParameterNames)
+            foreach (string paramName in ((SpriteProvider)context.Instance).ParameterNames)
             {
                properties.Add(new SpriteParamDescriptor(paramName));
             }
             return new PropertyDescriptorCollection((PropertyDescriptor[])properties.ToArray(typeof(PropertyDescriptor)));
          }
-         return base.GetProperties (context, value, attributes);
+         return base.GetProperties(context, value, attributes);
       }
-   
+
       public override bool GetPropertiesSupported(System.ComponentModel.ITypeDescriptorContext context)
       {
          if ((context.Instance is SpriteProvider) && (context.PropertyDescriptor == null))
             return true;
-         return base.GetPropertiesSupported (context);
+         return base.GetPropertiesSupported(context);
       }
-   
+
       public override System.ComponentModel.TypeConverter.StandardValuesCollection GetStandardValues(ITypeDescriptorContext context)
       {
          if ((context.PropertyDescriptor != null) && (string.Compare(context.PropertyDescriptor.Name, "Solidity", true) == 0))
          {
             string[] solidityList = new string[ProjectData.Solidity.DefaultView.Count];
             int idx = 0;
-            foreach(System.Data.DataRowView drv in ProjectData.Solidity.DefaultView)
+            foreach (System.Data.DataRowView drv in ProjectData.Solidity.DefaultView)
                solidityList[idx++] = ((ProjectDataset.SolidityRow)drv.Row).Name;
             return new System.ComponentModel.TypeConverter.StandardValuesCollection(
                solidityList);
@@ -100,9 +103,9 @@ namespace SGDK2
             }
          }
          System.Collections.Specialized.StringCollection vals = null;
-         foreach(SpriteProvider sp in (SpriteProvider[])context.Instance)
+         foreach (SpriteProvider sp in (SpriteProvider[])context.Instance)
          {
-            if(vals == null)
+            if (vals == null)
             {
                vals = new System.Collections.Specialized.StringCollection();
                vals.AddRange(sp.GetAvailableStates());
@@ -111,16 +114,16 @@ namespace SGDK2
             {
                string[] valcopy = new string[vals.Count];
                vals.CopyTo(valcopy, 0);
-               foreach(string s in valcopy)
+               foreach (string s in valcopy)
                   if (Array.IndexOf(sp.GetAvailableStates(), s) < 0)
-                     vals.Remove(s);               
+                     vals.Remove(s);
             }
          }
          string[] result = new string[vals.Count];
-         vals.CopyTo(result,0);
+         vals.CopyTo(result, 0);
          return new System.ComponentModel.TypeConverter.StandardValuesCollection(result);
       }
-   
+
       public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
       {
          if ((context.PropertyDescriptor != null) && (string.Compare(context.PropertyDescriptor.Name, "Solidity", true) == 0))
@@ -131,8 +134,24 @@ namespace SGDK2
          if ((context.Instance is SpriteProvider[]) && (context.PropertyDescriptor != null) &&
              (context.PropertyDescriptor.Name.Equals("CurrentStateName")))
             return true;
-         return base.GetStandardValuesSupported (context);
-      }      
+         return base.GetStandardValuesSupported(context);
+      }
+
+      public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
+      {
+         if ((context.PropertyDescriptor != null) && (string.Compare(context.PropertyDescriptor.Name, "Solidity", true) == 0)
+            && (sourceType == typeof(string)))
+            return true;
+         return base.CanConvertFrom(context, sourceType);
+      }
+
+      public override object ConvertFrom(ITypeDescriptorContext context, CultureInfo culture, object value)
+      {
+         if ((context.PropertyDescriptor != null) && (string.Compare(context.PropertyDescriptor.Name, "Solidity", true) == 0)
+            && (value is string))
+            return (string)value;
+         return base.ConvertFrom(context, culture, value);
+      }
    }
 
    [TypeConverter(typeof(SpriteConverter))]
@@ -174,14 +193,14 @@ namespace SGDK2
          m_SpriteRow = row;
          ProjectDataset.SpriteParameterRow[] parmrows = ProjectData.GetSortedSpriteParameters(row.SpriteStateRowParent.SpriteDefinitionRow, true);
          m_ParameterRows = new ProjectDataset.ParameterValueRow[parmrows.Length];
-         for(int i = 0; i < parmrows.Length; i++)
+         for (int i = 0; i < parmrows.Length; i++)
             m_ParameterRows[i] = ProjectData.GetSpriteParameterValueRow(row, parmrows[i].Name);
       }
 
       public static SpriteProvider GetDefaultInstance(CachedSpriteDef sprite, string defaultState, short defaultFrame, int defaultColor)
       {
          if (!defaultInstances.ContainsKey(sprite.Name))
-               defaultInstances[sprite.Name] = new SpriteProvider(sprite, defaultState, defaultFrame, defaultColor);
+            defaultInstances[sprite.Name] = new SpriteProvider(sprite, defaultState, defaultFrame, defaultColor);
          SpriteProvider result = (SpriteProvider)defaultInstances[sprite.Name];
          if (result.m_Sprite != sprite)
          {
@@ -191,7 +210,7 @@ namespace SGDK2
             newResult.m_dx = result.m_dx;
             newResult.m_dy = result.m_dy;
             newResult.m_Frame = result.m_Frame;
-            for(int i=0; i<newResult.ParameterNames.Count; i++)
+            for (int i = 0; i < newResult.ParameterNames.Count; i++)
             {
                int paramIdx = result.ParameterNames.IndexOf(newResult.ParameterNames[i]);
                if (paramIdx >= 0)
@@ -419,7 +438,7 @@ namespace SGDK2
                m_color = (int)(m_color & 0xFFFFFF00U) | value;
          }
       }
-      
+
       [Description("Opacity of the sprite: 0 = invisible, 128 = translucent, 255 = opaque")]
       public byte ModulateAlpha
       {
@@ -438,7 +457,7 @@ namespace SGDK2
                m_color = (int)(m_color & 0x00FFFFFFU) | value << 24;
          }
       }
-      
+
       [Description("Determines if this sprite instance is currently being drawn and its rules processed")]
       public bool Active
       {
@@ -503,6 +522,13 @@ namespace SGDK2
                else
                   m_Solidity = value;
             }
+            else if (string.IsNullOrEmpty(value))
+            {
+               if (m_SpriteRow != null)
+                  m_SpriteRow.Solidity = null;
+               else
+                  m_Solidity = null;
+            }
             else
             {
                throw new InvalidOperationException("Solidity " + value + " does not exist");
@@ -543,7 +569,7 @@ namespace SGDK2
          {
             if (m_ParameterRows != null)
             {
-               for(int i = 0; i < m_ParameterRows.Length; i++)
+               for (int i = 0; i < m_ParameterRows.Length; i++)
                   if (m_ParameterRows[i].SpriteParameterRowParent.Name.Equals(ParamName))
                      return m_ParameterRows[i].Value;
                throw new IndexOutOfRangeException("Parameter " + ParamName + " not found");
@@ -560,7 +586,7 @@ namespace SGDK2
          {
             if (m_ParameterRows != null)
             {
-               for(int i = 0; i < m_ParameterRows.Length; i++)
+               for (int i = 0; i < m_ParameterRows.Length; i++)
                   if (m_ParameterRows[i].SpriteParameterRowParent.Name.Equals(ParamName))
                   {
                      m_ParameterRows[i].Value = value;
@@ -585,7 +611,7 @@ namespace SGDK2
             if (m_ParameterRows != null)
             {
                int[] result = new int[m_ParameterRows.Length];
-               for(int i = 0; i < result.Length; i++)
+               for (int i = 0; i < result.Length; i++)
                   result[i] = m_ParameterRows[i].Value;
                return result;
             }
@@ -598,8 +624,8 @@ namespace SGDK2
       {
          string[] result = new string[m_Sprite.Count];
 
-         int i=0;
-         foreach(System.Collections.DictionaryEntry de in m_Sprite)
+         int i = 0;
+         foreach (System.Collections.DictionaryEntry de in m_Sprite)
          {
             result[i++] = de.Key.ToString();
          }
@@ -647,8 +673,8 @@ namespace SGDK2
       {
          get
          {
-            if (m_Sprite[CurrentStateName,CurrentFrame].Length >0)
-               return m_Sprite[CurrentStateName,CurrentFrame][0];
+            if (m_Sprite[CurrentStateName, CurrentFrame].Length > 0)
+               return m_Sprite[CurrentStateName, CurrentFrame][0];
             else
                return 0;
          }
@@ -658,7 +684,7 @@ namespace SGDK2
       {
          get
          {
-            return m_Sprite[CurrentStateName,CurrentFrame];
+            return m_Sprite[CurrentStateName, CurrentFrame];
          }
       }
 
@@ -701,12 +727,12 @@ namespace SGDK2
 
       public EventDescriptorCollection GetEvents(Attribute[] attributes)
       {
-         return new EventDescriptorCollection(new EventDescriptor[] {});
+         return new EventDescriptorCollection(new EventDescriptor[] { });
       }
 
       EventDescriptorCollection System.ComponentModel.ICustomTypeDescriptor.GetEvents()
       {
-         return new EventDescriptorCollection(new EventDescriptor[] {});
+         return new EventDescriptorCollection(new EventDescriptor[] { });
       }
 
       public string GetComponentName()
@@ -721,7 +747,7 @@ namespace SGDK2
 
       public AttributeCollection GetAttributes()
       {
-         return new AttributeCollection(new Attribute[] {new TypeConverterAttribute(typeof(SpriteConverter))});
+         return new AttributeCollection(new Attribute[] { new TypeConverterAttribute(typeof(SpriteConverter)) });
       }
 
       public PropertyDescriptorCollection GetProperties(Attribute[] attributes)
@@ -778,7 +804,7 @@ namespace SGDK2
       public object Instance
       {
          get
-         {            
+         {
             return this;
          }
       }
@@ -811,6 +837,8 @@ namespace SGDK2
       private float m_QuadraticFalloff;
       private float m_aimX;
       private float m_aimY;
+      private float m_aimZ;
+      private float m_Z;
       private float m_apertureFocus;
       private float m_apertureSoftness;
 
@@ -917,7 +945,45 @@ namespace SGDK2
          }
       }
 
-      [Description("Determines how light is emitted only in one direction. -1 emits in all directions, 0 in a 180-degree arc, and 1 in an infinitely narrow beam toward AimX, AimY.")]
+      [Description("Z-coordinate offset (relative to the sprite position) of the direction in which the light is pointing. Negative numbers point in the diretion from viewer to layer.")]
+      public float LightAimZ
+      {
+         get
+         {
+            if (m_SpriteRow != null)
+               return m_SpriteRow.LightAimZ;
+            else
+               return m_aimZ;
+         }
+         set
+         {
+            if (m_SpriteRow != null)
+               m_SpriteRow.LightAimZ = value;
+            else
+               m_aimZ = value;
+         }
+      }
+
+      [Description("Z-coordinate of the sprite's light source. Zero 0 is at the position of the layer, and positive numbers move toward the viewer.")]
+      public float LightZ
+      {
+         get
+         {
+            if (m_SpriteRow != null)
+               return m_SpriteRow.LightZ;
+            else
+               return m_Z;
+         }
+         set
+         {
+            if (m_SpriteRow != null)
+               m_SpriteRow.LightZ = value;
+            else
+               m_Z = value;
+         }
+      }
+
+      [Description("Determines how light is emitted only in one direction. -1 emits in all directions, 0 in a 180-degree arc, and 1 in an infinitely narrow beam toward AimX, AimY, AimZ.")]
       public float LightApertureFocus
       {
          get
@@ -988,8 +1054,8 @@ namespace SGDK2
    class ReflectionPropertyDescriptor : System.ComponentModel.PropertyDescriptor
    {
       System.Reflection.PropertyInfo m_PropertyInfo;
-      
-      public ReflectionPropertyDescriptor(System.Reflection.PropertyInfo pi) : base(pi.Name, new Attribute[] {new CategoryAttribute("Intrinsic"), new BrowsableAttribute(true)})
+
+      public ReflectionPropertyDescriptor(System.Reflection.PropertyInfo pi) : base(pi.Name, new Attribute[] { new CategoryAttribute("Intrinsic"), new BrowsableAttribute(true) })
       {
          m_PropertyInfo = pi;
       }
@@ -999,7 +1065,7 @@ namespace SGDK2
          m_PropertyInfo = pi;
       }
 
-      public ReflectionPropertyDescriptor(System.Reflection.PropertyInfo pi, TypeConverter tc) : base(pi.Name, new Attribute[] {new TypeConverterAttribute(tc.GetType()), new CategoryAttribute("Intrinsic"), new BrowsableAttribute(true)})
+      public ReflectionPropertyDescriptor(System.Reflection.PropertyInfo pi, TypeConverter tc) : base(pi.Name, new Attribute[] { new TypeConverterAttribute(tc.GetType()), new CategoryAttribute("Intrinsic"), new BrowsableAttribute(true) })
       {
          m_PropertyInfo = pi;
       }
@@ -1011,12 +1077,12 @@ namespace SGDK2
             return !m_PropertyInfo.CanWrite;
          }
       }
-   
+
       public override bool CanResetValue(object component)
       {
          return false;
       }
-   
+
       public override Type ComponentType
       {
          get
@@ -1024,7 +1090,7 @@ namespace SGDK2
             return m_PropertyInfo.DeclaringType;
          }
       }
-   
+
       public override Type PropertyType
       {
          get
@@ -1032,22 +1098,22 @@ namespace SGDK2
             return m_PropertyInfo.PropertyType;
          }
       }
-   
+
       public override object GetValue(object component)
       {
-         return m_PropertyInfo.GetValue(component, new object[] {});
+         return m_PropertyInfo.GetValue(component, new object[] { });
       }
-   
+
       public override void ResetValue(object component)
       {
          return;
       }
-   
+
       public override void SetValue(object component, object value)
       {
-         m_PropertyInfo.SetValue(component, value, new object[] {});
+         m_PropertyInfo.SetValue(component, value, new object[] { });
       }
-   
+
       public override bool ShouldSerializeValue(object component)
       {
          return true;
@@ -1068,7 +1134,7 @@ namespace SGDK2
 
    class SpriteParamDescriptor : System.ComponentModel.PropertyDescriptor
    {
-      public SpriteParamDescriptor(string name) : base(name, new Attribute[] {new CategoryAttribute("Parameters")})
+      public SpriteParamDescriptor(string name) : base(name, new Attribute[] { new CategoryAttribute("Parameters") })
       {
       }
 
@@ -1079,12 +1145,12 @@ namespace SGDK2
             return false;
          }
       }
-   
+
       public override bool CanResetValue(object component)
       {
          return false;
       }
-   
+
       public override Type ComponentType
       {
          get
@@ -1092,7 +1158,7 @@ namespace SGDK2
             return typeof(SpriteProvider);
          }
       }
-   
+
       public override Type PropertyType
       {
          get
@@ -1100,22 +1166,22 @@ namespace SGDK2
             return typeof(int);
          }
       }
-   
+
       public override object GetValue(object component)
       {
          return ((SpriteProvider)component)[base.Name];
       }
-   
+
       public override void ResetValue(object component)
       {
          return;
       }
-   
+
       public override void SetValue(object component, object value)
       {
          ((SpriteProvider)component)[base.Name] = (int)value;
       }
-   
+
       public override bool ShouldSerializeValue(object component)
       {
          return true;

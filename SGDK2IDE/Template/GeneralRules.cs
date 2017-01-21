@@ -1542,7 +1542,7 @@ public abstract partial class GeneralRules
             (float)(ParentLayer.CurrentPosition.X + ParentLayer.ParentMap.CurrentView.X + lsb.x + lsb.SolidWidth / 2),
             (float)(ParentLayer.CurrentPosition.Y + ParentLayer.ParentMap.CurrentView.Y + lsb.y + lsb.SolidHeight / 2)),
             new OpenTK.Vector3(lsb.constantFalloff, lsb.linearFalloff, lsb.quadraticFalloff),
-            System.Drawing.Color.FromArgb(lsb.color), lsb.aimX, lsb.aimY,
+            System.Drawing.Color.FromArgb(lsb.color), lsb.aimX, lsb.aimY, lsb.aimZ, lsb.lightZ,
             lsb.apertureFocus, lsb.apertureSoftness,
             LightSpriteBase.WallCoordinates, LightSpriteBase.WallCoordinateCount);
          if (++lightNum >= Display.MAX_LIGHTS)

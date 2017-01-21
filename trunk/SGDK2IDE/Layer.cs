@@ -505,8 +505,8 @@ namespace SGDK2
                LightSpriteProvider lsp = (LightSpriteProvider)sp;
                Display.SetLightSource(lightIndex++, new OpenTK.Vector2(lsp.X + CurrentPosition.X, lsp.Y + CurrentPosition.Y),
                   new OpenTK.Vector3(lsp.LightConstantFalloff, lsp.LightLinearFalloff, lsp.LightQuadraticFalloff),
-                  Color.FromArgb(lsp.Color), lsp.LightAimX, lsp.LightAimY, lsp.LightApertureFocus, lsp.LightApertureSoftness,
-                  new OpenTK.Vector3[] { }, 0);
+                  Color.FromArgb(lsp.Color), lsp.LightAimX, lsp.LightAimY, lsp.LightAimZ, lsp.LightZ,
+                  lsp.LightApertureFocus, lsp.LightApertureSoftness, new OpenTK.Vector3[] { }, 0);
                if (lightIndex >= LightSources.MAX_LIGHTS)
                   break;
             }

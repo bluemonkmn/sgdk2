@@ -2145,6 +2145,8 @@ namespace SGDK2
                   SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.LightQuadraticFalloff));
                   SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.LightAimX));
                   SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.LightAimY));
+                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.LightAimZ));
+                  SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.LightZ));
                   SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.LightApertureFocus));
                   SpriteCreateParams.Add(new CodePrimitiveExpression(sprite.LightApertureSoftness));
                }
@@ -2618,6 +2620,8 @@ namespace SGDK2
                new CodeParameterDeclarationExpression(typeof(float), "quadraticFalloff"),
                new CodeParameterDeclarationExpression(typeof(float), "aimX"),
                new CodeParameterDeclarationExpression(typeof(float), "aimY"),
+               new CodeParameterDeclarationExpression(typeof(float), "aimZ"),
+               new CodeParameterDeclarationExpression(typeof(float), "lightZ"),
                new CodeParameterDeclarationExpression(typeof(float), "apertureFocus"),
                new CodeParameterDeclarationExpression(typeof(float), "apertureSoftness")
             });
@@ -2628,6 +2632,8 @@ namespace SGDK2
                new CodeArgumentReferenceExpression("quadraticFalloff"),
                new CodeArgumentReferenceExpression("aimX"),
                new CodeArgumentReferenceExpression("aimY"),
+               new CodeArgumentReferenceExpression("aimZ"),
+               new CodeArgumentReferenceExpression("lightZ"),
                new CodeArgumentReferenceExpression("apertureFocus"),
                new CodeArgumentReferenceExpression("apertureSoftness")
             });
@@ -2674,6 +2680,8 @@ namespace SGDK2
                new CodeParameterDeclarationExpression(typeof(float), "quadraticFalloff"),
                new CodeParameterDeclarationExpression(typeof(float), "aimX"),
                new CodeParameterDeclarationExpression(typeof(float), "aimY"),
+               new CodeParameterDeclarationExpression(typeof(float), "aimZ"),
+               new CodeParameterDeclarationExpression(typeof(float), "lightZ"),
                new CodeParameterDeclarationExpression(typeof(float), "apertureFocus"),
                new CodeParameterDeclarationExpression(typeof(float), "apertureSoftness")
             });
@@ -2684,6 +2692,8 @@ namespace SGDK2
                new CodeArgumentReferenceExpression("quadraticFalloff"),
                new CodeArgumentReferenceExpression("aimX"),
                new CodeArgumentReferenceExpression("aimY"),
+               new CodeArgumentReferenceExpression("aimZ"),
+               new CodeArgumentReferenceExpression("lightZ"),
                new CodeArgumentReferenceExpression("apertureFocus"),
                new CodeArgumentReferenceExpression("apertureSoftness")
             });

@@ -236,8 +236,10 @@ public sealed class Shader : IDisposable
          DiffuseColor *= fColor;";
 
    private const string CodeFragmentNormal2 = @"
-         vec3 NormalMap = texelFetch(norm, ivec2(vTex.x, vTex.y), 0).rgb;
-         NormalMap.g = 1.0 - NormalMap.g;";
+         vec3 NormalMap = texelFetch(norm, ivec2(vTex.x, vTex.y), 0).rgb;";
+
+   // We don't have vertically inverted normal maps, but if we did, this would account for it:
+   // NormalMap.g = 1.0 - NormalMap.g;";
 
    private const string CodeFragmentGeneral3 = @"
          vec3 FinalColor = vec3(0,0,0);

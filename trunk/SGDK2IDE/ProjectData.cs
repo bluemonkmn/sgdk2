@@ -2169,7 +2169,7 @@ namespace SGDK2
          string DefinitionName, string StateName, short CurrentFrame, int X, int Y,
          float DX, float DY, string MapName, int Priority, bool Active, string Solidity, int Color, 
          float LightConstantFalloff, float LightLinearFalloff, float LightQuadraticFalloff,
-         float LightAimX, float LightAimY, float LightApertureFocus, float LightApertureSoftness,
+         float LightAimX, float LightAimY, float LightAimZ, float LightZ, float LightApertureFocus, float LightApertureSoftness,
          string[] ParamNames, int[] ParamValues)
       {
          if (GetSpritePlan(GetLayer(MapName, LayerName), SpriteName) != null)
@@ -2178,7 +2178,7 @@ namespace SGDK2
             LayerName, SpriteName, DefinitionName, StateName, CurrentFrame,
             X, Y, DX, DY, MapName, Priority, Active, Solidity, Color, 
             LightConstantFalloff, LightLinearFalloff, LightQuadraticFalloff,
-            LightAimX, LightAimY, LightApertureFocus, LightApertureSoftness);
+            LightAimX, LightAimY, LightAimZ, LightZ, LightApertureFocus, LightApertureSoftness);
          for (int i = 0; i < ParamNames.Length; i++)
             m_dsPrj.ParameterValue.AddParameterValueRow(LayerName, SpriteName, ParamNames[i],
                ParamValues[i], DefinitionName, MapName);

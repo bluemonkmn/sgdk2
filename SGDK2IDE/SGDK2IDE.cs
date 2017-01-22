@@ -327,7 +327,7 @@ namespace SGDK2
             {
                Color pixel = Color.FromArgb(texturePixels[y * nPixelStride + x]);
                Color normal = Color.FromArgb(normalPixels[y * nNormalStride + x]);
-               int colorScale = normal.B;
+               int colorScale = (normal.A * normal.B + (255 - normal.A) * 255) / 255;
                texturePixels[y * nPixelStride + x] = Color.FromArgb(
                   pixel.A,
                   pixel.R * colorScale / 255,

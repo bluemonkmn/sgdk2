@@ -236,7 +236,7 @@ public sealed class Shader : IDisposable
          DiffuseColor *= fColor;";
 
    private const string CodeFragmentNormal2 = @"
-         vec3 NormalMap = texelFetch(norm, ivec2(vTex.x, vTex.y), 0).rgb;";
+         vec4 NormalMap = texelFetch(norm, ivec2(vTex.x, vTex.y), 0);";
 
    // We don't have vertically inverted normal maps, but if we did, this would account for it:
    // NormalMap.g = 1.0 - NormalMap.g;";
@@ -250,7 +250,7 @@ public sealed class Shader : IDisposable
             float D = length(LightDir);";
 
    private const string CodeFragmentNormal4 = @"
-            vec3 N = normalize(NormalMap * 2.0 - 1.0);
+            vec3 N = normalize(NormalMap.rgb * 2.0 - 1.0);
             vec3 L = normalize(LightDir);
             vec3 Diffuse = (lights[i].color.rgb * lights[i].color.a) * max(dot(N, L), 0.0);";
 
@@ -280,9 +280,12 @@ public sealed class Shader : IDisposable
                float f1 = smoothstep(0, 2 - lights[i].wall[w*2].z * 2, dp1 * sign(dp2)) * smoothstep(0, 2 - lights[i].wall[w*2+1].z * 2, dp2 * sign(dp1));
                shadow = min(1, shadow + dp3 * f1); //smoothstep(-.002, 0, dp1 * dp2));
             }
-            Intensity = (1 - shadow) * Intensity;
-                  
-            FinalColor += max(vec3(0,0,0), DiffuseColor.rgb * Intensity);
+            Intensity = (1 - shadow) * Intensity;";
+   private const string CodeFragmentNormal6 = @"
+            FinalColor += mix(DiffuseColor.rgb, max(vec3(0,0,0), DiffuseColor.rgb * Intensity), NormalMap.a);";
+   private const string CodeFragmentFlat6 = @"
+            FinalColor += max(vec3(0,0,0), DiffuseColor.rgb * Intensity);";
+   private const string CodeFragmentGeneral7 = @"
          }
          fragColor = vec4(FinalColor, DiffuseColor.a);
       }";
@@ -340,10 +343,10 @@ public sealed class Shader : IDisposable
             return new Shader(ShaderType.VertexShader, CodeVertexSolid);
          case ShaderCode.FragmentShaderWithNormals:
             return new Shader(ShaderType.FragmentShader, CodeFragmentGeneral1 + CodeFragmentNormal2 +
-               CodeFragmentGeneral3 + CodeFragmentNormal4 + CodeFragmentGeneral5);
+               CodeFragmentGeneral3 + CodeFragmentNormal4 + CodeFragmentGeneral5 + CodeFragmentNormal6 + CodeFragmentGeneral7);
          case ShaderCode.FragmentShaderFlat:
             return new Shader(ShaderType.FragmentShader, CodeFragmentGeneral1 + CodeFragmentGeneral3 +
-               CodeFramentFlat4 + CodeFragmentGeneral5);
+               CodeFramentFlat4 + CodeFragmentGeneral5 + CodeFragmentFlat6 + CodeFragmentGeneral7);
          case ShaderCode.FragmentShaderSolid:
             return new Shader(ShaderType.FragmentShader, CodeFragmentSolid);
          case ShaderCode.FragmentShaderNoLights:

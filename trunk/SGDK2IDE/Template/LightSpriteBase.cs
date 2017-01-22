@@ -29,17 +29,15 @@ public abstract partial class LightSpriteBase : SpriteBase
       this.apertureSoftness = apertureSoftness;
    }
 
-   [Description("Rotates the AimX and AimY of this light clockwise (+) or counterclockwise (-).")]
-   public void RotateLight(int degreeOffset)
+   [Description("Rotates the AimX and AimY of this light clockwise (+) or counterclockwise (-). Offset is in 100ths of a degree.")]
+   public void RotateLight(int Offset)
    {
-      float radians;
-      if ((aimX == 0) && (aimY == 0))
-         radians = 0;
-      else
-         radians = (float)Math.Atan2(aimY, aimX);
-      radians += (float)(degreeOffset * Math.PI / 180.0);
-      aimX = (float)Math.Cos(radians);
-      aimY = (float)Math.Sin(radians);
+      OpenTK.Matrix3 m3 = OpenTK.Matrix3.CreateRotationZ(Offset * (float)Math.PI / 18000f);
+      OpenTK.Vector3 v3 = new OpenTK.Vector3(aimX, aimY, aimZ);
+      v3 *= m3;
+      aimX = v3.X;
+      aimY = v3.Y;
+      aimZ = v3.Z;
    }
 
    static System.Collections.BitArray processedTiles;

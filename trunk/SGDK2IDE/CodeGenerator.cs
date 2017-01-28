@@ -1773,6 +1773,10 @@ namespace SGDK2
             clsMap.Members.Add(prpView);
          }
 
+         // Determine if the current project's LayerBase can handle lighting
+         ProjectDataset.SourceCodeRow drLayerBaseCode = ProjectData.GetSourceCode("LayerBase.cs");
+         bool hasLighting = (drLayerBaseCode == null ? false : (drLayerBaseCode.Text.IndexOf("LightingMode") > 0));
+
          foreach (ProjectDataset.LayerRow drLayer in ProjectData.GetSortedLayers(drMap))
          {
             if (String.IsNullOrEmpty(drLayer.Tileset))
@@ -1816,9 +1820,10 @@ namespace SGDK2
                   new CodeParameterDeclarationExpression(typeof(int), "nVirtualRows"),
                   new CodeParameterDeclarationExpression(typeof(System.Drawing.Point), "Position"),
                   new CodeParameterDeclarationExpression(typeof(System.Drawing.SizeF), "ScrollRate"),
-                  new CodeParameterDeclarationExpression(new CodeTypeReference("LightingMode"), "Lighting"),
                   new CodeParameterDeclarationExpression(typeof(string), "Name")
                });
+            if (hasLighting)
+               lyrConstructor.Parameters.Insert(12, new CodeParameterDeclarationExpression(new CodeTypeReference("LightingMode"), "Lighting"));
             CodeObjectCreateExpression createLayerSprites = new CodeObjectCreateExpression(SpriteCollectionClassName);
             lyrConstructor.BaseConstructorArgs.AddRange(new CodeExpression[]
                {
@@ -1834,19 +1839,21 @@ namespace SGDK2
                   new CodeArgumentReferenceExpression("nVirtualRows"),
                   new CodeArgumentReferenceExpression("Position"),
                   new CodeArgumentReferenceExpression("ScrollRate"),
-                  new CodeArgumentReferenceExpression("Lighting"),
                   new CodePrimitiveExpression(-1), // Placeholder for nInjectStartIndex
                   new CodePrimitiveExpression(-1), // Placeholders for nAppendStartIndex
                   new CodeArgumentReferenceExpression("Name")
                });
+
+            int injectParamIndex = lyrConstructor.BaseConstructorArgs.Count - 3;
+            if (hasLighting)
+               lyrConstructor.BaseConstructorArgs.Insert(injectParamIndex++, new CodeArgumentReferenceExpression("Lighting"));
             clsMap.Members.Add(clsLayer);
 
             fldLayer = new CodeMemberField(clsLayer.Name, "m_" + NameToVariable(drLayer.Name));
             fldLayer.Attributes = MemberAttributes.Public | MemberAttributes.Final;
             clsMap.Members.Add(fldLayer);
 
-            constructor.Statements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(
-               new CodeThisReferenceExpression(), fldLayer.Name),
+            CodeObjectCreateExpression createLayerExpression =
                new CodeObjectCreateExpression(lyrTyp,
                new CodeFieldReferenceExpression(new CodeTypeReferenceExpression("Tileset"),
                NameToVariable(drLayer.Tileset)), new CodeThisReferenceExpression(),
@@ -1858,14 +1865,20 @@ namespace SGDK2
                new CodePrimitiveExpression(drLayer.Height),
                new CodePrimitiveExpression(drLayer.VirtualWidth),
                new CodePrimitiveExpression(drLayer.VirtualHeight),
-               new CodeObjectCreateExpression(typeof(System.Drawing.Point), 
+               new CodeObjectCreateExpression(typeof(System.Drawing.Point),
                new CodePrimitiveExpression(drLayer.OffsetX),
                new CodePrimitiveExpression(drLayer.OffsetY)),
                new CodeObjectCreateExpression(typeof(System.Drawing.SizeF),
                new CodePrimitiveExpression(drLayer.ScrollRateX),
                new CodePrimitiveExpression(drLayer.ScrollRateY)),
-               new CodeFieldReferenceExpression(new CodeTypeReferenceExpression("LightingMode"), drLayer.IsLightingNull()?"Disabled":drLayer.Lighting),
-               new CodePrimitiveExpression(drLayer.Name))));
+               new CodePrimitiveExpression(drLayer.Name));
+
+            if (hasLighting)
+               createLayerExpression.Parameters.Insert(createLayerExpression.Parameters.Count - 1,
+               new CodeFieldReferenceExpression(new CodeTypeReferenceExpression("LightingMode"), drLayer.IsLightingNull() ? "Disabled" : drLayer.Lighting));
+
+            constructor.Statements.Add(new CodeAssignStatement(new CodeFieldReferenceExpression(
+               new CodeThisReferenceExpression(), fldLayer.Name), createLayerExpression));
 
             if ((drLayer.ScrollRateX==0) && (drLayer.ScrollRateY==0))
                mthOnScroll.Statements.Add(new CodeCommentStatement(drLayer.Name + " does not participate in automatic scrolling"));
@@ -2098,14 +2111,14 @@ namespace SGDK2
             }
 
             if (injectStartIndex >= 0)
-               lyrConstructor.BaseConstructorArgs[13] = new CodePrimitiveExpression(injectStartIndex);
+               lyrConstructor.BaseConstructorArgs[injectParamIndex] = new CodePrimitiveExpression(injectStartIndex);
             else
-               lyrConstructor.BaseConstructorArgs[13] = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(int)), "MaxValue");
+               lyrConstructor.BaseConstructorArgs[injectParamIndex] = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(int)), "MaxValue");
 
             if (appendStartIndex >= 0)
-               lyrConstructor.BaseConstructorArgs[14] = new CodePrimitiveExpression(appendStartIndex);
+               lyrConstructor.BaseConstructorArgs[injectParamIndex+1] = new CodePrimitiveExpression(appendStartIndex);
             else
-               lyrConstructor.BaseConstructorArgs[14] = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(int)), "MaxValue");
+               lyrConstructor.BaseConstructorArgs[injectParamIndex+1] = new CodeFieldReferenceExpression(new CodeTypeReferenceExpression(typeof(int)), "MaxValue");
 
             System.Collections.Hashtable htCategories = new System.Collections.Hashtable();
 

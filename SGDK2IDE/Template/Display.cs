@@ -474,8 +474,8 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       GL.TexParameter(texTarget, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Clamp);
       CheckError();
 
-      int useWidth = OpenTK.MathHelper.NextPowerOfTwo(bmpTexture.Width - 1);
-      int useHeight = OpenTK.MathHelper.NextPowerOfTwo(bmpTexture.Height - 1);
+      int useWidth = OpenTK.MathHelper.NextPowerOfTwo(bmpTexture.Width);
+      int useHeight = OpenTK.MathHelper.NextPowerOfTwo(bmpTexture.Height);
 
       bool useSubTexture = (useWidth != bmpTexture.Width) || (useHeight != bmpTexture.Height);
 

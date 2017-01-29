@@ -945,7 +945,7 @@ namespace SGDK2
          }
       }
 
-      [Description("Z-coordinate offset (relative to the sprite position) of the direction in which the light is pointing. Negative numbers point in the diretion from viewer to layer.")]
+      [Description("Z-coordinate offset (relative to the sprite position) of the direction in which the light is pointing. Negative numbers point in the direction from viewer to layer.")]
       public float LightAimZ
       {
          get

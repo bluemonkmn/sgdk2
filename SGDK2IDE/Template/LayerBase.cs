@@ -353,6 +353,10 @@ public abstract partial class LayerBase : System.Collections.IEnumerable
    /// <summary>
    /// Determines whether lighing effect are enabled for this layer.
    /// </summary>
+   /// <remarks>This value determines whether the lighting effects are enabled or disabled on the
+   /// display before drawing this layer. The reason this is an enumerated value instead of a boolean
+   /// value is to allow for future expansion supporting multiple forms of lighting to use on a layer
+   /// and multiple levels of feature support.</remarks>
    public LightingMode Lighting
    {
       get
@@ -1272,8 +1276,20 @@ public abstract partial class ByteLayer : LayerBase
    }
 }
 
+/// <summary>
+/// Determines whether lighting is enabled or disabled.
+/// </summary>
+/// <remarks>The reason this enumerated type exists is because there is a hope
+/// to expand on the number of lighting effects available, and use this enumeration
+/// to determine what effects should be applied to various layers.</remarks>
 public enum LightingMode
 {
+   /// <summary>
+   /// All lighting effects are disabled, and graphics are drawn at full intensity as originally designed in the graphics editor.
+   /// </summary>
    Disabled,
+   /// <summary>
+   /// Lighting, bump mapping (aka normal mapping) and solidity shadows are enabled.
+   /// </summary>
    Normal
 }

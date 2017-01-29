@@ -1514,10 +1514,13 @@ public abstract partial class GeneralRules
    /// for the current frame.
    /// </summary>
    /// <param name="sprites">Sprite category containing all the light sources to apply to the display.</param>
-   /// <param name="view">View number (0 to 3) whose light sources are being applied.</param>
+   /// <param name="view">View number (0 to 3) whose light sources are being applied. The display will
+   /// remember up to 4 light source configurations to be used when drawing up to 4 views as defined by
+   /// <see cref="SetViewLayout(ViewLayout)"/>.</param>
    /// <remarks>Light sources are sprites whose base class is set to LightSpriteBase. Only sprites with that
    /// base class will affect the lighting. Only MAX_LIGHTS lights will be processed. Any quantity in excess
-   /// of that number will be ignored.</remarks>
+   /// of that number will be ignored. Only active light sources are applied; to exclude a light source from
+   /// consuming one of the limited slots available within MAX_LIGHTS, deactivate the sprite.</remarks>
    [Description("Use properties of the sprites in the specified category to configure real-time lighting on the display for the current frame.")]
    public virtual void ApplyLights(SpriteCollection sprites, int view)
    {
@@ -1527,6 +1530,7 @@ public abstract partial class GeneralRules
       ParentLayer.ParentMap.Display.currentView = view;
       foreach (SpriteBase sprite in sprites)
       {
+         if (!sprite.isActive) continue;
          LightSpriteBase lsb = sprite as LightSpriteBase;
          if (lsb == null) continue;
          lsb.GenerateWalls(10);

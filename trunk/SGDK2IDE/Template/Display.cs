@@ -151,6 +151,16 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
          }
       }
 
+      /// <summary>
+      /// Make this texture current so texture-based drawing operations use this texture.
+      /// </summary>
+      /// <param name="sp">Which shader program's variables should be bound to this texture.</param>
+      /// <param name="enableLighting">True to allow this texture's normal map (which is the
+      /// same name with " nm" appended) to also be activated for this texture, or false to
+      /// prevent this activation from also activating a normal map if one exists.</param>
+      /// <remarks>This is implicitly called by
+      /// <see cref="Display.DrawFrame(TextureRef, System.Drawing.Rectangle, System.Drawing.PointF[], int, int)"/>
+      /// whenever the specified texture is different than the already active texture.</remarks>
       public void Use(ShaderProgram sp, bool enableLighting)
       {
          if (m_Texture == 0)
@@ -176,6 +186,11 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
          }
       }
 
+      /// <summary>
+      /// Returns true if a normal map exists for this texture or false if not.
+      /// </summary>
+      /// <remarks>A normal map is a graphic sheet aka texture with the same name, but
+      /// an additional "nm" appended after a space.</remarks>
       public bool HasNormalMap
       {
          get
@@ -299,16 +314,37 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    private VertexArray<ColoredVertex> solidVertexArray;
    private VertexArray<TileVertex> nolightVertexArray;
    private Color4 currentColor;
+   /// <summary>
+   /// Determines which set of light sources should be used in subsequent drawing operations.
+   /// </summary>
+   /// <remarks>Because light source positions are relative to the display window and not
+   /// individual views within it (in case of a multi-view display for a multi-player game,
+   /// for example), a different set of light source positions are stored for each view.</remarks>
    public int currentView;
+   /// <summary>
+   /// Determines whether lights and normal maps should be processed during subsequent drawing
+   /// operations.
+   /// </summary>
+   /// <remarks>Performance may be optimized by disabling this when lighting is not needed.
+   /// This property is set to disable lighting when drawing layers whose lighting is
+   /// disabled.</remarks>
    public bool enableLighting;
    #endregion
 
    #region Initialization and clean-up
+   /// <summary>
+   /// Creates a default instance of Display with a resolution of 640x480x24 windowed.
+   /// </summary>
    public Display()
       : this(GameDisplayMode.m640x480x24, true)
    {
    }
 
+   /// <summary>
+   /// Create a display with the specified resolution and window state.
+   /// </summary>
+   /// <param name="mode">Determines the size or resolution of this display from a preset list of available modes.</param>
+   /// <param name="windowed">Determines whether the display appears in a window or consumes the whole screen.</param>
    public Display(GameDisplayMode mode, bool windowed)
       : base(CreateGraphicsMode(mode))
    {
@@ -662,7 +698,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
    }
 
    /// <summary>
-   /// Restore the resolution of the display after a call to <see cref="SwitchToResolution" />
+   /// Switch the monitor to the full-screen resolution required by <see cref="GameDisplayMode"/>.
    /// </summary>
    public void SwitchToResolution()
    {
@@ -696,7 +732,7 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
 
    /// <summary>
    /// Restores the original (desktop) resolution, for example after switching to full
-   /// screen mode in another resolution.
+   /// screen mode in another resolution with <see cref="SwitchToResolution"/>.
    /// </summary>
    public static void RestoreResolution()
    {
@@ -1176,6 +1212,9 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       GL.Disable(EnableCap.ScissorTest);
    }
 
+   /// <summary>
+   /// Check if any internal graphics-related errors have occurred and report them if so.
+   /// </summary>
    public static void CheckError()
    {
       if (GraphicsContext.CurrentContext == null)
@@ -1278,6 +1317,9 @@ public partial class Display : GLControl, IDisposable, System.Runtime.Serializat
       lights[currentView].Reset();
    }
 
+   /// <summary>
+   /// Maximum number of light sources that can be active during any particular drawing operation.
+   /// </summary>
    public const int MAX_LIGHTS = LightSources.MAX_LIGHTS;
 
    /// <summary>

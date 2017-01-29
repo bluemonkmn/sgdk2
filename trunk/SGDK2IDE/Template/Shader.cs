@@ -174,6 +174,9 @@ public sealed class Shader : IDisposable
 {
    private int handle;
 
+   /// <summary>
+   /// Return the internal handle that uniquely identifies this shader to OpenGL.
+   /// </summary>
    public int Handle
    {
       get
@@ -323,16 +326,42 @@ public sealed class Shader : IDisposable
          fragColor = DiffuseColor;
       }";
 
+   /// <summary>
+   /// Enumerates all the pre-implemented shaders provided by SGDK2
+   /// </summary>
    public enum ShaderCode
    {
+      /// <summary>
+      /// Vertex shader used when drawing tiles to include pixels from a graphic sheet while drawing.
+      /// </summary>
       VertexShaderTextured,
+      /// <summary>
+      /// Vertex shader used when drawing lines and rectangles that aren't textured.
+      /// </summary>
       VertexShaderSolidColors,
+      /// <summary>
+      /// Fragment shader used when drawing tiles from a graphic sheet that has a normal map associated with it.
+      /// </summary>
       FragmentShaderWithNormals,
+      /// <summary>
+      /// Fragment shader used when drawing tiles from a graphic sheet that does not have a normal map associated with it.
+      /// </summary>
       FragmentShaderFlat,
+      /// <summary>
+      /// Fragment shader used when drawing non-textured graphics like lines and rectangles.
+      /// </summary>
       FragmentShaderSolid,
+      /// <summary>
+      /// Fragment shader used when drawing textured gaphics, but lighting (and bump mapping) is disabled.
+      /// </summary>
       FragmentShaderNoLights
    }
 
+   /// <summary>
+   /// Compile and return a shader object using the provided <see cref="ShaderCode"/> object.
+   /// </summary>
+   /// <param name="code">Determines which code should be the basis for this shader.</param>
+   /// <returns><see cref="Shader"/> object conencted to an OpenGL shader via a <see cref="Handle"/> value.</returns>
    public static Shader CreateShader(ShaderCode code)
    {
       switch (code)
@@ -355,6 +384,11 @@ public sealed class Shader : IDisposable
       throw new ArgumentException("Unknown shader requested");
    }
 
+   /// <summary>
+   /// Compile and return a shader object of the specified type using the specified shader code.
+   /// </summary>
+   /// <param name="type">Determines whether to build a vertex shader, fragment shader, or other shader.</param>
+   /// <param name="code">Contains the code to compile.</param>
    public Shader(ShaderType type, string code)
    {
       // create shader object
@@ -388,7 +422,9 @@ public sealed class Shader : IDisposable
       Dispose(false);
    }
 
-   // This code added to correctly implement the disposable pattern.
+   /// <summary>
+   /// Release the resources associated with this shader, including the OpenGL shader identified by <see cref="Handle"/>.
+   /// </summary>
    public void Dispose()
    {
       // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
@@ -410,6 +446,12 @@ public sealed class ShaderProgram : IDisposable
    private static ShaderProgram m_SolidShader;
    private static ShaderProgram m_NoLightShader;
 
+   /// <summary>
+   /// Create a shader program that includes all the shaders (vertex and fragment shaders) necessary when rendering.
+   /// </summary>
+   /// <param name="shaders">Array of shaders to be included in the program.</param>
+   /// <remarks>This is likely not useful for using directly; it is used to create
+   /// pre-implemented shaders such as <see cref="NormalMappedShader"/>.</remarks>
    public ShaderProgram(params Shader[] shaders)
    {
       // create program object
@@ -461,6 +503,11 @@ public sealed class ShaderProgram : IDisposable
       fs_nolights.Dispose();
    }
 
+   /// <summary>
+   /// This shader is used for drawing textured graphics that have a normal map associated.
+   /// </summary>
+   /// <remarks>A graphic sheet has a normal map associated with it if there is another graphic sheet
+   /// whose name and the same with an added "nm" appended after a space in the SGDK2 IDE.</remarks>
    public static ShaderProgram NormalMappedShader
    {
       get
@@ -471,6 +518,10 @@ public sealed class ShaderProgram : IDisposable
       }
    }
 
+   /// <summary>
+   /// This shader is used for drawing textured graphics that have no normal map associated.
+   /// </summary>
+   /// <remarks>Lights may still affect the brightness of graphics drawn with this shader.</remarks>
    public static ShaderProgram FlatShader
    {
       get
@@ -481,6 +532,10 @@ public sealed class ShaderProgram : IDisposable
       }
    }
 
+   /// <summary>
+   /// This shader is used for drawing solid non-textured graphics such as lines and solid rectangles.
+   /// </summary>
+   /// <remarks>Lighting does not affect graphics drawn with this shader.</remarks>
    public static ShaderProgram SolidShader
    {
       get
@@ -491,6 +546,10 @@ public sealed class ShaderProgram : IDisposable
       }
    }
 
+   /// <summary>
+   /// This shader is used for drawing textured graphics when lighting is disabled.
+   /// </summary>
+   /// <remarks>Lighting, normal mapping and shadows are all disabled in this shader.</remarks>
    public static ShaderProgram NoLightShader
    {
       get
@@ -501,6 +560,9 @@ public sealed class ShaderProgram : IDisposable
       }
    }
 
+   /// <summary>
+   /// Clean up all the pre-implemented shaders from memory.
+   /// </summary>
    public static void DisposeShaderPrograms()
    {
       if (m_NormalMappedShader != null)
@@ -518,6 +580,10 @@ public sealed class ShaderProgram : IDisposable
       m_NoLightShader = null;
    }
 
+   /// <summary>
+   /// Make this shader program the currently active shader program, and apply the specified projection matrix.
+   /// </summary>
+   /// <param name="projectionMatrix">Projection matrix that determines how vertex coordinates are transformed to the display.</param>
    public void Use(Matrix4 projectionMatrix)
    {
       if (handle < 0)
@@ -528,6 +594,11 @@ public sealed class ShaderProgram : IDisposable
       Display.CheckError();
    }
 
+   /// <summary>
+   /// Uses the OpenGL glGetAttributeLocation function to determine how a particular attribute of a vertex can be located.
+   /// </summary>
+   /// <param name="name">Name of the attribute to be located.</param>
+   /// <returns>Integer uniquely identifying where this attribute can be located within a vertex structure.</returns>
    public int GetAttributeLocation(string name)
    {
       if (handle < 0)
@@ -536,6 +607,11 @@ public sealed class ShaderProgram : IDisposable
       return GL.GetAttribLocation(this.handle, name);
    }
 
+   /// <summary>
+   /// Uses the OpenGL glGetUniformLocation function to determine how a uniform object declared in the code can be located.
+   /// </summary>
+   /// <param name="name">Name of the variable declared in the shader code.</param>
+   /// <returns>Integer to uniquely identify the uniform variable from outside the shader.</returns>
    public int GetUniformLocation(string name)
    {
       if (handle < 0)
@@ -564,7 +640,9 @@ public sealed class ShaderProgram : IDisposable
       Dispose(false);
    }
 
-   // This code added to correctly implement the disposable pattern.
+   /// <summary>
+   /// Releases resources associated with this ShaderProgram, including the internally referenced OpenGL program.
+   /// </summary>
    public void Dispose()
    {
       // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
@@ -583,6 +661,12 @@ sealed class VertexArray<TVertex> : IDisposable
 {
    private int handle;
 
+   /// <summary>
+   /// Construct a new VertexArray object that combines the specified buffer and <see cref="ShaderProgram"/>.
+   /// </summary>
+   /// <param name="vertexBuffer">Contains a buffer for vertex data.</param>
+   /// <param name="program">Contains a shader that works with the specified buffer.</param>
+   /// <param name="attributes">Helps process the attributes of each vertex in teh buffer.</param>
    public VertexArray(VertexBuffer<TVertex> vertexBuffer, ShaderProgram program,
        params VertexAttribute[] attributes)
    {
@@ -607,6 +691,9 @@ sealed class VertexArray<TVertex> : IDisposable
       Display.CheckError();
    }
 
+   /// <summary>
+   ///  Make this VertexArray current.
+   /// </summary>
    public void Bind()
    {
       if (handle < 0)
@@ -642,7 +729,9 @@ sealed class VertexArray<TVertex> : IDisposable
       Dispose(false);
    }
 
-   // This code added to correctly implement the disposable pattern.
+   /// <summary>
+   /// Release the resources associated with this VertexArray, including the internal OpenGL vertex array object.
+   /// </summary>
    public void Dispose()
    {
       // Do not change this code. Put cleanup code in Dispose(bool disposing) above.

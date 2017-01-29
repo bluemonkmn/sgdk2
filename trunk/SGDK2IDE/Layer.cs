@@ -495,7 +495,7 @@ namespace SGDK2
 
          foreach (SpriteProvider sp in m_CachedSprites)
          {
-            if (sp is LightSpriteProvider)
+            if (sp.Active && (sp is LightSpriteProvider))
             {
                if (!didReset)
                {

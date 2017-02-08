@@ -102,6 +102,16 @@
       in order to see where the edges are in relation to the layer currently being edited.</para>
         </content>
 </section>
+<section><!--h3-->
+  <title>Auto-size to Game Display Mode</title>
+  <content>
+      <para>Forces the size of the map editor window to show the same portion
+      of the map that will be displayed when playing the game. This ensures that
+      the way parallax scrolling layers overlap looks the same in the editor
+      as it does when playing, and no regions outside the defined scrolling area
+      are displayed.</para>
+        </content>
+</section>
         </content>
 </section>
 
@@ -374,6 +384,102 @@
                initial values for each of these parameters on each instance of each sprite. 
                Sprite parameters are always integers, which means they can only be a numeric 
                value from -2147483648 to 2147483647.</entry>
+         </row>
+      </table>
+      <para>Some extra properties in the Lighting category are available when a
+      sprite based on the LightSpriteBase base class is selected.</para>
+      <table>
+         <row>
+            <entry>LightAimX</entry>
+            <entry>Horizontal offset relative to this sprite's location at which
+            this light source points. Positive values point right, and negative
+            values point left. Aim is mostly noticeable when LightApertureFocus is
+            used to focus the light in one direction. However, if aim is not set,
+            the light will not be visible. The size of the aim vector does not
+            matter because it is normalized to a unit vector; only the direction
+            matters.</entry>
+         </row>
+         <row>
+            <entry>LightAimY</entry>
+            <entry>Vertical offset relative to this sprite's location at which
+            this light source points. Positive values point down, and negative
+            values point up. Aim is mostly noticeable when LightApertureFocus is
+            used to focus the light in one direction. However, if aim is not set,
+            the light will not be visible. The size of the aim vector does not
+            matter because it is normalized to a unit vector; only the direction
+            matters.</entry>
+         </row>
+         <row>
+            <entry>LightAimZ</entry>
+            <entry>Depth offset relative to this sprite's location at which
+            this light source points. Positive values point from the layer toward
+            the viewer, and negative values point from the viewer toward the
+            layer, so negative numbers would be more common for this value
+            because light sources are generally positioned (with LightZ) on the
+            same side of the layer as the viewer. Aim is mostly noticeable when
+            LightApertureFocus is used to focus the light in one direction.
+            However, if aim is not set, the light will not be visible. The size
+            of the aim vector does not matter because it is normalized to a unit
+            vector; only the direction matters.</entry>
+         </row>
+         <row>
+            <entry>LightApertureFocus</entry>
+            <entry>Determines whether and how light is focused in a particular
+            direction. A value of 0 causes light to spread over a 180-degree
+            cone (in other words, from a plane) in the direction determined by
+            LightAimX, LightAimY and LightAimZ. Values near 1 (but less) focus
+            the light into a narrow beam. Negative values widen the spread.
+            Negative 1 sheds light in all directions.</entry>
+         </row>
+         <row>
+            <entry>LightApertureSoftness</entry>
+            <entry>Determines how crisp the edges of the light cone are for
+            lights directed by LightApertureFocus. This value is essentially
+            added to LightApertureFocus to generate two light cones that form a
+            gradient from lit to unlit.</entry>
+         </row>
+         <row>
+            <entry>LightConstantFalloff</entry>
+            <entry>Works in conjunction with LightLinearFalloff and
+            LightQuadraticFalloff to determine how this light source extends
+            over distance.  The sum of these 3 values should be about 1.0. Lower
+            values extend more light and higher values extend less light.
+            <externalLink><linkText>See Google for details</linkText>
+            <linkUri>https://www.google.com/search?q=constant+linear+quadratic+lighting+falloff</linkUri>
+            <linkTarget>_blank</linkTarget></externalLink>.</entry>
+         </row>
+         <row>
+            <entry>LightLinearFalloff</entry>
+            <entry>Works in conjunction with LightConstantFalloff and
+            LightQuadraticFalloff to determine how this light source extends
+            over distance.  The sum of these 3 values should be about 1.0. Lower
+            values extend more light and higher values extend less light.
+            <externalLink><linkText>See Google for details</linkText>
+            <linkUri>https://www.google.com/search?q=constant+linear+quadratic+lighting+falloff</linkUri>
+            <linkTarget>_blank</linkTarget></externalLink>.</entry>
+         </row>
+         <row>
+            <entry>LightQuadraticFalloff</entry>
+            <entry>Works in conjunction with LightConstantFalloff and
+            LightLinearFalloff to determine how this light source extends
+            over distance.  The sum of these 3 values should be about 1.0. Lower
+            values extend more light and higher values extend less light.
+            <externalLink><linkText>See Google for details</linkText>
+            <linkUri>https://www.google.com/search?q=constant+linear+quadratic+lighting+falloff</linkUri>
+            <linkTarget>_blank</linkTarget></externalLink>.</entry>
+         </row>
+         <row>
+            <entry>LightZ</entry>
+            <entry>Depth position of this light source relative to the layer
+            where the sprite resides. Since scrolling game sprites generally
+            don't have a depth coordinate, but depth is important for lighting,
+            this property is helpful in determining how light shines on the map.
+            Common values for this property fall approximately in the range of
+            0.1 to 10.0. Larger values position the light farther from the map,
+            which is useful when illuminating a large area, for example, to
+            provide ambient light. This value combined with the X and Y values
+            form a 3D coordinate, which work with LightAimX, LightAimY and
+            LightAimZ to determine the light's location and direction.</entry>
          </row>
       </table>
         </content>

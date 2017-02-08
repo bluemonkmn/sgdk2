@@ -200,6 +200,15 @@
                   </entry>
                </row>
                <row>
+                  <entry>Export HTML 5 and Run</entry>
+                  <entry>Once the project has been exported to HTML 5 once, this
+                  command is a convenient way to quickly test the HTML version
+                  of the project with the same settings that were used before.
+                  If it hasn't been exported to HTML 5 yet, this command will
+                  trigger the Export to HTML 5 Code command first.
+                  </entry>
+               </row>
+               <row>
                   <entry>(Recent File List)</entry>
                   <entry>The 5 most recently loaded projects are displayed near the bottom of the file 
                      menu for easy access (if you want to re-load a project you were recently 

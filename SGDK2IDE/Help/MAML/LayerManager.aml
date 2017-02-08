@@ -41,6 +41,21 @@
 </section>
 
 <section><!--h3-->
+  <title>Lighting</title>
+  <content>
+      <para>Version 2.3.0 introduced support for real-time lighting effects in
+      desktop-based projects (as opposed to HTML 5 projects). But sometimes not
+      all layers need to be affected by lighting effects. Lighting can be
+      disabled for a layer to simplify the layer's design, as an optimization or
+      simply for aesthetic reasons. Enabling lighting alone does not introduce
+      all the fancy effects right away. Light sources must be added and
+      configured. For more details on using light sources, see the
+      <link xlink:href="dff08c1a-590c-4da7-b9f9-8161b74dfec7">lighting tutorial</link>.
+      </para>
+        </content>
+</section>
+
+<section><!--h3-->
   <title>Tileset</title>
   <content>
       <para>Each layer must be associated with exactly one Tileset. The 

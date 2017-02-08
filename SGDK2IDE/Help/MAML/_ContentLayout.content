@@ -26,11 +26,12 @@
     <Topic id="225ac8d2-37be-4dd0-a566-1b4b4b7b1ff8" visible="True" title="Sprite Category" />
     <Topic id="8dc5b7ca-9900-4b6d-a51b-9de648e0da18" visible="True" title="Source Code Editor" />
   </Topic>
-  <Topic id="c481af15-d1ef-4039-b44e-39f4e7637788" visible="True" noFile="true" title="Tutorials">
+  <Topic id="c481af15-d1ef-4039-b44e-39f4e7637788" visible="True" noFile="true" isExpanded="true" title="Tutorials">
     <Topic id="44d5e991-27a6-4800-9657-6ff749f22206" visible="True" title="Simple Tutorial" />
     <Topic id="c93a5843-a79d-4489-aee9-40cd9b4c7d5c" visible="True" title="Multi-Player Tutorial" />
     <Topic id="9d346bae-01a5-49b1-8eb3-72ed6c177609" visible="True" title="New Tile Tutorial" />
     <Topic id="c3ce346a-100c-40f9-a23a-5680596d6cda" visible="True" title="Sound and Music Tutorial" />
     <Topic id="cac52525-8d2a-4c90-9c60-fff86eae1128" visible="True" title="Sprite Import Tutorial" />
+    <Topic id="dff08c1a-590c-4da7-b9f9-8161b74dfec7" visible="True" isSelected="true" title="Real-time Lighting Effects Tutorial" />
   </Topic>
 </Topics>

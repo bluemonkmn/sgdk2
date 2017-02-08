@@ -5,22 +5,34 @@
     xmlns:xlink="http://www.w3.org/1999/xlink">
 
     <introduction>
+      <autoOutline />
       <para>A graphic sheet is an array of graphic "cells" all the same size, stored in a 
          single image with a fixed number of rows and columns. Almost all graphics in a 
          game are based on the graphics defined in a graphic sheet. The only readily 
-         apparent exceptions would be some of the text (in cases where text drawing 
-         functions are used instead of drawing the text into graphic cells) and the 
-         window frame and secondary windows (options and about dialogs) when playing the 
-         game in windowed mode.</para>
+         apparent exceptions would be the window frame and secondary windows (options
+         and about dialogs) when playing the game in windowed mode.</para>
       <para>Before graphics can be edited, some parameters must be provided about the 
          layout of the graphics so the environment knows, for example, how large they 
          will be. This window is used to supply these parameters before proceeding to 
-         the <link xlink:href="2d575c3e-dff1-484e-8f48-6109b0f79028">graphics editor</link>. These parameters can also be 
-         updated later, but be careful when doing so because this can drastically affect 
-         the graphics.</para>
+         the <link xlink:href="2d575c3e-dff1-484e-8f48-6109b0f79028">graphics editor</link>.
+         These parameters can also be updated later, but be careful when doing so because
+         this can drastically affect the graphics.</para>
+      <para>As of version 2.3.0, graphic sheets have an additional purpose related to
+      real-time lighting. Some graphic sheets can now be used for <externalLink>
+      <linkText>normal mapping</linkText><linkUri>https://en.wikipedia.org/wiki/Normal_mapping</linkUri>
+      <linkTarget>_blank</linkTarget></externalLink>. By creating a graphic sheet
+      whose name is the same as another graphic sheet with a space and "nm"
+      appended to the end of the name, you can indicate that the "nm" graphic
+      sheet should be used as the normal map for the other graphic sheet. For
+      example, a graphic sheet called "Main" will automatically use a graphic
+      sheet named "Main nm" as its normal map if it exists. The graphics in
+      "Main nm" will determine which direction light reflects off each pixel in
+      "Main". As such, "Main nm" must use the exact same dimensions as "Main".
+      Normal maps are described in more detail below.</para>
     </introduction>
 
-<section><!--h2-->
+<section address="GfxProperties"><!--h2-->
+  <autoOutline />
   <title>Properties</title>
   <content>
       <para>The properties of the graphic sheet are edited in the main grid area of the 
@@ -55,7 +67,9 @@
   <content>
       <para>The name of a graphic sheet must be unique among all graphic 
          sheets in the project. Names must begin with a letter and contain only letters, 
-         digits and spaces.</para>
+         digits and spaces. If the name ends with a space followed by "nm", this
+         graphic sheet will be used as the normal map for the graphic sheet whose
+         name is the same without the space "nm".</para>
         </content>
 </section>
 
@@ -104,7 +118,8 @@
         </content>
 </section>
 
-<section><!--h2-->
+<section address="GfxCommands"><!--h2-->
+  <autoOutline />
   <title>Commands</title>
   <content>
       <para>All the commands available in this window are represented as buttons along the 
@@ -166,8 +181,97 @@
 </section>
         </content>
 </section>
-
+<section address="GfxNormalMap"><!--h2-->
+  <title>Normal Mapping</title>
+  <content>
+      <para>As mentioned in the introduction, a graphic sheet can have a normal
+      map associated with it by naming another graphic sheet the same with space
+      and "nm" appended to the name. This will cause the cells in the graphic
+      sheet to reflect light as determined by the normal map whenever they are
+      drawn in the context of a real-time lighted scene. That includes drawing
+      the graphics within a tile or within a sprite on any layer where the
+      lighting feature new with version 2.3.0 is enabled. The normal map will
+      also be used when drawing graphics in graphic, frame and tile selection
+      windows because often times the normal map is so essential to a graphic's
+      appearance that it's not possible to distinguish some graphics without
+      applying the normal map. So this software will draw graphics that have
+      associated normal maps as if there is a light source directly in front of
+      them, when showing them in selection windows.</para>
+      <para>But what is a normal map and how is it created? Much of that is
+      beyond the scope of this software and documentation, but here are the
+      basics. <list class="ordered">
+      <listItem>The normal map must have exactly the same layout (same width,
+      height, rows and columns) as the original graphic sheet.</listItem>
+      <listItem>Every pixel in the normal map corresponds to the pixel at the
+      same position in the original graphic sheet, and determines the angle of
+      that pixel. A pixel angled to the left, for example, will be more
+      illuminated when a light source is on the left side of the pixel than
+      when the light source is directly in front of or to the right of the
+      pixel.</listItem>
+      <listItem>The amount of red in the pixel ranges from 0 meaning 100% left
+      to 255 meaning 100% right; green ranges from 0 meaning 100% down to 255
+      meaning 100% up; blue ranges from 0 meaning 100% facing away from the
+      viewer to 255 meaning 100% facing the viewer. Normally these values should
+      be calculated to agree with each other such that, for example, a pixel
+      with 255 blue should have the red and green values at 127 to indicate zero
+      tilt in the the left, right, up or down directions because it's generally
+      not possible to face multiple directions at once. Ensuring that these
+      values agree is accomplished by implicitly converting the red, green and
+      blue values into a vector, and then <externalLink><linkText>normalizing
+      it</linkText><linkUri>https://www.google.com/search?q=normalize%20vector</linkUri>
+      <linkTarget>_blank</linkTarget></externalLink> so that it lies on a sphere
+      1 unit (100%) from the center of the pixel. This is accomplished in the
+      file Shader.cs in the <link xlink:href="8dc5b7ca-9900-4b6d-a51b-9de648e0da18">project's
+      SourceCode folder</link> with the code
+      <codeInLine>normalize(NormalMap.rgb * 2.0 - 1.0);</codeInLine>, which
+      could theoretically be disabled by removing the reference to "normalize,"
+      if, for example, special lighting effects requiring non-unit normal
+      vectors were desired.</listItem>
+      <listItem>The treatment of red green and blue values is pretty standard,
+      and used across a range of other products that use and generate normal map
+      data. The area where some variation may be encountered is in the green
+      value. Because mathematical coordinate systems have positive numbers
+      pointing upward, but computer coordinate systems have them pointing
+      downward, there is some inconsistency. The default code assumes that low
+      green values point downward and high green values point upward.</listItem>
+      <listItem>One non-standard feature provided by Scrolling Game Development
+      Kit 2.3.0 is the ability to use the alpha value of a pixel in the normal
+      map to determine how much lighting affects this pixel. Alpha 255 (opaque)
+      applies lighting normally. Alpha 0 (transparent) ignores lighting
+      completely, which draws the pixel at full intensity, useful for
+      representing pixels that are self-illuminated. Alpha values in between
+      partially apply lighting effects, and partially allow the pixel to
+      illuminate itself.</listItem>
+      <listItem>Scrolling Game Development Kit 2.3.0 normal mapping was designed
+      using normal maps generated by <externalLink><linkText>SpriteIlluminator</linkText>
+      <linkUri>https://www.google.com/search?q=SpriteIlluminator</linkUri>
+      <linkTarget>_blank</linkTarget></externalLink>, so that serves as a good
+      example of what kind of normal maps are supported and how they can be
+      created. Support for generating normal maps within Scrolling Game
+      Development Kit 2.3.0 ranges from limited to non-existent, and so normal
+      maps will likely need to be generated in other programs and imported in
+      the <link xlink:href="2d575c3e-dff1-484e-8f48-6109b0f79028">graphics
+      editor</link>. However, one means of creating a normal map within the
+      editor is to have a graphic representing a normal map for a sphere, then
+      color-pick pixels from it to draw over a copy of the original graphic.</listItem>
+      <listItem>When generating framesets from graphic sheet cells, be aware
+      that flipping a graphic does no processing on the normal map, so the
+      result will likely not be as intended. Although the normal map pixels will
+      be similarly tranformed so they still correspond to the correct pixels of
+      the original graphic, the red, green, and blue values are not adjusted. So
+      when horizontally flipping a red pixel from the right side of a tile that
+      was pointing rightward, the new pixel now on the left side of the image
+      will still be pointing rightward, whereas in most cases the expectation
+      would be that it point leftward.</listItem>
+      </list></para>
+      <para>See here an example of a graphic sheet, its associated normal
+      map, and how the resulting graphics appears when lit from directly in
+      front.</para>
+      <mediaLink><image placement="center" xlink:href="NormalMap"/></mediaLink>
+  </content>
+</section>
     <relatedTopics>
+    <link xlink:href="dff08c1a-590c-4da7-b9f9-8161b74dfec7"/>
     </relatedTopics>
 
   </developerConceptualDocument>

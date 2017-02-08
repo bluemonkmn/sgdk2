@@ -94,6 +94,7 @@
     <Folder Include="MAML\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="MAML\Tutorial6.aml" />
     <None Include="MAML\HTML5Export.aml" />
     <None Include="MAML\Media\_MediaFiles.xml">
       <ImageId>_MediaFiles</ImageId>
@@ -144,6 +145,24 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceItems Include="ResourceOverride.items" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="MAML\Media\AntiAliasTool.PNG">
+      <ImageId>AntiAliasTool</ImageId>
+      <AlternateText>Anti Alias Tool</AlternateText>
+    </Image>
+    <Image Include="MAML\Media\NormalCells.PNG">
+      <ImageId>NormalCells</ImageId>
+      <AlternateText>Normal Cells</AlternateText>
+    </Image>
+    <Image Include="MAML\Media\DemoCells.PNG">
+      <ImageId>DemoCells</ImageId>
+      <AlternateText>Demo Cells</AlternateText>
+    </Image>
+    <Image Include="MAML\Media\NormalMap.png">
+      <ImageId>NormalMap</ImageId>
+      <AlternateText>Normal Map</AlternateText>
+    </Image>
   </ItemGroup>
   <!-- Import the SHFB build targets -->
   <Import Project="$(SHFBROOT)\SandcastleHelpFileBuilder.targets" />

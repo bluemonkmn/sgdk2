@@ -1,0 +1,294 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<topic id="dff08c1a-590c-4da7-b9f9-8161b74dfec7" revisionNumber="1">
+  <developerConceptualDocument xmlns="http://ddue.schemas.microsoft.com/authoring/2003/5" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <summary>
+      <para>Create a project with real-time lighting effects.</para>
+    </summary>
+    <introduction>
+      <autoOutline />
+      <para>This tutorial will cover the basic steps for generating a project
+      that includes real-time lighting effects including normal maps, lights
+      and light walls. This requires Scrolling Game Development Kit 2.3.0 or
+      later, and was originally written targeting version 2.3.0. The tutorial
+      assumes you are starting with a new project created by selecting "New
+      Project" > "Default SGDK2 Project" from the File menu.
+      </para>
+    </introduction>
+    <!-- Add one or more top-level section elements.  These are collapsible.
+         If using <autoOutline />, add an address attribute to identify it
+         and specify a title so that it can be jumped to with a hyperlink. -->
+    <section address="BasicGraphics">
+      <title>Drawing Some Basic Graphics</title>
+      <content>
+        <para>These steps will walk through the process of drawing some very
+        simple graphics to use in the project.</para>
+      	<mediaLink><caption placement="after">Graphics as they will appear
+      	when this section is done</caption><image xlink:href="DemoCells" /></mediaLink>
+        <list class="ordered">
+        <listItem>Right-click "Graphic Sheets" and select "New".</listItem>
+        <listItem>Enter the name "Demo" into the (Name) property, and click "Add".</listItem>
+        <listItem>Open the graphic sheet for editing by double-clicking the new
+        "Edit Images" node in the project tree.</listItem>
+        <listItem>Left-click on the flood fill tool (bucket), and click in the
+        editing area to fill the whole tile with black.</listItem>
+        <listItem>Click "Store to Selected Cell(s)" to save the graphic.</listItem>
+        <listItem>Select the next blank cell in the Cell Manager pane, and click
+        "Load Selected Cell(s)" to edit a fresh, blank graphic.</listItem>
+        <listItem>Click on the color green, and click in the editing area to
+        make the whole graphic green.</listItem>
+        <listItem>Click "Store to Selected Cell(s)" to save the green graphic
+        next to the black one.</listItem>
+        <listItem>Select the next blank cell in the Cell Manager pane, and click
+        "Load Selected Cell(s)" to edit a fresh, blank graphic.</listItem>
+        <listItem>Click red to select red as the solid color, and click on the
+        ellipse tool to select it.</listItem>
+        <listItem>Drag from the upper left corner of the editing area to the
+        lower right corner to make a solid red circle.</listItem>
+        <listItem>Click "Store to Selected Cell(s)" to save the red circle
+        next to the green block.</listItem>
+        <listItem>Close the graphics editor.</listItem>
+        </list>
+      </content>
+      <!-- If a section contains a sections element, its content creates
+           sub-sections.  These are not collapsible.
+      <sections>
+          <section address="SubSection1">
+              <title>Sub-section 1</title>
+              <content>
+                  <para>Sub-section content.</para>
+              </content>
+          </section>
+          <section address="SubSection2">
+              <title>Sub-section 2</title>
+              <content>
+                  <para>Sub-section content.</para>
+              </content>
+          </section>
+      </sections> -->
+    </section>
+    <section address="NormalMap">
+      <title>Drawing A Normal Map</title>
+      <content>
+        <para>These steps will walk through the process of drawing a normal map
+        for the very simple graphics.</para>
+      	<mediaLink><caption placement="after">Graphics as they will appear
+      	when this section is done</caption><image xlink:href="NormalCells" /></mediaLink>
+        <list class="ordered">
+        <listItem>Right-click "Graphic Sheets" and select "New".</listItem>
+        <listItem>Enter the name "Demo nm" into the (Name) property, and click
+        "Add". (Normal maps must be named the same with space and "nm" added.)</listItem>
+        <listItem>Open the graphic sheet for editing by double-clicking the new
+        "Edit Images" node in the project tree.</listItem>
+        <listItem>Select the color gradient tool.</listItem>
+        <listItem>Change the "Green" and "Blue" value in the color selector from
+        0 to 127, leaving red at 0.</listItem>
+        <listItem>Select the "Solids" color button, and change Red to 127, Green
+        to 127, and Blue to 255.</listItem>
+        <listItem>Turn off the Anti-aliasing tool button <mediaLinkInline><image
+        xlink:href="AntiAliasTool" /></mediaLinkInline> (first button on top
+        toolbar), and drag in the editor from coordinate 15,0 to 0,0.</listItem>
+        <listItem>Select the Rectangular Selection tool and drag a selection
+        rectangle from 16,0 to 32,32.</listItem>
+        <listItem>Select the "Lines" color button, and change Red to 255,
+        leaving Green at 127, and Blue at 127.</listItem>
+        <listItem>Select the Gradient Fill tool, and drag in the editor from
+        coordinate 16,0 to 32,0.</listItem>
+        <listItem>Select the rectangle tool, turn on filling of solids, and
+        turn off drawing of outlines.</listItem>
+        <listItem>Draw a solid purplish regtangle from 9,0 to 23,32.</listItem>
+        <listItem>Select the second cell (cell #1 corresponding with the
+        position of the green block in the Demo sheet, not #0) in the Cell
+        Manager pane, and click "Store to Selected Cell(s)" to save the graphic.</listItem>
+        <listItem>Close the graphics editor.</listItem>
+        </list>
+      </content>
+    </section>
+    <section address="Frameset">
+      <title>Creating a Frameset</title>
+      <content>
+        <para>These steps will walk through creating a frameset from the
+        graphics.</para>
+        <list class="ordered">
+        <listItem>Right-click "Framesets" and select "New".</listItem>
+        <listItem>Enter the name "DemoFrames" into the Frameset Name field.</listItem>        
+        <listItem>Select "Demo" from the Graphic Sheet dropdown list.</listItem>
+        <listItem>Drag the first 3 graphics into the frameset.</listItem>
+        <listItem>Close the Frameset editor.</listItem>
+        </list>
+      </content>
+    </section>
+    <section address="Tileset">
+      <title>Creating a Tileset</title>
+      <content>
+        <para>These steps will walk through creating a tileset from the
+        Demo Frameset.</para>
+        <list class="ordered">
+        <listItem>Right-click "Tilesets" and select "New".</listItem>
+        <listItem>Enter the name "DemoTiles" into the Tileset Name field.</listItem>        
+        <listItem>Select "DemoFrames" from the Frameset dropdown list.</listItem>
+        <listItem>Change the Tile Width and Tile Height to 32.</listItem>
+        <listItem>Close the Tileset editor.</listItem>
+        </list>
+      </content>
+    </section>
+    <section address="Sprite">
+      <title>Creating a Sprite</title>
+      <content>
+        <para>These steps will walk through creating a light source sprite using
+        a graphic from the Demo Frameset.</para>
+        <list class="ordered">
+        <listItem>Right-click "Sprite Definitions" open the "New" sub-menu, and
+        select &lt;Blank&gt;.</listItem>
+        <listItem>Enter the name "DemoSprite" into the Name field.</listItem>
+        <listItem>Select "LightSpriteBase" from the "Base Class" field.</listItem>
+        <listItem>Add a new state to the sprite (press Ctrl+A).</listItem>
+        <listItem>Change the State Name field to "Main".</listItem>
+        <listItem>Select "DemoFrames" from the Frameset dropdown list.</listItem>
+        <listItem>Drag the red circle into the "Frames in Current State" panel.</listItem>
+        <listItem>Click on the "Rules" tab.</listItem>
+        <listItem>Add a new rule, and enter the Rule Name "Get player input".</listItem>
+        <listItem>Select "MapPlayerToInputs" from the dropdown list of rule
+        functions.</listItem>
+        <listItem>Enter the PlayerNumber parameter as 1.</listItem>
+        <listItem>Add another rule, and enter the Rule Name "Accelerate".</listItem>
+        <listItem>Select "AccelerateByInputs" from the dropdown list of rule
+        functions.</listItem>
+        <listItem>Enter Acceleration as 10, Max as 5 and HorizontalOnly as false.</listItem>
+        <listItem>Add another rule, and enter the Rule Name "React to solids".</listItem>
+        <listItem>Select "ReactToSolid" from the dropdown list of rule
+        functions. Note, the reason we want to react to solidity is because an
+        error will occur if the light source is off the edge of the map, and
+        ReactToSolidity also reacts to the edge of the map.</listItem>
+        <listItem>Add another rule, and enter the Rule Name "Move".</listItem>
+        <listItem>Select "MoveByVelocity" from the dropdown list of rule
+        functions.</listItem>
+        <listItem>Add another rule, and enter the Rule Name "Scroll".</listItem>
+        <listItem>Select "ScrollSpriteIntoView" from the dropdown list of rule
+        functions.</listItem>
+        <listItem>Select "true" for the UseScrollMargins parameter.</listItem>
+        <listItem>Add another rule, and enter the Rule Name "Limit framerate".</listItem>
+        <listItem>Select "LimitFrameRate" from the dropdown list of rule
+        functions.</listItem>
+        <listItem>Enter the fps value as 60</listItem>
+        <listItem>Close the Sprite Definition editor.</listItem>
+        <listItem>Right-click on Sprite Categories in the project tree, and
+        select "New".</listItem>
+        <listItem>Enter "Light Sources" as the Name.</listItem>
+        <listItem>Check the box for "DemoSprite".</listItem>
+        <listItem>Close the sprite category editor.</listItem>
+        <listItem>Reopen the editor for the "DemoSprite" sprite definition
+        (double-click on it) and switch to the Rules tab.</listItem>
+        <listItem>Add another rule, and enter the Rule Name "Apply lighting".</listItem>
+        <listItem>Select "ApplyLights" from the dropdown list of rule
+        functions.</listItem>
+        <listItem>Select "ParentLayer.m_SpriteCategories.Light_Sources" as the
+        value for the "sprites" parameter.</listItem>
+        <listItem>Select "CurrentView" for the "view" paramterer.</listItem>
+        <listItem>Close the Sprite Definition editor.</listItem>
+        </list>
+      </content>
+    </section>
+    <section address="Solidity">
+      <title>Defining Solid Tiles</title>
+      <content>
+        <para>These steps will walk through defining solid tiles. Solid tiles
+        have special behavior when it comes to sprites based on LightSpriteBase.
+        They will obstruct the light source casting 2-dimensional shadows on the
+        side away from the light source.</para>
+        <list class="ordered">
+        <listItem>Expand "Tile Categories" in the project tree, right-click on
+        "Solid" and select "New".</listItem>
+        <listItem>Select "DemoTiles" as the Tileset, and click OK.</listItem>        
+        <listItem>Drag the red circle into the bottom pane.</listItem>
+        <listItem>Close the tile category editor. Note, you can also go to the
+        solidity editor and define new solidity with this category, but since
+        the default project already has this, it's not necessary.</listItem>
+        </list>
+      </content>
+    </section>
+    <section address="MapAndLayer">
+      <title>Creating a Map and Layer</title>
+      <content>
+        <para>These steps will walk through creating a map and layer where tiles
+        and a sprite can be added to see the lighting effects of the sprite.</para>
+        <autoOutline />
+      </content>
+      <sections>
+          <section address="Map">
+              <title>Creating the Map</title>
+              <content>
+                  <para>This section walks through creating the map</para>
+                    <list class="ordered">
+                    <listItem>Right-click "Maps" and select "New".</listItem>
+                    <listItem>Enter the name "Level 1" into the (Name) property.</listItem>        
+                    <listItem>Enter the ScrollableSize as 1280, 1280.</listItem>
+                    <listItem>Click Add.</listItem>
+                    </list>
+              </content>
+          </section>
+          <section address="Layer">
+              <title>Creating the Layer</title>
+              <content>
+                  <para>This section walks though creating a layer within the
+                  map.</para>
+                    <list class="ordered">
+                    <listItem>Right-click "Layers" and select "New".</listItem>
+                    <listItem>Enter the name "Main" into the (Name) property.</listItem>        
+                    <listItem>Change Lighting to Normal.</listItem>
+                    <listItem>Change Tileset to DemoTiles.</listItem>
+                    <listItem>Change SizeInTiles to 40,40.</listItem>
+                    <listItem>Click Add.</listItem>
+                    </list>
+              </content>
+          </section>
+          <section address="EditLayer">
+              <title>Editing the Layer</title>
+              <content>
+                  <para>This section walks through adding tiles and a sprite to
+                  the layer so that lighting effects will be visible.</para>
+                    <list class="ordered">
+                    <listItem>From the Tiles tab, select the green tile.</listItem>
+                    <listItem>Draw a bunch of green tiles anywhere in the map
+                    editing area.</listItem>
+                    <listItem>Select the red circle tile, and draw a couple red
+                    tiles in positions that can cast a shadow onto green tiles
+                    below them.</listItem>
+                    <listItem>Select the Sprites tab, and click "Add Sprites".</listItem>                    
+                    <listItem>Select "&lt;All&gt;" from the dropdown list.</listItem>
+                    <listItem>Select the red circle.</listItem>
+                    <listItem>For the Solidity property select the value
+                    "Standard".</listItem>
+                    <listItem>Scroll to the bottom of the sprite's parameter
+                    list, and enter the following parameters: LightAimY=1,
+                    LightApertureFocus=0.8, LightQuadraticFalloff=1, LightZ=1.</listItem>
+                    <listItem>Click in the map editor to add the sprite to the
+                    layer. Note, if you neglect to set all the correct property
+                    values on the sprite before placing it on the map, you can
+                    still switch to select mode, select the sprite on the map,
+                    and edit its properties.</listItem>
+                    </list>
+              </content>
+          </section>
+      </sections>
+      </section>
+	  <section address="TestRun">
+      <title>Run a Test</title>
+      <content>
+        <para>These steps will walk through finalizing the project and observing
+        the results.</para>
+        <list class="ordered">
+        <listItem>Right-click on the root node in the project tree, and select
+        "Edit".</listItem>
+        <listItem>Select "Level 1" as the value for the StartMap property.</listItem>        
+        <listItem>Run the project (Press F5).</listItem>
+        <listItem>Observe how green tiles are illuminated depending on the
+        position of the light, and how the red tiles block light completely.</listItem>
+        </list>
+      </content>
+    </section>      
+    <relatedTopics>
+    <link xlink:href="76ac66ea-2071-486c-a830-d5da8e27d33c"/>
+    <link xlink:href="2d575c3e-dff1-484e-8f48-6109b0f79028"/>
+    </relatedTopics>
+  </developerConceptualDocument>
+</topic>

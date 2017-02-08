@@ -5,4 +5,24 @@
       <altText>Graphics Editor</altText>
     </image>
   </item>
+  <item id="NormalMap">
+  	<image file="NormalMap.png">
+  	  <altText>Graphic sheet, normal map and combined result screenshot</altText>
+  	</image>
+  </item>
+  <item id="NormalCells">
+    <image file="NormalCells.PNG">
+      <altText>Screenshot of Cell Manager with normal map cell in slot 1</altText>
+    </image>
+  </item>
+  <item id="DemoCells">
+    <image file="DemoCells.PNG">
+      <altText>Screenshot of Cell Manager with 3 cells drawn.</altText>
+    </image>
+  </item>
+  <item id="AntiAliasTool">
+    <image file="AntiAliasTool.PNG">
+      <altText>Screenshot of Anti-Alias tool button.</altText>
+    </image>
+  </item>
 </stockSharedContentDefinitions>

@@ -48,8 +48,8 @@
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>default.html</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>1</ApplicationRevision>
-    <ApplicationVersion>2.2.10.1</ApplicationVersion>
+    <ApplicationRevision>13</ApplicationRevision>
+    <ApplicationVersion>2.3.0.13</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -743,7 +743,6 @@
       <SubType>Designer</SubType>
     </Content>
     <None Include="app.config" />
-    <Content Include="Help\SGDK2Help.chm" />
     <Content Include="Library\Graphics\SHFL.sgdk2" />
     <Content Include="Library\Graphics\SMHFL.sgdk2" />
     <Content Include="Library\Projects\Default.sgdk2" />
@@ -768,6 +767,7 @@
     <Content Include="Library\Tiles\Simple Ground.sgdk2" />
     <Content Include="Library\Projects\SHFLHTML5.sgdk2" />
     <Content Include="Library\Projects\Mobile.sgdk2" />
+    <Content Include="Help\Compiled\SGDK2Help.chm" />
     <None Include="OpenTK.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -786,6 +786,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5.2 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -822,7 +827,7 @@
     </FileAssociation>
   </ItemGroup>
   <ItemGroup>
-    <PublishFile Include="Help\SGDK2Help.chm">
+    <PublishFile Include="Help\Compiled\SGDK2Help.chm">
       <Visible>False</Visible>
       <Group>Online Help</Group>
       <TargetPath>
@@ -864,6 +869,16 @@
       <TargetPath>
       </TargetPath>
       <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Projects\Default.sgdk2">
+      <Visible>False</Visible>
+      <Group>
+      </Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Exclude</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>

@@ -1,8 +1,12 @@
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual C# Express 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SGDK2", "SGDK2.csproj", "{A1F1DF5A-C16F-4439-BC2B-E99FE2904941}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reflect", "Reflect\Reflect.csproj", "{C8D38510-B197-47A1-9CE0-C2ED6187278E}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Setup", "Setup\Setup.vdproj", "{0D34501B-1338-4EE9-943D-D07FA1267122}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,6 +22,8 @@ Global
 		{C8D38510-B197-47A1-9CE0-C2ED6187278E}.Debug|x86.Build.0 = Debug|x86
 		{C8D38510-B197-47A1-9CE0-C2ED6187278E}.Release|x86.ActiveCfg = Release|x86
 		{C8D38510-B197-47A1-9CE0-C2ED6187278E}.Release|x86.Build.0 = Release|x86
+		{0D34501B-1338-4EE9-943D-D07FA1267122}.Debug|x86.ActiveCfg = Debug
+		{0D34501B-1338-4EE9-943D-D07FA1267122}.Release|x86.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

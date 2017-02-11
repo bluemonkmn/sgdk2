@@ -30,12 +30,17 @@
     unique throughout the project. The Folder is a backslash-delimited name that
     can be used to specify a parent folder name into which the sprite definition
     will be nested for organizational purposes only in the project tree. The
-    Base Class is a relatively advanced feature, which should be left at the
-    default value of SpriteBase in most cases. If you want to create <link
+    Base Class was a relatively advanced feature, and would be left at the
+    default value of SpriteBase in most cases until version 2.3.0. Now another
+    option LightSpriteBase is available. That should be selected to create a
+    sprite definition that includes all the extra properties and behaviors of a
+    dynamic light source. Of course the previous purpose is also still valid: if
+    you want to create <link
     xlink:href="8dc5b7ca-9900-4b6d-a51b-9de648e0da18">Source Code</link> objects
     to define sprites with specialized sets of rule functions you can specify
     your <codeEntityReference qualifyHint="false">T:SpriteBase</codeEntityReference>-derived
-    base class here.
+    base class here. LightSpriteBase is now just one pre-packaged example of
+    that.
     </para>
     <para>Because sprite definitions consist of different components that have a 
          significant deal of detail to explain, the description of sprite definitions is 

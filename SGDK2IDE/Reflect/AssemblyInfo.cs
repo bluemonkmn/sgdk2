@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -6,4 +7,6 @@ using System.Runtime.CompilerServices;
 [assembly: AssemblyCompany("Benjamin Marty")]
 [assembly: AssemblyProduct("Scrolling Game Development Kit 2")]
 [assembly: AssemblyCopyright("Copyright ©2006-2017 Benjamin Marty")]
-[assembly: AssemblyVersion("2.3.0.12")]
+[assembly: AssemblyVersion("2.3.0.13")]
+[assembly: ComVisible(false)]
+

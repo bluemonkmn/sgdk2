@@ -380,7 +380,11 @@ public abstract partial class LightSpriteBase : SpriteBase
          processedTiles.SetAll(false);
       tileCoords.Clear();
 
-      processedTiles[tileY * layer.VirtualColumns + tileX] = true;
+      // Mark the first tile as processsed
+      EnqueueCoord(tileX, tileY);
+      if (tileCoords.Count > 0)
+         tileCoords.Dequeue();
+      else return;
 
       wallCount = 0;
 

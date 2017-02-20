@@ -260,6 +260,11 @@ namespace SGDK2
                   g_HelpProvider.HelpNamespace = System.IO.Path.Combine(helpParentDir, @"Help\SGDK2Help.chm");
                   break;
                }
+               else if (System.IO.File.Exists(System.IO.Path.Combine(helpParentDir, @"Help\Compiled\SGDK2Help.chm")))
+               {
+                  g_HelpProvider.HelpNamespace = System.IO.Path.Combine(helpParentDir, @"Help\Compiled\SGDK2Help.chm");
+                  break;
+               }
                else
                {
                   System.IO.DirectoryInfo diHelp = System.IO.Directory.GetParent(helpParentDir);

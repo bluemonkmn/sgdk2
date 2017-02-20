@@ -11,8 +11,7 @@
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
     <AssemblyName>SGDK2IDE</AssemblyName>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>BenMarty.pfx</AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
@@ -48,8 +47,8 @@
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>default.html</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>13</ApplicationRevision>
-    <ApplicationVersion>2.3.0.13</ApplicationVersion>
+    <ApplicationRevision>14</ApplicationRevision>
+    <ApplicationVersion>2.3.0.14</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -124,16 +123,16 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>A105CC4C1BE263F33A397F50F8DDAC050FE99F9B</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>51173C80967746D5D71F1460773B26B4F2290AB9</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>SGDK2_1_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>BenMarty.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>false</SignManifests>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
@@ -141,7 +140,7 @@
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <Win32Resource>
@@ -768,6 +767,8 @@
     <Content Include="Library\Projects\SHFLHTML5.sgdk2" />
     <Content Include="Library\Projects\Mobile.sgdk2" />
     <Content Include="Help\Compiled\SGDK2Help.chm" />
+    <None Include="BenMarty.pfx" />
+    <Content Include="Library\Projects\Lighting.sgdk2" />
     <None Include="OpenTK.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -874,11 +875,19 @@
     </PublishFile>
     <PublishFile Include="Library\Projects\Default.sgdk2">
       <Visible>False</Visible>
-      <Group>
-      </Group>
+      <Group>Template Library</Group>
       <TargetPath>
       </TargetPath>
-      <PublishState>Exclude</PublishState>
+      <PublishState>Include</PublishState>
+      <IncludeHash>True</IncludeHash>
+      <FileType>File</FileType>
+    </PublishFile>
+    <PublishFile Include="Library\Projects\Lighting.sgdk2">
+      <Visible>False</Visible>
+      <Group>Template Library</Group>
+      <TargetPath>
+      </TargetPath>
+      <PublishState>Include</PublishState>
       <IncludeHash>True</IncludeHash>
       <FileType>File</FileType>
     </PublishFile>

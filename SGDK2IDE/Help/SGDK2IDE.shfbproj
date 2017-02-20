@@ -49,7 +49,7 @@
     <ProductTitle>Scrolling Game Development Kit 2</ProductTitle>
     <ApiFilter>
     </ApiFilter>
-    <HelpFileFormat>HtmlHelp1</HelpFileFormat>
+    <HelpFileFormat>HtmlHelp1, Website</HelpFileFormat>
     <CleanIntermediates>True</CleanIntermediates>
     <MaximumGroupParts>2</MaximumGroupParts>
     <NamespaceGrouping>False</NamespaceGrouping>

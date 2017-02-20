@@ -13,6 +13,14 @@
       assumes you are starting with a new project created by selecting "New
       Project" > "Default SGDK2 Project" from the File menu.
       </para>
+      <para>This tutorial is designed to force you through all the pieces
+      involved in lighting. There is a lighting template project in the new
+      project menu (File > New Project > Lighting Patterns) that will give a
+      good starting point for creating a project with lighting effects without
+      having to follow these steps. That template also provides a good range of
+      normal maps that can be used to demonstrate and develop other normal maps
+      not easily created from scratch.
+      </para>
     </introduction>
     <!-- Add one or more top-level section elements.  These are collapsible.
          If using <autoOutline />, add an address attribute to identify it

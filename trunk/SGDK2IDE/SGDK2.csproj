@@ -47,8 +47,8 @@
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>default.html</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>14</ApplicationRevision>
-    <ApplicationVersion>2.3.0.14</ApplicationVersion>
+    <ApplicationRevision>15</ApplicationRevision>
+    <ApplicationVersion>2.3.0.15</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
@@ -338,6 +338,7 @@
     <EmbeddedResource Include="HTML5\Player.js" />
     <EmbeddedResource Include="HTML5\Map.js" />
     <EmbeddedResource Include="HTML5\Template.html" />
+    <Content Include="COPYING.txt" />
     <Content Include="Library\Sound\fmod.cs" />
     <Content Include="Library\Sound\fmodbase.cs" />
     <Compile Include="LogView.cs">

@@ -201,6 +201,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_D7FCE70BE4C449D1B4CA765140FA4F2A"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_D9B0E405A97930B82A9D6A436C6B8748"
         "OwnerKey" = "8:_ED9D27D4005374ACA77A3111C588BDB9"
         "MsmSig" = "8:_UNDEFINED"
@@ -983,6 +989,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D7FCE70BE4C449D1B4CA765140FA4F2A"
+            {
+            "SourcePath" = "8:..\\COPYING.txt"
+            "TargetName" = "8:COPYING.txt"
+            "Tag" = "8:"
+            "Folder" = "8:_0930BF10E134475DA4A8DA4FEC001239"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D9B0E405A97930B82A9D6A436C6B8748"
             {
             "AssemblyRegister" = "3:1"
@@ -1409,6 +1435,20 @@
             "Folder" = "8:_AE28A0E6FFD446788E0D0C93E9FE8856"
             "WorkingFolder" = "8:_0930BF10E134475DA4A8DA4FEC001239"
             "Icon" = "8:_8E4EB2124C7F4737A54937E20AEF5244"
+            "Feature" = "8:"
+            }
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_D4BC6DF907BD452A8D55D33A5AA1BFE5"
+            {
+            "Name" = "8:COPYING.txt"
+            "Arguments" = "8:"
+            "Description" = "8:"
+            "ShowCmd" = "3:1"
+            "IconIndex" = "3:0"
+            "Transitive" = "11:FALSE"
+            "Target" = "8:_D7FCE70BE4C449D1B4CA765140FA4F2A"
+            "Folder" = "8:_AE28A0E6FFD446788E0D0C93E9FE8856"
+            "WorkingFolder" = "8:_0930BF10E134475DA4A8DA4FEC001239"
+            "Icon" = "8:"
             "Feature" = "8:"
             }
             "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_FE1EE7C020014E94BCA9558834F389FB"

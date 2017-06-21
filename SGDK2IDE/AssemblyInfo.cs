@@ -38,10 +38,10 @@ using System.Resources;
 // You can specify all the values or you can default the Revision and Build Numbers 
 // by using the '*' as shown below:
 
-[assembly: AssemblyVersion("2.3.0.15")]
+[assembly: AssemblyVersion("2.3.1.0")]
 
 // Displayed on splash screen and about dialog
-[assembly: AssemblyInformationalVersion("2.3.0")]
+[assembly: AssemblyInformationalVersion("2.3.1")]
 
 //
 // In order to sign your assembly you must specify a key to use. Refer to the 

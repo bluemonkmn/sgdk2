@@ -2078,7 +2078,22 @@ namespace SGDK2
 
             Size ScrollBounds = GetScrollBounds();
             if (ScrollBounds != MapDisplay.AutoScrollMinSize)
+            {
+               Size viewSize = Display.GetScreenSize(MapDisplay.GameDisplayMode, false);
+               // If the size of the content is close (say, about 32 pixels) to the size of the view, it can cause
+               // a terrible size flicker as the scroll bars disappear because everything can fit without the scroll
+               // bars, and then re-appear because, it can't fit with the scroll bars. So just force the scroll bars
+               // to remain.
+               if ((ScrollBounds.Width <= viewSize.Width) && (ScrollBounds.Height <= viewSize.Height) &&
+                   (ScrollBounds.Width >= viewSize.Width - 32) && (ScrollBounds.Height >= viewSize.Height - 32))
+               {
+                  if (viewSize.Width - ScrollBounds.Width < viewSize.Height - ScrollBounds.Height)
+                     ScrollBounds.Width = viewSize.Width + 1;
+                  else
+                     ScrollBounds.Height = viewSize.Height + 1;
+               }
                MapDisplay.AutoScrollMinSize = ScrollBounds;
+            }
 
             for (int i = 0; i < m_Layers.Length; i++)
             {

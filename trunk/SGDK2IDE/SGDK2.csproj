@@ -29,7 +29,7 @@
     <IsWebBootstrapper>true</IsWebBootstrapper>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
-    <PublishUrl>C:\Users\Benjamin Marty\Documents\Visual Studio 2015\Projects\SGDK2Publish\</PublishUrl>
+    <PublishUrl>C:\Users\bluem\Documents\Visual Studio 2017\Projects\SGDK2Publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Web</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -47,8 +47,8 @@
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>default.html</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>15</ApplicationRevision>
-    <ApplicationVersion>2.3.0.15</ApplicationVersion>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>2.3.1.0</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
